@@ -23,7 +23,7 @@ let entry = Entry::new()?;
 
 // create an instance (skip listing layers and extensions for this example)
 let instance_create_info = vk::InstanceCreateInfo {
-	.. Default::default()
+    .. Default::default()
 };
 let instance = unsafe { entry.create_instance(&instance_create_info, None) }?;
 
@@ -57,23 +57,23 @@ As an example, for this C function:
 
 ```C
 VkResult vkAllocateMemory(
-	VkDevice device,
-	const VkMemoryAllocateInfo* pAllocateInfo,
-	const VkAllocationCallbacks* pAllocator,
-	VkDeviceMemory* pMemory);
+    VkDevice device,
+    const VkMemoryAllocateInfo* pAllocateInfo,
+    const VkAllocationCallbacks* pAllocator,
+    VkDeviceMemory* pMemory);
 ```
 
 The rust wrapper on `Device` is:
 
 ```rust
 impl Device {
-	pub unsafe fn allocate_memory(
-	    &self,
-	    p_allocate_info: &vk::MemoryAllocateInfo,
-	    p_allocator: Option<&vk::AllocationCallbacks>,
-	) -> Result<vk::DeviceMemory> {
-		...
-	}
+    pub unsafe fn allocate_memory(
+        &self,
+        p_allocate_info: &vk::MemoryAllocateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DeviceMemory> {
+        ...
+    }
 }
 ```
 
