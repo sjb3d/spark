@@ -91,3 +91,28 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
+    let mut has_output = false;
+    let mut remain = bits;
+    for (bit, name) in bit_names.iter().cloned() {
+        if (remain & bit) == bit {
+            if has_output {
+                f.write_str(" | ")?;
+            }
+            write!(f, "{}", name)?;
+            has_output = true;
+            remain &= !bit;
+        }
+    }
+    if remain != 0 {
+        if has_output {
+            f.write_str(" | ")?;
+        }
+        write!(f, "{:#x}", remain)?;
+        has_output = true;
+    }
+    if !has_output {
+        f.write_str("0")?;
+    }
+    Ok(())
+}

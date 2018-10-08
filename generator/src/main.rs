@@ -903,18 +903,13 @@ impl<'a> Generator<'a> {
                     if entries.is_empty() {
                         writeln!(w, r#"f.write_str("0")"#)?;
                     } else {
-                        writeln!(w, "let mut is_first = true; let mut remain = self.0;")?;
+                        writeln!(w, "display_bitmask(self.0, &[")?;
                         for (ref name, value) in &entries {
                             if let EnumEntryValue::Number { value, .. } = value {
-                                writeln!(w,
-                                    r#"if (remain & {0:#x}) == {0:#x} {{ if !is_first {{ f.write_str(" | ")? }} is_first = false; f.write_str("{1}")?; remain &= !{0:#x}; }}"#,
-                                    value, name)?;
+                                writeln!(w, r#"({:#x}, "{}"),"#, value, name)?;
                             }
                         }
-                        writeln!(
-                            w,
-                            r#"if remain != 0 {{ if !is_first {{ f.write_str(" | ")? }} is_first = false; write!(f, "| {{:#x}}", remain)?; }}"#);
-                        writeln!(w, r#"if is_first {{ f.write_str("0")?; }} Ok(())"#);
+                        writeln!(w, "], f)")?;
                     }
                     writeln!(w, "}} }}")?;
                 }

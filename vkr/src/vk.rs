@@ -47,13 +47,7 @@ impl default::Default for Version {
 }
 impl fmt::Display for Version {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}.{}.{}",
-            self.get_major(),
-            self.get_minor(),
-            self.get_patch()
-        )
+        write!(f, "{}.{}.{}", self.get_major(), self.get_minor(), self.get_patch())
     }
 }
 
@@ -97,6 +91,31 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
+    let mut has_output = false;
+    let mut remain = bits;
+    for (bit, name) in bit_names.iter().cloned() {
+        if (remain & bit) == bit {
+            if has_output {
+                f.write_str(" | ")?;
+            }
+            write!(f, "{}", name)?;
+            has_output = true;
+            remain &= !bit;
+        }
+    }
+    if remain != 0 {
+        if has_output {
+            f.write_str(" | ")?;
+        }
+        write!(f, "{:#x}", remain)?;
+        has_output = true;
+    }
+    if !has_output {
+        f.write_str("0")?;
+    }
+    Ok(())
+}
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE: usize = 256;
 pub const UUID_SIZE: usize = 16;
 pub const LUID_SIZE: usize = 8;
@@ -1263,35 +1282,11 @@ impl ops::BitXorAssign for DescriptorSetLayoutCreateFlags {
 }
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PUSH_DESCRIPTOR_KHR")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UPDATE_AFTER_BIND_POOL_EXT")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "PUSH_DESCRIPTOR_KHR"), (0x2, "UPDATE_AFTER_BIND_POOL_EXT")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -1562,27 +1557,7 @@ impl ops::BitXorAssign for DeviceQueueCreateFlags {
 }
 impl fmt::Display for DeviceQueueCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "PROTECTED")], f)
     }
 }
 #[repr(transparent)]
@@ -1660,59 +1635,17 @@ impl ops::BitXorAssign for QueueFlags {
 }
 impl fmt::Display for QueueFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GRAPHICS")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMPUTE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_BINDING")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x10;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "GRAPHICS"),
+                (0x2, "COMPUTE"),
+                (0x4, "TRANSFER"),
+                (0x8, "SPARSE_BINDING"),
+                (0x10, "PROTECTED"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -1792,67 +1725,18 @@ impl ops::BitXorAssign for MemoryPropertyFlags {
 }
 impl fmt::Display for MemoryPropertyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEVICE_LOCAL")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_VISIBLE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_COHERENT")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_CACHED")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("LAZILY_ALLOCATED")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x20;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "DEVICE_LOCAL"),
+                (0x2, "HOST_VISIBLE"),
+                (0x4, "HOST_COHERENT"),
+                (0x8, "HOST_CACHED"),
+                (0x10, "LAZILY_ALLOCATED"),
+                (0x20, "PROTECTED"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -1925,35 +1809,7 @@ impl ops::BitXorAssign for MemoryHeapFlags {
 }
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEVICE_LOCAL")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MULTI_INSTANCE")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE")], f)
     }
 }
 #[repr(transparent)]
@@ -2064,219 +1920,37 @@ impl ops::BitXorAssign for AccessFlags {
 }
 impl fmt::Display for AccessFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INDIRECT_COMMAND_READ")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INDEX_READ")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_ATTRIBUTE_READ")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UNIFORM_READ")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INPUT_ATTACHMENT_READ")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHADER_READ")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHADER_WRITE")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT_READ")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT_WRITE")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEPTH_STENCIL_ATTACHMENT_READ")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEPTH_STENCIL_ATTACHMENT_WRITE")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x800) == 0x800 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_READ")?;
-            remain &= !0x800;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_WRITE")?;
-            remain &= !0x1000;
-        }
-        if (remain & 0x2000) == 0x2000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_READ")?;
-            remain &= !0x2000;
-        }
-        if (remain & 0x4000) == 0x4000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_WRITE")?;
-            remain &= !0x4000;
-        }
-        if (remain & 0x8000) == 0x8000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MEMORY_READ")?;
-            remain &= !0x8000;
-        }
-        if (remain & 0x10000) == 0x10000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MEMORY_WRITE")?;
-            remain &= !0x10000;
-        }
-        if (remain & 0x100000) == 0x100000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CONDITIONAL_RENDERING_READ_EXT")?;
-            remain &= !0x100000;
-        }
-        if (remain & 0x20000) == 0x20000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMMAND_PROCESS_READ_NVX")?;
-            remain &= !0x20000;
-        }
-        if (remain & 0x40000) == 0x40000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMMAND_PROCESS_WRITE_NVX")?;
-            remain &= !0x40000;
-        }
-        if (remain & 0x80000) == 0x80000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT_READ_NONCOHERENT_EXT")?;
-            remain &= !0x80000;
-        }
-        if (remain & 0x800000) == 0x800000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHADING_RATE_IMAGE_READ_NV")?;
-            remain &= !0x800000;
-        }
-        if (remain & 0x200000) == 0x200000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ACCELERATION_STRUCTURE_READ_NVX")?;
-            remain &= !0x200000;
-        }
-        if (remain & 0x400000) == 0x400000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ACCELERATION_STRUCTURE_WRITE_NVX")?;
-            remain &= !0x400000;
-        }
-        if (remain & 0x1000000) == 0x1000000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESERVED_24_EXT")?;
-            remain &= !0x1000000;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "INDIRECT_COMMAND_READ"),
+                (0x2, "INDEX_READ"),
+                (0x4, "VERTEX_ATTRIBUTE_READ"),
+                (0x8, "UNIFORM_READ"),
+                (0x10, "INPUT_ATTACHMENT_READ"),
+                (0x20, "SHADER_READ"),
+                (0x40, "SHADER_WRITE"),
+                (0x80, "COLOR_ATTACHMENT_READ"),
+                (0x100, "COLOR_ATTACHMENT_WRITE"),
+                (0x200, "DEPTH_STENCIL_ATTACHMENT_READ"),
+                (0x400, "DEPTH_STENCIL_ATTACHMENT_WRITE"),
+                (0x800, "TRANSFER_READ"),
+                (0x1000, "TRANSFER_WRITE"),
+                (0x2000, "HOST_READ"),
+                (0x4000, "HOST_WRITE"),
+                (0x8000, "MEMORY_READ"),
+                (0x10000, "MEMORY_WRITE"),
+                (0x100000, "CONDITIONAL_RENDERING_READ_EXT"),
+                (0x20000, "COMMAND_PROCESS_READ_NVX"),
+                (0x40000, "COMMAND_PROCESS_WRITE_NVX"),
+                (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+                (0x800000, "SHADING_RATE_IMAGE_READ_NV"),
+                (0x200000, "ACCELERATION_STRUCTURE_READ_NVX"),
+                (0x400000, "ACCELERATION_STRUCTURE_WRITE_NVX"),
+                (0x1000000, "RESERVED_24_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -2365,107 +2039,23 @@ impl ops::BitXorAssign for BufferUsageFlags {
 }
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_SRC")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_DST")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UNIFORM_TEXEL_BUFFER")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_TEXEL_BUFFER")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UNIFORM_BUFFER")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_BUFFER")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INDEX_BUFFER")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_BUFFER")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INDIRECT_BUFFER")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CONDITIONAL_RENDERING_EXT")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RAYTRACING_NVX")?;
-            remain &= !0x400;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "TRANSFER_SRC"),
+                (0x2, "TRANSFER_DST"),
+                (0x4, "UNIFORM_TEXEL_BUFFER"),
+                (0x8, "STORAGE_TEXEL_BUFFER"),
+                (0x10, "UNIFORM_BUFFER"),
+                (0x20, "STORAGE_BUFFER"),
+                (0x40, "INDEX_BUFFER"),
+                (0x80, "VERTEX_BUFFER"),
+                (0x100, "INDIRECT_BUFFER"),
+                (0x200, "CONDITIONAL_RENDERING_EXT"),
+                (0x400, "RAYTRACING_NVX"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -2541,51 +2131,16 @@ impl ops::BitXorAssign for BufferCreateFlags {
 }
 impl fmt::Display for BufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_BINDING")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_RESIDENCY")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_ALIASED")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "SPARSE_BINDING"),
+                (0x2, "SPARSE_RESIDENCY"),
+                (0x4, "SPARSE_ALIASED"),
+                (0x8, "PROTECTED"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -2669,147 +2224,28 @@ impl ops::BitXorAssign for ShaderStageFlags {
 }
 impl fmt::Display for ShaderStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_CONTROL")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_EVALUATION")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GEOMETRY")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRAGMENT")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMPUTE")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x1f) == 0x1f {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALL_GRAPHICS")?;
-            remain &= !0x1f;
-        }
-        if (remain & 0x7fffffff) == 0x7fffffff {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALL")?;
-            remain &= !0x7fffffff;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RAYGEN_NVX")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ANY_HIT_NVX")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CLOSEST_HIT_NVX")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x800) == 0x800 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MISS_NVX")?;
-            remain &= !0x800;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INTERSECTION_NVX")?;
-            remain &= !0x1000;
-        }
-        if (remain & 0x2000) == 0x2000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CALLABLE_NVX")?;
-            remain &= !0x2000;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TASK_NV")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MESH_NV")?;
-            remain &= !0x80;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "VERTEX"),
+                (0x2, "TESSELLATION_CONTROL"),
+                (0x4, "TESSELLATION_EVALUATION"),
+                (0x8, "GEOMETRY"),
+                (0x10, "FRAGMENT"),
+                (0x20, "COMPUTE"),
+                (0x1f, "ALL_GRAPHICS"),
+                (0x7fffffff, "ALL"),
+                (0x100, "RAYGEN_NVX"),
+                (0x200, "ANY_HIT_NVX"),
+                (0x400, "CLOSEST_HIT_NVX"),
+                (0x800, "MISS_NVX"),
+                (0x1000, "INTERSECTION_NVX"),
+                (0x2000, "CALLABLE_NVX"),
+                (0x40, "TASK_NV"),
+                (0x80, "MESH_NV"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -2895,99 +2331,22 @@ impl ops::BitXorAssign for ImageUsageFlags {
 }
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_SRC")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_DST")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEPTH_STENCIL_ATTACHMENT")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSIENT_ATTACHMENT")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INPUT_ATTACHMENT")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHADING_RATE_IMAGE_NV")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESERVED_9_EXT")?;
-            remain &= !0x200;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "TRANSFER_SRC"),
+                (0x2, "TRANSFER_DST"),
+                (0x4, "SAMPLED"),
+                (0x8, "STORAGE"),
+                (0x10, "COLOR_ATTACHMENT"),
+                (0x20, "DEPTH_STENCIL_ATTACHMENT"),
+                (0x40, "TRANSIENT_ATTACHMENT"),
+                (0x80, "INPUT_ATTACHMENT"),
+                (0x100, "SHADING_RATE_IMAGE_NV"),
+                (0x200, "RESERVED_9_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -3084,139 +2443,27 @@ impl ops::BitXorAssign for ImageCreateFlags {
 }
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_BINDING")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_RESIDENCY")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_ALIASED")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MUTABLE_FORMAT")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CUBE_COMPATIBLE")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALIAS")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPLIT_INSTANCE_BIND_REGIONS")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N2D_ARRAY_COMPATIBLE")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BLOCK_TEXEL_VIEW_COMPATIBLE")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EXTENDED_USAGE")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x800) == 0x800 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x800;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DISJOINT")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x2000) == 0x2000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CORNER_SAMPLED_NV")?;
-            remain &= !0x2000;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT")?;
-            remain &= !0x1000;
-        }
-        if (remain & 0x4000) == 0x4000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESERVED_14_EXT")?;
-            remain &= !0x4000;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "SPARSE_BINDING"),
+                (0x2, "SPARSE_RESIDENCY"),
+                (0x4, "SPARSE_ALIASED"),
+                (0x8, "MUTABLE_FORMAT"),
+                (0x10, "CUBE_COMPATIBLE"),
+                (0x400, "ALIAS"),
+                (0x40, "SPLIT_INSTANCE_BIND_REGIONS"),
+                (0x20, "N2D_ARRAY_COMPATIBLE"),
+                (0x80, "BLOCK_TEXEL_VIEW_COMPATIBLE"),
+                (0x100, "EXTENDED_USAGE"),
+                (0x800, "PROTECTED"),
+                (0x200, "DISJOINT"),
+                (0x2000, "CORNER_SAMPLED_NV"),
+                (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
+                (0x4000, "RESERVED_14_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -3359,67 +2606,18 @@ impl ops::BitXorAssign for PipelineCreateFlags {
 }
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DISABLE_OPTIMIZATION")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALLOW_DERIVATIVES")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DERIVATIVE")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VIEW_INDEX_FROM_DEVICE_INDEX")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DISPATCH_BASE")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEFER_COMPILE_NVX")?;
-            remain &= !0x20;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "DISABLE_OPTIMIZATION"),
+                (0x2, "ALLOW_DERIVATIVES"),
+                (0x4, "DERIVATIVE"),
+                (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
+                (0x10, "DISPATCH_BASE"),
+                (0x20, "DEFER_COMPILE_NVX"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -3491,51 +2689,7 @@ impl ops::BitXorAssign for ColorComponentFlags {
 }
 impl fmt::Display for ColorComponentFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("R")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("G")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("B")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("A")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "R"), (0x2, "G"), (0x4, "B"), (0x8, "A")], f)
     }
 }
 #[repr(transparent)]
@@ -3604,27 +2758,7 @@ impl ops::BitXorAssign for FenceCreateFlags {
 }
 impl fmt::Display for FenceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SIGNALED")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "SIGNALED")], f)
     }
 }
 #[repr(transparent)]
@@ -3733,10 +2867,8 @@ impl FormatFeatureFlags {
     /// Format can be used with linear filtering whilst color conversion is enabled
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER: Self = FormatFeatureFlags(0x40000);
     /// Format can have different chroma, min and mag filters
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self =
-        FormatFeatureFlags(0x80000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self =
-        FormatFeatureFlags(0x100000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self = FormatFeatureFlags(0x80000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self = FormatFeatureFlags(0x100000);
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE: Self =
         FormatFeatureFlags(0x200000);
     /// Format supports disjoint planes
@@ -3822,219 +2954,43 @@ impl ops::BitXorAssign for FormatFeatureFlags {
 }
 impl fmt::Display for FormatFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_IMAGE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_IMAGE_ATOMIC")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UNIFORM_TEXEL_BUFFER")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_TEXEL_BUFFER")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STORAGE_TEXEL_BUFFER_ATOMIC")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_BUFFER")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT_BLEND")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEPTH_STENCIL_ATTACHMENT")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BLIT_SRC")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x800) == 0x800 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BLIT_DST")?;
-            remain &= !0x800;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_FILTER_LINEAR")?;
-            remain &= !0x1000;
-        }
-        if (remain & 0x4000) == 0x4000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_SRC")?;
-            remain &= !0x4000;
-        }
-        if (remain & 0x8000) == 0x8000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER_DST")?;
-            remain &= !0x8000;
-        }
-        if (remain & 0x20000) == 0x20000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MIDPOINT_CHROMA_SAMPLES")?;
-            remain &= !0x20000;
-        }
-        if (remain & 0x40000) == 0x40000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER")?;
-            remain &= !0x40000;
-        }
-        if (remain & 0x80000) == 0x80000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER")?;
-            remain &= !0x80000;
-        }
-        if (remain & 0x100000) == 0x100000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT")?;
-            remain &= !0x100000;
-        }
-        if (remain & 0x200000) == 0x200000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE")?;
-            remain &= !0x200000;
-        }
-        if (remain & 0x400000) == 0x400000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DISJOINT")?;
-            remain &= !0x400000;
-        }
-        if (remain & 0x800000) == 0x800000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COSITED_CHROMA_SAMPLES")?;
-            remain &= !0x800000;
-        }
-        if (remain & 0x2000) == 0x2000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_FILTER_CUBIC_IMG")?;
-            remain &= !0x2000;
-        }
-        if (remain & 0x10000) == 0x10000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SAMPLED_IMAGE_FILTER_MINMAX_EXT")?;
-            remain &= !0x10000;
-        }
-        if (remain & 0x1000000) == 0x1000000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESERVED_24_EXT")?;
-            remain &= !0x1000000;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "SAMPLED_IMAGE"),
+                (0x2, "STORAGE_IMAGE"),
+                (0x4, "STORAGE_IMAGE_ATOMIC"),
+                (0x8, "UNIFORM_TEXEL_BUFFER"),
+                (0x10, "STORAGE_TEXEL_BUFFER"),
+                (0x20, "STORAGE_TEXEL_BUFFER_ATOMIC"),
+                (0x40, "VERTEX_BUFFER"),
+                (0x80, "COLOR_ATTACHMENT"),
+                (0x100, "COLOR_ATTACHMENT_BLEND"),
+                (0x200, "DEPTH_STENCIL_ATTACHMENT"),
+                (0x400, "BLIT_SRC"),
+                (0x800, "BLIT_DST"),
+                (0x1000, "SAMPLED_IMAGE_FILTER_LINEAR"),
+                (0x4000, "TRANSFER_SRC"),
+                (0x8000, "TRANSFER_DST"),
+                (0x20000, "MIDPOINT_CHROMA_SAMPLES"),
+                (0x40000, "SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER"),
+                (0x80000, "SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER"),
+                (
+                    0x100000,
+                    "SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT",
+                ),
+                (
+                    0x200000,
+                    "SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE",
+                ),
+                (0x400000, "DISJOINT"),
+                (0x800000, "COSITED_CHROMA_SAMPLES"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
+                (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX_EXT"),
+                (0x1000000, "RESERVED_24_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -4104,27 +3060,7 @@ impl ops::BitXorAssign for QueryControlFlags {
 }
 impl fmt::Display for QueryControlFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PRECISE")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "PRECISE")], f)
     }
 }
 #[repr(transparent)]
@@ -4200,51 +3136,16 @@ impl ops::BitXorAssign for QueryResultFlags {
 }
 impl fmt::Display for QueryResultFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N64")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("WAIT")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("WITH_AVAILABILITY")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PARTIAL")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "N64"),
+                (0x2, "WAIT"),
+                (0x4, "WITH_AVAILABILITY"),
+                (0x8, "PARTIAL"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -4452,43 +3353,11 @@ impl ops::BitXorAssign for CommandPoolCreateFlags {
 }
 impl fmt::Display for CommandPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSIENT")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESET_COMMAND_BUFFER")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "TRANSIENT"), (0x2, "RESET_COMMAND_BUFFER"), (0x4, "PROTECTED")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -4558,27 +3427,7 @@ impl ops::BitXorAssign for CommandPoolResetFlags {
 }
 impl fmt::Display for CommandPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RELEASE_RESOURCES")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "RELEASE_RESOURCES")], f)
     }
 }
 #[repr(transparent)]
@@ -4648,27 +3497,7 @@ impl ops::BitXorAssign for CommandBufferResetFlags {
 }
 impl fmt::Display for CommandBufferResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RELEASE_RESOURCES")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "RELEASE_RESOURCES")], f)
     }
 }
 #[repr(transparent)]
@@ -4740,43 +3569,15 @@ impl ops::BitXorAssign for CommandBufferUsageFlags {
 }
 impl fmt::Display for CommandBufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ONE_TIME_SUBMIT")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RENDER_PASS_CONTINUE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SIMULTANEOUS_USE")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "ONE_TIME_SUBMIT"),
+                (0x2, "RENDER_PASS_CONTINUE"),
+                (0x4, "SIMULTANEOUS_USE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -4866,107 +3667,23 @@ impl ops::BitXorAssign for QueryPipelineStatisticFlags {
 }
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INPUT_ASSEMBLY_VERTICES")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INPUT_ASSEMBLY_PRIMITIVES")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_SHADER_INVOCATIONS")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GEOMETRY_SHADER_INVOCATIONS")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GEOMETRY_SHADER_PRIMITIVES")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CLIPPING_INVOCATIONS")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CLIPPING_PRIMITIVES")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRAGMENT_SHADER_INVOCATIONS")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_CONTROL_SHADER_PATCHES")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_EVALUATION_SHADER_INVOCATIONS")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMPUTE_SHADER_INVOCATIONS")?;
-            remain &= !0x400;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "INPUT_ASSEMBLY_VERTICES"),
+                (0x2, "INPUT_ASSEMBLY_PRIMITIVES"),
+                (0x4, "VERTEX_SHADER_INVOCATIONS"),
+                (0x8, "GEOMETRY_SHADER_INVOCATIONS"),
+                (0x10, "GEOMETRY_SHADER_PRIMITIVES"),
+                (0x20, "CLIPPING_INVOCATIONS"),
+                (0x40, "CLIPPING_PRIMITIVES"),
+                (0x80, "FRAGMENT_SHADER_INVOCATIONS"),
+                (0x100, "TESSELLATION_CONTROL_SHADER_PATCHES"),
+                (0x200, "TESSELLATION_EVALUATION_SHADER_INVOCATIONS"),
+                (0x400, "COMPUTE_SHADER_INVOCATIONS"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5111,75 +3828,19 @@ impl ops::BitXorAssign for ImageAspectFlags {
 }
 impl fmt::Display for ImageAspectFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEPTH")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("STENCIL")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("METADATA")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PLANE_0")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PLANE_1")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PLANE_2")?;
-            remain &= !0x40;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "COLOR"),
+                (0x2, "DEPTH"),
+                (0x4, "STENCIL"),
+                (0x8, "METADATA"),
+                (0x10, "PLANE_0"),
+                (0x20, "PLANE_1"),
+                (0x40, "PLANE_2"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5249,27 +3910,7 @@ impl ops::BitXorAssign for SparseMemoryBindFlags {
 }
 impl fmt::Display for SparseMemoryBindFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("METADATA")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "METADATA")], f)
     }
 }
 #[repr(transparent)]
@@ -5343,43 +3984,15 @@ impl ops::BitXorAssign for SparseImageFormatFlags {
 }
 impl fmt::Display for SparseImageFormatFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SINGLE_MIPTAIL")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALIGNED_MIP_SIZE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("NONSTANDARD_BLOCK_SIZE")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "SINGLE_MIPTAIL"),
+                (0x2, "ALIGNED_MIP_SIZE"),
+                (0x4, "NONSTANDARD_BLOCK_SIZE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5449,35 +4062,11 @@ impl ops::BitXorAssign for SubpassDescriptionFlags {
 }
 impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PER_VIEW_ATTRIBUTES_NVX")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PER_VIEW_POSITION_X_ONLY_NVX")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "PER_VIEW_ATTRIBUTES_NVX"), (0x2, "PER_VIEW_POSITION_X_ONLY_NVX")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5587,211 +4176,36 @@ impl ops::BitXorAssign for PipelineStageFlags {
 }
 impl fmt::Display for PipelineStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TOP_OF_PIPE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DRAW_INDIRECT")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_INPUT")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERTEX_SHADER")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_CONTROL_SHADER")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TESSELLATION_EVALUATION_SHADER")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GEOMETRY_SHADER")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRAGMENT_SHADER")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EARLY_FRAGMENT_TESTS")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("LATE_FRAGMENT_TESTS")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COLOR_ATTACHMENT_OUTPUT")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x800) == 0x800 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMPUTE_SHADER")?;
-            remain &= !0x800;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRANSFER")?;
-            remain &= !0x1000;
-        }
-        if (remain & 0x2000) == 0x2000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BOTTOM_OF_PIPE")?;
-            remain &= !0x2000;
-        }
-        if (remain & 0x4000) == 0x4000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST")?;
-            remain &= !0x4000;
-        }
-        if (remain & 0x8000) == 0x8000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALL_GRAPHICS")?;
-            remain &= !0x8000;
-        }
-        if (remain & 0x10000) == 0x10000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALL_COMMANDS")?;
-            remain &= !0x10000;
-        }
-        if (remain & 0x40000) == 0x40000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CONDITIONAL_RENDERING_EXT")?;
-            remain &= !0x40000;
-        }
-        if (remain & 0x20000) == 0x20000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMMAND_PROCESS_NVX")?;
-            remain &= !0x20000;
-        }
-        if (remain & 0x400000) == 0x400000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHADING_RATE_IMAGE_NV")?;
-            remain &= !0x400000;
-        }
-        if (remain & 0x200000) == 0x200000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RAYTRACING_NVX")?;
-            remain &= !0x200000;
-        }
-        if (remain & 0x80000) == 0x80000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TASK_SHADER_NV")?;
-            remain &= !0x80000;
-        }
-        if (remain & 0x100000) == 0x100000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MESH_SHADER_NV")?;
-            remain &= !0x100000;
-        }
-        if (remain & 0x800000) == 0x800000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("RESERVED_23_EXT")?;
-            remain &= !0x800000;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "TOP_OF_PIPE"),
+                (0x2, "DRAW_INDIRECT"),
+                (0x4, "VERTEX_INPUT"),
+                (0x8, "VERTEX_SHADER"),
+                (0x10, "TESSELLATION_CONTROL_SHADER"),
+                (0x20, "TESSELLATION_EVALUATION_SHADER"),
+                (0x40, "GEOMETRY_SHADER"),
+                (0x80, "FRAGMENT_SHADER"),
+                (0x100, "EARLY_FRAGMENT_TESTS"),
+                (0x200, "LATE_FRAGMENT_TESTS"),
+                (0x400, "COLOR_ATTACHMENT_OUTPUT"),
+                (0x800, "COMPUTE_SHADER"),
+                (0x1000, "TRANSFER"),
+                (0x2000, "BOTTOM_OF_PIPE"),
+                (0x4000, "HOST"),
+                (0x8000, "ALL_GRAPHICS"),
+                (0x10000, "ALL_COMMANDS"),
+                (0x40000, "CONDITIONAL_RENDERING_EXT"),
+                (0x20000, "COMMAND_PROCESS_NVX"),
+                (0x400000, "SHADING_RATE_IMAGE_NV"),
+                (0x200000, "RAYTRACING_NVX"),
+                (0x80000, "TASK_SHADER_NV"),
+                (0x100000, "MESH_SHADER_NV"),
+                (0x800000, "RESERVED_23_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5873,75 +4287,19 @@ impl ops::BitXorAssign for SampleCountFlags {
 }
 impl fmt::Display for SampleCountFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N1")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N2")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N4")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N8")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N16")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N32")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("N64")?;
-            remain &= !0x40;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "N1"),
+                (0x2, "N2"),
+                (0x4, "N4"),
+                (0x8, "N8"),
+                (0x10, "N16"),
+                (0x20, "N32"),
+                (0x40, "N64"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6011,27 +4369,7 @@ impl ops::BitXorAssign for AttachmentDescriptionFlags {
 }
 impl fmt::Display for AttachmentDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("MAY_ALIAS")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "MAY_ALIAS")], f)
     }
 }
 #[repr(transparent)]
@@ -6105,43 +4443,7 @@ impl ops::BitXorAssign for StencilFaceFlags {
 }
 impl fmt::Display for StencilFaceFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRONT")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BACK")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x3) == 0x3 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRONT_AND_BACK")?;
-            remain &= !0x3;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")], f)
     }
 }
 #[repr(transparent)]
@@ -6213,51 +4515,11 @@ impl ops::BitXorAssign for CullModeFlags {
 }
 impl fmt::Display for CullModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x0) == 0x0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("NONE")?;
-            remain &= !0x0;
-        }
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRONT")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BACK")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x3) == 0x3 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FRONT_AND_BACK")?;
-            remain &= !0x3;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x0, "NONE"), (0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6328,35 +4590,11 @@ impl ops::BitXorAssign for DescriptorPoolCreateFlags {
 }
 impl fmt::Display for DescriptorPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FREE_DESCRIPTOR_SET")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UPDATE_AFTER_BIND_EXT")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "FREE_DESCRIPTOR_SET"), (0x2, "UPDATE_AFTER_BIND_EXT")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6498,43 +4736,11 @@ impl ops::BitXorAssign for DependencyFlags {
 }
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BY_REGION")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEVICE_GROUP")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VIEW_LOCAL")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "BY_REGION"), (0x4, "DEVICE_GROUP"), (0x2, "VIEW_LOCAL")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6619,91 +4825,21 @@ impl ops::BitXorAssign for SubgroupFeatureFlags {
 }
 impl fmt::Display for SubgroupFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BASIC")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VOTE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ARITHMETIC")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("BALLOT")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHUFFLE")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SHUFFLE_RELATIVE")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("CLUSTERED")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("QUAD")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PARTITIONED_NV")?;
-            remain &= !0x100;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "BASIC"),
+                (0x2, "VOTE"),
+                (0x4, "ARITHMETIC"),
+                (0x8, "BALLOT"),
+                (0x10, "SHUFFLE"),
+                (0x20, "SHUFFLE_RELATIVE"),
+                (0x40, "CLUSTERED"),
+                (0x80, "QUAD"),
+                (0x100, "PARTITIONED_NV"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6775,51 +4911,16 @@ impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNVX {
 }
 impl fmt::Display for IndirectCommandsLayoutUsageFlagsNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UNORDERED_SEQUENCES")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPARSE_SEQUENCES")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EMPTY_EXECUTIONS")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INDEXED_SEQUENCES")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "UNORDERED_SEQUENCES"),
+                (0x2, "SPARSE_SEQUENCES"),
+                (0x4, "EMPTY_EXECUTIONS"),
+                (0x8, "INDEXED_SEQUENCES"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6889,35 +4990,7 @@ impl ops::BitXorAssign for ObjectEntryUsageFlagsNVX {
 }
 impl fmt::Display for ObjectEntryUsageFlagsNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GRAPHICS")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COMPUTE")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "GRAPHICS"), (0x2, "COMPUTE")], f)
     }
 }
 #[repr(transparent)]
@@ -6987,35 +5060,7 @@ impl ops::BitXorAssign for GeometryFlagsNVX {
 }
 impl fmt::Display for GeometryFlagsNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("NO_DUPLICATE_ANY_HIT_INVOCATION")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "OPAQUE"), (0x2, "NO_DUPLICATE_ANY_HIT_INVOCATION")], f)
     }
 }
 #[repr(transparent)]
@@ -7087,51 +5132,16 @@ impl ops::BitXorAssign for GeometryInstanceFlagsNVX {
 }
 impl fmt::Display for GeometryInstanceFlagsNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRIANGLE_CULL_DISABLE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TRIANGLE_CULL_FLIP_WINDING")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FORCE_OPAQUE")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("FORCE_NO_OPAQUE")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "TRIANGLE_CULL_DISABLE"),
+                (0x2, "TRIANGLE_CULL_FLIP_WINDING"),
+                (0x4, "FORCE_OPAQUE"),
+                (0x8, "FORCE_NO_OPAQUE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -7204,59 +5214,17 @@ impl ops::BitXorAssign for BuildAccelerationStructureFlagsNVX {
 }
 impl fmt::Display for BuildAccelerationStructureFlagsNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALLOW_UPDATE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ALLOW_COMPACTION")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PREFER_FAST_TRACE")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PREFER_FAST_BUILD")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("LOW_MEMORY")?;
-            remain &= !0x10;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "ALLOW_UPDATE"),
+                (0x2, "ALLOW_COMPACTION"),
+                (0x4, "PREFER_FAST_TRACE"),
+                (0x8, "PREFER_FAST_BUILD"),
+                (0x10, "LOW_MEMORY"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -7396,51 +5364,16 @@ impl ops::BitXorAssign for CompositeAlphaFlagsKHR {
 }
 impl fmt::Display for CompositeAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PRE_MULTIPLIED")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("POST_MULTIPLIED")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INHERIT")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE"),
+                (0x2, "PRE_MULTIPLIED"),
+                (0x4, "POST_MULTIPLIED"),
+                (0x8, "INHERIT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -7512,51 +5445,16 @@ impl ops::BitXorAssign for DisplayPlaneAlphaFlagsKHR {
 }
 impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GLOBAL")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PER_PIXEL")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PER_PIXEL_PREMULTIPLIED")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE"),
+                (0x2, "GLOBAL"),
+                (0x4, "PER_PIXEL"),
+                (0x8, "PER_PIXEL_PREMULTIPLIED"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -7633,91 +5531,21 @@ impl ops::BitXorAssign for SurfaceTransformFlagsKHR {
 }
 impl fmt::Display for SurfaceTransformFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("IDENTITY")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ROTATE_90")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ROTATE_180")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ROTATE_270")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HORIZONTAL_MIRROR")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HORIZONTAL_MIRROR_ROTATE_90")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HORIZONTAL_MIRROR_ROTATE_180")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HORIZONTAL_MIRROR_ROTATE_270")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INHERIT")?;
-            remain &= !0x100;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "IDENTITY"),
+                (0x2, "ROTATE_90"),
+                (0x4, "ROTATE_180"),
+                (0x8, "ROTATE_270"),
+                (0x10, "HORIZONTAL_MIRROR"),
+                (0x20, "HORIZONTAL_MIRROR_ROTATE_90"),
+                (0x40, "HORIZONTAL_MIRROR_ROTATE_180"),
+                (0x80, "HORIZONTAL_MIRROR_ROTATE_270"),
+                (0x100, "INHERIT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -7789,35 +5617,7 @@ impl ops::BitXorAssign for SwapchainCreateFlagsKHR {
 }
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SPLIT_INSTANCE_BIND_REGIONS")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PROTECTED")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "SPLIT_INSTANCE_BIND_REGIONS"), (0x2, "PROTECTED")], f)
     }
 }
 #[repr(transparent)]
@@ -8634,51 +6434,16 @@ impl ops::BitXorAssign for PeerMemoryFeatureFlags {
 }
 impl fmt::Display for PeerMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COPY_SRC")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("COPY_DST")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GENERIC_SRC")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GENERIC_DST")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "COPY_SRC"),
+                (0x2, "COPY_DST"),
+                (0x4, "GENERIC_SRC"),
+                (0x8, "GENERIC_DST"),
+            ],
+            f,
+        )
     }
 }
 pub type PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
@@ -8750,27 +6515,7 @@ impl ops::BitXorAssign for MemoryAllocateFlags {
 }
 impl fmt::Display for MemoryAllocateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEVICE_MASK")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "DEVICE_MASK")], f)
     }
 }
 pub type MemoryAllocateFlagsKHR = MemoryAllocateFlags;
@@ -8847,51 +6592,16 @@ impl ops::BitXorAssign for DeviceGroupPresentModeFlagsKHR {
 }
 impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("LOCAL")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("REMOTE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SUM")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("LOCAL_MULTI_DEVICE")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "LOCAL"),
+                (0x2, "REMOTE"),
+                (0x4, "SUM"),
+                (0x8, "LOCAL_MULTI_DEVICE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -8964,59 +6674,17 @@ impl ops::BitXorAssign for DebugReportFlagsEXT {
 }
 impl fmt::Display for DebugReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INFORMATION")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("WARNING")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PERFORMANCE_WARNING")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ERROR")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEBUG")?;
-            remain &= !0x10;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "INFORMATION"),
+                (0x2, "WARNING"),
+                (0x4, "PERFORMANCE_WARNING"),
+                (0x8, "ERROR"),
+                (0x10, "DEBUG"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9156,51 +6824,16 @@ impl ops::BitXorAssign for ExternalMemoryHandleTypeFlagsNV {
 }
 impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32_KMT")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D11_IMAGE")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D11_IMAGE_KMT")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE_WIN32"),
+                (0x2, "OPAQUE_WIN32_KMT"),
+                (0x4, "D3D11_IMAGE"),
+                (0x8, "D3D11_IMAGE_KMT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9271,43 +6904,11 @@ impl ops::BitXorAssign for ExternalMemoryFeatureFlagsNV {
 }
 impl fmt::Display for ExternalMemoryFeatureFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEDICATED_ONLY")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EXPORTABLE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("IMPORTABLE")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "DEDICATED_ONLY"), (0x2, "EXPORTABLE"), (0x4, "IMPORTABLE")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9393,107 +6994,23 @@ impl ops::BitXorAssign for ExternalMemoryHandleTypeFlags {
 }
 impl fmt::Display for ExternalMemoryHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_FD")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32_KMT")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D11_TEXTURE")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D11_TEXTURE_KMT")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x20) == 0x20 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D12_HEAP")?;
-            remain &= !0x20;
-        }
-        if (remain & 0x40) == 0x40 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D12_RESOURCE")?;
-            remain &= !0x40;
-        }
-        if (remain & 0x200) == 0x200 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DMA_BUF_EXT")?;
-            remain &= !0x200;
-        }
-        if (remain & 0x400) == 0x400 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ANDROID_HARDWARE_BUFFER_ANDROID")?;
-            remain &= !0x400;
-        }
-        if (remain & 0x80) == 0x80 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_ALLOCATION_EXT")?;
-            remain &= !0x80;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("HOST_MAPPED_FOREIGN_MEMORY_EXT")?;
-            remain &= !0x100;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE_FD"),
+                (0x2, "OPAQUE_WIN32"),
+                (0x4, "OPAQUE_WIN32_KMT"),
+                (0x8, "D3D11_TEXTURE"),
+                (0x10, "D3D11_TEXTURE_KMT"),
+                (0x20, "D3D12_HEAP"),
+                (0x40, "D3D12_RESOURCE"),
+                (0x200, "DMA_BUF_EXT"),
+                (0x400, "ANDROID_HARDWARE_BUFFER_ANDROID"),
+                (0x80, "HOST_ALLOCATION_EXT"),
+                (0x100, "HOST_MAPPED_FOREIGN_MEMORY_EXT"),
+            ],
+            f,
+        )
     }
 }
 pub type ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
@@ -9568,43 +7085,11 @@ impl ops::BitXorAssign for ExternalMemoryFeatureFlags {
 }
 impl fmt::Display for ExternalMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("DEDICATED_ONLY")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EXPORTABLE")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("IMPORTABLE")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "DEDICATED_ONLY"), (0x2, "EXPORTABLE"), (0x4, "IMPORTABLE")],
+            f,
+        )
     }
 }
 pub type ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
@@ -9683,59 +7168,17 @@ impl ops::BitXorAssign for ExternalSemaphoreHandleTypeFlags {
 }
 impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_FD")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32_KMT")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("D3D12_FENCE")?;
-            remain &= !0x8;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SYNC_FD")?;
-            remain &= !0x10;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE_FD"),
+                (0x2, "OPAQUE_WIN32"),
+                (0x4, "OPAQUE_WIN32_KMT"),
+                (0x8, "D3D12_FENCE"),
+                (0x10, "SYNC_FD"),
+            ],
+            f,
+        )
     }
 }
 pub type ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
@@ -9808,35 +7251,7 @@ impl ops::BitXorAssign for ExternalSemaphoreFeatureFlags {
 }
 impl fmt::Display for ExternalSemaphoreFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EXPORTABLE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("IMPORTABLE")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
     }
 }
 pub type ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
@@ -9907,27 +7322,7 @@ impl ops::BitXorAssign for SemaphoreImportFlags {
 }
 impl fmt::Display for SemaphoreImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TEMPORARY")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "TEMPORARY")], f)
     }
 }
 pub type SemaphoreImportFlagsKHR = SemaphoreImportFlags;
@@ -10004,51 +7399,16 @@ impl ops::BitXorAssign for ExternalFenceHandleTypeFlags {
 }
 impl fmt::Display for ExternalFenceHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_FD")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("OPAQUE_WIN32_KMT")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("SYNC_FD")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "OPAQUE_FD"),
+                (0x2, "OPAQUE_WIN32"),
+                (0x4, "OPAQUE_WIN32_KMT"),
+                (0x8, "SYNC_FD"),
+            ],
+            f,
+        )
     }
 }
 pub type ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
@@ -10121,35 +7481,7 @@ impl ops::BitXorAssign for ExternalFenceFeatureFlags {
 }
 impl fmt::Display for ExternalFenceFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("EXPORTABLE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("IMPORTABLE")?;
-            remain &= !0x2;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
     }
 }
 pub type ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
@@ -10220,27 +7552,7 @@ impl ops::BitXorAssign for FenceImportFlags {
 }
 impl fmt::Display for FenceImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("TEMPORARY")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "TEMPORARY")], f)
     }
 }
 pub type FenceImportFlagsKHR = FenceImportFlags;
@@ -10310,27 +7622,7 @@ impl ops::BitXorAssign for SurfaceCounterFlagsEXT {
 }
 impl fmt::Display for SurfaceCounterFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VBLANK")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "VBLANK")], f)
     }
 }
 #[repr(transparent)]
@@ -10737,51 +8029,11 @@ impl ops::BitXorAssign for DebugUtilsMessageSeverityFlagsEXT {
 }
 impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VERBOSE")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x10) == 0x10 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INFO")?;
-            remain &= !0x10;
-        }
-        if (remain & 0x100) == 0x100 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("WARNING")?;
-            remain &= !0x100;
-        }
-        if (remain & 0x1000) == 0x1000 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("ERROR")?;
-            remain &= !0x1000;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "VERBOSE"), (0x10, "INFO"), (0x100, "WARNING"), (0x1000, "ERROR")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -10852,43 +8104,11 @@ impl ops::BitXorAssign for DebugUtilsMessageTypeFlagsEXT {
 }
 impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("GENERAL")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VALIDATION")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PERFORMANCE")?;
-            remain &= !0x4;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[(0x1, "GENERAL"), (0x2, "VALIDATION"), (0x4, "PERFORMANCE")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -11161,51 +8381,16 @@ impl ops::BitXorAssign for DescriptorBindingFlagsEXT {
 }
 impl fmt::Display for DescriptorBindingFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UPDATE_AFTER_BIND")?;
-            remain &= !0x1;
-        }
-        if (remain & 0x2) == 0x2 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("UPDATE_UNUSED_WHILE_PENDING")?;
-            remain &= !0x2;
-        }
-        if (remain & 0x4) == 0x4 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("PARTIALLY_BOUND")?;
-            remain &= !0x4;
-        }
-        if (remain & 0x8) == 0x8 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("VARIABLE_DESCRIPTOR_COUNT")?;
-            remain &= !0x8;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "UPDATE_AFTER_BIND"),
+                (0x2, "UPDATE_UNUSED_WHILE_PENDING"),
+                (0x4, "PARTIALLY_BOUND"),
+                (0x8, "VARIABLE_DESCRIPTOR_COUNT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -11274,27 +8459,7 @@ impl ops::BitXorAssign for ConditionalRenderingFlagsEXT {
 }
 impl fmt::Display for ConditionalRenderingFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut is_first = true;
-        let mut remain = self.0;
-        if (remain & 0x1) == 0x1 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            f.write_str("INVERTED")?;
-            remain &= !0x1;
-        }
-        if remain != 0 {
-            if !is_first {
-                f.write_str(" | ")?
-            }
-            is_first = false;
-            write!(f, "| {:#x}", remain)?;
-        }
-        if is_first {
-            f.write_str("0")?;
-        }
-        Ok(())
+        display_bitmask(self.0, &[(0x1, "INVERTED")], f)
     }
 }
 #[repr(transparent)]
@@ -12420,40 +9585,24 @@ impl Format {
     pub const G8_B8_R8_3PLANE_444_UNORM_KHR: Self = Self::G8_B8_R8_3PLANE_444_UNORM;
     pub const R10X6_UNORM_PACK16_KHR: Self = Self::R10X6_UNORM_PACK16;
     pub const R10X6G10X6_UNORM_2PACK16_KHR: Self = Self::R10X6G10X6_UNORM_2PACK16;
-    pub const R10X6G10X6B10X6A10X6_UNORM_4PACK16_KHR: Self =
-        Self::R10X6G10X6B10X6A10X6_UNORM_4PACK16;
-    pub const G10X6B10X6G10X6R10X6_422_UNORM_4PACK16_KHR: Self =
-        Self::G10X6B10X6G10X6R10X6_422_UNORM_4PACK16;
-    pub const B10X6G10X6R10X6G10X6_422_UNORM_4PACK16_KHR: Self =
-        Self::B10X6G10X6R10X6G10X6_422_UNORM_4PACK16;
-    pub const G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16_KHR: Self =
-        Self::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16;
-    pub const G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16_KHR: Self =
-        Self::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16;
-    pub const G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16_KHR: Self =
-        Self::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16;
-    pub const G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16_KHR: Self =
-        Self::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16;
-    pub const G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16_KHR: Self =
-        Self::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16;
+    pub const R10X6G10X6B10X6A10X6_UNORM_4PACK16_KHR: Self = Self::R10X6G10X6B10X6A10X6_UNORM_4PACK16;
+    pub const G10X6B10X6G10X6R10X6_422_UNORM_4PACK16_KHR: Self = Self::G10X6B10X6G10X6R10X6_422_UNORM_4PACK16;
+    pub const B10X6G10X6R10X6G10X6_422_UNORM_4PACK16_KHR: Self = Self::B10X6G10X6R10X6G10X6_422_UNORM_4PACK16;
+    pub const G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16_KHR: Self = Self::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16;
+    pub const G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16_KHR: Self = Self::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16;
+    pub const G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16_KHR: Self = Self::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16;
+    pub const G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16_KHR: Self = Self::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16;
+    pub const G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16_KHR: Self = Self::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16;
     pub const R12X4_UNORM_PACK16_KHR: Self = Self::R12X4_UNORM_PACK16;
     pub const R12X4G12X4_UNORM_2PACK16_KHR: Self = Self::R12X4G12X4_UNORM_2PACK16;
-    pub const R12X4G12X4B12X4A12X4_UNORM_4PACK16_KHR: Self =
-        Self::R12X4G12X4B12X4A12X4_UNORM_4PACK16;
-    pub const G12X4B12X4G12X4R12X4_422_UNORM_4PACK16_KHR: Self =
-        Self::G12X4B12X4G12X4R12X4_422_UNORM_4PACK16;
-    pub const B12X4G12X4R12X4G12X4_422_UNORM_4PACK16_KHR: Self =
-        Self::B12X4G12X4R12X4G12X4_422_UNORM_4PACK16;
-    pub const G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16_KHR: Self =
-        Self::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16;
-    pub const G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16_KHR: Self =
-        Self::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16;
-    pub const G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16_KHR: Self =
-        Self::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16;
-    pub const G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16_KHR: Self =
-        Self::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16;
-    pub const G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16_KHR: Self =
-        Self::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16;
+    pub const R12X4G12X4B12X4A12X4_UNORM_4PACK16_KHR: Self = Self::R12X4G12X4B12X4A12X4_UNORM_4PACK16;
+    pub const G12X4B12X4G12X4R12X4_422_UNORM_4PACK16_KHR: Self = Self::G12X4B12X4G12X4R12X4_422_UNORM_4PACK16;
+    pub const B12X4G12X4R12X4G12X4_422_UNORM_4PACK16_KHR: Self = Self::B12X4G12X4R12X4G12X4_422_UNORM_4PACK16;
+    pub const G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16_KHR: Self = Self::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16;
+    pub const G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16_KHR: Self = Self::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16;
+    pub const G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16_KHR: Self = Self::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16;
+    pub const G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16_KHR: Self = Self::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16;
+    pub const G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16_KHR: Self = Self::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16;
     pub const G16B16G16R16_422_UNORM_KHR: Self = Self::G16B16G16R16_422_UNORM;
     pub const B16G16R16G16_422_UNORM_KHR: Self = Self::B16G16R16G16_422_UNORM;
     pub const G16_B16_R16_3PLANE_420_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_420_UNORM;
@@ -12748,10 +9897,8 @@ impl ImageLayout {
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL: Self = ImageLayout(1000117001);
     pub const PRESENT_SRC_KHR: Self = ImageLayout(1000001002);
     pub const SHARED_PRESENT_KHR: Self = ImageLayout(1000111000);
-    pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR: Self =
-        Self::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
-    pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self =
-        Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
+    pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
+    pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
     pub const SHADING_RATE_OPTIMAL_NV: Self = ImageLayout(1000164003);
 }
 impl default::Default for ImageLayout {
@@ -13297,8 +10444,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES: Self = StructureType(1000117000);
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO: Self = StructureType(1000117001);
     pub const IMAGE_VIEW_USAGE_CREATE_INFO: Self = StructureType(1000117002);
-    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self =
-        StructureType(1000117003);
+    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self = StructureType(1000117003);
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = StructureType(1000053000);
     pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = StructureType(1000053001);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = StructureType(1000053002);
@@ -13351,8 +10497,7 @@ impl StructureType {
     pub const NATIVE_BUFFER_ANDROID: Self = StructureType(1000010000);
     pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = StructureType(1000011000);
     pub const DEBUG_REPORT_CREATE_INFO_EXT: Self = Self::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-    pub const PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD: Self =
-        StructureType(1000018000);
+    pub const PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD: Self = StructureType(1000018000);
     pub const DEBUG_MARKER_OBJECT_NAME_INFO_EXT: Self = StructureType(1000022000);
     pub const DEBUG_MARKER_OBJECT_TAG_INFO_EXT: Self = StructureType(1000022001);
     pub const DEBUG_MARKER_MARKER_INFO_EXT: Self = StructureType(1000022002);
@@ -13362,10 +10507,8 @@ impl StructureType {
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = StructureType(1000041000);
     pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = StructureType(1000050000);
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO_KHR: Self = Self::RENDER_PASS_MULTIVIEW_CREATE_INFO;
-    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHR: Self =
-        Self::PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
-    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHR: Self =
-        Self::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
+    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
     pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV: Self = StructureType(1000056000);
     pub const EXPORT_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000056001);
     pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = StructureType(1000057000);
@@ -13375,40 +10518,30 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_PROPERTIES_2_KHR: Self = Self::PHYSICAL_DEVICE_PROPERTIES_2;
     pub const FORMAT_PROPERTIES_2_KHR: Self = Self::FORMAT_PROPERTIES_2;
     pub const IMAGE_FORMAT_PROPERTIES_2_KHR: Self = Self::IMAGE_FORMAT_PROPERTIES_2;
-    pub const PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR: Self =
-        Self::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2;
+    pub const PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2_KHR: Self = Self::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2;
     pub const QUEUE_FAMILY_PROPERTIES_2_KHR: Self = Self::QUEUE_FAMILY_PROPERTIES_2;
-    pub const PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR: Self =
-        Self::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
+    pub const PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR: Self = Self::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
     pub const SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR: Self = Self::SPARSE_IMAGE_FORMAT_PROPERTIES_2;
-    pub const PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR: Self =
-        Self::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2;
+    pub const PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR: Self = Self::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2;
     pub const MEMORY_ALLOCATE_FLAGS_INFO_KHR: Self = Self::MEMORY_ALLOCATE_FLAGS_INFO;
-    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHR: Self =
-        Self::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO;
-    pub const DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHR: Self =
-        Self::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO;
+    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO_KHR: Self = Self::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO;
+    pub const DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO_KHR: Self = Self::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO;
     pub const DEVICE_GROUP_SUBMIT_INFO_KHR: Self = Self::DEVICE_GROUP_SUBMIT_INFO;
     pub const DEVICE_GROUP_BIND_SPARSE_INFO_KHR: Self = Self::DEVICE_GROUP_BIND_SPARSE_INFO;
-    pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHR: Self =
-        Self::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO;
-    pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHR: Self =
-        Self::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO;
+    pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO;
+    pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO;
     pub const VALIDATION_FLAGS_EXT: Self = StructureType(1000061000);
     pub const VI_SURFACE_CREATE_INFO_NN: Self = StructureType(1000062000);
     pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = StructureType(1000067000);
     pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = StructureType(1000067001);
     pub const PHYSICAL_DEVICE_GROUP_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pub const DEVICE_GROUP_DEVICE_CREATE_INFO_KHR: Self = Self::DEVICE_GROUP_DEVICE_CREATE_INFO;
-    pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR: Self =
-        Self::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
+    pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
     pub const EXTERNAL_IMAGE_FORMAT_PROPERTIES_KHR: Self = Self::EXTERNAL_IMAGE_FORMAT_PROPERTIES;
-    pub const PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR: Self =
-        Self::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO;
+    pub const PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO;
     pub const EXTERNAL_BUFFER_PROPERTIES_KHR: Self = Self::EXTERNAL_BUFFER_PROPERTIES;
     pub const PHYSICAL_DEVICE_ID_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_ID_PROPERTIES;
-    pub const EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR: Self =
-        Self::EXTERNAL_MEMORY_BUFFER_CREATE_INFO;
+    pub const EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR: Self = Self::EXTERNAL_MEMORY_BUFFER_CREATE_INFO;
     pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR: Self = Self::EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
     pub const EXPORT_MEMORY_ALLOCATE_INFO_KHR: Self = Self::EXPORT_MEMORY_ALLOCATE_INFO;
     pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073000);
@@ -13419,8 +10552,7 @@ impl StructureType {
     pub const MEMORY_FD_PROPERTIES_KHR: Self = StructureType(1000074001);
     pub const MEMORY_GET_FD_INFO_KHR: Self = StructureType(1000074002);
     pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR: Self = StructureType(1000075000);
-    pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: Self =
-        Self::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO;
+    pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO;
     pub const EXTERNAL_SEMAPHORE_PROPERTIES_KHR: Self = Self::EXTERNAL_SEMAPHORE_PROPERTIES;
     pub const EXPORT_SEMAPHORE_CREATE_INFO_KHR: Self = Self::EXPORT_SEMAPHORE_CREATE_INFO;
     pub const IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078000);
@@ -13430,15 +10562,12 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_FD_INFO_KHR: Self = StructureType(1000079000);
     pub const SEMAPHORE_GET_FD_INFO_KHR: Self = StructureType(1000079001);
     pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = StructureType(1000080000);
-    pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self =
-        StructureType(1000081000);
+    pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self = StructureType(1000081000);
     pub const PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT: Self = StructureType(1000081001);
     pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = StructureType(1000081002);
-    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self =
-        Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
+    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
     pub const PRESENT_REGIONS_KHR: Self = StructureType(1000084000);
-    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: Self =
-        Self::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
+    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
     pub const OBJECT_TABLE_CREATE_INFO_NVX: Self = StructureType(1000086000);
     pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX: Self = StructureType(1000086001);
     pub const CMD_PROCESS_COMMANDS_INFO_NVX: Self = StructureType(1000086002);
@@ -13453,15 +10582,12 @@ impl StructureType {
     pub const DISPLAY_EVENT_INFO_EXT: Self = StructureType(1000091002);
     pub const SWAPCHAIN_COUNTER_CREATE_INFO_EXT: Self = StructureType(1000091003);
     pub const PRESENT_TIMES_INFO_GOOGLE: Self = StructureType(1000092000);
-    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX: Self =
-        StructureType(1000097000);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX: Self = StructureType(1000097000);
     pub const PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV: Self = StructureType(1000098000);
     pub const PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT: Self = StructureType(1000099000);
     pub const PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT: Self = StructureType(1000099001);
-    pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self =
-        StructureType(1000101000);
-    pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self =
-        StructureType(1000101001);
+    pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000101000);
+    pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self = StructureType(1000101001);
     pub const HDR_METADATA_EXT: Self = StructureType(1000105000);
     pub const ATTACHMENT_DESCRIPTION_2_KHR: Self = StructureType(1000109000);
     pub const ATTACHMENT_REFERENCE_2_KHR: Self = StructureType(1000109001);
@@ -13471,8 +10597,7 @@ impl StructureType {
     pub const SUBPASS_BEGIN_INFO_KHR: Self = StructureType(1000109005);
     pub const SUBPASS_END_INFO_KHR: Self = StructureType(1000109006);
     pub const SHARED_PRESENT_SURFACE_CAPABILITIES_KHR: Self = StructureType(1000111000);
-    pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: Self =
-        Self::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
+    pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
     pub const EXTERNAL_FENCE_PROPERTIES_KHR: Self = Self::EXTERNAL_FENCE_PROPERTIES;
     pub const EXPORT_FENCE_CREATE_INFO_KHR: Self = Self::EXPORT_FENCE_CREATE_INFO;
     pub const IMPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114000);
@@ -13480,8 +10605,7 @@ impl StructureType {
     pub const FENCE_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114002);
     pub const IMPORT_FENCE_FD_INFO_KHR: Self = StructureType(1000115000);
     pub const FENCE_GET_FD_INFO_KHR: Self = StructureType(1000115001);
-    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self =
-        Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
+    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR: Self =
         Self::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO;
     pub const IMAGE_VIEW_USAGE_CREATE_INFO_KHR: Self = Self::IMAGE_VIEW_USAGE_CREATE_INFO;
@@ -13490,8 +10614,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SURFACE_INFO_2_KHR: Self = StructureType(1000119000);
     pub const SURFACE_CAPABILITIES_2_KHR: Self = StructureType(1000119001);
     pub const SURFACE_FORMAT_2_KHR: Self = StructureType(1000119002);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self =
-        Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
     pub const DISPLAY_PROPERTIES_2_KHR: Self = StructureType(1000121000);
     pub const DISPLAY_PLANE_PROPERTIES_2_KHR: Self = StructureType(1000121001);
     pub const DISPLAY_MODE_PROPERTIES_2_KHR: Self = StructureType(1000121002);
@@ -13512,14 +10635,12 @@ impl StructureType {
     pub const IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129003);
     pub const MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129004);
     pub const EXTERNAL_FORMAT_ANDROID: Self = StructureType(1000129005);
-    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self =
-        StructureType(1000130000);
+    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self = StructureType(1000130000);
     pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = StructureType(1000130001);
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self = StructureType(1000138000);
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT: Self = StructureType(1000138001);
     pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT: Self = StructureType(1000138002);
-    pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self =
-        StructureType(1000138003);
+    pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self = StructureType(1000138003);
     pub const SAMPLE_LOCATIONS_INFO_EXT: Self = StructureType(1000143000);
     pub const RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT: Self = StructureType(1000143001);
     pub const PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT: Self = StructureType(1000143002);
@@ -13527,25 +10648,19 @@ impl StructureType {
     pub const MULTISAMPLE_PROPERTIES_EXT: Self = StructureType(1000143004);
     pub const BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::BUFFER_MEMORY_REQUIREMENTS_INFO_2;
     pub const IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_MEMORY_REQUIREMENTS_INFO_2;
-    pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self =
-        Self::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2;
+    pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2;
     pub const MEMORY_REQUIREMENTS_2_KHR: Self = Self::MEMORY_REQUIREMENTS_2;
-    pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR: Self =
-        Self::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
+    pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR: Self = Self::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
     pub const IMAGE_FORMAT_LIST_CREATE_INFO_KHR: Self = StructureType(1000147000);
-    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT: Self =
-        StructureType(1000148000);
-    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT: Self =
-        StructureType(1000148001);
+    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT: Self = StructureType(1000148000);
+    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT: Self = StructureType(1000148001);
     pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = StructureType(1000148002);
     pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = StructureType(1000149000);
     pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = StructureType(1000152000);
-    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR: Self =
-        Self::SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
+    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
     pub const SAMPLER_YCBCR_CONVERSION_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_INFO;
     pub const BIND_IMAGE_PLANE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_PLANE_MEMORY_INFO;
-    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR: Self =
-        Self::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO;
+    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO_KHR: Self = Self::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO;
     pub const PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
     pub const SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES_KHR: Self =
@@ -13557,16 +10672,12 @@ impl StructureType {
     pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT: Self = StructureType(1000161000);
     pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT: Self = StructureType(1000161001);
     pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT: Self = StructureType(1000161002);
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT: Self =
-        StructureType(1000161003);
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self =
-        StructureType(1000161004);
-    pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self =
-        StructureType(1000164000);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT: Self = StructureType(1000161003);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self = StructureType(1000161004);
+    pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self = StructureType(1000164000);
     pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV: Self = StructureType(1000164001);
     pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV: Self = StructureType(1000164002);
-    pub const PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV: Self =
-        StructureType(1000164005);
+    pub const PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV: Self = StructureType(1000164005);
     pub const RAYTRACING_PIPELINE_CREATE_INFO_NVX: Self = StructureType(1000165000);
     pub const ACCELERATION_STRUCTURE_CREATE_INFO_NVX: Self = StructureType(1000165001);
     pub const GEOMETRY_INSTANCE_NVX: Self = StructureType(1000165002);
@@ -13578,12 +10689,9 @@ impl StructureType {
     pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX: Self = StructureType(1000165008);
     pub const PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX: Self = StructureType(1000165009);
     pub const HIT_SHADER_MODULE_CREATE_INFO_NVX: Self = StructureType(1000165010);
-    pub const PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV: Self =
-        StructureType(1000166000);
-    pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self =
-        StructureType(1000166001);
-    pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR: Self =
-        Self::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
+    pub const PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV: Self = StructureType(1000166000);
+    pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self = StructureType(1000166001);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR: Self = Self::DESCRIPTOR_SET_LAYOUT_SUPPORT;
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = StructureType(1000174000);
     pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = StructureType(1000177000);
@@ -13591,20 +10699,15 @@ impl StructureType {
     pub const MEMORY_HOST_POINTER_PROPERTIES_EXT: Self = StructureType(1000178001);
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = StructureType(1000185000);
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self =
-        StructureType(1000190000);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = StructureType(1000190000);
     pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = StructureType(1000190001);
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self =
-        StructureType(1000190002);
-    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self =
-        StructureType(1000201000);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
+    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
     pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = StructureType(1000202000);
     pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV: Self = StructureType(1000202001);
-    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self =
-        StructureType(1000203000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self = StructureType(1000203000);
     pub const PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV: Self = StructureType(1000204000);
-    pub const PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV: Self =
-        StructureType(1000205000);
+    pub const PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV: Self = StructureType(1000205000);
     pub const PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV: Self = StructureType(1000205002);
     pub const CHECKPOINT_DATA_NV: Self = StructureType(1000206000);
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
@@ -13801,9 +10904,7 @@ impl fmt::Display for StructureType {
             1000091002 => f.write_str("DISPLAY_EVENT_INFO_EXT"),
             1000091003 => f.write_str("SWAPCHAIN_COUNTER_CREATE_INFO_EXT"),
             1000092000 => f.write_str("PRESENT_TIMES_INFO_GOOGLE"),
-            1000097000 => {
-                f.write_str("PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX")
-            }
+            1000097000 => f.write_str("PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX"),
             1000098000 => f.write_str("PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV"),
             1000099000 => f.write_str("PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT"),
             1000099001 => f.write_str("PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT"),
@@ -13867,9 +10968,7 @@ impl fmt::Display for StructureType {
             1000161001 => f.write_str("PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT"),
             1000161002 => f.write_str("PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT"),
             1000161003 => f.write_str("DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT"),
-            1000161004 => {
-                f.write_str("DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT")
-            }
+            1000161004 => f.write_str("DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT"),
             1000164000 => f.write_str("PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV"),
             1000164001 => f.write_str("PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV"),
             1000164002 => f.write_str("PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV"),
@@ -15045,48 +12144,43 @@ impl fmt::Display for CoarseSampleOrderTypeNV {
         }
     }
 }
-pub type FnInternalAllocationNotification =
-    unsafe extern "system" fn(
-        p_user_data: *mut c_void,
-        size: usize,
-        allocation_type: InternalAllocationType,
-        allocation_scope: SystemAllocationScope,
-    ) -> c_void;
-pub type FnInternalFreeNotification =
-    unsafe extern "system" fn(
-        p_user_data: *mut c_void,
-        size: usize,
-        allocation_type: InternalAllocationType,
-        allocation_scope: SystemAllocationScope,
-    ) -> c_void;
-pub type FnReallocationFunction =
-    unsafe extern "system" fn(
-        p_user_data: *mut c_void,
-        p_original: *mut c_void,
-        size: usize,
-        alignment: usize,
-        allocation_scope: SystemAllocationScope,
-    ) -> *mut c_void;
+pub type FnInternalAllocationNotification = unsafe extern "system" fn(
+    p_user_data: *mut c_void,
+    size: usize,
+    allocation_type: InternalAllocationType,
+    allocation_scope: SystemAllocationScope,
+) -> c_void;
+pub type FnInternalFreeNotification = unsafe extern "system" fn(
+    p_user_data: *mut c_void,
+    size: usize,
+    allocation_type: InternalAllocationType,
+    allocation_scope: SystemAllocationScope,
+) -> c_void;
+pub type FnReallocationFunction = unsafe extern "system" fn(
+    p_user_data: *mut c_void,
+    p_original: *mut c_void,
+    size: usize,
+    alignment: usize,
+    allocation_scope: SystemAllocationScope,
+) -> *mut c_void;
 pub type FnAllocationFunction = unsafe extern "system" fn(
     p_user_data: *mut c_void,
     size: usize,
     alignment: usize,
     allocation_scope: SystemAllocationScope,
 ) -> *mut c_void;
-pub type FnFreeFunction =
-    unsafe extern "system" fn(p_user_data: *mut c_void, p_memory: *mut c_void) -> c_void;
+pub type FnFreeFunction = unsafe extern "system" fn(p_user_data: *mut c_void, p_memory: *mut c_void) -> c_void;
 pub type FnVoidFunction = unsafe extern "system" fn() -> c_void;
-pub type FnDebugReportCallbackEXT =
-    unsafe extern "system" fn(
-        flags: DebugReportFlagsEXT,
-        object_type: DebugReportObjectTypeEXT,
-        object: u64,
-        location: usize,
-        message_code: i32,
-        p_layer_prefix: *const c_char,
-        p_message: *const c_char,
-        p_user_data: *mut c_void,
-    ) -> Bool32;
+pub type FnDebugReportCallbackEXT = unsafe extern "system" fn(
+    flags: DebugReportFlagsEXT,
+    object_type: DebugReportObjectTypeEXT,
+    object: u64,
+    location: usize,
+    message_code: i32,
+    p_layer_prefix: *const c_char,
+    p_message: *const c_char,
+    p_user_data: *mut c_void,
+) -> Bool32;
 pub type FnDebugUtilsMessengerCallbackEXT =
     unsafe extern "system" fn(
         message_severity: DebugUtilsMessageSeverityFlagsEXT,
@@ -15377,9 +12471,8 @@ impl fmt::Debug for PhysicalDeviceProperties {
             .field("vendor_id", &self.vendor_id)
             .field("device_id", &self.device_id)
             .field("device_type", &self.device_type)
-            .field("device_name", &unsafe {
-                CStr::from_ptr(self.device_name.as_ptr())
-            }).field("pipeline_cache_uuid", &self.pipeline_cache_uuid)
+            .field("device_name", &unsafe { CStr::from_ptr(self.device_name.as_ptr()) })
+            .field("pipeline_cache_uuid", &self.pipeline_cache_uuid)
             .field("limits", &self.limits)
             .field("sparse_properties", &self.sparse_properties)
             .finish()
@@ -15435,13 +12528,11 @@ impl default::Default for LayerProperties {
 impl fmt::Debug for LayerProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("LayerProperties")
-            .field("layer_name", &unsafe {
-                CStr::from_ptr(self.layer_name.as_ptr())
-            }).field("spec_version", &self.spec_version)
+            .field("layer_name", &unsafe { CStr::from_ptr(self.layer_name.as_ptr()) })
+            .field("spec_version", &self.spec_version)
             .field("implementation_version", &self.implementation_version)
-            .field("description", &unsafe {
-                CStr::from_ptr(self.description.as_ptr())
-            }).finish()
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .finish()
     }
 }
 #[repr(C)]
@@ -15521,14 +12612,8 @@ impl fmt::Debug for AllocationCallbacks {
                 } else {
                     &"None"
                 },
-            ).field(
-                "pfn_free",
-                if self.pfn_free.is_some() {
-                    &"Some"
-                } else {
-                    &"None"
-                },
-            ).field(
+            ).field("pfn_free", if self.pfn_free.is_some() { &"Some" } else { &"None" })
+            .field(
                 "pfn_internal_allocation",
                 if self.pfn_internal_allocation.is_some() {
                     &"Some"
@@ -15621,10 +12706,8 @@ impl fmt::Debug for DeviceCreateInfo {
             .field("enabled_layer_count", &self.enabled_layer_count)
             .field("pp_enabled_layer_names", &self.pp_enabled_layer_names)
             .field("enabled_extension_count", &self.enabled_extension_count)
-            .field(
-                "pp_enabled_extension_names",
-                &self.pp_enabled_extension_names,
-            ).field("p_enabled_features", &self.p_enabled_features)
+            .field("pp_enabled_extension_names", &self.pp_enabled_extension_names)
+            .field("p_enabled_features", &self.p_enabled_features)
             .finish()
     }
 }
@@ -15666,10 +12749,8 @@ impl fmt::Debug for InstanceCreateInfo {
             .field("enabled_layer_count", &self.enabled_layer_count)
             .field("pp_enabled_layer_names", &self.pp_enabled_layer_names)
             .field("enabled_extension_count", &self.enabled_extension_count)
-            .field(
-                "pp_enabled_extension_names",
-                &self.pp_enabled_extension_names,
-            ).finish()
+            .field("pp_enabled_extension_names", &self.pp_enabled_extension_names)
+            .finish()
     }
 }
 #[repr(C)]
@@ -15698,10 +12779,8 @@ impl fmt::Debug for QueueFamilyProperties {
             .field("queue_flags", &self.queue_flags)
             .field("queue_count", &self.queue_count)
             .field("timestamp_valid_bits", &self.timestamp_valid_bits)
-            .field(
-                "min_image_transfer_granularity",
-                &self.min_image_transfer_granularity,
-            ).finish()
+            .field("min_image_transfer_granularity", &self.min_image_transfer_granularity)
+            .finish()
     }
 }
 #[repr(C)]
@@ -17381,16 +14460,12 @@ impl fmt::Debug for PipelineVertexInputStateCreateInfo {
             .field(
                 "vertex_binding_description_count",
                 &self.vertex_binding_description_count,
-            ).field(
-                "p_vertex_binding_descriptions",
-                &self.p_vertex_binding_descriptions,
-            ).field(
+            ).field("p_vertex_binding_descriptions", &self.p_vertex_binding_descriptions)
+            .field(
                 "vertex_attribute_description_count",
                 &self.vertex_attribute_description_count,
-            ).field(
-                "p_vertex_attribute_descriptions",
-                &self.p_vertex_attribute_descriptions,
-            ).finish()
+            ).field("p_vertex_attribute_descriptions", &self.p_vertex_attribute_descriptions)
+            .finish()
     }
 }
 #[repr(C)]
@@ -17538,10 +14613,8 @@ impl fmt::Debug for PipelineRasterizationStateCreateInfo {
             .field("cull_mode", &self.cull_mode)
             .field("front_face", &self.front_face)
             .field("depth_bias_enable", &self.depth_bias_enable)
-            .field(
-                "depth_bias_constant_factor",
-                &self.depth_bias_constant_factor,
-            ).field("depth_bias_clamp", &self.depth_bias_clamp)
+            .field("depth_bias_constant_factor", &self.depth_bias_constant_factor)
+            .field("depth_bias_clamp", &self.depth_bias_clamp)
             .field("depth_bias_slope_factor", &self.depth_bias_slope_factor)
             .field("line_width", &self.line_width)
             .finish()
@@ -18420,10 +15493,8 @@ impl fmt::Debug for SubpassDescription {
             .field("color_attachment_count", &self.color_attachment_count)
             .field("p_color_attachments", &self.p_color_attachments)
             .field("p_resolve_attachments", &self.p_resolve_attachments)
-            .field(
-                "p_depth_stencil_attachment",
-                &self.p_depth_stencil_attachment,
-            ).field("preserve_attachment_count", &self.preserve_attachment_count)
+            .field("p_depth_stencil_attachment", &self.p_depth_stencil_attachment)
+            .field("preserve_attachment_count", &self.preserve_attachment_count)
             .field("p_preserve_attachments", &self.p_preserve_attachments)
             .finish()
     }
@@ -18750,10 +15821,8 @@ impl fmt::Debug for PhysicalDeviceFeatures {
             .field("dual_src_blend", &self.dual_src_blend)
             .field("logic_op", &self.logic_op)
             .field("multi_draw_indirect", &self.multi_draw_indirect)
-            .field(
-                "draw_indirect_first_instance",
-                &self.draw_indirect_first_instance,
-            ).field("depth_clamp", &self.depth_clamp)
+            .field("draw_indirect_first_instance", &self.draw_indirect_first_instance)
+            .field("depth_clamp", &self.depth_clamp)
             .field("depth_bias_clamp", &self.depth_bias_clamp)
             .field("fill_mode_non_solid", &self.fill_mode_non_solid)
             .field("depth_bounds", &self.depth_bounds)
@@ -18763,25 +15832,19 @@ impl fmt::Debug for PhysicalDeviceFeatures {
             .field("multi_viewport", &self.multi_viewport)
             .field("sampler_anisotropy", &self.sampler_anisotropy)
             .field("texture_compression_etc2", &self.texture_compression_etc2)
-            .field(
-                "texture_compression_astc_ldr",
-                &self.texture_compression_astc_ldr,
-            ).field("texture_compression_bc", &self.texture_compression_bc)
+            .field("texture_compression_astc_ldr", &self.texture_compression_astc_ldr)
+            .field("texture_compression_bc", &self.texture_compression_bc)
             .field("occlusion_query_precise", &self.occlusion_query_precise)
             .field("pipeline_statistics_query", &self.pipeline_statistics_query)
             .field(
                 "vertex_pipeline_stores_and_atomics",
                 &self.vertex_pipeline_stores_and_atomics,
-            ).field(
-                "fragment_stores_and_atomics",
-                &self.fragment_stores_and_atomics,
-            ).field(
+            ).field("fragment_stores_and_atomics", &self.fragment_stores_and_atomics)
+            .field(
                 "shader_tessellation_and_geometry_point_size",
                 &self.shader_tessellation_and_geometry_point_size,
-            ).field(
-                "shader_image_gather_extended",
-                &self.shader_image_gather_extended,
-            ).field(
+            ).field("shader_image_gather_extended", &self.shader_image_gather_extended)
+            .field(
                 "shader_storage_image_extended_formats",
                 &self.shader_storage_image_extended_formats,
             ).field(
@@ -18819,10 +15882,8 @@ impl fmt::Debug for PhysicalDeviceFeatures {
             .field("sparse_residency2_samples", &self.sparse_residency2_samples)
             .field("sparse_residency4_samples", &self.sparse_residency4_samples)
             .field("sparse_residency8_samples", &self.sparse_residency8_samples)
-            .field(
-                "sparse_residency16_samples",
-                &self.sparse_residency16_samples,
-            ).field("sparse_residency_aliased", &self.sparse_residency_aliased)
+            .field("sparse_residency16_samples", &self.sparse_residency16_samples)
+            .field("sparse_residency_aliased", &self.sparse_residency_aliased)
             .field("variable_multisample_rate", &self.variable_multisample_rate)
             .field("inherited_queries", &self.inherited_queries)
             .finish()
@@ -18865,13 +15926,9 @@ impl fmt::Debug for PhysicalDeviceSparseProperties {
             ).field(
                 "residency_standard3_d_block_shape",
                 &self.residency_standard3_d_block_shape,
-            ).field(
-                "residency_aligned_mip_size",
-                &self.residency_aligned_mip_size,
-            ).field(
-                "residency_non_resident_strict",
-                &self.residency_non_resident_strict,
-            ).finish()
+            ).field("residency_aligned_mip_size", &self.residency_aligned_mip_size)
+            .field("residency_non_resident_strict", &self.residency_non_resident_strict)
+            .finish()
     }
 }
 #[repr(C)]
@@ -19214,13 +16271,9 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field("max_uniform_buffer_range", &self.max_uniform_buffer_range)
             .field("max_storage_buffer_range", &self.max_storage_buffer_range)
             .field("max_push_constants_size", &self.max_push_constants_size)
-            .field(
-                "max_memory_allocation_count",
-                &self.max_memory_allocation_count,
-            ).field(
-                "max_sampler_allocation_count",
-                &self.max_sampler_allocation_count,
-            ).field("buffer_image_granularity", &self.buffer_image_granularity)
+            .field("max_memory_allocation_count", &self.max_memory_allocation_count)
+            .field("max_sampler_allocation_count", &self.max_sampler_allocation_count)
+            .field("buffer_image_granularity", &self.buffer_image_granularity)
             .field("sparse_address_space_size", &self.sparse_address_space_size)
             .field("max_bound_descriptor_sets", &self.max_bound_descriptor_sets)
             .field(
@@ -19242,10 +16295,8 @@ impl fmt::Debug for PhysicalDeviceLimits {
                 "max_per_stage_descriptor_input_attachments",
                 &self.max_per_stage_descriptor_input_attachments,
             ).field("max_per_stage_resources", &self.max_per_stage_resources)
+            .field("max_descriptor_set_samplers", &self.max_descriptor_set_samplers)
             .field(
-                "max_descriptor_set_samplers",
-                &self.max_descriptor_set_samplers,
-            ).field(
                 "max_descriptor_set_uniform_buffers",
                 &self.max_descriptor_set_uniform_buffers,
             ).field(
@@ -19266,26 +16317,18 @@ impl fmt::Debug for PhysicalDeviceLimits {
             ).field(
                 "max_descriptor_set_input_attachments",
                 &self.max_descriptor_set_input_attachments,
-            ).field(
-                "max_vertex_input_attributes",
-                &self.max_vertex_input_attributes,
-            ).field("max_vertex_input_bindings", &self.max_vertex_input_bindings)
+            ).field("max_vertex_input_attributes", &self.max_vertex_input_attributes)
+            .field("max_vertex_input_bindings", &self.max_vertex_input_bindings)
             .field(
                 "max_vertex_input_attribute_offset",
                 &self.max_vertex_input_attribute_offset,
-            ).field(
-                "max_vertex_input_binding_stride",
-                &self.max_vertex_input_binding_stride,
-            ).field(
-                "max_vertex_output_components",
-                &self.max_vertex_output_components,
-            ).field(
+            ).field("max_vertex_input_binding_stride", &self.max_vertex_input_binding_stride)
+            .field("max_vertex_output_components", &self.max_vertex_output_components)
+            .field(
                 "max_tessellation_generation_level",
                 &self.max_tessellation_generation_level,
-            ).field(
-                "max_tessellation_patch_size",
-                &self.max_tessellation_patch_size,
-            ).field(
+            ).field("max_tessellation_patch_size", &self.max_tessellation_patch_size)
+            .field(
                 "max_tessellation_control_per_vertex_input_components",
                 &self.max_tessellation_control_per_vertex_input_components,
             ).field(
@@ -19303,52 +16346,32 @@ impl fmt::Debug for PhysicalDeviceLimits {
             ).field(
                 "max_tessellation_evaluation_output_components",
                 &self.max_tessellation_evaluation_output_components,
-            ).field(
-                "max_geometry_shader_invocations",
-                &self.max_geometry_shader_invocations,
-            ).field(
-                "max_geometry_input_components",
-                &self.max_geometry_input_components,
-            ).field(
-                "max_geometry_output_components",
-                &self.max_geometry_output_components,
-            ).field(
-                "max_geometry_output_vertices",
-                &self.max_geometry_output_vertices,
-            ).field(
+            ).field("max_geometry_shader_invocations", &self.max_geometry_shader_invocations)
+            .field("max_geometry_input_components", &self.max_geometry_input_components)
+            .field("max_geometry_output_components", &self.max_geometry_output_components)
+            .field("max_geometry_output_vertices", &self.max_geometry_output_vertices)
+            .field(
                 "max_geometry_total_output_components",
                 &self.max_geometry_total_output_components,
-            ).field(
-                "max_fragment_input_components",
-                &self.max_fragment_input_components,
-            ).field(
-                "max_fragment_output_attachments",
-                &self.max_fragment_output_attachments,
-            ).field(
+            ).field("max_fragment_input_components", &self.max_fragment_input_components)
+            .field("max_fragment_output_attachments", &self.max_fragment_output_attachments)
+            .field(
                 "max_fragment_dual_src_attachments",
                 &self.max_fragment_dual_src_attachments,
             ).field(
                 "max_fragment_combined_output_resources",
                 &self.max_fragment_combined_output_resources,
-            ).field(
-                "max_compute_shared_memory_size",
-                &self.max_compute_shared_memory_size,
-            ).field(
-                "max_compute_work_group_count",
-                &self.max_compute_work_group_count,
-            ).field(
+            ).field("max_compute_shared_memory_size", &self.max_compute_shared_memory_size)
+            .field("max_compute_work_group_count", &self.max_compute_work_group_count)
+            .field(
                 "max_compute_work_group_invocations",
                 &self.max_compute_work_group_invocations,
-            ).field(
-                "max_compute_work_group_size",
-                &self.max_compute_work_group_size,
-            ).field("sub_pixel_precision_bits", &self.sub_pixel_precision_bits)
+            ).field("max_compute_work_group_size", &self.max_compute_work_group_size)
+            .field("sub_pixel_precision_bits", &self.sub_pixel_precision_bits)
             .field("sub_texel_precision_bits", &self.sub_texel_precision_bits)
             .field("mipmap_precision_bits", &self.mipmap_precision_bits)
-            .field(
-                "max_draw_indexed_index_value",
-                &self.max_draw_indexed_index_value,
-            ).field("max_draw_indirect_count", &self.max_draw_indirect_count)
+            .field("max_draw_indexed_index_value", &self.max_draw_indexed_index_value)
+            .field("max_draw_indirect_count", &self.max_draw_indirect_count)
             .field("max_sampler_lod_bias", &self.max_sampler_lod_bias)
             .field("max_sampler_anisotropy", &self.max_sampler_anisotropy)
             .field("max_viewports", &self.max_viewports)
@@ -19377,13 +16400,9 @@ impl fmt::Debug for PhysicalDeviceLimits {
             ).field("max_framebuffer_width", &self.max_framebuffer_width)
             .field("max_framebuffer_height", &self.max_framebuffer_height)
             .field("max_framebuffer_layers", &self.max_framebuffer_layers)
+            .field("framebuffer_color_sample_counts", &self.framebuffer_color_sample_counts)
+            .field("framebuffer_depth_sample_counts", &self.framebuffer_depth_sample_counts)
             .field(
-                "framebuffer_color_sample_counts",
-                &self.framebuffer_color_sample_counts,
-            ).field(
-                "framebuffer_depth_sample_counts",
-                &self.framebuffer_depth_sample_counts,
-            ).field(
                 "framebuffer_stencil_sample_counts",
                 &self.framebuffer_stencil_sample_counts,
             ).field(
@@ -19402,14 +16421,10 @@ impl fmt::Debug for PhysicalDeviceLimits {
             ).field(
                 "sampled_image_stencil_sample_counts",
                 &self.sampled_image_stencil_sample_counts,
-            ).field(
-                "storage_image_sample_counts",
-                &self.storage_image_sample_counts,
-            ).field("max_sample_mask_words", &self.max_sample_mask_words)
-            .field(
-                "timestamp_compute_and_graphics",
-                &self.timestamp_compute_and_graphics,
-            ).field("timestamp_period", &self.timestamp_period)
+            ).field("storage_image_sample_counts", &self.storage_image_sample_counts)
+            .field("max_sample_mask_words", &self.max_sample_mask_words)
+            .field("timestamp_compute_and_graphics", &self.timestamp_compute_and_graphics)
+            .field("timestamp_period", &self.timestamp_period)
             .field("max_clip_distances", &self.max_clip_distances)
             .field("max_cull_distances", &self.max_cull_distances)
             .field(
@@ -20393,11 +17408,7 @@ impl fmt::Debug for DebugReportCallbackCreateInfoEXT {
             .field("flags", &self.flags)
             .field(
                 "pfn_callback",
-                if self.pfn_callback.is_some() {
-                    &"Some"
-                } else {
-                    &"None"
-                },
+                if self.pfn_callback.is_some() { &"Some" } else { &"None" },
             ).field("p_user_data", &self.p_user_data)
             .finish()
     }
@@ -20428,13 +17439,9 @@ impl fmt::Debug for ValidationFlagsEXT {
         fmt.debug_struct("ValidationFlagsEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "disabled_validation_check_count",
-                &self.disabled_validation_check_count,
-            ).field(
-                "p_disabled_validation_checks",
-                &self.p_disabled_validation_checks,
-            ).finish()
+            .field("disabled_validation_check_count", &self.disabled_validation_check_count)
+            .field("p_disabled_validation_checks", &self.p_disabled_validation_checks)
+            .finish()
     }
 }
 #[repr(C)]
@@ -20823,10 +17830,8 @@ impl fmt::Debug for Win32KeyedMutexAcquireReleaseInfoNV {
             .field("acquire_count", &self.acquire_count)
             .field("p_acquire_syncs", &self.p_acquire_syncs)
             .field("p_acquire_keys", &self.p_acquire_keys)
-            .field(
-                "p_acquire_timeout_milliseconds",
-                &self.p_acquire_timeout_milliseconds,
-            ).field("release_count", &self.release_count)
+            .field("p_acquire_timeout_milliseconds", &self.p_acquire_timeout_milliseconds)
+            .field("release_count", &self.release_count)
             .field("p_release_syncs", &self.p_release_syncs)
             .field("p_release_keys", &self.p_release_keys)
             .finish()
@@ -20853,10 +17858,8 @@ impl fmt::Debug for DeviceGeneratedCommandsFeaturesNVX {
         fmt.debug_struct("DeviceGeneratedCommandsFeaturesNVX")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "compute_binding_point_support",
-                &self.compute_binding_point_support,
-            ).finish()
+            .field("compute_binding_point_support", &self.compute_binding_point_support)
+            .finish()
     }
 }
 #[repr(C)]
@@ -21037,13 +18040,9 @@ impl fmt::Debug for CmdProcessCommandsInfoNVX {
             .field("p_next", &self.p_next)
             .field("object_table", &self.object_table)
             .field("indirect_commands_layout", &self.indirect_commands_layout)
-            .field(
-                "indirect_commands_token_count",
-                &self.indirect_commands_token_count,
-            ).field(
-                "p_indirect_commands_tokens",
-                &self.p_indirect_commands_tokens,
-            ).field("max_sequences_count", &self.max_sequences_count)
+            .field("indirect_commands_token_count", &self.indirect_commands_token_count)
+            .field("p_indirect_commands_tokens", &self.p_indirect_commands_tokens)
+            .field("max_sequences_count", &self.max_sequences_count)
             .field("target_command_buffer", &self.target_command_buffer)
             .field("sequences_count_buffer", &self.sequences_count_buffer)
             .field("sequences_count_offset", &self.sequences_count_offset)
@@ -21123,10 +18122,8 @@ impl fmt::Debug for ObjectTableCreateInfoNVX {
             .field("object_count", &self.object_count)
             .field("p_object_entry_types", &self.p_object_entry_types)
             .field("p_object_entry_counts", &self.p_object_entry_counts)
+            .field("p_object_entry_usage_flags", &self.p_object_entry_usage_flags)
             .field(
-                "p_object_entry_usage_flags",
-                &self.p_object_entry_usage_flags,
-            ).field(
                 "max_uniform_buffers_per_descriptor",
                 &self.max_uniform_buffers_per_descriptor,
             ).field(
@@ -21769,10 +18766,8 @@ impl fmt::Debug for ExternalImageFormatProperties {
         fmt.debug_struct("ExternalImageFormatProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "external_memory_properties",
-                &self.external_memory_properties,
-            ).finish()
+            .field("external_memory_properties", &self.external_memory_properties)
+            .finish()
     }
 }
 pub type ExternalImageFormatPropertiesKHR = ExternalImageFormatProperties;
@@ -21829,10 +18824,8 @@ impl fmt::Debug for ExternalBufferProperties {
         fmt.debug_struct("ExternalBufferProperties")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "external_memory_properties",
-                &self.external_memory_properties,
-            ).finish()
+            .field("external_memory_properties", &self.external_memory_properties)
+            .finish()
     }
 }
 pub type ExternalBufferPropertiesKHR = ExternalBufferProperties;
@@ -22246,10 +19239,8 @@ impl fmt::Debug for ExternalSemaphoreProperties {
                 "export_from_imported_handle_types",
                 &self.export_from_imported_handle_types,
             ).field("compatible_handle_types", &self.compatible_handle_types)
-            .field(
-                "external_semaphore_features",
-                &self.external_semaphore_features,
-            ).finish()
+            .field("external_semaphore_features", &self.external_semaphore_features)
+            .finish()
     }
 }
 pub type ExternalSemaphorePropertiesKHR = ExternalSemaphoreProperties;
@@ -22374,14 +19365,10 @@ impl fmt::Debug for D3D12FenceSubmitInfoKHR {
         fmt.debug_struct("D3D12FenceSubmitInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "wait_semaphore_values_count",
-                &self.wait_semaphore_values_count,
-            ).field("p_wait_semaphore_values", &self.p_wait_semaphore_values)
-            .field(
-                "signal_semaphore_values_count",
-                &self.signal_semaphore_values_count,
-            ).field("p_signal_semaphore_values", &self.p_signal_semaphore_values)
+            .field("wait_semaphore_values_count", &self.wait_semaphore_values_count)
+            .field("p_wait_semaphore_values", &self.p_wait_semaphore_values)
+            .field("signal_semaphore_values_count", &self.signal_semaphore_values_count)
+            .field("p_signal_semaphore_values", &self.p_signal_semaphore_values)
             .finish()
     }
 }
@@ -22749,10 +19736,8 @@ impl fmt::Debug for PhysicalDeviceMultiviewFeatures {
             .field("p_next", &self.p_next)
             .field("multiview", &self.multiview)
             .field("multiview_geometry_shader", &self.multiview_geometry_shader)
-            .field(
-                "multiview_tessellation_shader",
-                &self.multiview_tessellation_shader,
-            ).finish()
+            .field("multiview_tessellation_shader", &self.multiview_tessellation_shader)
+            .finish()
     }
 }
 pub type PhysicalDeviceMultiviewFeaturesKHR = PhysicalDeviceMultiviewFeatures;
@@ -22782,10 +19767,8 @@ impl fmt::Debug for PhysicalDeviceMultiviewProperties {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_multiview_view_count", &self.max_multiview_view_count)
-            .field(
-                "max_multiview_instance_index",
-                &self.max_multiview_instance_index,
-            ).finish()
+            .field("max_multiview_instance_index", &self.max_multiview_instance_index)
+            .finish()
     }
 }
 pub type PhysicalDeviceMultiviewPropertiesKHR = PhysicalDeviceMultiviewProperties;
@@ -22891,10 +19874,8 @@ impl fmt::Debug for SurfaceCapabilities2EXT {
             .field("current_transform", &self.current_transform)
             .field("supported_composite_alpha", &self.supported_composite_alpha)
             .field("supported_usage_flags", &self.supported_usage_flags)
-            .field(
-                "supported_surface_counters",
-                &self.supported_surface_counters,
-            ).finish()
+            .field("supported_surface_counters", &self.supported_surface_counters)
+            .finish()
     }
 }
 #[repr(C)]
@@ -23183,10 +20164,8 @@ impl fmt::Debug for BindImageMemoryDeviceGroupInfo {
             .field(
                 "split_instance_bind_region_count",
                 &self.split_instance_bind_region_count,
-            ).field(
-                "p_split_instance_bind_regions",
-                &self.p_split_instance_bind_regions,
-            ).finish()
+            ).field("p_split_instance_bind_regions", &self.p_split_instance_bind_regions)
+            .finish()
     }
 }
 pub type BindImageMemoryDeviceGroupInfoKHR = BindImageMemoryDeviceGroupInfo;
@@ -23280,14 +20259,10 @@ impl fmt::Debug for DeviceGroupSubmitInfo {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("wait_semaphore_count", &self.wait_semaphore_count)
-            .field(
-                "p_wait_semaphore_device_indices",
-                &self.p_wait_semaphore_device_indices,
-            ).field("command_buffer_count", &self.command_buffer_count)
-            .field(
-                "p_command_buffer_device_masks",
-                &self.p_command_buffer_device_masks,
-            ).field("signal_semaphore_count", &self.signal_semaphore_count)
+            .field("p_wait_semaphore_device_indices", &self.p_wait_semaphore_device_indices)
+            .field("command_buffer_count", &self.command_buffer_count)
+            .field("p_command_buffer_device_masks", &self.p_command_buffer_device_masks)
+            .field("signal_semaphore_count", &self.signal_semaphore_count)
             .field(
                 "p_signal_semaphore_device_indices",
                 &self.p_signal_semaphore_device_indices,
@@ -23607,13 +20582,9 @@ impl fmt::Debug for DescriptorUpdateTemplateCreateInfo {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
-            .field(
-                "descriptor_update_entry_count",
-                &self.descriptor_update_entry_count,
-            ).field(
-                "p_descriptor_update_entries",
-                &self.p_descriptor_update_entries,
-            ).field("template_type", &self.template_type)
+            .field("descriptor_update_entry_count", &self.descriptor_update_entry_count)
+            .field("p_descriptor_update_entries", &self.p_descriptor_update_entries)
+            .field("template_type", &self.template_type)
             .field("descriptor_set_layout", &self.descriptor_set_layout)
             .field("pipeline_bind_point", &self.pipeline_bind_point)
             .field("pipeline_layout", &self.pipeline_layout)
@@ -23694,10 +20665,8 @@ impl fmt::Debug for HdrMetadataEXT {
             .field("max_luminance", &self.max_luminance)
             .field("min_luminance", &self.min_luminance)
             .field("max_content_light_level", &self.max_content_light_level)
-            .field(
-                "max_frame_average_light_level",
-                &self.max_frame_average_light_level,
-            ).finish()
+            .field("max_frame_average_light_level", &self.max_frame_average_light_level)
+            .finish()
     }
 }
 #[repr(C)]
@@ -24382,10 +21351,8 @@ impl fmt::Debug for PhysicalDevice16BitStorageFeatures {
         fmt.debug_struct("PhysicalDevice16BitStorageFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("storage_buffer16_bit_access", &self.storage_buffer16_bit_access)
             .field(
-                "storage_buffer16_bit_access",
-                &self.storage_buffer16_bit_access,
-            ).field(
                 "uniform_and_storage_buffer16_bit_access",
                 &self.uniform_and_storage_buffer16_bit_access,
             ).field("storage_push_constant16", &self.storage_push_constant16)
@@ -24428,10 +21395,8 @@ impl fmt::Debug for PhysicalDeviceSubgroupProperties {
             .field("subgroup_size", &self.subgroup_size)
             .field("supported_stages", &self.supported_stages)
             .field("supported_operations", &self.supported_operations)
-            .field(
-                "quad_operations_in_all_stages",
-                &self.quad_operations_in_all_stages,
-            ).finish()
+            .field("quad_operations_in_all_stages", &self.quad_operations_in_all_stages)
+            .finish()
     }
 }
 #[repr(C)]
@@ -24613,13 +21578,9 @@ impl fmt::Debug for MemoryDedicatedRequirements {
         fmt.debug_struct("MemoryDedicatedRequirements")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "prefers_dedicated_allocation",
-                &self.prefers_dedicated_allocation,
-            ).field(
-                "requires_dedicated_allocation",
-                &self.requires_dedicated_allocation,
-            ).finish()
+            .field("prefers_dedicated_allocation", &self.prefers_dedicated_allocation)
+            .field("requires_dedicated_allocation", &self.requires_dedicated_allocation)
+            .finish()
     }
 }
 pub type MemoryDedicatedRequirementsKHR = MemoryDedicatedRequirements;
@@ -24705,8 +21666,7 @@ impl fmt::Debug for PipelineTessellationDomainOriginStateCreateInfo {
             .finish()
     }
 }
-pub type PipelineTessellationDomainOriginStateCreateInfoKHR =
-    PipelineTessellationDomainOriginStateCreateInfo;
+pub type PipelineTessellationDomainOriginStateCreateInfoKHR = PipelineTessellationDomainOriginStateCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SamplerYcbcrConversionInfo {
@@ -24775,10 +21735,8 @@ impl fmt::Debug for SamplerYcbcrConversionCreateInfo {
             .field("x_chroma_offset", &self.x_chroma_offset)
             .field("y_chroma_offset", &self.y_chroma_offset)
             .field("chroma_filter", &self.chroma_filter)
-            .field(
-                "force_explicit_reconstruction",
-                &self.force_explicit_reconstruction,
-            ).finish()
+            .field("force_explicit_reconstruction", &self.force_explicit_reconstruction)
+            .finish()
     }
 }
 pub type SamplerYcbcrConversionCreateInfoKHR = SamplerYcbcrConversionCreateInfo;
@@ -24860,8 +21818,7 @@ impl fmt::Debug for PhysicalDeviceSamplerYcbcrConversionFeatures {
             .finish()
     }
 }
-pub type PhysicalDeviceSamplerYcbcrConversionFeaturesKHR =
-    PhysicalDeviceSamplerYcbcrConversionFeatures;
+pub type PhysicalDeviceSamplerYcbcrConversionFeaturesKHR = PhysicalDeviceSamplerYcbcrConversionFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SamplerYcbcrConversionImageFormatProperties {
@@ -24889,8 +21846,7 @@ impl fmt::Debug for SamplerYcbcrConversionImageFormatProperties {
             ).finish()
     }
 }
-pub type SamplerYcbcrConversionImageFormatPropertiesKHR =
-    SamplerYcbcrConversionImageFormatProperties;
+pub type SamplerYcbcrConversionImageFormatPropertiesKHR = SamplerYcbcrConversionImageFormatProperties;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct TextureLODGatherFormatPropertiesAMD {
@@ -25083,10 +22039,8 @@ impl fmt::Debug for PipelineCoverageToColorStateCreateInfoNV {
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
             .field("coverage_to_color_enable", &self.coverage_to_color_enable)
-            .field(
-                "coverage_to_color_location",
-                &self.coverage_to_color_location,
-            ).finish()
+            .field("coverage_to_color_location", &self.coverage_to_color_location)
+            .finish()
     }
 }
 #[repr(C)]
@@ -25170,10 +22124,8 @@ impl fmt::Debug for SampleLocationsInfoEXT {
         fmt.debug_struct("SampleLocationsInfoEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "sample_locations_per_pixel",
-                &self.sample_locations_per_pixel,
-            ).field("sample_location_grid_size", &self.sample_location_grid_size)
+            .field("sample_locations_per_pixel", &self.sample_locations_per_pixel)
+            .field("sample_location_grid_size", &self.sample_location_grid_size)
             .field("sample_locations_count", &self.sample_locations_count)
             .field("p_sample_locations", &self.p_sample_locations)
             .finish()
@@ -25259,10 +22211,8 @@ impl fmt::Debug for RenderPassSampleLocationsBeginInfoEXT {
             ).field(
                 "post_subpass_sample_locations_count",
                 &self.post_subpass_sample_locations_count,
-            ).field(
-                "p_post_subpass_sample_locations",
-                &self.p_post_subpass_sample_locations,
-            ).finish()
+            ).field("p_post_subpass_sample_locations", &self.p_post_subpass_sample_locations)
+            .finish()
     }
 }
 #[repr(C)]
@@ -25322,19 +22272,13 @@ impl fmt::Debug for PhysicalDeviceSampleLocationsPropertiesEXT {
         fmt.debug_struct("PhysicalDeviceSampleLocationsPropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("sample_location_sample_counts", &self.sample_location_sample_counts)
+            .field("max_sample_location_grid_size", &self.max_sample_location_grid_size)
             .field(
-                "sample_location_sample_counts",
-                &self.sample_location_sample_counts,
-            ).field(
-                "max_sample_location_grid_size",
-                &self.max_sample_location_grid_size,
-            ).field(
                 "sample_location_coordinate_range",
                 &self.sample_location_coordinate_range,
-            ).field(
-                "sample_location_sub_pixel_bits",
-                &self.sample_location_sub_pixel_bits,
-            ).field("variable_sample_locations", &self.variable_sample_locations)
+            ).field("sample_location_sub_pixel_bits", &self.sample_location_sub_pixel_bits)
+            .field("variable_sample_locations", &self.variable_sample_locations)
             .finish()
     }
 }
@@ -25359,10 +22303,8 @@ impl fmt::Debug for MultisamplePropertiesEXT {
         fmt.debug_struct("MultisamplePropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "max_sample_location_grid_size",
-                &self.max_sample_location_grid_size,
-            ).finish()
+            .field("max_sample_location_grid_size", &self.max_sample_location_grid_size)
+            .finish()
     }
 }
 #[repr(C)]
@@ -25463,10 +22405,8 @@ impl fmt::Debug for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
             ).field(
                 "advanced_blend_correlated_overlap",
                 &self.advanced_blend_correlated_overlap,
-            ).field(
-                "advanced_blend_all_operations",
-                &self.advanced_blend_all_operations,
-            ).finish()
+            ).field("advanced_blend_all_operations", &self.advanced_blend_all_operations)
+            .finish()
     }
 }
 #[repr(C)]
@@ -25559,10 +22499,8 @@ impl fmt::Debug for PhysicalDeviceInlineUniformBlockPropertiesEXT {
         fmt.debug_struct("PhysicalDeviceInlineUniformBlockPropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("max_inline_uniform_block_size", &self.max_inline_uniform_block_size)
             .field(
-                "max_inline_uniform_block_size",
-                &self.max_inline_uniform_block_size,
-            ).field(
                 "max_per_stage_descriptor_inline_uniform_blocks",
                 &self.max_per_stage_descriptor_inline_uniform_blocks,
             ).field(
@@ -25666,13 +22604,9 @@ impl fmt::Debug for PipelineCoverageModulationStateCreateInfoNV {
             .field(
                 "coverage_modulation_table_enable",
                 &self.coverage_modulation_table_enable,
-            ).field(
-                "coverage_modulation_table_count",
-                &self.coverage_modulation_table_count,
-            ).field(
-                "p_coverage_modulation_table",
-                &self.p_coverage_modulation_table,
-            ).finish()
+            ).field("coverage_modulation_table_count", &self.coverage_modulation_table_count)
+            .field("p_coverage_modulation_table", &self.p_coverage_modulation_table)
+            .finish()
     }
 }
 #[repr(C)]
@@ -25783,10 +22717,8 @@ impl fmt::Debug for PhysicalDeviceMaintenance3Properties {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_per_set_descriptors", &self.max_per_set_descriptors)
-            .field(
-                "max_memory_allocation_size",
-                &self.max_memory_allocation_size,
-            ).finish()
+            .field("max_memory_allocation_size", &self.max_memory_allocation_size)
+            .finish()
     }
 }
 pub type PhysicalDeviceMaintenance3PropertiesKHR = PhysicalDeviceMaintenance3Properties;
@@ -25900,14 +22832,10 @@ impl fmt::Debug for ShaderResourceUsageAMD {
         fmt.debug_struct("ShaderResourceUsageAMD")
             .field("num_used_vgprs", &self.num_used_vgprs)
             .field("num_used_sgprs", &self.num_used_sgprs)
-            .field(
-                "lds_size_per_local_work_group",
-                &self.lds_size_per_local_work_group,
-            ).field("lds_usage_size_in_bytes", &self.lds_usage_size_in_bytes)
-            .field(
-                "scratch_mem_usage_in_bytes",
-                &self.scratch_mem_usage_in_bytes,
-            ).finish()
+            .field("lds_size_per_local_work_group", &self.lds_size_per_local_work_group)
+            .field("lds_usage_size_in_bytes", &self.lds_usage_size_in_bytes)
+            .field("scratch_mem_usage_in_bytes", &self.scratch_mem_usage_in_bytes)
+            .finish()
     }
 }
 #[repr(C)]
@@ -26290,10 +23218,8 @@ impl fmt::Debug for PhysicalDeviceConservativeRasterizationPropertiesEXT {
         fmt.debug_struct("PhysicalDeviceConservativeRasterizationPropertiesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("primitive_overestimation_size", &self.primitive_overestimation_size)
             .field(
-                "primitive_overestimation_size",
-                &self.primitive_overestimation_size,
-            ).field(
                 "max_extra_primitive_overestimation_size",
                 &self.max_extra_primitive_overestimation_size,
             ).field(
@@ -26303,13 +23229,9 @@ impl fmt::Debug for PhysicalDeviceConservativeRasterizationPropertiesEXT {
             .field(
                 "conservative_point_and_line_rasterization",
                 &self.conservative_point_and_line_rasterization,
-            ).field(
-                "degenerate_triangles_rasterized",
-                &self.degenerate_triangles_rasterized,
-            ).field(
-                "degenerate_lines_rasterized",
-                &self.degenerate_lines_rasterized,
-            ).field(
+            ).field("degenerate_triangles_rasterized", &self.degenerate_triangles_rasterized)
+            .field("degenerate_lines_rasterized", &self.degenerate_lines_rasterized)
+            .field(
                 "fully_covered_fragment_shader_input_variable",
                 &self.fully_covered_fragment_shader_input_variable,
             ).field(
@@ -26381,28 +23303,20 @@ impl fmt::Debug for PhysicalDeviceShaderCorePropertiesAMD {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_engine_count", &self.shader_engine_count)
-            .field(
-                "shader_arrays_per_engine_count",
-                &self.shader_arrays_per_engine_count,
-            ).field(
-                "compute_units_per_shader_array",
-                &self.compute_units_per_shader_array,
-            ).field("simd_per_compute_unit", &self.simd_per_compute_unit)
+            .field("shader_arrays_per_engine_count", &self.shader_arrays_per_engine_count)
+            .field("compute_units_per_shader_array", &self.compute_units_per_shader_array)
+            .field("simd_per_compute_unit", &self.simd_per_compute_unit)
             .field("wavefronts_per_simd", &self.wavefronts_per_simd)
             .field("wavefront_size", &self.wavefront_size)
             .field("sgprs_per_simd", &self.sgprs_per_simd)
             .field("min_sgpr_allocation", &self.min_sgpr_allocation)
             .field("max_sgpr_allocation", &self.max_sgpr_allocation)
-            .field(
-                "sgpr_allocation_granularity",
-                &self.sgpr_allocation_granularity,
-            ).field("vgprs_per_simd", &self.vgprs_per_simd)
+            .field("sgpr_allocation_granularity", &self.sgpr_allocation_granularity)
+            .field("vgprs_per_simd", &self.vgprs_per_simd)
             .field("min_vgpr_allocation", &self.min_vgpr_allocation)
             .field("max_vgpr_allocation", &self.max_vgpr_allocation)
-            .field(
-                "vgpr_allocation_granularity",
-                &self.vgpr_allocation_granularity,
-            ).finish()
+            .field("vgpr_allocation_granularity", &self.vgpr_allocation_granularity)
+            .finish()
     }
 }
 #[repr(C)]
@@ -26431,10 +23345,8 @@ impl fmt::Debug for PipelineRasterizationConservativeStateCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
+            .field("conservative_rasterization_mode", &self.conservative_rasterization_mode)
             .field(
-                "conservative_rasterization_mode",
-                &self.conservative_rasterization_mode,
-            ).field(
                 "extra_primitive_overestimation_size",
                 &self.extra_primitive_overestimation_size,
             ).finish()
@@ -26646,10 +23558,8 @@ impl fmt::Debug for PhysicalDeviceDescriptorIndexingPropertiesEXT {
             ).field(
                 "robust_buffer_access_update_after_bind",
                 &self.robust_buffer_access_update_after_bind,
-            ).field(
-                "quad_divergent_implicit_lod",
-                &self.quad_divergent_implicit_lod,
-            ).field(
+            ).field("quad_divergent_implicit_lod", &self.quad_divergent_implicit_lod)
+            .field(
                 "max_per_stage_descriptor_update_after_bind_samplers",
                 &self.max_per_stage_descriptor_update_after_bind_samplers,
             ).field(
@@ -26774,10 +23684,8 @@ impl fmt::Debug for DescriptorSetVariableDescriptorCountLayoutSupportEXT {
         fmt.debug_struct("DescriptorSetVariableDescriptorCountLayoutSupportEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "max_variable_descriptor_count",
-                &self.max_variable_descriptor_count,
-            ).finish()
+            .field("max_variable_descriptor_count", &self.max_variable_descriptor_count)
+            .finish()
     }
 }
 #[repr(C)]
@@ -26913,10 +23821,8 @@ impl fmt::Debug for SubpassDescription2KHR {
             .field("color_attachment_count", &self.color_attachment_count)
             .field("p_color_attachments", &self.p_color_attachments)
             .field("p_resolve_attachments", &self.p_resolve_attachments)
-            .field(
-                "p_depth_stencil_attachment",
-                &self.p_depth_stencil_attachment,
-            ).field("preserve_attachment_count", &self.preserve_attachment_count)
+            .field("p_depth_stencil_attachment", &self.p_depth_stencil_attachment)
+            .field("preserve_attachment_count", &self.preserve_attachment_count)
             .field("p_preserve_attachments", &self.p_preserve_attachments)
             .finish()
     }
@@ -27011,10 +23917,8 @@ impl fmt::Debug for RenderPassCreateInfo2KHR {
             .field("p_subpasses", &self.p_subpasses)
             .field("dependency_count", &self.dependency_count)
             .field("p_dependencies", &self.p_dependencies)
-            .field(
-                "correlated_view_mask_count",
-                &self.correlated_view_mask_count,
-            ).field("p_correlated_view_masks", &self.p_correlated_view_masks)
+            .field("correlated_view_mask_count", &self.correlated_view_mask_count)
+            .field("p_correlated_view_masks", &self.p_correlated_view_masks)
             .finish()
     }
 }
@@ -27110,10 +24014,8 @@ impl fmt::Debug for PipelineVertexInputDivisorStateCreateInfoEXT {
         fmt.debug_struct("PipelineVertexInputDivisorStateCreateInfoEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "vertex_binding_divisor_count",
-                &self.vertex_binding_divisor_count,
-            ).field("p_vertex_binding_divisors", &self.p_vertex_binding_divisors)
+            .field("vertex_binding_divisor_count", &self.vertex_binding_divisor_count)
+            .field("p_vertex_binding_divisors", &self.p_vertex_binding_divisors)
             .finish()
     }
 }
@@ -27189,10 +24091,8 @@ impl fmt::Debug for AndroidHardwareBufferUsageANDROID {
         fmt.debug_struct("AndroidHardwareBufferUsageANDROID")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "android_hardware_buffer_usage",
-                &self.android_hardware_buffer_usage,
-            ).finish()
+            .field("android_hardware_buffer_usage", &self.android_hardware_buffer_usage)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27318,10 +24218,8 @@ impl fmt::Debug for CommandBufferInheritanceConditionalRenderingInfoEXT {
         fmt.debug_struct("CommandBufferInheritanceConditionalRenderingInfoEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "conditional_rendering_enable",
-                &self.conditional_rendering_enable,
-            ).finish()
+            .field("conditional_rendering_enable", &self.conditional_rendering_enable)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27377,10 +24275,8 @@ impl fmt::Debug for PhysicalDevice8BitStorageFeaturesKHR {
         fmt.debug_struct("PhysicalDevice8BitStorageFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("storage_buffer8_bit_access", &self.storage_buffer8_bit_access)
             .field(
-                "storage_buffer8_bit_access",
-                &self.storage_buffer8_bit_access,
-            ).field(
                 "uniform_and_storage_buffer8_bit_access",
                 &self.uniform_and_storage_buffer8_bit_access,
             ).field("storage_push_constant8", &self.storage_push_constant8)
@@ -27411,10 +24307,8 @@ impl fmt::Debug for PhysicalDeviceConditionalRenderingFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("conditional_rendering", &self.conditional_rendering)
-            .field(
-                "inherited_conditional_rendering",
-                &self.inherited_conditional_rendering,
-            ).finish()
+            .field("inherited_conditional_rendering", &self.inherited_conditional_rendering)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27500,10 +24394,8 @@ impl fmt::Debug for QueueFamilyCheckpointPropertiesNV {
         fmt.debug_struct("QueueFamilyCheckpointPropertiesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "checkpoint_execution_stage_mask",
-                &self.checkpoint_execution_stage_mask,
-            ).finish()
+            .field("checkpoint_execution_stage_mask", &self.checkpoint_execution_stage_mask)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27580,10 +24472,8 @@ impl fmt::Debug for PhysicalDeviceASTCDecodeFeaturesEXT {
         fmt.debug_struct("PhysicalDeviceASTCDecodeFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "decode_mode_shared_exponent",
-                &self.decode_mode_shared_exponent,
-            ).finish()
+            .field("decode_mode_shared_exponent", &self.decode_mode_shared_exponent)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27607,10 +24497,8 @@ impl fmt::Debug for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
         fmt.debug_struct("PhysicalDeviceRepresentativeFragmentTestFeaturesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "representative_fragment_test",
-                &self.representative_fragment_test,
-            ).finish()
+            .field("representative_fragment_test", &self.representative_fragment_test)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27741,13 +24629,9 @@ impl fmt::Debug for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
         fmt.debug_struct("PhysicalDeviceComputeShaderDerivativesFeaturesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "compute_derivative_group_quads",
-                &self.compute_derivative_group_quads,
-            ).field(
-                "compute_derivative_group_linear",
-                &self.compute_derivative_group_linear,
-            ).finish()
+            .field("compute_derivative_group_quads", &self.compute_derivative_group_quads)
+            .field("compute_derivative_group_linear", &self.compute_derivative_group_linear)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27771,10 +24655,8 @@ impl fmt::Debug for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
         fmt.debug_struct("PhysicalDeviceFragmentShaderBarycentricFeaturesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "fragment_shader_barycentric",
-                &self.fragment_shader_barycentric,
-            ).finish()
+            .field("fragment_shader_barycentric", &self.fragment_shader_barycentric)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27822,10 +24704,8 @@ impl fmt::Debug for ShadingRatePaletteNV {
             .field(
                 "shading_rate_palette_entry_count",
                 &self.shading_rate_palette_entry_count,
-            ).field(
-                "p_shading_rate_palette_entries",
-                &self.p_shading_rate_palette_entries,
-            ).finish()
+            ).field("p_shading_rate_palette_entries", &self.p_shading_rate_palette_entries)
+            .finish()
     }
 }
 #[repr(C)]
@@ -27916,10 +24796,8 @@ impl fmt::Debug for PhysicalDeviceShadingRateImagePropertiesNV {
             .field("p_next", &self.p_next)
             .field("shading_rate_texel_size", &self.shading_rate_texel_size)
             .field("shading_rate_palette_size", &self.shading_rate_palette_size)
-            .field(
-                "shading_rate_max_coarse_samples",
-                &self.shading_rate_max_coarse_samples,
-            ).finish()
+            .field("shading_rate_max_coarse_samples", &self.shading_rate_max_coarse_samples)
+            .finish()
     }
 }
 #[repr(C)]
@@ -28080,29 +24958,17 @@ impl fmt::Debug for PhysicalDeviceMeshShaderPropertiesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_draw_mesh_tasks_count", &self.max_draw_mesh_tasks_count)
+            .field("max_task_work_group_invocations", &self.max_task_work_group_invocations)
+            .field("max_task_work_group_size", &self.max_task_work_group_size)
+            .field("max_task_total_memory_size", &self.max_task_total_memory_size)
+            .field("max_task_output_count", &self.max_task_output_count)
+            .field("max_mesh_work_group_invocations", &self.max_mesh_work_group_invocations)
+            .field("max_mesh_work_group_size", &self.max_mesh_work_group_size)
+            .field("max_mesh_total_memory_size", &self.max_mesh_total_memory_size)
+            .field("max_mesh_output_vertices", &self.max_mesh_output_vertices)
+            .field("max_mesh_output_primitives", &self.max_mesh_output_primitives)
+            .field("max_mesh_multiview_view_count", &self.max_mesh_multiview_view_count)
             .field(
-                "max_task_work_group_invocations",
-                &self.max_task_work_group_invocations,
-            ).field("max_task_work_group_size", &self.max_task_work_group_size)
-            .field(
-                "max_task_total_memory_size",
-                &self.max_task_total_memory_size,
-            ).field("max_task_output_count", &self.max_task_output_count)
-            .field(
-                "max_mesh_work_group_invocations",
-                &self.max_mesh_work_group_invocations,
-            ).field("max_mesh_work_group_size", &self.max_mesh_work_group_size)
-            .field(
-                "max_mesh_total_memory_size",
-                &self.max_mesh_total_memory_size,
-            ).field("max_mesh_output_vertices", &self.max_mesh_output_vertices)
-            .field(
-                "max_mesh_output_primitives",
-                &self.max_mesh_output_primitives,
-            ).field(
-                "max_mesh_multiview_view_count",
-                &self.max_mesh_multiview_view_count,
-            ).field(
                 "mesh_output_per_vertex_granularity",
                 &self.mesh_output_per_vertex_granularity,
             ).field(
@@ -28431,10 +25297,8 @@ impl fmt::Debug for DescriptorAccelerationStructureInfoNVX {
         fmt.debug_struct("DescriptorAccelerationStructureInfoNVX")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field(
-                "acceleration_structure_count",
-                &self.acceleration_structure_count,
-            ).field("p_acceleration_structures", &self.p_acceleration_structures)
+            .field("acceleration_structure_count", &self.acceleration_structure_count)
+            .field("p_acceleration_structures", &self.p_acceleration_structures)
             .finish()
     }
 }
@@ -28499,15 +25363,13 @@ type FnCreateInstance = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_instance: *mut Instance,
 ) -> Result;
-type FnEnumerateInstanceExtensionProperties =
-    unsafe extern "system" fn(
-        p_layer_name: *const c_char,
-        p_property_count: *mut u32,
-        p_properties: *mut ExtensionProperties,
-    ) -> Result;
+type FnEnumerateInstanceExtensionProperties = unsafe extern "system" fn(
+    p_layer_name: *const c_char,
+    p_property_count: *mut u32,
+    p_properties: *mut ExtensionProperties,
+) -> Result;
 type FnEnumerateInstanceLayerProperties =
-    unsafe extern "system" fn(p_property_count: *mut u32, p_properties: *mut LayerProperties)
-        -> Result;
+    unsafe extern "system" fn(p_property_count: *mut u32, p_properties: *mut LayerProperties) -> Result;
 pub struct EntryFn1_0 {
     pub create_instance: FnCreateInstance,
     pub enumerate_instance_extension_properties: FnEnumerateInstanceExtensionProperties,
@@ -28545,15 +25407,11 @@ impl EntryFn1_0 {
                 ) -> Result {
                     panic!("fn enumerate_instance_extension_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkEnumerateInstanceExtensionProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumerateInstanceExtensionProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            enumerate_instance_extension_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(enumerate_instance_extension_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28565,14 +25423,11 @@ impl EntryFn1_0 {
                 ) -> Result {
                     panic!("fn enumerate_instance_layer_properties not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkEnumerateInstanceLayerProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumerateInstanceLayerProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            enumerate_instance_layer_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(enumerate_instance_layer_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28610,25 +25465,20 @@ impl EntryFn1_1 {
     }
 }
 type FnDestroyInstance =
-    unsafe extern "system" fn(instance: Option<Instance>, p_allocator: *const AllocationCallbacks)
-        -> c_void;
-type FnEnumeratePhysicalDevices =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_physical_device_count: *mut u32,
-        p_physical_devices: *mut PhysicalDevice,
-    ) -> Result;
+    unsafe extern "system" fn(instance: Option<Instance>, p_allocator: *const AllocationCallbacks) -> c_void;
+type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_physical_device_count: *mut u32,
+    p_physical_devices: *mut PhysicalDevice,
+) -> Result;
 type FnGetPhysicalDeviceFeatures =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_features: *mut PhysicalDeviceFeatures,
-    ) -> c_void;
-type FnGetPhysicalDeviceFormatProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        format: Format,
-        p_format_properties: *mut FormatProperties,
-    ) -> c_void;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_features: *mut PhysicalDeviceFeatures)
+        -> c_void;
+type FnGetPhysicalDeviceFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    p_format_properties: *mut FormatProperties,
+) -> c_void;
 type FnGetPhysicalDeviceImageFormatProperties =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -28640,10 +25490,8 @@ type FnGetPhysicalDeviceImageFormatProperties =
         p_image_format_properties: *mut ImageFormatProperties,
     ) -> Result;
 type FnGetPhysicalDeviceProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_properties: *mut PhysicalDeviceProperties,
-    ) -> c_void;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_properties: *mut PhysicalDeviceProperties)
+        -> c_void;
 type FnGetPhysicalDeviceQueueFamilyProperties =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -28655,27 +25503,25 @@ type FnGetPhysicalDeviceMemoryProperties =
         physical_device: Option<PhysicalDevice>,
         p_memory_properties: *mut PhysicalDeviceMemoryProperties,
     ) -> c_void;
-type FnGetDeviceProcAddr = unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char)
-    -> Option<FnVoidFunction>;
+type FnGetDeviceProcAddr =
+    unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
 type FnCreateDevice = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_create_info: *const DeviceCreateInfo,
     p_allocator: *const AllocationCallbacks,
     p_device: *mut Device,
 ) -> Result;
-type FnEnumerateDeviceExtensionProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_layer_name: *const c_char,
-        p_property_count: *mut u32,
-        p_properties: *mut ExtensionProperties,
-    ) -> Result;
-type FnEnumerateDeviceLayerProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_property_count: *mut u32,
-        p_properties: *mut LayerProperties,
-    ) -> Result;
+type FnEnumerateDeviceExtensionProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_layer_name: *const c_char,
+    p_property_count: *mut u32,
+    p_properties: *mut ExtensionProperties,
+) -> Result;
+type FnEnumerateDeviceLayerProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut LayerProperties,
+) -> Result;
 type FnGetPhysicalDeviceSparseImageFormatProperties =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -28700,8 +25546,7 @@ pub struct InstanceFn1_0 {
     pub create_device: FnCreateDevice,
     pub enumerate_device_extension_properties: FnEnumerateDeviceExtensionProperties,
     pub enumerate_device_layer_properties: FnEnumerateDeviceLayerProperties,
-    pub get_physical_device_sparse_image_format_properties:
-        FnGetPhysicalDeviceSparseImageFormatProperties,
+    pub get_physical_device_sparse_image_format_properties: FnGetPhysicalDeviceSparseImageFormatProperties,
 }
 impl InstanceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -28767,14 +25612,11 @@ impl InstanceFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_format_properties not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_format_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_format_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28791,15 +25633,11 @@ impl InstanceFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_image_format_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceImageFormatProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceImageFormatProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_image_format_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_image_format_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28828,15 +25666,11 @@ impl InstanceFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_queue_family_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceQueueFamilyProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceQueueFamilyProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_queue_family_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_queue_family_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28848,14 +25682,11 @@ impl InstanceFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_memory_properties not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_memory_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_memory_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28903,14 +25734,11 @@ impl InstanceFn1_0 {
                 ) -> Result {
                     panic!("fn enumerate_device_extension_properties not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkEnumerateDeviceExtensionProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumerateDeviceExtensionProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            enumerate_device_extension_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(enumerate_device_extension_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28923,8 +25751,7 @@ impl InstanceFn1_0 {
                 ) -> Result {
                     panic!("fn enumerate_device_layer_properties not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkEnumerateDeviceLayerProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumerateDeviceLayerProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -28946,16 +25773,11 @@ impl InstanceFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_sparse_image_format_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSparseImageFormatProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSparseImageFormatProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_sparse_image_format_properties_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_sparse_image_format_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -28964,23 +25786,23 @@ impl InstanceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnEnumeratePhysicalDeviceGroups = unsafe extern "system" fn(instance: Option<Instance>,p_physical_device_group_count: * mut u32,p_physical_device_group_properties: * mut PhysicalDeviceGroupProperties,) -> Result;
+type FnEnumeratePhysicalDeviceGroups =
+    unsafe extern "system" fn(
+        instance: Option<Instance>,
+        p_physical_device_group_count: *mut u32,
+        p_physical_device_group_properties: *mut PhysicalDeviceGroupProperties,
+    ) -> Result;
 type FnGetPhysicalDeviceFeatures2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_features: *mut PhysicalDeviceFeatures2,
-    ) -> c_void;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_features: *mut PhysicalDeviceFeatures2)
+        -> c_void;
 type FnGetPhysicalDeviceProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_properties: *mut PhysicalDeviceProperties2,
-    ) -> c_void;
-type FnGetPhysicalDeviceFormatProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        format: Format,
-        p_format_properties: *mut FormatProperties2,
-    ) -> c_void;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_properties: *mut PhysicalDeviceProperties2)
+        -> c_void;
+type FnGetPhysicalDeviceFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    p_format_properties: *mut FormatProperties2,
+) -> c_void;
 type FnGetPhysicalDeviceImageFormatProperties2 =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -29017,7 +25839,12 @@ type FnGetPhysicalDeviceExternalFenceProperties =
         p_external_fence_info: *const PhysicalDeviceExternalFenceInfo,
         p_external_fence_properties: *mut ExternalFenceProperties,
     ) -> c_void;
-type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(physical_device: Option<PhysicalDevice>,p_external_semaphore_info: * const PhysicalDeviceExternalSemaphoreInfo,p_external_semaphore_properties: * mut ExternalSemaphoreProperties,) -> c_void;
+type FnGetPhysicalDeviceExternalSemaphoreProperties =
+    unsafe extern "system" fn(
+        physical_device: Option<PhysicalDevice>,
+        p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
+        p_external_semaphore_properties: *mut ExternalSemaphoreProperties,
+    ) -> c_void;
 pub struct InstanceFn1_1 {
     pub enumerate_physical_device_groups: FnEnumeratePhysicalDeviceGroups,
     pub get_physical_device_features2: FnGetPhysicalDeviceFeatures2,
@@ -29026,12 +25853,10 @@ pub struct InstanceFn1_1 {
     pub get_physical_device_image_format_properties2: FnGetPhysicalDeviceImageFormatProperties2,
     pub get_physical_device_queue_family_properties2: FnGetPhysicalDeviceQueueFamilyProperties2,
     pub get_physical_device_memory_properties2: FnGetPhysicalDeviceMemoryProperties2,
-    pub get_physical_device_sparse_image_format_properties2:
-        FnGetPhysicalDeviceSparseImageFormatProperties2,
+    pub get_physical_device_sparse_image_format_properties2: FnGetPhysicalDeviceSparseImageFormatProperties2,
     pub get_physical_device_external_buffer_properties: FnGetPhysicalDeviceExternalBufferProperties,
     pub get_physical_device_external_fence_properties: FnGetPhysicalDeviceExternalFenceProperties,
-    pub get_physical_device_external_semaphore_properties:
-        FnGetPhysicalDeviceExternalSemaphoreProperties,
+    pub get_physical_device_external_semaphore_properties: FnGetPhysicalDeviceExternalSemaphoreProperties,
 }
 impl InstanceFn1_1 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -29048,8 +25873,7 @@ impl InstanceFn1_1 {
                 ) -> Result {
                     panic!("fn enumerate_physical_device_groups not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroups\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroups\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -29098,14 +25922,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_format_properties2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_format_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29118,15 +25939,11 @@ impl InstanceFn1_1 {
                 ) -> Result {
                     panic!("fn get_physical_device_image_format_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceImageFormatProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceImageFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_image_format_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_image_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29139,15 +25956,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_queue_family_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceQueueFamilyProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceQueueFamilyProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_queue_family_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_queue_family_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29159,14 +25972,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_memory_properties2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_memory_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_memory_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29180,16 +25990,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_sparse_image_format_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSparseImageFormatProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSparseImageFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_sparse_image_format_properties2_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_sparse_image_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29202,16 +26007,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_buffer_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalBufferProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalBufferProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_buffer_properties_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_buffer_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29224,15 +26024,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_fence_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalFenceProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalFenceProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_fence_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_fence_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29245,16 +26041,11 @@ impl InstanceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_semaphore_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalSemaphoreProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalSemaphoreProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_semaphore_properties_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_semaphore_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -29264,14 +26055,10 @@ impl InstanceFn1_1 {
     }
 }
 type FnDestroyDevice =
-    unsafe extern "system" fn(device: Option<Device>, p_allocator: *const AllocationCallbacks)
+    unsafe extern "system" fn(device: Option<Device>, p_allocator: *const AllocationCallbacks) -> c_void;
+type FnGetDeviceQueue =
+    unsafe extern "system" fn(device: Option<Device>, queue_family_index: u32, queue_index: u32, p_queue: *mut Queue)
         -> c_void;
-type FnGetDeviceQueue = unsafe extern "system" fn(
-    device: Option<Device>,
-    queue_family_index: u32,
-    queue_index: u32,
-    p_queue: *mut Queue,
-) -> c_void;
 type FnQueueSubmit = unsafe extern "system" fn(
     queue: Option<Queue>,
     submit_count: u32,
@@ -29299,26 +26086,22 @@ type FnMapMemory = unsafe extern "system" fn(
     flags: MemoryMapFlags,
     pp_data: *mut *mut c_void,
 ) -> Result;
-type FnUnmapMemory =
-    unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>) -> c_void;
-type FnFlushMappedMemoryRanges =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        memory_range_count: u32,
-        p_memory_ranges: *const MappedMemoryRange,
-    ) -> Result;
-type FnInvalidateMappedMemoryRanges =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        memory_range_count: u32,
-        p_memory_ranges: *const MappedMemoryRange,
-    ) -> Result;
-type FnGetDeviceMemoryCommitment =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        memory: Option<DeviceMemory>,
-        p_committed_memory_in_bytes: *mut DeviceSize,
-    ) -> c_void;
+type FnUnmapMemory = unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>) -> c_void;
+type FnFlushMappedMemoryRanges = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory_range_count: u32,
+    p_memory_ranges: *const MappedMemoryRange,
+) -> Result;
+type FnInvalidateMappedMemoryRanges = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory_range_count: u32,
+    p_memory_ranges: *const MappedMemoryRange,
+) -> Result;
+type FnGetDeviceMemoryCommitment = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    p_committed_memory_in_bytes: *mut DeviceSize,
+) -> c_void;
 type FnBindBufferMemory = unsafe extern "system" fn(
     device: Option<Device>,
     buffer: Option<Buffer>,
@@ -29331,18 +26114,16 @@ type FnBindImageMemory = unsafe extern "system" fn(
     memory: Option<DeviceMemory>,
     memory_offset: DeviceSize,
 ) -> Result;
-type FnGetBufferMemoryRequirements =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        buffer: Option<Buffer>,
-        p_memory_requirements: *mut MemoryRequirements,
-    ) -> c_void;
-type FnGetImageMemoryRequirements =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        image: Option<Image>,
-        p_memory_requirements: *mut MemoryRequirements,
-    ) -> c_void;
+type FnGetBufferMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: Option<Buffer>,
+    p_memory_requirements: *mut MemoryRequirements,
+) -> c_void;
+type FnGetImageMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_memory_requirements: *mut MemoryRequirements,
+) -> c_void;
 type FnGetImageSparseMemoryRequirements =
     unsafe extern "system" fn(
         device: Option<Device>,
@@ -29362,16 +26143,12 @@ type FnCreateFence = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_fence: *mut Fence,
 ) -> Result;
-type FnDestroyFence = unsafe extern "system" fn(
-    device: Option<Device>,
-    fence: Option<Fence>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
+type FnDestroyFence =
+    unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>, p_allocator: *const AllocationCallbacks)
+        -> c_void;
 type FnResetFences =
-    unsafe extern "system" fn(device: Option<Device>, fence_count: u32, p_fences: *const Fence)
-        -> Result;
-type FnGetFenceStatus =
-    unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, fence_count: u32, p_fences: *const Fence) -> Result;
+type FnGetFenceStatus = unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>) -> Result;
 type FnWaitForFences = unsafe extern "system" fn(
     device: Option<Device>,
     fence_count: u32,
@@ -29396,16 +26173,12 @@ type FnCreateEvent = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_event: *mut Event,
 ) -> Result;
-type FnDestroyEvent = unsafe extern "system" fn(
-    device: Option<Device>,
-    event: Option<Event>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetEventStatus =
-    unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
+type FnDestroyEvent =
+    unsafe extern "system" fn(device: Option<Device>, event: Option<Event>, p_allocator: *const AllocationCallbacks)
+        -> c_void;
+type FnGetEventStatus = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
 type FnSetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
-type FnResetEvent =
-    unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
+type FnResetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
 type FnCreateQueryPool = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const QueryPoolCreateInfo,
@@ -29433,11 +26206,9 @@ type FnCreateBuffer = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_buffer: *mut Buffer,
 ) -> Result;
-type FnDestroyBuffer = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer: Option<Buffer>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
+type FnDestroyBuffer =
+    unsafe extern "system" fn(device: Option<Device>, buffer: Option<Buffer>, p_allocator: *const AllocationCallbacks)
+        -> c_void;
 type FnCreateBufferView = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const BufferViewCreateInfo,
@@ -29455,18 +26226,15 @@ type FnCreateImage = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_image: *mut Image,
 ) -> Result;
-type FnDestroyImage = unsafe extern "system" fn(
+type FnDestroyImage =
+    unsafe extern "system" fn(device: Option<Device>, image: Option<Image>, p_allocator: *const AllocationCallbacks)
+        -> c_void;
+type FnGetImageSubresourceLayout = unsafe extern "system" fn(
     device: Option<Device>,
     image: Option<Image>,
-    p_allocator: *const AllocationCallbacks,
+    p_subresource: *const ImageSubresource,
+    p_layout: *mut SubresourceLayout,
 ) -> c_void;
-type FnGetImageSubresourceLayout =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        image: Option<Image>,
-        p_subresource: *const ImageSubresource,
-        p_layout: *mut SubresourceLayout,
-    ) -> c_void;
 type FnCreateImageView = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const ImageViewCreateInfo,
@@ -29489,13 +26257,12 @@ type FnDestroyShaderModule = unsafe extern "system" fn(
     shader_module: Option<ShaderModule>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnCreatePipelineCache =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const PipelineCacheCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_pipeline_cache: *mut PipelineCache,
-    ) -> Result;
+type FnCreatePipelineCache = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PipelineCacheCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipeline_cache: *mut PipelineCache,
+) -> Result;
 type FnDestroyPipelineCache = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline_cache: Option<PipelineCache>,
@@ -29513,36 +26280,33 @@ type FnMergePipelineCaches = unsafe extern "system" fn(
     src_cache_count: u32,
     p_src_caches: *const PipelineCache,
 ) -> Result;
-type FnCreateGraphicsPipelines =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        pipeline_cache: Option<PipelineCache>,
-        create_info_count: u32,
-        p_create_infos: *const GraphicsPipelineCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_pipelines: *mut Pipeline,
-    ) -> Result;
-type FnCreateComputePipelines =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        pipeline_cache: Option<PipelineCache>,
-        create_info_count: u32,
-        p_create_infos: *const ComputePipelineCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_pipelines: *mut Pipeline,
-    ) -> Result;
+type FnCreateGraphicsPipelines = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const GraphicsPipelineCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+type FnCreateComputePipelines = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const ComputePipelineCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
 type FnDestroyPipeline = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnCreatePipelineLayout =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const PipelineLayoutCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_pipeline_layout: *mut PipelineLayout,
-    ) -> Result;
+type FnCreatePipelineLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PipelineLayoutCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipeline_layout: *mut PipelineLayout,
+) -> Result;
 type FnDestroyPipelineLayout = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline_layout: Option<PipelineLayout>,
@@ -29559,26 +26323,23 @@ type FnDestroySampler = unsafe extern "system" fn(
     sampler: Option<Sampler>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnCreateDescriptorSetLayout =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const DescriptorSetLayoutCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_set_layout: *mut DescriptorSetLayout,
-    ) -> Result;
-type FnDestroyDescriptorSetLayout =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        descriptor_set_layout: Option<DescriptorSetLayout>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
-type FnCreateDescriptorPool =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const DescriptorPoolCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_descriptor_pool: *mut DescriptorPool,
-    ) -> Result;
+type FnCreateDescriptorSetLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorSetLayoutCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_set_layout: *mut DescriptorSetLayout,
+) -> Result;
+type FnDestroyDescriptorSetLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_set_layout: Option<DescriptorSetLayout>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+type FnCreateDescriptorPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorPoolCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_descriptor_pool: *mut DescriptorPool,
+) -> Result;
 type FnDestroyDescriptorPool = unsafe extern "system" fn(
     device: Option<Device>,
     descriptor_pool: Option<DescriptorPool>,
@@ -29589,26 +26350,24 @@ type FnResetDescriptorPool = unsafe extern "system" fn(
     descriptor_pool: Option<DescriptorPool>,
     flags: DescriptorPoolResetFlags,
 ) -> Result;
-type FnAllocateDescriptorSets =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_allocate_info: *const DescriptorSetAllocateInfo,
-        p_descriptor_sets: *mut DescriptorSet,
-    ) -> Result;
+type FnAllocateDescriptorSets = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_allocate_info: *const DescriptorSetAllocateInfo,
+    p_descriptor_sets: *mut DescriptorSet,
+) -> Result;
 type FnFreeDescriptorSets = unsafe extern "system" fn(
     device: Option<Device>,
     descriptor_pool: Option<DescriptorPool>,
     descriptor_set_count: u32,
     p_descriptor_sets: *const DescriptorSet,
 ) -> Result;
-type FnUpdateDescriptorSets =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        descriptor_write_count: u32,
-        p_descriptor_writes: *const WriteDescriptorSet,
-        descriptor_copy_count: u32,
-        p_descriptor_copies: *const CopyDescriptorSet,
-    ) -> c_void;
+type FnUpdateDescriptorSets = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_write_count: u32,
+    p_descriptor_writes: *const WriteDescriptorSet,
+    descriptor_copy_count: u32,
+    p_descriptor_copies: *const CopyDescriptorSet,
+) -> c_void;
 type FnCreateFramebuffer = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const FramebufferCreateInfo,
@@ -29631,11 +26390,9 @@ type FnDestroyRenderPass = unsafe extern "system" fn(
     render_pass: Option<RenderPass>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnGetRenderAreaGranularity = unsafe extern "system" fn(
-    device: Option<Device>,
-    render_pass: Option<RenderPass>,
-    p_granularity: *mut Extent2D,
-) -> c_void;
+type FnGetRenderAreaGranularity =
+    unsafe extern "system" fn(device: Option<Device>, render_pass: Option<RenderPass>, p_granularity: *mut Extent2D)
+        -> c_void;
 type FnCreateCommandPool = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const CommandPoolCreateInfo,
@@ -29647,33 +26404,26 @@ type FnDestroyCommandPool = unsafe extern "system" fn(
     command_pool: Option<CommandPool>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnResetCommandPool = unsafe extern "system" fn(
+type FnResetCommandPool =
+    unsafe extern "system" fn(device: Option<Device>, command_pool: Option<CommandPool>, flags: CommandPoolResetFlags)
+        -> Result;
+type FnAllocateCommandBuffers = unsafe extern "system" fn(
     device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    flags: CommandPoolResetFlags,
+    p_allocate_info: *const CommandBufferAllocateInfo,
+    p_command_buffers: *mut CommandBuffer,
 ) -> Result;
-type FnAllocateCommandBuffers =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_allocate_info: *const CommandBufferAllocateInfo,
-        p_command_buffers: *mut CommandBuffer,
-    ) -> Result;
 type FnFreeCommandBuffers = unsafe extern "system" fn(
     device: Option<Device>,
     command_pool: Option<CommandPool>,
     command_buffer_count: u32,
     p_command_buffers: *const CommandBuffer,
 ) -> c_void;
-type FnBeginCommandBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_begin_info: *const CommandBufferBeginInfo,
-) -> Result;
-type FnEndCommandBuffer =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> Result;
-type FnResetCommandBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    flags: CommandBufferResetFlags,
-) -> Result;
+type FnBeginCommandBuffer =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_begin_info: *const CommandBufferBeginInfo)
+        -> Result;
+type FnEndCommandBuffer = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> Result;
+type FnResetCommandBuffer =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, flags: CommandBufferResetFlags) -> Result;
 type FnCmdBindPipeline = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     pipeline_bind_point: PipelineBindPoint,
@@ -29691,8 +26441,7 @@ type FnCmdSetScissor = unsafe extern "system" fn(
     scissor_count: u32,
     p_scissors: *const Rect2D,
 ) -> c_void;
-type FnCmdSetLineWidth =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, line_width: f32) -> c_void;
+type FnCmdSetLineWidth = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, line_width: f32) -> c_void;
 type FnCmdSetDepthBias = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     depth_bias_constant_factor: f32,
@@ -29700,28 +26449,19 @@ type FnCmdSetDepthBias = unsafe extern "system" fn(
     depth_bias_slope_factor: f32,
 ) -> c_void;
 type FnCmdSetBlendConstants =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4])
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4]) -> c_void;
+type FnCmdSetDepthBounds =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, min_depth_bounds: f32, max_depth_bounds: f32)
         -> c_void;
-type FnCmdSetDepthBounds = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    min_depth_bounds: f32,
-    max_depth_bounds: f32,
-) -> c_void;
-type FnCmdSetStencilCompareMask = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    compare_mask: u32,
-) -> c_void;
-type FnCmdSetStencilWriteMask = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    write_mask: u32,
-) -> c_void;
-type FnCmdSetStencilReference = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    reference: u32,
-) -> c_void;
+type FnCmdSetStencilCompareMask =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, compare_mask: u32)
+        -> c_void;
+type FnCmdSetStencilWriteMask =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, write_mask: u32)
+        -> c_void;
+type FnCmdSetStencilReference =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, reference: u32)
+        -> c_void;
 type FnCmdBindDescriptorSets = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     pipeline_bind_point: PipelineBindPoint,
@@ -29780,11 +26520,9 @@ type FnCmdDispatch = unsafe extern "system" fn(
     group_count_y: u32,
     group_count_z: u32,
 ) -> c_void;
-type FnCmdDispatchIndirect = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-) -> c_void;
+type FnCmdDispatchIndirect =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize)
+        -> c_void;
 type FnCmdCopyBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     src_buffer: Option<Buffer>,
@@ -29849,15 +26587,14 @@ type FnCmdClearColorImage = unsafe extern "system" fn(
     range_count: u32,
     p_ranges: *const ImageSubresourceRange,
 ) -> c_void;
-type FnCmdClearDepthStencilImage =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        image: Option<Image>,
-        image_layout: ImageLayout,
-        p_depth_stencil: *const ClearDepthStencilValue,
-        range_count: u32,
-        p_ranges: *const ImageSubresourceRange,
-    ) -> c_void;
+type FnCmdClearDepthStencilImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    image: Option<Image>,
+    image_layout: ImageLayout,
+    p_depth_stencil: *const ClearDepthStencilValue,
+    range_count: u32,
+    p_ranges: *const ImageSubresourceRange,
+) -> c_void;
 type FnCmdClearAttachments = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     attachment_count: u32,
@@ -29884,44 +26621,40 @@ type FnCmdResetEvent = unsafe extern "system" fn(
     event: Option<Event>,
     stage_mask: PipelineStageFlags,
 ) -> c_void;
-type FnCmdWaitEvents =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        event_count: u32,
-        p_events: *const Event,
-        src_stage_mask: PipelineStageFlags,
-        dst_stage_mask: PipelineStageFlags,
-        memory_barrier_count: u32,
-        p_memory_barriers: *const MemoryBarrier,
-        buffer_memory_barrier_count: u32,
-        p_buffer_memory_barriers: *const BufferMemoryBarrier,
-        image_memory_barrier_count: u32,
-        p_image_memory_barriers: *const ImageMemoryBarrier,
-    ) -> c_void;
-type FnCmdPipelineBarrier =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        src_stage_mask: PipelineStageFlags,
-        dst_stage_mask: PipelineStageFlags,
-        dependency_flags: DependencyFlags,
-        memory_barrier_count: u32,
-        p_memory_barriers: *const MemoryBarrier,
-        buffer_memory_barrier_count: u32,
-        p_buffer_memory_barriers: *const BufferMemoryBarrier,
-        image_memory_barrier_count: u32,
-        p_image_memory_barriers: *const ImageMemoryBarrier,
-    ) -> c_void;
+type FnCmdWaitEvents = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event_count: u32,
+    p_events: *const Event,
+    src_stage_mask: PipelineStageFlags,
+    dst_stage_mask: PipelineStageFlags,
+    memory_barrier_count: u32,
+    p_memory_barriers: *const MemoryBarrier,
+    buffer_memory_barrier_count: u32,
+    p_buffer_memory_barriers: *const BufferMemoryBarrier,
+    image_memory_barrier_count: u32,
+    p_image_memory_barriers: *const ImageMemoryBarrier,
+) -> c_void;
+type FnCmdPipelineBarrier = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_stage_mask: PipelineStageFlags,
+    dst_stage_mask: PipelineStageFlags,
+    dependency_flags: DependencyFlags,
+    memory_barrier_count: u32,
+    p_memory_barriers: *const MemoryBarrier,
+    buffer_memory_barrier_count: u32,
+    p_buffer_memory_barriers: *const BufferMemoryBarrier,
+    image_memory_barrier_count: u32,
+    p_image_memory_barriers: *const ImageMemoryBarrier,
+) -> c_void;
 type FnCmdBeginQuery = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     query_pool: Option<QueryPool>,
     query: u32,
     flags: QueryControlFlags,
 ) -> c_void;
-type FnCmdEndQuery = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    query: u32,
-) -> c_void;
+type FnCmdEndQuery =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, query_pool: Option<QueryPool>, query: u32)
+        -> c_void;
 type FnCmdResetQueryPool = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     query_pool: Option<QueryPool>,
@@ -29952,17 +26685,14 @@ type FnCmdPushConstants = unsafe extern "system" fn(
     size: u32,
     p_values: *const c_void,
 ) -> c_void;
-type FnCmdBeginRenderPass =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_render_pass_begin: *const RenderPassBeginInfo,
-        contents: SubpassContents,
-    ) -> c_void;
+type FnCmdBeginRenderPass = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_render_pass_begin: *const RenderPassBeginInfo,
+    contents: SubpassContents,
+) -> c_void;
 type FnCmdNextSubpass =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, contents: SubpassContents)
-        -> c_void;
-type FnCmdEndRenderPass =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, contents: SubpassContents) -> c_void;
+type FnCmdEndRenderPass = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 type FnCmdExecuteCommands = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     command_buffer_count: u32,
@@ -30098,10 +26828,7 @@ impl DeviceFn1_0 {
         let mut all_loaded = true;
         let block = DeviceFn1_0 {
             destroy_device: unsafe {
-                extern "system" fn destroy_device_fallback(
-                    _: Option<Device>,
-                    _: *const AllocationCallbacks,
-                ) -> c_void {
+                extern "system" fn destroy_device_fallback(_: Option<Device>, _: *const AllocationCallbacks) -> c_void {
                     panic!("fn destroy_device not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDevice\0");
@@ -30231,10 +26958,7 @@ impl DeviceFn1_0 {
                 )
             },
             unmap_memory: unsafe {
-                extern "system" fn unmap_memory_fallback(
-                    _: Option<Device>,
-                    _: Option<DeviceMemory>,
-                ) -> c_void {
+                extern "system" fn unmap_memory_fallback(_: Option<Device>, _: Option<DeviceMemory>) -> c_void {
                     panic!("fn unmap_memory not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory\0");
@@ -30376,14 +27100,11 @@ impl DeviceFn1_0 {
                 ) -> c_void {
                     panic!("fn get_image_sparse_memory_requirements not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_image_sparse_memory_requirements_fallback as *const c_void,
-                        )
+                        mem::transmute(get_image_sparse_memory_requirements_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -30442,11 +27163,7 @@ impl DeviceFn1_0 {
                 )
             },
             reset_fences: unsafe {
-                extern "system" fn reset_fences_fallback(
-                    _: Option<Device>,
-                    _: u32,
-                    _: *const Fence,
-                ) -> Result {
+                extern "system" fn reset_fences_fallback(_: Option<Device>, _: u32, _: *const Fence) -> Result {
                     panic!("fn reset_fences not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkResetFences\0");
@@ -30459,10 +27176,7 @@ impl DeviceFn1_0 {
                 )
             },
             get_fence_status: unsafe {
-                extern "system" fn get_fence_status_fallback(
-                    _: Option<Device>,
-                    _: Option<Fence>,
-                ) -> Result {
+                extern "system" fn get_fence_status_fallback(_: Option<Device>, _: Option<Fence>) -> Result {
                     panic!("fn get_fence_status not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkGetFenceStatus\0");
@@ -30564,10 +27278,7 @@ impl DeviceFn1_0 {
                 )
             },
             get_event_status: unsafe {
-                extern "system" fn get_event_status_fallback(
-                    _: Option<Device>,
-                    _: Option<Event>,
-                ) -> Result {
+                extern "system" fn get_event_status_fallback(_: Option<Device>, _: Option<Event>) -> Result {
                     panic!("fn get_event_status not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkGetEventStatus\0");
@@ -30580,10 +27291,7 @@ impl DeviceFn1_0 {
                 )
             },
             set_event: unsafe {
-                extern "system" fn set_event_fallback(
-                    _: Option<Device>,
-                    _: Option<Event>,
-                ) -> Result {
+                extern "system" fn set_event_fallback(_: Option<Device>, _: Option<Event>) -> Result {
                     panic!("fn set_event not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkSetEvent\0");
@@ -30596,10 +27304,7 @@ impl DeviceFn1_0 {
                 )
             },
             reset_event: unsafe {
-                extern "system" fn reset_event_fallback(
-                    _: Option<Device>,
-                    _: Option<Event>,
-                ) -> Result {
+                extern "system" fn reset_event_fallback(_: Option<Device>, _: Option<Event>) -> Result {
                     panic!("fn reset_event not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkResetEvent\0");
@@ -31473,10 +28178,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_set_line_width: unsafe {
-                extern "system" fn cmd_set_line_width_fallback(
-                    _: Option<CommandBuffer>,
-                    _: f32,
-                ) -> c_void {
+                extern "system" fn cmd_set_line_width_fallback(_: Option<CommandBuffer>, _: f32) -> c_void {
                     panic!("fn cmd_set_line_width not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineWidth\0");
@@ -31507,10 +28209,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_set_blend_constants: unsafe {
-                extern "system" fn cmd_set_blend_constants_fallback(
-                    _: Option<CommandBuffer>,
-                    _: [f32; 4],
-                ) -> c_void {
+                extern "system" fn cmd_set_blend_constants_fallback(_: Option<CommandBuffer>, _: [f32; 4]) -> c_void {
                     panic!("fn cmd_set_blend_constants not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetBlendConstants\0");
@@ -31523,11 +28222,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_set_depth_bounds: unsafe {
-                extern "system" fn cmd_set_depth_bounds_fallback(
-                    _: Option<CommandBuffer>,
-                    _: f32,
-                    _: f32,
-                ) -> c_void {
+                extern "system" fn cmd_set_depth_bounds_fallback(_: Option<CommandBuffer>, _: f32, _: f32) -> c_void {
                     panic!("fn cmd_set_depth_bounds not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBounds\0");
@@ -31727,12 +28422,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_dispatch: unsafe {
-                extern "system" fn cmd_dispatch_fallback(
-                    _: Option<CommandBuffer>,
-                    _: u32,
-                    _: u32,
-                    _: u32,
-                ) -> c_void {
+                extern "system" fn cmd_dispatch_fallback(_: Option<CommandBuffer>, _: u32, _: u32, _: u32) -> c_void {
                     panic!("fn cmd_dispatch not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatch\0");
@@ -32195,10 +28885,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_next_subpass: unsafe {
-                extern "system" fn cmd_next_subpass_fallback(
-                    _: Option<CommandBuffer>,
-                    _: SubpassContents,
-                ) -> c_void {
+                extern "system" fn cmd_next_subpass_fallback(_: Option<CommandBuffer>, _: SubpassContents) -> c_void {
                     panic!("fn cmd_next_subpass not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass\0");
@@ -32211,9 +28898,7 @@ impl DeviceFn1_0 {
                 )
             },
             cmd_end_render_pass: unsafe {
-                extern "system" fn cmd_end_render_pass_fallback(
-                    _: Option<CommandBuffer>,
-                ) -> c_void {
+                extern "system" fn cmd_end_render_pass_fallback(_: Option<CommandBuffer>) -> c_void {
                     panic!("fn cmd_end_render_pass not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass\0");
@@ -32246,16 +28931,12 @@ impl DeviceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnBindBufferMemory2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    bind_info_count: u32,
-    p_bind_infos: *const BindBufferMemoryInfo,
-) -> Result;
-type FnBindImageMemory2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    bind_info_count: u32,
-    p_bind_infos: *const BindImageMemoryInfo,
-) -> Result;
+type FnBindBufferMemory2 =
+    unsafe extern "system" fn(device: Option<Device>, bind_info_count: u32, p_bind_infos: *const BindBufferMemoryInfo)
+        -> Result;
+type FnBindImageMemory2 =
+    unsafe extern "system" fn(device: Option<Device>, bind_info_count: u32, p_bind_infos: *const BindImageMemoryInfo)
+        -> Result;
 type FnGetDeviceGroupPeerMemoryFeatures =
     unsafe extern "system" fn(
         device: Option<Device>,
@@ -32264,8 +28945,7 @@ type FnGetDeviceGroupPeerMemoryFeatures =
         remote_device_index: u32,
         p_peer_memory_features: *mut PeerMemoryFeatureFlags,
     ) -> c_void;
-type FnCmdSetDeviceMask =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, device_mask: u32) -> c_void;
+type FnCmdSetDeviceMask = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, device_mask: u32) -> c_void;
 type FnCmdDispatchBase = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     base_group_x: u32,
@@ -32275,18 +28955,16 @@ type FnCmdDispatchBase = unsafe extern "system" fn(
     group_count_y: u32,
     group_count_z: u32,
 ) -> c_void;
-type FnGetImageMemoryRequirements2 =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_info: *const ImageMemoryRequirementsInfo2,
-        p_memory_requirements: *mut MemoryRequirements2,
-    ) -> c_void;
-type FnGetBufferMemoryRequirements2 =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_info: *const BufferMemoryRequirementsInfo2,
-        p_memory_requirements: *mut MemoryRequirements2,
-    ) -> c_void;
+type FnGetImageMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageMemoryRequirementsInfo2,
+    p_memory_requirements: *mut MemoryRequirements2,
+) -> c_void;
+type FnGetBufferMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const BufferMemoryRequirementsInfo2,
+    p_memory_requirements: *mut MemoryRequirements2,
+) -> c_void;
 type FnGetImageSparseMemoryRequirements2 =
     unsafe extern "system" fn(
         device: Option<Device>,
@@ -32294,29 +28972,23 @@ type FnGetImageSparseMemoryRequirements2 =
         p_sparse_memory_requirement_count: *mut u32,
         p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
     ) -> c_void;
-type FnTrimCommandPool = unsafe extern "system" fn(
+type FnTrimCommandPool =
+    unsafe extern "system" fn(device: Option<Device>, command_pool: Option<CommandPool>, flags: CommandPoolTrimFlags)
+        -> c_void;
+type FnGetDeviceQueue2 =
+    unsafe extern "system" fn(device: Option<Device>, p_queue_info: *const DeviceQueueInfo2, p_queue: *mut Queue)
+        -> c_void;
+type FnCreateSamplerYcbcrConversion = unsafe extern "system" fn(
     device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    flags: CommandPoolTrimFlags,
-) -> c_void;
-type FnGetDeviceQueue2 = unsafe extern "system" fn(
+    p_create_info: *const SamplerYcbcrConversionCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_ycbcr_conversion: *mut SamplerYcbcrConversion,
+) -> Result;
+type FnDestroySamplerYcbcrConversion = unsafe extern "system" fn(
     device: Option<Device>,
-    p_queue_info: *const DeviceQueueInfo2,
-    p_queue: *mut Queue,
+    ycbcr_conversion: Option<SamplerYcbcrConversion>,
+    p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnCreateSamplerYcbcrConversion =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const SamplerYcbcrConversionCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_ycbcr_conversion: *mut SamplerYcbcrConversion,
-    ) -> Result;
-type FnDestroySamplerYcbcrConversion =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        ycbcr_conversion: Option<SamplerYcbcrConversion>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
 type FnCreateDescriptorUpdateTemplate =
     unsafe extern "system" fn(
         device: Option<Device>,
@@ -32337,12 +29009,11 @@ type FnUpdateDescriptorSetWithTemplate =
         descriptor_update_template: Option<DescriptorUpdateTemplate>,
         p_data: *const c_void,
     ) -> c_void;
-type FnGetDescriptorSetLayoutSupport =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const DescriptorSetLayoutCreateInfo,
-        p_support: *mut DescriptorSetLayoutSupport,
-    ) -> c_void;
+type FnGetDescriptorSetLayoutSupport = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorSetLayoutCreateInfo,
+    p_support: *mut DescriptorSetLayoutSupport,
+) -> c_void;
 pub struct DeviceFn1_1 {
     pub bind_buffer_memory2: FnBindBufferMemory2,
     pub bind_image_memory2: FnBindImageMemory2,
@@ -32412,23 +29083,17 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_device_group_peer_memory_features not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeatures\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeatures\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_peer_memory_features_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_peer_memory_features_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
             cmd_set_device_mask: unsafe {
-                extern "system" fn cmd_set_device_mask_fallback(
-                    _: Option<CommandBuffer>,
-                    _: u32,
-                ) -> c_void {
+                extern "system" fn cmd_set_device_mask_fallback(_: Option<CommandBuffer>, _: u32) -> c_void {
                     panic!("fn cmd_set_device_mask not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0");
@@ -32504,14 +29169,11 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_image_sparse_memory_requirements2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_image_sparse_memory_requirements2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_image_sparse_memory_requirements2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32576,8 +29238,7 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn destroy_sampler_ycbcr_conversion not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversion\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversion\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -32595,8 +29256,7 @@ impl DeviceFn1_1 {
                 ) -> Result {
                     panic!("fn create_descriptor_update_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -32613,8 +29273,7 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn destroy_descriptor_update_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -32632,14 +29291,11 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn update_descriptor_set_with_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            update_descriptor_set_with_template_fallback as *const c_void,
-                        )
+                        mem::transmute(update_descriptor_set_with_template_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32652,8 +29308,7 @@ impl DeviceFn1_1 {
                 ) -> c_void {
                     panic!("fn get_descriptor_set_layout_support not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupport\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupport\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -32671,33 +29326,30 @@ type FnDestroySurfaceKHR = unsafe extern "system" fn(
     surface: Option<SurfaceKHR>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnGetPhysicalDeviceSurfaceSupportKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        queue_family_index: u32,
-        surface: Option<SurfaceKHR>,
-        p_supported: *mut Bool32,
-    ) -> Result;
+type FnGetPhysicalDeviceSurfaceSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    surface: Option<SurfaceKHR>,
+    p_supported: *mut Bool32,
+) -> Result;
 type FnGetPhysicalDeviceSurfaceCapabilitiesKHR =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
         surface: Option<SurfaceKHR>,
         p_surface_capabilities: *mut SurfaceCapabilitiesKHR,
     ) -> Result;
-type FnGetPhysicalDeviceSurfaceFormatsKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        surface: Option<SurfaceKHR>,
-        p_surface_format_count: *mut u32,
-        p_surface_formats: *mut SurfaceFormatKHR,
-    ) -> Result;
-type FnGetPhysicalDeviceSurfacePresentModesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        surface: Option<SurfaceKHR>,
-        p_present_mode_count: *mut u32,
-        p_present_modes: *mut PresentModeKHR,
-    ) -> Result;
+type FnGetPhysicalDeviceSurfaceFormatsKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_format_count: *mut u32,
+    p_surface_formats: *mut SurfaceFormatKHR,
+) -> Result;
+type FnGetPhysicalDeviceSurfacePresentModesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_present_mode_count: *mut u32,
+    p_present_modes: *mut PresentModeKHR,
+) -> Result;
 pub struct KhrSurfaceFn1_0 {
     pub destroy_surface_khr: FnDestroySurfaceKHR,
     pub get_physical_device_surface_support_khr: FnGetPhysicalDeviceSurfaceSupportKHR,
@@ -32738,14 +29390,11 @@ impl KhrSurfaceFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_support_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceSupportKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_support_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32758,15 +29407,11 @@ impl KhrSurfaceFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_capabilities_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_capabilities_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_capabilities_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32780,14 +29425,11 @@ impl KhrSurfaceFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_formats_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceFormatsKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceFormatsKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_formats_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_formats_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32801,15 +29443,11 @@ impl KhrSurfaceFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_present_modes_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSurfacePresentModesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfacePresentModesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_present_modes_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_present_modes_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -32844,8 +29482,7 @@ type FnAcquireNextImageKHR = unsafe extern "system" fn(
     p_image_index: *mut u32,
 ) -> Result;
 type FnQueuePresentKHR =
-    unsafe extern "system" fn(queue: Option<Queue>, p_present_info: *const PresentInfoKHR)
-        -> Result;
+    unsafe extern "system" fn(queue: Option<Queue>, p_present_info: *const PresentInfoKHR) -> Result;
 pub struct KhrSwapchainFn1_0 {
     pub create_swapchain_khr: FnCreateSwapchainKHR,
     pub destroy_swapchain_khr: FnDestroySwapchainKHR,
@@ -32934,10 +29571,7 @@ impl KhrSwapchainFn1_0 {
                 )
             },
             queue_present_khr: unsafe {
-                extern "system" fn queue_present_khr_fallback(
-                    _: Option<Queue>,
-                    _: *const PresentInfoKHR,
-                ) -> Result {
+                extern "system" fn queue_present_khr_fallback(_: Option<Queue>, _: *const PresentInfoKHR) -> Result {
                     panic!("fn queue_present_khr not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkQueuePresentKHR\0");
@@ -32953,26 +29587,27 @@ impl KhrSwapchainFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetDeviceGroupPresentCapabilitiesKHR = unsafe extern "system" fn(device: Option<Device>,p_device_group_present_capabilities: * mut DeviceGroupPresentCapabilitiesKHR,) -> Result;
-type FnGetDeviceGroupSurfacePresentModesKHR =
+type FnGetDeviceGroupPresentCapabilitiesKHR =
     unsafe extern "system" fn(
         device: Option<Device>,
-        surface: Option<SurfaceKHR>,
-        p_modes: *mut DeviceGroupPresentModeFlagsKHR,
+        p_device_group_present_capabilities: *mut DeviceGroupPresentCapabilitiesKHR,
     ) -> Result;
-type FnGetPhysicalDevicePresentRectanglesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        surface: Option<SurfaceKHR>,
-        p_rect_count: *mut u32,
-        p_rects: *mut Rect2D,
-    ) -> Result;
-type FnAcquireNextImage2KHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_acquire_info: *const AcquireNextImageInfoKHR,
-        p_image_index: *mut u32,
-    ) -> Result;
+type FnGetDeviceGroupSurfacePresentModesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    surface: Option<SurfaceKHR>,
+    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
+) -> Result;
+type FnGetPhysicalDevicePresentRectanglesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_rect_count: *mut u32,
+    p_rects: *mut Rect2D,
+) -> Result;
+type FnAcquireNextImage2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_acquire_info: *const AcquireNextImageInfoKHR,
+    p_image_index: *mut u32,
+) -> Result;
 pub struct KhrSwapchainFn1_1 {
     pub get_device_group_present_capabilities_khr: FnGetDeviceGroupPresentCapabilitiesKHR,
     pub get_device_group_surface_present_modes_khr: FnGetDeviceGroupSurfacePresentModesKHR,
@@ -32993,15 +29628,11 @@ impl KhrSwapchainFn1_1 {
                 ) -> Result {
                     panic!("fn get_device_group_present_capabilities_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPresentCapabilitiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_present_capabilities_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_present_capabilities_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33014,15 +29645,11 @@ impl KhrSwapchainFn1_1 {
                 ) -> Result {
                     panic!("fn get_device_group_surface_present_modes_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetDeviceGroupSurfacePresentModesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupSurfacePresentModesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_surface_present_modes_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_surface_present_modes_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33036,15 +29663,11 @@ impl KhrSwapchainFn1_1 {
                 ) -> Result {
                     panic!("fn get_physical_device_present_rectangles_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDevicePresentRectanglesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDevicePresentRectanglesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_present_rectangles_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_present_rectangles_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33070,58 +29693,51 @@ impl KhrSwapchainFn1_1 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceDisplayPropertiesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayPropertiesKHR,
-    ) -> Result;
+type FnGetPhysicalDeviceDisplayPropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPropertiesKHR,
+) -> Result;
 type FnGetPhysicalDeviceDisplayPlanePropertiesKHR =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
         p_property_count: *mut u32,
         p_properties: *mut DisplayPlanePropertiesKHR,
     ) -> Result;
-type FnGetDisplayPlaneSupportedDisplaysKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        plane_index: u32,
-        p_display_count: *mut u32,
-        p_displays: *mut DisplayKHR,
-    ) -> Result;
-type FnGetDisplayModePropertiesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        display: Option<DisplayKHR>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayModePropertiesKHR,
-    ) -> Result;
-type FnCreateDisplayModeKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        display: Option<DisplayKHR>,
-        p_create_info: *const DisplayModeCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_mode: *mut DisplayModeKHR,
-    ) -> Result;
-type FnGetDisplayPlaneCapabilitiesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        mode: Option<DisplayModeKHR>,
-        plane_index: u32,
-        p_capabilities: *mut DisplayPlaneCapabilitiesKHR,
-    ) -> Result;
-type FnCreateDisplayPlaneSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const DisplaySurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnGetDisplayPlaneSupportedDisplaysKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    plane_index: u32,
+    p_display_count: *mut u32,
+    p_displays: *mut DisplayKHR,
+) -> Result;
+type FnGetDisplayModePropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayModePropertiesKHR,
+) -> Result;
+type FnCreateDisplayModeKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_create_info: *const DisplayModeCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_mode: *mut DisplayModeKHR,
+) -> Result;
+type FnGetDisplayPlaneCapabilitiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    mode: Option<DisplayModeKHR>,
+    plane_index: u32,
+    p_capabilities: *mut DisplayPlaneCapabilitiesKHR,
+) -> Result;
+type FnCreateDisplayPlaneSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DisplaySurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct KhrDisplayFn1_0 {
     pub get_physical_device_display_properties_khr: FnGetPhysicalDeviceDisplayPropertiesKHR,
-    pub get_physical_device_display_plane_properties_khr:
-        FnGetPhysicalDeviceDisplayPlanePropertiesKHR,
+    pub get_physical_device_display_plane_properties_khr: FnGetPhysicalDeviceDisplayPlanePropertiesKHR,
     pub get_display_plane_supported_displays_khr: FnGetDisplayPlaneSupportedDisplaysKHR,
     pub get_display_mode_properties_khr: FnGetDisplayModePropertiesKHR,
     pub create_display_mode_khr: FnCreateDisplayModeKHR,
@@ -33143,15 +29759,11 @@ impl KhrDisplayFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_display_properties_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceDisplayPropertiesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceDisplayPropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_display_properties_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_display_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33164,16 +29776,11 @@ impl KhrDisplayFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_display_plane_properties_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_display_plane_properties_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_display_plane_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33187,14 +29794,11 @@ impl KhrDisplayFn1_0 {
                 ) -> Result {
                     panic!("fn get_display_plane_supported_displays_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneSupportedDisplaysKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneSupportedDisplaysKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_display_plane_supported_displays_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_display_plane_supported_displays_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33245,8 +29849,7 @@ impl KhrDisplayFn1_0 {
                 ) -> Result {
                     panic!("fn get_display_plane_capabilities_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneCapabilitiesKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneCapabilitiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -33277,14 +29880,13 @@ impl KhrDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateSharedSwapchainsKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        swapchain_count: u32,
-        p_create_infos: *const SwapchainCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_swapchains: *mut SwapchainKHR,
-    ) -> Result;
+type FnCreateSharedSwapchainsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain_count: u32,
+    p_create_infos: *const SwapchainCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_swapchains: *mut SwapchainKHR,
+) -> Result;
 pub struct KhrDisplaySwapchainFn1_0 {
     pub create_shared_swapchains_khr: FnCreateSharedSwapchainsKHR,
 }
@@ -33318,24 +29920,21 @@ impl KhrDisplaySwapchainFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateXlibSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const XlibSurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
-type FnGetPhysicalDeviceXlibPresentationSupportKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        queue_family_index: u32,
-        dpy: *mut Display,
-        visual_id: VisualID,
-    ) -> Bool32;
+type FnCreateXlibSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const XlibSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+type FnGetPhysicalDeviceXlibPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    dpy: *mut Display,
+    visual_id: VisualID,
+) -> Bool32;
 pub struct KhrXlibSurfaceFn1_0 {
     pub create_xlib_surface_khr: FnCreateXlibSurfaceKHR,
-    pub get_physical_device_xlib_presentation_support_khr:
-        FnGetPhysicalDeviceXlibPresentationSupportKHR,
+    pub get_physical_device_xlib_presentation_support_khr: FnGetPhysicalDeviceXlibPresentationSupportKHR,
 }
 impl KhrXlibSurfaceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -33371,16 +29970,11 @@ impl KhrXlibSurfaceFn1_0 {
                 ) -> Bool32 {
                     panic!("fn get_physical_device_xlib_presentation_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceXlibPresentationSupportKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceXlibPresentationSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_xlib_presentation_support_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_xlib_presentation_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33389,24 +29983,21 @@ impl KhrXlibSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateXcbSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const XcbSurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
-type FnGetPhysicalDeviceXcbPresentationSupportKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        queue_family_index: u32,
-        connection: *mut xcb_connection_t,
-        visual_id: xcb_visualid_t,
-    ) -> Bool32;
+type FnCreateXcbSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const XcbSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+type FnGetPhysicalDeviceXcbPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    connection: *mut xcb_connection_t,
+    visual_id: xcb_visualid_t,
+) -> Bool32;
 pub struct KhrXcbSurfaceFn1_0 {
     pub create_xcb_surface_khr: FnCreateXcbSurfaceKHR,
-    pub get_physical_device_xcb_presentation_support_khr:
-        FnGetPhysicalDeviceXcbPresentationSupportKHR,
+    pub get_physical_device_xcb_presentation_support_khr: FnGetPhysicalDeviceXcbPresentationSupportKHR,
 }
 impl KhrXcbSurfaceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -33442,16 +30033,11 @@ impl KhrXcbSurfaceFn1_0 {
                 ) -> Bool32 {
                     panic!("fn get_physical_device_xcb_presentation_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_xcb_presentation_support_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_xcb_presentation_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33460,13 +30046,12 @@ impl KhrXcbSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateWaylandSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const WaylandSurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateWaylandSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const WaylandSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 type FnGetPhysicalDeviceWaylandPresentationSupportKHR =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -33475,8 +30060,7 @@ type FnGetPhysicalDeviceWaylandPresentationSupportKHR =
     ) -> Bool32;
 pub struct KhrWaylandSurfaceFn1_0 {
     pub create_wayland_surface_khr: FnCreateWaylandSurfaceKHR,
-    pub get_physical_device_wayland_presentation_support_khr:
-        FnGetPhysicalDeviceWaylandPresentationSupportKHR,
+    pub get_physical_device_wayland_presentation_support_khr: FnGetPhysicalDeviceWaylandPresentationSupportKHR,
 }
 impl KhrWaylandSurfaceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -33511,16 +30095,11 @@ impl KhrWaylandSurfaceFn1_0 {
                 ) -> Bool32 {
                     panic!("fn get_physical_device_wayland_presentation_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_wayland_presentation_support_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_wayland_presentation_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33529,23 +30108,20 @@ impl KhrWaylandSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateMirSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const MirSurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
-type FnGetPhysicalDeviceMirPresentationSupportKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        queue_family_index: u32,
-        connection: *mut MirConnection,
-    ) -> Bool32;
+type FnCreateMirSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const MirSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+type FnGetPhysicalDeviceMirPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    connection: *mut MirConnection,
+) -> Bool32;
 pub struct KhrMirSurfaceFn1_0 {
     pub create_mir_surface_khr: FnCreateMirSurfaceKHR,
-    pub get_physical_device_mir_presentation_support_khr:
-        FnGetPhysicalDeviceMirPresentationSupportKHR,
+    pub get_physical_device_mir_presentation_support_khr: FnGetPhysicalDeviceMirPresentationSupportKHR,
 }
 impl KhrMirSurfaceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -33580,16 +30156,11 @@ impl KhrMirSurfaceFn1_0 {
                 ) -> Bool32 {
                     panic!("fn get_physical_device_mir_presentation_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceMirPresentationSupportKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMirPresentationSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_mir_presentation_support_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_mir_presentation_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33598,13 +30169,12 @@ impl KhrMirSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateAndroidSurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const AndroidSurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateAndroidSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const AndroidSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct KhrAndroidSurfaceFn1_0 {
     pub create_android_surface_khr: FnCreateAndroidSurfaceKHR,
 }
@@ -33637,20 +30207,17 @@ impl KhrAndroidSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateWin32SurfaceKHR =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const Win32SurfaceCreateInfoKHR,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateWin32SurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const Win32SurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 type FnGetPhysicalDeviceWin32PresentationSupportKHR =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, queue_family_index: u32)
-        -> Bool32;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, queue_family_index: u32) -> Bool32;
 pub struct KhrWin32SurfaceFn1_0 {
     pub create_win32_surface_khr: FnCreateWin32SurfaceKHR,
-    pub get_physical_device_win32_presentation_support_khr:
-        FnGetPhysicalDeviceWin32PresentationSupportKHR,
+    pub get_physical_device_win32_presentation_support_khr: FnGetPhysicalDeviceWin32PresentationSupportKHR,
 }
 impl KhrWin32SurfaceFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -33684,16 +30251,11 @@ impl KhrWin32SurfaceFn1_0 {
                 ) -> Bool32 {
                     panic!("fn get_physical_device_win32_presentation_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceWin32PresentationSupportKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceWin32PresentationSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_win32_presentation_support_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_win32_presentation_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -33702,19 +30264,17 @@ impl KhrWin32SurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateDebugReportCallbackEXT =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const DebugReportCallbackCreateInfoEXT,
-        p_allocator: *const AllocationCallbacks,
-        p_callback: *mut DebugReportCallbackEXT,
-    ) -> Result;
-type FnDestroyDebugReportCallbackEXT =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        callback: Option<DebugReportCallbackEXT>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
+type FnCreateDebugReportCallbackEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DebugReportCallbackCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_callback: *mut DebugReportCallbackEXT,
+) -> Result;
+type FnDestroyDebugReportCallbackEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    callback: Option<DebugReportCallbackEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnDebugReportMessageEXT = unsafe extern "system" fn(
     instance: Option<Instance>,
     flags: DebugReportFlagsEXT,
@@ -33763,8 +30323,7 @@ impl ExtDebugReportFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_debug_report_callback_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyDebugReportCallbackEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDebugReportCallbackEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -33800,27 +30359,16 @@ impl ExtDebugReportFn1_0 {
     }
 }
 type FnDebugMarkerSetObjectTagEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_tag_info: *const DebugMarkerObjectTagInfoEXT,
-    ) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugMarkerObjectTagInfoEXT) -> Result;
 type FnDebugMarkerSetObjectNameEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_name_info: *const DebugMarkerObjectNameInfoEXT,
-    ) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugMarkerObjectNameInfoEXT) -> Result;
 type FnCmdDebugMarkerBeginEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_marker_info: *const DebugMarkerMarkerInfoEXT,
-    ) -> c_void;
-type FnCmdDebugMarkerEndEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_marker_info: *const DebugMarkerMarkerInfoEXT)
+        -> c_void;
+type FnCmdDebugMarkerEndEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 type FnCmdDebugMarkerInsertEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_marker_info: *const DebugMarkerMarkerInfoEXT,
-    ) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_marker_info: *const DebugMarkerMarkerInfoEXT)
+        -> c_void;
 pub struct ExtDebugMarkerFn1_0 {
     pub debug_marker_set_object_tag_ext: FnDebugMarkerSetObjectTagEXT,
     pub debug_marker_set_object_name_ext: FnDebugMarkerSetObjectNameEXT,
@@ -33884,9 +30432,7 @@ impl ExtDebugMarkerFn1_0 {
                 )
             },
             cmd_debug_marker_end_ext: unsafe {
-                extern "system" fn cmd_debug_marker_end_ext_fallback(
-                    _: Option<CommandBuffer>,
-                ) -> c_void {
+                extern "system" fn cmd_debug_marker_end_ext_fallback(_: Option<CommandBuffer>) -> c_void {
                     panic!("fn cmd_debug_marker_end_ext not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerEndEXT\0");
@@ -33927,16 +30473,15 @@ type FnCmdDrawIndirectCountAMD = unsafe extern "system" fn(
     max_draw_count: u32,
     stride: u32,
 ) -> c_void;
-type FnCmdDrawIndexedIndirectCountAMD =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        buffer: Option<Buffer>,
-        offset: DeviceSize,
-        count_buffer: Option<Buffer>,
-        count_buffer_offset: DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) -> c_void;
+type FnCmdDrawIndexedIndirectCountAMD = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
 pub struct AmdDrawIndirectCountFn1_0 {
     pub cmd_draw_indirect_count_amd: FnCmdDrawIndirectCountAMD,
     pub cmd_draw_indexed_indirect_count_amd: FnCmdDrawIndexedIndirectCountAMD,
@@ -33981,14 +30526,11 @@ impl AmdDrawIndirectCountFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_draw_indexed_indirect_count_amd not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirectCountAMD\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirectCountAMD\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_draw_indexed_indirect_count_amd_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_draw_indexed_indirect_count_amd_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34039,10 +30581,19 @@ impl AmdShaderInfoFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalImageFormatPropertiesNV = unsafe extern "system" fn(physical_device: Option<PhysicalDevice>,format: Format,ty: ImageType,tiling: ImageTiling,usage: ImageUsageFlags,flags: ImageCreateFlags,external_handle_type: ExternalMemoryHandleTypeFlagsNV,p_external_image_format_properties: * mut ExternalImageFormatPropertiesNV,) -> Result;
+type FnGetPhysicalDeviceExternalImageFormatPropertiesNV =
+    unsafe extern "system" fn(
+        physical_device: Option<PhysicalDevice>,
+        format: Format,
+        ty: ImageType,
+        tiling: ImageTiling,
+        usage: ImageUsageFlags,
+        flags: ImageCreateFlags,
+        external_handle_type: ExternalMemoryHandleTypeFlagsNV,
+        p_external_image_format_properties: *mut ExternalImageFormatPropertiesNV,
+    ) -> Result;
 pub struct NvExternalMemoryCapabilitiesFn1_0 {
-    pub get_physical_device_external_image_format_properties_nv:
-        FnGetPhysicalDeviceExternalImageFormatPropertiesNV,
+    pub get_physical_device_external_image_format_properties_nv: FnGetPhysicalDeviceExternalImageFormatPropertiesNV,
 }
 impl NvExternalMemoryCapabilitiesFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34064,15 +30615,12 @@ impl NvExternalMemoryCapabilitiesFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_external_image_format_properties_nv not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
                         mem::transmute(
-                            get_physical_device_external_image_format_properties_nv_fallback
-                                as *const c_void,
+                            get_physical_device_external_image_format_properties_nv_fallback as *const c_void,
                         )
                     },
                     |f| mem::transmute(f),
@@ -34082,13 +30630,12 @@ impl NvExternalMemoryCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryWin32HandleNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        memory: Option<DeviceMemory>,
-        handle_type: ExternalMemoryHandleTypeFlagsNV,
-        p_handle: *mut HANDLE,
-    ) -> Result;
+type FnGetMemoryWin32HandleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    handle_type: ExternalMemoryHandleTypeFlagsNV,
+    p_handle: *mut HANDLE,
+) -> Result;
 pub struct NvExternalMemoryWin32Fn1_0 {
     pub get_memory_win32_handle_nv: FnGetMemoryWin32HandleNV,
 }
@@ -34128,8 +30675,7 @@ pub struct KhrGetPhysicalDeviceProperties2Fn1_0 {
     pub get_physical_device_image_format_properties2: FnGetPhysicalDeviceImageFormatProperties2,
     pub get_physical_device_queue_family_properties2: FnGetPhysicalDeviceQueueFamilyProperties2,
     pub get_physical_device_memory_properties2: FnGetPhysicalDeviceMemoryProperties2,
-    pub get_physical_device_sparse_image_format_properties2:
-        FnGetPhysicalDeviceSparseImageFormatProperties2,
+    pub get_physical_device_sparse_image_format_properties2: FnGetPhysicalDeviceSparseImageFormatProperties2,
 }
 impl KhrGetPhysicalDeviceProperties2Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34178,14 +30724,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_format_properties2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_format_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34198,15 +30741,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_image_format_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceImageFormatProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceImageFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_image_format_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_image_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34219,15 +30758,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_queue_family_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceQueueFamilyProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceQueueFamilyProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_queue_family_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_queue_family_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34239,14 +30774,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_memory_properties2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_memory_properties2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_memory_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34260,16 +30792,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_sparse_image_format_properties2 not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSparseImageFormatProperties2\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSparseImageFormatProperties2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_sparse_image_format_properties2_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_sparse_image_format_properties2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34304,23 +30831,17 @@ impl KhrDeviceGroupFn1_0 {
                 ) -> c_void {
                     panic!("fn get_device_group_peer_memory_features not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeatures\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeatures\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_peer_memory_features_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_peer_memory_features_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
             cmd_set_device_mask: unsafe {
-                extern "system" fn cmd_set_device_mask_fallback(
-                    _: Option<CommandBuffer>,
-                    _: u32,
-                ) -> c_void {
+                extern "system" fn cmd_set_device_mask_fallback(_: Option<CommandBuffer>, _: u32) -> c_void {
                     panic!("fn cmd_set_device_mask not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0");
@@ -34360,15 +30881,11 @@ impl KhrDeviceGroupFn1_0 {
                 ) -> Result {
                     panic!("fn get_device_group_present_capabilities_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPresentCapabilitiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_present_capabilities_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_present_capabilities_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34381,15 +30898,11 @@ impl KhrDeviceGroupFn1_0 {
                 ) -> Result {
                     panic!("fn get_device_group_surface_present_modes_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetDeviceGroupSurfacePresentModesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupSurfacePresentModesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_device_group_surface_present_modes_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_device_group_surface_present_modes_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34403,15 +30916,11 @@ impl KhrDeviceGroupFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_present_rectangles_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDevicePresentRectanglesKHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDevicePresentRectanglesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_present_rectangles_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_present_rectangles_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34524,8 +31033,7 @@ impl KhrDeviceGroupCreationFn1_0 {
                 ) -> Result {
                     panic!("fn enumerate_physical_device_groups not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroups\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroups\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -34556,16 +31064,11 @@ impl KhrExternalMemoryCapabilitiesFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_buffer_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalBufferProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalBufferProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_buffer_properties_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_buffer_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34574,13 +31077,18 @@ impl KhrExternalMemoryCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryWin32HandleKHR =
+type FnGetMemoryWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const MemoryGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
+type FnGetMemoryWin32HandlePropertiesKHR =
     unsafe extern "system" fn(
         device: Option<Device>,
-        p_get_win32_handle_info: *const MemoryGetWin32HandleInfoKHR,
-        p_handle: *mut HANDLE,
+        handle_type: ExternalMemoryHandleTypeFlags,
+        handle: HANDLE,
+        p_memory_win32_handle_properties: *mut MemoryWin32HandlePropertiesKHR,
     ) -> Result;
-type FnGetMemoryWin32HandlePropertiesKHR = unsafe extern "system" fn(device: Option<Device>,handle_type: ExternalMemoryHandleTypeFlags,handle: HANDLE,p_memory_win32_handle_properties: * mut MemoryWin32HandlePropertiesKHR,) -> Result;
 pub struct KhrExternalMemoryWin32Fn1_0 {
     pub get_memory_win32_handle_khr: FnGetMemoryWin32HandleKHR,
     pub get_memory_win32_handle_properties_khr: FnGetMemoryWin32HandlePropertiesKHR,
@@ -34618,14 +31126,11 @@ impl KhrExternalMemoryWin32Fn1_0 {
                 ) -> Result {
                     panic!("fn get_memory_win32_handle_properties_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandlePropertiesKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandlePropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_memory_win32_handle_properties_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_memory_win32_handle_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34634,18 +31139,15 @@ impl KhrExternalMemoryWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryFdKHR = unsafe extern "system" fn(
+type FnGetMemoryFdKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const MemoryGetFdInfoKHR, p_fd: *mut c_int)
+        -> Result;
+type FnGetMemoryFdPropertiesKHR = unsafe extern "system" fn(
     device: Option<Device>,
-    p_get_fd_info: *const MemoryGetFdInfoKHR,
-    p_fd: *mut c_int,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    fd: c_int,
+    p_memory_fd_properties: *mut MemoryFdPropertiesKHR,
 ) -> Result;
-type FnGetMemoryFdPropertiesKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        handle_type: ExternalMemoryHandleTypeFlags,
-        fd: c_int,
-        p_memory_fd_properties: *mut MemoryFdPropertiesKHR,
-    ) -> Result;
 pub struct KhrExternalMemoryFdFn1_0 {
     pub get_memory_fd_khr: FnGetMemoryFdKHR,
     pub get_memory_fd_properties_khr: FnGetMemoryFdPropertiesKHR,
@@ -34697,8 +31199,7 @@ impl KhrExternalMemoryFdFn1_0 {
     }
 }
 pub struct KhrExternalSemaphoreCapabilitiesFn1_0 {
-    pub get_physical_device_external_semaphore_properties:
-        FnGetPhysicalDeviceExternalSemaphoreProperties,
+    pub get_physical_device_external_semaphore_properties: FnGetPhysicalDeviceExternalSemaphoreProperties,
 }
 impl KhrExternalSemaphoreCapabilitiesFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34715,16 +31216,11 @@ impl KhrExternalSemaphoreCapabilitiesFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_semaphore_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalSemaphoreProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalSemaphoreProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_semaphore_properties_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_semaphore_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34733,7 +31229,11 @@ impl KhrExternalSemaphoreCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportSemaphoreWin32HandleKHR = unsafe extern "system" fn(device: Option<Device>,p_import_semaphore_win32_handle_info: * const ImportSemaphoreWin32HandleInfoKHR,) -> Result;
+type FnImportSemaphoreWin32HandleKHR =
+    unsafe extern "system" fn(
+        device: Option<Device>,
+        p_import_semaphore_win32_handle_info: *const ImportSemaphoreWin32HandleInfoKHR,
+    ) -> Result;
 type FnGetSemaphoreWin32HandleKHR =
     unsafe extern "system" fn(
         device: Option<Device>,
@@ -34758,8 +31258,7 @@ impl KhrExternalSemaphoreWin32Fn1_0 {
                 ) -> Result {
                     panic!("fn import_semaphore_win32_handle_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreWin32HandleKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreWin32HandleKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -34790,15 +31289,11 @@ impl KhrExternalSemaphoreWin32Fn1_0 {
     }
 }
 type FnImportSemaphoreFdKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR,
-    ) -> Result;
-type FnGetSemaphoreFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_fd_info: *const SemaphoreGetFdInfoKHR,
-    p_fd: *mut c_int,
-) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR)
+        -> Result;
+type FnGetSemaphoreFdKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const SemaphoreGetFdInfoKHR, p_fd: *mut c_int)
+        -> Result;
 pub struct KhrExternalSemaphoreFdFn1_0 {
     pub import_semaphore_fd_khr: FnImportSemaphoreFdKHR,
     pub get_semaphore_fd_khr: FnGetSemaphoreFdKHR,
@@ -34847,15 +31342,14 @@ impl KhrExternalSemaphoreFdFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdPushDescriptorSetKHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        pipeline_bind_point: PipelineBindPoint,
-        layout: Option<PipelineLayout>,
-        set: u32,
-        descriptor_write_count: u32,
-        p_descriptor_writes: *const WriteDescriptorSet,
-    ) -> c_void;
+type FnCmdPushDescriptorSetKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    layout: Option<PipelineLayout>,
+    set: u32,
+    descriptor_write_count: u32,
+    p_descriptor_writes: *const WriteDescriptorSet,
+) -> c_void;
 pub struct KhrPushDescriptorFn1_0 {
     pub cmd_push_descriptor_set_khr: FnCmdPushDescriptorSetKHR,
 }
@@ -34918,14 +31412,11 @@ impl KhrPushDescriptorFn1_1 {
                 ) -> c_void {
                     panic!("fn cmd_push_descriptor_set_with_template_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetWithTemplateKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetWithTemplateKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_push_descriptor_set_with_template_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_push_descriptor_set_with_template_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34934,9 +31425,12 @@ impl KhrPushDescriptorFn1_1 {
         (block, all_loaded)
     }
 }
-type FnCmdBeginConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>,p_conditional_rendering_begin: * const ConditionalRenderingBeginInfoEXT,) -> c_void;
-type FnCmdEndConditionalRenderingEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+type FnCmdBeginConditionalRenderingEXT =
+    unsafe extern "system" fn(
+        command_buffer: Option<CommandBuffer>,
+        p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
+    ) -> c_void;
+type FnCmdEndConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 pub struct ExtConditionalRenderingFn1_0 {
     pub cmd_begin_conditional_rendering_ext: FnCmdBeginConditionalRenderingEXT,
     pub cmd_end_conditional_rendering_ext: FnCmdEndConditionalRenderingEXT,
@@ -34955,26 +31449,20 @@ impl ExtConditionalRenderingFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_begin_conditional_rendering_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginConditionalRenderingEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginConditionalRenderingEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_begin_conditional_rendering_ext_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_begin_conditional_rendering_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
             cmd_end_conditional_rendering_ext: unsafe {
-                extern "system" fn cmd_end_conditional_rendering_ext_fallback(
-                    _: Option<CommandBuffer>,
-                ) -> c_void {
+                extern "system" fn cmd_end_conditional_rendering_ext_fallback(_: Option<CommandBuffer>) -> c_void {
                     panic!("fn cmd_end_conditional_rendering_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdEndConditionalRenderingEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdEndConditionalRenderingEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -35009,8 +31497,7 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
                 ) -> Result {
                     panic!("fn create_descriptor_update_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -35027,8 +31514,7 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_descriptor_update_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -35046,14 +31532,11 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
                 ) -> c_void {
                     panic!("fn update_descriptor_set_with_template not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplate\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            update_descriptor_set_with_template_fallback as *const c_void,
-                        )
+                        mem::transmute(update_descriptor_set_with_template_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35068,14 +31551,11 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_push_descriptor_set_with_template_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetWithTemplateKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetWithTemplateKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_push_descriptor_set_with_template_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_push_descriptor_set_with_template_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35084,11 +31564,10 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdProcessCommandsNVX =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_process_commands_info: *const CmdProcessCommandsInfoNVX,
-    ) -> c_void;
+type FnCmdProcessCommandsNVX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_process_commands_info: *const CmdProcessCommandsInfoNVX,
+) -> c_void;
 type FnCmdReserveSpaceForCommandsNVX =
     unsafe extern "system" fn(
         command_buffer: Option<CommandBuffer>,
@@ -35107,34 +31586,31 @@ type FnDestroyIndirectCommandsLayoutNVX =
         indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
         p_allocator: *const AllocationCallbacks,
     ) -> c_void;
-type FnCreateObjectTableNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const ObjectTableCreateInfoNVX,
-        p_allocator: *const AllocationCallbacks,
-        p_object_table: *mut ObjectTableNVX,
-    ) -> Result;
+type FnCreateObjectTableNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ObjectTableCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_object_table: *mut ObjectTableNVX,
+) -> Result;
 type FnDestroyObjectTableNVX = unsafe extern "system" fn(
     device: Option<Device>,
     object_table: Option<ObjectTableNVX>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnRegisterObjectsNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        object_table: Option<ObjectTableNVX>,
-        object_count: u32,
-        pp_object_table_entries: *const *const ObjectTableEntryNVX,
-        p_object_indices: *const u32,
-    ) -> Result;
-type FnUnregisterObjectsNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        object_table: Option<ObjectTableNVX>,
-        object_count: u32,
-        p_object_entry_types: *const ObjectEntryTypeNVX,
-        p_object_indices: *const u32,
-    ) -> Result;
+type FnRegisterObjectsNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_table: Option<ObjectTableNVX>,
+    object_count: u32,
+    pp_object_table_entries: *const *const ObjectTableEntryNVX,
+    p_object_indices: *const u32,
+) -> Result;
+type FnUnregisterObjectsNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_table: Option<ObjectTableNVX>,
+    object_count: u32,
+    p_object_entry_types: *const ObjectEntryTypeNVX,
+    p_object_indices: *const u32,
+) -> Result;
 type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -35150,8 +31626,7 @@ pub struct NvxDeviceGeneratedCommandsFn1_0 {
     pub destroy_object_table_nvx: FnDestroyObjectTableNVX,
     pub register_objects_nvx: FnRegisterObjectsNVX,
     pub unregister_objects_nvx: FnUnregisterObjectsNVX,
-    pub get_physical_device_generated_commands_properties_nvx:
-        FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX,
+    pub get_physical_device_generated_commands_properties_nvx: FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX,
 }
 impl NvxDeviceGeneratedCommandsFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -35183,8 +31658,7 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_reserve_space_for_commands_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdReserveSpaceForCommandsNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdReserveSpaceForCommandsNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -35202,14 +31676,11 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
                 ) -> Result {
                     panic!("fn create_indirect_commands_layout_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCreateIndirectCommandsLayoutNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateIndirectCommandsLayoutNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            create_indirect_commands_layout_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(create_indirect_commands_layout_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35222,14 +31693,11 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_indirect_commands_layout_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyIndirectCommandsLayoutNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyIndirectCommandsLayoutNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            destroy_indirect_commands_layout_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(destroy_indirect_commands_layout_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35315,16 +31783,11 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_generated_commands_properties_nvx not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_generated_commands_properties_nvx_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_generated_commands_properties_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35333,13 +31796,12 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetViewportWScalingNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        first_viewport: u32,
-        viewport_count: u32,
-        p_viewport_w_scalings: *const ViewportWScalingNV,
-    ) -> c_void;
+type FnCmdSetViewportWScalingNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_viewport_w_scalings: *const ViewportWScalingNV,
+) -> c_void;
 pub struct NvClipSpaceWScalingFn1_0 {
     pub cmd_set_viewport_w_scaling_nv: FnCmdSetViewportWScalingNV,
 }
@@ -35373,8 +31835,7 @@ impl NvClipSpaceWScalingFn1_0 {
     }
 }
 type FnReleaseDisplayEXT =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, display: Option<DisplayKHR>)
-        -> Result;
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, display: Option<DisplayKHR>) -> Result;
 pub struct ExtDirectModeDisplayFn1_0 {
     pub release_display_ext: FnReleaseDisplayEXT,
 }
@@ -35405,18 +31866,15 @@ impl ExtDirectModeDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnAcquireXlibDisplayEXT = unsafe extern "system" fn(
+type FnAcquireXlibDisplayEXT =
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, dpy: *mut Display, display: Option<DisplayKHR>)
+        -> Result;
+type FnGetRandROutputDisplayEXT = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     dpy: *mut Display,
-    display: Option<DisplayKHR>,
+    rr_output: RROutput,
+    p_display: *mut DisplayKHR,
 ) -> Result;
-type FnGetRandROutputDisplayEXT =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        dpy: *mut Display,
-        rr_output: RROutput,
-        p_display: *mut DisplayKHR,
-    ) -> Result;
 pub struct ExtAcquireXlibDisplayFn1_0 {
     pub acquire_xlib_display_ext: FnAcquireXlibDisplayEXT,
     pub get_rand_r_output_display_ext: FnGetRandROutputDisplayEXT,
@@ -35491,15 +31949,11 @@ impl ExtDisplaySurfaceCounterFn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_capabilities2_ext not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_capabilities2_ext_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_capabilities2_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35508,27 +31962,24 @@ impl ExtDisplaySurfaceCounterFn1_0 {
         (block, all_loaded)
     }
 }
-type FnDisplayPowerControlEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        display: Option<DisplayKHR>,
-        p_display_power_info: *const DisplayPowerInfoEXT,
-    ) -> Result;
-type FnRegisterDeviceEventEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_device_event_info: *const DeviceEventInfoEXT,
-        p_allocator: *const AllocationCallbacks,
-        p_fence: *mut Fence,
-    ) -> Result;
-type FnRegisterDisplayEventEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        display: Option<DisplayKHR>,
-        p_display_event_info: *const DisplayEventInfoEXT,
-        p_allocator: *const AllocationCallbacks,
-        p_fence: *mut Fence,
-    ) -> Result;
+type FnDisplayPowerControlEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    display: Option<DisplayKHR>,
+    p_display_power_info: *const DisplayPowerInfoEXT,
+) -> Result;
+type FnRegisterDeviceEventEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_device_event_info: *const DeviceEventInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_fence: *mut Fence,
+) -> Result;
+type FnRegisterDisplayEventEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    display: Option<DisplayKHR>,
+    p_display_event_info: *const DisplayEventInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_fence: *mut Fence,
+) -> Result;
 type FnGetSwapchainCounterEXT = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
@@ -35656,8 +32107,7 @@ impl GoogleDisplayTimingFn1_0 {
                 ) -> Result {
                     panic!("fn get_refresh_cycle_duration_google not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetRefreshCycleDurationGOOGLE\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetRefreshCycleDurationGOOGLE\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -35675,14 +32125,11 @@ impl GoogleDisplayTimingFn1_0 {
                 ) -> Result {
                     panic!("fn get_past_presentation_timing_google not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPastPresentationTimingGOOGLE\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPastPresentationTimingGOOGLE\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_past_presentation_timing_google_fallback as *const c_void,
-                        )
+                        mem::transmute(get_past_presentation_timing_google_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35767,30 +32214,25 @@ impl ExtHdrMetadataFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateRenderPass2KHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const RenderPassCreateInfo2KHR,
-        p_allocator: *const AllocationCallbacks,
-        p_render_pass: *mut RenderPass,
-    ) -> Result;
-type FnCmdBeginRenderPass2KHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_render_pass_begin: *const RenderPassBeginInfo,
-        p_subpass_begin_info: *const SubpassBeginInfoKHR,
-    ) -> c_void;
-type FnCmdNextSubpass2KHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_subpass_begin_info: *const SubpassBeginInfoKHR,
-        p_subpass_end_info: *const SubpassEndInfoKHR,
-    ) -> c_void;
+type FnCreateRenderPass2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const RenderPassCreateInfo2KHR,
+    p_allocator: *const AllocationCallbacks,
+    p_render_pass: *mut RenderPass,
+) -> Result;
+type FnCmdBeginRenderPass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_render_pass_begin: *const RenderPassBeginInfo,
+    p_subpass_begin_info: *const SubpassBeginInfoKHR,
+) -> c_void;
+type FnCmdNextSubpass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_subpass_begin_info: *const SubpassBeginInfoKHR,
+    p_subpass_end_info: *const SubpassEndInfoKHR,
+) -> c_void;
 type FnCmdEndRenderPass2KHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_subpass_end_info: *const SubpassEndInfoKHR,
-    ) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_subpass_end_info: *const SubpassEndInfoKHR)
+        -> c_void;
 pub struct KhrCreateRenderpass2Fn1_0 {
     pub create_render_pass2_khr: FnCreateRenderPass2KHR,
     pub cmd_begin_render_pass2_khr: FnCmdBeginRenderPass2KHR,
@@ -35926,15 +32368,11 @@ impl KhrExternalFenceCapabilitiesFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_external_fence_properties not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceExternalFenceProperties\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalFenceProperties\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_external_fence_properties_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_external_fence_properties_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35943,13 +32381,16 @@ impl KhrExternalFenceCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportFenceWin32HandleKHR = unsafe extern "system" fn(device: Option<Device>,p_import_fence_win32_handle_info: * const ImportFenceWin32HandleInfoKHR,) -> Result;
-type FnGetFenceWin32HandleKHR =
+type FnImportFenceWin32HandleKHR =
     unsafe extern "system" fn(
         device: Option<Device>,
-        p_get_win32_handle_info: *const FenceGetWin32HandleInfoKHR,
-        p_handle: *mut HANDLE,
+        p_import_fence_win32_handle_info: *const ImportFenceWin32HandleInfoKHR,
     ) -> Result;
+type FnGetFenceWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const FenceGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
 pub struct KhrExternalFenceWin32Fn1_0 {
     pub import_fence_win32_handle_khr: FnImportFenceWin32HandleKHR,
     pub get_fence_win32_handle_khr: FnGetFenceWin32HandleKHR,
@@ -35999,15 +32440,10 @@ impl KhrExternalFenceWin32Fn1_0 {
     }
 }
 type FnImportFenceFdKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_import_fence_fd_info: *const ImportFenceFdInfoKHR,
-    ) -> Result;
-type FnGetFenceFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_fd_info: *const FenceGetFdInfoKHR,
-    p_fd: *mut c_int,
-) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_import_fence_fd_info: *const ImportFenceFdInfoKHR) -> Result;
+type FnGetFenceFdKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const FenceGetFdInfoKHR, p_fd: *mut c_int)
+        -> Result;
 pub struct KhrExternalFenceFdFn1_0 {
     pub import_fence_fd_khr: FnImportFenceFdKHR,
     pub get_fence_fd_khr: FnGetFenceFdKHR,
@@ -36088,15 +32524,11 @@ impl KhrGetSurfaceCapabilities2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_capabilities2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_capabilities2_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_capabilities2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36110,14 +32542,11 @@ impl KhrGetSurfaceCapabilities2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_surface_formats2_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceFormats2KHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfaceFormats2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_surface_formats2_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_surface_formats2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36126,35 +32555,31 @@ impl KhrGetSurfaceCapabilities2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceDisplayProperties2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayProperties2KHR,
-    ) -> Result;
+type FnGetPhysicalDeviceDisplayProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayProperties2KHR,
+) -> Result;
 type FnGetPhysicalDeviceDisplayPlaneProperties2KHR =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
         p_property_count: *mut u32,
         p_properties: *mut DisplayPlaneProperties2KHR,
     ) -> Result;
-type FnGetDisplayModeProperties2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        display: Option<DisplayKHR>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayModeProperties2KHR,
-    ) -> Result;
-type FnGetDisplayPlaneCapabilities2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_display_plane_info: *const DisplayPlaneInfo2KHR,
-        p_capabilities: *mut DisplayPlaneCapabilities2KHR,
-    ) -> Result;
+type FnGetDisplayModeProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayModeProperties2KHR,
+) -> Result;
+type FnGetDisplayPlaneCapabilities2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_display_plane_info: *const DisplayPlaneInfo2KHR,
+    p_capabilities: *mut DisplayPlaneCapabilities2KHR,
+) -> Result;
 pub struct KhrGetDisplayProperties2Fn1_0 {
     pub get_physical_device_display_properties2_khr: FnGetPhysicalDeviceDisplayProperties2KHR,
-    pub get_physical_device_display_plane_properties2_khr:
-        FnGetPhysicalDeviceDisplayPlaneProperties2KHR,
+    pub get_physical_device_display_plane_properties2_khr: FnGetPhysicalDeviceDisplayPlaneProperties2KHR,
     pub get_display_mode_properties2_khr: FnGetDisplayModeProperties2KHR,
     pub get_display_plane_capabilities2_khr: FnGetDisplayPlaneCapabilities2KHR,
 }
@@ -36173,15 +32598,11 @@ impl KhrGetDisplayProperties2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_display_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceDisplayProperties2KHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceDisplayProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_display_properties2_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_display_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36194,16 +32615,11 @@ impl KhrGetDisplayProperties2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_physical_device_display_plane_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_display_plane_properties2_khr_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_display_plane_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36234,14 +32650,11 @@ impl KhrGetDisplayProperties2Fn1_0 {
                 ) -> Result {
                     panic!("fn get_display_plane_capabilities2_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneCapabilities2KHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayPlaneCapabilities2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_display_plane_capabilities2_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(get_display_plane_capabilities2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36250,13 +32663,12 @@ impl KhrGetDisplayProperties2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateIOSSurfaceMVK =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const IOSSurfaceCreateInfoMVK,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateIOSSurfaceMVK = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const IOSSurfaceCreateInfoMVK,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct MvkIosSurfaceFn1_0 {
     pub create_ios_surface_mvk: FnCreateIOSSurfaceMVK,
 }
@@ -36289,13 +32701,12 @@ impl MvkIosSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateMacOSSurfaceMVK =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const MacOSSurfaceCreateInfoMVK,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateMacOSSurfaceMVK = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const MacOSSurfaceCreateInfoMVK,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct MvkMacosSurfaceFn1_0 {
     pub create_mac_os_surface_mvk: FnCreateMacOSSurfaceMVK,
 }
@@ -36329,47 +32740,30 @@ impl MvkMacosSurfaceFn1_0 {
     }
 }
 type FnSetDebugUtilsObjectNameEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_name_info: *const DebugUtilsObjectNameInfoEXT,
-    ) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugUtilsObjectNameInfoEXT) -> Result;
 type FnSetDebugUtilsObjectTagEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_tag_info: *const DebugUtilsObjectTagInfoEXT,
-    ) -> Result;
+    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugUtilsObjectTagInfoEXT) -> Result;
 type FnQueueBeginDebugUtilsLabelEXT =
-    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT)
-        -> c_void;
+    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
 type FnQueueEndDebugUtilsLabelEXT = unsafe extern "system" fn(queue: Option<Queue>) -> c_void;
 type FnQueueInsertDebugUtilsLabelEXT =
-    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT)
-        -> c_void;
+    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
 type FnCmdBeginDebugUtilsLabelEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_label_info: *const DebugUtilsLabelEXT,
-    ) -> c_void;
-type FnCmdEndDebugUtilsLabelEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+type FnCmdEndDebugUtilsLabelEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 type FnCmdInsertDebugUtilsLabelEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_label_info: *const DebugUtilsLabelEXT,
-    ) -> c_void;
-type FnCreateDebugUtilsMessengerEXT =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const DebugUtilsMessengerCreateInfoEXT,
-        p_allocator: *const AllocationCallbacks,
-        p_messenger: *mut DebugUtilsMessengerEXT,
-    ) -> Result;
-type FnDestroyDebugUtilsMessengerEXT =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        messenger: Option<DebugUtilsMessengerEXT>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+type FnCreateDebugUtilsMessengerEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DebugUtilsMessengerCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_messenger: *mut DebugUtilsMessengerEXT,
+) -> Result;
+type FnDestroyDebugUtilsMessengerEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    messenger: Option<DebugUtilsMessengerEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnSubmitDebugUtilsMessageEXT =
     unsafe extern "system" fn(
         instance: Option<Instance>,
@@ -36446,9 +32840,7 @@ impl ExtDebugUtilsFn1_0 {
                 )
             },
             queue_end_debug_utils_label_ext: unsafe {
-                extern "system" fn queue_end_debug_utils_label_ext_fallback(
-                    _: Option<Queue>,
-                ) -> c_void {
+                extern "system" fn queue_end_debug_utils_label_ext_fallback(_: Option<Queue>) -> c_void {
                     panic!("fn queue_end_debug_utils_label_ext not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkQueueEndDebugUtilsLabelEXT\0");
@@ -36467,8 +32859,7 @@ impl ExtDebugUtilsFn1_0 {
                 ) -> c_void {
                     panic!("fn queue_insert_debug_utils_label_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkQueueInsertDebugUtilsLabelEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkQueueInsertDebugUtilsLabelEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -36494,9 +32885,7 @@ impl ExtDebugUtilsFn1_0 {
                 )
             },
             cmd_end_debug_utils_label_ext: unsafe {
-                extern "system" fn cmd_end_debug_utils_label_ext_fallback(
-                    _: Option<CommandBuffer>,
-                ) -> c_void {
+                extern "system" fn cmd_end_debug_utils_label_ext_fallback(_: Option<CommandBuffer>) -> c_void {
                     panic!("fn cmd_end_debug_utils_label_ext not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdEndDebugUtilsLabelEXT\0");
@@ -36550,8 +32939,7 @@ impl ExtDebugUtilsFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_debug_utils_messenger_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyDebugUtilsMessengerEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDebugUtilsMessengerEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -36613,16 +33001,11 @@ impl AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
                 ) -> Result {
                     panic!("fn get_android_hardware_buffer_properties_android not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetAndroidHardwareBufferPropertiesANDROID\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetAndroidHardwareBufferPropertiesANDROID\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_android_hardware_buffer_properties_android_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_android_hardware_buffer_properties_android_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36635,15 +33018,11 @@ impl AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
                 ) -> Result {
                     panic!("fn get_memory_android_hardware_buffer_android not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetMemoryAndroidHardwareBufferANDROID\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryAndroidHardwareBufferANDROID\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_memory_android_hardware_buffer_android_fallback as *const c_void,
-                        )
+                        mem::transmute(get_memory_android_hardware_buffer_android_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36652,11 +33031,10 @@ impl AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetSampleLocationsEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_sample_locations_info: *const SampleLocationsInfoEXT,
-    ) -> c_void;
+type FnCmdSetSampleLocationsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_sample_locations_info: *const SampleLocationsInfoEXT,
+) -> c_void;
 type FnGetPhysicalDeviceMultisamplePropertiesEXT =
     unsafe extern "system" fn(
         physical_device: Option<PhysicalDevice>,
@@ -36698,16 +33076,11 @@ impl ExtSampleLocationsFn1_0 {
                 ) -> c_void {
                     panic!("fn get_physical_device_multisample_properties_ext not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_physical_device_multisample_properties_ext_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_physical_device_multisample_properties_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36771,14 +33144,11 @@ impl KhrGetMemoryRequirements2Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_image_sparse_memory_requirements2 not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_image_sparse_memory_requirements2_fallback as *const c_void,
-                        )
+                        mem::transmute(get_image_sparse_memory_requirements2_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36824,8 +33194,7 @@ impl KhrSamplerYcbcrConversionFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_sampler_ycbcr_conversion not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversion\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversion\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -36887,33 +33256,29 @@ impl KhrBindMemory2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateValidationCacheEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const ValidationCacheCreateInfoEXT,
-        p_allocator: *const AllocationCallbacks,
-        p_validation_cache: *mut ValidationCacheEXT,
-    ) -> Result;
-type FnDestroyValidationCacheEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        validation_cache: Option<ValidationCacheEXT>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
-type FnMergeValidationCachesEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        dst_cache: Option<ValidationCacheEXT>,
-        src_cache_count: u32,
-        p_src_caches: *const ValidationCacheEXT,
-    ) -> Result;
-type FnGetValidationCacheDataEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        validation_cache: Option<ValidationCacheEXT>,
-        p_data_size: *mut usize,
-        p_data: *mut c_void,
-    ) -> Result;
+type FnCreateValidationCacheEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ValidationCacheCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_validation_cache: *mut ValidationCacheEXT,
+) -> Result;
+type FnDestroyValidationCacheEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    validation_cache: Option<ValidationCacheEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+type FnMergeValidationCachesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    dst_cache: Option<ValidationCacheEXT>,
+    src_cache_count: u32,
+    p_src_caches: *const ValidationCacheEXT,
+) -> Result;
+type FnGetValidationCacheDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    validation_cache: Option<ValidationCacheEXT>,
+    p_data_size: *mut usize,
+    p_data: *mut c_void,
+) -> Result;
 pub struct ExtValidationCacheFn1_0 {
     pub create_validation_cache_ext: FnCreateValidationCacheEXT,
     pub destroy_validation_cache_ext: FnDestroyValidationCacheEXT,
@@ -37014,13 +33379,12 @@ type FnCmdSetViewportShadingRatePaletteNV =
         viewport_count: u32,
         p_shading_rate_palettes: *const ShadingRatePaletteNV,
     ) -> c_void;
-type FnCmdSetCoarseSampleOrderNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        sample_order_type: CoarseSampleOrderTypeNV,
-        custom_sample_order_count: u32,
-        p_custom_sample_orders: *const CoarseSampleOrderCustomNV,
-    ) -> c_void;
+type FnCmdSetCoarseSampleOrderNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    sample_order_type: CoarseSampleOrderTypeNV,
+    custom_sample_order_count: u32,
+    p_custom_sample_orders: *const CoarseSampleOrderCustomNV,
+) -> c_void;
 pub struct NvShadingRateImageFn1_0 {
     pub cmd_bind_shading_rate_image_nv: FnCmdBindShadingRateImageNV,
     pub cmd_set_viewport_shading_rate_palette_nv: FnCmdSetViewportShadingRatePaletteNV,
@@ -37059,14 +33423,11 @@ impl NvShadingRateImageFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_set_viewport_shading_rate_palette_nv not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportShadingRatePaletteNV\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportShadingRatePaletteNV\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_set_viewport_shading_rate_palette_nv_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_set_viewport_shading_rate_palette_nv_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37124,52 +33485,48 @@ type FnBindAccelerationStructureMemoryNVX =
         bind_info_count: u32,
         p_bind_infos: *const BindAccelerationStructureMemoryInfoNVX,
     ) -> Result;
-type FnCmdBuildAccelerationStructureNVX =
-    unsafe extern "system" fn(
-        cmd_buf: Option<CommandBuffer>,
-        ty: AccelerationStructureTypeNVX,
-        instance_count: u32,
-        instance_data: Option<Buffer>,
-        instance_offset: DeviceSize,
-        geometry_count: u32,
-        p_geometries: *const GeometryNVX,
-        flags: BuildAccelerationStructureFlagsNVX,
-        update: Bool32,
-        dst: Option<AccelerationStructureNVX>,
-        src: Option<AccelerationStructureNVX>,
-        scratch: Option<Buffer>,
-        scratch_offset: DeviceSize,
-    ) -> c_void;
-type FnCmdCopyAccelerationStructureNVX =
-    unsafe extern "system" fn(
-        cmd_buf: Option<CommandBuffer>,
-        dst: Option<AccelerationStructureNVX>,
-        src: Option<AccelerationStructureNVX>,
-        mode: CopyAccelerationStructureModeNVX,
-    ) -> c_void;
-type FnCmdTraceRaysNVX =
-    unsafe extern "system" fn(
-        cmd_buf: Option<CommandBuffer>,
-        raygen_shader_binding_table_buffer: Option<Buffer>,
-        raygen_shader_binding_offset: DeviceSize,
-        miss_shader_binding_table_buffer: Option<Buffer>,
-        miss_shader_binding_offset: DeviceSize,
-        miss_shader_binding_stride: DeviceSize,
-        hit_shader_binding_table_buffer: Option<Buffer>,
-        hit_shader_binding_offset: DeviceSize,
-        hit_shader_binding_stride: DeviceSize,
-        width: u32,
-        height: u32,
-    ) -> c_void;
-type FnCreateRaytracingPipelinesNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        pipeline_cache: Option<PipelineCache>,
-        create_info_count: u32,
-        p_create_infos: *const RaytracingPipelineCreateInfoNVX,
-        p_allocator: *const AllocationCallbacks,
-        p_pipelines: *mut Pipeline,
-    ) -> Result;
+type FnCmdBuildAccelerationStructureNVX = unsafe extern "system" fn(
+    cmd_buf: Option<CommandBuffer>,
+    ty: AccelerationStructureTypeNVX,
+    instance_count: u32,
+    instance_data: Option<Buffer>,
+    instance_offset: DeviceSize,
+    geometry_count: u32,
+    p_geometries: *const GeometryNVX,
+    flags: BuildAccelerationStructureFlagsNVX,
+    update: Bool32,
+    dst: Option<AccelerationStructureNVX>,
+    src: Option<AccelerationStructureNVX>,
+    scratch: Option<Buffer>,
+    scratch_offset: DeviceSize,
+) -> c_void;
+type FnCmdCopyAccelerationStructureNVX = unsafe extern "system" fn(
+    cmd_buf: Option<CommandBuffer>,
+    dst: Option<AccelerationStructureNVX>,
+    src: Option<AccelerationStructureNVX>,
+    mode: CopyAccelerationStructureModeNVX,
+) -> c_void;
+type FnCmdTraceRaysNVX = unsafe extern "system" fn(
+    cmd_buf: Option<CommandBuffer>,
+    raygen_shader_binding_table_buffer: Option<Buffer>,
+    raygen_shader_binding_offset: DeviceSize,
+    miss_shader_binding_table_buffer: Option<Buffer>,
+    miss_shader_binding_offset: DeviceSize,
+    miss_shader_binding_stride: DeviceSize,
+    hit_shader_binding_table_buffer: Option<Buffer>,
+    hit_shader_binding_offset: DeviceSize,
+    hit_shader_binding_stride: DeviceSize,
+    width: u32,
+    height: u32,
+) -> c_void;
+type FnCreateRaytracingPipelinesNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const RaytracingPipelineCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
 type FnGetRaytracingShaderHandlesNVX = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
@@ -37194,13 +33551,11 @@ type FnCmdWriteAccelerationStructurePropertiesNVX =
         query: u32,
     ) -> c_void;
 type FnCompileDeferredNVX =
-    unsafe extern "system" fn(device: Option<Device>, pipeline: Option<Pipeline>, shader: u32)
-        -> Result;
+    unsafe extern "system" fn(device: Option<Device>, pipeline: Option<Pipeline>, shader: u32) -> Result;
 pub struct NvxRaytracingFn1_0 {
     pub create_acceleration_structure_nvx: FnCreateAccelerationStructureNVX,
     pub destroy_acceleration_structure_nvx: FnDestroyAccelerationStructureNVX,
-    pub get_acceleration_structure_memory_requirements_nvx:
-        FnGetAccelerationStructureMemoryRequirementsNVX,
+    pub get_acceleration_structure_memory_requirements_nvx: FnGetAccelerationStructureMemoryRequirementsNVX,
     pub get_acceleration_structure_scratch_memory_requirements_nvx:
         FnGetAccelerationStructureScratchMemoryRequirementsNVX,
     pub bind_acceleration_structure_memory_nvx: FnBindAccelerationStructureMemoryNVX,
@@ -37210,8 +33565,7 @@ pub struct NvxRaytracingFn1_0 {
     pub create_raytracing_pipelines_nvx: FnCreateRaytracingPipelinesNVX,
     pub get_raytracing_shader_handles_nvx: FnGetRaytracingShaderHandlesNVX,
     pub get_acceleration_structure_handle_nvx: FnGetAccelerationStructureHandleNVX,
-    pub cmd_write_acceleration_structure_properties_nvx:
-        FnCmdWriteAccelerationStructurePropertiesNVX,
+    pub cmd_write_acceleration_structure_properties_nvx: FnCmdWriteAccelerationStructurePropertiesNVX,
     pub compile_deferred_nvx: FnCompileDeferredNVX,
 }
 impl NvxRaytracingFn1_0 {
@@ -37230,8 +33584,7 @@ impl NvxRaytracingFn1_0 {
                 ) -> Result {
                     panic!("fn create_acceleration_structure_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCreateAccelerationStructureNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateAccelerationStructureNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -37248,8 +33601,7 @@ impl NvxRaytracingFn1_0 {
                 ) -> c_void {
                     panic!("fn destroy_acceleration_structure_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkDestroyAccelerationStructureNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyAccelerationStructureNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -37266,16 +33618,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> c_void {
                     panic!("fn get_acceleration_structure_memory_requirements_nvx not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetAccelerationStructureMemoryRequirementsNVX\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetAccelerationStructureMemoryRequirementsNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_acceleration_structure_memory_requirements_nvx_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(get_acceleration_structure_memory_requirements_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37286,19 +33633,15 @@ impl NvxRaytracingFn1_0 {
                     _: *const AccelerationStructureMemoryRequirementsInfoNVX,
                     _: *mut MemoryRequirements2KHR,
                 ) -> c_void {
-                    panic!(
-                        "fn get_acceleration_structure_scratch_memory_requirements_nvx not loaded"
-                    );
+                    panic!("fn get_acceleration_structure_scratch_memory_requirements_nvx not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetAccelerationStructureScratchMemoryRequirementsNVX\0",
-                );
+                let name =
+                    CStr::from_bytes_with_nul_unchecked(b"vkGetAccelerationStructureScratchMemoryRequirementsNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
                         mem::transmute(
-                            get_acceleration_structure_scratch_memory_requirements_nvx_fallback
-                                as *const c_void,
+                            get_acceleration_structure_scratch_memory_requirements_nvx_fallback as *const c_void,
                         )
                     },
                     |f| mem::transmute(f),
@@ -37312,14 +33655,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> Result {
                     panic!("fn bind_acceleration_structure_memory_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkBindAccelerationStructureMemoryNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkBindAccelerationStructureMemoryNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            bind_acceleration_structure_memory_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(bind_acceleration_structure_memory_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37342,14 +33682,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_build_acceleration_structure_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdBuildAccelerationStructureNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdBuildAccelerationStructureNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_build_acceleration_structure_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_build_acceleration_structure_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37363,14 +33700,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_copy_acceleration_structure_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyAccelerationStructureNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyAccelerationStructureNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_copy_acceleration_structure_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_copy_acceleration_structure_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37431,8 +33765,7 @@ impl NvxRaytracingFn1_0 {
                 ) -> Result {
                     panic!("fn get_raytracing_shader_handles_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetRaytracingShaderHandlesNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetRaytracingShaderHandlesNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -37450,14 +33783,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> Result {
                     panic!("fn get_acceleration_structure_handle_nvx not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetAccelerationStructureHandleNVX\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetAccelerationStructureHandleNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_acceleration_structure_handle_nvx_fallback as *const c_void,
-                        )
+                        mem::transmute(get_acceleration_structure_handle_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37472,16 +33802,11 @@ impl NvxRaytracingFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_write_acceleration_structure_properties_nvx not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(
-                    b"vkCmdWriteAccelerationStructurePropertiesNVX\0",
-                );
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteAccelerationStructurePropertiesNVX\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_write_acceleration_structure_properties_nvx_fallback
-                                as *const c_void,
-                        )
+                        mem::transmute(cmd_write_acceleration_structure_properties_nvx_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37525,8 +33850,7 @@ impl KhrMaintenance3Fn1_0 {
                 ) -> c_void {
                     panic!("fn get_descriptor_set_layout_support not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupport\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupport\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
@@ -37548,16 +33872,15 @@ type FnCmdDrawIndirectCountKHR = unsafe extern "system" fn(
     max_draw_count: u32,
     stride: u32,
 ) -> c_void;
-type FnCmdDrawIndexedIndirectCountKHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        buffer: Option<Buffer>,
-        offset: DeviceSize,
-        count_buffer: Option<Buffer>,
-        count_buffer_offset: DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) -> c_void;
+type FnCmdDrawIndexedIndirectCountKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
 pub struct KhrDrawIndirectCountFn1_0 {
     pub cmd_draw_indirect_count_khr: FnCmdDrawIndirectCountKHR,
     pub cmd_draw_indexed_indirect_count_khr: FnCmdDrawIndexedIndirectCountKHR,
@@ -37602,14 +33925,11 @@ impl KhrDrawIndirectCountFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_draw_indexed_indirect_count_khr not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirectCountKHR\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirectCountKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_draw_indexed_indirect_count_khr_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_draw_indexed_indirect_count_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37618,7 +33938,13 @@ impl KhrDrawIndirectCountFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryHostPointerPropertiesEXT = unsafe extern "system" fn(device: Option<Device>,handle_type: ExternalMemoryHandleTypeFlags,p_host_pointer: * const c_void,p_memory_host_pointer_properties: * mut MemoryHostPointerPropertiesEXT,) -> Result;
+type FnGetMemoryHostPointerPropertiesEXT =
+    unsafe extern "system" fn(
+        device: Option<Device>,
+        handle_type: ExternalMemoryHandleTypeFlags,
+        p_host_pointer: *const c_void,
+        p_memory_host_pointer_properties: *mut MemoryHostPointerPropertiesEXT,
+    ) -> Result;
 pub struct ExtExternalMemoryHostFn1_0 {
     pub get_memory_host_pointer_properties_ext: FnGetMemoryHostPointerPropertiesEXT,
 }
@@ -37638,14 +33964,11 @@ impl ExtExternalMemoryHostFn1_0 {
                 ) -> Result {
                     panic!("fn get_memory_host_pointer_properties_ext not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryHostPointerPropertiesEXT\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryHostPointerPropertiesEXT\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            get_memory_host_pointer_properties_ext_fallback as *const c_void,
-                        )
+                        mem::transmute(get_memory_host_pointer_properties_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37694,29 +34017,24 @@ impl AmdBufferMarkerFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdDrawMeshTasksNV = unsafe extern "system" fn(
+type FnCmdDrawMeshTasksNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, task_count: u32, first_task: u32) -> c_void;
+type FnCmdDrawMeshTasksIndirectNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    task_count: u32,
-    first_task: u32,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    draw_count: u32,
+    stride: u32,
 ) -> c_void;
-type FnCmdDrawMeshTasksIndirectNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        buffer: Option<Buffer>,
-        offset: DeviceSize,
-        draw_count: u32,
-        stride: u32,
-    ) -> c_void;
-type FnCmdDrawMeshTasksIndirectCountNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        buffer: Option<Buffer>,
-        offset: DeviceSize,
-        count_buffer: Option<Buffer>,
-        count_buffer_offset: DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) -> c_void;
+type FnCmdDrawMeshTasksIndirectCountNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
 pub struct NvMeshShaderFn1_0 {
     pub cmd_draw_mesh_tasks_nv: FnCmdDrawMeshTasksNV,
     pub cmd_draw_mesh_tasks_indirect_nv: FnCmdDrawMeshTasksIndirectNV,
@@ -37730,11 +34048,7 @@ impl NvMeshShaderFn1_0 {
         let mut all_loaded = true;
         let block = NvMeshShaderFn1_0 {
             cmd_draw_mesh_tasks_nv: unsafe {
-                extern "system" fn cmd_draw_mesh_tasks_nv_fallback(
-                    _: Option<CommandBuffer>,
-                    _: u32,
-                    _: u32,
-                ) -> c_void {
+                extern "system" fn cmd_draw_mesh_tasks_nv_fallback(_: Option<CommandBuffer>, _: u32, _: u32) -> c_void {
                     panic!("fn cmd_draw_mesh_tasks_nv not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksNV\0");
@@ -37777,14 +34091,11 @@ impl NvMeshShaderFn1_0 {
                 ) -> c_void {
                     panic!("fn cmd_draw_mesh_tasks_indirect_count_nv not loaded");
                 }
-                let name =
-                    CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksIndirectCountNV\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksIndirectCountNV\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(
-                            cmd_draw_mesh_tasks_indirect_count_nv_fallback as *const c_void,
-                        )
+                        mem::transmute(cmd_draw_mesh_tasks_indirect_count_nv_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37831,16 +34142,13 @@ impl NvScissorExclusiveFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetCheckpointNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_checkpoint_marker: *const c_void,
+type FnCmdSetCheckpointNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_checkpoint_marker: *const c_void) -> c_void;
+type FnGetQueueCheckpointDataNV = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    p_checkpoint_data_count: *mut u32,
+    p_checkpoint_data: *mut CheckpointDataNV,
 ) -> c_void;
-type FnGetQueueCheckpointDataNV =
-    unsafe extern "system" fn(
-        queue: Option<Queue>,
-        p_checkpoint_data_count: *mut u32,
-        p_checkpoint_data: *mut CheckpointDataNV,
-    ) -> c_void;
 pub struct NvDeviceDiagnosticCheckpointsFn1_0 {
     pub cmd_set_checkpoint_nv: FnCmdSetCheckpointNV,
     pub get_queue_checkpoint_data_nv: FnGetQueueCheckpointDataNV,

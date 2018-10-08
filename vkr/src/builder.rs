@@ -166,10 +166,7 @@ impl<'a> AllocationCallbacksBuilder<'a> {
         self.inner.pfn_internal_allocation = pfn_internal_allocation;
         self
     }
-    pub fn set_pfn_internal_free(
-        mut self,
-        pfn_internal_free: Option<vk::FnInternalFreeNotification>,
-    ) -> Self {
+    pub fn set_pfn_internal_free(mut self, pfn_internal_free: Option<vk::FnInternalFreeNotification>) -> Self {
         self.inner.pfn_internal_free = pfn_internal_free;
         self
     }
@@ -254,34 +251,22 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_queue_create_infos(
-        mut self,
-        p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo],
-    ) -> Self {
+    pub fn set_p_queue_create_infos(mut self, p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo]) -> Self {
         self.inner.queue_create_info_count = p_queue_create_infos.len() as u32;
         self.inner.p_queue_create_infos = p_queue_create_infos.as_ptr();
         self
     }
-    pub fn set_pp_enabled_layer_names(
-        mut self,
-        pp_enabled_layer_names: &'a [*const c_char],
-    ) -> Self {
+    pub fn set_pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
         self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
         self
     }
-    pub fn set_pp_enabled_extension_names(
-        mut self,
-        pp_enabled_extension_names: &'a [*const c_char],
-    ) -> Self {
+    pub fn set_pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
         self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
         self
     }
-    pub fn set_p_enabled_features(
-        mut self,
-        p_enabled_features: Option<&'a vk::PhysicalDeviceFeatures>,
-    ) -> Self {
+    pub fn set_p_enabled_features(mut self, p_enabled_features: Option<&'a vk::PhysicalDeviceFeatures>) -> Self {
         self.inner.p_enabled_features = p_enabled_features.map_or(ptr::null(), |p| p);
         self
     }
@@ -321,25 +306,16 @@ impl<'a> InstanceCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_application_info(
-        mut self,
-        p_application_info: Option<&'a vk::ApplicationInfo>,
-    ) -> Self {
+    pub fn set_p_application_info(mut self, p_application_info: Option<&'a vk::ApplicationInfo>) -> Self {
         self.inner.p_application_info = p_application_info.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_pp_enabled_layer_names(
-        mut self,
-        pp_enabled_layer_names: &'a [*const c_char],
-    ) -> Self {
+    pub fn set_pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
         self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
         self
     }
-    pub fn set_pp_enabled_extension_names(
-        mut self,
-        pp_enabled_extension_names: &'a [*const c_char],
-    ) -> Self {
+    pub fn set_pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
         self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
         self
@@ -1093,18 +1069,12 @@ impl<'a> BindSparseInfoBuilder<'a> {
         self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
         self
     }
-    pub fn set_p_buffer_binds(
-        mut self,
-        p_buffer_binds: &'a [vk::SparseBufferMemoryBindInfo],
-    ) -> Self {
+    pub fn set_p_buffer_binds(mut self, p_buffer_binds: &'a [vk::SparseBufferMemoryBindInfo]) -> Self {
         self.inner.buffer_bind_count = p_buffer_binds.len() as u32;
         self.inner.p_buffer_binds = p_buffer_binds.as_ptr();
         self
     }
-    pub fn set_p_image_opaque_binds(
-        mut self,
-        p_image_opaque_binds: &'a [vk::SparseImageOpaqueMemoryBindInfo],
-    ) -> Self {
+    pub fn set_p_image_opaque_binds(mut self, p_image_opaque_binds: &'a [vk::SparseImageOpaqueMemoryBindInfo]) -> Self {
         self.inner.image_opaque_bind_count = p_image_opaque_binds.len() as u32;
         self.inner.p_image_opaque_binds = p_image_opaque_binds.as_ptr();
         self
@@ -1420,10 +1390,7 @@ impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
         self.inner.p_name = p_name.as_ptr();
         self
     }
-    pub fn set_p_specialization_info(
-        mut self,
-        p_specialization_info: Option<&'a vk::SpecializationInfo>,
-    ) -> Self {
+    pub fn set_p_specialization_info(mut self, p_specialization_info: Option<&'a vk::SpecializationInfo>) -> Self {
         self.inner.p_specialization_info = p_specialization_info.map_or(ptr::null(), |p| p);
         self
     }
@@ -1527,8 +1494,7 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
         mut self,
         p_vertex_attribute_descriptions: &'a [vk::VertexInputAttributeDescription],
     ) -> Self {
-        self.inner.vertex_attribute_description_count =
-            p_vertex_attribute_descriptions.len() as u32;
+        self.inner.vertex_attribute_description_count = p_vertex_attribute_descriptions.len() as u32;
         self.inner.p_vertex_attribute_descriptions = p_vertex_attribute_descriptions.as_ptr();
         self
     }
@@ -1573,11 +1539,7 @@ impl<'a> PipelineInputAssemblyStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_primitive_restart_enable(mut self, primitive_restart_enable: bool) -> Self {
-        self.inner.primitive_restart_enable = if primitive_restart_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.primitive_restart_enable = if primitive_restart_enable { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -1711,19 +1673,11 @@ impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_depth_clamp_enable(mut self, depth_clamp_enable: bool) -> Self {
-        self.inner.depth_clamp_enable = if depth_clamp_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.depth_clamp_enable = if depth_clamp_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_rasterizer_discard_enable(mut self, rasterizer_discard_enable: bool) -> Self {
-        self.inner.rasterizer_discard_enable = if rasterizer_discard_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.rasterizer_discard_enable = if rasterizer_discard_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_polygon_mode(mut self, polygon_mode: vk::PolygonMode) -> Self {
@@ -1739,11 +1693,7 @@ impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_depth_bias_enable(mut self, depth_bias_enable: bool) -> Self {
-        self.inner.depth_bias_enable = if depth_bias_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.depth_bias_enable = if depth_bias_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_depth_bias_constant_factor(mut self, depth_bias_constant_factor: f32) -> Self {
@@ -1798,19 +1748,12 @@ impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_rasterization_samples(
-        mut self,
-        rasterization_samples: vk::SampleCountFlags,
-    ) -> Self {
+    pub fn set_rasterization_samples(mut self, rasterization_samples: vk::SampleCountFlags) -> Self {
         self.inner.rasterization_samples = rasterization_samples;
         self
     }
     pub fn set_sample_shading_enable(mut self, sample_shading_enable: bool) -> Self {
-        self.inner.sample_shading_enable = if sample_shading_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.sample_shading_enable = if sample_shading_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_min_sample_shading(mut self, min_sample_shading: f32) -> Self {
@@ -1822,19 +1765,11 @@ impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_alpha_to_coverage_enable(mut self, alpha_to_coverage_enable: bool) -> Self {
-        self.inner.alpha_to_coverage_enable = if alpha_to_coverage_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.alpha_to_coverage_enable = if alpha_to_coverage_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_alpha_to_one_enable(mut self, alpha_to_one_enable: bool) -> Self {
-        self.inner.alpha_to_one_enable = if alpha_to_one_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.alpha_to_one_enable = if alpha_to_one_enable { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -1881,10 +1816,7 @@ impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
         self.inner.logic_op = logic_op;
         self
     }
-    pub fn set_p_attachments(
-        mut self,
-        p_attachments: &'a [vk::PipelineColorBlendAttachmentState],
-    ) -> Self {
+    pub fn set_p_attachments(mut self, p_attachments: &'a [vk::PipelineColorBlendAttachmentState]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
         self.inner.p_attachments = p_attachments.as_ptr();
         self
@@ -1967,19 +1899,11 @@ impl<'a> PipelineDepthStencilStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_depth_test_enable(mut self, depth_test_enable: bool) -> Self {
-        self.inner.depth_test_enable = if depth_test_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.depth_test_enable = if depth_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_depth_write_enable(mut self, depth_write_enable: bool) -> Self {
-        self.inner.depth_write_enable = if depth_write_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.depth_write_enable = if depth_write_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_depth_compare_op(mut self, depth_compare_op: vk::CompareOp) -> Self {
@@ -1987,19 +1911,11 @@ impl<'a> PipelineDepthStencilStateCreateInfoBuilder<'a> {
         self
     }
     pub fn set_depth_bounds_test_enable(mut self, depth_bounds_test_enable: bool) -> Self {
-        self.inner.depth_bounds_test_enable = if depth_bounds_test_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.depth_bounds_test_enable = if depth_bounds_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_stencil_test_enable(mut self, stencil_test_enable: bool) -> Self {
-        self.inner.stencil_test_enable = if stencil_test_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.stencil_test_enable = if stencil_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_front(mut self, front: vk::StencilOpState) -> Self {
@@ -2080,10 +1996,7 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         self.inner.p_tessellation_state = p_tessellation_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_viewport_state(
-        mut self,
-        p_viewport_state: Option<&'a vk::PipelineViewportStateCreateInfo>,
-    ) -> Self {
+    pub fn set_p_viewport_state(mut self, p_viewport_state: Option<&'a vk::PipelineViewportStateCreateInfo>) -> Self {
         self.inner.p_viewport_state = p_viewport_state.map_or(ptr::null(), |p| p);
         self
     }
@@ -2115,10 +2028,7 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         self.inner.p_color_blend_state = p_color_blend_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_dynamic_state(
-        mut self,
-        p_dynamic_state: Option<&'a vk::PipelineDynamicStateCreateInfo>,
-    ) -> Self {
+    pub fn set_p_dynamic_state(mut self, p_dynamic_state: Option<&'a vk::PipelineDynamicStateCreateInfo>) -> Self {
         self.inner.p_dynamic_state = p_dynamic_state.map_or(ptr::null(), |p| p);
         self
     }
@@ -2227,10 +2137,7 @@ impl<'a> PipelineLayoutCreateInfoBuilder<'a> {
         self.inner.p_set_layouts = p_set_layouts.as_ptr();
         self
     }
-    pub fn set_p_push_constant_ranges(
-        mut self,
-        p_push_constant_ranges: &'a [vk::PushConstantRange],
-    ) -> Self {
+    pub fn set_p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
         self.inner.push_constant_range_count = p_push_constant_ranges.len() as u32;
         self.inner.p_push_constant_ranges = p_push_constant_ranges.as_ptr();
         self
@@ -2300,11 +2207,7 @@ impl<'a> SamplerCreateInfoBuilder<'a> {
         self
     }
     pub fn set_anisotropy_enable(mut self, anisotropy_enable: bool) -> Self {
-        self.inner.anisotropy_enable = if anisotropy_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.anisotropy_enable = if anisotropy_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_max_anisotropy(mut self, max_anisotropy: f32) -> Self {
@@ -2332,11 +2235,7 @@ impl<'a> SamplerCreateInfoBuilder<'a> {
         self
     }
     pub fn set_unnormalized_coordinates(mut self, unnormalized_coordinates: bool) -> Self {
-        self.inner.unnormalized_coordinates = if unnormalized_coordinates {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.unnormalized_coordinates = if unnormalized_coordinates { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -2468,21 +2367,14 @@ impl<'a> CommandBufferInheritanceInfoBuilder<'a> {
         self
     }
     pub fn set_occlusion_query_enable(mut self, occlusion_query_enable: bool) -> Self {
-        self.inner.occlusion_query_enable = if occlusion_query_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.occlusion_query_enable = if occlusion_query_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_query_flags(mut self, query_flags: vk::QueryControlFlags) -> Self {
         self.inner.query_flags = query_flags;
         self
     }
-    pub fn set_pipeline_statistics(
-        mut self,
-        pipeline_statistics: vk::QueryPipelineStatisticFlags,
-    ) -> Self {
+    pub fn set_pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
         self.inner.pipeline_statistics = pipeline_statistics;
         self
     }
@@ -2522,10 +2414,7 @@ impl<'a> CommandBufferBeginInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_inheritance_info(
-        mut self,
-        p_inheritance_info: Option<&'a vk::CommandBufferInheritanceInfo>,
-    ) -> Self {
+    pub fn set_p_inheritance_info(mut self, p_inheritance_info: Option<&'a vk::CommandBufferInheritanceInfo>) -> Self {
         self.inner.p_inheritance_info = p_inheritance_info.map_or(ptr::null(), |p| p);
         self
     }
@@ -2610,10 +2499,7 @@ impl<'a> SubpassDescriptionBuilder<'a> {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn set_p_input_attachments(
-        mut self,
-        p_input_attachments: &'a [vk::AttachmentReference],
-    ) -> Self {
+    pub fn set_p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
         self.inner.p_input_attachments = p_input_attachments.as_ptr();
         self
@@ -2628,16 +2514,14 @@ impl<'a> SubpassDescriptionBuilder<'a> {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
         self.inner.p_color_attachments = p_color_attachments.as_ptr();
-        self.inner.p_resolve_attachments =
-            p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
+        self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
     pub fn set_p_depth_stencil_attachment(
         mut self,
         p_depth_stencil_attachment: Option<&'a vk::AttachmentReference>,
     ) -> Self {
-        self.inner.p_depth_stencil_attachment =
-            p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
+        self.inner.p_depth_stencil_attachment = p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
         self
     }
     pub fn set_p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
@@ -2848,10 +2732,7 @@ impl<'a> QueryPoolCreateInfoBuilder<'a> {
         self.inner.query_count = query_count;
         self
     }
-    pub fn set_pipeline_statistics(
-        mut self,
-        pipeline_statistics: vk::QueryPipelineStatisticFlags,
-    ) -> Self {
+    pub fn set_pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
         self.inner.pipeline_statistics = pipeline_statistics;
         self
     }
@@ -2950,10 +2831,7 @@ impl<'a> SubmitInfoBuilder<'a> {
         p_wait_dst_stage_mask: &'a [vk::PipelineStageFlags],
     ) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
-        assert_eq!(
-            self.inner.wait_semaphore_count,
-            p_wait_dst_stage_mask.len() as u32
-        );
+        assert_eq!(self.inner.wait_semaphore_count, p_wait_dst_stage_mask.len() as u32);
         self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
         self.inner.p_wait_dst_stage_mask = p_wait_dst_stage_mask.as_ptr();
         self
@@ -3546,11 +3424,7 @@ impl<'a> PresentInfoKHRBuilder<'a> {
         self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
         self
     }
-    pub fn set_p_swapchains(
-        mut self,
-        p_swapchains: &'a [vk::SwapchainKHR],
-        p_image_indices: &'a [u32],
-    ) -> Self {
+    pub fn set_p_swapchains(mut self, p_swapchains: &'a [vk::SwapchainKHR], p_image_indices: &'a [u32]) -> Self {
         self.inner.swapchain_count = p_swapchains.len() as u32;
         assert_eq!(self.inner.swapchain_count, p_image_indices.len() as u32);
         self.inner.p_swapchains = p_swapchains.as_ptr();
@@ -3677,10 +3551,7 @@ impl<'a> PipelineRasterizationStateRasterizationOrderAMDBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_rasterization_order(
-        mut self,
-        rasterization_order: vk::RasterizationOrderAMD,
-    ) -> Self {
+    pub fn set_rasterization_order(mut self, rasterization_order: vk::RasterizationOrderAMD) -> Self {
         self.inner.rasterization_order = rasterization_order;
         self
     }
@@ -3849,11 +3720,7 @@ impl<'a> DedicatedAllocationImageCreateInfoNVBuilder<'a> {
         self
     }
     pub fn set_dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
-        self.inner.dedicated_allocation = if dedicated_allocation {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.dedicated_allocation = if dedicated_allocation { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -3889,11 +3756,7 @@ impl<'a> DedicatedAllocationBufferCreateInfoNVBuilder<'a> {
         self
     }
     pub fn set_dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
-        self.inner.dedicated_allocation = if dedicated_allocation {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.dedicated_allocation = if dedicated_allocation { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -4128,20 +3991,13 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
     ) -> Self {
         self.inner.acquire_count = p_acquire_syncs.len() as u32;
         assert_eq!(self.inner.acquire_count, p_acquire_keys.len() as u32);
-        assert_eq!(
-            self.inner.acquire_count,
-            p_acquire_timeout_milliseconds.len() as u32
-        );
+        assert_eq!(self.inner.acquire_count, p_acquire_timeout_milliseconds.len() as u32);
         self.inner.p_acquire_syncs = p_acquire_syncs.as_ptr();
         self.inner.p_acquire_keys = p_acquire_keys.as_ptr();
         self.inner.p_acquire_timeout_milliseconds = p_acquire_timeout_milliseconds.as_ptr();
         self
     }
-    pub fn set_p_release_syncs(
-        mut self,
-        p_release_syncs: &'a [vk::DeviceMemory],
-        p_release_keys: &'a [u64],
-    ) -> Self {
+    pub fn set_p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
         self.inner.p_release_syncs = p_release_syncs.as_ptr();
@@ -4180,10 +4036,7 @@ impl<'a> DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_compute_binding_point_support(
-        mut self,
-        compute_binding_point_support: bool,
-    ) -> Self {
+    pub fn set_compute_binding_point_support(mut self, compute_binding_point_support: bool) -> Self {
         self.inner.compute_binding_point_support = if compute_binding_point_support {
             vk::TRUE
         } else {
@@ -4227,8 +4080,7 @@ impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
         mut self,
         max_indirect_commands_layout_token_count: u32,
     ) -> Self {
-        self.inner.max_indirect_commands_layout_token_count =
-            max_indirect_commands_layout_token_count;
+        self.inner.max_indirect_commands_layout_token_count = max_indirect_commands_layout_token_count;
         self
     }
     pub fn set_max_object_entry_counts(mut self, max_object_entry_counts: u32) -> Self {
@@ -4239,24 +4091,21 @@ impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
         mut self,
         min_sequence_count_buffer_offset_alignment: u32,
     ) -> Self {
-        self.inner.min_sequence_count_buffer_offset_alignment =
-            min_sequence_count_buffer_offset_alignment;
+        self.inner.min_sequence_count_buffer_offset_alignment = min_sequence_count_buffer_offset_alignment;
         self
     }
     pub fn set_min_sequence_index_buffer_offset_alignment(
         mut self,
         min_sequence_index_buffer_offset_alignment: u32,
     ) -> Self {
-        self.inner.min_sequence_index_buffer_offset_alignment =
-            min_sequence_index_buffer_offset_alignment;
+        self.inner.min_sequence_index_buffer_offset_alignment = min_sequence_index_buffer_offset_alignment;
         self
     }
     pub fn set_min_commands_token_buffer_offset_alignment(
         mut self,
         min_commands_token_buffer_offset_alignment: u32,
     ) -> Self {
-        self.inner.min_commands_token_buffer_offset_alignment =
-            min_commands_token_buffer_offset_alignment;
+        self.inner.min_commands_token_buffer_offset_alignment = min_commands_token_buffer_offset_alignment;
         self
     }
 }
@@ -4340,10 +4189,7 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
         self.inner.object_table = Some(object_table);
         self
     }
-    pub fn set_indirect_commands_layout(
-        mut self,
-        indirect_commands_layout: vk::IndirectCommandsLayoutNVX,
-    ) -> Self {
+    pub fn set_indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
         self.inner.indirect_commands_layout = Some(indirect_commands_layout);
         self
     }
@@ -4359,17 +4205,11 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
         self.inner.max_sequences_count = max_sequences_count;
         self
     }
-    pub fn set_target_command_buffer(
-        mut self,
-        target_command_buffer: Option<vk::CommandBuffer>,
-    ) -> Self {
+    pub fn set_target_command_buffer(mut self, target_command_buffer: Option<vk::CommandBuffer>) -> Self {
         self.inner.target_command_buffer = target_command_buffer;
         self
     }
-    pub fn set_sequences_count_buffer(
-        mut self,
-        sequences_count_buffer: Option<vk::Buffer>,
-    ) -> Self {
+    pub fn set_sequences_count_buffer(mut self, sequences_count_buffer: Option<vk::Buffer>) -> Self {
         self.inner.sequences_count_buffer = sequences_count_buffer;
         self
     }
@@ -4377,10 +4217,7 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
         self.inner.sequences_count_offset = sequences_count_offset;
         self
     }
-    pub fn set_sequences_index_buffer(
-        mut self,
-        sequences_index_buffer: Option<vk::Buffer>,
-    ) -> Self {
+    pub fn set_sequences_index_buffer(mut self, sequences_index_buffer: Option<vk::Buffer>) -> Self {
         self.inner.sequences_index_buffer = sequences_index_buffer;
         self
     }
@@ -4424,10 +4261,7 @@ impl<'a> CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
         self.inner.object_table = Some(object_table);
         self
     }
-    pub fn set_indirect_commands_layout(
-        mut self,
-        indirect_commands_layout: vk::IndirectCommandsLayoutNVX,
-    ) -> Self {
+    pub fn set_indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
         self.inner.indirect_commands_layout = Some(indirect_commands_layout);
         self
     }
@@ -4475,40 +4309,25 @@ impl<'a> ObjectTableCreateInfoNVXBuilder<'a> {
     ) -> Self {
         self.inner.object_count = p_object_entry_types.len() as u32;
         assert_eq!(self.inner.object_count, p_object_entry_counts.len() as u32);
-        assert_eq!(
-            self.inner.object_count,
-            p_object_entry_usage_flags.len() as u32
-        );
+        assert_eq!(self.inner.object_count, p_object_entry_usage_flags.len() as u32);
         self.inner.p_object_entry_types = p_object_entry_types.as_ptr();
         self.inner.p_object_entry_counts = p_object_entry_counts.as_ptr();
         self.inner.p_object_entry_usage_flags = p_object_entry_usage_flags.as_ptr();
         self
     }
-    pub fn set_max_uniform_buffers_per_descriptor(
-        mut self,
-        max_uniform_buffers_per_descriptor: u32,
-    ) -> Self {
+    pub fn set_max_uniform_buffers_per_descriptor(mut self, max_uniform_buffers_per_descriptor: u32) -> Self {
         self.inner.max_uniform_buffers_per_descriptor = max_uniform_buffers_per_descriptor;
         self
     }
-    pub fn set_max_storage_buffers_per_descriptor(
-        mut self,
-        max_storage_buffers_per_descriptor: u32,
-    ) -> Self {
+    pub fn set_max_storage_buffers_per_descriptor(mut self, max_storage_buffers_per_descriptor: u32) -> Self {
         self.inner.max_storage_buffers_per_descriptor = max_storage_buffers_per_descriptor;
         self
     }
-    pub fn set_max_storage_images_per_descriptor(
-        mut self,
-        max_storage_images_per_descriptor: u32,
-    ) -> Self {
+    pub fn set_max_storage_images_per_descriptor(mut self, max_storage_images_per_descriptor: u32) -> Self {
         self.inner.max_storage_images_per_descriptor = max_storage_images_per_descriptor;
         self
     }
-    pub fn set_max_sampled_images_per_descriptor(
-        mut self,
-        max_sampled_images_per_descriptor: u32,
-    ) -> Self {
+    pub fn set_max_sampled_images_per_descriptor(mut self, max_sampled_images_per_descriptor: u32) -> Self {
         self.inner.max_sampled_images_per_descriptor = max_sampled_images_per_descriptor;
         self
     }
@@ -4790,10 +4609,7 @@ impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_variable_pointers_storage_buffer(
-        mut self,
-        variable_pointers_storage_buffer: bool,
-    ) -> Self {
+    pub fn set_variable_pointers_storage_buffer(mut self, variable_pointers_storage_buffer: bool) -> Self {
         self.inner.variable_pointers_storage_buffer = if variable_pointers_storage_buffer {
             vk::TRUE
         } else {
@@ -4802,11 +4618,7 @@ impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
         self
     }
     pub fn set_variable_pointers(mut self, variable_pointers: bool) -> Self {
-        self.inner.variable_pointers = if variable_pointers {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.variable_pointers = if variable_pointers { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -5251,11 +5063,7 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
         self.inner.p_acquire_timeouts = p_acquire_timeouts.as_ptr();
         self
     }
-    pub fn set_p_release_syncs(
-        mut self,
-        p_release_syncs: &'a [vk::DeviceMemory],
-        p_release_keys: &'a [u64],
-    ) -> Self {
+    pub fn set_p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
         self.inner.p_release_syncs = p_release_syncs.as_ptr();
@@ -5933,17 +5741,10 @@ impl<'a> PhysicalDeviceMultiviewFeaturesBuilder<'a> {
         self
     }
     pub fn set_multiview_geometry_shader(mut self, multiview_geometry_shader: bool) -> Self {
-        self.inner.multiview_geometry_shader = if multiview_geometry_shader {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.multiview_geometry_shader = if multiview_geometry_shader { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_multiview_tessellation_shader(
-        mut self,
-        multiview_tessellation_shader: bool,
-    ) -> Self {
+    pub fn set_multiview_tessellation_shader(mut self, multiview_tessellation_shader: bool) -> Self {
         self.inner.multiview_tessellation_shader = if multiview_tessellation_shader {
             vk::TRUE
         } else {
@@ -6344,10 +6145,7 @@ impl<'a> BindImageMemoryDeviceGroupInfoBuilder<'a> {
         self.inner.p_device_indices = p_device_indices.as_ptr();
         self
     }
-    pub fn set_p_split_instance_bind_regions(
-        mut self,
-        p_split_instance_bind_regions: &'a [vk::Rect2D],
-    ) -> Self {
+    pub fn set_p_split_instance_bind_regions(mut self, p_split_instance_bind_regions: &'a [vk::Rect2D]) -> Self {
         self.inner.split_instance_bind_region_count = p_split_instance_bind_regions.len() as u32;
         self.inner.p_split_instance_bind_regions = p_split_instance_bind_regions.as_ptr();
         self
@@ -6461,26 +6259,17 @@ impl<'a> DeviceGroupSubmitInfoBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphore_device_indices(
-        mut self,
-        p_wait_semaphore_device_indices: &'a [u32],
-    ) -> Self {
+    pub fn set_p_wait_semaphore_device_indices(mut self, p_wait_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphore_device_indices.len() as u32;
         self.inner.p_wait_semaphore_device_indices = p_wait_semaphore_device_indices.as_ptr();
         self
     }
-    pub fn set_p_command_buffer_device_masks(
-        mut self,
-        p_command_buffer_device_masks: &'a [u32],
-    ) -> Self {
+    pub fn set_p_command_buffer_device_masks(mut self, p_command_buffer_device_masks: &'a [u32]) -> Self {
         self.inner.command_buffer_count = p_command_buffer_device_masks.len() as u32;
         self.inner.p_command_buffer_device_masks = p_command_buffer_device_masks.as_ptr();
         self
     }
-    pub fn set_p_signal_semaphore_device_indices(
-        mut self,
-        p_signal_semaphore_device_indices: &'a [u32],
-    ) -> Self {
+    pub fn set_p_signal_semaphore_device_indices(mut self, p_signal_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphore_device_indices.len() as u32;
         self.inner.p_signal_semaphore_device_indices = p_signal_semaphore_device_indices.as_ptr();
         self
@@ -6815,10 +6604,7 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         self.inner.template_type = template_type;
         self
     }
-    pub fn set_descriptor_set_layout(
-        mut self,
-        descriptor_set_layout: Option<vk::DescriptorSetLayout>,
-    ) -> Self {
+    pub fn set_descriptor_set_layout(mut self, descriptor_set_layout: Option<vk::DescriptorSetLayout>) -> Self {
         self.inner.descriptor_set_layout = descriptor_set_layout;
         self
     }
@@ -7048,17 +6834,10 @@ impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
         self
     }
     pub fn set_viewport_w_scaling_enable(mut self, viewport_w_scaling_enable: bool) -> Self {
-        self.inner.viewport_w_scaling_enable = if viewport_w_scaling_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.viewport_w_scaling_enable = if viewport_w_scaling_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_p_viewport_w_scalings(
-        mut self,
-        p_viewport_w_scalings: &'a [vk::ViewportWScalingNV],
-    ) -> Self {
+    pub fn set_p_viewport_w_scalings(mut self, p_viewport_w_scalings: &'a [vk::ViewportWScalingNV]) -> Self {
         self.inner.viewport_count = p_viewport_w_scalings.len() as u32;
         self.inner.p_viewport_w_scalings = p_viewport_w_scalings.as_ptr();
         self
@@ -7103,10 +6882,7 @@ impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
         self.inner.viewport_count = viewport_count;
         self
     }
-    pub fn set_p_viewport_swizzles(
-        mut self,
-        p_viewport_swizzles: &'a [vk::ViewportSwizzleNV],
-    ) -> Self {
+    pub fn set_p_viewport_swizzles(mut self, p_viewport_swizzles: &'a [vk::ViewportSwizzleNV]) -> Self {
         self.inner.viewport_count = p_viewport_swizzles.len() as u32;
         self.inner.p_viewport_swizzles = p_viewport_swizzles.as_ptr();
         self
@@ -7183,10 +6959,7 @@ impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_discard_rectangle_mode(
-        mut self,
-        discard_rectangle_mode: vk::DiscardRectangleModeEXT,
-    ) -> Self {
+    pub fn set_discard_rectangle_mode(mut self, discard_rectangle_mode: vk::DiscardRectangleModeEXT) -> Self {
         self.inner.discard_rectangle_mode = discard_rectangle_mode;
         self
     }
@@ -7231,10 +7004,7 @@ impl<'a> RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_aspect_references(
-        mut self,
-        p_aspect_references: &'a [vk::InputAttachmentAspectReference],
-    ) -> Self {
+    pub fn set_p_aspect_references(mut self, p_aspect_references: &'a [vk::InputAttachmentAspectReference]) -> Self {
         self.inner.aspect_reference_count = p_aspect_references.len() as u32;
         self.inner.p_aspect_references = p_aspect_references.as_ptr();
         self
@@ -7359,28 +7129,19 @@ impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
         mut self,
         uniform_and_storage_buffer16_bit_access: bool,
     ) -> Self {
-        self.inner.uniform_and_storage_buffer16_bit_access =
-            if uniform_and_storage_buffer16_bit_access {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.uniform_and_storage_buffer16_bit_access = if uniform_and_storage_buffer16_bit_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_storage_push_constant16(mut self, storage_push_constant16: bool) -> Self {
-        self.inner.storage_push_constant16 = if storage_push_constant16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.storage_push_constant16 = if storage_push_constant16 { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_storage_input_output16(mut self, storage_input_output16: bool) -> Self {
-        self.inner.storage_input_output16 = if storage_input_output16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.storage_input_output16 = if storage_input_output16 { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -7699,10 +7460,7 @@ impl<'a> SamplerYcbcrConversionCreateInfoBuilder<'a> {
         self.inner.chroma_filter = chroma_filter;
         self
     }
-    pub fn set_force_explicit_reconstruction(
-        mut self,
-        force_explicit_reconstruction: bool,
-    ) -> Self {
+    pub fn set_force_explicit_reconstruction(mut self, force_explicit_reconstruction: bool) -> Self {
         self.inner.force_explicit_reconstruction = if force_explicit_reconstruction {
             vk::TRUE
         } else {
@@ -7815,11 +7573,7 @@ impl<'a> PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a> {
         self
     }
     pub fn set_sampler_ycbcr_conversion(mut self, sampler_ycbcr_conversion: bool) -> Self {
-        self.inner.sampler_ycbcr_conversion = if sampler_ycbcr_conversion {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.sampler_ycbcr_conversion = if sampler_ycbcr_conversion { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -7899,11 +7653,7 @@ impl<'a> ProtectedSubmitInfoBuilder<'a> {
         self
     }
     pub fn set_protected_submit(mut self, protected_submit: bool) -> Self {
-        self.inner.protected_submit = if protected_submit {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.protected_submit = if protected_submit { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -7939,11 +7689,7 @@ impl<'a> PhysicalDeviceProtectedMemoryFeaturesBuilder<'a> {
         self
     }
     pub fn set_protected_memory(mut self, protected_memory: bool) -> Self {
-        self.inner.protected_memory = if protected_memory {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.protected_memory = if protected_memory { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -7979,11 +7725,7 @@ impl<'a> PhysicalDeviceProtectedMemoryPropertiesBuilder<'a> {
         self
     }
     pub fn set_protected_no_fault(mut self, protected_no_fault: bool) -> Self {
-        self.inner.protected_no_fault = if protected_no_fault {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.protected_no_fault = if protected_no_fault { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -8067,11 +7809,7 @@ impl<'a> PipelineCoverageToColorStateCreateInfoNVBuilder<'a> {
         self
     }
     pub fn set_coverage_to_color_enable(mut self, coverage_to_color_enable: bool) -> Self {
-        self.inner.coverage_to_color_enable = if coverage_to_color_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.coverage_to_color_enable = if coverage_to_color_enable { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_coverage_to_color_location(mut self, coverage_to_color_location: u32) -> Self {
@@ -8110,24 +7848,15 @@ impl<'a> SampleLocationsInfoEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_sample_locations_per_pixel(
-        mut self,
-        sample_locations_per_pixel: vk::SampleCountFlags,
-    ) -> Self {
+    pub fn set_sample_locations_per_pixel(mut self, sample_locations_per_pixel: vk::SampleCountFlags) -> Self {
         self.inner.sample_locations_per_pixel = sample_locations_per_pixel;
         self
     }
-    pub fn set_sample_location_grid_size(
-        mut self,
-        sample_location_grid_size: vk::Extent2D,
-    ) -> Self {
+    pub fn set_sample_location_grid_size(mut self, sample_location_grid_size: vk::Extent2D) -> Self {
         self.inner.sample_location_grid_size = sample_location_grid_size;
         self
     }
-    pub fn set_p_sample_locations(
-        mut self,
-        p_sample_locations: &'a [vk::SampleLocationEXT],
-    ) -> Self {
+    pub fn set_p_sample_locations(mut self, p_sample_locations: &'a [vk::SampleLocationEXT]) -> Self {
         self.inner.sample_locations_count = p_sample_locations.len() as u32;
         self.inner.p_sample_locations = p_sample_locations.as_ptr();
         self
@@ -8168,18 +7897,15 @@ impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
         mut self,
         p_attachment_initial_sample_locations: &'a [vk::AttachmentSampleLocationsEXT],
     ) -> Self {
-        self.inner.attachment_initial_sample_locations_count =
-            p_attachment_initial_sample_locations.len() as u32;
-        self.inner.p_attachment_initial_sample_locations =
-            p_attachment_initial_sample_locations.as_ptr();
+        self.inner.attachment_initial_sample_locations_count = p_attachment_initial_sample_locations.len() as u32;
+        self.inner.p_attachment_initial_sample_locations = p_attachment_initial_sample_locations.as_ptr();
         self
     }
     pub fn set_p_post_subpass_sample_locations(
         mut self,
         p_post_subpass_sample_locations: &'a [vk::SubpassSampleLocationsEXT],
     ) -> Self {
-        self.inner.post_subpass_sample_locations_count =
-            p_post_subpass_sample_locations.len() as u32;
+        self.inner.post_subpass_sample_locations_count = p_post_subpass_sample_locations.len() as u32;
         self.inner.p_post_subpass_sample_locations = p_post_subpass_sample_locations.as_ptr();
         self
     }
@@ -8216,17 +7942,10 @@ impl<'a> PipelineSampleLocationsStateCreateInfoEXTBuilder<'a> {
         self
     }
     pub fn set_sample_locations_enable(mut self, sample_locations_enable: bool) -> Self {
-        self.inner.sample_locations_enable = if sample_locations_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.sample_locations_enable = if sample_locations_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_sample_locations_info(
-        mut self,
-        sample_locations_info: vk::SampleLocationsInfoEXT,
-    ) -> Self {
+    pub fn set_sample_locations_info(mut self, sample_locations_info: vk::SampleLocationsInfoEXT) -> Self {
         self.inner.sample_locations_info = sample_locations_info;
         self
     }
@@ -8298,10 +8017,7 @@ impl<'a> PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_advanced_blend_coherent_operations(
-        mut self,
-        advanced_blend_coherent_operations: bool,
-    ) -> Self {
+    pub fn set_advanced_blend_coherent_operations(mut self, advanced_blend_coherent_operations: bool) -> Self {
         self.inner.advanced_blend_coherent_operations = if advanced_blend_coherent_operations {
             vk::TRUE
         } else {
@@ -8342,19 +8058,11 @@ impl<'a> PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
         self
     }
     pub fn set_src_premultiplied(mut self, src_premultiplied: bool) -> Self {
-        self.inner.src_premultiplied = if src_premultiplied {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.src_premultiplied = if src_premultiplied { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_dst_premultiplied(mut self, dst_premultiplied: bool) -> Self {
-        self.inner.dst_premultiplied = if dst_premultiplied {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.dst_premultiplied = if dst_premultiplied { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_blend_overlap(mut self, blend_overlap: vk::BlendOverlapEXT) -> Self {
@@ -8433,10 +8141,7 @@ impl<'a> DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_inline_uniform_block_bindings(
-        mut self,
-        max_inline_uniform_block_bindings: u32,
-    ) -> Self {
+    pub fn set_max_inline_uniform_block_bindings(mut self, max_inline_uniform_block_bindings: u32) -> Self {
         self.inner.max_inline_uniform_block_bindings = max_inline_uniform_block_bindings;
         self
     }
@@ -8476,17 +8181,11 @@ impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_coverage_modulation_mode(
-        mut self,
-        coverage_modulation_mode: vk::CoverageModulationModeNV,
-    ) -> Self {
+    pub fn set_coverage_modulation_mode(mut self, coverage_modulation_mode: vk::CoverageModulationModeNV) -> Self {
         self.inner.coverage_modulation_mode = coverage_modulation_mode;
         self
     }
-    pub fn set_coverage_modulation_table_enable(
-        mut self,
-        coverage_modulation_table_enable: bool,
-    ) -> Self {
+    pub fn set_coverage_modulation_table_enable(mut self, coverage_modulation_table_enable: bool) -> Self {
         self.inner.coverage_modulation_table_enable = if coverage_modulation_table_enable {
             vk::TRUE
         } else {
@@ -8494,17 +8193,11 @@ impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
         };
         self
     }
-    pub fn set_coverage_modulation_table_count(
-        mut self,
-        coverage_modulation_table_count: u32,
-    ) -> Self {
+    pub fn set_coverage_modulation_table_count(mut self, coverage_modulation_table_count: u32) -> Self {
         self.inner.coverage_modulation_table_count = coverage_modulation_table_count;
         self
     }
-    pub fn set_p_coverage_modulation_table(
-        mut self,
-        p_coverage_modulation_table: &'a [f32],
-    ) -> Self {
+    pub fn set_p_coverage_modulation_table(mut self, p_coverage_modulation_table: &'a [f32]) -> Self {
         self.inner.coverage_modulation_table_count = p_coverage_modulation_table.len() as u32;
         self.inner.p_coverage_modulation_table = p_coverage_modulation_table.as_ptr();
         self
@@ -8659,11 +8352,7 @@ impl<'a> PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
         self
     }
     pub fn set_shader_draw_parameters(mut self, shader_draw_parameters: bool) -> Self {
-        self.inner.shader_draw_parameters = if shader_draw_parameters {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.shader_draw_parameters = if shader_draw_parameters { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -8918,10 +8607,7 @@ impl<'a> DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn set_message_severity(
-        mut self,
-        message_severity: vk::DebugUtilsMessageSeverityFlagsEXT,
-    ) -> Self {
+    pub fn set_message_severity(mut self, message_severity: vk::DebugUtilsMessageSeverityFlagsEXT) -> Self {
         self.inner.message_severity = message_severity;
         self
     }
@@ -8929,10 +8615,7 @@ impl<'a> DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
         self.inner.message_type = message_type;
         self
     }
-    pub fn set_pfn_user_callback(
-        mut self,
-        pfn_user_callback: vk::FnDebugUtilsMessengerCallbackEXT,
-    ) -> Self {
+    pub fn set_pfn_user_callback(mut self, pfn_user_callback: vk::FnDebugUtilsMessengerCallbackEXT) -> Self {
         self.inner.pfn_user_callback = Some(pfn_user_callback);
         self
     }
@@ -9163,46 +8846,33 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         self.inner.primitive_overestimation_size = primitive_overestimation_size;
         self
     }
-    pub fn set_max_extra_primitive_overestimation_size(
-        mut self,
-        max_extra_primitive_overestimation_size: f32,
-    ) -> Self {
-        self.inner.max_extra_primitive_overestimation_size =
-            max_extra_primitive_overestimation_size;
+    pub fn set_max_extra_primitive_overestimation_size(mut self, max_extra_primitive_overestimation_size: f32) -> Self {
+        self.inner.max_extra_primitive_overestimation_size = max_extra_primitive_overestimation_size;
         self
     }
     pub fn set_extra_primitive_overestimation_size_granularity(
         mut self,
         extra_primitive_overestimation_size_granularity: f32,
     ) -> Self {
-        self.inner.extra_primitive_overestimation_size_granularity =
-            extra_primitive_overestimation_size_granularity;
+        self.inner.extra_primitive_overestimation_size_granularity = extra_primitive_overestimation_size_granularity;
         self
     }
     pub fn set_primitive_underestimation(mut self, primitive_underestimation: bool) -> Self {
-        self.inner.primitive_underestimation = if primitive_underestimation {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.primitive_underestimation = if primitive_underestimation { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn set_conservative_point_and_line_rasterization(
         mut self,
         conservative_point_and_line_rasterization: bool,
     ) -> Self {
-        self.inner.conservative_point_and_line_rasterization =
-            if conservative_point_and_line_rasterization {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.conservative_point_and_line_rasterization = if conservative_point_and_line_rasterization {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
-    pub fn set_degenerate_triangles_rasterized(
-        mut self,
-        degenerate_triangles_rasterized: bool,
-    ) -> Self {
+    pub fn set_degenerate_triangles_rasterized(mut self, degenerate_triangles_rasterized: bool) -> Self {
         self.inner.degenerate_triangles_rasterized = if degenerate_triangles_rasterized {
             vk::TRUE
         } else {
@@ -9222,24 +8892,22 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         mut self,
         fully_covered_fragment_shader_input_variable: bool,
     ) -> Self {
-        self.inner.fully_covered_fragment_shader_input_variable =
-            if fully_covered_fragment_shader_input_variable {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.fully_covered_fragment_shader_input_variable = if fully_covered_fragment_shader_input_variable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_conservative_rasterization_post_depth_coverage(
         mut self,
         conservative_rasterization_post_depth_coverage: bool,
     ) -> Self {
-        self.inner.conservative_rasterization_post_depth_coverage =
-            if conservative_rasterization_post_depth_coverage {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.conservative_rasterization_post_depth_coverage = if conservative_rasterization_post_depth_coverage {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
 }
@@ -9274,10 +8942,7 @@ impl<'a> PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(
-        mut self,
-        flags: vk::PipelineRasterizationConservativeStateCreateFlagsEXT,
-    ) -> Self {
+    pub fn set_flags(mut self, flags: vk::PipelineRasterizationConservativeStateCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -9288,10 +8953,7 @@ impl<'a> PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a> {
         self.inner.conservative_rasterization_mode = conservative_rasterization_mode;
         self
     }
-    pub fn set_extra_primitive_overestimation_size(
-        mut self,
-        extra_primitive_overestimation_size: f32,
-    ) -> Self {
+    pub fn set_extra_primitive_overestimation_size(mut self, extra_primitive_overestimation_size: f32) -> Self {
         self.inner.extra_primitive_overestimation_size = extra_primitive_overestimation_size;
         self
     }
@@ -9331,20 +8993,18 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_input_attachment_array_dynamic_indexing: bool,
     ) -> Self {
-        self.inner.shader_input_attachment_array_dynamic_indexing =
-            if shader_input_attachment_array_dynamic_indexing {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.shader_input_attachment_array_dynamic_indexing = if shader_input_attachment_array_dynamic_indexing {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_shader_uniform_texel_buffer_array_dynamic_indexing(
         mut self,
         shader_uniform_texel_buffer_array_dynamic_indexing: bool,
     ) -> Self {
-        self.inner
-            .shader_uniform_texel_buffer_array_dynamic_indexing =
+        self.inner.shader_uniform_texel_buffer_array_dynamic_indexing =
             if shader_uniform_texel_buffer_array_dynamic_indexing {
                 vk::TRUE
             } else {
@@ -9356,8 +9016,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_storage_texel_buffer_array_dynamic_indexing: bool,
     ) -> Self {
-        self.inner
-            .shader_storage_texel_buffer_array_dynamic_indexing =
+        self.inner.shader_storage_texel_buffer_array_dynamic_indexing =
             if shader_storage_texel_buffer_array_dynamic_indexing {
                 vk::TRUE
             } else {
@@ -9381,12 +9040,12 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_sampled_image_array_non_uniform_indexing: bool,
     ) -> Self {
-        self.inner.shader_sampled_image_array_non_uniform_indexing =
-            if shader_sampled_image_array_non_uniform_indexing {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.shader_sampled_image_array_non_uniform_indexing = if shader_sampled_image_array_non_uniform_indexing
+        {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_shader_storage_buffer_array_non_uniform_indexing(
@@ -9405,20 +9064,19 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_storage_image_array_non_uniform_indexing: bool,
     ) -> Self {
-        self.inner.shader_storage_image_array_non_uniform_indexing =
-            if shader_storage_image_array_non_uniform_indexing {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.shader_storage_image_array_non_uniform_indexing = if shader_storage_image_array_non_uniform_indexing
+        {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_shader_input_attachment_array_non_uniform_indexing(
         mut self,
         shader_input_attachment_array_non_uniform_indexing: bool,
     ) -> Self {
-        self.inner
-            .shader_input_attachment_array_non_uniform_indexing =
+        self.inner.shader_input_attachment_array_non_uniform_indexing =
             if shader_input_attachment_array_non_uniform_indexing {
                 vk::TRUE
             } else {
@@ -9430,8 +9088,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_uniform_texel_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
-        self.inner
-            .shader_uniform_texel_buffer_array_non_uniform_indexing =
+        self.inner.shader_uniform_texel_buffer_array_non_uniform_indexing =
             if shader_uniform_texel_buffer_array_non_uniform_indexing {
                 vk::TRUE
             } else {
@@ -9443,8 +9100,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         shader_storage_texel_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
-        self.inner
-            .shader_storage_texel_buffer_array_non_uniform_indexing =
+        self.inner.shader_storage_texel_buffer_array_non_uniform_indexing =
             if shader_storage_texel_buffer_array_non_uniform_indexing {
                 vk::TRUE
             } else {
@@ -9456,8 +9112,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_uniform_buffer_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_uniform_buffer_update_after_bind =
+        self.inner.descriptor_binding_uniform_buffer_update_after_bind =
             if descriptor_binding_uniform_buffer_update_after_bind {
                 vk::TRUE
             } else {
@@ -9469,8 +9124,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_sampled_image_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_sampled_image_update_after_bind =
+        self.inner.descriptor_binding_sampled_image_update_after_bind =
             if descriptor_binding_sampled_image_update_after_bind {
                 vk::TRUE
             } else {
@@ -9482,8 +9136,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_storage_image_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_storage_image_update_after_bind =
+        self.inner.descriptor_binding_storage_image_update_after_bind =
             if descriptor_binding_storage_image_update_after_bind {
                 vk::TRUE
             } else {
@@ -9495,8 +9148,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_storage_buffer_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_storage_buffer_update_after_bind =
+        self.inner.descriptor_binding_storage_buffer_update_after_bind =
             if descriptor_binding_storage_buffer_update_after_bind {
                 vk::TRUE
             } else {
@@ -9508,8 +9160,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_uniform_texel_buffer_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_uniform_texel_buffer_update_after_bind =
+        self.inner.descriptor_binding_uniform_texel_buffer_update_after_bind =
             if descriptor_binding_uniform_texel_buffer_update_after_bind {
                 vk::TRUE
             } else {
@@ -9521,8 +9172,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_storage_texel_buffer_update_after_bind: bool,
     ) -> Self {
-        self.inner
-            .descriptor_binding_storage_texel_buffer_update_after_bind =
+        self.inner.descriptor_binding_storage_texel_buffer_update_after_bind =
             if descriptor_binding_storage_texel_buffer_update_after_bind {
                 vk::TRUE
             } else {
@@ -9534,18 +9184,14 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_update_unused_while_pending: bool,
     ) -> Self {
-        self.inner.descriptor_binding_update_unused_while_pending =
-            if descriptor_binding_update_unused_while_pending {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.descriptor_binding_update_unused_while_pending = if descriptor_binding_update_unused_while_pending {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
-    pub fn set_descriptor_binding_partially_bound(
-        mut self,
-        descriptor_binding_partially_bound: bool,
-    ) -> Self {
+    pub fn set_descriptor_binding_partially_bound(mut self, descriptor_binding_partially_bound: bool) -> Self {
         self.inner.descriptor_binding_partially_bound = if descriptor_binding_partially_bound {
             vk::TRUE
         } else {
@@ -9557,20 +9203,15 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         mut self,
         descriptor_binding_variable_descriptor_count: bool,
     ) -> Self {
-        self.inner.descriptor_binding_variable_descriptor_count =
-            if descriptor_binding_variable_descriptor_count {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn set_runtime_descriptor_array(mut self, runtime_descriptor_array: bool) -> Self {
-        self.inner.runtime_descriptor_array = if runtime_descriptor_array {
+        self.inner.descriptor_binding_variable_descriptor_count = if descriptor_binding_variable_descriptor_count {
             vk::TRUE
         } else {
             vk::FALSE
         };
+        self
+    }
+    pub fn set_runtime_descriptor_array(mut self, runtime_descriptor_array: bool) -> Self {
+        self.inner.runtime_descriptor_array = if runtime_descriptor_array { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -9605,10 +9246,7 @@ impl<'a> DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_binding_flags(
-        mut self,
-        p_binding_flags: &'a [vk::DescriptorBindingFlagsEXT],
-    ) -> Self {
+    pub fn set_p_binding_flags(mut self, p_binding_flags: &'a [vk::DescriptorBindingFlagsEXT]) -> Self {
         self.inner.binding_count = p_binding_flags.len() as u32;
         self.inner.p_binding_flags = p_binding_flags.as_ptr();
         self
@@ -9806,10 +9444,7 @@ impl<'a> SubpassDescription2KHRBuilder<'a> {
         self.inner.view_mask = view_mask;
         self
     }
-    pub fn set_p_input_attachments(
-        mut self,
-        p_input_attachments: &'a [vk::AttachmentReference2KHR],
-    ) -> Self {
+    pub fn set_p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference2KHR]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
         self.inner.p_input_attachments = p_input_attachments.as_ptr();
         self
@@ -9824,16 +9459,14 @@ impl<'a> SubpassDescription2KHRBuilder<'a> {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
         self.inner.p_color_attachments = p_color_attachments.as_ptr();
-        self.inner.p_resolve_attachments =
-            p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
+        self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
     pub fn set_p_depth_stencil_attachment(
         mut self,
         p_depth_stencil_attachment: Option<&'a vk::AttachmentReference2KHR>,
     ) -> Self {
-        self.inner.p_depth_stencil_attachment =
-            p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
+        self.inner.p_depth_stencil_attachment = p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
         self
     }
     pub fn set_p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
@@ -10293,24 +9926,16 @@ impl<'a> PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
         };
         self
     }
-    pub fn set_uniform_and_storage_buffer8_bit_access(
-        mut self,
-        uniform_and_storage_buffer8_bit_access: bool,
-    ) -> Self {
-        self.inner.uniform_and_storage_buffer8_bit_access =
-            if uniform_and_storage_buffer8_bit_access {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn set_storage_push_constant8(mut self, storage_push_constant8: bool) -> Self {
-        self.inner.storage_push_constant8 = if storage_push_constant8 {
+    pub fn set_uniform_and_storage_buffer8_bit_access(mut self, uniform_and_storage_buffer8_bit_access: bool) -> Self {
+        self.inner.uniform_and_storage_buffer8_bit_access = if uniform_and_storage_buffer8_bit_access {
             vk::TRUE
         } else {
             vk::FALSE
         };
+        self
+    }
+    pub fn set_storage_push_constant8(mut self, storage_push_constant8: bool) -> Self {
+        self.inner.storage_push_constant8 = if storage_push_constant8 { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -10346,17 +9971,10 @@ impl<'a> PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
         self
     }
     pub fn set_conditional_rendering(mut self, conditional_rendering: bool) -> Self {
-        self.inner.conditional_rendering = if conditional_rendering {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.conditional_rendering = if conditional_rendering { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_inherited_conditional_rendering(
-        mut self,
-        inherited_conditional_rendering: bool,
-    ) -> Self {
+    pub fn set_inherited_conditional_rendering(mut self, inherited_conditional_rendering: bool) -> Self {
         self.inner.inherited_conditional_rendering = if inherited_conditional_rendering {
             vk::TRUE
         } else {
@@ -10396,28 +10014,23 @@ impl<'a> PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_vertex_attribute_instance_rate_divisor(
-        mut self,
-        vertex_attribute_instance_rate_divisor: bool,
-    ) -> Self {
-        self.inner.vertex_attribute_instance_rate_divisor =
-            if vertex_attribute_instance_rate_divisor {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+    pub fn set_vertex_attribute_instance_rate_divisor(mut self, vertex_attribute_instance_rate_divisor: bool) -> Self {
+        self.inner.vertex_attribute_instance_rate_divisor = if vertex_attribute_instance_rate_divisor {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
     pub fn set_vertex_attribute_instance_rate_zero_divisor(
         mut self,
         vertex_attribute_instance_rate_zero_divisor: bool,
     ) -> Self {
-        self.inner.vertex_attribute_instance_rate_zero_divisor =
-            if vertex_attribute_instance_rate_zero_divisor {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
+        self.inner.vertex_attribute_instance_rate_zero_divisor = if vertex_attribute_instance_rate_zero_divisor {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
         self
     }
 }
@@ -10568,10 +10181,7 @@ impl<'a> PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_representative_fragment_test_enable(
-        mut self,
-        representative_fragment_test_enable: bool,
-    ) -> Self {
+    pub fn set_representative_fragment_test_enable(mut self, representative_fragment_test_enable: bool) -> Self {
         self.inner.representative_fragment_test_enable = if representative_fragment_test_enable {
             vk::TRUE
         } else {
@@ -10612,11 +10222,7 @@ impl<'a> PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a> {
         self
     }
     pub fn set_exclusive_scissor(mut self, exclusive_scissor: bool) -> Self {
-        self.inner.exclusive_scissor = if exclusive_scissor {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.exclusive_scissor = if exclusive_scissor { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -10689,11 +10295,7 @@ impl<'a> PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a> {
         self
     }
     pub fn set_corner_sampled_image(mut self, corner_sampled_image: bool) -> Self {
-        self.inner.corner_sampled_image = if corner_sampled_image {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.corner_sampled_image = if corner_sampled_image { vk::TRUE } else { vk::FALSE };
         self
     }
 }
@@ -10728,10 +10330,7 @@ impl<'a> PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_compute_derivative_group_quads(
-        mut self,
-        compute_derivative_group_quads: bool,
-    ) -> Self {
+    pub fn set_compute_derivative_group_quads(mut self, compute_derivative_group_quads: bool) -> Self {
         self.inner.compute_derivative_group_quads = if compute_derivative_group_quads {
             vk::TRUE
         } else {
@@ -10739,10 +10338,7 @@ impl<'a> PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
         };
         self
     }
-    pub fn set_compute_derivative_group_linear(
-        mut self,
-        compute_derivative_group_linear: bool,
-    ) -> Self {
+    pub fn set_compute_derivative_group_linear(mut self, compute_derivative_group_linear: bool) -> Self {
         self.inner.compute_derivative_group_linear = if compute_derivative_group_linear {
             vk::TRUE
         } else {
@@ -10891,17 +10487,10 @@ impl<'a> PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
         self
     }
     pub fn set_shading_rate_image_enable(mut self, shading_rate_image_enable: bool) -> Self {
-        self.inner.shading_rate_image_enable = if shading_rate_image_enable {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.shading_rate_image_enable = if shading_rate_image_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_p_shading_rate_palettes(
-        mut self,
-        p_shading_rate_palettes: &'a [vk::ShadingRatePaletteNV],
-    ) -> Self {
+    pub fn set_p_shading_rate_palettes(mut self, p_shading_rate_palettes: &'a [vk::ShadingRatePaletteNV]) -> Self {
         self.inner.viewport_count = p_shading_rate_palettes.len() as u32;
         self.inner.p_shading_rate_palettes = p_shading_rate_palettes.as_ptr();
         self
@@ -10939,17 +10528,10 @@ impl<'a> PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a> {
         self
     }
     pub fn set_shading_rate_image(mut self, shading_rate_image: bool) -> Self {
-        self.inner.shading_rate_image = if shading_rate_image {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+        self.inner.shading_rate_image = if shading_rate_image { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_shading_rate_coarse_sample_order(
-        mut self,
-        shading_rate_coarse_sample_order: bool,
-    ) -> Self {
+    pub fn set_shading_rate_coarse_sample_order(mut self, shading_rate_coarse_sample_order: bool) -> Self {
         self.inner.shading_rate_coarse_sample_order = if shading_rate_coarse_sample_order {
             vk::TRUE
         } else {
@@ -10989,10 +10571,7 @@ impl<'a> CoarseSampleOrderCustomNVBuilder<'a> {
         self.inner.sample_count = sample_count;
         self
     }
-    pub fn set_p_sample_locations(
-        mut self,
-        p_sample_locations: &'a [vk::CoarseSampleLocationNV],
-    ) -> Self {
+    pub fn set_p_sample_locations(mut self, p_sample_locations: &'a [vk::CoarseSampleLocationNV]) -> Self {
         self.inner.sample_location_count = p_sample_locations.len() as u32;
         self.inner.p_sample_locations = p_sample_locations.as_ptr();
         self
@@ -11033,10 +10612,7 @@ impl<'a> PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
         self.inner.sample_order_type = sample_order_type;
         self
     }
-    pub fn set_p_custom_sample_orders(
-        mut self,
-        p_custom_sample_orders: &'a [vk::CoarseSampleOrderCustomNV],
-    ) -> Self {
+    pub fn set_p_custom_sample_orders(mut self, p_custom_sample_orders: &'a [vk::CoarseSampleOrderCustomNV]) -> Self {
         self.inner.custom_sample_order_count = p_custom_sample_orders.len() as u32;
         self.inner.p_custom_sample_orders = p_custom_sample_orders.as_ptr();
         self
@@ -11117,10 +10693,7 @@ impl<'a> PhysicalDeviceMeshShaderPropertiesNVBuilder<'a> {
         self.inner.max_draw_mesh_tasks_count = max_draw_mesh_tasks_count;
         self
     }
-    pub fn set_max_task_work_group_invocations(
-        mut self,
-        max_task_work_group_invocations: u32,
-    ) -> Self {
+    pub fn set_max_task_work_group_invocations(mut self, max_task_work_group_invocations: u32) -> Self {
         self.inner.max_task_work_group_invocations = max_task_work_group_invocations;
         self
     }
@@ -11132,10 +10705,7 @@ impl<'a> PhysicalDeviceMeshShaderPropertiesNVBuilder<'a> {
         self.inner.max_task_output_count = max_task_output_count;
         self
     }
-    pub fn set_max_mesh_work_group_invocations(
-        mut self,
-        max_mesh_work_group_invocations: u32,
-    ) -> Self {
+    pub fn set_max_mesh_work_group_invocations(mut self, max_mesh_work_group_invocations: u32) -> Self {
         self.inner.max_mesh_work_group_invocations = max_mesh_work_group_invocations;
         self
     }
@@ -11155,17 +10725,11 @@ impl<'a> PhysicalDeviceMeshShaderPropertiesNVBuilder<'a> {
         self.inner.max_mesh_multiview_view_count = max_mesh_multiview_view_count;
         self
     }
-    pub fn set_mesh_output_per_vertex_granularity(
-        mut self,
-        mesh_output_per_vertex_granularity: u32,
-    ) -> Self {
+    pub fn set_mesh_output_per_vertex_granularity(mut self, mesh_output_per_vertex_granularity: u32) -> Self {
         self.inner.mesh_output_per_vertex_granularity = mesh_output_per_vertex_granularity;
         self
     }
-    pub fn set_mesh_output_per_primitive_granularity(
-        mut self,
-        mesh_output_per_primitive_granularity: u32,
-    ) -> Self {
+    pub fn set_mesh_output_per_primitive_granularity(mut self, mesh_output_per_primitive_granularity: u32) -> Self {
         self.inner.mesh_output_per_primitive_granularity = mesh_output_per_primitive_granularity;
         self
     }
@@ -11485,10 +11049,7 @@ impl<'a> BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_acceleration_structure(
-        mut self,
-        acceleration_structure: vk::AccelerationStructureNVX,
-    ) -> Self {
+    pub fn set_acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
@@ -11577,10 +11138,7 @@ impl<'a> AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_acceleration_structure(
-        mut self,
-        acceleration_structure: vk::AccelerationStructureNVX,
-    ) -> Self {
+    pub fn set_acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
