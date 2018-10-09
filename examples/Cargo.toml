@@ -1,11 +1,8 @@
 [package]
-name = "generator"
+name = "examples"
 version = "0.1.0"
 authors = ["Simon Brown <si@sjbrown.co.uk>"]
 publish = false
 
 [dependencies]
-heck = "0.3.0"
-nom = "4.0.0"
-take_mut = "0.2.2"
-vk-parse = "0.2.0"
+vkr = { path = "../vkr" }
