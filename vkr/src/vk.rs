@@ -1219,7 +1219,9 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
 pub struct DescriptorSetLayoutCreateFlags(u32);
 impl DescriptorSetLayoutCreateFlags {
     /// Descriptors are pushed via flink:vkCmdPushDescriptorSetKHR
+    /// Added by extension VK_KHR_push_descriptor.
     pub const PUSH_DESCRIPTOR_KHR: Self = DescriptorSetLayoutCreateFlags(0x1);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = DescriptorSetLayoutCreateFlags(0x2);
 }
 impl default::Default for DescriptorSetLayoutCreateFlags {
@@ -1851,13 +1853,21 @@ impl AccessFlags {
     /// Controls coherency of memory writes
     pub const MEMORY_WRITE: Self = AccessFlags(0x10000);
     /// read access flag for reading conditional rendering predicate
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_READ_EXT: Self = AccessFlags(0x100000);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const COMMAND_PROCESS_READ_NVX: Self = AccessFlags(0x20000);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const COMMAND_PROCESS_WRITE_NVX: Self = AccessFlags(0x40000);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = AccessFlags(0x80000);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_READ_NV: Self = AccessFlags(0x800000);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_READ_NVX: Self = AccessFlags(0x200000);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_WRITE_NVX: Self = AccessFlags(0x400000);
+    /// Added by extension VK_EXT_extension_219.
     pub const RESERVED_24_EXT: Self = AccessFlags(0x1000000);
 }
 impl default::Default for AccessFlags {
@@ -1976,7 +1986,9 @@ impl BufferUsageFlags {
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
     pub const INDIRECT_BUFFER: Self = BufferUsageFlags(0x100);
     /// Specifies the buffer can be used as predicate in conditional rendering
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = BufferUsageFlags(0x200);
+    /// Added by extension VK_NVX_raytracing.
     pub const RAYTRACING_NVX: Self = BufferUsageFlags(0x400);
 }
 impl default::Default for BufferUsageFlags {
@@ -2155,13 +2167,21 @@ impl ShaderStageFlags {
     pub const COMPUTE: Self = ShaderStageFlags(0x20);
     pub const ALL_GRAPHICS: Self = ShaderStageFlags(0x1f);
     pub const ALL: Self = ShaderStageFlags(0x7fffffff);
+    /// Added by extension VK_NVX_raytracing.
     pub const RAYGEN_NVX: Self = ShaderStageFlags(0x100);
+    /// Added by extension VK_NVX_raytracing.
     pub const ANY_HIT_NVX: Self = ShaderStageFlags(0x200);
+    /// Added by extension VK_NVX_raytracing.
     pub const CLOSEST_HIT_NVX: Self = ShaderStageFlags(0x400);
+    /// Added by extension VK_NVX_raytracing.
     pub const MISS_NVX: Self = ShaderStageFlags(0x800);
+    /// Added by extension VK_NVX_raytracing.
     pub const INTERSECTION_NVX: Self = ShaderStageFlags(0x1000);
+    /// Added by extension VK_NVX_raytracing.
     pub const CALLABLE_NVX: Self = ShaderStageFlags(0x2000);
+    /// Added by extension VK_NV_mesh_shader.
     pub const TASK_NV: Self = ShaderStageFlags(0x40);
+    /// Added by extension VK_NV_mesh_shader.
     pub const MESH_NV: Self = ShaderStageFlags(0x80);
 }
 impl default::Default for ShaderStageFlags {
@@ -2268,7 +2288,9 @@ impl ImageUsageFlags {
     pub const TRANSIENT_ATTACHMENT: Self = ImageUsageFlags(0x40);
     /// Can be used as framebuffer input attachment
     pub const INPUT_ATTACHMENT: Self = ImageUsageFlags(0x80);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = ImageUsageFlags(0x100);
+    /// Added by extension VK_EXT_extension_219.
     pub const RESERVED_9_EXT: Self = ImageUsageFlags(0x200);
 }
 impl default::Default for ImageUsageFlags {
@@ -2373,14 +2395,17 @@ impl ImageCreateFlags {
     /// Image requires protected memory
     pub const PROTECTED: Self = ImageCreateFlags(0x800);
     pub const DISJOINT: Self = ImageCreateFlags(0x200);
+    /// Added by extension VK_NV_corner_sampled_image.
     pub const CORNER_SAMPLED_NV: Self = ImageCreateFlags(0x2000);
     pub const SPLIT_INSTANCE_BIND_REGIONS_KHR: Self = Self::SPLIT_INSTANCE_BIND_REGIONS;
     pub const N2D_ARRAY_COMPATIBLE_KHR: Self = Self::N2D_ARRAY_COMPATIBLE;
     pub const BLOCK_TEXEL_VIEW_COMPATIBLE_KHR: Self = Self::BLOCK_TEXEL_VIEW_COMPATIBLE;
     pub const EXTENDED_USAGE_KHR: Self = Self::EXTENDED_USAGE;
+    /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = ImageCreateFlags(0x1000);
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const ALIAS_KHR: Self = Self::ALIAS;
+    /// Added by extension VK_EXT_extension_219.
     pub const RESERVED_14_EXT: Self = ImageCreateFlags(0x4000);
 }
 impl default::Default for ImageCreateFlags {
@@ -2544,6 +2569,7 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE: Self = PipelineCreateFlags(0x10);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
+    /// Added by extension VK_NVX_raytracing.
     pub const DEFER_COMPILE_NVX: Self = PipelineCreateFlags(0x20);
 }
 impl default::Default for PipelineCreateFlags {
@@ -2876,10 +2902,12 @@ impl FormatFeatureFlags {
     /// Format can have cosited rather than midpoint chroma samples
     pub const COSITED_CHROMA_SAMPLES: Self = FormatFeatureFlags(0x800000);
     /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
+    /// Added by extension VK_IMG_filter_cubic.
     pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = FormatFeatureFlags(0x2000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     /// Format can be used with min/max reduction filtering
+    /// Added by extension VK_EXT_sampler_filter_minmax.
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = FormatFeatureFlags(0x10000);
     pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
@@ -2892,6 +2920,7 @@ impl FormatFeatureFlags {
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
+    /// Added by extension VK_EXT_extension_219.
     pub const RESERVED_24_EXT: Self = FormatFeatureFlags(0x1000000);
 }
 impl default::Default for FormatFeatureFlags {
@@ -3999,7 +4028,9 @@ impl fmt::Display for SparseImageFormatFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SubpassDescriptionFlags(u32);
 impl SubpassDescriptionFlags {
+    /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PER_VIEW_ATTRIBUTES_NVX: Self = SubpassDescriptionFlags(0x1);
+    /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = SubpassDescriptionFlags(0x2);
 }
 impl default::Default for SubpassDescriptionFlags {
@@ -4108,12 +4139,19 @@ impl PipelineStageFlags {
     /// All stages supported on the queue
     pub const ALL_COMMANDS: Self = PipelineStageFlags(0x10000);
     /// A pipeline stage for conditional rendering predicate fetch
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = PipelineStageFlags(0x40000);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const COMMAND_PROCESS_NVX: Self = PipelineStageFlags(0x20000);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = PipelineStageFlags(0x400000);
+    /// Added by extension VK_NVX_raytracing.
     pub const RAYTRACING_NVX: Self = PipelineStageFlags(0x200000);
+    /// Added by extension VK_NV_mesh_shader.
     pub const TASK_SHADER_NV: Self = PipelineStageFlags(0x80000);
+    /// Added by extension VK_NV_mesh_shader.
     pub const MESH_SHADER_NV: Self = PipelineStageFlags(0x100000);
+    /// Added by extension VK_EXT_extension_219.
     pub const RESERVED_23_EXT: Self = PipelineStageFlags(0x800000);
 }
 impl default::Default for PipelineStageFlags {
@@ -4528,6 +4566,7 @@ pub struct DescriptorPoolCreateFlags(u32);
 impl DescriptorPoolCreateFlags {
     /// Descriptor sets may be freed individually
     pub const FREE_DESCRIPTOR_SET: Self = DescriptorPoolCreateFlags(0x1);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const UPDATE_AFTER_BIND_EXT: Self = DescriptorPoolCreateFlags(0x2);
 }
 impl default::Default for DescriptorPoolCreateFlags {
@@ -4763,6 +4802,7 @@ impl SubgroupFeatureFlags {
     pub const CLUSTERED: Self = SubgroupFeatureFlags(0x40);
     /// Quad subgroup operations
     pub const QUAD: Self = SubgroupFeatureFlags(0x80);
+    /// Added by extension VK_NV_shader_subgroup_partitioned.
     pub const PARTITIONED_NV: Self = SubgroupFeatureFlags(0x100);
 }
 impl default::Default for SubgroupFeatureFlags {
@@ -5553,8 +5593,10 @@ impl fmt::Display for SurfaceTransformFlagsKHR {
 pub struct SwapchainCreateFlagsKHR(u32);
 impl SwapchainCreateFlagsKHR {
     /// Allow images with VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT
+    /// Added by extension VK_KHR_device_group.
     pub const SPLIT_INSTANCE_BIND_REGIONS: Self = SwapchainCreateFlagsKHR(0x1);
     /// Swapchain is protected
+    /// Added by extension VK_KHR_swapchain.
     pub const PROTECTED: Self = SwapchainCreateFlagsKHR(0x2);
 }
 impl default::Default for SwapchainCreateFlagsKHR {
@@ -6929,9 +6971,13 @@ impl ExternalMemoryHandleTypeFlags {
     pub const D3D11_TEXTURE_KMT_KHR: Self = Self::D3D11_TEXTURE_KMT;
     pub const D3D12_HEAP_KHR: Self = Self::D3D12_HEAP;
     pub const D3D12_RESOURCE_KHR: Self = Self::D3D12_RESOURCE;
+    /// Added by extension VK_EXT_external_memory_dma_buf.
     pub const DMA_BUF_EXT: Self = ExternalMemoryHandleTypeFlags(0x200);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const ANDROID_HARDWARE_BUFFER_ANDROID: Self = ExternalMemoryHandleTypeFlags(0x400);
+    /// Added by extension VK_EXT_external_memory_host.
     pub const HOST_ALLOCATION_EXT: Self = ExternalMemoryHandleTypeFlags(0x80);
+    /// Added by extension VK_EXT_external_memory_host.
     pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = ExternalMemoryHandleTypeFlags(0x100);
 }
 impl default::Default for ExternalMemoryHandleTypeFlags {
@@ -8683,51 +8729,97 @@ impl BlendOp {
     pub const REVERSE_SUBTRACT: Self = BlendOp(2);
     pub const MIN: Self = BlendOp(3);
     pub const MAX: Self = BlendOp(4);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const ZERO_EXT: Self = BlendOp(1000148000);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SRC_EXT: Self = BlendOp(1000148001);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DST_EXT: Self = BlendOp(1000148002);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SRC_OVER_EXT: Self = BlendOp(1000148003);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DST_OVER_EXT: Self = BlendOp(1000148004);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SRC_IN_EXT: Self = BlendOp(1000148005);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DST_IN_EXT: Self = BlendOp(1000148006);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SRC_OUT_EXT: Self = BlendOp(1000148007);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DST_OUT_EXT: Self = BlendOp(1000148008);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SRC_ATOP_EXT: Self = BlendOp(1000148009);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DST_ATOP_EXT: Self = BlendOp(1000148010);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const XOR_EXT: Self = BlendOp(1000148011);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const MULTIPLY_EXT: Self = BlendOp(1000148012);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SCREEN_EXT: Self = BlendOp(1000148013);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const OVERLAY_EXT: Self = BlendOp(1000148014);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DARKEN_EXT: Self = BlendOp(1000148015);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const LIGHTEN_EXT: Self = BlendOp(1000148016);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const COLORDODGE_EXT: Self = BlendOp(1000148017);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const COLORBURN_EXT: Self = BlendOp(1000148018);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HARDLIGHT_EXT: Self = BlendOp(1000148019);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const SOFTLIGHT_EXT: Self = BlendOp(1000148020);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const DIFFERENCE_EXT: Self = BlendOp(1000148021);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const EXCLUSION_EXT: Self = BlendOp(1000148022);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const INVERT_EXT: Self = BlendOp(1000148023);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const INVERT_RGB_EXT: Self = BlendOp(1000148024);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const LINEARDODGE_EXT: Self = BlendOp(1000148025);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const LINEARBURN_EXT: Self = BlendOp(1000148026);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const VIVIDLIGHT_EXT: Self = BlendOp(1000148027);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const LINEARLIGHT_EXT: Self = BlendOp(1000148028);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PINLIGHT_EXT: Self = BlendOp(1000148029);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HARDMIX_EXT: Self = BlendOp(1000148030);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HSL_HUE_EXT: Self = BlendOp(1000148031);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HSL_SATURATION_EXT: Self = BlendOp(1000148032);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HSL_COLOR_EXT: Self = BlendOp(1000148033);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const HSL_LUMINOSITY_EXT: Self = BlendOp(1000148034);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PLUS_EXT: Self = BlendOp(1000148035);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PLUS_CLAMPED_EXT: Self = BlendOp(1000148036);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PLUS_CLAMPED_ALPHA_EXT: Self = BlendOp(1000148037);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PLUS_DARKER_EXT: Self = BlendOp(1000148038);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const MINUS_EXT: Self = BlendOp(1000148039);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const MINUS_CLAMPED_EXT: Self = BlendOp(1000148040);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const CONTRAST_EXT: Self = BlendOp(1000148041);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const INVERT_OVG_EXT: Self = BlendOp(1000148042);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const RED_EXT: Self = BlendOp(1000148043);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const GREEN_EXT: Self = BlendOp(1000148044);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const BLUE_EXT: Self = BlendOp(1000148045);
 }
 impl default::Default for BlendOp {
@@ -9229,7 +9321,9 @@ impl DescriptorType {
     pub const UNIFORM_BUFFER_DYNAMIC: Self = DescriptorType(8);
     pub const STORAGE_BUFFER_DYNAMIC: Self = DescriptorType(9);
     pub const INPUT_ATTACHMENT: Self = DescriptorType(10);
+    /// Added by extension VK_EXT_inline_uniform_block.
     pub const INLINE_UNIFORM_BLOCK_EXT: Self = DescriptorType(1000138000);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_NVX: Self = DescriptorType(1000165000);
 }
 impl default::Default for DescriptorType {
@@ -9286,11 +9380,17 @@ impl DynamicState {
     pub const STENCIL_COMPARE_MASK: Self = DynamicState(6);
     pub const STENCIL_WRITE_MASK: Self = DynamicState(7);
     pub const STENCIL_REFERENCE: Self = DynamicState(8);
+    /// Added by extension VK_NV_clip_space_w_scaling.
     pub const VIEWPORT_W_SCALING_NV: Self = DynamicState(1000087000);
+    /// Added by extension VK_EXT_discard_rectangles.
     pub const DISCARD_RECTANGLE_EXT: Self = DynamicState(1000099000);
+    /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_EXT: Self = DynamicState(1000143000);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const VIEWPORT_SHADING_RATE_PALETTE_NV: Self = DynamicState(1000164004);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = DynamicState(1000164006);
+    /// Added by extension VK_NV_scissor_exclusive.
     pub const EXCLUSIVE_SCISSOR_NV: Self = DynamicState(1000205001);
 }
 impl default::Default for DynamicState {
@@ -9327,6 +9427,7 @@ impl PolygonMode {
     pub const FILL: Self = PolygonMode(0);
     pub const LINE: Self = PolygonMode(1);
     pub const POINT: Self = PolygonMode(2);
+    /// Added by extension VK_NV_fill_rectangle.
     pub const FILL_RECTANGLE_NV: Self = PolygonMode(1000153000);
 }
 impl default::Default for PolygonMode {
@@ -9568,13 +9669,21 @@ impl Format {
     pub const G16_B16_R16_3PLANE_422_UNORM: Self = Format(1000156031);
     pub const G16_B16R16_2PLANE_422_UNORM: Self = Format(1000156032);
     pub const G16_B16_R16_3PLANE_444_UNORM: Self = Format(1000156033);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC1_2BPP_UNORM_BLOCK_IMG: Self = Format(1000054000);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC1_4BPP_UNORM_BLOCK_IMG: Self = Format(1000054001);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC2_2BPP_UNORM_BLOCK_IMG: Self = Format(1000054002);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC2_4BPP_UNORM_BLOCK_IMG: Self = Format(1000054003);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC1_2BPP_SRGB_BLOCK_IMG: Self = Format(1000054004);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC1_4BPP_SRGB_BLOCK_IMG: Self = Format(1000054005);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC2_2BPP_SRGB_BLOCK_IMG: Self = Format(1000054006);
+    /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC2_4BPP_SRGB_BLOCK_IMG: Self = Format(1000054007);
     pub const G8B8G8R8_422_UNORM_KHR: Self = Self::G8B8G8R8_422_UNORM;
     pub const B8G8R8G8_422_UNORM_KHR: Self = Self::B8G8R8G8_422_UNORM;
@@ -9895,10 +10004,13 @@ impl ImageLayout {
     pub const PREINITIALIZED: Self = ImageLayout(8);
     pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL: Self = ImageLayout(1000117000);
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL: Self = ImageLayout(1000117001);
+    /// Added by extension VK_KHR_swapchain.
     pub const PRESENT_SRC_KHR: Self = ImageLayout(1000001002);
+    /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_PRESENT_KHR: Self = ImageLayout(1000111000);
     pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
+    /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_OPTIMAL_NV: Self = ImageLayout(1000164003);
 }
 impl default::Default for ImageLayout {
@@ -10126,6 +10238,7 @@ pub struct PipelineBindPoint(i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = PipelineBindPoint(0);
     pub const COMPUTE: Self = PipelineBindPoint(1);
+    /// Added by extension VK_NVX_raytracing.
     pub const RAYTRACING_NVX: Self = PipelineBindPoint(1000165000);
 }
 impl default::Default for PipelineBindPoint {
@@ -10190,6 +10303,7 @@ impl QueryType {
     /// Optional
     pub const PIPELINE_STATISTICS: Self = QueryType(1);
     pub const TIMESTAMP: Self = QueryType(2);
+    /// Added by extension VK_NVX_raytracing.
     pub const COMPACTED_SIZE_NVX: Self = QueryType(1000165000);
 }
 impl default::Default for QueryType {
@@ -10271,16 +10385,25 @@ impl Result {
     pub const ERROR_FRAGMENTED_POOL: Self = Result(-12);
     pub const ERROR_OUT_OF_POOL_MEMORY: Self = Result(-1000069000);
     pub const ERROR_INVALID_EXTERNAL_HANDLE: Self = Result(-1000072003);
+    /// Added by extension VK_KHR_surface.
     pub const ERROR_SURFACE_LOST_KHR: Self = Result(-1000000000);
+    /// Added by extension VK_KHR_surface.
     pub const ERROR_NATIVE_WINDOW_IN_USE_KHR: Self = Result(-1000000001);
+    /// Added by extension VK_KHR_swapchain.
     pub const SUBOPTIMAL_KHR: Self = Result(1000001003);
+    /// Added by extension VK_KHR_swapchain.
     pub const ERROR_OUT_OF_DATE_KHR: Self = Result(-1000001004);
+    /// Added by extension VK_KHR_display_swapchain.
     pub const ERROR_INCOMPATIBLE_DISPLAY_KHR: Self = Result(-1000003001);
+    /// Added by extension VK_EXT_debug_report.
     pub const ERROR_VALIDATION_FAILED_EXT: Self = Result(-1000011001);
+    /// Added by extension VK_NV_glsl_shader.
     pub const ERROR_INVALID_SHADER_NV: Self = Result(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const ERROR_FRAGMENTATION_EXT: Self = Result(-1000161000);
+    /// Added by extension VK_EXT_global_priority.
     pub const ERROR_NOT_PERMITTED_EXT: Self = Result(-1000174001);
 }
 impl default::Default for Result {
@@ -10477,42 +10600,75 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES: Self = StructureType(1000168000);
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT: Self = StructureType(1000168001);
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self = StructureType(1000063000);
+    /// Added by extension VK_KHR_swapchain.
     pub const SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000001000);
+    /// Added by extension VK_KHR_swapchain.
     pub const PRESENT_INFO_KHR: Self = StructureType(1000001001);
+    /// Added by extension VK_KHR_device_group.
     pub const DEVICE_GROUP_PRESENT_CAPABILITIES_KHR: Self = StructureType(1000060007);
+    /// Added by extension VK_KHR_device_group.
     pub const IMAGE_SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000060008);
+    /// Added by extension VK_KHR_device_group.
     pub const BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR: Self = StructureType(1000060009);
+    /// Added by extension VK_KHR_device_group.
     pub const ACQUIRE_NEXT_IMAGE_INFO_KHR: Self = StructureType(1000060010);
+    /// Added by extension VK_KHR_device_group.
     pub const DEVICE_GROUP_PRESENT_INFO_KHR: Self = StructureType(1000060011);
+    /// Added by extension VK_KHR_device_group.
     pub const DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000060012);
+    /// Added by extension VK_KHR_display.
     pub const DISPLAY_MODE_CREATE_INFO_KHR: Self = StructureType(1000002000);
+    /// Added by extension VK_KHR_display.
     pub const DISPLAY_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000002001);
+    /// Added by extension VK_KHR_display_swapchain.
     pub const DISPLAY_PRESENT_INFO_KHR: Self = StructureType(1000003000);
+    /// Added by extension VK_KHR_xlib_surface.
     pub const XLIB_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000004000);
+    /// Added by extension VK_KHR_xcb_surface.
     pub const XCB_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000005000);
+    /// Added by extension VK_KHR_wayland_surface.
     pub const WAYLAND_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000006000);
+    /// Added by extension VK_KHR_mir_surface.
     pub const MIR_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000007000);
+    /// Added by extension VK_KHR_android_surface.
     pub const ANDROID_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000008000);
+    /// Added by extension VK_KHR_win32_surface.
     pub const WIN32_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000009000);
+    /// Added by extension VK_ANDROID_native_buffer.
     pub const NATIVE_BUFFER_ANDROID: Self = StructureType(1000010000);
+    /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = StructureType(1000011000);
     pub const DEBUG_REPORT_CREATE_INFO_EXT: Self = Self::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+    /// Added by extension VK_AMD_rasterization_order.
     pub const PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD: Self = StructureType(1000018000);
+    /// Added by extension VK_EXT_debug_marker.
     pub const DEBUG_MARKER_OBJECT_NAME_INFO_EXT: Self = StructureType(1000022000);
+    /// Added by extension VK_EXT_debug_marker.
     pub const DEBUG_MARKER_OBJECT_TAG_INFO_EXT: Self = StructureType(1000022001);
+    /// Added by extension VK_EXT_debug_marker.
     pub const DEBUG_MARKER_MARKER_INFO_EXT: Self = StructureType(1000022002);
+    /// Added by extension VK_NV_dedicated_allocation.
     pub const DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV: Self = StructureType(1000026000);
+    /// Added by extension VK_NV_dedicated_allocation.
     pub const DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV: Self = StructureType(1000026001);
+    /// Added by extension VK_NV_dedicated_allocation.
     pub const DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000026002);
+    /// Added by extension VK_AMD_texture_gather_bias_lod.
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = StructureType(1000041000);
+    /// Added by extension VK_NV_corner_sampled_image.
     pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = StructureType(1000050000);
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO_KHR: Self = Self::RENDER_PASS_MULTIVIEW_CREATE_INFO;
     pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
     pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
+    /// Added by extension VK_NV_external_memory.
     pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV: Self = StructureType(1000056000);
+    /// Added by extension VK_NV_external_memory.
     pub const EXPORT_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000056001);
+    /// Added by extension VK_NV_external_memory_win32.
     pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = StructureType(1000057000);
+    /// Added by extension VK_NV_external_memory_win32.
     pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = StructureType(1000057001);
+    /// Added by extension VK_NV_win32_keyed_mutex.
     pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV: Self = StructureType(1000058000);
     pub const PHYSICAL_DEVICE_FEATURES_2_KHR: Self = Self::PHYSICAL_DEVICE_FEATURES_2;
     pub const PHYSICAL_DEVICE_PROPERTIES_2_KHR: Self = Self::PHYSICAL_DEVICE_PROPERTIES_2;
@@ -10530,9 +10686,13 @@ impl StructureType {
     pub const DEVICE_GROUP_BIND_SPARSE_INFO_KHR: Self = Self::DEVICE_GROUP_BIND_SPARSE_INFO;
     pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO;
     pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO;
+    /// Added by extension VK_EXT_validation_flags.
     pub const VALIDATION_FLAGS_EXT: Self = StructureType(1000061000);
+    /// Added by extension VK_NN_vi_surface.
     pub const VI_SURFACE_CREATE_INFO_NN: Self = StructureType(1000062000);
+    /// Added by extension VK_EXT_astc_decode_mode.
     pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = StructureType(1000067000);
+    /// Added by extension VK_EXT_astc_decode_mode.
     pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = StructureType(1000067001);
     pub const PHYSICAL_DEVICE_GROUP_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pub const DEVICE_GROUP_DEVICE_CREATE_INFO_KHR: Self = Self::DEVICE_GROUP_DEVICE_CREATE_INFO;
@@ -10544,66 +10704,118 @@ impl StructureType {
     pub const EXTERNAL_MEMORY_BUFFER_CREATE_INFO_KHR: Self = Self::EXTERNAL_MEMORY_BUFFER_CREATE_INFO;
     pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR: Self = Self::EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
     pub const EXPORT_MEMORY_ALLOCATE_INFO_KHR: Self = Self::EXPORT_MEMORY_ALLOCATE_INFO;
+    /// Added by extension VK_KHR_external_memory_win32.
     pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073000);
+    /// Added by extension VK_KHR_external_memory_win32.
     pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073001);
+    /// Added by extension VK_KHR_external_memory_win32.
     pub const MEMORY_WIN32_HANDLE_PROPERTIES_KHR: Self = StructureType(1000073002);
+    /// Added by extension VK_KHR_external_memory_win32.
     pub const MEMORY_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073003);
+    /// Added by extension VK_KHR_external_memory_fd.
     pub const IMPORT_MEMORY_FD_INFO_KHR: Self = StructureType(1000074000);
+    /// Added by extension VK_KHR_external_memory_fd.
     pub const MEMORY_FD_PROPERTIES_KHR: Self = StructureType(1000074001);
+    /// Added by extension VK_KHR_external_memory_fd.
     pub const MEMORY_GET_FD_INFO_KHR: Self = StructureType(1000074002);
+    /// Added by extension VK_KHR_win32_keyed_mutex.
     pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR: Self = StructureType(1000075000);
     pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO;
     pub const EXTERNAL_SEMAPHORE_PROPERTIES_KHR: Self = Self::EXTERNAL_SEMAPHORE_PROPERTIES;
     pub const EXPORT_SEMAPHORE_CREATE_INFO_KHR: Self = Self::EXPORT_SEMAPHORE_CREATE_INFO;
+    /// Added by extension VK_KHR_external_semaphore_win32.
     pub const IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078000);
+    /// Added by extension VK_KHR_external_semaphore_win32.
     pub const EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078001);
+    /// Added by extension VK_KHR_external_semaphore_win32.
     pub const D3D12_FENCE_SUBMIT_INFO_KHR: Self = StructureType(1000078002);
+    /// Added by extension VK_KHR_external_semaphore_win32.
     pub const SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078003);
+    /// Added by extension VK_KHR_external_semaphore_fd.
     pub const IMPORT_SEMAPHORE_FD_INFO_KHR: Self = StructureType(1000079000);
+    /// Added by extension VK_KHR_external_semaphore_fd.
     pub const SEMAPHORE_GET_FD_INFO_KHR: Self = StructureType(1000079001);
+    /// Added by extension VK_KHR_push_descriptor.
     pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = StructureType(1000080000);
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self = StructureType(1000081000);
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT: Self = StructureType(1000081001);
+    /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = StructureType(1000081002);
     pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
+    /// Added by extension VK_KHR_incremental_present.
     pub const PRESENT_REGIONS_KHR: Self = StructureType(1000084000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const OBJECT_TABLE_CREATE_INFO_NVX: Self = StructureType(1000086000);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX: Self = StructureType(1000086001);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const CMD_PROCESS_COMMANDS_INFO_NVX: Self = StructureType(1000086002);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX: Self = StructureType(1000086003);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const DEVICE_GENERATED_COMMANDS_LIMITS_NVX: Self = StructureType(1000086004);
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const DEVICE_GENERATED_COMMANDS_FEATURES_NVX: Self = StructureType(1000086005);
+    /// Added by extension VK_NV_clip_space_w_scaling.
     pub const PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV: Self = StructureType(1000087000);
+    /// Added by extension VK_EXT_display_surface_counter.
     pub const SURFACE_CAPABILITIES_2_EXT: Self = StructureType(1000090000);
     pub const SURFACE_CAPABILITIES2_EXT: Self = Self::SURFACE_CAPABILITIES_2_EXT;
+    /// Added by extension VK_EXT_display_control.
     pub const DISPLAY_POWER_INFO_EXT: Self = StructureType(1000091000);
+    /// Added by extension VK_EXT_display_control.
     pub const DEVICE_EVENT_INFO_EXT: Self = StructureType(1000091001);
+    /// Added by extension VK_EXT_display_control.
     pub const DISPLAY_EVENT_INFO_EXT: Self = StructureType(1000091002);
+    /// Added by extension VK_EXT_display_control.
     pub const SWAPCHAIN_COUNTER_CREATE_INFO_EXT: Self = StructureType(1000091003);
+    /// Added by extension VK_GOOGLE_display_timing.
     pub const PRESENT_TIMES_INFO_GOOGLE: Self = StructureType(1000092000);
+    /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX: Self = StructureType(1000097000);
+    /// Added by extension VK_NV_viewport_swizzle.
     pub const PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV: Self = StructureType(1000098000);
+    /// Added by extension VK_EXT_discard_rectangles.
     pub const PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT: Self = StructureType(1000099000);
+    /// Added by extension VK_EXT_discard_rectangles.
     pub const PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT: Self = StructureType(1000099001);
+    /// Added by extension VK_EXT_conservative_rasterization.
     pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000101000);
+    /// Added by extension VK_EXT_conservative_rasterization.
     pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self = StructureType(1000101001);
+    /// Added by extension VK_EXT_hdr_metadata.
     pub const HDR_METADATA_EXT: Self = StructureType(1000105000);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const ATTACHMENT_DESCRIPTION_2_KHR: Self = StructureType(1000109000);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const ATTACHMENT_REFERENCE_2_KHR: Self = StructureType(1000109001);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const SUBPASS_DESCRIPTION_2_KHR: Self = StructureType(1000109002);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const SUBPASS_DEPENDENCY_2_KHR: Self = StructureType(1000109003);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const RENDER_PASS_CREATE_INFO_2_KHR: Self = StructureType(1000109004);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const SUBPASS_BEGIN_INFO_KHR: Self = StructureType(1000109005);
+    /// Added by extension VK_KHR_create_renderpass2.
     pub const SUBPASS_END_INFO_KHR: Self = StructureType(1000109006);
+    /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_PRESENT_SURFACE_CAPABILITIES_KHR: Self = StructureType(1000111000);
     pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
     pub const EXTERNAL_FENCE_PROPERTIES_KHR: Self = Self::EXTERNAL_FENCE_PROPERTIES;
     pub const EXPORT_FENCE_CREATE_INFO_KHR: Self = Self::EXPORT_FENCE_CREATE_INFO;
+    /// Added by extension VK_KHR_external_fence_win32.
     pub const IMPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114000);
+    /// Added by extension VK_KHR_external_fence_win32.
     pub const EXPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114001);
+    /// Added by extension VK_KHR_external_fence_win32.
     pub const FENCE_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114002);
+    /// Added by extension VK_KHR_external_fence_fd.
     pub const IMPORT_FENCE_FD_INFO_KHR: Self = StructureType(1000115000);
+    /// Added by extension VK_KHR_external_fence_fd.
     pub const FENCE_GET_FD_INFO_KHR: Self = StructureType(1000115001);
     pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR: Self =
@@ -10611,51 +10823,89 @@ impl StructureType {
     pub const IMAGE_VIEW_USAGE_CREATE_INFO_KHR: Self = Self::IMAGE_VIEW_USAGE_CREATE_INFO;
     pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR: Self =
         Self::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO;
+    /// Added by extension VK_KHR_get_surface_capabilities2.
     pub const PHYSICAL_DEVICE_SURFACE_INFO_2_KHR: Self = StructureType(1000119000);
+    /// Added by extension VK_KHR_get_surface_capabilities2.
     pub const SURFACE_CAPABILITIES_2_KHR: Self = StructureType(1000119001);
+    /// Added by extension VK_KHR_get_surface_capabilities2.
     pub const SURFACE_FORMAT_2_KHR: Self = StructureType(1000119002);
     pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
+    /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PROPERTIES_2_KHR: Self = StructureType(1000121000);
+    /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PLANE_PROPERTIES_2_KHR: Self = StructureType(1000121001);
+    /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_MODE_PROPERTIES_2_KHR: Self = StructureType(1000121002);
+    /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PLANE_INFO_2_KHR: Self = StructureType(1000121003);
+    /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PLANE_CAPABILITIES_2_KHR: Self = StructureType(1000121004);
+    /// Added by extension VK_MVK_ios_surface.
     pub const IOS_SURFACE_CREATE_INFO_MVK: Self = StructureType(1000122000);
+    /// Added by extension VK_MVK_macos_surface.
     pub const MACOS_SURFACE_CREATE_INFO_MVK: Self = StructureType(1000123000);
     pub const MEMORY_DEDICATED_REQUIREMENTS_KHR: Self = Self::MEMORY_DEDICATED_REQUIREMENTS;
     pub const MEMORY_DEDICATED_ALLOCATE_INFO_KHR: Self = Self::MEMORY_DEDICATED_ALLOCATE_INFO;
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_OBJECT_NAME_INFO_EXT: Self = StructureType(1000128000);
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_OBJECT_TAG_INFO_EXT: Self = StructureType(1000128001);
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_LABEL_EXT: Self = StructureType(1000128002);
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT: Self = StructureType(1000128003);
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT: Self = StructureType(1000128004);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const ANDROID_HARDWARE_BUFFER_USAGE_ANDROID: Self = StructureType(1000129000);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID: Self = StructureType(1000129001);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID: Self = StructureType(1000129002);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129003);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129004);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const EXTERNAL_FORMAT_ANDROID: Self = StructureType(1000129005);
+    /// Added by extension VK_EXT_sampler_filter_minmax.
     pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self = StructureType(1000130000);
+    /// Added by extension VK_EXT_sampler_filter_minmax.
     pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = StructureType(1000130001);
+    /// Added by extension VK_EXT_inline_uniform_block.
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self = StructureType(1000138000);
+    /// Added by extension VK_EXT_inline_uniform_block.
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT: Self = StructureType(1000138001);
+    /// Added by extension VK_EXT_inline_uniform_block.
     pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT: Self = StructureType(1000138002);
+    /// Added by extension VK_EXT_inline_uniform_block.
     pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self = StructureType(1000138003);
+    /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_INFO_EXT: Self = StructureType(1000143000);
+    /// Added by extension VK_EXT_sample_locations.
     pub const RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT: Self = StructureType(1000143001);
+    /// Added by extension VK_EXT_sample_locations.
     pub const PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT: Self = StructureType(1000143002);
+    /// Added by extension VK_EXT_sample_locations.
     pub const PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT: Self = StructureType(1000143003);
+    /// Added by extension VK_EXT_sample_locations.
     pub const MULTISAMPLE_PROPERTIES_EXT: Self = StructureType(1000143004);
     pub const BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::BUFFER_MEMORY_REQUIREMENTS_INFO_2;
     pub const IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_MEMORY_REQUIREMENTS_INFO_2;
     pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2;
     pub const MEMORY_REQUIREMENTS_2_KHR: Self = Self::MEMORY_REQUIREMENTS_2;
     pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR: Self = Self::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
+    /// Added by extension VK_KHR_image_format_list.
     pub const IMAGE_FORMAT_LIST_CREATE_INFO_KHR: Self = StructureType(1000147000);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT: Self = StructureType(1000148000);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT: Self = StructureType(1000148001);
+    /// Added by extension VK_EXT_blend_operation_advanced.
     pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = StructureType(1000148002);
+    /// Added by extension VK_NV_fragment_coverage_to_color.
     pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = StructureType(1000149000);
+    /// Added by extension VK_NV_framebuffer_mixed_samples.
     pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = StructureType(1000152000);
     pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
     pub const SAMPLER_YCBCR_CONVERSION_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_INFO;
@@ -10667,50 +10917,93 @@ impl StructureType {
         Self::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES;
     pub const BIND_BUFFER_MEMORY_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_INFO;
     pub const BIND_IMAGE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_INFO;
+    /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_CREATE_INFO_EXT: Self = StructureType(1000160000);
+    /// Added by extension VK_EXT_validation_cache.
     pub const SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT: Self = StructureType(1000160001);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT: Self = StructureType(1000161000);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT: Self = StructureType(1000161001);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT: Self = StructureType(1000161002);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT: Self = StructureType(1000161003);
+    /// Added by extension VK_EXT_descriptor_indexing.
     pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self = StructureType(1000161004);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self = StructureType(1000164000);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV: Self = StructureType(1000164001);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV: Self = StructureType(1000164002);
+    /// Added by extension VK_NV_shading_rate_image.
     pub const PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV: Self = StructureType(1000164005);
+    /// Added by extension VK_NVX_raytracing.
     pub const RAYTRACING_PIPELINE_CREATE_INFO_NVX: Self = StructureType(1000165000);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_CREATE_INFO_NVX: Self = StructureType(1000165001);
+    /// Added by extension VK_NVX_raytracing.
     pub const GEOMETRY_INSTANCE_NVX: Self = StructureType(1000165002);
+    /// Added by extension VK_NVX_raytracing.
     pub const GEOMETRY_NVX: Self = StructureType(1000165003);
+    /// Added by extension VK_NVX_raytracing.
     pub const GEOMETRY_TRIANGLES_NVX: Self = StructureType(1000165004);
+    /// Added by extension VK_NVX_raytracing.
     pub const GEOMETRY_AABB_NVX: Self = StructureType(1000165005);
+    /// Added by extension VK_NVX_raytracing.
     pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NVX: Self = StructureType(1000165006);
+    /// Added by extension VK_NVX_raytracing.
     pub const DESCRIPTOR_ACCELERATION_STRUCTURE_INFO_NVX: Self = StructureType(1000165007);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX: Self = StructureType(1000165008);
+    /// Added by extension VK_NVX_raytracing.
     pub const PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX: Self = StructureType(1000165009);
+    /// Added by extension VK_NVX_raytracing.
     pub const HIT_SHADER_MODULE_CREATE_INFO_NVX: Self = StructureType(1000165010);
+    /// Added by extension VK_NV_representative_fragment_test.
     pub const PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV: Self = StructureType(1000166000);
+    /// Added by extension VK_NV_representative_fragment_test.
     pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self = StructureType(1000166001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR: Self = Self::DESCRIPTOR_SET_LAYOUT_SUPPORT;
+    /// Added by extension VK_EXT_global_priority.
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = StructureType(1000174000);
+    /// Added by extension VK_KHR_8bit_storage.
     pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = StructureType(1000177000);
+    /// Added by extension VK_EXT_external_memory_host.
     pub const IMPORT_MEMORY_HOST_POINTER_INFO_EXT: Self = StructureType(1000178000);
+    /// Added by extension VK_EXT_external_memory_host.
     pub const MEMORY_HOST_POINTER_PROPERTIES_EXT: Self = StructureType(1000178001);
+    /// Added by extension VK_EXT_external_memory_host.
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
+    /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = StructureType(1000185000);
+    /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = StructureType(1000190000);
+    /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = StructureType(1000190001);
+    /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
+    /// Added by extension VK_NV_compute_shader_derivatives.
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
+    /// Added by extension VK_NV_mesh_shader.
     pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = StructureType(1000202000);
+    /// Added by extension VK_NV_mesh_shader.
     pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV: Self = StructureType(1000202001);
+    /// Added by extension VK_NV_fragment_shader_barycentric.
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self = StructureType(1000203000);
+    /// Added by extension VK_NV_shader_image_footprint.
     pub const PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV: Self = StructureType(1000204000);
+    /// Added by extension VK_NV_scissor_exclusive.
     pub const PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV: Self = StructureType(1000205000);
+    /// Added by extension VK_NV_scissor_exclusive.
     pub const PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV: Self = StructureType(1000205002);
+    /// Added by extension VK_NV_device_diagnostic_checkpoints.
     pub const CHECKPOINT_DATA_NV: Self = StructureType(1000206000);
+    /// Added by extension VK_NV_device_diagnostic_checkpoints.
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
+    /// Added by extension VK_KHR_vulkan_memory_model.
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
 }
 impl default::Default for StructureType {
@@ -11064,6 +11357,7 @@ impl SamplerAddressMode {
     pub const CLAMP_TO_EDGE: Self = SamplerAddressMode(2);
     pub const CLAMP_TO_BORDER: Self = SamplerAddressMode(3);
     /// Note that this defines what was previously a core enum, and so uses the 'value' attribute rather than 'offset', and does not have a suffix. This is a special case, and should not be repeated
+    /// Added by extension VK_KHR_sampler_mirror_clamp_to_edge.
     pub const MIRROR_CLAMP_TO_EDGE: Self = SamplerAddressMode(4);
 }
 impl default::Default for SamplerAddressMode {
@@ -11089,6 +11383,7 @@ pub struct Filter(i32);
 impl Filter {
     pub const NEAREST: Self = Filter(0);
     pub const LINEAR: Self = Filter(1);
+    /// Added by extension VK_IMG_filter_cubic.
     pub const CUBIC_IMG: Self = Filter(1000015000);
 }
 impl default::Default for Filter {
@@ -11208,25 +11503,35 @@ impl ObjectType {
     pub const SAMPLER_YCBCR_CONVERSION: Self = ObjectType(1000156000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = ObjectType(1000085000);
     /// VkSurfaceKHR
+    /// Added by extension VK_KHR_surface.
     pub const SURFACE_KHR: Self = ObjectType(1000000000);
     /// VkSwapchainKHR
+    /// Added by extension VK_KHR_swapchain.
     pub const SWAPCHAIN_KHR: Self = ObjectType(1000001000);
     /// VkDisplayKHR
+    /// Added by extension VK_KHR_display.
     pub const DISPLAY_KHR: Self = ObjectType(1000002000);
     /// VkDisplayModeKHR
+    /// Added by extension VK_KHR_display.
     pub const DISPLAY_MODE_KHR: Self = ObjectType(1000002001);
     /// VkDebugReportCallbackEXT
+    /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_EXT: Self = ObjectType(1000011000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     /// VkobjectTableNVX
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const OBJECT_TABLE_NVX: Self = ObjectType(1000086000);
     /// VkIndirectCommandsLayoutNVX
+    /// Added by extension VK_NVX_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = ObjectType(1000086001);
     /// VkDebugUtilsMessengerEXT
+    /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = ObjectType(1000128000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// VkValidationCacheEXT
+    /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_EXT: Self = ObjectType(1000160000);
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_NVX: Self = ObjectType(1000165000);
 }
 impl default::Default for ObjectType {
@@ -11346,6 +11651,7 @@ impl DescriptorUpdateTemplateType {
     /// Create descriptor update template for descriptor set updates
     pub const DESCRIPTOR_SET: Self = DescriptorUpdateTemplateType(0);
     /// Create descriptor update template for pushed descriptor updates
+    /// Added by extension VK_KHR_descriptor_update_template.
     pub const PUSH_DESCRIPTORS_KHR: Self = DescriptorUpdateTemplateType(1);
     pub const DESCRIPTOR_SET_KHR: Self = Self::DESCRIPTOR_SET;
 }
@@ -11626,19 +11932,33 @@ pub struct ColorSpaceKHR(i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = ColorSpaceKHR(0);
     pub const COLORSPACE_SRGB_NONLINEAR: Self = Self::SRGB_NONLINEAR;
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const DISPLAY_P3_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104001);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const EXTENDED_SRGB_LINEAR_EXT: Self = ColorSpaceKHR(1000104002);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const DCI_P3_LINEAR_EXT: Self = ColorSpaceKHR(1000104003);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const DCI_P3_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104004);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const BT709_LINEAR_EXT: Self = ColorSpaceKHR(1000104005);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const BT709_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104006);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const BT2020_LINEAR_EXT: Self = ColorSpaceKHR(1000104007);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const HDR10_ST2084_EXT: Self = ColorSpaceKHR(1000104008);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const DOLBYVISION_EXT: Self = ColorSpaceKHR(1000104009);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const HDR10_HLG_EXT: Self = ColorSpaceKHR(1000104010);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const ADOBERGB_LINEAR_EXT: Self = ColorSpaceKHR(1000104011);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const ADOBERGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104012);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const PASS_THROUGH_EXT: Self = ColorSpaceKHR(1000104013);
+    /// Added by extension VK_EXT_swapchain_colorspace.
     pub const EXTENDED_SRGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104014);
 }
 impl default::Default for ColorSpaceKHR {
@@ -11676,7 +11996,9 @@ impl PresentModeKHR {
     pub const MAILBOX: Self = PresentModeKHR(1);
     pub const FIFO: Self = PresentModeKHR(2);
     pub const FIFO_RELAXED: Self = PresentModeKHR(3);
+    /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_DEMAND_REFRESH: Self = PresentModeKHR(1000111000);
+    /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_CONTINUOUS_REFRESH: Self = PresentModeKHR(1000111001);
 }
 impl default::Default for PresentModeKHR {
@@ -11737,10 +12059,13 @@ impl DebugReportObjectTypeEXT {
     pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = DebugReportObjectTypeEXT(32);
     pub const VALIDATION_CACHE_EXT: Self = DebugReportObjectTypeEXT(33);
     pub const VALIDATION_CACHE: Self = Self::VALIDATION_CACHE_EXT;
+    /// Added by extension VK_KHR_sampler_ycbcr_conversion.
     pub const SAMPLER_YCBCR_CONVERSION: Self = DebugReportObjectTypeEXT(1000156000);
+    /// Added by extension VK_EXT_debug_report.
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = DebugReportObjectTypeEXT(1000085000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
+    /// Added by extension VK_NVX_raytracing.
     pub const ACCELERATION_STRUCTURE_NVX: Self = DebugReportObjectTypeEXT(1000165000);
 }
 impl default::Default for DebugReportObjectTypeEXT {

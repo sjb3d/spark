@@ -791,7 +791,7 @@ impl<'a> Generator<'a> {
                 }
             };
 
-            let entries: Vec<(String, EnumEntryValue)> = self
+            let entries: Vec<(String, EnumEntryValue, Option<&vk::Extension>)> = self
                 .enums_by_name
                 .get(value_type_name)
                 .map(|s| s.as_slice())
@@ -801,6 +801,7 @@ impl<'a> Generator<'a> {
                     (
                         self.get_enum_entry_name(value_type_name, enum_type, en.name.as_str()),
                         self.get_enum_entry_value(value_type_name, enum_type, en),
+                        self.extension_by_enum_name.get(en.name.as_str()).cloned(),
                     )
                 }).collect();
 
@@ -815,11 +816,14 @@ impl<'a> Generator<'a> {
                 derives=derives, enum_name=enum_name, interior_type=interior_type
             )?;
             let mut all = 0;
-            for (ref name, value) in &entries {
+            for (ref name, value, ref ext) in &entries {
                 match value {
                     EnumEntryValue::Number { value, ref comment } => {
                         if let Some(comment) = comment {
                             writeln!(w, "/// {}", comment);
+                        }
+                        if let Some(ext) = ext {
+                            writeln!(w, "/// Added by extension {}.", ext.name)?;
                         }
                         writeln!(
                             w,
@@ -904,7 +908,7 @@ impl<'a> Generator<'a> {
                         writeln!(w, r#"f.write_str("0")"#)?;
                     } else {
                         writeln!(w, "display_bitmask(self.0, &[")?;
-                        for (ref name, value) in &entries {
+                        for (ref name, value, _) in &entries {
                             if let EnumEntryValue::Number { value, .. } = value {
                                 writeln!(w, r#"({:#x}, "{}"),"#, value, name)?;
                             }
@@ -921,7 +925,7 @@ impl<'a> Generator<'a> {
                          match self.0 {{",
                         enum_name
                     )?;
-                    for (ref name, value) in &entries {
+                    for (ref name, value, _) in &entries {
                         if let EnumEntryValue::Number { value, .. } = value {
                             writeln!(w, r#"{} => f.write_str("{}"),"#, value, name)?;
                         }
