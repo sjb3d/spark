@@ -2017,7 +2017,14 @@ impl<'a> Generator<'a> {
                     write!(w, "-> Vec<{}>", return_type_name)?;
                 }
                 LibReturnType::ResultEmpty | LibReturnType::ResultObject | LibReturnType::ResultEnum => {
-                    write!(w, "-> Result<{}>", return_type_name)?;
+                    match return_transform {
+                        LibReturnTransform::ToInstance | LibReturnTransform::ToDevice => {
+                            write!(w, "-> result::Result<{}, LoaderError>", return_type_name)?;
+                        }
+                        _ => {
+                            write!(w, "-> Result<{}>", return_type_name)?;
+                        }
+                    }
                 }
                 LibReturnType::ResultVecUnknownLen | LibReturnType::ResultVecKnownLen { .. } => match style {
                     LibCommandStyle::Default => {
@@ -2064,11 +2071,10 @@ impl<'a> Generator<'a> {
 
             for pass_index in pass_start..2 {
                 match return_type {
-                    LibReturnType::CDecl | LibReturnType::None => {
-                        if return_transform != LibReturnTransform::None {
-                            write!(w, "let res = ")?;
-                        }
+                    LibReturnType::CDecl => {
+                        write!(w, "let res = ")?;
                     }
+                    LibReturnType::None => {}
                     LibReturnType::ResultEmpty | LibReturnType::ResultEnum => {
                         write!(w, "let err = ")?;
                     }
@@ -2174,26 +2180,16 @@ impl<'a> Generator<'a> {
                     }
                     write!(w, ",")?;
                 }
-                writeln!(w, ")")?;
-
-                let wrapped_return_value = match return_transform {
-                    LibReturnTransform::None => "res",
-                    LibReturnTransform::ToBool => "res != vk::FALSE",
-                    LibReturnTransform::ToInstance => "Instance::load(res).unwrap()",
-                    LibReturnTransform::ToDevice => "Device::load(&self, res).unwrap()",
-                };
+                writeln!(w, ");")?;
 
                 match return_type {
-                    LibReturnType::CDecl => {
-                        if return_transform != LibReturnTransform::None {
-                            write!(w, "; {}", wrapped_return_value)?;
-                        }
-                    }
-                    LibReturnType::None => {
-                        write!(w, ";")?;
-                    }
+                    LibReturnType::CDecl => {}
+                    LibReturnType::None => {}
                     LibReturnType::ResultEmpty => {
-                        write!(w, "; match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }}")?;
+                        write!(
+                            w,
+                            "let res = match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }};"
+                        )?;
                     }
                     LibReturnType::ResultEnum => {
                         let matches: Vec<String> = cmd_def
@@ -2203,13 +2199,16 @@ impl<'a> Generator<'a> {
                             .split(',')
                             .map(|s| format!("vk::Result::{}", s.skip_prefix("VK_")))
                             .collect();
-                        write!(w, "; match err {{ {} => Ok(err), _ => Err(err) }}", matches.join("|"));
+                        write!(
+                            w,
+                            "let res = match err {{ {} => Ok(err), _ => Err(err) }};",
+                            matches.join("|")
+                        );
                     }
                     LibReturnType::ResultObject => {
                         write!(
                             w,
-                            "; match err {{ vk::Result::SUCCESS => Ok({}), _ => Err(err) }}",
-                            wrapped_return_value
+                            "let res = match err {{ vk::Result::SUCCESS => Ok(res), _ => Err(err) }};",
                         )?;
                     }
                     LibReturnType::ResultEnumAndObject => {
@@ -2222,39 +2221,57 @@ impl<'a> Generator<'a> {
                             .collect();
                         write!(
                             w,
-                            "; match err {{ {} => Ok((err, {})), _ => Err(err) }}",
+                            "let res = match err {{ {} => Ok((err, res)), _ => Err(err) }};",
                             matches.join("|"),
-                            wrapped_return_value,
                         );
                     }
-                    LibReturnType::Object => {
-                        write!(w, "; {}", wrapped_return_value)?;
-                    }
+                    LibReturnType::Object => {}
                     LibReturnType::ResultVecUnknownLen => {
                         if pass_index == 0 {
-                            write!(w, "; if len_err != vk::Result::SUCCESS {{ return Err(len_err) }}")?;
+                            write!(w, "if len_err != vk::Result::SUCCESS {{ return Err(len_err) }}")?;
                         } else {
-                            write!(w, "; v.set_len(len as usize); match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
+                            write!(w, "v.set_len(len as usize); let res = match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }};")?;
                         }
                     }
                     LibReturnType::VecUnknownLen => {
-                        if pass_index == 0 {
-                            write!(w, ";")?;
-                        } else {
-                            write!(w, "; v.set_len(len as usize); v")?;
+                        if pass_index != 0 {
+                            write!(w, "v.set_len(len as usize); let res = v;")?;
                         }
                     }
                     LibReturnType::ResultVecKnownLen { .. } => match style {
                         LibCommandStyle::Default => {
-                            write!(w, "; match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }}")?;
+                            write!(
+                                w,
+                                "; let res = match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }};"
+                            )?;
                         }
                         LibCommandStyle::ToVecUnknownLen
                         | LibCommandStyle::ToVecKnownLen
                         | LibCommandStyle::Array
                         | LibCommandStyle::Single => {
-                            write!(w, "; match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
+                            write!(
+                                w,
+                                "; let res = match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }};"
+                            )?;
                         }
                     },
+                }
+
+                if return_type != LibReturnType::None && pass_index != 0 {
+                    writeln!(
+                        w,
+                        "{}",
+                        match return_transform {
+                            LibReturnTransform::None => "res",
+                            LibReturnTransform::ToBool => "res.map(|r| r != vk::FALSE)",
+                            LibReturnTransform::ToInstance => {
+                                "res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))"
+                            }
+                            LibReturnTransform::ToDevice => {
+                                "res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r))"
+                            }
+                        }
+                    );
                 }
             }
 
@@ -2287,8 +2304,8 @@ impl<'a> Generator<'a> {
                 Group::Loader => {
                     write!(
                         w,
-                        "pub fn new() -> Result<Self> {{\
-                         let lib = &LIB;\
+                        "pub fn new() -> result::Result<Self, LoaderError> {{\
+                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
                          let f = |name: &CStr| unsafe {{\
                          lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) }};"
                     )?;
@@ -2296,30 +2313,30 @@ impl<'a> Generator<'a> {
                 Group::Instance => {
                     writeln!(
                         w,
-                        "unsafe fn load(instance: vk::Instance) -> Result<Self> {{\
-                         let lib = &LIB;\
+                        "unsafe fn load(instance: vk::Instance) -> result::Result<Self, LoaderError> {{\
+                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
                          let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name).map(|p| mem::transmute(p));"
                     )?;
                 }
                 Group::Device => {
                     writeln!(
                         w,
-                        "unsafe fn load(instance: &Instance, device: vk::Device) -> Result<Self> {{\
+                        "unsafe fn load(instance: &Instance, device: vk::Device) -> result::Result<Self, LoaderError> {{\
                          let f = |name: &CStr| instance.get_device_proc_addr(device, name).map(|p| mem::transmute(p));"
                     )?;
                 }
                 Group::InstanceExtension(_) => {
                     writeln!(
                         w,
-                        "pub unsafe fn new(instance: &Instance) -> Result<Self> {{\
-                         let lib = &LIB;\
+                        "pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {{\
+                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
                          let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance.handle), name).map(|p| mem::transmute(p));"
                     )?;
                 }
                 Group::DeviceExtension(_) => {
                     writeln!(
                         w,
-                        "pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {{\
+                        "pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {{\
                          let f = |name: &CStr| instance.get_device_proc_addr(device.handle, name).map(|p| mem::transmute(p));"
                     )?;
                 }

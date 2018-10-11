@@ -55,19 +55,33 @@ struct Lib {
     pub fp: LibFn,
 }
 
+#[derive(Debug, Clone)]
+pub enum LoaderError {
+    DynamicLibrary(String),
+    MissingSymbol(String),
+    Vulkan(vk::Result),
+}
+
+impl From<vk::Result> for LoaderError {
+    fn from(err: vk::Result) -> LoaderError {
+        LoaderError::Vulkan(err)
+    }
+}
+
 impl Lib {
-    pub fn new() -> Self {
-        let lib = DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))).expect("failed to load vulkan library");
-
-        let get_instance_proc_addr: FnGetInstanceProcAddr = unsafe {
-            lib.symbol("vkGetInstanceProcAddr")
-                .map(|f: *mut c_void| mem::transmute(f))
-                .expect("failed to load vkGetInstanceProcAddr")
-        };
-
-        Self {
-            lib,
-            fp: LibFn { get_instance_proc_addr },
+    pub fn new() -> result::Result<Self, LoaderError> {
+        match DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))) {
+            Ok(lib) => match unsafe {
+                lib.symbol("vkGetInstanceProcAddr")
+                    .map(|f: *mut c_void| mem::transmute(f))
+            } {
+                Ok(get_instance_proc_addr) => Ok(Self {
+                    lib,
+                    fp: LibFn { get_instance_proc_addr },
+                }),
+                Err(s) => Err(LoaderError::MissingSymbol(s)),
+            },
+            Err(s) => Err(LoaderError::DynamicLibrary(s)),
         }
     }
 
@@ -77,5 +91,5 @@ impl Lib {
 }
 
 lazy_static! {
-    static ref LIB: Lib = Lib::new();
+    static ref LIB: result::Result<Lib, LoaderError> = Lib::new();
 }

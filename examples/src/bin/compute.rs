@@ -19,7 +19,7 @@ fn get_memory_type_index(
     None
 }
 
-fn main() -> vkr::Result<()> {
+fn main() -> Result<(), vkr::LoaderError> {
     // load the Vulkan lib
     let loader = Loader::new()?;
     let layer_names_raw =
@@ -200,6 +200,7 @@ fn main() -> vkr::Result<()> {
     for (i, v) in check.iter().cloned().enumerate() {
         assert_eq!(i as f32, v);
     }
+    println!("compute shader run successfully!");
 
     // let the driver clean up
     Ok(())

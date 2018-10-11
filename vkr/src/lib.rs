@@ -60,19 +60,33 @@ struct Lib {
     pub fp: LibFn,
 }
 
+#[derive(Debug, Clone)]
+pub enum LoaderError {
+    DynamicLibrary(String),
+    MissingSymbol(String),
+    Vulkan(vk::Result),
+}
+
+impl From<vk::Result> for LoaderError {
+    fn from(err: vk::Result) -> LoaderError {
+        LoaderError::Vulkan(err)
+    }
+}
+
 impl Lib {
-    pub fn new() -> Self {
-        let lib = DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))).expect("failed to load vulkan library");
-
-        let get_instance_proc_addr: FnGetInstanceProcAddr = unsafe {
-            lib.symbol("vkGetInstanceProcAddr")
-                .map(|f: *mut c_void| mem::transmute(f))
-                .expect("failed to load vkGetInstanceProcAddr")
-        };
-
-        Self {
-            lib,
-            fp: LibFn { get_instance_proc_addr },
+    pub fn new() -> result::Result<Self, LoaderError> {
+        match DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))) {
+            Ok(lib) => match unsafe {
+                lib.symbol("vkGetInstanceProcAddr")
+                    .map(|f: *mut c_void| mem::transmute(f))
+            } {
+                Ok(get_instance_proc_addr) => Ok(Self {
+                    lib,
+                    fp: LibFn { get_instance_proc_addr },
+                }),
+                Err(s) => Err(LoaderError::MissingSymbol(s)),
+            },
+            Err(s) => Err(LoaderError::DynamicLibrary(s)),
         }
     }
 
@@ -86,7 +100,7 @@ impl Lib {
 }
 
 lazy_static! {
-    static ref LIB: Lib = Lib::new();
+    static ref LIB: result::Result<Lib, LoaderError> = Lib::new();
 }
 pub struct Loader {
     pub version: vk::Version,
@@ -94,8 +108,8 @@ pub struct Loader {
     pub fp1_1: vk::LoaderFn1_1,
 }
 impl Loader {
-    pub fn new() -> Result<Self> {
-        let lib = &LIB;
+    pub fn new() -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| unsafe { lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) };
         let mut version = vk::Version::from_raw(0);
         let mut ok = true;
@@ -115,13 +129,14 @@ impl Loader {
         &self,
         p_create_info: &vk::InstanceCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<Instance> {
+    ) -> result::Result<Instance, LoaderError> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.create_instance)(p_create_info, p_allocator.map_or(ptr::null(), |r| r), &mut res);
-        match err {
-            vk::Result::SUCCESS => Ok(Instance::load(res).unwrap()),
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))
     }
     pub unsafe fn enumerate_instance_extension_properties_to_vec(
         &self,
@@ -137,10 +152,11 @@ impl Loader {
         let v_err =
             (self.fp1_0.enumerate_instance_extension_properties)(p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn enumerate_instance_layer_properties_to_vec(&self) -> Result<Vec<vk::LayerProperties>> {
         let mut len = mem::uninitialized();
@@ -151,18 +167,20 @@ impl Loader {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_0.enumerate_instance_layer_properties)(&mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn enumerate_instance_version(&self) -> Result<vk::Version> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_1.enumerate_instance_version)(&mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct Instance {
@@ -172,8 +190,8 @@ pub struct Instance {
     pub fp1_1: vk::InstanceFn1_1,
 }
 impl Instance {
-    unsafe fn load(instance: vk::Instance) -> Result<Self> {
-        let lib = &LIB;
+    unsafe fn load(instance: vk::Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance), name)
                 .map(|p| mem::transmute(p))
@@ -209,10 +227,11 @@ impl Instance {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_0.enumerate_physical_devices)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_features(
         &self,
@@ -250,10 +269,11 @@ impl Instance {
             flags,
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_properties(
         &self,
@@ -272,7 +292,8 @@ impl Instance {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_0.get_physical_device_queue_family_properties)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn get_physical_device_memory_properties(
         &self,
@@ -283,14 +304,15 @@ impl Instance {
         res
     }
     pub unsafe fn get_device_proc_addr(&self, device: vk::Device, p_name: &CStr) -> Option<vk::FnVoidFunction> {
-        (self.fp1_0.get_device_proc_addr)(Some(device), p_name.as_ptr())
+        let res = (self.fp1_0.get_device_proc_addr)(Some(device), p_name.as_ptr());
+        res
     }
     pub unsafe fn create_device(
         &self,
         physical_device: vk::PhysicalDevice,
         p_create_info: &vk::DeviceCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<Device> {
+    ) -> result::Result<Device, LoaderError> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.create_device)(
             Some(physical_device),
@@ -298,10 +320,12 @@ impl Instance {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
-            vk::Result::SUCCESS => Ok(Device::load(&self, res).unwrap()),
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res.map_err(|e| LoaderError::Vulkan(e))
+            .and_then(|r| Device::load(&self, r))
     }
     pub unsafe fn enumerate_device_extension_properties_to_vec(
         &self,
@@ -326,10 +350,11 @@ impl Instance {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn enumerate_device_layer_properties_to_vec(
         &self,
@@ -343,10 +368,11 @@ impl Instance {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_0.enumerate_device_layer_properties)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_sparse_image_format_properties_to_vec(
         &self,
@@ -380,7 +406,8 @@ impl Instance {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn enumerate_physical_device_groups_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
         let mut len = mem::uninitialized();
@@ -391,10 +418,11 @@ impl Instance {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_1.enumerate_physical_device_groups)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_features2(
         &self,
@@ -429,10 +457,11 @@ impl Instance {
             p_image_format_info,
             p_image_format_properties,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_queue_family_properties2_to_vec(
         &self,
@@ -443,7 +472,8 @@ impl Instance {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_1.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn get_physical_device_memory_properties2(
         &self,
@@ -472,7 +502,8 @@ impl Instance {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn get_physical_device_external_buffer_properties(
         &self,
@@ -518,7 +549,7 @@ pub struct Device {
     pub fp1_1: vk::DeviceFn1_1,
 }
 impl Device {
-    unsafe fn load(instance: &Instance, device: vk::Device) -> Result<Self> {
+    unsafe fn load(instance: &Instance, device: vk::Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| instance.get_device_proc_addr(device, name).map(|p| mem::transmute(p));
         let mut version = vk::Version::from_raw(0);
         let mut ok = true;
@@ -555,24 +586,27 @@ impl Device {
     ) -> Result<()> {
         let submit_count = p_submits.len();
         let err = (self.fp1_0.queue_submit)(Some(queue), submit_count as u32, p_submits.as_ptr(), fence);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn queue_wait_idle(&self, queue: vk::Queue) -> Result<()> {
         let err = (self.fp1_0.queue_wait_idle)(Some(queue));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn device_wait_idle(&self) -> Result<()> {
         let err = (self.fp1_0.device_wait_idle)(Some(self.handle));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_memory(
         &self,
@@ -586,10 +620,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn free_memory(&self, memory: Option<vk::DeviceMemory>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.free_memory)(Some(self.handle), memory, p_allocator.map_or(ptr::null(), |r| r));
@@ -603,10 +638,11 @@ impl Device {
     ) -> Result<*mut c_void> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.map_memory)(Some(self.handle), Some(memory), offset, size, flags, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn unmap_memory(&self, memory: vk::DeviceMemory) {
         (self.fp1_0.unmap_memory)(Some(self.handle), Some(memory));
@@ -618,10 +654,11 @@ impl Device {
             memory_range_count as u32,
             p_memory_ranges.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn invalidate_mapped_memory_ranges(&self, p_memory_ranges: &[vk::MappedMemoryRange]) -> Result<()> {
         let memory_range_count = p_memory_ranges.len();
@@ -630,10 +667,11 @@ impl Device {
             memory_range_count as u32,
             p_memory_ranges.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_device_memory_commitment(&self, memory: vk::DeviceMemory) -> vk::DeviceSize {
         let mut res = mem::uninitialized();
@@ -647,10 +685,11 @@ impl Device {
         memory_offset: vk::DeviceSize,
     ) -> Result<()> {
         let err = (self.fp1_0.bind_buffer_memory)(Some(self.handle), Some(buffer), Some(memory), memory_offset);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn bind_image_memory(
         &self,
@@ -659,10 +698,11 @@ impl Device {
         memory_offset: vk::DeviceSize,
     ) -> Result<()> {
         let err = (self.fp1_0.bind_image_memory)(Some(self.handle), Some(image), Some(memory), memory_offset);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_buffer_memory_requirements(&self, buffer: vk::Buffer) -> vk::MemoryRequirements {
         let mut res = mem::uninitialized();
@@ -683,7 +723,8 @@ impl Device {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_0.get_image_sparse_memory_requirements)(Some(self.handle), Some(image), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn queue_bind_sparse(
         &self,
@@ -693,10 +734,11 @@ impl Device {
     ) -> Result<()> {
         let bind_info_count = p_bind_info.len();
         let err = (self.fp1_0.queue_bind_sparse)(Some(queue), bind_info_count as u32, p_bind_info.as_ptr(), fence);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_fence(
         &self,
@@ -710,10 +752,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_fence(&self, fence: Option<vk::Fence>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.destroy_fence)(Some(self.handle), fence, p_allocator.map_or(ptr::null(), |r| r));
@@ -721,17 +764,19 @@ impl Device {
     pub unsafe fn reset_fences(&self, p_fences: &[vk::Fence]) -> Result<()> {
         let fence_count = p_fences.len();
         let err = (self.fp1_0.reset_fences)(Some(self.handle), fence_count as u32, p_fences.as_ptr());
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_fence_status(&self, fence: vk::Fence) -> Result<vk::Result> {
         let err = (self.fp1_0.get_fence_status)(Some(self.handle), Some(fence));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn wait_for_fences(&self, p_fences: &[vk::Fence], wait_all: bool, timeout: u64) -> Result<vk::Result> {
         let fence_count = p_fences.len();
@@ -742,10 +787,11 @@ impl Device {
             if wait_all { vk::TRUE } else { vk::FALSE },
             timeout,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_semaphore(
         &self,
@@ -759,10 +805,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_semaphore(
         &self,
@@ -783,34 +830,38 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_event(&self, event: Option<vk::Event>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.destroy_event)(Some(self.handle), event, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_event_status(&self, event: vk::Event) -> Result<vk::Result> {
         let err = (self.fp1_0.get_event_status)(Some(self.handle), Some(event));
-        match err {
+        let res = match err {
             vk::Result::EVENT_SET | vk::Result::EVENT_RESET => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn set_event(&self, event: vk::Event) -> Result<()> {
         let err = (self.fp1_0.set_event)(Some(self.handle), Some(event));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn reset_event(&self, event: vk::Event) -> Result<()> {
         let err = (self.fp1_0.reset_event)(Some(self.handle), Some(event));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_query_pool(
         &self,
@@ -824,10 +875,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_query_pool(
         &self,
@@ -856,10 +908,11 @@ impl Device {
             stride,
             flags,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_buffer(
         &self,
@@ -873,10 +926,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_buffer(&self, buffer: Option<vk::Buffer>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.destroy_buffer)(Some(self.handle), buffer, p_allocator.map_or(ptr::null(), |r| r));
@@ -893,10 +947,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_buffer_view(
         &self,
@@ -917,10 +972,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_image(&self, image: Option<vk::Image>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.destroy_image)(Some(self.handle), image, p_allocator.map_or(ptr::null(), |r| r));
@@ -946,10 +1002,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_image_view(
         &self,
@@ -970,10 +1027,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_shader_module(
         &self,
@@ -994,10 +1052,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_pipeline_cache(
         &self,
@@ -1017,10 +1076,11 @@ impl Device {
         p_data: *mut c_void,
     ) -> Result<vk::Result> {
         let err = (self.fp1_0.get_pipeline_cache_data)(Some(self.handle), Some(pipeline_cache), p_data_size, p_data);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn merge_pipeline_caches(
         &self,
@@ -1034,10 +1094,11 @@ impl Device {
             src_cache_count as u32,
             p_src_caches.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_graphics_pipelines(
         &self,
@@ -1055,10 +1116,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_graphics_pipelines_to_vec(
         &self,
@@ -1077,10 +1139,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_graphics_pipelines_array<A: Array<Item = vk::Pipeline>>(
         &self,
@@ -1099,10 +1162,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_graphics_pipelines_single(
         &self,
@@ -1121,10 +1185,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_compute_pipelines(
         &self,
@@ -1142,10 +1207,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_compute_pipelines_to_vec(
         &self,
@@ -1164,10 +1230,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_compute_pipelines_array<A: Array<Item = vk::Pipeline>>(
         &self,
@@ -1186,10 +1253,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_compute_pipelines_single(
         &self,
@@ -1208,10 +1276,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_pipeline(
         &self,
@@ -1232,10 +1301,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_pipeline_layout(
         &self,
@@ -1260,10 +1330,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_sampler(&self, sampler: Option<vk::Sampler>, p_allocator: Option<&vk::AllocationCallbacks>) {
         (self.fp1_0.destroy_sampler)(Some(self.handle), sampler, p_allocator.map_or(ptr::null(), |r| r));
@@ -1280,10 +1351,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_descriptor_set_layout(
         &self,
@@ -1308,10 +1380,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_descriptor_pool(
         &self,
@@ -1330,10 +1403,11 @@ impl Device {
         flags: vk::DescriptorPoolResetFlags,
     ) -> Result<()> {
         let err = (self.fp1_0.reset_descriptor_pool)(Some(self.handle), Some(descriptor_pool), flags);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_descriptor_sets(
         &self,
@@ -1341,10 +1415,11 @@ impl Device {
         p_descriptor_sets: *mut vk::DescriptorSet,
     ) -> Result<()> {
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, p_descriptor_sets);
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_descriptor_sets_to_vec(
         &self,
@@ -1353,10 +1428,11 @@ impl Device {
         let mut v = Vec::with_capacity(p_allocate_info.descriptor_set_count as usize);
         v.set_len(p_allocate_info.descriptor_set_count as usize);
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_descriptor_sets_array<A: Array<Item = vk::DescriptorSet>>(
         &self,
@@ -1365,10 +1441,11 @@ impl Device {
         assert_eq!(p_allocate_info.descriptor_set_count as usize, A::len());
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_descriptor_sets_single(
         &self,
@@ -1377,10 +1454,11 @@ impl Device {
         assert_eq!(p_allocate_info.descriptor_set_count as usize, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, &mut v);
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn free_descriptor_sets(
         &self,
@@ -1394,10 +1472,11 @@ impl Device {
             descriptor_set_count as u32,
             p_descriptor_sets.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn update_descriptor_sets(
         &self,
@@ -1426,10 +1505,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_framebuffer(
         &self,
@@ -1450,10 +1530,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_render_pass(
         &self,
@@ -1479,10 +1560,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_command_pool(
         &self,
@@ -1497,10 +1579,11 @@ impl Device {
         flags: vk::CommandPoolResetFlags,
     ) -> Result<()> {
         let err = (self.fp1_0.reset_command_pool)(Some(self.handle), Some(command_pool), flags);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_command_buffers(
         &self,
@@ -1508,10 +1591,11 @@ impl Device {
         p_command_buffers: *mut vk::CommandBuffer,
     ) -> Result<()> {
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, p_command_buffers);
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_command_buffers_to_vec(
         &self,
@@ -1520,10 +1604,11 @@ impl Device {
         let mut v = Vec::with_capacity(p_allocate_info.command_buffer_count as usize);
         v.set_len(p_allocate_info.command_buffer_count as usize);
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_command_buffers_array<A: Array<Item = vk::CommandBuffer>>(
         &self,
@@ -1532,10 +1617,11 @@ impl Device {
         assert_eq!(p_allocate_info.command_buffer_count as usize, A::len());
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn allocate_command_buffers_single(
         &self,
@@ -1544,10 +1630,11 @@ impl Device {
         assert_eq!(p_allocate_info.command_buffer_count as usize, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, &mut v);
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn free_command_buffers(&self, command_pool: vk::CommandPool, p_command_buffers: &[vk::CommandBuffer]) {
         let command_buffer_count = p_command_buffers.len();
@@ -1564,17 +1651,19 @@ impl Device {
         p_begin_info: &vk::CommandBufferBeginInfo,
     ) -> Result<()> {
         let err = (self.fp1_0.begin_command_buffer)(Some(command_buffer), p_begin_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn end_command_buffer(&self, command_buffer: vk::CommandBuffer) -> Result<()> {
         let err = (self.fp1_0.end_command_buffer)(Some(command_buffer));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn reset_command_buffer(
         &self,
@@ -1582,10 +1671,11 @@ impl Device {
         flags: vk::CommandBufferResetFlags,
     ) -> Result<()> {
         let err = (self.fp1_0.reset_command_buffer)(Some(command_buffer), flags);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn cmd_bind_pipeline(
         &self,
@@ -2142,18 +2232,20 @@ impl Device {
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len();
         let err = (self.fp1_1.bind_buffer_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len();
         let err = (self.fp1_1.bind_image_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_device_group_peer_memory_features(
         &self,
@@ -2217,7 +2309,8 @@ impl Device {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_1.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn trim_command_pool(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
         (self.fp1_1.trim_command_pool)(Some(self.handle), Some(command_pool), flags);
@@ -2239,10 +2332,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_sampler_ycbcr_conversion(
         &self,
@@ -2267,10 +2361,11 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_descriptor_update_template(
         &self,
@@ -2310,8 +2405,8 @@ pub struct KhrSurface {
     pub fp1_0: vk::KhrSurfaceFn1_0,
 }
 impl KhrSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -2352,10 +2447,11 @@ impl KhrSurface {
             Some(surface),
             &mut res,
         );
-        match err {
-            vk::Result::SUCCESS => Ok(res != vk::FALSE),
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res.map(|r| r != vk::FALSE)
     }
     pub unsafe fn get_physical_device_surface_capabilities_khr(
         &self,
@@ -2365,10 +2461,11 @@ impl KhrSurface {
         let mut res = mem::uninitialized();
         let err =
             (self.fp1_0.get_physical_device_surface_capabilities_khr)(Some(physical_device), Some(surface), &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_surface_formats_khr_to_vec(
         &self,
@@ -2393,10 +2490,11 @@ impl KhrSurface {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_surface_present_modes_khr_to_vec(
         &self,
@@ -2421,10 +2519,11 @@ impl KhrSurface {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
 }
 pub struct KhrSwapchain {
@@ -2434,7 +2533,7 @@ pub struct KhrSwapchain {
     pub fp1_1: vk::KhrSwapchainFn1_1,
 }
 impl KhrSwapchain {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -2474,10 +2573,11 @@ impl KhrSwapchain {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_swapchain_khr(
         &self,
@@ -2496,10 +2596,11 @@ impl KhrSwapchain {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_0.get_swapchain_images_khr)(Some(self.handle), Some(swapchain), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn acquire_next_image_khr(
         &self,
@@ -2517,12 +2618,13 @@ impl KhrSwapchain {
             fence,
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
                 Ok((err, res))
             }
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn queue_present_khr(
         &self,
@@ -2530,10 +2632,11 @@ impl KhrSwapchain {
         p_present_info: &vk::PresentInfoKHR,
     ) -> Result<vk::Result> {
         let err = (self.fp1_0.queue_present_khr)(Some(queue), p_present_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_device_group_present_capabilities_khr(
         &self,
@@ -2543,10 +2646,11 @@ impl KhrSwapchain {
             Some(self.handle),
             p_device_group_present_capabilities,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_device_group_surface_present_modes_khr(
         &self,
@@ -2554,10 +2658,11 @@ impl KhrSwapchain {
     ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_1.get_device_group_surface_present_modes_khr)(Some(self.handle), Some(surface), &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_present_rectangles_khr_to_vec(
         &self,
@@ -2582,10 +2687,11 @@ impl KhrSwapchain {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn acquire_next_image2_khr(
         &self,
@@ -2593,12 +2699,13 @@ impl KhrSwapchain {
     ) -> Result<(vk::Result, u32)> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_1.acquire_next_image2_khr)(Some(self.handle), p_acquire_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
                 Ok((err, res))
             }
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrDisplay {
@@ -2607,8 +2714,8 @@ pub struct KhrDisplay {
     pub fp1_0: vk::KhrDisplayFn1_0,
 }
 impl KhrDisplay {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -2643,10 +2750,11 @@ impl KhrDisplay {
         let v_err =
             (self.fp1_0.get_physical_device_display_properties_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_display_plane_properties_khr_to_vec(
         &self,
@@ -2668,10 +2776,11 @@ impl KhrDisplay {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_display_plane_supported_displays_khr_to_vec(
         &self,
@@ -2696,10 +2805,11 @@ impl KhrDisplay {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_display_mode_properties_khr_to_vec(
         &self,
@@ -2724,10 +2834,11 @@ impl KhrDisplay {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_display_mode_khr(
         &self,
@@ -2744,10 +2855,11 @@ impl KhrDisplay {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_display_plane_capabilities_khr(
         &self,
@@ -2758,10 +2870,11 @@ impl KhrDisplay {
         let mut res = mem::uninitialized();
         let err =
             (self.fp1_0.get_display_plane_capabilities_khr)(Some(physical_device), Some(mode), plane_index, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn create_display_plane_surface_khr(
         &self,
@@ -2775,10 +2888,11 @@ impl KhrDisplay {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrDisplaySwapchain {
@@ -2787,7 +2901,7 @@ pub struct KhrDisplaySwapchain {
     pub fp1_0: vk::KhrDisplaySwapchainFn1_0,
 }
 impl KhrDisplaySwapchain {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -2823,10 +2937,11 @@ impl KhrDisplaySwapchain {
             p_allocator.map_or(ptr::null(), |r| r),
             p_swapchains,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_shared_swapchains_khr_to_vec(
         &self,
@@ -2843,10 +2958,11 @@ impl KhrDisplaySwapchain {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_shared_swapchains_khr_array<A: Array<Item = vk::SwapchainKHR>>(
         &self,
@@ -2863,10 +2979,11 @@ impl KhrDisplaySwapchain {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_shared_swapchains_khr_single(
         &self,
@@ -2883,10 +3000,11 @@ impl KhrDisplaySwapchain {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
 }
 pub struct KhrXlibSurface {
@@ -2895,8 +3013,8 @@ pub struct KhrXlibSurface {
     pub fp1_0: vk::KhrXlibSurfaceFn1_0,
 }
 impl KhrXlibSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -2929,10 +3047,11 @@ impl KhrXlibSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_xlib_presentation_support_khr(
         &self,
@@ -2941,12 +3060,13 @@ impl KhrXlibSurface {
         dpy: &mut vk::Display,
         visual_id: vk::VisualID,
     ) -> vk::Bool32 {
-        (self.fp1_0.get_physical_device_xlib_presentation_support_khr)(
+        let res = (self.fp1_0.get_physical_device_xlib_presentation_support_khr)(
             Some(physical_device),
             queue_family_index,
             dpy,
             visual_id,
-        )
+        );
+        res
     }
 }
 pub struct KhrXcbSurface {
@@ -2955,8 +3075,8 @@ pub struct KhrXcbSurface {
     pub fp1_0: vk::KhrXcbSurfaceFn1_0,
 }
 impl KhrXcbSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -2989,10 +3109,11 @@ impl KhrXcbSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_xcb_presentation_support_khr(
         &self,
@@ -3001,12 +3122,13 @@ impl KhrXcbSurface {
         connection: &mut vk::xcb_connection_t,
         visual_id: vk::xcb_visualid_t,
     ) -> vk::Bool32 {
-        (self.fp1_0.get_physical_device_xcb_presentation_support_khr)(
+        let res = (self.fp1_0.get_physical_device_xcb_presentation_support_khr)(
             Some(physical_device),
             queue_family_index,
             connection,
             visual_id,
-        )
+        );
+        res
     }
 }
 pub struct KhrWaylandSurface {
@@ -3015,8 +3137,8 @@ pub struct KhrWaylandSurface {
     pub fp1_0: vk::KhrWaylandSurfaceFn1_0,
 }
 impl KhrWaylandSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3049,10 +3171,11 @@ impl KhrWaylandSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_wayland_presentation_support_khr(
         &self,
@@ -3060,11 +3183,12 @@ impl KhrWaylandSurface {
         queue_family_index: u32,
         display: &mut vk::wl_display,
     ) -> vk::Bool32 {
-        (self.fp1_0.get_physical_device_wayland_presentation_support_khr)(
+        let res = (self.fp1_0.get_physical_device_wayland_presentation_support_khr)(
             Some(physical_device),
             queue_family_index,
             display,
-        )
+        );
+        res
     }
 }
 pub struct KhrMirSurface {
@@ -3073,8 +3197,8 @@ pub struct KhrMirSurface {
     pub fp1_0: vk::KhrMirSurfaceFn1_0,
 }
 impl KhrMirSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3107,10 +3231,11 @@ impl KhrMirSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_mir_presentation_support_khr(
         &self,
@@ -3118,11 +3243,12 @@ impl KhrMirSurface {
         queue_family_index: u32,
         connection: &mut vk::MirConnection,
     ) -> vk::Bool32 {
-        (self.fp1_0.get_physical_device_mir_presentation_support_khr)(
+        let res = (self.fp1_0.get_physical_device_mir_presentation_support_khr)(
             Some(physical_device),
             queue_family_index,
             connection,
-        )
+        );
+        res
     }
 }
 pub struct KhrAndroidSurface {
@@ -3131,8 +3257,8 @@ pub struct KhrAndroidSurface {
     pub fp1_0: vk::KhrAndroidSurfaceFn1_0,
 }
 impl KhrAndroidSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3165,10 +3291,11 @@ impl KhrAndroidSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrWin32Surface {
@@ -3177,8 +3304,8 @@ pub struct KhrWin32Surface {
     pub fp1_0: vk::KhrWin32SurfaceFn1_0,
 }
 impl KhrWin32Surface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3211,17 +3338,20 @@ impl KhrWin32Surface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_win32_presentation_support_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         queue_family_index: u32,
     ) -> vk::Bool32 {
-        (self.fp1_0.get_physical_device_win32_presentation_support_khr)(Some(physical_device), queue_family_index)
+        let res =
+            (self.fp1_0.get_physical_device_win32_presentation_support_khr)(Some(physical_device), queue_family_index);
+        res
     }
 }
 pub struct ExtDebugReport {
@@ -3230,8 +3360,8 @@ pub struct ExtDebugReport {
     pub fp1_0: vk::ExtDebugReportFn1_0,
 }
 impl ExtDebugReport {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3264,10 +3394,11 @@ impl ExtDebugReport {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_debug_report_callback_ext(
         &self,
@@ -3308,7 +3439,7 @@ pub struct ExtDebugMarker {
     pub fp1_0: vk::ExtDebugMarkerFn1_0,
 }
 impl ExtDebugMarker {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3332,20 +3463,22 @@ impl ExtDebugMarker {
     }
     pub unsafe fn debug_marker_set_object_tag_ext(&self, p_tag_info: &vk::DebugMarkerObjectTagInfoEXT) -> Result<()> {
         let err = (self.fp1_0.debug_marker_set_object_tag_ext)(Some(self.handle), p_tag_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn debug_marker_set_object_name_ext(
         &self,
         p_name_info: &vk::DebugMarkerObjectNameInfoEXT,
     ) -> Result<()> {
         let err = (self.fp1_0.debug_marker_set_object_name_ext)(Some(self.handle), p_name_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn cmd_debug_marker_begin_ext(
         &self,
@@ -3371,7 +3504,7 @@ pub struct AmdDrawIndirectCount {
     pub fp1_0: vk::AmdDrawIndirectCountFn1_0,
 }
 impl AmdDrawIndirectCount {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3440,7 +3573,7 @@ pub struct AmdShaderInfo {
     pub fp1_0: vk::AmdShaderInfoFn1_0,
 }
 impl AmdShaderInfo {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3478,10 +3611,11 @@ impl AmdShaderInfo {
             p_info_size,
             p_info,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct NvExternalMemoryCapabilities {
@@ -3490,8 +3624,8 @@ pub struct NvExternalMemoryCapabilities {
     pub fp1_0: vk::NvExternalMemoryCapabilitiesFn1_0,
 }
 impl NvExternalMemoryCapabilities {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3533,10 +3667,11 @@ impl NvExternalMemoryCapabilities {
             external_handle_type,
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct NvExternalMemoryWin32 {
@@ -3545,7 +3680,7 @@ pub struct NvExternalMemoryWin32 {
     pub fp1_0: vk::NvExternalMemoryWin32Fn1_0,
 }
 impl NvExternalMemoryWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3574,10 +3709,11 @@ impl NvExternalMemoryWin32 {
     ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_memory_win32_handle_nv)(Some(self.handle), Some(memory), handle_type, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrGetPhysicalDeviceProperties2 {
@@ -3586,8 +3722,8 @@ pub struct KhrGetPhysicalDeviceProperties2 {
     pub fp1_0: vk::KhrGetPhysicalDeviceProperties2Fn1_0,
 }
 impl KhrGetPhysicalDeviceProperties2 {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3641,10 +3777,11 @@ impl KhrGetPhysicalDeviceProperties2 {
             p_image_format_info,
             p_image_format_properties,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_queue_family_properties2_to_vec(
         &self,
@@ -3655,7 +3792,8 @@ impl KhrGetPhysicalDeviceProperties2 {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_0.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
     pub unsafe fn get_physical_device_memory_properties2(
         &self,
@@ -3684,7 +3822,8 @@ impl KhrGetPhysicalDeviceProperties2 {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
 }
 pub struct KhrDeviceGroup {
@@ -3693,7 +3832,7 @@ pub struct KhrDeviceGroup {
     pub fp1_0: vk::KhrDeviceGroupFn1_0,
 }
 impl KhrDeviceGroup {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3762,10 +3901,11 @@ impl KhrDeviceGroup {
             Some(self.handle),
             p_device_group_present_capabilities,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_device_group_surface_present_modes_khr(
         &self,
@@ -3773,10 +3913,11 @@ impl KhrDeviceGroup {
     ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_device_group_surface_present_modes_khr)(Some(self.handle), Some(surface), &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_present_rectangles_khr_to_vec(
         &self,
@@ -3801,10 +3942,11 @@ impl KhrDeviceGroup {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn acquire_next_image2_khr(
         &self,
@@ -3812,12 +3954,13 @@ impl KhrDeviceGroup {
     ) -> Result<(vk::Result, u32)> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.acquire_next_image2_khr)(Some(self.handle), p_acquire_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
                 Ok((err, res))
             }
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct NnViSurface {
@@ -3826,8 +3969,8 @@ pub struct NnViSurface {
     pub fp1_0: vk::NnViSurfaceFn1_0,
 }
 impl NnViSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3860,10 +4003,11 @@ impl NnViSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrMaintenance1 {
@@ -3872,7 +4016,7 @@ pub struct KhrMaintenance1 {
     pub fp1_0: vk::KhrMaintenance1Fn1_0,
 }
 impl KhrMaintenance1 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -3904,8 +4048,8 @@ pub struct KhrDeviceGroupCreation {
     pub fp1_0: vk::KhrDeviceGroupCreationFn1_0,
 }
 impl KhrDeviceGroupCreation {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3935,10 +4079,11 @@ impl KhrDeviceGroupCreation {
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (self.fp1_0.enumerate_physical_device_groups)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalMemoryCapabilities {
@@ -3947,8 +4092,8 @@ pub struct KhrExternalMemoryCapabilities {
     pub fp1_0: vk::KhrExternalMemoryCapabilitiesFn1_0,
 }
 impl KhrExternalMemoryCapabilities {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -3988,7 +4133,7 @@ pub struct KhrExternalMemoryWin32 {
     pub fp1_0: vk::KhrExternalMemoryWin32Fn1_0,
 }
 impl KhrExternalMemoryWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4016,10 +4161,11 @@ impl KhrExternalMemoryWin32 {
     ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_memory_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_memory_win32_handle_properties_khr(
         &self,
@@ -4033,10 +4179,11 @@ impl KhrExternalMemoryWin32 {
             handle,
             p_memory_win32_handle_properties,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalMemoryFd {
@@ -4045,7 +4192,7 @@ pub struct KhrExternalMemoryFd {
     pub fp1_0: vk::KhrExternalMemoryFdFn1_0,
 }
 impl KhrExternalMemoryFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4070,10 +4217,11 @@ impl KhrExternalMemoryFd {
     pub unsafe fn get_memory_fd_khr(&self, p_get_fd_info: &vk::MemoryGetFdInfoKHR) -> Result<c_int> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_memory_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_memory_fd_properties_khr(
         &self,
@@ -4082,10 +4230,11 @@ impl KhrExternalMemoryFd {
         p_memory_fd_properties: &mut vk::MemoryFdPropertiesKHR,
     ) -> Result<()> {
         let err = (self.fp1_0.get_memory_fd_properties_khr)(Some(self.handle), handle_type, fd, p_memory_fd_properties);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalSemaphoreCapabilities {
@@ -4094,8 +4243,8 @@ pub struct KhrExternalSemaphoreCapabilities {
     pub fp1_0: vk::KhrExternalSemaphoreCapabilitiesFn1_0,
 }
 impl KhrExternalSemaphoreCapabilities {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -4135,7 +4284,7 @@ pub struct KhrExternalSemaphoreWin32 {
     pub fp1_0: vk::KhrExternalSemaphoreWin32Fn1_0,
 }
 impl KhrExternalSemaphoreWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4163,10 +4312,11 @@ impl KhrExternalSemaphoreWin32 {
     ) -> Result<()> {
         let err =
             (self.fp1_0.import_semaphore_win32_handle_khr)(Some(self.handle), p_import_semaphore_win32_handle_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_semaphore_win32_handle_khr(
         &self,
@@ -4174,10 +4324,11 @@ impl KhrExternalSemaphoreWin32 {
     ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_semaphore_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalSemaphoreFd {
@@ -4186,7 +4337,7 @@ pub struct KhrExternalSemaphoreFd {
     pub fp1_0: vk::KhrExternalSemaphoreFdFn1_0,
 }
 impl KhrExternalSemaphoreFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4213,18 +4364,20 @@ impl KhrExternalSemaphoreFd {
         p_import_semaphore_fd_info: &vk::ImportSemaphoreFdInfoKHR,
     ) -> Result<()> {
         let err = (self.fp1_0.import_semaphore_fd_khr)(Some(self.handle), p_import_semaphore_fd_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_semaphore_fd_khr(&self, p_get_fd_info: &vk::SemaphoreGetFdInfoKHR) -> Result<c_int> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_semaphore_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrPushDescriptor {
@@ -4234,7 +4387,7 @@ pub struct KhrPushDescriptor {
     pub fp1_1: vk::KhrPushDescriptorFn1_1,
 }
 impl KhrPushDescriptor {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4303,7 +4456,7 @@ pub struct ExtConditionalRendering {
     pub fp1_0: vk::ExtConditionalRenderingFn1_0,
 }
 impl ExtConditionalRendering {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4342,7 +4495,7 @@ pub struct KhrDescriptorUpdateTemplate {
     pub fp1_0: vk::KhrDescriptorUpdateTemplateFn1_0,
 }
 impl KhrDescriptorUpdateTemplate {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4376,10 +4529,11 @@ impl KhrDescriptorUpdateTemplate {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_descriptor_update_template(
         &self,
@@ -4428,7 +4582,7 @@ pub struct NvxDeviceGeneratedCommands {
     pub fp1_0: vk::NvxDeviceGeneratedCommandsFn1_0,
 }
 impl NvxDeviceGeneratedCommands {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4476,10 +4630,11 @@ impl NvxDeviceGeneratedCommands {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_indirect_commands_layout_nvx(
         &self,
@@ -4504,10 +4659,11 @@ impl NvxDeviceGeneratedCommands {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_object_table_nvx(
         &self,
@@ -4534,10 +4690,11 @@ impl NvxDeviceGeneratedCommands {
             pp_object_table_entries,
             p_object_indices.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn unregister_objects_nvx(
         &self,
@@ -4554,10 +4711,11 @@ impl NvxDeviceGeneratedCommands {
             p_object_entry_types.as_ptr(),
             p_object_indices.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_generated_commands_properties_nvx(
         &self,
@@ -4574,7 +4732,7 @@ pub struct NvClipSpaceWScaling {
     pub fp1_0: vk::NvClipSpaceWScalingFn1_0,
 }
 impl NvClipSpaceWScaling {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4617,8 +4775,8 @@ pub struct ExtDirectModeDisplay {
     pub fp1_0: vk::ExtDirectModeDisplayFn1_0,
 }
 impl ExtDirectModeDisplay {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -4645,10 +4803,11 @@ impl ExtDirectModeDisplay {
         display: vk::DisplayKHR,
     ) -> Result<()> {
         let err = (self.fp1_0.release_display_ext)(Some(physical_device), Some(display));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtAcquireXlibDisplay {
@@ -4657,8 +4816,8 @@ pub struct ExtAcquireXlibDisplay {
     pub fp1_0: vk::ExtAcquireXlibDisplayFn1_0,
 }
 impl ExtAcquireXlibDisplay {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -4686,10 +4845,11 @@ impl ExtAcquireXlibDisplay {
         display: vk::DisplayKHR,
     ) -> Result<()> {
         let err = (self.fp1_0.acquire_xlib_display_ext)(Some(physical_device), dpy, Some(display));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_rand_r_output_display_ext(
         &self,
@@ -4699,10 +4859,11 @@ impl ExtAcquireXlibDisplay {
     ) -> Result<vk::DisplayKHR> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_rand_r_output_display_ext)(Some(physical_device), dpy, rr_output, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtDisplaySurfaceCounter {
@@ -4711,8 +4872,8 @@ pub struct ExtDisplaySurfaceCounter {
     pub fp1_0: vk::ExtDisplaySurfaceCounterFn1_0,
 }
 impl ExtDisplaySurfaceCounter {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -4744,10 +4905,11 @@ impl ExtDisplaySurfaceCounter {
             Some(surface),
             p_surface_capabilities,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtDisplayControl {
@@ -4756,7 +4918,7 @@ pub struct ExtDisplayControl {
     pub fp1_0: vk::ExtDisplayControlFn1_0,
 }
 impl ExtDisplayControl {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4784,10 +4946,11 @@ impl ExtDisplayControl {
         p_display_power_info: &vk::DisplayPowerInfoEXT,
     ) -> Result<()> {
         let err = (self.fp1_0.display_power_control_ext)(Some(self.handle), Some(display), p_display_power_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn register_device_event_ext(
         &self,
@@ -4801,10 +4964,11 @@ impl ExtDisplayControl {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn register_display_event_ext(
         &self,
@@ -4820,10 +4984,11 @@ impl ExtDisplayControl {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_swapchain_counter_ext(
         &self,
@@ -4832,10 +4997,11 @@ impl ExtDisplayControl {
     ) -> Result<u64> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_swapchain_counter_ext)(Some(self.handle), Some(swapchain), counter, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct GoogleDisplayTiming {
@@ -4844,7 +5010,7 @@ pub struct GoogleDisplayTiming {
     pub fp1_0: vk::GoogleDisplayTimingFn1_0,
 }
 impl GoogleDisplayTiming {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4872,10 +5038,11 @@ impl GoogleDisplayTiming {
     ) -> Result<vk::RefreshCycleDurationGOOGLE> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_refresh_cycle_duration_google)(Some(self.handle), Some(swapchain), &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_past_presentation_timing_google_to_vec(
         &self,
@@ -4899,10 +5066,11 @@ impl GoogleDisplayTiming {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
 }
 pub struct ExtDiscardRectangles {
@@ -4911,7 +5079,7 @@ pub struct ExtDiscardRectangles {
     pub fp1_0: vk::ExtDiscardRectanglesFn1_0,
 }
 impl ExtDiscardRectangles {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4954,7 +5122,7 @@ pub struct ExtHdrMetadata {
     pub fp1_0: vk::ExtHdrMetadataFn1_0,
 }
 impl ExtHdrMetadata {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -4993,7 +5161,7 @@ pub struct KhrCreateRenderpass2 {
     pub fp1_0: vk::KhrCreateRenderpass2Fn1_0,
 }
 impl KhrCreateRenderpass2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5027,10 +5195,11 @@ impl KhrCreateRenderpass2 {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn cmd_begin_render_pass2_khr(
         &self,
@@ -5062,7 +5231,7 @@ pub struct KhrSharedPresentableImage {
     pub fp1_0: vk::KhrSharedPresentableImageFn1_0,
 }
 impl KhrSharedPresentableImage {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5086,10 +5255,11 @@ impl KhrSharedPresentableImage {
     }
     pub unsafe fn get_swapchain_status_khr(&self, swapchain: vk::SwapchainKHR) -> Result<vk::Result> {
         let err = (self.fp1_0.get_swapchain_status_khr)(Some(self.handle), Some(swapchain));
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalFenceCapabilities {
@@ -5098,8 +5268,8 @@ pub struct KhrExternalFenceCapabilities {
     pub fp1_0: vk::KhrExternalFenceCapabilitiesFn1_0,
 }
 impl KhrExternalFenceCapabilities {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5139,7 +5309,7 @@ pub struct KhrExternalFenceWin32 {
     pub fp1_0: vk::KhrExternalFenceWin32Fn1_0,
 }
 impl KhrExternalFenceWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5166,10 +5336,11 @@ impl KhrExternalFenceWin32 {
         p_import_fence_win32_handle_info: &vk::ImportFenceWin32HandleInfoKHR,
     ) -> Result<()> {
         let err = (self.fp1_0.import_fence_win32_handle_khr)(Some(self.handle), p_import_fence_win32_handle_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_fence_win32_handle_khr(
         &self,
@@ -5177,10 +5348,11 @@ impl KhrExternalFenceWin32 {
     ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_fence_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrExternalFenceFd {
@@ -5189,7 +5361,7 @@ pub struct KhrExternalFenceFd {
     pub fp1_0: vk::KhrExternalFenceFdFn1_0,
 }
 impl KhrExternalFenceFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5213,18 +5385,20 @@ impl KhrExternalFenceFd {
     }
     pub unsafe fn import_fence_fd_khr(&self, p_import_fence_fd_info: &vk::ImportFenceFdInfoKHR) -> Result<()> {
         let err = (self.fp1_0.import_fence_fd_khr)(Some(self.handle), p_import_fence_fd_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_fence_fd_khr(&self, p_get_fd_info: &vk::FenceGetFdInfoKHR) -> Result<c_int> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_fence_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrGetSurfaceCapabilities2 {
@@ -5233,8 +5407,8 @@ pub struct KhrGetSurfaceCapabilities2 {
     pub fp1_0: vk::KhrGetSurfaceCapabilities2Fn1_0,
 }
 impl KhrGetSurfaceCapabilities2 {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5266,10 +5440,11 @@ impl KhrGetSurfaceCapabilities2 {
             p_surface_info,
             p_surface_capabilities,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_surface_formats2_khr_to_vec(
         &self,
@@ -5294,10 +5469,11 @@ impl KhrGetSurfaceCapabilities2 {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
 }
 pub struct KhrGetDisplayProperties2 {
@@ -5306,8 +5482,8 @@ pub struct KhrGetDisplayProperties2 {
     pub fp1_0: vk::KhrGetDisplayProperties2Fn1_0,
 }
 impl KhrGetDisplayProperties2 {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5342,10 +5518,11 @@ impl KhrGetDisplayProperties2 {
         let v_err =
             (self.fp1_0.get_physical_device_display_properties2_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_physical_device_display_plane_properties2_khr_to_vec(
         &self,
@@ -5367,10 +5544,11 @@ impl KhrGetDisplayProperties2 {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_display_mode_properties2_khr_to_vec(
         &self,
@@ -5395,10 +5573,11 @@ impl KhrGetDisplayProperties2 {
             v.as_mut_ptr(),
         );
         v.set_len(len as usize);
-        match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_display_plane_capabilities2_khr(
         &self,
@@ -5411,10 +5590,11 @@ impl KhrGetDisplayProperties2 {
             p_display_plane_info,
             p_capabilities,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct MvkIosSurface {
@@ -5423,8 +5603,8 @@ pub struct MvkIosSurface {
     pub fp1_0: vk::MvkIosSurfaceFn1_0,
 }
 impl MvkIosSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5457,10 +5637,11 @@ impl MvkIosSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct MvkMacosSurface {
@@ -5469,8 +5650,8 @@ pub struct MvkMacosSurface {
     pub fp1_0: vk::MvkMacosSurfaceFn1_0,
 }
 impl MvkMacosSurface {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5503,10 +5684,11 @@ impl MvkMacosSurface {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtDebugUtils {
@@ -5515,8 +5697,8 @@ pub struct ExtDebugUtils {
     pub fp1_0: vk::ExtDebugUtilsFn1_0,
 }
 impl ExtDebugUtils {
-    pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let lib = &LIB;
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
         let f = |name: &CStr| {
             lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
@@ -5543,10 +5725,11 @@ impl ExtDebugUtils {
         p_name_info: &vk::DebugUtilsObjectNameInfoEXT,
     ) -> Result<()> {
         let err = (self.fp1_0.set_debug_utils_object_name_ext)(Some(device), p_name_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn set_debug_utils_object_tag_ext(
         &self,
@@ -5554,10 +5737,11 @@ impl ExtDebugUtils {
         p_tag_info: &vk::DebugUtilsObjectTagInfoEXT,
     ) -> Result<()> {
         let err = (self.fp1_0.set_debug_utils_object_tag_ext)(Some(device), p_tag_info);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn queue_begin_debug_utils_label_ext(&self, queue: vk::Queue, p_label_info: &vk::DebugUtilsLabelEXT) {
         (self.fp1_0.queue_begin_debug_utils_label_ext)(Some(queue), p_label_info);
@@ -5597,10 +5781,11 @@ impl ExtDebugUtils {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_debug_utils_messenger_ext(
         &self,
@@ -5633,7 +5818,7 @@ pub struct AndroidExternalMemoryAndroidHardwareBuffer {
     pub fp1_0: vk::AndroidExternalMemoryAndroidHardwareBufferFn1_0,
 }
 impl AndroidExternalMemoryAndroidHardwareBuffer {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5661,10 +5846,11 @@ impl AndroidExternalMemoryAndroidHardwareBuffer {
         p_properties: &mut vk::AndroidHardwareBufferPropertiesANDROID,
     ) -> Result<()> {
         let err = (self.fp1_0.get_android_hardware_buffer_properties_android)(Some(self.handle), buffer, p_properties);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_memory_android_hardware_buffer_android(
         &self,
@@ -5672,10 +5858,11 @@ impl AndroidExternalMemoryAndroidHardwareBuffer {
     ) -> Result<*mut vk::AHardwareBuffer> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.get_memory_android_hardware_buffer_android)(Some(self.handle), p_info, &mut res);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtSampleLocations {
@@ -5684,7 +5871,7 @@ pub struct ExtSampleLocations {
     pub fp1_0: vk::ExtSampleLocationsFn1_0,
 }
 impl ExtSampleLocations {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5732,7 +5919,7 @@ pub struct KhrGetMemoryRequirements2 {
     pub fp1_0: vk::KhrGetMemoryRequirements2Fn1_0,
 }
 impl KhrGetMemoryRequirements2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5777,7 +5964,8 @@ impl KhrGetMemoryRequirements2 {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_0.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
 }
 pub struct KhrSamplerYcbcrConversion {
@@ -5786,7 +5974,7 @@ pub struct KhrSamplerYcbcrConversion {
     pub fp1_0: vk::KhrSamplerYcbcrConversionFn1_0,
 }
 impl KhrSamplerYcbcrConversion {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5820,10 +6008,11 @@ impl KhrSamplerYcbcrConversion {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_sampler_ycbcr_conversion(
         &self,
@@ -5843,7 +6032,7 @@ pub struct KhrBindMemory2 {
     pub fp1_0: vk::KhrBindMemory2Fn1_0,
 }
 impl KhrBindMemory2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5868,18 +6057,20 @@ impl KhrBindMemory2 {
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len();
         let err = (self.fp1_0.bind_buffer_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len();
         let err = (self.fp1_0.bind_image_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct ExtValidationCache {
@@ -5888,7 +6079,7 @@ pub struct ExtValidationCache {
     pub fp1_0: vk::ExtValidationCacheFn1_0,
 }
 impl ExtValidationCache {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -5922,10 +6113,11 @@ impl ExtValidationCache {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_validation_cache_ext(
         &self,
@@ -5950,10 +6142,11 @@ impl ExtValidationCache {
             src_cache_count as u32,
             p_src_caches.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_validation_cache_data_ext(
         &self,
@@ -5963,10 +6156,11 @@ impl ExtValidationCache {
     ) -> Result<vk::Result> {
         let err =
             (self.fp1_0.get_validation_cache_data_ext)(Some(self.handle), Some(validation_cache), p_data_size, p_data);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct NvShadingRateImage {
@@ -5975,7 +6169,7 @@ pub struct NvShadingRateImage {
     pub fp1_0: vk::NvShadingRateImageFn1_0,
 }
 impl NvShadingRateImage {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6040,7 +6234,7 @@ pub struct NvxRaytracing {
     pub fp1_0: vk::NvxRaytracingFn1_0,
 }
 impl NvxRaytracing {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6074,10 +6268,11 @@ impl NvxRaytracing {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut res,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn destroy_acceleration_structure_nvx(
         &self,
@@ -6122,10 +6317,11 @@ impl NvxRaytracing {
             bind_info_count as u32,
             p_bind_infos.as_ptr(),
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn cmd_build_acceleration_structure_nvx(
         &self,
@@ -6212,10 +6408,11 @@ impl NvxRaytracing {
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_raytracing_pipelines_nvx_to_vec(
         &self,
@@ -6234,10 +6431,11 @@ impl NvxRaytracing {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_raytracing_pipelines_nvx_array<A: Array<Item = vk::Pipeline>>(
         &self,
@@ -6256,10 +6454,11 @@ impl NvxRaytracing {
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn create_raytracing_pipelines_nvx_single(
         &self,
@@ -6278,10 +6477,11 @@ impl NvxRaytracing {
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-        match v_err {
+;        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        }
+        };
+        res
     }
     pub unsafe fn get_raytracing_shader_handles_nvx(
         &self,
@@ -6299,10 +6499,11 @@ impl NvxRaytracing {
             data_size,
             p_data,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn get_acceleration_structure_handle_nvx(
         &self,
@@ -6316,10 +6517,11 @@ impl NvxRaytracing {
             data_size,
             p_data,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
     pub unsafe fn cmd_write_acceleration_structure_properties_nvx(
         &self,
@@ -6339,10 +6541,11 @@ impl NvxRaytracing {
     }
     pub unsafe fn compile_deferred_nvx(&self, pipeline: vk::Pipeline, shader: u32) -> Result<()> {
         let err = (self.fp1_0.compile_deferred_nvx)(Some(self.handle), Some(pipeline), shader);
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct KhrMaintenance3 {
@@ -6351,7 +6554,7 @@ pub struct KhrMaintenance3 {
     pub fp1_0: vk::KhrMaintenance3Fn1_0,
 }
 impl KhrMaintenance3 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6387,7 +6590,7 @@ pub struct KhrDrawIndirectCount {
     pub fp1_0: vk::KhrDrawIndirectCountFn1_0,
 }
 impl KhrDrawIndirectCount {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6456,7 +6659,7 @@ pub struct ExtExternalMemoryHost {
     pub fp1_0: vk::ExtExternalMemoryHostFn1_0,
 }
 impl ExtExternalMemoryHost {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6490,10 +6693,11 @@ impl ExtExternalMemoryHost {
             p_host_pointer,
             p_memory_host_pointer_properties,
         );
-        match err {
+        let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
-        }
+        };
+        res
     }
 }
 pub struct AmdBufferMarker {
@@ -6502,7 +6706,7 @@ pub struct AmdBufferMarker {
     pub fp1_0: vk::AmdBufferMarkerFn1_0,
 }
 impl AmdBufferMarker {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6547,7 +6751,7 @@ pub struct NvMeshShader {
     pub fp1_0: vk::NvMeshShaderFn1_0,
 }
 impl NvMeshShader {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6609,7 +6813,7 @@ pub struct NvScissorExclusive {
     pub fp1_0: vk::NvScissorExclusiveFn1_0,
 }
 impl NvScissorExclusive {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6652,7 +6856,7 @@ pub struct NvDeviceDiagnosticCheckpoints {
     pub fp1_0: vk::NvDeviceDiagnosticCheckpointsFn1_0,
 }
 impl NvDeviceDiagnosticCheckpoints {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> Result<Self> {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
                 .get_device_proc_addr(device.handle, name)
@@ -6683,7 +6887,8 @@ impl NvDeviceDiagnosticCheckpoints {
         let mut v = Vec::with_capacity(len as usize);
         (self.fp1_0.get_queue_checkpoint_data_nv)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
-        v
+        let res = v;
+        res
     }
 }
 
