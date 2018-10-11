@@ -15,20 +15,20 @@ Almost all of the library is generated from the Vulkan API specifications using 
 
 ## Loaders
 
-The structs `Entry`, `Instance` and `Device` load function pointers for the core API.
+The structs `Loader`, `Instance` and `Device` load function pointers for the core API.
 
 ```rust
 // load the Vulkan shared library
-let entry = Entry::new()?;
+let loader = Loader::new()?;
 
 // create an instance (skip listing layers and extensions for this example)
 let instance_create_info = vk::InstanceCreateInfo {
     .. Default::default()
 };
-let instance = unsafe { entry.create_instance(&instance_create_info, None) }?;
+let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
 
 // check what version loaded successfully
-println!("loaded instance version: {}", instance.version);
+println!("instance version: {}", instance.version);
 ```
 
 Each struct will attempt to load function pointers for all versions of Vulkan.  The `version` field can be read to determine what versions loaded successfully.  Function pointers for versions beyond this will be present but their implementation will `panic!`.

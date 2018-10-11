@@ -25695,18 +25695,18 @@ type FnEnumerateInstanceExtensionProperties = unsafe extern "system" fn(
 ) -> Result;
 type FnEnumerateInstanceLayerProperties =
     unsafe extern "system" fn(p_property_count: *mut u32, p_properties: *mut LayerProperties) -> Result;
-pub struct EntryFn1_0 {
+pub struct LoaderFn1_0 {
     pub create_instance: FnCreateInstance,
     pub enumerate_instance_extension_properties: FnEnumerateInstanceExtensionProperties,
     pub enumerate_instance_layer_properties: FnEnumerateInstanceLayerProperties,
 }
-impl EntryFn1_0 {
+impl LoaderFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
     where
         F: FnMut(&CStr) -> Option<FnVoidFunction>,
     {
         let mut all_loaded = true;
-        let block = EntryFn1_0 {
+        let block = LoaderFn1_0 {
             create_instance: unsafe {
                 extern "system" fn create_instance_fallback(
                     _: *const InstanceCreateInfo,
@@ -25762,16 +25762,16 @@ impl EntryFn1_0 {
     }
 }
 type FnEnumerateInstanceVersion = unsafe extern "system" fn(p_api_version: *mut Version) -> Result;
-pub struct EntryFn1_1 {
+pub struct LoaderFn1_1 {
     pub enumerate_instance_version: FnEnumerateInstanceVersion,
 }
-impl EntryFn1_1 {
+impl LoaderFn1_1 {
     pub fn load<F>(mut f: F) -> (Self, bool)
     where
         F: FnMut(&CStr) -> Option<FnVoidFunction>,
     {
         let mut all_loaded = true;
-        let block = EntryFn1_1 {
+        let block = LoaderFn1_1 {
             enumerate_instance_version: unsafe {
                 extern "system" fn enumerate_instance_version_fallback(_: *mut Version) -> Result {
                     panic!("fn enumerate_instance_version not loaded");

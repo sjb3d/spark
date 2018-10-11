@@ -51,16 +51,16 @@ pub type Result<T> = result::Result<T, vk::Result>;
 type FnGetInstanceProcAddr =
     extern "system" fn(instance: Option<vk::Instance>, p_name: *const c_char) -> Option<vk::FnVoidFunction>;
 
-struct LoaderFn {
+struct LibFn {
     pub get_instance_proc_addr: FnGetInstanceProcAddr,
 }
 
-struct Loader {
+struct Lib {
     pub lib: DynamicLibrary,
-    pub fp: LoaderFn,
+    pub fp: LibFn,
 }
 
-impl Loader {
+impl Lib {
     pub fn new() -> Self {
         let lib = DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))).expect("failed to load vulkan library");
 
@@ -72,7 +72,7 @@ impl Loader {
 
         Self {
             lib,
-            fp: LoaderFn { get_instance_proc_addr },
+            fp: LibFn { get_instance_proc_addr },
         }
     }
 
@@ -86,25 +86,25 @@ impl Loader {
 }
 
 lazy_static! {
-    static ref LOADER: Loader = Loader::new();
+    static ref LIB: Lib = Lib::new();
 }
-pub struct Entry {
+pub struct Loader {
     pub version: vk::Version,
-    pub fp1_0: vk::EntryFn1_0,
-    pub fp1_1: vk::EntryFn1_1,
+    pub fp1_0: vk::LoaderFn1_0,
+    pub fp1_1: vk::LoaderFn1_1,
 }
-impl Entry {
+impl Loader {
     pub fn new() -> Result<Self> {
-        let loader = &LOADER;
-        let f = |name: &CStr| unsafe { loader.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) };
+        let lib = &LIB;
+        let f = |name: &CStr| unsafe { lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) };
         let mut version = vk::Version::from_raw(0);
         let mut ok = true;
-        let (fp1_0, ok1_0) = vk::EntryFn1_0::load(f);
+        let (fp1_0, ok1_0) = vk::LoaderFn1_0::load(f);
         ok = ok && ok1_0;
         if ok {
             version = vk::Version::from_raw_parts(1, 0, 0);
         }
-        let (fp1_1, ok1_1) = vk::EntryFn1_1::load(f);
+        let (fp1_1, ok1_1) = vk::LoaderFn1_1::load(f);
         ok = ok && ok1_1;
         if ok {
             version = vk::Version::from_raw_parts(1, 1, 0);
@@ -173,10 +173,9 @@ pub struct Instance {
 }
 impl Instance {
     unsafe fn load(instance: vk::Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance), name)
+            lib.get_instance_proc_addr(Some(instance), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -2312,10 +2311,9 @@ pub struct KhrSurface {
 }
 impl KhrSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -2610,10 +2608,9 @@ pub struct KhrDisplay {
 }
 impl KhrDisplay {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -2899,10 +2896,9 @@ pub struct KhrXlibSurface {
 }
 impl KhrXlibSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -2960,10 +2956,9 @@ pub struct KhrXcbSurface {
 }
 impl KhrXcbSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3021,10 +3016,9 @@ pub struct KhrWaylandSurface {
 }
 impl KhrWaylandSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3080,10 +3074,9 @@ pub struct KhrMirSurface {
 }
 impl KhrMirSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3139,10 +3132,9 @@ pub struct KhrAndroidSurface {
 }
 impl KhrAndroidSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3186,10 +3178,9 @@ pub struct KhrWin32Surface {
 }
 impl KhrWin32Surface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3240,10 +3231,9 @@ pub struct ExtDebugReport {
 }
 impl ExtDebugReport {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3501,10 +3491,9 @@ pub struct NvExternalMemoryCapabilities {
 }
 impl NvExternalMemoryCapabilities {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3598,10 +3587,9 @@ pub struct KhrGetPhysicalDeviceProperties2 {
 }
 impl KhrGetPhysicalDeviceProperties2 {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3839,10 +3827,9 @@ pub struct NnViSurface {
 }
 impl NnViSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3918,10 +3905,9 @@ pub struct KhrDeviceGroupCreation {
 }
 impl KhrDeviceGroupCreation {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -3962,10 +3948,9 @@ pub struct KhrExternalMemoryCapabilities {
 }
 impl KhrExternalMemoryCapabilities {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -4110,10 +4095,9 @@ pub struct KhrExternalSemaphoreCapabilities {
 }
 impl KhrExternalSemaphoreCapabilities {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -4634,10 +4618,9 @@ pub struct ExtDirectModeDisplay {
 }
 impl ExtDirectModeDisplay {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -4675,10 +4658,9 @@ pub struct ExtAcquireXlibDisplay {
 }
 impl ExtAcquireXlibDisplay {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -4730,10 +4712,9 @@ pub struct ExtDisplaySurfaceCounter {
 }
 impl ExtDisplaySurfaceCounter {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5118,10 +5099,9 @@ pub struct KhrExternalFenceCapabilities {
 }
 impl KhrExternalFenceCapabilities {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5254,10 +5234,9 @@ pub struct KhrGetSurfaceCapabilities2 {
 }
 impl KhrGetSurfaceCapabilities2 {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5328,10 +5307,9 @@ pub struct KhrGetDisplayProperties2 {
 }
 impl KhrGetDisplayProperties2 {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5446,10 +5424,9 @@ pub struct MvkIosSurface {
 }
 impl MvkIosSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5493,10 +5470,9 @@ pub struct MvkMacosSurface {
 }
 impl MvkMacosSurface {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -5540,10 +5516,9 @@ pub struct ExtDebugUtils {
 }
 impl ExtDebugUtils {
     pub unsafe fn new(instance: &Instance) -> Result<Self> {
-        let loader = &LOADER;
+        let lib = &LIB;
         let f = |name: &CStr| {
-            loader
-                .get_instance_proc_addr(Some(instance.handle), name)
+            lib.get_instance_proc_addr(Some(instance.handle), name)
                 .map(|p| mem::transmute(p))
         };
         let mut version = vk::Version::from_raw(0);
@@ -6718,8 +6693,8 @@ mod tests {
 
     #[test]
     fn enumerate_instance_version() {
-        let entry = Entry::new().unwrap();
-        let v = unsafe { entry.enumerate_instance_version() };
+        let loader = Loader::new().unwrap();
+        let v = unsafe { loader.enumerate_instance_version() };
         assert!(v.is_ok());
     }
 }

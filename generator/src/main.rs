@@ -151,7 +151,7 @@ fn get_rust_variable_name(camel_case: &str) -> String {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Group<'a> {
-    Entry,
+    Loader,
     Instance,
     Device,
     InstanceExtension(&'a str),
@@ -161,7 +161,7 @@ enum Group<'a> {
 impl<'a> fmt::Display for Group<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Group::Entry => write!(f, "Entry"),
+            Group::Loader => write!(f, "Loader"),
             Group::Instance => write!(f, "Instance"),
             Group::Device => write!(f, "Device"),
             Group::InstanceExtension(s) => write!(f, "{}", s.skip_prefix(CONST_PREFIX).to_camel_case()),
@@ -421,7 +421,7 @@ impl<'a> Generator<'a> {
             "vkCreateInstance"
             | "vkEnumerateInstanceLayerProperties"
             | "vkEnumerateInstanceExtensionProperties"
-            | "vkEnumerateInstanceVersion" => Some(Group::Entry),
+            | "vkEnumerateInstanceVersion" => Some(Group::Loader),
             "vkGetDeviceProcAddr" => Some(Group::Instance),
             _ => {
                 let cmd_def = self.cmd_def_by_name.get(name).cloned().expect("command not found");
@@ -480,7 +480,7 @@ impl<'a> Generator<'a> {
     }
 
     fn collect_groups(&mut self) {
-        let entry_group = self.collect_group(Group::Entry);
+        let entry_group = self.collect_group(Group::Loader);
         let instance_group = self.collect_group(Group::Instance);
         let device_group = self.collect_group(Group::Device);
         self.group_names.push(entry_group);
@@ -2269,7 +2269,7 @@ impl<'a> Generator<'a> {
             write!(w, "pub struct {} {{", group_names.group)?;
             write!(w, "pub version: vk::Version,")?;
             match group_names.group {
-                Group::Entry => {}
+                Group::Loader => {}
                 Group::Instance | Group::InstanceExtension(_) => {
                     write!(w, "pub handle: vk::Instance,")?;
                 }
@@ -2284,21 +2284,21 @@ impl<'a> Generator<'a> {
             writeln!(w, "}}");
             writeln!(w, "impl {} {{", group_names.group)?;
             match group_names.group {
-                Group::Entry => {
+                Group::Loader => {
                     write!(
                         w,
                         "pub fn new() -> Result<Self> {{\
-                         let loader = &LOADER;\
+                         let lib = &LIB;\
                          let f = |name: &CStr| unsafe {{\
-                         loader.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) }};"
+                         lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) }};"
                     )?;
                 }
                 Group::Instance => {
                     writeln!(
                         w,
                         "unsafe fn load(instance: vk::Instance) -> Result<Self> {{\
-                         let loader = &LOADER;\
-                         let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name).map(|p| mem::transmute(p));"
+                         let lib = &LIB;\
+                         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name).map(|p| mem::transmute(p));"
                     )?;
                 }
                 Group::Device => {
@@ -2312,8 +2312,8 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "pub unsafe fn new(instance: &Instance) -> Result<Self> {{\
-                         let loader = &LOADER;\
-                         let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance.handle), name).map(|p| mem::transmute(p));"
+                         let lib = &LIB;\
+                         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance.handle), name).map(|p| mem::transmute(p));"
                     )?;
                 }
                 Group::DeviceExtension(_) => {
@@ -2338,7 +2338,7 @@ impl<'a> Generator<'a> {
             }
             writeln!(w, "Ok(Self {{ version,")?;
             match group_names.group {
-                Group::Entry => {}
+                Group::Loader => {}
                 Group::Instance => {
                     write!(w, "handle: instance,")?;
                 }

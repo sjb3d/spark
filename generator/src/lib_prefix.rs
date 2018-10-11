@@ -46,16 +46,16 @@ pub type Result<T> = result::Result<T, vk::Result>;
 
 type FnGetInstanceProcAddr = extern "system" fn(instance: Option<vk::Instance>, p_name: *const c_char,) -> Option<vk::FnVoidFunction>;
 
-struct LoaderFn {
+struct LibFn {
     pub get_instance_proc_addr: FnGetInstanceProcAddr,
 }
 
-struct Loader {
+struct Lib {
     pub lib: DynamicLibrary,
-    pub fp: LoaderFn,
+    pub fp: LibFn,
 }
 
-impl Loader {
+impl Lib {
     pub fn new() -> Self {
         let lib = DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))).expect("failed to load vulkan library");
 
@@ -67,7 +67,7 @@ impl Loader {
 
         Self {
             lib,
-            fp: LoaderFn { get_instance_proc_addr },
+            fp: LibFn { get_instance_proc_addr },
         }
     }
 
@@ -77,5 +77,5 @@ impl Loader {
 }
 
 lazy_static! {
-    static ref LOADER: Loader = Loader::new();
+    static ref LIB: Lib = Lib::new();
 }

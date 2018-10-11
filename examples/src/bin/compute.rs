@@ -3,7 +3,7 @@ extern crate vkr;
 use std::ffi::CStr;
 use std::mem;
 use std::slice;
-use vkr::{vk, Builder, Entry};
+use vkr::{vk, Builder, Loader};
 
 fn get_memory_type_index(
     memory_properties: &vk::PhysicalDeviceMemoryProperties,
@@ -21,11 +21,11 @@ fn get_memory_type_index(
 
 fn main() -> vkr::Result<()> {
     // load the Vulkan lib
-    let entry = Entry::new()?;
+    let loader = Loader::new()?;
     let layer_names_raw =
         [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
     let instance_create_info = vk::InstanceCreateInfo::builder().set_pp_enabled_layer_names(&layer_names_raw);
-    let instance = unsafe { entry.create_instance(&instance_create_info, None) }?;
+    let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
 
     // find the first physical device
     let physical_devices = unsafe { instance.enumerate_physical_devices_to_vec() }?;
