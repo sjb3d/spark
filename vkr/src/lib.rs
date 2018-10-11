@@ -102,6 +102,7 @@ impl Lib {
 lazy_static! {
     static ref LIB: result::Result<Lib, LoaderError> = Lib::new();
 }
+/// Core library loader
 pub struct Loader {
     pub version: vk::Version,
     pub fp1_0: vk::LoaderFn1_0,
@@ -183,6 +184,7 @@ impl Loader {
         res
     }
 }
+/// Core instance loader
 pub struct Instance {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -542,6 +544,7 @@ impl Instance {
         );
     }
 }
+/// Core device loader
 pub struct Device {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -2399,6 +2402,7 @@ impl Device {
         (self.fp1_1.get_descriptor_set_layout_support)(Some(self.handle), p_create_info, p_support);
     }
 }
+/// Loader for the `VK_KHR_surface` instance extension
 pub struct KhrSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -2526,6 +2530,7 @@ impl KhrSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_swapchain` device extension
 pub struct KhrSwapchain {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -2708,6 +2713,7 @@ impl KhrSwapchain {
         res
     }
 }
+/// Loader for the `VK_KHR_display` instance extension
 pub struct KhrDisplay {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -2895,6 +2901,7 @@ impl KhrDisplay {
         res
     }
 }
+/// Loader for the `VK_KHR_display_swapchain` device extension
 pub struct KhrDisplaySwapchain {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3007,6 +3014,7 @@ impl KhrDisplaySwapchain {
         res
     }
 }
+/// Loader for the `VK_KHR_xlib_surface` instance extension
 pub struct KhrXlibSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3069,6 +3077,7 @@ impl KhrXlibSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_xcb_surface` instance extension
 pub struct KhrXcbSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3131,6 +3140,7 @@ impl KhrXcbSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_wayland_surface` instance extension
 pub struct KhrWaylandSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3191,6 +3201,7 @@ impl KhrWaylandSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_mir_surface` instance extension
 pub struct KhrMirSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3251,6 +3262,7 @@ impl KhrMirSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_android_surface` instance extension
 pub struct KhrAndroidSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3298,6 +3310,7 @@ impl KhrAndroidSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_win32_surface` instance extension
 pub struct KhrWin32Surface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3354,6 +3367,7 @@ impl KhrWin32Surface {
         res
     }
 }
+/// Loader for the `VK_EXT_debug_report` instance extension
 pub struct ExtDebugReport {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3433,6 +3447,7 @@ impl ExtDebugReport {
         );
     }
 }
+/// Loader for the `VK_EXT_debug_marker` device extension
 pub struct ExtDebugMarker {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3498,6 +3513,7 @@ impl ExtDebugMarker {
         (self.fp1_0.cmd_debug_marker_insert_ext)(Some(command_buffer), p_marker_info);
     }
 }
+/// Loader for the `VK_AMD_draw_indirect_count` device extension
 pub struct AmdDrawIndirectCount {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3567,6 +3583,7 @@ impl AmdDrawIndirectCount {
         );
     }
 }
+/// Loader for the `VK_AMD_shader_info` device extension
 pub struct AmdShaderInfo {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3618,6 +3635,7 @@ impl AmdShaderInfo {
         res
     }
 }
+/// Loader for the `VK_NV_external_memory_capabilities` instance extension
 pub struct NvExternalMemoryCapabilities {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3674,6 +3692,7 @@ impl NvExternalMemoryCapabilities {
         res
     }
 }
+/// Loader for the `VK_NV_external_memory_win32` device extension
 pub struct NvExternalMemoryWin32 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3716,6 +3735,7 @@ impl NvExternalMemoryWin32 {
         res
     }
 }
+/// Loader for the `VK_KHR_get_physical_device_properties2` instance extension
 pub struct KhrGetPhysicalDeviceProperties2 {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -3826,6 +3846,7 @@ impl KhrGetPhysicalDeviceProperties2 {
         res
     }
 }
+/// Loader for the `VK_KHR_device_group` device extension
 pub struct KhrDeviceGroup {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -3963,6 +3984,7 @@ impl KhrDeviceGroup {
         res
     }
 }
+/// Loader for the `VK_NN_vi_surface` instance extension
 pub struct NnViSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4010,6 +4032,7 @@ impl NnViSurface {
         res
     }
 }
+/// Loader for the `VK_KHR_maintenance1` device extension
 pub struct KhrMaintenance1 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4042,6 +4065,7 @@ impl KhrMaintenance1 {
         (self.fp1_0.trim_command_pool)(Some(self.handle), Some(command_pool), flags);
     }
 }
+/// Loader for the `VK_KHR_device_group_creation` instance extension
 pub struct KhrDeviceGroupCreation {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4086,6 +4110,7 @@ impl KhrDeviceGroupCreation {
         res
     }
 }
+/// Loader for the `VK_KHR_external_memory_capabilities` instance extension
 pub struct KhrExternalMemoryCapabilities {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4127,6 +4152,7 @@ impl KhrExternalMemoryCapabilities {
         );
     }
 }
+/// Loader for the `VK_KHR_external_memory_win32` device extension
 pub struct KhrExternalMemoryWin32 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4186,6 +4212,7 @@ impl KhrExternalMemoryWin32 {
         res
     }
 }
+/// Loader for the `VK_KHR_external_memory_fd` device extension
 pub struct KhrExternalMemoryFd {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4237,6 +4264,7 @@ impl KhrExternalMemoryFd {
         res
     }
 }
+/// Loader for the `VK_KHR_external_semaphore_capabilities` instance extension
 pub struct KhrExternalSemaphoreCapabilities {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4278,6 +4306,7 @@ impl KhrExternalSemaphoreCapabilities {
         );
     }
 }
+/// Loader for the `VK_KHR_external_semaphore_win32` device extension
 pub struct KhrExternalSemaphoreWin32 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4331,6 +4360,7 @@ impl KhrExternalSemaphoreWin32 {
         res
     }
 }
+/// Loader for the `VK_KHR_external_semaphore_fd` device extension
 pub struct KhrExternalSemaphoreFd {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4380,6 +4410,7 @@ impl KhrExternalSemaphoreFd {
         res
     }
 }
+/// Loader for the `VK_KHR_push_descriptor` device extension
 pub struct KhrPushDescriptor {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4450,6 +4481,7 @@ impl KhrPushDescriptor {
         );
     }
 }
+/// Loader for the `VK_EXT_conditional_rendering` device extension
 pub struct ExtConditionalRendering {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4489,6 +4521,7 @@ impl ExtConditionalRendering {
         (self.fp1_0.cmd_end_conditional_rendering_ext)(Some(command_buffer));
     }
 }
+/// Loader for the `VK_KHR_descriptor_update_template` device extension
 pub struct KhrDescriptorUpdateTemplate {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4576,6 +4609,7 @@ impl KhrDescriptorUpdateTemplate {
         );
     }
 }
+/// Loader for the `VK_NVX_device_generated_commands` device extension
 pub struct NvxDeviceGeneratedCommands {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4726,6 +4760,7 @@ impl NvxDeviceGeneratedCommands {
         (self.fp1_0.get_physical_device_generated_commands_properties_nvx)(Some(physical_device), p_features, p_limits);
     }
 }
+/// Loader for the `VK_NV_clip_space_w_scaling` device extension
 pub struct NvClipSpaceWScaling {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -4769,6 +4804,7 @@ impl NvClipSpaceWScaling {
         );
     }
 }
+/// Loader for the `VK_EXT_direct_mode_display` instance extension
 pub struct ExtDirectModeDisplay {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4810,6 +4846,7 @@ impl ExtDirectModeDisplay {
         res
     }
 }
+/// Loader for the `VK_EXT_acquire_xlib_display` instance extension
 pub struct ExtAcquireXlibDisplay {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4866,6 +4903,7 @@ impl ExtAcquireXlibDisplay {
         res
     }
 }
+/// Loader for the `VK_EXT_display_surface_counter` instance extension
 pub struct ExtDisplaySurfaceCounter {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -4912,6 +4950,7 @@ impl ExtDisplaySurfaceCounter {
         res
     }
 }
+/// Loader for the `VK_EXT_display_control` device extension
 pub struct ExtDisplayControl {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5004,6 +5043,7 @@ impl ExtDisplayControl {
         res
     }
 }
+/// Loader for the `VK_GOOGLE_display_timing` device extension
 pub struct GoogleDisplayTiming {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5073,6 +5113,7 @@ impl GoogleDisplayTiming {
         res
     }
 }
+/// Loader for the `VK_EXT_discard_rectangles` device extension
 pub struct ExtDiscardRectangles {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5116,6 +5157,7 @@ impl ExtDiscardRectangles {
         );
     }
 }
+/// Loader for the `VK_EXT_hdr_metadata` device extension
 pub struct ExtHdrMetadata {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5155,6 +5197,7 @@ impl ExtHdrMetadata {
         );
     }
 }
+/// Loader for the `VK_KHR_create_renderpass2` device extension
 pub struct KhrCreateRenderpass2 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5225,6 +5268,7 @@ impl KhrCreateRenderpass2 {
         (self.fp1_0.cmd_end_render_pass2_khr)(Some(command_buffer), p_subpass_end_info);
     }
 }
+/// Loader for the `VK_KHR_shared_presentable_image` device extension
 pub struct KhrSharedPresentableImage {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5262,6 +5306,7 @@ impl KhrSharedPresentableImage {
         res
     }
 }
+/// Loader for the `VK_KHR_external_fence_capabilities` instance extension
 pub struct KhrExternalFenceCapabilities {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5303,6 +5348,7 @@ impl KhrExternalFenceCapabilities {
         );
     }
 }
+/// Loader for the `VK_KHR_external_fence_win32` device extension
 pub struct KhrExternalFenceWin32 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5355,6 +5401,7 @@ impl KhrExternalFenceWin32 {
         res
     }
 }
+/// Loader for the `VK_KHR_external_fence_fd` device extension
 pub struct KhrExternalFenceFd {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5401,6 +5448,7 @@ impl KhrExternalFenceFd {
         res
     }
 }
+/// Loader for the `VK_KHR_get_surface_capabilities2` instance extension
 pub struct KhrGetSurfaceCapabilities2 {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5476,6 +5524,7 @@ impl KhrGetSurfaceCapabilities2 {
         res
     }
 }
+/// Loader for the `VK_KHR_get_display_properties2` instance extension
 pub struct KhrGetDisplayProperties2 {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5597,6 +5646,7 @@ impl KhrGetDisplayProperties2 {
         res
     }
 }
+/// Loader for the `VK_MVK_ios_surface` instance extension
 pub struct MvkIosSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5644,6 +5694,7 @@ impl MvkIosSurface {
         res
     }
 }
+/// Loader for the `VK_MVK_macos_surface` instance extension
 pub struct MvkMacosSurface {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5691,6 +5742,7 @@ impl MvkMacosSurface {
         res
     }
 }
+/// Loader for the `VK_EXT_debug_utils` instance extension
 pub struct ExtDebugUtils {
     pub version: vk::Version,
     pub handle: vk::Instance,
@@ -5812,6 +5864,7 @@ impl ExtDebugUtils {
         );
     }
 }
+/// Loader for the `VK_ANDROID_external_memory_android_hardware_buffer` device extension
 pub struct AndroidExternalMemoryAndroidHardwareBuffer {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5865,6 +5918,7 @@ impl AndroidExternalMemoryAndroidHardwareBuffer {
         res
     }
 }
+/// Loader for the `VK_EXT_sample_locations` device extension
 pub struct ExtSampleLocations {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5913,6 +5967,7 @@ impl ExtSampleLocations {
         );
     }
 }
+/// Loader for the `VK_KHR_get_memory_requirements2` device extension
 pub struct KhrGetMemoryRequirements2 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -5968,6 +6023,7 @@ impl KhrGetMemoryRequirements2 {
         res
     }
 }
+/// Loader for the `VK_KHR_sampler_ycbcr_conversion` device extension
 pub struct KhrSamplerYcbcrConversion {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6026,6 +6082,7 @@ impl KhrSamplerYcbcrConversion {
         );
     }
 }
+/// Loader for the `VK_KHR_bind_memory2` device extension
 pub struct KhrBindMemory2 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6073,6 +6130,7 @@ impl KhrBindMemory2 {
         res
     }
 }
+/// Loader for the `VK_EXT_validation_cache` device extension
 pub struct ExtValidationCache {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6163,6 +6221,7 @@ impl ExtValidationCache {
         res
     }
 }
+/// Loader for the `VK_NV_shading_rate_image` device extension
 pub struct NvShadingRateImage {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6228,6 +6287,7 @@ impl NvShadingRateImage {
         );
     }
 }
+/// Loader for the `VK_NVX_raytracing` device extension
 pub struct NvxRaytracing {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6548,6 +6608,7 @@ impl NvxRaytracing {
         res
     }
 }
+/// Loader for the `VK_KHR_maintenance3` device extension
 pub struct KhrMaintenance3 {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6584,6 +6645,7 @@ impl KhrMaintenance3 {
         (self.fp1_0.get_descriptor_set_layout_support)(Some(self.handle), p_create_info, p_support);
     }
 }
+/// Loader for the `VK_KHR_draw_indirect_count` device extension
 pub struct KhrDrawIndirectCount {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6653,6 +6715,7 @@ impl KhrDrawIndirectCount {
         );
     }
 }
+/// Loader for the `VK_EXT_external_memory_host` device extension
 pub struct ExtExternalMemoryHost {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6700,6 +6763,7 @@ impl ExtExternalMemoryHost {
         res
     }
 }
+/// Loader for the `VK_AMD_buffer_marker` device extension
 pub struct AmdBufferMarker {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6745,6 +6809,7 @@ impl AmdBufferMarker {
         );
     }
 }
+/// Loader for the `VK_NV_mesh_shader` device extension
 pub struct NvMeshShader {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6807,6 +6872,7 @@ impl NvMeshShader {
         );
     }
 }
+/// Loader for the `VK_NV_scissor_exclusive` device extension
 pub struct NvScissorExclusive {
     pub version: vk::Version,
     pub handle: vk::Device,
@@ -6850,6 +6916,7 @@ impl NvScissorExclusive {
         );
     }
 }
+/// Loader for the `VK_NV_device_diagnostic_checkpoints` device extension
 pub struct NvDeviceDiagnosticCheckpoints {
     pub version: vk::Version,
     pub handle: vk::Device,

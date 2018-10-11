@@ -2283,6 +2283,23 @@ impl<'a> Generator<'a> {
 
     fn write_group_structs(&self, w: &mut impl IoWrite) -> WriteResult {
         for group_names in self.group_names.iter().filter(|g| !g.versions.is_empty()) {
+            match group_names.group {
+                Group::Loader => {
+                    writeln!(w, "/// Core library loader")?;
+                }
+                Group::Instance => {
+                    writeln!(w, "/// Core instance loader")?;
+                }
+                Group::InstanceExtension(ref name) => {
+                    writeln!(w, "/// Loader for the `{}` instance extension", name)?;
+                }
+                Group::Device => {
+                    writeln!(w, "/// Core device loader")?;
+                }
+                Group::DeviceExtension(ref name) => {
+                    writeln!(w, "/// Loader for the `{}` device extension", name)?;
+                }
+            }
             write!(w, "pub struct {} {{", group_names.group)?;
             write!(w, "pub version: vk::Version,")?;
             match group_names.group {
