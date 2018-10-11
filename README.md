@@ -4,14 +4,15 @@ An unsafe rust wrapper for the [Vulkan API](https://www.khronos.org/registry/vul
 
 The wrapper provides:
 * Function pointer loaders for the Vulkan core API and all extensions
-* Thin wrappers around Vulkan functions to make them more convenient to call from rust code
+* Type safety for enums and handles
 * Defaults and builders for Vulkan structures to make constructing them less verbose
+* Thin wrappers around Vulkan functions to make them more convenient to call from rust code
 
 The wrapper does not provide:
 * Parameter validation
-* Safety
+* Safe functions
 
-Almost all of the library is generated from the Vulkan API specifications using [vk_parse](https://github.com/krolli/vk-parse).
+Almost all of the library is generated from the Vulkan API specifications using [vk_parse](https://github.com/krolli/vk-parse) to parse the specifications XML.
 
 ## Loaders
 
@@ -31,17 +32,55 @@ let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
 println!("instance version: {}", instance.version);
 ```
 
-Each struct will attempt to load function pointers for all versions of Vulkan.  The `version` field can be read to determine what versions loaded successfully.  Function pointers for versions beyond this will be present but their implementation will `panic!`.
+Each struct will attempt to load function pointers for all versions of Vulkan.
+The `version` field can be read to determine what versions loaded successfully.
+Function pointers for versions beyond this will be present but their implementation will `panic!`.
 
-Each Vulkan extension has its own loader that must be created manually for an `Instance` or `Device`.
+Each Vulkan extension has its own loader that must be created manually for an `Instance` or `Device`.  For example:
+
+```rust
+// load functions for the VK_NVX_raytracing extension for this device
+// (expects instance to have been created with this extension listed)
+let nvx_raytracing = NvxRaytracing::new(&instance, &device)?;
+
+// can now call functions from this extension
+let accel = nvx_raytracing.create_acceleration_structure_nvx(&create_info, None)?;
+```
 
 ## Vulkan Handles
 
-Handle types make use of the `std::ptr::NonNull` and `std::num::NonZeroU64` rust types and must always be valid.  Null handles are represented by choosing `None` in `Option<vk::SomeHandle>`.
+Handle types make use of the `std::ptr::NonNull` and `std::num::NonZeroU64` rust types and must always be valid.
+
+When used as part of other structures, handles will be wrapped in `Option<T>` to allow encoding of VK_NULL_HANDLE. For example:
+
+```rust
+pub struct DescriptorImageInfo {
+    pub sampler: Option<Sampler>,
+    pub image_view: Option<ImageView>,
+    pub image_layout: ImageLayout,
+}
+```
+
+When used as function parameters, the parameter will only be wrapped in `Option<T>` if that parameter is optional.  For example:
+
+```rust
+impl KhrSwapchain {
+    pub unsafe fn acquire_next_image_khr(
+        &self,
+        swapchain: vk::SwapchainKHR,        // not optional
+        timeout: u64,
+        semaphore: Option<vk::Semaphore>,   // optional
+        fence: Option<vk::Fence>,           // optional
+    ) -> Result<(vk::Result, u32)> {
+        ...
+    }
+}
+```
 
 ## Function Wrappers
 
-Vulkan functions that return `VkResult`, are translated to return `Result<T, vk::Result>` for some `T` return value type.  Where there are multiple success codes, the `T` type will be `(T, vk::Result)` so that the success code is also returned.
+Vulkan functions that return `VkResult`, are usually translated to return `Result<T, vk::Result>` for some `T` return value type.
+Where there are multiple success codes, the return type will be `Result<(vk::Result, T), vk::Result>` so that the success code is also returned.
 
 The remaining parameters are translated as follows:
 
