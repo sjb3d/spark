@@ -1,6 +1,6 @@
 # vkr
 
-An unsafe rust wrapper for the [Vulkan API](https://www.khronos.org/registry/vulkan/).
+Convenience wrapper for [Vulkan](https://www.khronos.org/registry/vulkan/) in Rust.
 
 The wrapper provides:
 * Function pointer loaders for the Vulkan core API and all extensions
@@ -10,7 +10,7 @@ The wrapper provides:
 
 The wrapper does not provide:
 * Parameter validation
-* Safe functions
+* Safe functions (all functions are `unsafe`, handle lifetimes and multi-threading must be made safe by the caller)
 
 Almost all of the library is generated from the Vulkan API specifications using [vk_parse](https://github.com/krolli/vk-parse) to parse the specifications XML.
 
