@@ -51,7 +51,7 @@ let accel = nvx_raytracing.create_acceleration_structure_nvx(&create_info, None)
 
 Handle types make use of the `std::ptr::NonNull` and `std::num::NonZeroU64` rust types and must always be valid.
 
-When used as part of other structures, handles will be wrapped in `Option<T>` to allow encoding of VK_NULL_HANDLE. For example:
+When used as part of other structures, handles will be wrapped in `Option<T>` to allow encoding of `VK_NULL_HANDLE` as `None`. For example:
 
 ```rust
 pub struct DescriptorImageInfo {
