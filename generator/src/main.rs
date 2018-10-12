@@ -922,16 +922,23 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "impl fmt::Display for {} {{\
-                         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\
-                         match self.0 {{",
+                         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{",
                         enum_name
                     )?;
-                    for (ref name, value, _) in &entries {
-                        if let EnumEntryValue::Number { value, .. } = value {
-                            writeln!(w, r#"{} => f.write_str("{}"),"#, value, name)?;
+                    if !entries.is_empty() {
+                        writeln!(w, "let name = match self.0 {{")?;
+                        for (ref name, value, _) in &entries {
+                            if let EnumEntryValue::Number { value, .. } = value {
+                                writeln!(w, r#"{} => Some(&"{}"),"#, value, name)?;
+                            }
                         }
+                        writeln!(w, "_ => None, }};")?;
+                        writeln!(w, r#"if let Some(name) = name {{ write!(f, "{{}}", name) }} else {{"#)?;
                     }
-                    writeln!(w, r#"_ => write!(f, "{{}}", self.0), }} }} }}"#)?;
+                    writeln!(w, r#"write!(f, "{{}}", self.0) }} }}"#)?;
+                    if !entries.is_empty() {
+                        writeln!(w, "}}")?;
+                    }
                 }
             }
         }
@@ -2427,7 +2434,10 @@ impl<'a> Generator<'a> {
 
 fn main() -> WriteResult {
     let args: Vec<String> = env::args().collect();
-    let xml_file_name = &args.get(1).map(|s| s.as_str()).unwrap_or("/usr/share/vulkan/registry/vk.xml");
+    let xml_file_name = &args
+        .get(1)
+        .map(|s| s.as_str())
+        .unwrap_or("/usr/share/vulkan/registry/vk.xml");
     let registry = vk::parse_file(Path::new(xml_file_name));
 
     let generator = Generator::new(&registry);

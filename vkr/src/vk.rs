@@ -8721,11 +8721,16 @@ impl default::Default for AttachmentLoadOp {
 }
 impl fmt::Display for AttachmentLoadOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("LOAD"),
-            1 => f.write_str("CLEAR"),
-            2 => f.write_str("DONT_CARE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"LOAD"),
+            1 => Some(&"CLEAR"),
+            2 => Some(&"DONT_CARE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -8743,10 +8748,15 @@ impl default::Default for AttachmentStoreOp {
 }
 impl fmt::Display for AttachmentStoreOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("STORE"),
-            1 => f.write_str("DONT_CARE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"STORE"),
+            1 => Some(&"DONT_CARE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -8781,27 +8791,32 @@ impl default::Default for BlendFactor {
 }
 impl fmt::Display for BlendFactor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("ZERO"),
-            1 => f.write_str("ONE"),
-            2 => f.write_str("SRC_COLOR"),
-            3 => f.write_str("ONE_MINUS_SRC_COLOR"),
-            4 => f.write_str("DST_COLOR"),
-            5 => f.write_str("ONE_MINUS_DST_COLOR"),
-            6 => f.write_str("SRC_ALPHA"),
-            7 => f.write_str("ONE_MINUS_SRC_ALPHA"),
-            8 => f.write_str("DST_ALPHA"),
-            9 => f.write_str("ONE_MINUS_DST_ALPHA"),
-            10 => f.write_str("CONSTANT_COLOR"),
-            11 => f.write_str("ONE_MINUS_CONSTANT_COLOR"),
-            12 => f.write_str("CONSTANT_ALPHA"),
-            13 => f.write_str("ONE_MINUS_CONSTANT_ALPHA"),
-            14 => f.write_str("SRC_ALPHA_SATURATE"),
-            15 => f.write_str("SRC1_COLOR"),
-            16 => f.write_str("ONE_MINUS_SRC1_COLOR"),
-            17 => f.write_str("SRC1_ALPHA"),
-            18 => f.write_str("ONE_MINUS_SRC1_ALPHA"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"ZERO"),
+            1 => Some(&"ONE"),
+            2 => Some(&"SRC_COLOR"),
+            3 => Some(&"ONE_MINUS_SRC_COLOR"),
+            4 => Some(&"DST_COLOR"),
+            5 => Some(&"ONE_MINUS_DST_COLOR"),
+            6 => Some(&"SRC_ALPHA"),
+            7 => Some(&"ONE_MINUS_SRC_ALPHA"),
+            8 => Some(&"DST_ALPHA"),
+            9 => Some(&"ONE_MINUS_DST_ALPHA"),
+            10 => Some(&"CONSTANT_COLOR"),
+            11 => Some(&"ONE_MINUS_CONSTANT_COLOR"),
+            12 => Some(&"CONSTANT_ALPHA"),
+            13 => Some(&"ONE_MINUS_CONSTANT_ALPHA"),
+            14 => Some(&"SRC_ALPHA_SATURATE"),
+            15 => Some(&"SRC1_COLOR"),
+            16 => Some(&"ONE_MINUS_SRC1_COLOR"),
+            17 => Some(&"SRC1_ALPHA"),
+            18 => Some(&"ONE_MINUS_SRC1_ALPHA"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -8914,59 +8929,64 @@ impl default::Default for BlendOp {
 }
 impl fmt::Display for BlendOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("ADD"),
-            1 => f.write_str("SUBTRACT"),
-            2 => f.write_str("REVERSE_SUBTRACT"),
-            3 => f.write_str("MIN"),
-            4 => f.write_str("MAX"),
-            1000148000 => f.write_str("ZERO_EXT"),
-            1000148001 => f.write_str("SRC_EXT"),
-            1000148002 => f.write_str("DST_EXT"),
-            1000148003 => f.write_str("SRC_OVER_EXT"),
-            1000148004 => f.write_str("DST_OVER_EXT"),
-            1000148005 => f.write_str("SRC_IN_EXT"),
-            1000148006 => f.write_str("DST_IN_EXT"),
-            1000148007 => f.write_str("SRC_OUT_EXT"),
-            1000148008 => f.write_str("DST_OUT_EXT"),
-            1000148009 => f.write_str("SRC_ATOP_EXT"),
-            1000148010 => f.write_str("DST_ATOP_EXT"),
-            1000148011 => f.write_str("XOR_EXT"),
-            1000148012 => f.write_str("MULTIPLY_EXT"),
-            1000148013 => f.write_str("SCREEN_EXT"),
-            1000148014 => f.write_str("OVERLAY_EXT"),
-            1000148015 => f.write_str("DARKEN_EXT"),
-            1000148016 => f.write_str("LIGHTEN_EXT"),
-            1000148017 => f.write_str("COLORDODGE_EXT"),
-            1000148018 => f.write_str("COLORBURN_EXT"),
-            1000148019 => f.write_str("HARDLIGHT_EXT"),
-            1000148020 => f.write_str("SOFTLIGHT_EXT"),
-            1000148021 => f.write_str("DIFFERENCE_EXT"),
-            1000148022 => f.write_str("EXCLUSION_EXT"),
-            1000148023 => f.write_str("INVERT_EXT"),
-            1000148024 => f.write_str("INVERT_RGB_EXT"),
-            1000148025 => f.write_str("LINEARDODGE_EXT"),
-            1000148026 => f.write_str("LINEARBURN_EXT"),
-            1000148027 => f.write_str("VIVIDLIGHT_EXT"),
-            1000148028 => f.write_str("LINEARLIGHT_EXT"),
-            1000148029 => f.write_str("PINLIGHT_EXT"),
-            1000148030 => f.write_str("HARDMIX_EXT"),
-            1000148031 => f.write_str("HSL_HUE_EXT"),
-            1000148032 => f.write_str("HSL_SATURATION_EXT"),
-            1000148033 => f.write_str("HSL_COLOR_EXT"),
-            1000148034 => f.write_str("HSL_LUMINOSITY_EXT"),
-            1000148035 => f.write_str("PLUS_EXT"),
-            1000148036 => f.write_str("PLUS_CLAMPED_EXT"),
-            1000148037 => f.write_str("PLUS_CLAMPED_ALPHA_EXT"),
-            1000148038 => f.write_str("PLUS_DARKER_EXT"),
-            1000148039 => f.write_str("MINUS_EXT"),
-            1000148040 => f.write_str("MINUS_CLAMPED_EXT"),
-            1000148041 => f.write_str("CONTRAST_EXT"),
-            1000148042 => f.write_str("INVERT_OVG_EXT"),
-            1000148043 => f.write_str("RED_EXT"),
-            1000148044 => f.write_str("GREEN_EXT"),
-            1000148045 => f.write_str("BLUE_EXT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"ADD"),
+            1 => Some(&"SUBTRACT"),
+            2 => Some(&"REVERSE_SUBTRACT"),
+            3 => Some(&"MIN"),
+            4 => Some(&"MAX"),
+            1000148000 => Some(&"ZERO_EXT"),
+            1000148001 => Some(&"SRC_EXT"),
+            1000148002 => Some(&"DST_EXT"),
+            1000148003 => Some(&"SRC_OVER_EXT"),
+            1000148004 => Some(&"DST_OVER_EXT"),
+            1000148005 => Some(&"SRC_IN_EXT"),
+            1000148006 => Some(&"DST_IN_EXT"),
+            1000148007 => Some(&"SRC_OUT_EXT"),
+            1000148008 => Some(&"DST_OUT_EXT"),
+            1000148009 => Some(&"SRC_ATOP_EXT"),
+            1000148010 => Some(&"DST_ATOP_EXT"),
+            1000148011 => Some(&"XOR_EXT"),
+            1000148012 => Some(&"MULTIPLY_EXT"),
+            1000148013 => Some(&"SCREEN_EXT"),
+            1000148014 => Some(&"OVERLAY_EXT"),
+            1000148015 => Some(&"DARKEN_EXT"),
+            1000148016 => Some(&"LIGHTEN_EXT"),
+            1000148017 => Some(&"COLORDODGE_EXT"),
+            1000148018 => Some(&"COLORBURN_EXT"),
+            1000148019 => Some(&"HARDLIGHT_EXT"),
+            1000148020 => Some(&"SOFTLIGHT_EXT"),
+            1000148021 => Some(&"DIFFERENCE_EXT"),
+            1000148022 => Some(&"EXCLUSION_EXT"),
+            1000148023 => Some(&"INVERT_EXT"),
+            1000148024 => Some(&"INVERT_RGB_EXT"),
+            1000148025 => Some(&"LINEARDODGE_EXT"),
+            1000148026 => Some(&"LINEARBURN_EXT"),
+            1000148027 => Some(&"VIVIDLIGHT_EXT"),
+            1000148028 => Some(&"LINEARLIGHT_EXT"),
+            1000148029 => Some(&"PINLIGHT_EXT"),
+            1000148030 => Some(&"HARDMIX_EXT"),
+            1000148031 => Some(&"HSL_HUE_EXT"),
+            1000148032 => Some(&"HSL_SATURATION_EXT"),
+            1000148033 => Some(&"HSL_COLOR_EXT"),
+            1000148034 => Some(&"HSL_LUMINOSITY_EXT"),
+            1000148035 => Some(&"PLUS_EXT"),
+            1000148036 => Some(&"PLUS_CLAMPED_EXT"),
+            1000148037 => Some(&"PLUS_CLAMPED_ALPHA_EXT"),
+            1000148038 => Some(&"PLUS_DARKER_EXT"),
+            1000148039 => Some(&"MINUS_EXT"),
+            1000148040 => Some(&"MINUS_CLAMPED_EXT"),
+            1000148041 => Some(&"CONTRAST_EXT"),
+            1000148042 => Some(&"INVERT_OVG_EXT"),
+            1000148043 => Some(&"RED_EXT"),
+            1000148044 => Some(&"GREEN_EXT"),
+            1000148045 => Some(&"BLUE_EXT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -8988,14 +9008,19 @@ impl default::Default for BorderColor {
 }
 impl fmt::Display for BorderColor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("FLOAT_TRANSPARENT_BLACK"),
-            1 => f.write_str("INT_TRANSPARENT_BLACK"),
-            2 => f.write_str("FLOAT_OPAQUE_BLACK"),
-            3 => f.write_str("INT_OPAQUE_BLACK"),
-            4 => f.write_str("FLOAT_OPAQUE_WHITE"),
-            5 => f.write_str("INT_OPAQUE_WHITE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"FLOAT_TRANSPARENT_BLACK"),
+            1 => Some(&"INT_TRANSPARENT_BLACK"),
+            2 => Some(&"FLOAT_OPAQUE_BLACK"),
+            3 => Some(&"INT_OPAQUE_BLACK"),
+            4 => Some(&"FLOAT_OPAQUE_WHITE"),
+            5 => Some(&"INT_OPAQUE_WHITE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9010,9 +9035,7 @@ impl default::Default for FramebufferCreateFlagBits {
 }
 impl fmt::Display for FramebufferCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9026,9 +9049,7 @@ impl default::Default for QueryPoolCreateFlagBits {
 }
 impl fmt::Display for QueryPoolCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9045,9 +9066,14 @@ impl default::Default for RenderPassCreateFlagBits {
 }
 impl fmt::Display for RenderPassCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            1 => f.write_str("RESERVED_0_BIT_KHR"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            1 => Some(&"RESERVED_0_BIT_KHR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9062,9 +9088,7 @@ impl default::Default for SamplerCreateFlagBits {
 }
 impl fmt::Display for SamplerCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9080,9 +9104,14 @@ impl default::Default for PipelineCacheHeaderVersion {
 }
 impl fmt::Display for PipelineCacheHeaderVersion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            1 => f.write_str("ONE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            1 => Some(&"ONE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9097,9 +9126,7 @@ impl default::Default for PipelineLayoutCreateFlagBits {
 }
 impl fmt::Display for PipelineLayoutCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9113,9 +9140,7 @@ impl default::Default for PipelineCacheCreateFlagBits {
 }
 impl fmt::Display for PipelineCacheCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9129,9 +9154,7 @@ impl default::Default for PipelineDepthStencilStateCreateFlagBits {
 }
 impl fmt::Display for PipelineDepthStencilStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9145,9 +9168,7 @@ impl default::Default for PipelineDynamicStateCreateFlagBits {
 }
 impl fmt::Display for PipelineDynamicStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9161,9 +9182,7 @@ impl default::Default for PipelineColorBlendStateCreateFlagBits {
 }
 impl fmt::Display for PipelineColorBlendStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9177,9 +9196,7 @@ impl default::Default for PipelineMultisampleStateCreateFlagBits {
 }
 impl fmt::Display for PipelineMultisampleStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9193,9 +9210,7 @@ impl default::Default for PipelineRasterizationStateCreateFlagBits {
 }
 impl fmt::Display for PipelineRasterizationStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9209,9 +9224,7 @@ impl default::Default for PipelineViewportStateCreateFlagBits {
 }
 impl fmt::Display for PipelineViewportStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9225,9 +9238,7 @@ impl default::Default for PipelineTessellationStateCreateFlagBits {
 }
 impl fmt::Display for PipelineTessellationStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9241,9 +9252,7 @@ impl default::Default for PipelineInputAssemblyStateCreateFlagBits {
 }
 impl fmt::Display for PipelineInputAssemblyStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9257,9 +9266,7 @@ impl default::Default for PipelineVertexInputStateCreateFlagBits {
 }
 impl fmt::Display for PipelineVertexInputStateCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9273,9 +9280,7 @@ impl default::Default for PipelineShaderStageCreateFlagBits {
 }
 impl fmt::Display for PipelineShaderStageCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9289,9 +9294,7 @@ impl default::Default for BufferViewCreateFlagBits {
 }
 impl fmt::Display for BufferViewCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9305,9 +9308,7 @@ impl default::Default for InstanceCreateFlagBits {
 }
 impl fmt::Display for InstanceCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9329,15 +9330,20 @@ impl default::Default for ComponentSwizzle {
 }
 impl fmt::Display for ComponentSwizzle {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("IDENTITY"),
-            1 => f.write_str("ZERO"),
-            2 => f.write_str("ONE"),
-            3 => f.write_str("R"),
-            4 => f.write_str("G"),
-            5 => f.write_str("B"),
-            6 => f.write_str("A"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"IDENTITY"),
+            1 => Some(&"ZERO"),
+            2 => Some(&"ONE"),
+            3 => Some(&"R"),
+            4 => Some(&"G"),
+            5 => Some(&"B"),
+            6 => Some(&"A"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9355,10 +9361,15 @@ impl default::Default for CommandBufferLevel {
 }
 impl fmt::Display for CommandBufferLevel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("PRIMARY"),
-            1 => f.write_str("SECONDARY"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"PRIMARY"),
+            1 => Some(&"SECONDARY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9382,16 +9393,21 @@ impl default::Default for CompareOp {
 }
 impl fmt::Display for CompareOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("NEVER"),
-            1 => f.write_str("LESS"),
-            2 => f.write_str("EQUAL"),
-            3 => f.write_str("LESS_OR_EQUAL"),
-            4 => f.write_str("GREATER"),
-            5 => f.write_str("NOT_EQUAL"),
-            6 => f.write_str("GREATER_OR_EQUAL"),
-            7 => f.write_str("ALWAYS"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"NEVER"),
+            1 => Some(&"LESS"),
+            2 => Some(&"EQUAL"),
+            3 => Some(&"LESS_OR_EQUAL"),
+            4 => Some(&"GREATER"),
+            5 => Some(&"NOT_EQUAL"),
+            6 => Some(&"GREATER_OR_EQUAL"),
+            7 => Some(&"ALWAYS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9422,21 +9438,26 @@ impl default::Default for DescriptorType {
 }
 impl fmt::Display for DescriptorType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("SAMPLER"),
-            1 => f.write_str("COMBINED_IMAGE_SAMPLER"),
-            2 => f.write_str("SAMPLED_IMAGE"),
-            3 => f.write_str("STORAGE_IMAGE"),
-            4 => f.write_str("UNIFORM_TEXEL_BUFFER"),
-            5 => f.write_str("STORAGE_TEXEL_BUFFER"),
-            6 => f.write_str("UNIFORM_BUFFER"),
-            7 => f.write_str("STORAGE_BUFFER"),
-            8 => f.write_str("UNIFORM_BUFFER_DYNAMIC"),
-            9 => f.write_str("STORAGE_BUFFER_DYNAMIC"),
-            10 => f.write_str("INPUT_ATTACHMENT"),
-            1000138000 => f.write_str("INLINE_UNIFORM_BLOCK_EXT"),
-            1000165000 => f.write_str("ACCELERATION_STRUCTURE_NVX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"SAMPLER"),
+            1 => Some(&"COMBINED_IMAGE_SAMPLER"),
+            2 => Some(&"SAMPLED_IMAGE"),
+            3 => Some(&"STORAGE_IMAGE"),
+            4 => Some(&"UNIFORM_TEXEL_BUFFER"),
+            5 => Some(&"STORAGE_TEXEL_BUFFER"),
+            6 => Some(&"UNIFORM_BUFFER"),
+            7 => Some(&"STORAGE_BUFFER"),
+            8 => Some(&"UNIFORM_BUFFER_DYNAMIC"),
+            9 => Some(&"STORAGE_BUFFER_DYNAMIC"),
+            10 => Some(&"INPUT_ATTACHMENT"),
+            1000138000 => Some(&"INLINE_UNIFORM_BLOCK_EXT"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NVX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9451,9 +9472,7 @@ impl default::Default for DeviceCreateFlagBits {
 }
 impl fmt::Display for DeviceCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            _ => write!(f, "{}", self.0),
-        }
+        write!(f, "{}", self.0)
     }
 }
 #[repr(transparent)]
@@ -9489,23 +9508,28 @@ impl default::Default for DynamicState {
 }
 impl fmt::Display for DynamicState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("VIEWPORT"),
-            1 => f.write_str("SCISSOR"),
-            2 => f.write_str("LINE_WIDTH"),
-            3 => f.write_str("DEPTH_BIAS"),
-            4 => f.write_str("BLEND_CONSTANTS"),
-            5 => f.write_str("DEPTH_BOUNDS"),
-            6 => f.write_str("STENCIL_COMPARE_MASK"),
-            7 => f.write_str("STENCIL_WRITE_MASK"),
-            8 => f.write_str("STENCIL_REFERENCE"),
-            1000087000 => f.write_str("VIEWPORT_W_SCALING_NV"),
-            1000099000 => f.write_str("DISCARD_RECTANGLE_EXT"),
-            1000143000 => f.write_str("SAMPLE_LOCATIONS_EXT"),
-            1000164004 => f.write_str("VIEWPORT_SHADING_RATE_PALETTE_NV"),
-            1000164006 => f.write_str("VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
-            1000205001 => f.write_str("EXCLUSIVE_SCISSOR_NV"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"VIEWPORT"),
+            1 => Some(&"SCISSOR"),
+            2 => Some(&"LINE_WIDTH"),
+            3 => Some(&"DEPTH_BIAS"),
+            4 => Some(&"BLEND_CONSTANTS"),
+            5 => Some(&"DEPTH_BOUNDS"),
+            6 => Some(&"STENCIL_COMPARE_MASK"),
+            7 => Some(&"STENCIL_WRITE_MASK"),
+            8 => Some(&"STENCIL_REFERENCE"),
+            1000087000 => Some(&"VIEWPORT_W_SCALING_NV"),
+            1000099000 => Some(&"DISCARD_RECTANGLE_EXT"),
+            1000143000 => Some(&"SAMPLE_LOCATIONS_EXT"),
+            1000164004 => Some(&"VIEWPORT_SHADING_RATE_PALETTE_NV"),
+            1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
+            1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9526,12 +9550,17 @@ impl default::Default for PolygonMode {
 }
 impl fmt::Display for PolygonMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("FILL"),
-            1 => f.write_str("LINE"),
-            2 => f.write_str("POINT"),
-            1000153000 => f.write_str("FILL_RECTANGLE_NV"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"FILL"),
+            1 => Some(&"LINE"),
+            2 => Some(&"POINT"),
+            1000153000 => Some(&"FILL_RECTANGLE_NV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -9816,235 +9845,240 @@ impl default::Default for Format {
 }
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UNDEFINED"),
-            1 => f.write_str("R4G4_UNORM_PACK8"),
-            2 => f.write_str("R4G4B4A4_UNORM_PACK16"),
-            3 => f.write_str("B4G4R4A4_UNORM_PACK16"),
-            4 => f.write_str("R5G6B5_UNORM_PACK16"),
-            5 => f.write_str("B5G6R5_UNORM_PACK16"),
-            6 => f.write_str("R5G5B5A1_UNORM_PACK16"),
-            7 => f.write_str("B5G5R5A1_UNORM_PACK16"),
-            8 => f.write_str("A1R5G5B5_UNORM_PACK16"),
-            9 => f.write_str("R8_UNORM"),
-            10 => f.write_str("R8_SNORM"),
-            11 => f.write_str("R8_USCALED"),
-            12 => f.write_str("R8_SSCALED"),
-            13 => f.write_str("R8_UINT"),
-            14 => f.write_str("R8_SINT"),
-            15 => f.write_str("R8_SRGB"),
-            16 => f.write_str("R8G8_UNORM"),
-            17 => f.write_str("R8G8_SNORM"),
-            18 => f.write_str("R8G8_USCALED"),
-            19 => f.write_str("R8G8_SSCALED"),
-            20 => f.write_str("R8G8_UINT"),
-            21 => f.write_str("R8G8_SINT"),
-            22 => f.write_str("R8G8_SRGB"),
-            23 => f.write_str("R8G8B8_UNORM"),
-            24 => f.write_str("R8G8B8_SNORM"),
-            25 => f.write_str("R8G8B8_USCALED"),
-            26 => f.write_str("R8G8B8_SSCALED"),
-            27 => f.write_str("R8G8B8_UINT"),
-            28 => f.write_str("R8G8B8_SINT"),
-            29 => f.write_str("R8G8B8_SRGB"),
-            30 => f.write_str("B8G8R8_UNORM"),
-            31 => f.write_str("B8G8R8_SNORM"),
-            32 => f.write_str("B8G8R8_USCALED"),
-            33 => f.write_str("B8G8R8_SSCALED"),
-            34 => f.write_str("B8G8R8_UINT"),
-            35 => f.write_str("B8G8R8_SINT"),
-            36 => f.write_str("B8G8R8_SRGB"),
-            37 => f.write_str("R8G8B8A8_UNORM"),
-            38 => f.write_str("R8G8B8A8_SNORM"),
-            39 => f.write_str("R8G8B8A8_USCALED"),
-            40 => f.write_str("R8G8B8A8_SSCALED"),
-            41 => f.write_str("R8G8B8A8_UINT"),
-            42 => f.write_str("R8G8B8A8_SINT"),
-            43 => f.write_str("R8G8B8A8_SRGB"),
-            44 => f.write_str("B8G8R8A8_UNORM"),
-            45 => f.write_str("B8G8R8A8_SNORM"),
-            46 => f.write_str("B8G8R8A8_USCALED"),
-            47 => f.write_str("B8G8R8A8_SSCALED"),
-            48 => f.write_str("B8G8R8A8_UINT"),
-            49 => f.write_str("B8G8R8A8_SINT"),
-            50 => f.write_str("B8G8R8A8_SRGB"),
-            51 => f.write_str("A8B8G8R8_UNORM_PACK32"),
-            52 => f.write_str("A8B8G8R8_SNORM_PACK32"),
-            53 => f.write_str("A8B8G8R8_USCALED_PACK32"),
-            54 => f.write_str("A8B8G8R8_SSCALED_PACK32"),
-            55 => f.write_str("A8B8G8R8_UINT_PACK32"),
-            56 => f.write_str("A8B8G8R8_SINT_PACK32"),
-            57 => f.write_str("A8B8G8R8_SRGB_PACK32"),
-            58 => f.write_str("A2R10G10B10_UNORM_PACK32"),
-            59 => f.write_str("A2R10G10B10_SNORM_PACK32"),
-            60 => f.write_str("A2R10G10B10_USCALED_PACK32"),
-            61 => f.write_str("A2R10G10B10_SSCALED_PACK32"),
-            62 => f.write_str("A2R10G10B10_UINT_PACK32"),
-            63 => f.write_str("A2R10G10B10_SINT_PACK32"),
-            64 => f.write_str("A2B10G10R10_UNORM_PACK32"),
-            65 => f.write_str("A2B10G10R10_SNORM_PACK32"),
-            66 => f.write_str("A2B10G10R10_USCALED_PACK32"),
-            67 => f.write_str("A2B10G10R10_SSCALED_PACK32"),
-            68 => f.write_str("A2B10G10R10_UINT_PACK32"),
-            69 => f.write_str("A2B10G10R10_SINT_PACK32"),
-            70 => f.write_str("R16_UNORM"),
-            71 => f.write_str("R16_SNORM"),
-            72 => f.write_str("R16_USCALED"),
-            73 => f.write_str("R16_SSCALED"),
-            74 => f.write_str("R16_UINT"),
-            75 => f.write_str("R16_SINT"),
-            76 => f.write_str("R16_SFLOAT"),
-            77 => f.write_str("R16G16_UNORM"),
-            78 => f.write_str("R16G16_SNORM"),
-            79 => f.write_str("R16G16_USCALED"),
-            80 => f.write_str("R16G16_SSCALED"),
-            81 => f.write_str("R16G16_UINT"),
-            82 => f.write_str("R16G16_SINT"),
-            83 => f.write_str("R16G16_SFLOAT"),
-            84 => f.write_str("R16G16B16_UNORM"),
-            85 => f.write_str("R16G16B16_SNORM"),
-            86 => f.write_str("R16G16B16_USCALED"),
-            87 => f.write_str("R16G16B16_SSCALED"),
-            88 => f.write_str("R16G16B16_UINT"),
-            89 => f.write_str("R16G16B16_SINT"),
-            90 => f.write_str("R16G16B16_SFLOAT"),
-            91 => f.write_str("R16G16B16A16_UNORM"),
-            92 => f.write_str("R16G16B16A16_SNORM"),
-            93 => f.write_str("R16G16B16A16_USCALED"),
-            94 => f.write_str("R16G16B16A16_SSCALED"),
-            95 => f.write_str("R16G16B16A16_UINT"),
-            96 => f.write_str("R16G16B16A16_SINT"),
-            97 => f.write_str("R16G16B16A16_SFLOAT"),
-            98 => f.write_str("R32_UINT"),
-            99 => f.write_str("R32_SINT"),
-            100 => f.write_str("R32_SFLOAT"),
-            101 => f.write_str("R32G32_UINT"),
-            102 => f.write_str("R32G32_SINT"),
-            103 => f.write_str("R32G32_SFLOAT"),
-            104 => f.write_str("R32G32B32_UINT"),
-            105 => f.write_str("R32G32B32_SINT"),
-            106 => f.write_str("R32G32B32_SFLOAT"),
-            107 => f.write_str("R32G32B32A32_UINT"),
-            108 => f.write_str("R32G32B32A32_SINT"),
-            109 => f.write_str("R32G32B32A32_SFLOAT"),
-            110 => f.write_str("R64_UINT"),
-            111 => f.write_str("R64_SINT"),
-            112 => f.write_str("R64_SFLOAT"),
-            113 => f.write_str("R64G64_UINT"),
-            114 => f.write_str("R64G64_SINT"),
-            115 => f.write_str("R64G64_SFLOAT"),
-            116 => f.write_str("R64G64B64_UINT"),
-            117 => f.write_str("R64G64B64_SINT"),
-            118 => f.write_str("R64G64B64_SFLOAT"),
-            119 => f.write_str("R64G64B64A64_UINT"),
-            120 => f.write_str("R64G64B64A64_SINT"),
-            121 => f.write_str("R64G64B64A64_SFLOAT"),
-            122 => f.write_str("B10G11R11_UFLOAT_PACK32"),
-            123 => f.write_str("E5B9G9R9_UFLOAT_PACK32"),
-            124 => f.write_str("D16_UNORM"),
-            125 => f.write_str("X8_D24_UNORM_PACK32"),
-            126 => f.write_str("D32_SFLOAT"),
-            127 => f.write_str("S8_UINT"),
-            128 => f.write_str("D16_UNORM_S8_UINT"),
-            129 => f.write_str("D24_UNORM_S8_UINT"),
-            130 => f.write_str("D32_SFLOAT_S8_UINT"),
-            131 => f.write_str("BC1_RGB_UNORM_BLOCK"),
-            132 => f.write_str("BC1_RGB_SRGB_BLOCK"),
-            133 => f.write_str("BC1_RGBA_UNORM_BLOCK"),
-            134 => f.write_str("BC1_RGBA_SRGB_BLOCK"),
-            135 => f.write_str("BC2_UNORM_BLOCK"),
-            136 => f.write_str("BC2_SRGB_BLOCK"),
-            137 => f.write_str("BC3_UNORM_BLOCK"),
-            138 => f.write_str("BC3_SRGB_BLOCK"),
-            139 => f.write_str("BC4_UNORM_BLOCK"),
-            140 => f.write_str("BC4_SNORM_BLOCK"),
-            141 => f.write_str("BC5_UNORM_BLOCK"),
-            142 => f.write_str("BC5_SNORM_BLOCK"),
-            143 => f.write_str("BC6H_UFLOAT_BLOCK"),
-            144 => f.write_str("BC6H_SFLOAT_BLOCK"),
-            145 => f.write_str("BC7_UNORM_BLOCK"),
-            146 => f.write_str("BC7_SRGB_BLOCK"),
-            147 => f.write_str("ETC2_R8G8B8_UNORM_BLOCK"),
-            148 => f.write_str("ETC2_R8G8B8_SRGB_BLOCK"),
-            149 => f.write_str("ETC2_R8G8B8A1_UNORM_BLOCK"),
-            150 => f.write_str("ETC2_R8G8B8A1_SRGB_BLOCK"),
-            151 => f.write_str("ETC2_R8G8B8A8_UNORM_BLOCK"),
-            152 => f.write_str("ETC2_R8G8B8A8_SRGB_BLOCK"),
-            153 => f.write_str("EAC_R11_UNORM_BLOCK"),
-            154 => f.write_str("EAC_R11_SNORM_BLOCK"),
-            155 => f.write_str("EAC_R11G11_UNORM_BLOCK"),
-            156 => f.write_str("EAC_R11G11_SNORM_BLOCK"),
-            157 => f.write_str("ASTC_4X4_UNORM_BLOCK"),
-            158 => f.write_str("ASTC_4X4_SRGB_BLOCK"),
-            159 => f.write_str("ASTC_5X4_UNORM_BLOCK"),
-            160 => f.write_str("ASTC_5X4_SRGB_BLOCK"),
-            161 => f.write_str("ASTC_5X5_UNORM_BLOCK"),
-            162 => f.write_str("ASTC_5X5_SRGB_BLOCK"),
-            163 => f.write_str("ASTC_6X5_UNORM_BLOCK"),
-            164 => f.write_str("ASTC_6X5_SRGB_BLOCK"),
-            165 => f.write_str("ASTC_6X6_UNORM_BLOCK"),
-            166 => f.write_str("ASTC_6X6_SRGB_BLOCK"),
-            167 => f.write_str("ASTC_8X5_UNORM_BLOCK"),
-            168 => f.write_str("ASTC_8X5_SRGB_BLOCK"),
-            169 => f.write_str("ASTC_8X6_UNORM_BLOCK"),
-            170 => f.write_str("ASTC_8X6_SRGB_BLOCK"),
-            171 => f.write_str("ASTC_8X8_UNORM_BLOCK"),
-            172 => f.write_str("ASTC_8X8_SRGB_BLOCK"),
-            173 => f.write_str("ASTC_10X5_UNORM_BLOCK"),
-            174 => f.write_str("ASTC_10X5_SRGB_BLOCK"),
-            175 => f.write_str("ASTC_10X6_UNORM_BLOCK"),
-            176 => f.write_str("ASTC_10X6_SRGB_BLOCK"),
-            177 => f.write_str("ASTC_10X8_UNORM_BLOCK"),
-            178 => f.write_str("ASTC_10X8_SRGB_BLOCK"),
-            179 => f.write_str("ASTC_10X10_UNORM_BLOCK"),
-            180 => f.write_str("ASTC_10X10_SRGB_BLOCK"),
-            181 => f.write_str("ASTC_12X10_UNORM_BLOCK"),
-            182 => f.write_str("ASTC_12X10_SRGB_BLOCK"),
-            183 => f.write_str("ASTC_12X12_UNORM_BLOCK"),
-            184 => f.write_str("ASTC_12X12_SRGB_BLOCK"),
-            1000156000 => f.write_str("G8B8G8R8_422_UNORM"),
-            1000156001 => f.write_str("B8G8R8G8_422_UNORM"),
-            1000156002 => f.write_str("G8_B8_R8_3PLANE_420_UNORM"),
-            1000156003 => f.write_str("G8_B8R8_2PLANE_420_UNORM"),
-            1000156004 => f.write_str("G8_B8_R8_3PLANE_422_UNORM"),
-            1000156005 => f.write_str("G8_B8R8_2PLANE_422_UNORM"),
-            1000156006 => f.write_str("G8_B8_R8_3PLANE_444_UNORM"),
-            1000156007 => f.write_str("R10X6_UNORM_PACK16"),
-            1000156008 => f.write_str("R10X6G10X6_UNORM_2PACK16"),
-            1000156009 => f.write_str("R10X6G10X6B10X6A10X6_UNORM_4PACK16"),
-            1000156010 => f.write_str("G10X6B10X6G10X6R10X6_422_UNORM_4PACK16"),
-            1000156011 => f.write_str("B10X6G10X6R10X6G10X6_422_UNORM_4PACK16"),
-            1000156012 => f.write_str("G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16"),
-            1000156013 => f.write_str("G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16"),
-            1000156014 => f.write_str("G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16"),
-            1000156015 => f.write_str("G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16"),
-            1000156016 => f.write_str("G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16"),
-            1000156017 => f.write_str("R12X4_UNORM_PACK16"),
-            1000156018 => f.write_str("R12X4G12X4_UNORM_2PACK16"),
-            1000156019 => f.write_str("R12X4G12X4B12X4A12X4_UNORM_4PACK16"),
-            1000156020 => f.write_str("G12X4B12X4G12X4R12X4_422_UNORM_4PACK16"),
-            1000156021 => f.write_str("B12X4G12X4R12X4G12X4_422_UNORM_4PACK16"),
-            1000156022 => f.write_str("G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16"),
-            1000156023 => f.write_str("G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16"),
-            1000156024 => f.write_str("G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16"),
-            1000156025 => f.write_str("G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16"),
-            1000156026 => f.write_str("G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16"),
-            1000156027 => f.write_str("G16B16G16R16_422_UNORM"),
-            1000156028 => f.write_str("B16G16R16G16_422_UNORM"),
-            1000156029 => f.write_str("G16_B16_R16_3PLANE_420_UNORM"),
-            1000156030 => f.write_str("G16_B16R16_2PLANE_420_UNORM"),
-            1000156031 => f.write_str("G16_B16_R16_3PLANE_422_UNORM"),
-            1000156032 => f.write_str("G16_B16R16_2PLANE_422_UNORM"),
-            1000156033 => f.write_str("G16_B16_R16_3PLANE_444_UNORM"),
-            1000054000 => f.write_str("PVRTC1_2BPP_UNORM_BLOCK_IMG"),
-            1000054001 => f.write_str("PVRTC1_4BPP_UNORM_BLOCK_IMG"),
-            1000054002 => f.write_str("PVRTC2_2BPP_UNORM_BLOCK_IMG"),
-            1000054003 => f.write_str("PVRTC2_4BPP_UNORM_BLOCK_IMG"),
-            1000054004 => f.write_str("PVRTC1_2BPP_SRGB_BLOCK_IMG"),
-            1000054005 => f.write_str("PVRTC1_4BPP_SRGB_BLOCK_IMG"),
-            1000054006 => f.write_str("PVRTC2_2BPP_SRGB_BLOCK_IMG"),
-            1000054007 => f.write_str("PVRTC2_4BPP_SRGB_BLOCK_IMG"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UNDEFINED"),
+            1 => Some(&"R4G4_UNORM_PACK8"),
+            2 => Some(&"R4G4B4A4_UNORM_PACK16"),
+            3 => Some(&"B4G4R4A4_UNORM_PACK16"),
+            4 => Some(&"R5G6B5_UNORM_PACK16"),
+            5 => Some(&"B5G6R5_UNORM_PACK16"),
+            6 => Some(&"R5G5B5A1_UNORM_PACK16"),
+            7 => Some(&"B5G5R5A1_UNORM_PACK16"),
+            8 => Some(&"A1R5G5B5_UNORM_PACK16"),
+            9 => Some(&"R8_UNORM"),
+            10 => Some(&"R8_SNORM"),
+            11 => Some(&"R8_USCALED"),
+            12 => Some(&"R8_SSCALED"),
+            13 => Some(&"R8_UINT"),
+            14 => Some(&"R8_SINT"),
+            15 => Some(&"R8_SRGB"),
+            16 => Some(&"R8G8_UNORM"),
+            17 => Some(&"R8G8_SNORM"),
+            18 => Some(&"R8G8_USCALED"),
+            19 => Some(&"R8G8_SSCALED"),
+            20 => Some(&"R8G8_UINT"),
+            21 => Some(&"R8G8_SINT"),
+            22 => Some(&"R8G8_SRGB"),
+            23 => Some(&"R8G8B8_UNORM"),
+            24 => Some(&"R8G8B8_SNORM"),
+            25 => Some(&"R8G8B8_USCALED"),
+            26 => Some(&"R8G8B8_SSCALED"),
+            27 => Some(&"R8G8B8_UINT"),
+            28 => Some(&"R8G8B8_SINT"),
+            29 => Some(&"R8G8B8_SRGB"),
+            30 => Some(&"B8G8R8_UNORM"),
+            31 => Some(&"B8G8R8_SNORM"),
+            32 => Some(&"B8G8R8_USCALED"),
+            33 => Some(&"B8G8R8_SSCALED"),
+            34 => Some(&"B8G8R8_UINT"),
+            35 => Some(&"B8G8R8_SINT"),
+            36 => Some(&"B8G8R8_SRGB"),
+            37 => Some(&"R8G8B8A8_UNORM"),
+            38 => Some(&"R8G8B8A8_SNORM"),
+            39 => Some(&"R8G8B8A8_USCALED"),
+            40 => Some(&"R8G8B8A8_SSCALED"),
+            41 => Some(&"R8G8B8A8_UINT"),
+            42 => Some(&"R8G8B8A8_SINT"),
+            43 => Some(&"R8G8B8A8_SRGB"),
+            44 => Some(&"B8G8R8A8_UNORM"),
+            45 => Some(&"B8G8R8A8_SNORM"),
+            46 => Some(&"B8G8R8A8_USCALED"),
+            47 => Some(&"B8G8R8A8_SSCALED"),
+            48 => Some(&"B8G8R8A8_UINT"),
+            49 => Some(&"B8G8R8A8_SINT"),
+            50 => Some(&"B8G8R8A8_SRGB"),
+            51 => Some(&"A8B8G8R8_UNORM_PACK32"),
+            52 => Some(&"A8B8G8R8_SNORM_PACK32"),
+            53 => Some(&"A8B8G8R8_USCALED_PACK32"),
+            54 => Some(&"A8B8G8R8_SSCALED_PACK32"),
+            55 => Some(&"A8B8G8R8_UINT_PACK32"),
+            56 => Some(&"A8B8G8R8_SINT_PACK32"),
+            57 => Some(&"A8B8G8R8_SRGB_PACK32"),
+            58 => Some(&"A2R10G10B10_UNORM_PACK32"),
+            59 => Some(&"A2R10G10B10_SNORM_PACK32"),
+            60 => Some(&"A2R10G10B10_USCALED_PACK32"),
+            61 => Some(&"A2R10G10B10_SSCALED_PACK32"),
+            62 => Some(&"A2R10G10B10_UINT_PACK32"),
+            63 => Some(&"A2R10G10B10_SINT_PACK32"),
+            64 => Some(&"A2B10G10R10_UNORM_PACK32"),
+            65 => Some(&"A2B10G10R10_SNORM_PACK32"),
+            66 => Some(&"A2B10G10R10_USCALED_PACK32"),
+            67 => Some(&"A2B10G10R10_SSCALED_PACK32"),
+            68 => Some(&"A2B10G10R10_UINT_PACK32"),
+            69 => Some(&"A2B10G10R10_SINT_PACK32"),
+            70 => Some(&"R16_UNORM"),
+            71 => Some(&"R16_SNORM"),
+            72 => Some(&"R16_USCALED"),
+            73 => Some(&"R16_SSCALED"),
+            74 => Some(&"R16_UINT"),
+            75 => Some(&"R16_SINT"),
+            76 => Some(&"R16_SFLOAT"),
+            77 => Some(&"R16G16_UNORM"),
+            78 => Some(&"R16G16_SNORM"),
+            79 => Some(&"R16G16_USCALED"),
+            80 => Some(&"R16G16_SSCALED"),
+            81 => Some(&"R16G16_UINT"),
+            82 => Some(&"R16G16_SINT"),
+            83 => Some(&"R16G16_SFLOAT"),
+            84 => Some(&"R16G16B16_UNORM"),
+            85 => Some(&"R16G16B16_SNORM"),
+            86 => Some(&"R16G16B16_USCALED"),
+            87 => Some(&"R16G16B16_SSCALED"),
+            88 => Some(&"R16G16B16_UINT"),
+            89 => Some(&"R16G16B16_SINT"),
+            90 => Some(&"R16G16B16_SFLOAT"),
+            91 => Some(&"R16G16B16A16_UNORM"),
+            92 => Some(&"R16G16B16A16_SNORM"),
+            93 => Some(&"R16G16B16A16_USCALED"),
+            94 => Some(&"R16G16B16A16_SSCALED"),
+            95 => Some(&"R16G16B16A16_UINT"),
+            96 => Some(&"R16G16B16A16_SINT"),
+            97 => Some(&"R16G16B16A16_SFLOAT"),
+            98 => Some(&"R32_UINT"),
+            99 => Some(&"R32_SINT"),
+            100 => Some(&"R32_SFLOAT"),
+            101 => Some(&"R32G32_UINT"),
+            102 => Some(&"R32G32_SINT"),
+            103 => Some(&"R32G32_SFLOAT"),
+            104 => Some(&"R32G32B32_UINT"),
+            105 => Some(&"R32G32B32_SINT"),
+            106 => Some(&"R32G32B32_SFLOAT"),
+            107 => Some(&"R32G32B32A32_UINT"),
+            108 => Some(&"R32G32B32A32_SINT"),
+            109 => Some(&"R32G32B32A32_SFLOAT"),
+            110 => Some(&"R64_UINT"),
+            111 => Some(&"R64_SINT"),
+            112 => Some(&"R64_SFLOAT"),
+            113 => Some(&"R64G64_UINT"),
+            114 => Some(&"R64G64_SINT"),
+            115 => Some(&"R64G64_SFLOAT"),
+            116 => Some(&"R64G64B64_UINT"),
+            117 => Some(&"R64G64B64_SINT"),
+            118 => Some(&"R64G64B64_SFLOAT"),
+            119 => Some(&"R64G64B64A64_UINT"),
+            120 => Some(&"R64G64B64A64_SINT"),
+            121 => Some(&"R64G64B64A64_SFLOAT"),
+            122 => Some(&"B10G11R11_UFLOAT_PACK32"),
+            123 => Some(&"E5B9G9R9_UFLOAT_PACK32"),
+            124 => Some(&"D16_UNORM"),
+            125 => Some(&"X8_D24_UNORM_PACK32"),
+            126 => Some(&"D32_SFLOAT"),
+            127 => Some(&"S8_UINT"),
+            128 => Some(&"D16_UNORM_S8_UINT"),
+            129 => Some(&"D24_UNORM_S8_UINT"),
+            130 => Some(&"D32_SFLOAT_S8_UINT"),
+            131 => Some(&"BC1_RGB_UNORM_BLOCK"),
+            132 => Some(&"BC1_RGB_SRGB_BLOCK"),
+            133 => Some(&"BC1_RGBA_UNORM_BLOCK"),
+            134 => Some(&"BC1_RGBA_SRGB_BLOCK"),
+            135 => Some(&"BC2_UNORM_BLOCK"),
+            136 => Some(&"BC2_SRGB_BLOCK"),
+            137 => Some(&"BC3_UNORM_BLOCK"),
+            138 => Some(&"BC3_SRGB_BLOCK"),
+            139 => Some(&"BC4_UNORM_BLOCK"),
+            140 => Some(&"BC4_SNORM_BLOCK"),
+            141 => Some(&"BC5_UNORM_BLOCK"),
+            142 => Some(&"BC5_SNORM_BLOCK"),
+            143 => Some(&"BC6H_UFLOAT_BLOCK"),
+            144 => Some(&"BC6H_SFLOAT_BLOCK"),
+            145 => Some(&"BC7_UNORM_BLOCK"),
+            146 => Some(&"BC7_SRGB_BLOCK"),
+            147 => Some(&"ETC2_R8G8B8_UNORM_BLOCK"),
+            148 => Some(&"ETC2_R8G8B8_SRGB_BLOCK"),
+            149 => Some(&"ETC2_R8G8B8A1_UNORM_BLOCK"),
+            150 => Some(&"ETC2_R8G8B8A1_SRGB_BLOCK"),
+            151 => Some(&"ETC2_R8G8B8A8_UNORM_BLOCK"),
+            152 => Some(&"ETC2_R8G8B8A8_SRGB_BLOCK"),
+            153 => Some(&"EAC_R11_UNORM_BLOCK"),
+            154 => Some(&"EAC_R11_SNORM_BLOCK"),
+            155 => Some(&"EAC_R11G11_UNORM_BLOCK"),
+            156 => Some(&"EAC_R11G11_SNORM_BLOCK"),
+            157 => Some(&"ASTC_4X4_UNORM_BLOCK"),
+            158 => Some(&"ASTC_4X4_SRGB_BLOCK"),
+            159 => Some(&"ASTC_5X4_UNORM_BLOCK"),
+            160 => Some(&"ASTC_5X4_SRGB_BLOCK"),
+            161 => Some(&"ASTC_5X5_UNORM_BLOCK"),
+            162 => Some(&"ASTC_5X5_SRGB_BLOCK"),
+            163 => Some(&"ASTC_6X5_UNORM_BLOCK"),
+            164 => Some(&"ASTC_6X5_SRGB_BLOCK"),
+            165 => Some(&"ASTC_6X6_UNORM_BLOCK"),
+            166 => Some(&"ASTC_6X6_SRGB_BLOCK"),
+            167 => Some(&"ASTC_8X5_UNORM_BLOCK"),
+            168 => Some(&"ASTC_8X5_SRGB_BLOCK"),
+            169 => Some(&"ASTC_8X6_UNORM_BLOCK"),
+            170 => Some(&"ASTC_8X6_SRGB_BLOCK"),
+            171 => Some(&"ASTC_8X8_UNORM_BLOCK"),
+            172 => Some(&"ASTC_8X8_SRGB_BLOCK"),
+            173 => Some(&"ASTC_10X5_UNORM_BLOCK"),
+            174 => Some(&"ASTC_10X5_SRGB_BLOCK"),
+            175 => Some(&"ASTC_10X6_UNORM_BLOCK"),
+            176 => Some(&"ASTC_10X6_SRGB_BLOCK"),
+            177 => Some(&"ASTC_10X8_UNORM_BLOCK"),
+            178 => Some(&"ASTC_10X8_SRGB_BLOCK"),
+            179 => Some(&"ASTC_10X10_UNORM_BLOCK"),
+            180 => Some(&"ASTC_10X10_SRGB_BLOCK"),
+            181 => Some(&"ASTC_12X10_UNORM_BLOCK"),
+            182 => Some(&"ASTC_12X10_SRGB_BLOCK"),
+            183 => Some(&"ASTC_12X12_UNORM_BLOCK"),
+            184 => Some(&"ASTC_12X12_SRGB_BLOCK"),
+            1000156000 => Some(&"G8B8G8R8_422_UNORM"),
+            1000156001 => Some(&"B8G8R8G8_422_UNORM"),
+            1000156002 => Some(&"G8_B8_R8_3PLANE_420_UNORM"),
+            1000156003 => Some(&"G8_B8R8_2PLANE_420_UNORM"),
+            1000156004 => Some(&"G8_B8_R8_3PLANE_422_UNORM"),
+            1000156005 => Some(&"G8_B8R8_2PLANE_422_UNORM"),
+            1000156006 => Some(&"G8_B8_R8_3PLANE_444_UNORM"),
+            1000156007 => Some(&"R10X6_UNORM_PACK16"),
+            1000156008 => Some(&"R10X6G10X6_UNORM_2PACK16"),
+            1000156009 => Some(&"R10X6G10X6B10X6A10X6_UNORM_4PACK16"),
+            1000156010 => Some(&"G10X6B10X6G10X6R10X6_422_UNORM_4PACK16"),
+            1000156011 => Some(&"B10X6G10X6R10X6G10X6_422_UNORM_4PACK16"),
+            1000156012 => Some(&"G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16"),
+            1000156013 => Some(&"G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16"),
+            1000156014 => Some(&"G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16"),
+            1000156015 => Some(&"G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16"),
+            1000156016 => Some(&"G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16"),
+            1000156017 => Some(&"R12X4_UNORM_PACK16"),
+            1000156018 => Some(&"R12X4G12X4_UNORM_2PACK16"),
+            1000156019 => Some(&"R12X4G12X4B12X4A12X4_UNORM_4PACK16"),
+            1000156020 => Some(&"G12X4B12X4G12X4R12X4_422_UNORM_4PACK16"),
+            1000156021 => Some(&"B12X4G12X4R12X4G12X4_422_UNORM_4PACK16"),
+            1000156022 => Some(&"G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16"),
+            1000156023 => Some(&"G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16"),
+            1000156024 => Some(&"G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16"),
+            1000156025 => Some(&"G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16"),
+            1000156026 => Some(&"G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16"),
+            1000156027 => Some(&"G16B16G16R16_422_UNORM"),
+            1000156028 => Some(&"B16G16R16G16_422_UNORM"),
+            1000156029 => Some(&"G16_B16_R16_3PLANE_420_UNORM"),
+            1000156030 => Some(&"G16_B16R16_2PLANE_420_UNORM"),
+            1000156031 => Some(&"G16_B16_R16_3PLANE_422_UNORM"),
+            1000156032 => Some(&"G16_B16R16_2PLANE_422_UNORM"),
+            1000156033 => Some(&"G16_B16_R16_3PLANE_444_UNORM"),
+            1000054000 => Some(&"PVRTC1_2BPP_UNORM_BLOCK_IMG"),
+            1000054001 => Some(&"PVRTC1_4BPP_UNORM_BLOCK_IMG"),
+            1000054002 => Some(&"PVRTC2_2BPP_UNORM_BLOCK_IMG"),
+            1000054003 => Some(&"PVRTC2_4BPP_UNORM_BLOCK_IMG"),
+            1000054004 => Some(&"PVRTC1_2BPP_SRGB_BLOCK_IMG"),
+            1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
+            1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
+            1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10062,10 +10096,15 @@ impl default::Default for FrontFace {
 }
 impl fmt::Display for FrontFace {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("COUNTER_CLOCKWISE"),
-            1 => f.write_str("CLOCKWISE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"COUNTER_CLOCKWISE"),
+            1 => Some(&"CLOCKWISE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10109,22 +10148,27 @@ impl default::Default for ImageLayout {
 }
 impl fmt::Display for ImageLayout {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UNDEFINED"),
-            1 => f.write_str("GENERAL"),
-            2 => f.write_str("COLOR_ATTACHMENT_OPTIMAL"),
-            3 => f.write_str("DEPTH_STENCIL_ATTACHMENT_OPTIMAL"),
-            4 => f.write_str("DEPTH_STENCIL_READ_ONLY_OPTIMAL"),
-            5 => f.write_str("SHADER_READ_ONLY_OPTIMAL"),
-            6 => f.write_str("TRANSFER_SRC_OPTIMAL"),
-            7 => f.write_str("TRANSFER_DST_OPTIMAL"),
-            8 => f.write_str("PREINITIALIZED"),
-            1000117000 => f.write_str("DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL"),
-            1000117001 => f.write_str("DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL"),
-            1000001002 => f.write_str("PRESENT_SRC_KHR"),
-            1000111000 => f.write_str("SHARED_PRESENT_KHR"),
-            1000164003 => f.write_str("SHADING_RATE_OPTIMAL_NV"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UNDEFINED"),
+            1 => Some(&"GENERAL"),
+            2 => Some(&"COLOR_ATTACHMENT_OPTIMAL"),
+            3 => Some(&"DEPTH_STENCIL_ATTACHMENT_OPTIMAL"),
+            4 => Some(&"DEPTH_STENCIL_READ_ONLY_OPTIMAL"),
+            5 => Some(&"SHADER_READ_ONLY_OPTIMAL"),
+            6 => Some(&"TRANSFER_SRC_OPTIMAL"),
+            7 => Some(&"TRANSFER_DST_OPTIMAL"),
+            8 => Some(&"PREINITIALIZED"),
+            1000117000 => Some(&"DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL"),
+            1000117001 => Some(&"DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL"),
+            1000001002 => Some(&"PRESENT_SRC_KHR"),
+            1000111000 => Some(&"SHARED_PRESENT_KHR"),
+            1000164003 => Some(&"SHADING_RATE_OPTIMAL_NV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10144,11 +10188,16 @@ impl default::Default for ImageTiling {
 }
 impl fmt::Display for ImageTiling {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("OPTIMAL"),
-            1 => f.write_str("LINEAR"),
-            1000158000 => f.write_str("DRM_FORMAT_MODIFIER_EXT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"OPTIMAL"),
+            1 => Some(&"LINEAR"),
+            1000158000 => Some(&"DRM_FORMAT_MODIFIER_EXT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10167,11 +10216,16 @@ impl default::Default for ImageType {
 }
 impl fmt::Display for ImageType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("N1D"),
-            1 => f.write_str("N2D"),
-            2 => f.write_str("N3D"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"N1D"),
+            1 => Some(&"N2D"),
+            2 => Some(&"N3D"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10194,15 +10248,20 @@ impl default::Default for ImageViewType {
 }
 impl fmt::Display for ImageViewType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("N1D"),
-            1 => f.write_str("N2D"),
-            2 => f.write_str("N3D"),
-            3 => f.write_str("CUBE"),
-            4 => f.write_str("N1D_ARRAY"),
-            5 => f.write_str("N2D_ARRAY"),
-            6 => f.write_str("CUBE_ARRAY"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"N1D"),
+            1 => Some(&"N2D"),
+            2 => Some(&"N3D"),
+            3 => Some(&"CUBE"),
+            4 => Some(&"N1D_ARRAY"),
+            5 => Some(&"N2D_ARRAY"),
+            6 => Some(&"CUBE_ARRAY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10220,10 +10279,15 @@ impl default::Default for SharingMode {
 }
 impl fmt::Display for SharingMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("EXCLUSIVE"),
-            1 => f.write_str("CONCURRENT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"EXCLUSIVE"),
+            1 => Some(&"CONCURRENT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10241,10 +10305,15 @@ impl default::Default for IndexType {
 }
 impl fmt::Display for IndexType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UINT16"),
-            1 => f.write_str("UINT32"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UINT16"),
+            1 => Some(&"UINT32"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10276,24 +10345,29 @@ impl default::Default for LogicOp {
 }
 impl fmt::Display for LogicOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("CLEAR"),
-            1 => f.write_str("AND"),
-            2 => f.write_str("AND_REVERSE"),
-            3 => f.write_str("COPY"),
-            4 => f.write_str("AND_INVERTED"),
-            5 => f.write_str("NO_OP"),
-            6 => f.write_str("XOR"),
-            7 => f.write_str("OR"),
-            8 => f.write_str("NOR"),
-            9 => f.write_str("EQUIVALENT"),
-            10 => f.write_str("INVERT"),
-            11 => f.write_str("OR_REVERSE"),
-            12 => f.write_str("COPY_INVERTED"),
-            13 => f.write_str("OR_INVERTED"),
-            14 => f.write_str("NAND"),
-            15 => f.write_str("SET"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"CLEAR"),
+            1 => Some(&"AND"),
+            2 => Some(&"AND_REVERSE"),
+            3 => Some(&"COPY"),
+            4 => Some(&"AND_INVERTED"),
+            5 => Some(&"NO_OP"),
+            6 => Some(&"XOR"),
+            7 => Some(&"OR"),
+            8 => Some(&"NOR"),
+            9 => Some(&"EQUIVALENT"),
+            10 => Some(&"INVERT"),
+            11 => Some(&"OR_REVERSE"),
+            12 => Some(&"COPY_INVERTED"),
+            13 => Some(&"OR_INVERTED"),
+            14 => Some(&"NAND"),
+            15 => Some(&"SET"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10314,13 +10388,18 @@ impl default::Default for PhysicalDeviceType {
 }
 impl fmt::Display for PhysicalDeviceType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("OTHER"),
-            1 => f.write_str("INTEGRATED_GPU"),
-            2 => f.write_str("DISCRETE_GPU"),
-            3 => f.write_str("VIRTUAL_GPU"),
-            4 => f.write_str("CPU"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"OTHER"),
+            1 => Some(&"INTEGRATED_GPU"),
+            2 => Some(&"DISCRETE_GPU"),
+            3 => Some(&"VIRTUAL_GPU"),
+            4 => Some(&"CPU"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10340,11 +10419,16 @@ impl default::Default for PipelineBindPoint {
 }
 impl fmt::Display for PipelineBindPoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("GRAPHICS"),
-            1 => f.write_str("COMPUTE"),
-            1000165000 => f.write_str("RAYTRACING_NVX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"GRAPHICS"),
+            1 => Some(&"COMPUTE"),
+            1000165000 => Some(&"RAYTRACING_NVX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10371,19 +10455,24 @@ impl default::Default for PrimitiveTopology {
 }
 impl fmt::Display for PrimitiveTopology {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("POINT_LIST"),
-            1 => f.write_str("LINE_LIST"),
-            2 => f.write_str("LINE_STRIP"),
-            3 => f.write_str("TRIANGLE_LIST"),
-            4 => f.write_str("TRIANGLE_STRIP"),
-            5 => f.write_str("TRIANGLE_FAN"),
-            6 => f.write_str("LINE_LIST_WITH_ADJACENCY"),
-            7 => f.write_str("LINE_STRIP_WITH_ADJACENCY"),
-            8 => f.write_str("TRIANGLE_LIST_WITH_ADJACENCY"),
-            9 => f.write_str("TRIANGLE_STRIP_WITH_ADJACENCY"),
-            10 => f.write_str("PATCH_LIST"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"POINT_LIST"),
+            1 => Some(&"LINE_LIST"),
+            2 => Some(&"LINE_STRIP"),
+            3 => Some(&"TRIANGLE_LIST"),
+            4 => Some(&"TRIANGLE_STRIP"),
+            5 => Some(&"TRIANGLE_FAN"),
+            6 => Some(&"LINE_LIST_WITH_ADJACENCY"),
+            7 => Some(&"LINE_STRIP_WITH_ADJACENCY"),
+            8 => Some(&"TRIANGLE_LIST_WITH_ADJACENCY"),
+            9 => Some(&"TRIANGLE_STRIP_WITH_ADJACENCY"),
+            10 => Some(&"PATCH_LIST"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10405,12 +10494,17 @@ impl default::Default for QueryType {
 }
 impl fmt::Display for QueryType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("OCCLUSION"),
-            1 => f.write_str("PIPELINE_STATISTICS"),
-            2 => f.write_str("TIMESTAMP"),
-            1000165000 => f.write_str("COMPACTED_SIZE_NVX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"OCCLUSION"),
+            1 => Some(&"PIPELINE_STATISTICS"),
+            2 => Some(&"TIMESTAMP"),
+            1000165000 => Some(&"COMPACTED_SIZE_NVX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10428,10 +10522,15 @@ impl default::Default for SubpassContents {
 }
 impl fmt::Display for SubpassContents {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("INLINE"),
-            1 => f.write_str("SECONDARY_COMMAND_BUFFERS"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"INLINE"),
+            1 => Some(&"SECONDARY_COMMAND_BUFFERS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10507,38 +10606,43 @@ impl default::Default for Result {
 }
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("SUCCESS"),
-            1 => f.write_str("NOT_READY"),
-            2 => f.write_str("TIMEOUT"),
-            3 => f.write_str("EVENT_SET"),
-            4 => f.write_str("EVENT_RESET"),
-            5 => f.write_str("INCOMPLETE"),
-            -1 => f.write_str("ERROR_OUT_OF_HOST_MEMORY"),
-            -2 => f.write_str("ERROR_OUT_OF_DEVICE_MEMORY"),
-            -3 => f.write_str("ERROR_INITIALIZATION_FAILED"),
-            -4 => f.write_str("ERROR_DEVICE_LOST"),
-            -5 => f.write_str("ERROR_MEMORY_MAP_FAILED"),
-            -6 => f.write_str("ERROR_LAYER_NOT_PRESENT"),
-            -7 => f.write_str("ERROR_EXTENSION_NOT_PRESENT"),
-            -8 => f.write_str("ERROR_FEATURE_NOT_PRESENT"),
-            -9 => f.write_str("ERROR_INCOMPATIBLE_DRIVER"),
-            -10 => f.write_str("ERROR_TOO_MANY_OBJECTS"),
-            -11 => f.write_str("ERROR_FORMAT_NOT_SUPPORTED"),
-            -12 => f.write_str("ERROR_FRAGMENTED_POOL"),
-            -1000069000 => f.write_str("ERROR_OUT_OF_POOL_MEMORY"),
-            -1000072003 => f.write_str("ERROR_INVALID_EXTERNAL_HANDLE"),
-            -1000000000 => f.write_str("ERROR_SURFACE_LOST_KHR"),
-            -1000000001 => f.write_str("ERROR_NATIVE_WINDOW_IN_USE_KHR"),
-            1000001003 => f.write_str("SUBOPTIMAL_KHR"),
-            -1000001004 => f.write_str("ERROR_OUT_OF_DATE_KHR"),
-            -1000003001 => f.write_str("ERROR_INCOMPATIBLE_DISPLAY_KHR"),
-            -1000011001 => f.write_str("ERROR_VALIDATION_FAILED_EXT"),
-            -1000012000 => f.write_str("ERROR_INVALID_SHADER_NV"),
-            -1000158000 => f.write_str("ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
-            -1000161000 => f.write_str("ERROR_FRAGMENTATION_EXT"),
-            -1000174001 => f.write_str("ERROR_NOT_PERMITTED_EXT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"SUCCESS"),
+            1 => Some(&"NOT_READY"),
+            2 => Some(&"TIMEOUT"),
+            3 => Some(&"EVENT_SET"),
+            4 => Some(&"EVENT_RESET"),
+            5 => Some(&"INCOMPLETE"),
+            -1 => Some(&"ERROR_OUT_OF_HOST_MEMORY"),
+            -2 => Some(&"ERROR_OUT_OF_DEVICE_MEMORY"),
+            -3 => Some(&"ERROR_INITIALIZATION_FAILED"),
+            -4 => Some(&"ERROR_DEVICE_LOST"),
+            -5 => Some(&"ERROR_MEMORY_MAP_FAILED"),
+            -6 => Some(&"ERROR_LAYER_NOT_PRESENT"),
+            -7 => Some(&"ERROR_EXTENSION_NOT_PRESENT"),
+            -8 => Some(&"ERROR_FEATURE_NOT_PRESENT"),
+            -9 => Some(&"ERROR_INCOMPATIBLE_DRIVER"),
+            -10 => Some(&"ERROR_TOO_MANY_OBJECTS"),
+            -11 => Some(&"ERROR_FORMAT_NOT_SUPPORTED"),
+            -12 => Some(&"ERROR_FRAGMENTED_POOL"),
+            -1000069000 => Some(&"ERROR_OUT_OF_POOL_MEMORY"),
+            -1000072003 => Some(&"ERROR_INVALID_EXTERNAL_HANDLE"),
+            -1000000000 => Some(&"ERROR_SURFACE_LOST_KHR"),
+            -1000000001 => Some(&"ERROR_NATIVE_WINDOW_IN_USE_KHR"),
+            1000001003 => Some(&"SUBOPTIMAL_KHR"),
+            -1000001004 => Some(&"ERROR_OUT_OF_DATE_KHR"),
+            -1000003001 => Some(&"ERROR_INCOMPATIBLE_DISPLAY_KHR"),
+            -1000011001 => Some(&"ERROR_VALIDATION_FAILED_EXT"),
+            -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
+            -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
+            -1000161000 => Some(&"ERROR_FRAGMENTATION_EXT"),
+            -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -10562,16 +10666,21 @@ impl default::Default for StencilOp {
 }
 impl fmt::Display for StencilOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("KEEP"),
-            1 => f.write_str("ZERO"),
-            2 => f.write_str("REPLACE"),
-            3 => f.write_str("INCREMENT_AND_CLAMP"),
-            4 => f.write_str("DECREMENT_AND_CLAMP"),
-            5 => f.write_str("INVERT"),
-            6 => f.write_str("INCREMENT_AND_WRAP"),
-            7 => f.write_str("DECREMENT_AND_WRAP"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"KEEP"),
+            1 => Some(&"ZERO"),
+            2 => Some(&"REPLACE"),
+            3 => Some(&"INCREMENT_AND_CLAMP"),
+            4 => Some(&"DECREMENT_AND_CLAMP"),
+            5 => Some(&"INVERT"),
+            6 => Some(&"INCREMENT_AND_WRAP"),
+            7 => Some(&"DECREMENT_AND_WRAP"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11126,301 +11235,306 @@ impl default::Default for StructureType {
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("APPLICATION_INFO"),
-            1 => f.write_str("INSTANCE_CREATE_INFO"),
-            2 => f.write_str("DEVICE_QUEUE_CREATE_INFO"),
-            3 => f.write_str("DEVICE_CREATE_INFO"),
-            4 => f.write_str("SUBMIT_INFO"),
-            5 => f.write_str("MEMORY_ALLOCATE_INFO"),
-            6 => f.write_str("MAPPED_MEMORY_RANGE"),
-            7 => f.write_str("BIND_SPARSE_INFO"),
-            8 => f.write_str("FENCE_CREATE_INFO"),
-            9 => f.write_str("SEMAPHORE_CREATE_INFO"),
-            10 => f.write_str("EVENT_CREATE_INFO"),
-            11 => f.write_str("QUERY_POOL_CREATE_INFO"),
-            12 => f.write_str("BUFFER_CREATE_INFO"),
-            13 => f.write_str("BUFFER_VIEW_CREATE_INFO"),
-            14 => f.write_str("IMAGE_CREATE_INFO"),
-            15 => f.write_str("IMAGE_VIEW_CREATE_INFO"),
-            16 => f.write_str("SHADER_MODULE_CREATE_INFO"),
-            17 => f.write_str("PIPELINE_CACHE_CREATE_INFO"),
-            18 => f.write_str("PIPELINE_SHADER_STAGE_CREATE_INFO"),
-            19 => f.write_str("PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO"),
-            20 => f.write_str("PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO"),
-            21 => f.write_str("PIPELINE_TESSELLATION_STATE_CREATE_INFO"),
-            22 => f.write_str("PIPELINE_VIEWPORT_STATE_CREATE_INFO"),
-            23 => f.write_str("PIPELINE_RASTERIZATION_STATE_CREATE_INFO"),
-            24 => f.write_str("PIPELINE_MULTISAMPLE_STATE_CREATE_INFO"),
-            25 => f.write_str("PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO"),
-            26 => f.write_str("PIPELINE_COLOR_BLEND_STATE_CREATE_INFO"),
-            27 => f.write_str("PIPELINE_DYNAMIC_STATE_CREATE_INFO"),
-            28 => f.write_str("GRAPHICS_PIPELINE_CREATE_INFO"),
-            29 => f.write_str("COMPUTE_PIPELINE_CREATE_INFO"),
-            30 => f.write_str("PIPELINE_LAYOUT_CREATE_INFO"),
-            31 => f.write_str("SAMPLER_CREATE_INFO"),
-            32 => f.write_str("DESCRIPTOR_SET_LAYOUT_CREATE_INFO"),
-            33 => f.write_str("DESCRIPTOR_POOL_CREATE_INFO"),
-            34 => f.write_str("DESCRIPTOR_SET_ALLOCATE_INFO"),
-            35 => f.write_str("WRITE_DESCRIPTOR_SET"),
-            36 => f.write_str("COPY_DESCRIPTOR_SET"),
-            37 => f.write_str("FRAMEBUFFER_CREATE_INFO"),
-            38 => f.write_str("RENDER_PASS_CREATE_INFO"),
-            39 => f.write_str("COMMAND_POOL_CREATE_INFO"),
-            40 => f.write_str("COMMAND_BUFFER_ALLOCATE_INFO"),
-            41 => f.write_str("COMMAND_BUFFER_INHERITANCE_INFO"),
-            42 => f.write_str("COMMAND_BUFFER_BEGIN_INFO"),
-            43 => f.write_str("RENDER_PASS_BEGIN_INFO"),
-            44 => f.write_str("BUFFER_MEMORY_BARRIER"),
-            45 => f.write_str("IMAGE_MEMORY_BARRIER"),
-            46 => f.write_str("MEMORY_BARRIER"),
-            47 => f.write_str("LOADER_INSTANCE_CREATE_INFO"),
-            48 => f.write_str("LOADER_DEVICE_CREATE_INFO"),
-            1000094000 => f.write_str("PHYSICAL_DEVICE_SUBGROUP_PROPERTIES"),
-            1000157000 => f.write_str("BIND_BUFFER_MEMORY_INFO"),
-            1000157001 => f.write_str("BIND_IMAGE_MEMORY_INFO"),
-            1000083000 => f.write_str("PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES"),
-            1000127000 => f.write_str("MEMORY_DEDICATED_REQUIREMENTS"),
-            1000127001 => f.write_str("MEMORY_DEDICATED_ALLOCATE_INFO"),
-            1000060000 => f.write_str("MEMORY_ALLOCATE_FLAGS_INFO"),
-            1000060003 => f.write_str("DEVICE_GROUP_RENDER_PASS_BEGIN_INFO"),
-            1000060004 => f.write_str("DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO"),
-            1000060005 => f.write_str("DEVICE_GROUP_SUBMIT_INFO"),
-            1000060006 => f.write_str("DEVICE_GROUP_BIND_SPARSE_INFO"),
-            1000060013 => f.write_str("BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO"),
-            1000060014 => f.write_str("BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO"),
-            1000070000 => f.write_str("PHYSICAL_DEVICE_GROUP_PROPERTIES"),
-            1000070001 => f.write_str("DEVICE_GROUP_DEVICE_CREATE_INFO"),
-            1000146000 => f.write_str("BUFFER_MEMORY_REQUIREMENTS_INFO_2"),
-            1000146001 => f.write_str("IMAGE_MEMORY_REQUIREMENTS_INFO_2"),
-            1000146002 => f.write_str("IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2"),
-            1000146003 => f.write_str("MEMORY_REQUIREMENTS_2"),
-            1000146004 => f.write_str("SPARSE_IMAGE_MEMORY_REQUIREMENTS_2"),
-            1000059000 => f.write_str("PHYSICAL_DEVICE_FEATURES_2"),
-            1000059001 => f.write_str("PHYSICAL_DEVICE_PROPERTIES_2"),
-            1000059002 => f.write_str("FORMAT_PROPERTIES_2"),
-            1000059003 => f.write_str("IMAGE_FORMAT_PROPERTIES_2"),
-            1000059004 => f.write_str("PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2"),
-            1000059005 => f.write_str("QUEUE_FAMILY_PROPERTIES_2"),
-            1000059006 => f.write_str("PHYSICAL_DEVICE_MEMORY_PROPERTIES_2"),
-            1000059007 => f.write_str("SPARSE_IMAGE_FORMAT_PROPERTIES_2"),
-            1000059008 => f.write_str("PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2"),
-            1000117000 => f.write_str("PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES"),
-            1000117001 => f.write_str("RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO"),
-            1000117002 => f.write_str("IMAGE_VIEW_USAGE_CREATE_INFO"),
-            1000117003 => f.write_str("PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO"),
-            1000053000 => f.write_str("RENDER_PASS_MULTIVIEW_CREATE_INFO"),
-            1000053001 => f.write_str("PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
-            1000053002 => f.write_str("PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
-            1000120000 => f.write_str("PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES"),
-            1000145000 => f.write_str("PROTECTED_SUBMIT_INFO"),
-            1000145001 => f.write_str("PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES"),
-            1000145002 => f.write_str("PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES"),
-            1000145003 => f.write_str("DEVICE_QUEUE_INFO_2"),
-            1000156000 => f.write_str("SAMPLER_YCBCR_CONVERSION_CREATE_INFO"),
-            1000156001 => f.write_str("SAMPLER_YCBCR_CONVERSION_INFO"),
-            1000156002 => f.write_str("BIND_IMAGE_PLANE_MEMORY_INFO"),
-            1000156003 => f.write_str("IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO"),
-            1000156004 => f.write_str("PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES"),
-            1000156005 => f.write_str("SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES"),
-            1000085000 => f.write_str("DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO"),
-            1000071000 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO"),
-            1000071001 => f.write_str("EXTERNAL_IMAGE_FORMAT_PROPERTIES"),
-            1000071002 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO"),
-            1000071003 => f.write_str("EXTERNAL_BUFFER_PROPERTIES"),
-            1000071004 => f.write_str("PHYSICAL_DEVICE_ID_PROPERTIES"),
-            1000072000 => f.write_str("EXTERNAL_MEMORY_BUFFER_CREATE_INFO"),
-            1000072001 => f.write_str("EXTERNAL_MEMORY_IMAGE_CREATE_INFO"),
-            1000072002 => f.write_str("EXPORT_MEMORY_ALLOCATE_INFO"),
-            1000112000 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO"),
-            1000112001 => f.write_str("EXTERNAL_FENCE_PROPERTIES"),
-            1000113000 => f.write_str("EXPORT_FENCE_CREATE_INFO"),
-            1000077000 => f.write_str("EXPORT_SEMAPHORE_CREATE_INFO"),
-            1000076000 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO"),
-            1000076001 => f.write_str("EXTERNAL_SEMAPHORE_PROPERTIES"),
-            1000168000 => f.write_str("PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES"),
-            1000168001 => f.write_str("DESCRIPTOR_SET_LAYOUT_SUPPORT"),
-            1000063000 => f.write_str("PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES"),
-            1000001000 => f.write_str("SWAPCHAIN_CREATE_INFO_KHR"),
-            1000001001 => f.write_str("PRESENT_INFO_KHR"),
-            1000060007 => f.write_str("DEVICE_GROUP_PRESENT_CAPABILITIES_KHR"),
-            1000060008 => f.write_str("IMAGE_SWAPCHAIN_CREATE_INFO_KHR"),
-            1000060009 => f.write_str("BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR"),
-            1000060010 => f.write_str("ACQUIRE_NEXT_IMAGE_INFO_KHR"),
-            1000060011 => f.write_str("DEVICE_GROUP_PRESENT_INFO_KHR"),
-            1000060012 => f.write_str("DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR"),
-            1000002000 => f.write_str("DISPLAY_MODE_CREATE_INFO_KHR"),
-            1000002001 => f.write_str("DISPLAY_SURFACE_CREATE_INFO_KHR"),
-            1000003000 => f.write_str("DISPLAY_PRESENT_INFO_KHR"),
-            1000004000 => f.write_str("XLIB_SURFACE_CREATE_INFO_KHR"),
-            1000005000 => f.write_str("XCB_SURFACE_CREATE_INFO_KHR"),
-            1000006000 => f.write_str("WAYLAND_SURFACE_CREATE_INFO_KHR"),
-            1000007000 => f.write_str("MIR_SURFACE_CREATE_INFO_KHR"),
-            1000008000 => f.write_str("ANDROID_SURFACE_CREATE_INFO_KHR"),
-            1000009000 => f.write_str("WIN32_SURFACE_CREATE_INFO_KHR"),
-            1000010000 => f.write_str("NATIVE_BUFFER_ANDROID"),
-            1000011000 => f.write_str("DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"),
-            1000018000 => f.write_str("PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD"),
-            1000022000 => f.write_str("DEBUG_MARKER_OBJECT_NAME_INFO_EXT"),
-            1000022001 => f.write_str("DEBUG_MARKER_OBJECT_TAG_INFO_EXT"),
-            1000022002 => f.write_str("DEBUG_MARKER_MARKER_INFO_EXT"),
-            1000026000 => f.write_str("DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV"),
-            1000026001 => f.write_str("DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV"),
-            1000026002 => f.write_str("DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV"),
-            1000041000 => f.write_str("TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
-            1000050000 => f.write_str("PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
-            1000056000 => f.write_str("EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
-            1000056001 => f.write_str("EXPORT_MEMORY_ALLOCATE_INFO_NV"),
-            1000057000 => f.write_str("IMPORT_MEMORY_WIN32_HANDLE_INFO_NV"),
-            1000057001 => f.write_str("EXPORT_MEMORY_WIN32_HANDLE_INFO_NV"),
-            1000058000 => f.write_str("WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV"),
-            1000061000 => f.write_str("VALIDATION_FLAGS_EXT"),
-            1000062000 => f.write_str("VI_SURFACE_CREATE_INFO_NN"),
-            1000067000 => f.write_str("IMAGE_VIEW_ASTC_DECODE_MODE_EXT"),
-            1000067001 => f.write_str("PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT"),
-            1000073000 => f.write_str("IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
-            1000073001 => f.write_str("EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
-            1000073002 => f.write_str("MEMORY_WIN32_HANDLE_PROPERTIES_KHR"),
-            1000073003 => f.write_str("MEMORY_GET_WIN32_HANDLE_INFO_KHR"),
-            1000074000 => f.write_str("IMPORT_MEMORY_FD_INFO_KHR"),
-            1000074001 => f.write_str("MEMORY_FD_PROPERTIES_KHR"),
-            1000074002 => f.write_str("MEMORY_GET_FD_INFO_KHR"),
-            1000075000 => f.write_str("WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR"),
-            1000078000 => f.write_str("IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR"),
-            1000078001 => f.write_str("EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR"),
-            1000078002 => f.write_str("D3D12_FENCE_SUBMIT_INFO_KHR"),
-            1000078003 => f.write_str("SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR"),
-            1000079000 => f.write_str("IMPORT_SEMAPHORE_FD_INFO_KHR"),
-            1000079001 => f.write_str("SEMAPHORE_GET_FD_INFO_KHR"),
-            1000080000 => f.write_str("PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR"),
-            1000081000 => f.write_str("COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT"),
-            1000081001 => f.write_str("PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
-            1000081002 => f.write_str("CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
-            1000084000 => f.write_str("PRESENT_REGIONS_KHR"),
-            1000086000 => f.write_str("OBJECT_TABLE_CREATE_INFO_NVX"),
-            1000086001 => f.write_str("INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX"),
-            1000086002 => f.write_str("CMD_PROCESS_COMMANDS_INFO_NVX"),
-            1000086003 => f.write_str("CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX"),
-            1000086004 => f.write_str("DEVICE_GENERATED_COMMANDS_LIMITS_NVX"),
-            1000086005 => f.write_str("DEVICE_GENERATED_COMMANDS_FEATURES_NVX"),
-            1000087000 => f.write_str("PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV"),
-            1000090000 => f.write_str("SURFACE_CAPABILITIES_2_EXT"),
-            1000091000 => f.write_str("DISPLAY_POWER_INFO_EXT"),
-            1000091001 => f.write_str("DEVICE_EVENT_INFO_EXT"),
-            1000091002 => f.write_str("DISPLAY_EVENT_INFO_EXT"),
-            1000091003 => f.write_str("SWAPCHAIN_COUNTER_CREATE_INFO_EXT"),
-            1000092000 => f.write_str("PRESENT_TIMES_INFO_GOOGLE"),
-            1000097000 => f.write_str("PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX"),
-            1000098000 => f.write_str("PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV"),
-            1000099000 => f.write_str("PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT"),
-            1000099001 => f.write_str("PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT"),
-            1000101000 => f.write_str("PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT"),
-            1000101001 => f.write_str("PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT"),
-            1000105000 => f.write_str("HDR_METADATA_EXT"),
-            1000109000 => f.write_str("ATTACHMENT_DESCRIPTION_2_KHR"),
-            1000109001 => f.write_str("ATTACHMENT_REFERENCE_2_KHR"),
-            1000109002 => f.write_str("SUBPASS_DESCRIPTION_2_KHR"),
-            1000109003 => f.write_str("SUBPASS_DEPENDENCY_2_KHR"),
-            1000109004 => f.write_str("RENDER_PASS_CREATE_INFO_2_KHR"),
-            1000109005 => f.write_str("SUBPASS_BEGIN_INFO_KHR"),
-            1000109006 => f.write_str("SUBPASS_END_INFO_KHR"),
-            1000111000 => f.write_str("SHARED_PRESENT_SURFACE_CAPABILITIES_KHR"),
-            1000114000 => f.write_str("IMPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
-            1000114001 => f.write_str("EXPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
-            1000114002 => f.write_str("FENCE_GET_WIN32_HANDLE_INFO_KHR"),
-            1000115000 => f.write_str("IMPORT_FENCE_FD_INFO_KHR"),
-            1000115001 => f.write_str("FENCE_GET_FD_INFO_KHR"),
-            1000119000 => f.write_str("PHYSICAL_DEVICE_SURFACE_INFO_2_KHR"),
-            1000119001 => f.write_str("SURFACE_CAPABILITIES_2_KHR"),
-            1000119002 => f.write_str("SURFACE_FORMAT_2_KHR"),
-            1000121000 => f.write_str("DISPLAY_PROPERTIES_2_KHR"),
-            1000121001 => f.write_str("DISPLAY_PLANE_PROPERTIES_2_KHR"),
-            1000121002 => f.write_str("DISPLAY_MODE_PROPERTIES_2_KHR"),
-            1000121003 => f.write_str("DISPLAY_PLANE_INFO_2_KHR"),
-            1000121004 => f.write_str("DISPLAY_PLANE_CAPABILITIES_2_KHR"),
-            1000122000 => f.write_str("IOS_SURFACE_CREATE_INFO_MVK"),
-            1000123000 => f.write_str("MACOS_SURFACE_CREATE_INFO_MVK"),
-            1000128000 => f.write_str("DEBUG_UTILS_OBJECT_NAME_INFO_EXT"),
-            1000128001 => f.write_str("DEBUG_UTILS_OBJECT_TAG_INFO_EXT"),
-            1000128002 => f.write_str("DEBUG_UTILS_LABEL_EXT"),
-            1000128003 => f.write_str("DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT"),
-            1000128004 => f.write_str("DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT"),
-            1000129000 => f.write_str("ANDROID_HARDWARE_BUFFER_USAGE_ANDROID"),
-            1000129001 => f.write_str("ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID"),
-            1000129002 => f.write_str("ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID"),
-            1000129003 => f.write_str("IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
-            1000129004 => f.write_str("MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
-            1000129005 => f.write_str("EXTERNAL_FORMAT_ANDROID"),
-            1000130000 => f.write_str("PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT"),
-            1000130001 => f.write_str("SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT"),
-            1000138000 => f.write_str("PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT"),
-            1000138001 => f.write_str("PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT"),
-            1000138002 => f.write_str("WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT"),
-            1000138003 => f.write_str("DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT"),
-            1000143000 => f.write_str("SAMPLE_LOCATIONS_INFO_EXT"),
-            1000143001 => f.write_str("RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT"),
-            1000143002 => f.write_str("PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT"),
-            1000143003 => f.write_str("PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT"),
-            1000143004 => f.write_str("MULTISAMPLE_PROPERTIES_EXT"),
-            1000147000 => f.write_str("IMAGE_FORMAT_LIST_CREATE_INFO_KHR"),
-            1000148000 => f.write_str("PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT"),
-            1000148001 => f.write_str("PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT"),
-            1000148002 => f.write_str("PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
-            1000149000 => f.write_str("PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
-            1000152000 => f.write_str("PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
-            1000158000 => f.write_str("DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT"),
-            1000158001 => f.write_str("DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
-            1000158002 => f.write_str("PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
-            1000158003 => f.write_str("IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
-            1000158004 => f.write_str("IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT"),
-            1000158005 => f.write_str("IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
-            1000160000 => f.write_str("VALIDATION_CACHE_CREATE_INFO_EXT"),
-            1000160001 => f.write_str("SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
-            1000161000 => f.write_str("DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT"),
-            1000161001 => f.write_str("PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT"),
-            1000161002 => f.write_str("PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT"),
-            1000161003 => f.write_str("DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT"),
-            1000161004 => f.write_str("DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT"),
-            1000164000 => f.write_str("PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV"),
-            1000164001 => f.write_str("PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV"),
-            1000164002 => f.write_str("PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV"),
-            1000164005 => f.write_str("PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV"),
-            1000165000 => f.write_str("RAYTRACING_PIPELINE_CREATE_INFO_NVX"),
-            1000165001 => f.write_str("ACCELERATION_STRUCTURE_CREATE_INFO_NVX"),
-            1000165002 => f.write_str("GEOMETRY_INSTANCE_NVX"),
-            1000165003 => f.write_str("GEOMETRY_NVX"),
-            1000165004 => f.write_str("GEOMETRY_TRIANGLES_NVX"),
-            1000165005 => f.write_str("GEOMETRY_AABB_NVX"),
-            1000165006 => f.write_str("BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NVX"),
-            1000165007 => f.write_str("DESCRIPTOR_ACCELERATION_STRUCTURE_INFO_NVX"),
-            1000165008 => f.write_str("ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX"),
-            1000165009 => f.write_str("PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX"),
-            1000165010 => f.write_str("HIT_SHADER_MODULE_CREATE_INFO_NVX"),
-            1000166000 => f.write_str("PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV"),
-            1000166001 => f.write_str("PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV"),
-            1000174000 => f.write_str("DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT"),
-            1000177000 => f.write_str("PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR"),
-            1000178000 => f.write_str("IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
-            1000178001 => f.write_str("MEMORY_HOST_POINTER_PROPERTIES_EXT"),
-            1000178002 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
-            1000180000 => f.write_str("PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
-            1000185000 => f.write_str("PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
-            1000190000 => f.write_str("PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
-            1000190001 => f.write_str("PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
-            1000190002 => f.write_str("PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
-            1000196000 => f.write_str("PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
-            1000201000 => f.write_str("PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
-            1000202000 => f.write_str("PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
-            1000202001 => f.write_str("PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
-            1000203000 => f.write_str("PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV"),
-            1000204000 => f.write_str("PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV"),
-            1000205000 => f.write_str("PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV"),
-            1000205002 => f.write_str("PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
-            1000206000 => f.write_str("CHECKPOINT_DATA_NV"),
-            1000206001 => f.write_str("QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
-            1000211000 => f.write_str("PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
-            1000214000 => f.write_str("IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"APPLICATION_INFO"),
+            1 => Some(&"INSTANCE_CREATE_INFO"),
+            2 => Some(&"DEVICE_QUEUE_CREATE_INFO"),
+            3 => Some(&"DEVICE_CREATE_INFO"),
+            4 => Some(&"SUBMIT_INFO"),
+            5 => Some(&"MEMORY_ALLOCATE_INFO"),
+            6 => Some(&"MAPPED_MEMORY_RANGE"),
+            7 => Some(&"BIND_SPARSE_INFO"),
+            8 => Some(&"FENCE_CREATE_INFO"),
+            9 => Some(&"SEMAPHORE_CREATE_INFO"),
+            10 => Some(&"EVENT_CREATE_INFO"),
+            11 => Some(&"QUERY_POOL_CREATE_INFO"),
+            12 => Some(&"BUFFER_CREATE_INFO"),
+            13 => Some(&"BUFFER_VIEW_CREATE_INFO"),
+            14 => Some(&"IMAGE_CREATE_INFO"),
+            15 => Some(&"IMAGE_VIEW_CREATE_INFO"),
+            16 => Some(&"SHADER_MODULE_CREATE_INFO"),
+            17 => Some(&"PIPELINE_CACHE_CREATE_INFO"),
+            18 => Some(&"PIPELINE_SHADER_STAGE_CREATE_INFO"),
+            19 => Some(&"PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO"),
+            20 => Some(&"PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO"),
+            21 => Some(&"PIPELINE_TESSELLATION_STATE_CREATE_INFO"),
+            22 => Some(&"PIPELINE_VIEWPORT_STATE_CREATE_INFO"),
+            23 => Some(&"PIPELINE_RASTERIZATION_STATE_CREATE_INFO"),
+            24 => Some(&"PIPELINE_MULTISAMPLE_STATE_CREATE_INFO"),
+            25 => Some(&"PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO"),
+            26 => Some(&"PIPELINE_COLOR_BLEND_STATE_CREATE_INFO"),
+            27 => Some(&"PIPELINE_DYNAMIC_STATE_CREATE_INFO"),
+            28 => Some(&"GRAPHICS_PIPELINE_CREATE_INFO"),
+            29 => Some(&"COMPUTE_PIPELINE_CREATE_INFO"),
+            30 => Some(&"PIPELINE_LAYOUT_CREATE_INFO"),
+            31 => Some(&"SAMPLER_CREATE_INFO"),
+            32 => Some(&"DESCRIPTOR_SET_LAYOUT_CREATE_INFO"),
+            33 => Some(&"DESCRIPTOR_POOL_CREATE_INFO"),
+            34 => Some(&"DESCRIPTOR_SET_ALLOCATE_INFO"),
+            35 => Some(&"WRITE_DESCRIPTOR_SET"),
+            36 => Some(&"COPY_DESCRIPTOR_SET"),
+            37 => Some(&"FRAMEBUFFER_CREATE_INFO"),
+            38 => Some(&"RENDER_PASS_CREATE_INFO"),
+            39 => Some(&"COMMAND_POOL_CREATE_INFO"),
+            40 => Some(&"COMMAND_BUFFER_ALLOCATE_INFO"),
+            41 => Some(&"COMMAND_BUFFER_INHERITANCE_INFO"),
+            42 => Some(&"COMMAND_BUFFER_BEGIN_INFO"),
+            43 => Some(&"RENDER_PASS_BEGIN_INFO"),
+            44 => Some(&"BUFFER_MEMORY_BARRIER"),
+            45 => Some(&"IMAGE_MEMORY_BARRIER"),
+            46 => Some(&"MEMORY_BARRIER"),
+            47 => Some(&"LOADER_INSTANCE_CREATE_INFO"),
+            48 => Some(&"LOADER_DEVICE_CREATE_INFO"),
+            1000094000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_PROPERTIES"),
+            1000157000 => Some(&"BIND_BUFFER_MEMORY_INFO"),
+            1000157001 => Some(&"BIND_IMAGE_MEMORY_INFO"),
+            1000083000 => Some(&"PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES"),
+            1000127000 => Some(&"MEMORY_DEDICATED_REQUIREMENTS"),
+            1000127001 => Some(&"MEMORY_DEDICATED_ALLOCATE_INFO"),
+            1000060000 => Some(&"MEMORY_ALLOCATE_FLAGS_INFO"),
+            1000060003 => Some(&"DEVICE_GROUP_RENDER_PASS_BEGIN_INFO"),
+            1000060004 => Some(&"DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO"),
+            1000060005 => Some(&"DEVICE_GROUP_SUBMIT_INFO"),
+            1000060006 => Some(&"DEVICE_GROUP_BIND_SPARSE_INFO"),
+            1000060013 => Some(&"BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO"),
+            1000060014 => Some(&"BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO"),
+            1000070000 => Some(&"PHYSICAL_DEVICE_GROUP_PROPERTIES"),
+            1000070001 => Some(&"DEVICE_GROUP_DEVICE_CREATE_INFO"),
+            1000146000 => Some(&"BUFFER_MEMORY_REQUIREMENTS_INFO_2"),
+            1000146001 => Some(&"IMAGE_MEMORY_REQUIREMENTS_INFO_2"),
+            1000146002 => Some(&"IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2"),
+            1000146003 => Some(&"MEMORY_REQUIREMENTS_2"),
+            1000146004 => Some(&"SPARSE_IMAGE_MEMORY_REQUIREMENTS_2"),
+            1000059000 => Some(&"PHYSICAL_DEVICE_FEATURES_2"),
+            1000059001 => Some(&"PHYSICAL_DEVICE_PROPERTIES_2"),
+            1000059002 => Some(&"FORMAT_PROPERTIES_2"),
+            1000059003 => Some(&"IMAGE_FORMAT_PROPERTIES_2"),
+            1000059004 => Some(&"PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2"),
+            1000059005 => Some(&"QUEUE_FAMILY_PROPERTIES_2"),
+            1000059006 => Some(&"PHYSICAL_DEVICE_MEMORY_PROPERTIES_2"),
+            1000059007 => Some(&"SPARSE_IMAGE_FORMAT_PROPERTIES_2"),
+            1000059008 => Some(&"PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2"),
+            1000117000 => Some(&"PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES"),
+            1000117001 => Some(&"RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO"),
+            1000117002 => Some(&"IMAGE_VIEW_USAGE_CREATE_INFO"),
+            1000117003 => Some(&"PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO"),
+            1000053000 => Some(&"RENDER_PASS_MULTIVIEW_CREATE_INFO"),
+            1000053001 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
+            1000053002 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
+            1000120000 => Some(&"PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES"),
+            1000145000 => Some(&"PROTECTED_SUBMIT_INFO"),
+            1000145001 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES"),
+            1000145002 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES"),
+            1000145003 => Some(&"DEVICE_QUEUE_INFO_2"),
+            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION_CREATE_INFO"),
+            1000156001 => Some(&"SAMPLER_YCBCR_CONVERSION_INFO"),
+            1000156002 => Some(&"BIND_IMAGE_PLANE_MEMORY_INFO"),
+            1000156003 => Some(&"IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO"),
+            1000156004 => Some(&"PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES"),
+            1000156005 => Some(&"SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES"),
+            1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO"),
+            1000071000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO"),
+            1000071001 => Some(&"EXTERNAL_IMAGE_FORMAT_PROPERTIES"),
+            1000071002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO"),
+            1000071003 => Some(&"EXTERNAL_BUFFER_PROPERTIES"),
+            1000071004 => Some(&"PHYSICAL_DEVICE_ID_PROPERTIES"),
+            1000072000 => Some(&"EXTERNAL_MEMORY_BUFFER_CREATE_INFO"),
+            1000072001 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO"),
+            1000072002 => Some(&"EXPORT_MEMORY_ALLOCATE_INFO"),
+            1000112000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO"),
+            1000112001 => Some(&"EXTERNAL_FENCE_PROPERTIES"),
+            1000113000 => Some(&"EXPORT_FENCE_CREATE_INFO"),
+            1000077000 => Some(&"EXPORT_SEMAPHORE_CREATE_INFO"),
+            1000076000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO"),
+            1000076001 => Some(&"EXTERNAL_SEMAPHORE_PROPERTIES"),
+            1000168000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES"),
+            1000168001 => Some(&"DESCRIPTOR_SET_LAYOUT_SUPPORT"),
+            1000063000 => Some(&"PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES"),
+            1000001000 => Some(&"SWAPCHAIN_CREATE_INFO_KHR"),
+            1000001001 => Some(&"PRESENT_INFO_KHR"),
+            1000060007 => Some(&"DEVICE_GROUP_PRESENT_CAPABILITIES_KHR"),
+            1000060008 => Some(&"IMAGE_SWAPCHAIN_CREATE_INFO_KHR"),
+            1000060009 => Some(&"BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR"),
+            1000060010 => Some(&"ACQUIRE_NEXT_IMAGE_INFO_KHR"),
+            1000060011 => Some(&"DEVICE_GROUP_PRESENT_INFO_KHR"),
+            1000060012 => Some(&"DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR"),
+            1000002000 => Some(&"DISPLAY_MODE_CREATE_INFO_KHR"),
+            1000002001 => Some(&"DISPLAY_SURFACE_CREATE_INFO_KHR"),
+            1000003000 => Some(&"DISPLAY_PRESENT_INFO_KHR"),
+            1000004000 => Some(&"XLIB_SURFACE_CREATE_INFO_KHR"),
+            1000005000 => Some(&"XCB_SURFACE_CREATE_INFO_KHR"),
+            1000006000 => Some(&"WAYLAND_SURFACE_CREATE_INFO_KHR"),
+            1000007000 => Some(&"MIR_SURFACE_CREATE_INFO_KHR"),
+            1000008000 => Some(&"ANDROID_SURFACE_CREATE_INFO_KHR"),
+            1000009000 => Some(&"WIN32_SURFACE_CREATE_INFO_KHR"),
+            1000010000 => Some(&"NATIVE_BUFFER_ANDROID"),
+            1000011000 => Some(&"DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"),
+            1000018000 => Some(&"PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD"),
+            1000022000 => Some(&"DEBUG_MARKER_OBJECT_NAME_INFO_EXT"),
+            1000022001 => Some(&"DEBUG_MARKER_OBJECT_TAG_INFO_EXT"),
+            1000022002 => Some(&"DEBUG_MARKER_MARKER_INFO_EXT"),
+            1000026000 => Some(&"DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV"),
+            1000026001 => Some(&"DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV"),
+            1000026002 => Some(&"DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV"),
+            1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
+            1000050000 => Some(&"PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
+            1000056000 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
+            1000056001 => Some(&"EXPORT_MEMORY_ALLOCATE_INFO_NV"),
+            1000057000 => Some(&"IMPORT_MEMORY_WIN32_HANDLE_INFO_NV"),
+            1000057001 => Some(&"EXPORT_MEMORY_WIN32_HANDLE_INFO_NV"),
+            1000058000 => Some(&"WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV"),
+            1000061000 => Some(&"VALIDATION_FLAGS_EXT"),
+            1000062000 => Some(&"VI_SURFACE_CREATE_INFO_NN"),
+            1000067000 => Some(&"IMAGE_VIEW_ASTC_DECODE_MODE_EXT"),
+            1000067001 => Some(&"PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT"),
+            1000073000 => Some(&"IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
+            1000073001 => Some(&"EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
+            1000073002 => Some(&"MEMORY_WIN32_HANDLE_PROPERTIES_KHR"),
+            1000073003 => Some(&"MEMORY_GET_WIN32_HANDLE_INFO_KHR"),
+            1000074000 => Some(&"IMPORT_MEMORY_FD_INFO_KHR"),
+            1000074001 => Some(&"MEMORY_FD_PROPERTIES_KHR"),
+            1000074002 => Some(&"MEMORY_GET_FD_INFO_KHR"),
+            1000075000 => Some(&"WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR"),
+            1000078000 => Some(&"IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR"),
+            1000078001 => Some(&"EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR"),
+            1000078002 => Some(&"D3D12_FENCE_SUBMIT_INFO_KHR"),
+            1000078003 => Some(&"SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR"),
+            1000079000 => Some(&"IMPORT_SEMAPHORE_FD_INFO_KHR"),
+            1000079001 => Some(&"SEMAPHORE_GET_FD_INFO_KHR"),
+            1000080000 => Some(&"PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR"),
+            1000081000 => Some(&"COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT"),
+            1000081001 => Some(&"PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
+            1000081002 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
+            1000084000 => Some(&"PRESENT_REGIONS_KHR"),
+            1000086000 => Some(&"OBJECT_TABLE_CREATE_INFO_NVX"),
+            1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX"),
+            1000086002 => Some(&"CMD_PROCESS_COMMANDS_INFO_NVX"),
+            1000086003 => Some(&"CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX"),
+            1000086004 => Some(&"DEVICE_GENERATED_COMMANDS_LIMITS_NVX"),
+            1000086005 => Some(&"DEVICE_GENERATED_COMMANDS_FEATURES_NVX"),
+            1000087000 => Some(&"PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV"),
+            1000090000 => Some(&"SURFACE_CAPABILITIES_2_EXT"),
+            1000091000 => Some(&"DISPLAY_POWER_INFO_EXT"),
+            1000091001 => Some(&"DEVICE_EVENT_INFO_EXT"),
+            1000091002 => Some(&"DISPLAY_EVENT_INFO_EXT"),
+            1000091003 => Some(&"SWAPCHAIN_COUNTER_CREATE_INFO_EXT"),
+            1000092000 => Some(&"PRESENT_TIMES_INFO_GOOGLE"),
+            1000097000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX"),
+            1000098000 => Some(&"PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV"),
+            1000099000 => Some(&"PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT"),
+            1000099001 => Some(&"PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT"),
+            1000101000 => Some(&"PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT"),
+            1000101001 => Some(&"PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT"),
+            1000105000 => Some(&"HDR_METADATA_EXT"),
+            1000109000 => Some(&"ATTACHMENT_DESCRIPTION_2_KHR"),
+            1000109001 => Some(&"ATTACHMENT_REFERENCE_2_KHR"),
+            1000109002 => Some(&"SUBPASS_DESCRIPTION_2_KHR"),
+            1000109003 => Some(&"SUBPASS_DEPENDENCY_2_KHR"),
+            1000109004 => Some(&"RENDER_PASS_CREATE_INFO_2_KHR"),
+            1000109005 => Some(&"SUBPASS_BEGIN_INFO_KHR"),
+            1000109006 => Some(&"SUBPASS_END_INFO_KHR"),
+            1000111000 => Some(&"SHARED_PRESENT_SURFACE_CAPABILITIES_KHR"),
+            1000114000 => Some(&"IMPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
+            1000114001 => Some(&"EXPORT_FENCE_WIN32_HANDLE_INFO_KHR"),
+            1000114002 => Some(&"FENCE_GET_WIN32_HANDLE_INFO_KHR"),
+            1000115000 => Some(&"IMPORT_FENCE_FD_INFO_KHR"),
+            1000115001 => Some(&"FENCE_GET_FD_INFO_KHR"),
+            1000119000 => Some(&"PHYSICAL_DEVICE_SURFACE_INFO_2_KHR"),
+            1000119001 => Some(&"SURFACE_CAPABILITIES_2_KHR"),
+            1000119002 => Some(&"SURFACE_FORMAT_2_KHR"),
+            1000121000 => Some(&"DISPLAY_PROPERTIES_2_KHR"),
+            1000121001 => Some(&"DISPLAY_PLANE_PROPERTIES_2_KHR"),
+            1000121002 => Some(&"DISPLAY_MODE_PROPERTIES_2_KHR"),
+            1000121003 => Some(&"DISPLAY_PLANE_INFO_2_KHR"),
+            1000121004 => Some(&"DISPLAY_PLANE_CAPABILITIES_2_KHR"),
+            1000122000 => Some(&"IOS_SURFACE_CREATE_INFO_MVK"),
+            1000123000 => Some(&"MACOS_SURFACE_CREATE_INFO_MVK"),
+            1000128000 => Some(&"DEBUG_UTILS_OBJECT_NAME_INFO_EXT"),
+            1000128001 => Some(&"DEBUG_UTILS_OBJECT_TAG_INFO_EXT"),
+            1000128002 => Some(&"DEBUG_UTILS_LABEL_EXT"),
+            1000128003 => Some(&"DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT"),
+            1000128004 => Some(&"DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT"),
+            1000129000 => Some(&"ANDROID_HARDWARE_BUFFER_USAGE_ANDROID"),
+            1000129001 => Some(&"ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID"),
+            1000129002 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID"),
+            1000129003 => Some(&"IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
+            1000129004 => Some(&"MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
+            1000129005 => Some(&"EXTERNAL_FORMAT_ANDROID"),
+            1000130000 => Some(&"PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT"),
+            1000130001 => Some(&"SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT"),
+            1000138000 => Some(&"PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT"),
+            1000138001 => Some(&"PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT"),
+            1000138002 => Some(&"WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT"),
+            1000138003 => Some(&"DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT"),
+            1000143000 => Some(&"SAMPLE_LOCATIONS_INFO_EXT"),
+            1000143001 => Some(&"RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT"),
+            1000143002 => Some(&"PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT"),
+            1000143003 => Some(&"PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT"),
+            1000143004 => Some(&"MULTISAMPLE_PROPERTIES_EXT"),
+            1000147000 => Some(&"IMAGE_FORMAT_LIST_CREATE_INFO_KHR"),
+            1000148000 => Some(&"PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT"),
+            1000148001 => Some(&"PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT"),
+            1000148002 => Some(&"PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
+            1000149000 => Some(&"PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
+            1000152000 => Some(&"PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
+            1000158000 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT"),
+            1000158001 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
+            1000158002 => Some(&"PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
+            1000158003 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
+            1000158004 => Some(&"IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT"),
+            1000158005 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
+            1000160000 => Some(&"VALIDATION_CACHE_CREATE_INFO_EXT"),
+            1000160001 => Some(&"SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
+            1000161000 => Some(&"DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT"),
+            1000161001 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT"),
+            1000161002 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT"),
+            1000161003 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT"),
+            1000161004 => Some(&"DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT"),
+            1000164000 => Some(&"PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV"),
+            1000164001 => Some(&"PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV"),
+            1000164002 => Some(&"PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV"),
+            1000164005 => Some(&"PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV"),
+            1000165000 => Some(&"RAYTRACING_PIPELINE_CREATE_INFO_NVX"),
+            1000165001 => Some(&"ACCELERATION_STRUCTURE_CREATE_INFO_NVX"),
+            1000165002 => Some(&"GEOMETRY_INSTANCE_NVX"),
+            1000165003 => Some(&"GEOMETRY_NVX"),
+            1000165004 => Some(&"GEOMETRY_TRIANGLES_NVX"),
+            1000165005 => Some(&"GEOMETRY_AABB_NVX"),
+            1000165006 => Some(&"BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NVX"),
+            1000165007 => Some(&"DESCRIPTOR_ACCELERATION_STRUCTURE_INFO_NVX"),
+            1000165008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NVX"),
+            1000165009 => Some(&"PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX"),
+            1000165010 => Some(&"HIT_SHADER_MODULE_CREATE_INFO_NVX"),
+            1000166000 => Some(&"PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV"),
+            1000166001 => Some(&"PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV"),
+            1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT"),
+            1000177000 => Some(&"PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR"),
+            1000178000 => Some(&"IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
+            1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
+            1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
+            1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
+            1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
+            1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
+            1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
+            1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
+            1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
+            1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
+            1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
+            1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
+            1000203000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV"),
+            1000204000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV"),
+            1000205000 => Some(&"PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV"),
+            1000205002 => Some(&"PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
+            1000206000 => Some(&"CHECKPOINT_DATA_NV"),
+            1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
+            1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
+            1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11441,13 +11555,18 @@ impl default::Default for SystemAllocationScope {
 }
 impl fmt::Display for SystemAllocationScope {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("COMMAND"),
-            1 => f.write_str("OBJECT"),
-            2 => f.write_str("CACHE"),
-            3 => f.write_str("DEVICE"),
-            4 => f.write_str("INSTANCE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"COMMAND"),
+            1 => Some(&"OBJECT"),
+            2 => Some(&"CACHE"),
+            3 => Some(&"DEVICE"),
+            4 => Some(&"INSTANCE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11464,9 +11583,14 @@ impl default::Default for InternalAllocationType {
 }
 impl fmt::Display for InternalAllocationType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("EXECUTABLE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"EXECUTABLE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11489,13 +11613,18 @@ impl default::Default for SamplerAddressMode {
 }
 impl fmt::Display for SamplerAddressMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("REPEAT"),
-            1 => f.write_str("MIRRORED_REPEAT"),
-            2 => f.write_str("CLAMP_TO_EDGE"),
-            3 => f.write_str("CLAMP_TO_BORDER"),
-            4 => f.write_str("MIRROR_CLAMP_TO_EDGE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"REPEAT"),
+            1 => Some(&"MIRRORED_REPEAT"),
+            2 => Some(&"CLAMP_TO_EDGE"),
+            3 => Some(&"CLAMP_TO_BORDER"),
+            4 => Some(&"MIRROR_CLAMP_TO_EDGE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11515,11 +11644,16 @@ impl default::Default for Filter {
 }
 impl fmt::Display for Filter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("NEAREST"),
-            1 => f.write_str("LINEAR"),
-            1000015000 => f.write_str("CUBIC_IMG"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"NEAREST"),
+            1 => Some(&"LINEAR"),
+            1000015000 => Some(&"CUBIC_IMG"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11539,10 +11673,15 @@ impl default::Default for SamplerMipmapMode {
 }
 impl fmt::Display for SamplerMipmapMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("NEAREST"),
-            1 => f.write_str("LINEAR"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"NEAREST"),
+            1 => Some(&"LINEAR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11560,10 +11699,15 @@ impl default::Default for VertexInputRate {
 }
 impl fmt::Display for VertexInputRate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("VERTEX"),
-            1 => f.write_str("INSTANCE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"VERTEX"),
+            1 => Some(&"INSTANCE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11663,46 +11807,51 @@ impl default::Default for ObjectType {
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UNKNOWN"),
-            1 => f.write_str("INSTANCE"),
-            2 => f.write_str("PHYSICAL_DEVICE"),
-            3 => f.write_str("DEVICE"),
-            4 => f.write_str("QUEUE"),
-            5 => f.write_str("SEMAPHORE"),
-            6 => f.write_str("COMMAND_BUFFER"),
-            7 => f.write_str("FENCE"),
-            8 => f.write_str("DEVICE_MEMORY"),
-            9 => f.write_str("BUFFER"),
-            10 => f.write_str("IMAGE"),
-            11 => f.write_str("EVENT"),
-            12 => f.write_str("QUERY_POOL"),
-            13 => f.write_str("BUFFER_VIEW"),
-            14 => f.write_str("IMAGE_VIEW"),
-            15 => f.write_str("SHADER_MODULE"),
-            16 => f.write_str("PIPELINE_CACHE"),
-            17 => f.write_str("PIPELINE_LAYOUT"),
-            18 => f.write_str("RENDER_PASS"),
-            19 => f.write_str("PIPELINE"),
-            20 => f.write_str("DESCRIPTOR_SET_LAYOUT"),
-            21 => f.write_str("SAMPLER"),
-            22 => f.write_str("DESCRIPTOR_POOL"),
-            23 => f.write_str("DESCRIPTOR_SET"),
-            24 => f.write_str("FRAMEBUFFER"),
-            25 => f.write_str("COMMAND_POOL"),
-            1000156000 => f.write_str("SAMPLER_YCBCR_CONVERSION"),
-            1000085000 => f.write_str("DESCRIPTOR_UPDATE_TEMPLATE"),
-            1000000000 => f.write_str("SURFACE_KHR"),
-            1000001000 => f.write_str("SWAPCHAIN_KHR"),
-            1000002000 => f.write_str("DISPLAY_KHR"),
-            1000002001 => f.write_str("DISPLAY_MODE_KHR"),
-            1000011000 => f.write_str("DEBUG_REPORT_CALLBACK_EXT"),
-            1000086000 => f.write_str("OBJECT_TABLE_NVX"),
-            1000086001 => f.write_str("INDIRECT_COMMANDS_LAYOUT_NVX"),
-            1000128000 => f.write_str("DEBUG_UTILS_MESSENGER_EXT"),
-            1000160000 => f.write_str("VALIDATION_CACHE_EXT"),
-            1000165000 => f.write_str("ACCELERATION_STRUCTURE_NVX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UNKNOWN"),
+            1 => Some(&"INSTANCE"),
+            2 => Some(&"PHYSICAL_DEVICE"),
+            3 => Some(&"DEVICE"),
+            4 => Some(&"QUEUE"),
+            5 => Some(&"SEMAPHORE"),
+            6 => Some(&"COMMAND_BUFFER"),
+            7 => Some(&"FENCE"),
+            8 => Some(&"DEVICE_MEMORY"),
+            9 => Some(&"BUFFER"),
+            10 => Some(&"IMAGE"),
+            11 => Some(&"EVENT"),
+            12 => Some(&"QUERY_POOL"),
+            13 => Some(&"BUFFER_VIEW"),
+            14 => Some(&"IMAGE_VIEW"),
+            15 => Some(&"SHADER_MODULE"),
+            16 => Some(&"PIPELINE_CACHE"),
+            17 => Some(&"PIPELINE_LAYOUT"),
+            18 => Some(&"RENDER_PASS"),
+            19 => Some(&"PIPELINE"),
+            20 => Some(&"DESCRIPTOR_SET_LAYOUT"),
+            21 => Some(&"SAMPLER"),
+            22 => Some(&"DESCRIPTOR_POOL"),
+            23 => Some(&"DESCRIPTOR_SET"),
+            24 => Some(&"FRAMEBUFFER"),
+            25 => Some(&"COMMAND_POOL"),
+            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
+            1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
+            1000000000 => Some(&"SURFACE_KHR"),
+            1000001000 => Some(&"SWAPCHAIN_KHR"),
+            1000002000 => Some(&"DISPLAY_KHR"),
+            1000002001 => Some(&"DISPLAY_MODE_KHR"),
+            1000011000 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
+            1000086000 => Some(&"OBJECT_TABLE_NVX"),
+            1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_NVX"),
+            1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
+            1000160000 => Some(&"VALIDATION_CACHE_EXT"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NVX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11726,16 +11875,21 @@ impl default::Default for IndirectCommandsTokenTypeNVX {
 }
 impl fmt::Display for IndirectCommandsTokenTypeNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("PIPELINE"),
-            1 => f.write_str("DESCRIPTOR_SET"),
-            2 => f.write_str("INDEX_BUFFER"),
-            3 => f.write_str("VERTEX_BUFFER"),
-            4 => f.write_str("PUSH_CONSTANT"),
-            5 => f.write_str("DRAW_INDEXED"),
-            6 => f.write_str("DRAW"),
-            7 => f.write_str("DISPATCH"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"PIPELINE"),
+            1 => Some(&"DESCRIPTOR_SET"),
+            2 => Some(&"INDEX_BUFFER"),
+            3 => Some(&"VERTEX_BUFFER"),
+            4 => Some(&"PUSH_CONSTANT"),
+            5 => Some(&"DRAW_INDEXED"),
+            6 => Some(&"DRAW"),
+            7 => Some(&"DISPATCH"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11756,13 +11910,18 @@ impl default::Default for ObjectEntryTypeNVX {
 }
 impl fmt::Display for ObjectEntryTypeNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("DESCRIPTOR_SET"),
-            1 => f.write_str("PIPELINE"),
-            2 => f.write_str("INDEX_BUFFER"),
-            3 => f.write_str("VERTEX_BUFFER"),
-            4 => f.write_str("PUSH_CONSTANT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"DESCRIPTOR_SET"),
+            1 => Some(&"PIPELINE"),
+            2 => Some(&"INDEX_BUFFER"),
+            3 => Some(&"VERTEX_BUFFER"),
+            4 => Some(&"PUSH_CONSTANT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11784,10 +11943,15 @@ impl default::Default for DescriptorUpdateTemplateType {
 }
 impl fmt::Display for DescriptorUpdateTemplateType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("DESCRIPTOR_SET"),
-            1 => f.write_str("PUSH_DESCRIPTORS_KHR"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"DESCRIPTOR_SET"),
+            1 => Some(&"PUSH_DESCRIPTORS_KHR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11812,16 +11976,21 @@ impl default::Default for ViewportCoordinateSwizzleNV {
 }
 impl fmt::Display for ViewportCoordinateSwizzleNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("POSITIVE_X"),
-            1 => f.write_str("NEGATIVE_X"),
-            2 => f.write_str("POSITIVE_Y"),
-            3 => f.write_str("NEGATIVE_Y"),
-            4 => f.write_str("POSITIVE_Z"),
-            5 => f.write_str("NEGATIVE_Z"),
-            6 => f.write_str("POSITIVE_W"),
-            7 => f.write_str("NEGATIVE_W"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"POSITIVE_X"),
+            1 => Some(&"NEGATIVE_X"),
+            2 => Some(&"POSITIVE_Y"),
+            3 => Some(&"NEGATIVE_Y"),
+            4 => Some(&"POSITIVE_Z"),
+            5 => Some(&"NEGATIVE_Z"),
+            6 => Some(&"POSITIVE_W"),
+            7 => Some(&"NEGATIVE_W"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11839,10 +12008,15 @@ impl default::Default for DiscardRectangleModeEXT {
 }
 impl fmt::Display for DiscardRectangleModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("INCLUSIVE"),
-            1 => f.write_str("EXCLUSIVE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"INCLUSIVE"),
+            1 => Some(&"EXCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11862,10 +12036,15 @@ impl default::Default for PointClippingBehavior {
 }
 impl fmt::Display for PointClippingBehavior {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("ALL_CLIP_PLANES"),
-            1 => f.write_str("USER_CLIP_PLANES_ONLY"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"ALL_CLIP_PLANES"),
+            1 => Some(&"USER_CLIP_PLANES_ONLY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11886,12 +12065,17 @@ impl default::Default for CoverageModulationModeNV {
 }
 impl fmt::Display for CoverageModulationModeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("NONE"),
-            1 => f.write_str("RGB"),
-            2 => f.write_str("ALPHA"),
-            3 => f.write_str("RGBA"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"RGB"),
+            2 => Some(&"ALPHA"),
+            3 => Some(&"RGBA"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11908,9 +12092,14 @@ impl default::Default for ValidationCacheHeaderVersionEXT {
 }
 impl fmt::Display for ValidationCacheHeaderVersionEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            1 => f.write_str("ONE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            1 => Some(&"ONE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11929,11 +12118,16 @@ impl default::Default for ShaderInfoTypeAMD {
 }
 impl fmt::Display for ShaderInfoTypeAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("STATISTICS"),
-            1 => f.write_str("BINARY"),
-            2 => f.write_str("DISASSEMBLY"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"STATISTICS"),
+            1 => Some(&"BINARY"),
+            2 => Some(&"DISASSEMBLY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11953,12 +12147,17 @@ impl default::Default for QueueGlobalPriorityEXT {
 }
 impl fmt::Display for QueueGlobalPriorityEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            128 => f.write_str("LOW"),
-            256 => f.write_str("MEDIUM"),
-            512 => f.write_str("HIGH"),
-            1024 => f.write_str("REALTIME"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            128 => Some(&"LOW"),
+            256 => Some(&"MEDIUM"),
+            512 => Some(&"HIGH"),
+            1024 => Some(&"REALTIME"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11977,11 +12176,16 @@ impl default::Default for ConservativeRasterizationModeEXT {
 }
 impl fmt::Display for ConservativeRasterizationModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("DISABLED"),
-            1 => f.write_str("OVERESTIMATE"),
-            2 => f.write_str("UNDERESTIMATE"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"DISABLED"),
+            1 => Some(&"OVERESTIMATE"),
+            2 => Some(&"UNDERESTIMATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -11999,10 +12203,15 @@ impl default::Default for CopyAccelerationStructureModeNVX {
 }
 impl fmt::Display for CopyAccelerationStructureModeNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("CLONE"),
-            1 => f.write_str("COMPACT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"CLONE"),
+            1 => Some(&"COMPACT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12020,10 +12229,15 @@ impl default::Default for AccelerationStructureTypeNVX {
 }
 impl fmt::Display for AccelerationStructureTypeNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("TOP_LEVEL"),
-            1 => f.write_str("BOTTOM_LEVEL"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"TOP_LEVEL"),
+            1 => Some(&"BOTTOM_LEVEL"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12041,10 +12255,15 @@ impl default::Default for GeometryTypeNVX {
 }
 impl fmt::Display for GeometryTypeNVX {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("TRIANGLES"),
-            1 => f.write_str("AABBS"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"TRIANGLES"),
+            1 => Some(&"AABBS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12090,23 +12309,28 @@ impl default::Default for ColorSpaceKHR {
 }
 impl fmt::Display for ColorSpaceKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("SRGB_NONLINEAR"),
-            1000104001 => f.write_str("DISPLAY_P3_NONLINEAR_EXT"),
-            1000104002 => f.write_str("EXTENDED_SRGB_LINEAR_EXT"),
-            1000104003 => f.write_str("DCI_P3_LINEAR_EXT"),
-            1000104004 => f.write_str("DCI_P3_NONLINEAR_EXT"),
-            1000104005 => f.write_str("BT709_LINEAR_EXT"),
-            1000104006 => f.write_str("BT709_NONLINEAR_EXT"),
-            1000104007 => f.write_str("BT2020_LINEAR_EXT"),
-            1000104008 => f.write_str("HDR10_ST2084_EXT"),
-            1000104009 => f.write_str("DOLBYVISION_EXT"),
-            1000104010 => f.write_str("HDR10_HLG_EXT"),
-            1000104011 => f.write_str("ADOBERGB_LINEAR_EXT"),
-            1000104012 => f.write_str("ADOBERGB_NONLINEAR_EXT"),
-            1000104013 => f.write_str("PASS_THROUGH_EXT"),
-            1000104014 => f.write_str("EXTENDED_SRGB_NONLINEAR_EXT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"SRGB_NONLINEAR"),
+            1000104001 => Some(&"DISPLAY_P3_NONLINEAR_EXT"),
+            1000104002 => Some(&"EXTENDED_SRGB_LINEAR_EXT"),
+            1000104003 => Some(&"DCI_P3_LINEAR_EXT"),
+            1000104004 => Some(&"DCI_P3_NONLINEAR_EXT"),
+            1000104005 => Some(&"BT709_LINEAR_EXT"),
+            1000104006 => Some(&"BT709_NONLINEAR_EXT"),
+            1000104007 => Some(&"BT2020_LINEAR_EXT"),
+            1000104008 => Some(&"HDR10_ST2084_EXT"),
+            1000104009 => Some(&"DOLBYVISION_EXT"),
+            1000104010 => Some(&"HDR10_HLG_EXT"),
+            1000104011 => Some(&"ADOBERGB_LINEAR_EXT"),
+            1000104012 => Some(&"ADOBERGB_NONLINEAR_EXT"),
+            1000104013 => Some(&"PASS_THROUGH_EXT"),
+            1000104014 => Some(&"EXTENDED_SRGB_NONLINEAR_EXT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12130,14 +12354,19 @@ impl default::Default for PresentModeKHR {
 }
 impl fmt::Display for PresentModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("IMMEDIATE"),
-            1 => f.write_str("MAILBOX"),
-            2 => f.write_str("FIFO"),
-            3 => f.write_str("FIFO_RELAXED"),
-            1000111000 => f.write_str("SHARED_DEMAND_REFRESH"),
-            1000111001 => f.write_str("SHARED_CONTINUOUS_REFRESH"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"IMMEDIATE"),
+            1 => Some(&"MAILBOX"),
+            2 => Some(&"FIFO"),
+            3 => Some(&"FIFO_RELAXED"),
+            1000111000 => Some(&"SHARED_DEMAND_REFRESH"),
+            1000111001 => Some(&"SHARED_CONTINUOUS_REFRESH"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12197,45 +12426,50 @@ impl default::Default for DebugReportObjectTypeEXT {
 }
 impl fmt::Display for DebugReportObjectTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UNKNOWN"),
-            1 => f.write_str("INSTANCE"),
-            2 => f.write_str("PHYSICAL_DEVICE"),
-            3 => f.write_str("DEVICE"),
-            4 => f.write_str("QUEUE"),
-            5 => f.write_str("SEMAPHORE"),
-            6 => f.write_str("COMMAND_BUFFER"),
-            7 => f.write_str("FENCE"),
-            8 => f.write_str("DEVICE_MEMORY"),
-            9 => f.write_str("BUFFER"),
-            10 => f.write_str("IMAGE"),
-            11 => f.write_str("EVENT"),
-            12 => f.write_str("QUERY_POOL"),
-            13 => f.write_str("BUFFER_VIEW"),
-            14 => f.write_str("IMAGE_VIEW"),
-            15 => f.write_str("SHADER_MODULE"),
-            16 => f.write_str("PIPELINE_CACHE"),
-            17 => f.write_str("PIPELINE_LAYOUT"),
-            18 => f.write_str("RENDER_PASS"),
-            19 => f.write_str("PIPELINE"),
-            20 => f.write_str("DESCRIPTOR_SET_LAYOUT"),
-            21 => f.write_str("SAMPLER"),
-            22 => f.write_str("DESCRIPTOR_POOL"),
-            23 => f.write_str("DESCRIPTOR_SET"),
-            24 => f.write_str("FRAMEBUFFER"),
-            25 => f.write_str("COMMAND_POOL"),
-            26 => f.write_str("SURFACE_KHR"),
-            27 => f.write_str("SWAPCHAIN_KHR"),
-            28 => f.write_str("DEBUG_REPORT_CALLBACK_EXT"),
-            29 => f.write_str("DISPLAY_KHR"),
-            30 => f.write_str("DISPLAY_MODE_KHR"),
-            31 => f.write_str("OBJECT_TABLE_NVX"),
-            32 => f.write_str("INDIRECT_COMMANDS_LAYOUT_NVX"),
-            33 => f.write_str("VALIDATION_CACHE_EXT"),
-            1000156000 => f.write_str("SAMPLER_YCBCR_CONVERSION"),
-            1000085000 => f.write_str("DESCRIPTOR_UPDATE_TEMPLATE"),
-            1000165000 => f.write_str("ACCELERATION_STRUCTURE_NVX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UNKNOWN"),
+            1 => Some(&"INSTANCE"),
+            2 => Some(&"PHYSICAL_DEVICE"),
+            3 => Some(&"DEVICE"),
+            4 => Some(&"QUEUE"),
+            5 => Some(&"SEMAPHORE"),
+            6 => Some(&"COMMAND_BUFFER"),
+            7 => Some(&"FENCE"),
+            8 => Some(&"DEVICE_MEMORY"),
+            9 => Some(&"BUFFER"),
+            10 => Some(&"IMAGE"),
+            11 => Some(&"EVENT"),
+            12 => Some(&"QUERY_POOL"),
+            13 => Some(&"BUFFER_VIEW"),
+            14 => Some(&"IMAGE_VIEW"),
+            15 => Some(&"SHADER_MODULE"),
+            16 => Some(&"PIPELINE_CACHE"),
+            17 => Some(&"PIPELINE_LAYOUT"),
+            18 => Some(&"RENDER_PASS"),
+            19 => Some(&"PIPELINE"),
+            20 => Some(&"DESCRIPTOR_SET_LAYOUT"),
+            21 => Some(&"SAMPLER"),
+            22 => Some(&"DESCRIPTOR_POOL"),
+            23 => Some(&"DESCRIPTOR_SET"),
+            24 => Some(&"FRAMEBUFFER"),
+            25 => Some(&"COMMAND_POOL"),
+            26 => Some(&"SURFACE_KHR"),
+            27 => Some(&"SWAPCHAIN_KHR"),
+            28 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
+            29 => Some(&"DISPLAY_KHR"),
+            30 => Some(&"DISPLAY_MODE_KHR"),
+            31 => Some(&"OBJECT_TABLE_NVX"),
+            32 => Some(&"INDIRECT_COMMANDS_LAYOUT_NVX"),
+            33 => Some(&"VALIDATION_CACHE_EXT"),
+            1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
+            1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NVX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12253,10 +12487,15 @@ impl default::Default for RasterizationOrderAMD {
 }
 impl fmt::Display for RasterizationOrderAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("STRICT"),
-            1 => f.write_str("RELAXED"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"STRICT"),
+            1 => Some(&"RELAXED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12274,10 +12513,15 @@ impl default::Default for ValidationCheckEXT {
 }
 impl fmt::Display for ValidationCheckEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("ALL"),
-            1 => f.write_str("SHADERS"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"ALL"),
+            1 => Some(&"SHADERS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12296,11 +12540,16 @@ impl default::Default for DisplayPowerStateEXT {
 }
 impl fmt::Display for DisplayPowerStateEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("OFF"),
-            1 => f.write_str("SUSPEND"),
-            2 => f.write_str("ON"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"OFF"),
+            1 => Some(&"SUSPEND"),
+            2 => Some(&"ON"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12317,9 +12566,14 @@ impl default::Default for DeviceEventTypeEXT {
 }
 impl fmt::Display for DeviceEventTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("DISPLAY_HOTPLUG"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"DISPLAY_HOTPLUG"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12336,9 +12590,14 @@ impl default::Default for DisplayEventTypeEXT {
 }
 impl fmt::Display for DisplayEventTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("FIRST_PIXEL_OUT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"FIRST_PIXEL_OUT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12358,10 +12617,15 @@ impl default::Default for TessellationDomainOrigin {
 }
 impl fmt::Display for TessellationDomainOrigin {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UPPER_LEFT"),
-            1 => f.write_str("LOWER_LEFT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UPPER_LEFT"),
+            1 => Some(&"LOWER_LEFT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12392,13 +12656,18 @@ impl default::Default for SamplerYcbcrModelConversion {
 }
 impl fmt::Display for SamplerYcbcrModelConversion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("RGB_IDENTITY"),
-            1 => f.write_str("YCBCR_IDENTITY"),
-            2 => f.write_str("YCBCR_709"),
-            3 => f.write_str("YCBCR_601"),
-            4 => f.write_str("YCBCR_2020"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"RGB_IDENTITY"),
+            1 => Some(&"YCBCR_IDENTITY"),
+            2 => Some(&"YCBCR_709"),
+            3 => Some(&"YCBCR_601"),
+            4 => Some(&"YCBCR_2020"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12421,10 +12690,15 @@ impl default::Default for SamplerYcbcrRange {
 }
 impl fmt::Display for SamplerYcbcrRange {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("ITU_FULL"),
-            1 => f.write_str("ITU_NARROW"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"ITU_FULL"),
+            1 => Some(&"ITU_NARROW"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12445,10 +12719,15 @@ impl default::Default for ChromaLocation {
 }
 impl fmt::Display for ChromaLocation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("COSITED_EVEN"),
-            1 => f.write_str("MIDPOINT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"COSITED_EVEN"),
+            1 => Some(&"MIDPOINT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12468,11 +12747,16 @@ impl default::Default for SamplerReductionModeEXT {
 }
 impl fmt::Display for SamplerReductionModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("WEIGHTED_AVERAGE"),
-            1 => f.write_str("MIN"),
-            2 => f.write_str("MAX"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"WEIGHTED_AVERAGE"),
+            1 => Some(&"MIN"),
+            2 => Some(&"MAX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12491,11 +12775,16 @@ impl default::Default for BlendOverlapEXT {
 }
 impl fmt::Display for BlendOverlapEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("UNCORRELATED"),
-            1 => f.write_str("DISJOINT"),
-            2 => f.write_str("CONJOINT"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"UNCORRELATED"),
+            1 => Some(&"DISJOINT"),
+            2 => Some(&"CONJOINT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12517,11 +12806,16 @@ impl default::Default for VendorId {
 }
 impl fmt::Display for VendorId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            65537 => f.write_str("VIV"),
-            65538 => f.write_str("VSI"),
-            65539 => f.write_str("KAZAN"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            65537 => Some(&"VIV"),
+            65538 => Some(&"VSI"),
+            65539 => Some(&"KAZAN"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12555,17 +12849,22 @@ impl default::Default for DriverIdKHR {
 }
 impl fmt::Display for DriverIdKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            1 => f.write_str("AMD_PROPRIETARY"),
-            2 => f.write_str("AMD_OPEN_SOURCE"),
-            3 => f.write_str("MESA_RADV"),
-            4 => f.write_str("NVIDIA_PROPRIETARY"),
-            5 => f.write_str("INTEL_PROPRIETARY_WINDOWS"),
-            6 => f.write_str("INTEL_OPEN_SOURCE_MESA"),
-            7 => f.write_str("IMAGINATION_PROPRIETARY"),
-            8 => f.write_str("QUALCOMM_PROPRIETARY"),
-            9 => f.write_str("ARM_PROPRIETARY"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            1 => Some(&"AMD_PROPRIETARY"),
+            2 => Some(&"AMD_OPEN_SOURCE"),
+            3 => Some(&"MESA_RADV"),
+            4 => Some(&"NVIDIA_PROPRIETARY"),
+            5 => Some(&"INTEL_PROPRIETARY_WINDOWS"),
+            6 => Some(&"INTEL_OPEN_SOURCE_MESA"),
+            7 => Some(&"IMAGINATION_PROPRIETARY"),
+            8 => Some(&"QUALCOMM_PROPRIETARY"),
+            9 => Some(&"ARM_PROPRIETARY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12593,20 +12892,25 @@ impl default::Default for ShadingRatePaletteEntryNV {
 }
 impl fmt::Display for ShadingRatePaletteEntryNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("NO_INVOCATIONS"),
-            1 => f.write_str("N16_INVOCATIONS_PER_PIXEL"),
-            2 => f.write_str("N8_INVOCATIONS_PER_PIXEL"),
-            3 => f.write_str("N4_INVOCATIONS_PER_PIXEL"),
-            4 => f.write_str("N2_INVOCATIONS_PER_PIXEL"),
-            5 => f.write_str("N1_INVOCATION_PER_PIXEL"),
-            6 => f.write_str("N1_INVOCATION_PER_2X1_PIXELS"),
-            7 => f.write_str("N1_INVOCATION_PER_1X2_PIXELS"),
-            8 => f.write_str("N1_INVOCATION_PER_2X2_PIXELS"),
-            9 => f.write_str("N1_INVOCATION_PER_4X2_PIXELS"),
-            10 => f.write_str("N1_INVOCATION_PER_2X4_PIXELS"),
-            11 => f.write_str("N1_INVOCATION_PER_4X4_PIXELS"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"NO_INVOCATIONS"),
+            1 => Some(&"N16_INVOCATIONS_PER_PIXEL"),
+            2 => Some(&"N8_INVOCATIONS_PER_PIXEL"),
+            3 => Some(&"N4_INVOCATIONS_PER_PIXEL"),
+            4 => Some(&"N2_INVOCATIONS_PER_PIXEL"),
+            5 => Some(&"N1_INVOCATION_PER_PIXEL"),
+            6 => Some(&"N1_INVOCATION_PER_2X1_PIXELS"),
+            7 => Some(&"N1_INVOCATION_PER_1X2_PIXELS"),
+            8 => Some(&"N1_INVOCATION_PER_2X2_PIXELS"),
+            9 => Some(&"N1_INVOCATION_PER_4X2_PIXELS"),
+            10 => Some(&"N1_INVOCATION_PER_2X4_PIXELS"),
+            11 => Some(&"N1_INVOCATION_PER_4X4_PIXELS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
@@ -12626,12 +12930,17 @@ impl default::Default for CoarseSampleOrderTypeNV {
 }
 impl fmt::Display for CoarseSampleOrderTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            0 => f.write_str("DEFAULT"),
-            1 => f.write_str("CUSTOM"),
-            2 => f.write_str("PIXEL_MAJOR"),
-            3 => f.write_str("SAMPLE_MAJOR"),
-            _ => write!(f, "{}", self.0),
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"CUSTOM"),
+            2 => Some(&"PIXEL_MAJOR"),
+            3 => Some(&"SAMPLE_MAJOR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
         }
     }
 }
