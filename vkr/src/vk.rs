@@ -91,6 +91,10 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+// Zircon
+#[allow(non_camel_case_types)]
+pub type zx_handle_t = u32;
+
 fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
@@ -138,6 +142,8 @@ pub const QUEUE_FAMILY_FOREIGN_EXT: u32 = 0xfffffffd;
 pub const SUBPASS_EXTERNAL: u32 = 0xffffffff;
 pub const MAX_DEVICE_GROUP_SIZE: usize = 32;
 pub const MAX_DEVICE_GROUP_SIZE_KHR: usize = MAX_DEVICE_GROUP_SIZE;
+pub const MAX_DRIVER_NAME_SIZE_KHR: usize = 256;
+pub const MAX_DRIVER_INFO_SIZE_KHR: usize = 256;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -3796,6 +3802,14 @@ impl ImageAspectFlags {
     pub const PLANE_0_KHR: Self = Self::PLANE_0;
     pub const PLANE_1_KHR: Self = Self::PLANE_1;
     pub const PLANE_2_KHR: Self = Self::PLANE_2;
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const MEMORY_PLANE_0_EXT: Self = ImageAspectFlags(0x80);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const MEMORY_PLANE_1_EXT: Self = ImageAspectFlags(0x100);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const MEMORY_PLANE_2_EXT: Self = ImageAspectFlags(0x200);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const MEMORY_PLANE_3_EXT: Self = ImageAspectFlags(0x400);
 }
 impl default::Default for ImageAspectFlags {
     fn default() -> Self {
@@ -3807,13 +3821,13 @@ impl ImageAspectFlags {
         ImageAspectFlags(0)
     }
     pub fn all() -> Self {
-        ImageAspectFlags(0x7f)
+        ImageAspectFlags(0x7ff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x7f
+        self.0 == 0x7ff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3867,6 +3881,10 @@ impl fmt::Display for ImageAspectFlags {
                 (0x10, "PLANE_0"),
                 (0x20, "PLANE_1"),
                 (0x40, "PLANE_2"),
+                (0x80, "MEMORY_PLANE_0_EXT"),
+                (0x100, "MEMORY_PLANE_1_EXT"),
+                (0x200, "MEMORY_PLANE_2_EXT"),
+                (0x400, "MEMORY_PLANE_3_EXT"),
             ],
             f,
         )
@@ -6395,6 +6413,73 @@ impl ops::BitXorAssign for MacOSSurfaceCreateFlagsMVK {
     }
 }
 impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(u32);
+impl ImagePipeSurfaceCreateFlagsFUCHSIA {}
+impl default::Default for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    fn default() -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(0)
+    }
+}
+impl ImagePipeSurfaceCreateFlagsFUCHSIA {
+    pub fn empty() -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(0)
+    }
+    pub fn all() -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("0")
     }
@@ -8949,7 +9034,10 @@ impl fmt::Display for QueryPoolCreateFlagBits {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RenderPassCreateFlagBits(i32);
-impl RenderPassCreateFlagBits {}
+impl RenderPassCreateFlagBits {
+    /// Added by extension VK_KHR_extension_221.
+    pub const RESERVED_0_BIT_KHR: Self = RenderPassCreateFlagBits(1);
+}
 impl default::Default for RenderPassCreateFlagBits {
     fn default() -> Self {
         RenderPassCreateFlagBits(0)
@@ -8958,6 +9046,7 @@ impl default::Default for RenderPassCreateFlagBits {
 impl fmt::Display for RenderPassCreateFlagBits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.0 {
+            1 => f.write_str("RESERVED_0_BIT_KHR"),
             _ => write!(f, "{}", self.0),
         }
     }
@@ -10045,6 +10134,8 @@ pub struct ImageTiling(i32);
 impl ImageTiling {
     pub const OPTIMAL: Self = ImageTiling(0);
     pub const LINEAR: Self = ImageTiling(1);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const DRM_FORMAT_MODIFIER_EXT: Self = ImageTiling(1000158000);
 }
 impl default::Default for ImageTiling {
     fn default() -> Self {
@@ -10056,6 +10147,7 @@ impl fmt::Display for ImageTiling {
         match self.0 {
             0 => f.write_str("OPTIMAL"),
             1 => f.write_str("LINEAR"),
+            1000158000 => f.write_str("DRM_FORMAT_MODIFIER_EXT"),
             _ => write!(f, "{}", self.0),
         }
     }
@@ -10401,6 +10493,8 @@ impl Result {
     pub const ERROR_INVALID_SHADER_NV: Self = Result(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Result(-1000158000);
     /// Added by extension VK_EXT_descriptor_indexing.
     pub const ERROR_FRAGMENTATION_EXT: Self = Result(-1000161000);
     /// Added by extension VK_EXT_global_priority.
@@ -10441,6 +10535,7 @@ impl fmt::Display for Result {
             -1000003001 => f.write_str("ERROR_INCOMPATIBLE_DISPLAY_KHR"),
             -1000011001 => f.write_str("ERROR_VALIDATION_FAILED_EXT"),
             -1000012000 => f.write_str("ERROR_INVALID_SHADER_NV"),
+            -1000158000 => f.write_str("ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000161000 => f.write_str("ERROR_FRAGMENTATION_EXT"),
             -1000174001 => f.write_str("ERROR_NOT_PERMITTED_EXT"),
             _ => write!(f, "{}", self.0),
@@ -10917,6 +11012,18 @@ impl StructureType {
         Self::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES;
     pub const BIND_BUFFER_MEMORY_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_INFO;
     pub const BIND_IMAGE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_INFO;
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT: Self = StructureType(1000158000);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = StructureType(1000158001);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT: Self = StructureType(1000158002);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT: Self = StructureType(1000158003);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT: Self = StructureType(1000158004);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = StructureType(1000158005);
     /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_CREATE_INFO_EXT: Self = StructureType(1000160000);
     /// Added by extension VK_EXT_validation_cache.
@@ -10977,6 +11084,8 @@ impl StructureType {
     pub const MEMORY_HOST_POINTER_PROPERTIES_EXT: Self = StructureType(1000178001);
     /// Added by extension VK_EXT_external_memory_host.
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
+    /// Added by extension VK_KHR_shader_atomic_int64.
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = StructureType(1000180000);
     /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = StructureType(1000185000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
@@ -10985,6 +11094,8 @@ impl StructureType {
     pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = StructureType(1000190001);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
+    /// Added by extension VK_KHR_driver_properties.
+    pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = StructureType(1000196000);
     /// Added by extension VK_NV_compute_shader_derivatives.
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
     /// Added by extension VK_NV_mesh_shader.
@@ -11005,6 +11116,8 @@ impl StructureType {
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
     /// Added by extension VK_KHR_vulkan_memory_model.
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
+    /// Added by extension VK_FUCHSIA_imagepipe_surface.
+    pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11255,6 +11368,12 @@ impl fmt::Display for StructureType {
             1000148002 => f.write_str("PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
             1000149000 => f.write_str("PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
             1000152000 => f.write_str("PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
+            1000158000 => f.write_str("DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT"),
+            1000158001 => f.write_str("DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
+            1000158002 => f.write_str("PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
+            1000158003 => f.write_str("IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
+            1000158004 => f.write_str("IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT"),
+            1000158005 => f.write_str("IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000160000 => f.write_str("VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000160001 => f.write_str("SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000161000 => f.write_str("DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT"),
@@ -11284,10 +11403,12 @@ impl fmt::Display for StructureType {
             1000178000 => f.write_str("IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
             1000178001 => f.write_str("MEMORY_HOST_POINTER_PROPERTIES_EXT"),
             1000178002 => f.write_str("PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
+            1000180000 => f.write_str("PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
             1000185000 => f.write_str("PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
             1000190000 => f.write_str("PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
             1000190001 => f.write_str("PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
             1000190002 => f.write_str("PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
+            1000196000 => f.write_str("PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
             1000201000 => f.write_str("PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => f.write_str("PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => f.write_str("PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
@@ -11298,6 +11419,7 @@ impl fmt::Display for StructureType {
             1000206000 => f.write_str("CHECKPOINT_DATA_NV"),
             1000206001 => f.write_str("QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
             1000211000 => f.write_str("PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
+            1000214000 => f.write_str("IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
             _ => write!(f, "{}", self.0),
         }
     }
@@ -12399,6 +12521,50 @@ impl fmt::Display for VendorId {
             65537 => f.write_str("VIV"),
             65538 => f.write_str("VSI"),
             65539 => f.write_str("KAZAN"),
+            _ => write!(f, "{}", self.0),
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DriverIdKHR(i32);
+impl DriverIdKHR {
+    /// Advanced Micro Devices, Inc.
+    pub const AMD_PROPRIETARY: Self = DriverIdKHR(1);
+    /// Advanced Micro Devices, Inc.
+    pub const AMD_OPEN_SOURCE: Self = DriverIdKHR(2);
+    /// Mesa open source project
+    pub const MESA_RADV: Self = DriverIdKHR(3);
+    /// NVIDIA Corporation
+    pub const NVIDIA_PROPRIETARY: Self = DriverIdKHR(4);
+    /// Intel Corporation
+    pub const INTEL_PROPRIETARY_WINDOWS: Self = DriverIdKHR(5);
+    /// Intel Corporation
+    pub const INTEL_OPEN_SOURCE_MESA: Self = DriverIdKHR(6);
+    /// Imagination Technologies
+    pub const IMAGINATION_PROPRIETARY: Self = DriverIdKHR(7);
+    /// Qualcomm Technologies, Inc.
+    pub const QUALCOMM_PROPRIETARY: Self = DriverIdKHR(8);
+    /// Arm Limited
+    pub const ARM_PROPRIETARY: Self = DriverIdKHR(9);
+}
+impl default::Default for DriverIdKHR {
+    fn default() -> Self {
+        DriverIdKHR(0)
+    }
+}
+impl fmt::Display for DriverIdKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.0 {
+            1 => f.write_str("AMD_PROPRIETARY"),
+            2 => f.write_str("AMD_OPEN_SOURCE"),
+            3 => f.write_str("MESA_RADV"),
+            4 => f.write_str("NVIDIA_PROPRIETARY"),
+            5 => f.write_str("INTEL_PROPRIETARY_WINDOWS"),
+            6 => f.write_str("INTEL_OPEN_SOURCE_MESA"),
+            7 => f.write_str("IMAGINATION_PROPRIETARY"),
+            8 => f.write_str("QUALCOMM_PROPRIETARY"),
+            9 => f.write_str("ARM_PROPRIETARY"),
             _ => write!(f, "{}", self.0),
         }
     }
@@ -17549,6 +17715,34 @@ impl fmt::Debug for XcbSurfaceCreateInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct ImagePipeSurfaceCreateInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: ImagePipeSurfaceCreateFlagsFUCHSIA,
+    pub image_pipe_handle: zx_handle_t,
+}
+impl default::Default for ImagePipeSurfaceCreateInfoFUCHSIA {
+    fn default() -> Self {
+        ImagePipeSurfaceCreateInfoFUCHSIA {
+            s_type: StructureType::IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            flags: ImagePipeSurfaceCreateFlagsFUCHSIA::default(),
+            image_pipe_handle: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImagePipeSurfaceCreateInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImagePipeSurfaceCreateInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("image_pipe_handle", &self.image_pipe_handle)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SurfaceFormatKHR {
     /// Supported pair of rendering format
     pub format: Format,
@@ -18900,6 +19094,68 @@ impl fmt::Debug for PhysicalDevicePushDescriptorPropertiesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("max_push_descriptors", &self.max_push_descriptors)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ConformanceVersionKHR {
+    pub major: u8,
+    pub minor: u8,
+    pub subminor: u8,
+    pub patch: u8,
+}
+impl default::Default for ConformanceVersionKHR {
+    fn default() -> Self {
+        ConformanceVersionKHR {
+            major: u8::default(),
+            minor: u8::default(),
+            subminor: u8::default(),
+            patch: u8::default(),
+        }
+    }
+}
+impl fmt::Debug for ConformanceVersionKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ConformanceVersionKHR")
+            .field("major", &self.major)
+            .field("minor", &self.minor)
+            .field("subminor", &self.subminor)
+            .field("patch", &self.patch)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDriverPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub driver_id: u32,
+    pub driver_name: [c_char; MAX_DRIVER_NAME_SIZE_KHR],
+    pub driver_info: [c_char; MAX_DRIVER_INFO_SIZE_KHR],
+    pub conformance_version: ConformanceVersionKHR,
+}
+impl default::Default for PhysicalDeviceDriverPropertiesKHR {
+    fn default() -> Self {
+        PhysicalDeviceDriverPropertiesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            driver_id: u32::default(),
+            driver_name: [c_char::default(); MAX_DRIVER_NAME_SIZE_KHR],
+            driver_info: [c_char::default(); MAX_DRIVER_INFO_SIZE_KHR],
+            conformance_version: ConformanceVersionKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDriverPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDriverPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("driver_id", &self.driver_id)
+            .field("driver_name", &unsafe { CStr::from_ptr(self.driver_name.as_ptr()) })
+            .field("driver_info", &unsafe { CStr::from_ptr(self.driver_info.as_ptr()) })
+            .field("conformance_version", &self.conformance_version)
             .finish()
     }
 }
@@ -24668,6 +24924,34 @@ impl fmt::Debug for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_buffer_int64_atomics: Bool32,
+    pub shader_shared_int64_atomics: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+    fn default() -> Self {
+        PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_buffer_int64_atomics: Bool32::default(),
+            shader_shared_int64_atomics: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAtomicInt64FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_buffer_int64_atomics", &self.shader_buffer_int64_atomics)
+            .field("shader_shared_int64_atomics", &self.shader_shared_int64_atomics)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -25680,6 +25964,172 @@ impl fmt::Debug for PhysicalDeviceRaytracingPropertiesNVX {
             .field("shader_header_size", &self.shader_header_size)
             .field("max_recursion_depth", &self.max_recursion_depth)
             .field("max_geometry_count", &self.max_geometry_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DrmFormatModifierPropertiesListEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub drm_format_modifier_count: u32,
+    pub p_drm_format_modifier_properties: *mut DrmFormatModifierPropertiesEXT,
+}
+impl default::Default for DrmFormatModifierPropertiesListEXT {
+    fn default() -> Self {
+        DrmFormatModifierPropertiesListEXT {
+            s_type: StructureType::DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT,
+            p_next: ptr::null_mut(),
+            drm_format_modifier_count: u32::default(),
+            p_drm_format_modifier_properties: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DrmFormatModifierPropertiesListEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrmFormatModifierPropertiesListEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier_count", &self.drm_format_modifier_count)
+            .field(
+                "p_drm_format_modifier_properties",
+                &self.p_drm_format_modifier_properties,
+            ).finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DrmFormatModifierPropertiesEXT {
+    pub drm_format_modifier: u64,
+    pub drm_format_modifier_plane_count: u32,
+    pub drm_format_modifier_tiling_features: FormatFeatureFlags,
+}
+impl default::Default for DrmFormatModifierPropertiesEXT {
+    fn default() -> Self {
+        DrmFormatModifierPropertiesEXT {
+            drm_format_modifier: u64::default(),
+            drm_format_modifier_plane_count: u32::default(),
+            drm_format_modifier_tiling_features: FormatFeatureFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for DrmFormatModifierPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrmFormatModifierPropertiesEXT")
+            .field("drm_format_modifier", &self.drm_format_modifier)
+            .field("drm_format_modifier_plane_count", &self.drm_format_modifier_plane_count)
+            .field(
+                "drm_format_modifier_tiling_features",
+                &self.drm_format_modifier_tiling_features,
+            ).finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub drm_format_modifier: u64,
+}
+impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
+    fn default() -> Self {
+        PhysicalDeviceImageDrmFormatModifierInfoEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
+            p_next: ptr::null(),
+            drm_format_modifier: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageDrmFormatModifierInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageDrmFormatModifierInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier", &self.drm_format_modifier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageDrmFormatModifierListCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub drm_format_modifier_count: u32,
+    pub p_drm_format_modifiers: *const u64,
+}
+impl default::Default for ImageDrmFormatModifierListCreateInfoEXT {
+    fn default() -> Self {
+        ImageDrmFormatModifierListCreateInfoEXT {
+            s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            drm_format_modifier_count: u32::default(),
+            p_drm_format_modifiers: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ImageDrmFormatModifierListCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageDrmFormatModifierListCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier_count", &self.drm_format_modifier_count)
+            .field("p_drm_format_modifiers", &self.p_drm_format_modifiers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageDrmFormatModifierExplicitCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub drm_format_modifier: u64,
+    pub drm_format_modifier_plane_count: u32,
+    pub p_plane_layouts: *const SubresourceLayout,
+}
+impl default::Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
+    fn default() -> Self {
+        ImageDrmFormatModifierExplicitCreateInfoEXT {
+            s_type: StructureType::IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            drm_format_modifier: u64::default(),
+            drm_format_modifier_plane_count: u32::default(),
+            p_plane_layouts: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ImageDrmFormatModifierExplicitCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageDrmFormatModifierExplicitCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier", &self.drm_format_modifier)
+            .field("drm_format_modifier_plane_count", &self.drm_format_modifier_plane_count)
+            .field("p_plane_layouts", &self.p_plane_layouts)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageDrmFormatModifierPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub drm_format_modifier: u64,
+}
+impl default::Default for ImageDrmFormatModifierPropertiesEXT {
+    fn default() -> Self {
+        ImageDrmFormatModifierPropertiesEXT {
+            s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            drm_format_modifier: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageDrmFormatModifierPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageDrmFormatModifierPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier", &self.drm_format_modifier)
             .finish()
     }
 }
@@ -33811,7 +34261,7 @@ type FnBindAccelerationStructureMemoryNVX =
         p_bind_infos: *const BindAccelerationStructureMemoryInfoNVX,
     ) -> Result;
 type FnCmdBuildAccelerationStructureNVX = unsafe extern "system" fn(
-    cmd_buf: Option<CommandBuffer>,
+    command_buffer: Option<CommandBuffer>,
     ty: AccelerationStructureTypeNVX,
     instance_count: u32,
     instance_data: Option<Buffer>,
@@ -33826,13 +34276,13 @@ type FnCmdBuildAccelerationStructureNVX = unsafe extern "system" fn(
     scratch_offset: DeviceSize,
 ) -> c_void;
 type FnCmdCopyAccelerationStructureNVX = unsafe extern "system" fn(
-    cmd_buf: Option<CommandBuffer>,
+    command_buffer: Option<CommandBuffer>,
     dst: Option<AccelerationStructureNVX>,
     src: Option<AccelerationStructureNVX>,
     mode: CopyAccelerationStructureModeNVX,
 ) -> c_void;
 type FnCmdTraceRaysNVX = unsafe extern "system" fn(
-    cmd_buf: Option<CommandBuffer>,
+    command_buffer: Option<CommandBuffer>,
     raygen_shader_binding_table_buffer: Option<Buffer>,
     raygen_shader_binding_offset: DeviceSize,
     miss_shader_binding_table_buffer: Option<Buffer>,
@@ -33869,7 +34319,7 @@ type FnGetAccelerationStructureHandleNVX =
     ) -> Result;
 type FnCmdWriteAccelerationStructurePropertiesNVX =
     unsafe extern "system" fn(
-        cmd_buf: Option<CommandBuffer>,
+        command_buffer: Option<CommandBuffer>,
         acceleration_structure: Option<AccelerationStructureNVX>,
         query_type: QueryType,
         query_pool: Option<QueryPool>,
@@ -34514,6 +34964,45 @@ impl NvDeviceDiagnosticCheckpointsFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(get_queue_checkpoint_data_nv_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnCreateImagePipeSurfaceFUCHSIA =
+    unsafe extern "system" fn(
+        instance: Option<Instance>,
+        p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
+        p_allocator: *const AllocationCallbacks,
+        p_surface: *mut SurfaceKHR,
+    ) -> Result;
+pub struct FuchsiaImagepipeSurfaceFn1_0 {
+    pub create_image_pipe_surface_fuchsia: FnCreateImagePipeSurfaceFUCHSIA,
+}
+impl FuchsiaImagepipeSurfaceFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = FuchsiaImagepipeSurfaceFn1_0 {
+            create_image_pipe_surface_fuchsia: unsafe {
+                extern "system" fn create_image_pipe_surface_fuchsia_fallback(
+                    _: Option<Instance>,
+                    _: *const ImagePipeSurfaceCreateInfoFUCHSIA,
+                    _: *const AllocationCallbacks,
+                    _: *mut SurfaceKHR,
+                ) -> Result {
+                    panic!("fn create_image_pipe_surface_fuchsia not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateImagePipeSurfaceFUCHSIA\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(create_image_pipe_surface_fuchsia_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

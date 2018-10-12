@@ -91,6 +91,10 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+// Zircon
+#[allow(non_camel_case_types)]
+pub type zx_handle_t = u32;
+
 fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;

@@ -3301,6 +3301,46 @@ impl<'a> Deref for XcbSurfaceCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::ImagePipeSurfaceCreateInfoFUCHSIA {
+    type Type = ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a>;
+    fn builder() -> Self::Type {
+        ImagePipeSurfaceCreateInfoFUCHSIABuilder::new()
+    }
+}
+pub struct ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
+    inner: vk::ImagePipeSurfaceCreateInfoFUCHSIA,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_flags(mut self, flags: vk::ImagePipeSurfaceCreateFlagsFUCHSIA) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn set_image_pipe_handle(mut self, image_pipe_handle: vk::zx_handle_t) -> Self {
+        self.inner.image_pipe_handle = image_pipe_handle;
+        self
+    }
+}
+impl<'a> Deref for ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
+    type Target = vk::ImagePipeSurfaceCreateInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::SwapchainCreateInfoKHR {
     type Type = SwapchainCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9989,6 +10029,54 @@ impl<'a> Deref for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+    type Type = PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_shader_buffer_int64_atomics(mut self, shader_buffer_int64_atomics: bool) -> Self {
+        self.inner.shader_buffer_int64_atomics = if shader_buffer_int64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn set_shader_shared_int64_atomics(mut self, shader_shared_int64_atomics: bool) -> Self {
+        self.inner.shader_shared_int64_atomics = if shader_shared_int64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11189,6 +11277,163 @@ impl<'a> PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
     type Target = vk::PhysicalDeviceRaytracingPropertiesNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DrmFormatModifierPropertiesListEXT {
+    type Type = DrmFormatModifierPropertiesListEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        DrmFormatModifierPropertiesListEXTBuilder::new()
+    }
+}
+pub struct DrmFormatModifierPropertiesListEXTBuilder<'a> {
+    inner: vk::DrmFormatModifierPropertiesListEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DrmFormatModifierPropertiesListEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_drm_format_modifier_count(mut self, drm_format_modifier_count: u32) -> Self {
+        self.inner.drm_format_modifier_count = drm_format_modifier_count;
+        self
+    }
+    pub fn set_p_drm_format_modifier_properties(
+        mut self,
+        p_drm_format_modifier_properties: *mut vk::DrmFormatModifierPropertiesEXT,
+    ) -> Self {
+        self.inner.p_drm_format_modifier_properties = p_drm_format_modifier_properties;
+        self
+    }
+}
+impl<'a> Deref for DrmFormatModifierPropertiesListEXTBuilder<'a> {
+    type Target = vk::DrmFormatModifierPropertiesListEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceImageDrmFormatModifierInfoEXT {
+    type Type = PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceImageDrmFormatModifierInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
+        self.inner.drm_format_modifier = drm_format_modifier;
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceImageDrmFormatModifierInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageDrmFormatModifierListCreateInfoEXT {
+    type Type = ImageDrmFormatModifierListCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        ImageDrmFormatModifierListCreateInfoEXTBuilder::new()
+    }
+}
+pub struct ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
+    inner: vk::ImageDrmFormatModifierListCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_p_drm_format_modifiers(mut self, p_drm_format_modifiers: &'a [u64]) -> Self {
+        self.inner.drm_format_modifier_count = p_drm_format_modifiers.len() as u32;
+        self.inner.p_drm_format_modifiers = p_drm_format_modifiers.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
+    type Target = vk::ImageDrmFormatModifierListCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageDrmFormatModifierExplicitCreateInfoEXT {
+    type Type = ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        ImageDrmFormatModifierExplicitCreateInfoEXTBuilder::new()
+    }
+}
+pub struct ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
+    inner: vk::ImageDrmFormatModifierExplicitCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
+        self.inner.drm_format_modifier = drm_format_modifier;
+        self
+    }
+    pub fn set_p_plane_layouts(mut self, p_plane_layouts: &'a [vk::SubresourceLayout]) -> Self {
+        self.inner.drm_format_modifier_plane_count = p_plane_layouts.len() as u32;
+        self.inner.p_plane_layouts = p_plane_layouts.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
+    type Target = vk::ImageDrmFormatModifierExplicitCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

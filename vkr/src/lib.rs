@@ -6385,7 +6385,7 @@ impl NvxRaytracing {
     }
     pub unsafe fn cmd_build_acceleration_structure_nvx(
         &self,
-        cmd_buf: vk::CommandBuffer,
+        command_buffer: vk::CommandBuffer,
         ty: vk::AccelerationStructureTypeNVX,
         instance_count: u32,
         instance_data: Option<vk::Buffer>,
@@ -6400,7 +6400,7 @@ impl NvxRaytracing {
     ) {
         let geometry_count = p_geometries.len();
         (self.fp1_0.cmd_build_acceleration_structure_nvx)(
-            Some(cmd_buf),
+            Some(command_buffer),
             ty,
             instance_count,
             instance_data,
@@ -6417,16 +6417,16 @@ impl NvxRaytracing {
     }
     pub unsafe fn cmd_copy_acceleration_structure_nvx(
         &self,
-        cmd_buf: vk::CommandBuffer,
+        command_buffer: vk::CommandBuffer,
         dst: vk::AccelerationStructureNVX,
         src: vk::AccelerationStructureNVX,
         mode: vk::CopyAccelerationStructureModeNVX,
     ) {
-        (self.fp1_0.cmd_copy_acceleration_structure_nvx)(Some(cmd_buf), Some(dst), Some(src), mode);
+        (self.fp1_0.cmd_copy_acceleration_structure_nvx)(Some(command_buffer), Some(dst), Some(src), mode);
     }
     pub unsafe fn cmd_trace_rays_nvx(
         &self,
-        cmd_buf: vk::CommandBuffer,
+        command_buffer: vk::CommandBuffer,
         raygen_shader_binding_table_buffer: vk::Buffer,
         raygen_shader_binding_offset: vk::DeviceSize,
         miss_shader_binding_table_buffer: vk::Buffer,
@@ -6439,7 +6439,7 @@ impl NvxRaytracing {
         height: u32,
     ) {
         (self.fp1_0.cmd_trace_rays_nvx)(
-            Some(cmd_buf),
+            Some(command_buffer),
             Some(raygen_shader_binding_table_buffer),
             raygen_shader_binding_offset,
             Some(miss_shader_binding_table_buffer),
@@ -6585,14 +6585,14 @@ impl NvxRaytracing {
     }
     pub unsafe fn cmd_write_acceleration_structure_properties_nvx(
         &self,
-        cmd_buf: vk::CommandBuffer,
+        command_buffer: vk::CommandBuffer,
         acceleration_structure: vk::AccelerationStructureNVX,
         query_type: vk::QueryType,
         query_pool: vk::QueryPool,
         query: u32,
     ) {
         (self.fp1_0.cmd_write_acceleration_structure_properties_nvx)(
-            Some(cmd_buf),
+            Some(command_buffer),
             Some(acceleration_structure),
             query_type,
             Some(query_pool),
@@ -6955,6 +6955,54 @@ impl NvDeviceDiagnosticCheckpoints {
         (self.fp1_0.get_queue_checkpoint_data_nv)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         let res = v;
+        res
+    }
+}
+/// Loader for the `VK_FUCHSIA_imagepipe_surface` instance extension
+pub struct FuchsiaImagepipeSurface {
+    pub version: vk::Version,
+    pub handle: vk::Instance,
+    pub fp1_0: vk::FuchsiaImagepipeSurfaceFn1_0,
+}
+impl FuchsiaImagepipeSurface {
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
+        let f = |name: &CStr| {
+            lib.get_instance_proc_addr(Some(instance.handle), name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::FuchsiaImagepipeSurfaceFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: instance.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_FUCHSIA_imagepipe_surface\0").unwrap()
+    }
+    pub unsafe fn create_image_pipe_surface_fuchsia(
+        &self,
+        p_create_info: &vk::ImagePipeSurfaceCreateInfoFUCHSIA,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp1_0.create_image_pipe_surface_fuchsia)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
         res
     }
 }
