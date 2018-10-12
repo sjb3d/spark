@@ -9,6 +9,7 @@ mod c_parse;
 use c_parse::*;
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use std::collections::{HashMap, HashSet};
+use std::env;
 use std::fmt;
 use std::fmt::Write as FmtWrite;
 use std::fs::File;
@@ -2425,7 +2426,9 @@ impl<'a> Generator<'a> {
 }
 
 fn main() -> WriteResult {
-    let registry = vk::parse_file(Path::new("/usr/share/vulkan/registry/vk.xml"));
+    let args: Vec<String> = env::args().collect();
+    let xml_file_name = &args.get(1).map(|s| s.as_str()).unwrap_or("/usr/share/vulkan/registry/vk.xml");
+    let registry = vk::parse_file(Path::new(xml_file_name));
 
     let generator = Generator::new(&registry);
     generator.write_vk(Path::new("../vkr/src/vk.rs"))?;
