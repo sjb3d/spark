@@ -587,8 +587,8 @@ impl Device {
         p_submits: &[vk::SubmitInfo],
         fence: Option<vk::Fence>,
     ) -> Result<()> {
-        let submit_count = p_submits.len();
-        let err = (self.fp1_0.queue_submit)(Some(queue), submit_count as u32, p_submits.as_ptr(), fence);
+        let submit_count = p_submits.len() as u32;
+        let err = (self.fp1_0.queue_submit)(Some(queue), submit_count, p_submits.as_ptr(), fence);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -651,12 +651,9 @@ impl Device {
         (self.fp1_0.unmap_memory)(Some(self.handle), Some(memory));
     }
     pub unsafe fn flush_mapped_memory_ranges(&self, p_memory_ranges: &[vk::MappedMemoryRange]) -> Result<()> {
-        let memory_range_count = p_memory_ranges.len();
-        let err = (self.fp1_0.flush_mapped_memory_ranges)(
-            Some(self.handle),
-            memory_range_count as u32,
-            p_memory_ranges.as_ptr(),
-        );
+        let memory_range_count = p_memory_ranges.len() as u32;
+        let err =
+            (self.fp1_0.flush_mapped_memory_ranges)(Some(self.handle), memory_range_count, p_memory_ranges.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -664,10 +661,10 @@ impl Device {
         res
     }
     pub unsafe fn invalidate_mapped_memory_ranges(&self, p_memory_ranges: &[vk::MappedMemoryRange]) -> Result<()> {
-        let memory_range_count = p_memory_ranges.len();
+        let memory_range_count = p_memory_ranges.len() as u32;
         let err = (self.fp1_0.invalidate_mapped_memory_ranges)(
             Some(self.handle),
-            memory_range_count as u32,
+            memory_range_count,
             p_memory_ranges.as_ptr(),
         );
         let res = match err {
@@ -735,8 +732,8 @@ impl Device {
         p_bind_info: &[vk::BindSparseInfo],
         fence: Option<vk::Fence>,
     ) -> Result<()> {
-        let bind_info_count = p_bind_info.len();
-        let err = (self.fp1_0.queue_bind_sparse)(Some(queue), bind_info_count as u32, p_bind_info.as_ptr(), fence);
+        let bind_info_count = p_bind_info.len() as u32;
+        let err = (self.fp1_0.queue_bind_sparse)(Some(queue), bind_info_count, p_bind_info.as_ptr(), fence);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -765,8 +762,8 @@ impl Device {
         (self.fp1_0.destroy_fence)(Some(self.handle), fence, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn reset_fences(&self, p_fences: &[vk::Fence]) -> Result<()> {
-        let fence_count = p_fences.len();
-        let err = (self.fp1_0.reset_fences)(Some(self.handle), fence_count as u32, p_fences.as_ptr());
+        let fence_count = p_fences.len() as u32;
+        let err = (self.fp1_0.reset_fences)(Some(self.handle), fence_count, p_fences.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -782,10 +779,10 @@ impl Device {
         res
     }
     pub unsafe fn wait_for_fences(&self, p_fences: &[vk::Fence], wait_all: bool, timeout: u64) -> Result<vk::Result> {
-        let fence_count = p_fences.len();
+        let fence_count = p_fences.len() as u32;
         let err = (self.fp1_0.wait_for_fences)(
             Some(self.handle),
-            fence_count as u32,
+            fence_count,
             p_fences.as_ptr(),
             if wait_all { vk::TRUE } else { vk::FALSE },
             timeout,
@@ -1090,11 +1087,11 @@ impl Device {
         dst_cache: vk::PipelineCache,
         p_src_caches: &[vk::PipelineCache],
     ) -> Result<()> {
-        let src_cache_count = p_src_caches.len();
+        let src_cache_count = p_src_caches.len() as u32;
         let err = (self.fp1_0.merge_pipeline_caches)(
             Some(self.handle),
             Some(dst_cache),
-            src_cache_count as u32,
+            src_cache_count,
             p_src_caches.as_ptr(),
         );
         let res = match err {
@@ -1110,16 +1107,16 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         let v_err = (self.fp1_0.create_graphics_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -1131,18 +1128,18 @@ impl Device {
         p_create_infos: &[vk::GraphicsPipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<Vec<vk::Pipeline>> {
-        let create_info_count = p_create_infos.len();
-        let mut v = Vec::with_capacity(create_info_count);
-        v.set_len(create_info_count);
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = Vec::with_capacity(create_info_count as usize);
+        v.set_len(create_info_count as usize);
         let v_err = (self.fp1_0.create_graphics_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1154,18 +1151,18 @@ impl Device {
         p_create_infos: &[vk::GraphicsPipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<A> {
-        let create_info_count = p_create_infos.len();
-        assert_eq!(create_info_count, A::len());
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.create_graphics_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1177,18 +1174,18 @@ impl Device {
         p_create_infos: &[vk::GraphicsPipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.create_graphics_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1201,16 +1198,16 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         let v_err = (self.fp1_0.create_compute_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -1222,18 +1219,18 @@ impl Device {
         p_create_infos: &[vk::ComputePipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<Vec<vk::Pipeline>> {
-        let create_info_count = p_create_infos.len();
-        let mut v = Vec::with_capacity(create_info_count);
-        v.set_len(create_info_count);
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = Vec::with_capacity(create_info_count as usize);
+        v.set_len(create_info_count as usize);
         let v_err = (self.fp1_0.create_compute_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1245,18 +1242,18 @@ impl Device {
         p_create_infos: &[vk::ComputePipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<A> {
-        let create_info_count = p_create_infos.len();
-        assert_eq!(create_info_count, A::len());
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.create_compute_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1268,18 +1265,18 @@ impl Device {
         p_create_infos: &[vk::ComputePipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.create_compute_pipelines)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1418,7 +1415,7 @@ impl Device {
         p_descriptor_sets: *mut vk::DescriptorSet,
     ) -> Result<()> {
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, p_descriptor_sets);
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -1431,7 +1428,7 @@ impl Device {
         let mut v = Vec::with_capacity(p_allocate_info.descriptor_set_count as usize);
         v.set_len(p_allocate_info.descriptor_set_count as usize);
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1441,10 +1438,10 @@ impl Device {
         &self,
         p_allocate_info: &vk::DescriptorSetAllocateInfo,
     ) -> Result<A> {
-        assert_eq!(p_allocate_info.descriptor_set_count as usize, A::len());
+        assert_eq!(p_allocate_info.descriptor_set_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1454,10 +1451,10 @@ impl Device {
         &self,
         p_allocate_info: &vk::DescriptorSetAllocateInfo,
     ) -> Result<vk::DescriptorSet> {
-        assert_eq!(p_allocate_info.descriptor_set_count as usize, 1);
+        assert_eq!(p_allocate_info.descriptor_set_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, &mut v);
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1468,11 +1465,11 @@ impl Device {
         descriptor_pool: vk::DescriptorPool,
         p_descriptor_sets: &[vk::DescriptorSet],
     ) -> Result<()> {
-        let descriptor_set_count = p_descriptor_sets.len();
+        let descriptor_set_count = p_descriptor_sets.len() as u32;
         let err = (self.fp1_0.free_descriptor_sets)(
             Some(self.handle),
             Some(descriptor_pool),
-            descriptor_set_count as u32,
+            descriptor_set_count,
             p_descriptor_sets.as_ptr(),
         );
         let res = match err {
@@ -1486,13 +1483,13 @@ impl Device {
         p_descriptor_writes: &[vk::WriteDescriptorSet],
         p_descriptor_copies: &[vk::CopyDescriptorSet],
     ) {
-        let descriptor_write_count = p_descriptor_writes.len();
-        let descriptor_copy_count = p_descriptor_copies.len();
+        let descriptor_write_count = p_descriptor_writes.len() as u32;
+        let descriptor_copy_count = p_descriptor_copies.len() as u32;
         (self.fp1_0.update_descriptor_sets)(
             Some(self.handle),
-            descriptor_write_count as u32,
+            descriptor_write_count,
             p_descriptor_writes.as_ptr(),
-            descriptor_copy_count as u32,
+            descriptor_copy_count,
             p_descriptor_copies.as_ptr(),
         );
     }
@@ -1594,7 +1591,7 @@ impl Device {
         p_command_buffers: *mut vk::CommandBuffer,
     ) -> Result<()> {
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, p_command_buffers);
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -1607,7 +1604,7 @@ impl Device {
         let mut v = Vec::with_capacity(p_allocate_info.command_buffer_count as usize);
         v.set_len(p_allocate_info.command_buffer_count as usize);
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1617,10 +1614,10 @@ impl Device {
         &self,
         p_allocate_info: &vk::CommandBufferAllocateInfo,
     ) -> Result<A> {
-        assert_eq!(p_allocate_info.command_buffer_count as usize, A::len());
+        assert_eq!(p_allocate_info.command_buffer_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -1630,21 +1627,21 @@ impl Device {
         &self,
         p_allocate_info: &vk::CommandBufferAllocateInfo,
     ) -> Result<vk::CommandBuffer> {
-        assert_eq!(p_allocate_info.command_buffer_count as usize, 1);
+        assert_eq!(p_allocate_info.command_buffer_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, &mut v);
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
         res
     }
     pub unsafe fn free_command_buffers(&self, command_pool: vk::CommandPool, p_command_buffers: &[vk::CommandBuffer]) {
-        let command_buffer_count = p_command_buffers.len();
+        let command_buffer_count = p_command_buffers.len() as u32;
         (self.fp1_0.free_command_buffers)(
             Some(self.handle),
             Some(command_pool),
-            command_buffer_count as u32,
+            command_buffer_count,
             p_command_buffers.as_ptr(),
         );
     }
@@ -1694,11 +1691,11 @@ impl Device {
         first_viewport: u32,
         p_viewports: &[vk::Viewport],
     ) {
-        let viewport_count = p_viewports.len();
+        let viewport_count = p_viewports.len() as u32;
         (self.fp1_0.cmd_set_viewport)(
             Some(command_buffer),
             first_viewport,
-            viewport_count as u32,
+            viewport_count,
             p_viewports.as_ptr(),
         );
     }
@@ -1708,13 +1705,8 @@ impl Device {
         first_scissor: u32,
         p_scissors: &[vk::Rect2D],
     ) {
-        let scissor_count = p_scissors.len();
-        (self.fp1_0.cmd_set_scissor)(
-            Some(command_buffer),
-            first_scissor,
-            scissor_count as u32,
-            p_scissors.as_ptr(),
-        );
+        let scissor_count = p_scissors.len() as u32;
+        (self.fp1_0.cmd_set_scissor)(Some(command_buffer), first_scissor, scissor_count, p_scissors.as_ptr());
     }
     pub unsafe fn cmd_set_line_width(&self, command_buffer: vk::CommandBuffer, line_width: f32) {
         (self.fp1_0.cmd_set_line_width)(Some(command_buffer), line_width);
@@ -1777,16 +1769,16 @@ impl Device {
         p_descriptor_sets: &[vk::DescriptorSet],
         p_dynamic_offsets: &[u32],
     ) {
-        let descriptor_set_count = p_descriptor_sets.len();
-        let dynamic_offset_count = p_dynamic_offsets.len();
+        let descriptor_set_count = p_descriptor_sets.len() as u32;
+        let dynamic_offset_count = p_dynamic_offsets.len() as u32;
         (self.fp1_0.cmd_bind_descriptor_sets)(
             Some(command_buffer),
             pipeline_bind_point,
             Some(layout),
             first_set,
-            descriptor_set_count as u32,
+            descriptor_set_count,
             p_descriptor_sets.as_ptr(),
-            dynamic_offset_count as u32,
+            dynamic_offset_count,
             p_dynamic_offsets.as_ptr(),
         );
     }
@@ -1806,12 +1798,12 @@ impl Device {
         p_buffers: &[vk::Buffer],
         p_offsets: &[vk::DeviceSize],
     ) {
-        let binding_count = p_buffers.len();
-        assert_eq!(binding_count, p_offsets.len());
+        let binding_count = p_buffers.len() as u32;
+        assert_eq!(binding_count, p_offsets.len() as u32);
         (self.fp1_0.cmd_bind_vertex_buffers)(
             Some(command_buffer),
             first_binding,
-            binding_count as u32,
+            binding_count,
             p_buffers.as_ptr(),
             p_offsets.as_ptr(),
         );
@@ -1894,12 +1886,12 @@ impl Device {
         dst_buffer: vk::Buffer,
         p_regions: &[vk::BufferCopy],
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_copy_buffer)(
             Some(command_buffer),
             Some(src_buffer),
             Some(dst_buffer),
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
         );
     }
@@ -1912,14 +1904,14 @@ impl Device {
         dst_image_layout: vk::ImageLayout,
         p_regions: &[vk::ImageCopy],
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_copy_image)(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
             Some(dst_image),
             dst_image_layout,
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
         );
     }
@@ -1933,14 +1925,14 @@ impl Device {
         p_regions: &[vk::ImageBlit],
         filter: vk::Filter,
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_blit_image)(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
             Some(dst_image),
             dst_image_layout,
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
             filter,
         );
@@ -1953,13 +1945,13 @@ impl Device {
         dst_image_layout: vk::ImageLayout,
         p_regions: &[vk::BufferImageCopy],
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_copy_buffer_to_image)(
             Some(command_buffer),
             Some(src_buffer),
             Some(dst_image),
             dst_image_layout,
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
         );
     }
@@ -1971,13 +1963,13 @@ impl Device {
         dst_buffer: vk::Buffer,
         p_regions: &[vk::BufferImageCopy],
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_copy_image_to_buffer)(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
             Some(dst_buffer),
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
         );
     }
@@ -2009,13 +2001,13 @@ impl Device {
         p_color: &vk::ClearColorValue,
         p_ranges: &[vk::ImageSubresourceRange],
     ) {
-        let range_count = p_ranges.len();
+        let range_count = p_ranges.len() as u32;
         (self.fp1_0.cmd_clear_color_image)(
             Some(command_buffer),
             Some(image),
             image_layout,
             p_color,
-            range_count as u32,
+            range_count,
             p_ranges.as_ptr(),
         );
     }
@@ -2027,13 +2019,13 @@ impl Device {
         p_depth_stencil: &vk::ClearDepthStencilValue,
         p_ranges: &[vk::ImageSubresourceRange],
     ) {
-        let range_count = p_ranges.len();
+        let range_count = p_ranges.len() as u32;
         (self.fp1_0.cmd_clear_depth_stencil_image)(
             Some(command_buffer),
             Some(image),
             image_layout,
             p_depth_stencil,
-            range_count as u32,
+            range_count,
             p_ranges.as_ptr(),
         );
     }
@@ -2043,13 +2035,13 @@ impl Device {
         p_attachments: &[vk::ClearAttachment],
         p_rects: &[vk::ClearRect],
     ) {
-        let attachment_count = p_attachments.len();
-        let rect_count = p_rects.len();
+        let attachment_count = p_attachments.len() as u32;
+        let rect_count = p_rects.len() as u32;
         (self.fp1_0.cmd_clear_attachments)(
             Some(command_buffer),
-            attachment_count as u32,
+            attachment_count,
             p_attachments.as_ptr(),
-            rect_count as u32,
+            rect_count,
             p_rects.as_ptr(),
         );
     }
@@ -2062,14 +2054,14 @@ impl Device {
         dst_image_layout: vk::ImageLayout,
         p_regions: &[vk::ImageResolve],
     ) {
-        let region_count = p_regions.len();
+        let region_count = p_regions.len() as u32;
         (self.fp1_0.cmd_resolve_image)(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
             Some(dst_image),
             dst_image_layout,
-            region_count as u32,
+            region_count,
             p_regions.as_ptr(),
         );
     }
@@ -2099,21 +2091,21 @@ impl Device {
         p_buffer_memory_barriers: &[vk::BufferMemoryBarrier],
         p_image_memory_barriers: &[vk::ImageMemoryBarrier],
     ) {
-        let event_count = p_events.len();
-        let memory_barrier_count = p_memory_barriers.len();
-        let buffer_memory_barrier_count = p_buffer_memory_barriers.len();
-        let image_memory_barrier_count = p_image_memory_barriers.len();
+        let event_count = p_events.len() as u32;
+        let memory_barrier_count = p_memory_barriers.len() as u32;
+        let buffer_memory_barrier_count = p_buffer_memory_barriers.len() as u32;
+        let image_memory_barrier_count = p_image_memory_barriers.len() as u32;
         (self.fp1_0.cmd_wait_events)(
             Some(command_buffer),
-            event_count as u32,
+            event_count,
             p_events.as_ptr(),
             src_stage_mask,
             dst_stage_mask,
-            memory_barrier_count as u32,
+            memory_barrier_count,
             p_memory_barriers.as_ptr(),
-            buffer_memory_barrier_count as u32,
+            buffer_memory_barrier_count,
             p_buffer_memory_barriers.as_ptr(),
-            image_memory_barrier_count as u32,
+            image_memory_barrier_count,
             p_image_memory_barriers.as_ptr(),
         );
     }
@@ -2127,19 +2119,19 @@ impl Device {
         p_buffer_memory_barriers: &[vk::BufferMemoryBarrier],
         p_image_memory_barriers: &[vk::ImageMemoryBarrier],
     ) {
-        let memory_barrier_count = p_memory_barriers.len();
-        let buffer_memory_barrier_count = p_buffer_memory_barriers.len();
-        let image_memory_barrier_count = p_image_memory_barriers.len();
+        let memory_barrier_count = p_memory_barriers.len() as u32;
+        let buffer_memory_barrier_count = p_buffer_memory_barriers.len() as u32;
+        let image_memory_barrier_count = p_image_memory_barriers.len() as u32;
         (self.fp1_0.cmd_pipeline_barrier)(
             Some(command_buffer),
             src_stage_mask,
             dst_stage_mask,
             dependency_flags,
-            memory_barrier_count as u32,
+            memory_barrier_count,
             p_memory_barriers.as_ptr(),
-            buffer_memory_barrier_count as u32,
+            buffer_memory_barrier_count,
             p_buffer_memory_barriers.as_ptr(),
-            image_memory_barrier_count as u32,
+            image_memory_barrier_count,
             p_image_memory_barriers.as_ptr(),
         );
     }
@@ -2225,16 +2217,12 @@ impl Device {
         command_buffer: vk::CommandBuffer,
         p_command_buffers: &[vk::CommandBuffer],
     ) {
-        let command_buffer_count = p_command_buffers.len();
-        (self.fp1_0.cmd_execute_commands)(
-            Some(command_buffer),
-            command_buffer_count as u32,
-            p_command_buffers.as_ptr(),
-        );
+        let command_buffer_count = p_command_buffers.len() as u32;
+        (self.fp1_0.cmd_execute_commands)(Some(command_buffer), command_buffer_count, p_command_buffers.as_ptr());
     }
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len();
-        let err = (self.fp1_1.bind_buffer_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp1_1.bind_buffer_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -2242,8 +2230,8 @@ impl Device {
         res
     }
     pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len();
-        let err = (self.fp1_1.bind_image_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp1_1.bind_image_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -2936,15 +2924,15 @@ impl KhrDisplaySwapchain {
         p_allocator: Option<&vk::AllocationCallbacks>,
         p_swapchains: *mut vk::SwapchainKHR,
     ) -> Result<()> {
-        let swapchain_count = p_create_infos.len();
+        let swapchain_count = p_create_infos.len() as u32;
         let v_err = (self.fp1_0.create_shared_swapchains_khr)(
             Some(self.handle),
-            swapchain_count as u32,
+            swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             p_swapchains,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -2955,17 +2943,17 @@ impl KhrDisplaySwapchain {
         p_create_infos: &[vk::SwapchainCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<Vec<vk::SwapchainKHR>> {
-        let swapchain_count = p_create_infos.len();
-        let mut v = Vec::with_capacity(swapchain_count);
-        v.set_len(swapchain_count);
+        let swapchain_count = p_create_infos.len() as u32;
+        let mut v = Vec::with_capacity(swapchain_count as usize);
+        v.set_len(swapchain_count as usize);
         let v_err = (self.fp1_0.create_shared_swapchains_khr)(
             Some(self.handle),
-            swapchain_count as u32,
+            swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -2976,17 +2964,17 @@ impl KhrDisplaySwapchain {
         p_create_infos: &[vk::SwapchainCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<A> {
-        let swapchain_count = p_create_infos.len();
-        assert_eq!(swapchain_count, A::len());
+        let swapchain_count = p_create_infos.len() as u32;
+        assert_eq!(swapchain_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.create_shared_swapchains_khr)(
             Some(self.handle),
-            swapchain_count as u32,
+            swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -2997,17 +2985,17 @@ impl KhrDisplaySwapchain {
         p_create_infos: &[vk::SwapchainCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::SwapchainKHR> {
-        let swapchain_count = p_create_infos.len();
+        let swapchain_count = p_create_infos.len() as u32;
         assert_eq!(swapchain_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.create_shared_swapchains_khr)(
             Some(self.handle),
-            swapchain_count as u32,
+            swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -4454,13 +4442,13 @@ impl KhrPushDescriptor {
         set: u32,
         p_descriptor_writes: &[vk::WriteDescriptorSet],
     ) {
-        let descriptor_write_count = p_descriptor_writes.len();
+        let descriptor_write_count = p_descriptor_writes.len() as u32;
         (self.fp1_0.cmd_push_descriptor_set_khr)(
             Some(command_buffer),
             pipeline_bind_point,
             Some(layout),
             set,
-            descriptor_write_count as u32,
+            descriptor_write_count,
             p_descriptor_writes.as_ptr(),
         );
     }
@@ -4716,11 +4704,11 @@ impl NvxDeviceGeneratedCommands {
         pp_object_table_entries: *const *const vk::ObjectTableEntryNVX,
         p_object_indices: &[u32],
     ) -> Result<()> {
-        let object_count = p_object_indices.len();
+        let object_count = p_object_indices.len() as u32;
         let err = (self.fp1_0.register_objects_nvx)(
             Some(self.handle),
             Some(object_table),
-            object_count as u32,
+            object_count,
             pp_object_table_entries,
             p_object_indices.as_ptr(),
         );
@@ -4736,12 +4724,12 @@ impl NvxDeviceGeneratedCommands {
         p_object_entry_types: &[vk::ObjectEntryTypeNVX],
         p_object_indices: &[u32],
     ) -> Result<()> {
-        let object_count = p_object_entry_types.len();
-        assert_eq!(object_count, p_object_indices.len());
+        let object_count = p_object_entry_types.len() as u32;
+        assert_eq!(object_count, p_object_indices.len() as u32);
         let err = (self.fp1_0.unregister_objects_nvx)(
             Some(self.handle),
             Some(object_table),
-            object_count as u32,
+            object_count,
             p_object_entry_types.as_ptr(),
             p_object_indices.as_ptr(),
         );
@@ -4795,11 +4783,11 @@ impl NvClipSpaceWScaling {
         first_viewport: u32,
         p_viewport_w_scalings: &[vk::ViewportWScalingNV],
     ) {
-        let viewport_count = p_viewport_w_scalings.len();
+        let viewport_count = p_viewport_w_scalings.len() as u32;
         (self.fp1_0.cmd_set_viewport_w_scaling_nv)(
             Some(command_buffer),
             first_viewport,
-            viewport_count as u32,
+            viewport_count,
             p_viewport_w_scalings.as_ptr(),
         );
     }
@@ -5148,11 +5136,11 @@ impl ExtDiscardRectangles {
         first_discard_rectangle: u32,
         p_discard_rectangles: &[vk::Rect2D],
     ) {
-        let discard_rectangle_count = p_discard_rectangles.len();
+        let discard_rectangle_count = p_discard_rectangles.len() as u32;
         (self.fp1_0.cmd_set_discard_rectangle_ext)(
             Some(command_buffer),
             first_discard_rectangle,
-            discard_rectangle_count as u32,
+            discard_rectangle_count,
             p_discard_rectangles.as_ptr(),
         );
     }
@@ -5187,11 +5175,11 @@ impl ExtHdrMetadata {
         CStr::from_bytes_with_nul(b"VK_EXT_hdr_metadata\0").unwrap()
     }
     pub unsafe fn set_hdr_metadata_ext(&self, p_swapchains: &[vk::SwapchainKHR], p_metadata: &[vk::HdrMetadataEXT]) {
-        let swapchain_count = p_swapchains.len();
-        assert_eq!(swapchain_count, p_metadata.len());
+        let swapchain_count = p_swapchains.len() as u32;
+        assert_eq!(swapchain_count, p_metadata.len() as u32);
         (self.fp1_0.set_hdr_metadata_ext)(
             Some(self.handle),
-            swapchain_count as u32,
+            swapchain_count,
             p_swapchains.as_ptr(),
             p_metadata.as_ptr(),
         );
@@ -6112,8 +6100,8 @@ impl KhrBindMemory2 {
         CStr::from_bytes_with_nul(b"VK_KHR_bind_memory2\0").unwrap()
     }
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len();
-        let err = (self.fp1_0.bind_buffer_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp1_0.bind_buffer_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -6121,8 +6109,8 @@ impl KhrBindMemory2 {
         res
     }
     pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len();
-        let err = (self.fp1_0.bind_image_memory2)(Some(self.handle), bind_info_count as u32, p_bind_infos.as_ptr());
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp1_0.bind_image_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -6193,11 +6181,11 @@ impl ExtValidationCache {
         dst_cache: vk::ValidationCacheEXT,
         p_src_caches: &[vk::ValidationCacheEXT],
     ) -> Result<()> {
-        let src_cache_count = p_src_caches.len();
+        let src_cache_count = p_src_caches.len() as u32;
         let err = (self.fp1_0.merge_validation_caches_ext)(
             Some(self.handle),
             Some(dst_cache),
-            src_cache_count as u32,
+            src_cache_count,
             p_src_caches.as_ptr(),
         );
         let res = match err {
@@ -6264,11 +6252,11 @@ impl NvShadingRateImage {
         first_viewport: u32,
         p_shading_rate_palettes: &[vk::ShadingRatePaletteNV],
     ) {
-        let viewport_count = p_shading_rate_palettes.len();
+        let viewport_count = p_shading_rate_palettes.len() as u32;
         (self.fp1_0.cmd_set_viewport_shading_rate_palette_nv)(
             Some(command_buffer),
             first_viewport,
-            viewport_count as u32,
+            viewport_count,
             p_shading_rate_palettes.as_ptr(),
         );
     }
@@ -6278,11 +6266,11 @@ impl NvShadingRateImage {
         sample_order_type: vk::CoarseSampleOrderTypeNV,
         p_custom_sample_orders: &[vk::CoarseSampleOrderCustomNV],
     ) {
-        let custom_sample_order_count = p_custom_sample_orders.len();
+        let custom_sample_order_count = p_custom_sample_orders.len() as u32;
         (self.fp1_0.cmd_set_coarse_sample_order_nv)(
             Some(command_buffer),
             sample_order_type,
-            custom_sample_order_count as u32,
+            custom_sample_order_count,
             p_custom_sample_orders.as_ptr(),
         );
     }
@@ -6371,10 +6359,10 @@ impl NvxRaytracing {
         &self,
         p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNVX],
     ) -> Result<()> {
-        let bind_info_count = p_bind_infos.len();
+        let bind_info_count = p_bind_infos.len() as u32;
         let err = (self.fp1_0.bind_acceleration_structure_memory_nvx)(
             Some(self.handle),
-            bind_info_count as u32,
+            bind_info_count,
             p_bind_infos.as_ptr(),
         );
         let res = match err {
@@ -6398,14 +6386,14 @@ impl NvxRaytracing {
         scratch: vk::Buffer,
         scratch_offset: vk::DeviceSize,
     ) {
-        let geometry_count = p_geometries.len();
+        let geometry_count = p_geometries.len() as u32;
         (self.fp1_0.cmd_build_acceleration_structure_nvx)(
             Some(command_buffer),
             ty,
             instance_count,
             instance_data,
             instance_offset,
-            geometry_count as u32,
+            geometry_count,
             p_geometries.as_ptr(),
             flags,
             if update { vk::TRUE } else { vk::FALSE },
@@ -6459,16 +6447,16 @@ impl NvxRaytracing {
         p_allocator: Option<&vk::AllocationCallbacks>,
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
         };
@@ -6480,18 +6468,18 @@ impl NvxRaytracing {
         p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<Vec<vk::Pipeline>> {
-        let create_info_count = p_create_infos.len();
-        let mut v = Vec::with_capacity(create_info_count);
-        v.set_len(create_info_count);
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = Vec::with_capacity(create_info_count as usize);
+        v.set_len(create_info_count as usize);
         let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -6503,18 +6491,18 @@ impl NvxRaytracing {
         p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<A> {
-        let create_info_count = p_create_infos.len();
-        assert_eq!(create_info_count, A::len());
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
         let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -6526,18 +6514,18 @@ impl NvxRaytracing {
         p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
-        let create_info_count = p_create_infos.len();
+        let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
         let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
             Some(self.handle),
             pipeline_cache,
-            create_info_count as u32,
+            create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
             &mut v,
         );
-;        let res = match v_err {
+        let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         };
@@ -6907,11 +6895,11 @@ impl NvScissorExclusive {
         first_exclusive_scissor: u32,
         p_exclusive_scissors: &[vk::Rect2D],
     ) {
-        let exclusive_scissor_count = p_exclusive_scissors.len();
+        let exclusive_scissor_count = p_exclusive_scissors.len() as u32;
         (self.fp1_0.cmd_set_exclusive_scissor_nv)(
             Some(command_buffer),
             first_exclusive_scissor,
-            exclusive_scissor_count as u32,
+            exclusive_scissor_count,
             p_exclusive_scissors.as_ptr(),
         );
     }
