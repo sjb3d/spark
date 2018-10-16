@@ -1858,6 +1858,12 @@ impl AccessFlags {
     pub const MEMORY_READ: Self = AccessFlags(0x8000);
     /// Controls coherency of memory writes
     pub const MEMORY_WRITE: Self = AccessFlags(0x10000);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = AccessFlags(0x2000000);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = AccessFlags(0x4000000);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = AccessFlags(0x8000000);
     /// read access flag for reading conditional rendering predicate
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_READ_EXT: Self = AccessFlags(0x100000);
@@ -1886,13 +1892,13 @@ impl AccessFlags {
         AccessFlags(0)
     }
     pub fn all() -> Self {
-        AccessFlags(0x1ffffff)
+        AccessFlags(0xfffffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x1ffffff
+        self.0 == 0xfffffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1956,6 +1962,9 @@ impl fmt::Display for AccessFlags {
                 (0x4000, "HOST_WRITE"),
                 (0x8000, "MEMORY_READ"),
                 (0x10000, "MEMORY_WRITE"),
+                (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
+                (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
+                (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
                 (0x100000, "CONDITIONAL_RENDERING_READ_EXT"),
                 (0x20000, "COMMAND_PROCESS_READ_NVX"),
                 (0x40000, "COMMAND_PROCESS_WRITE_NVX"),
@@ -1991,6 +2000,10 @@ impl BufferUsageFlags {
     pub const VERTEX_BUFFER: Self = BufferUsageFlags(0x80);
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
     pub const INDIRECT_BUFFER: Self = BufferUsageFlags(0x100);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = BufferUsageFlags(0x800);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = BufferUsageFlags(0x1000);
     /// Specifies the buffer can be used as predicate in conditional rendering
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = BufferUsageFlags(0x200);
@@ -2007,13 +2020,13 @@ impl BufferUsageFlags {
         BufferUsageFlags(0)
     }
     pub fn all() -> Self {
-        BufferUsageFlags(0x7ff)
+        BufferUsageFlags(0x1fff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x7ff
+        self.0 == 0x1fff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2069,6 +2082,8 @@ impl fmt::Display for BufferUsageFlags {
                 (0x40, "INDEX_BUFFER"),
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
+                (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
+                (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "RAYTRACING_NVX"),
             ],
@@ -4156,6 +4171,8 @@ impl PipelineStageFlags {
     pub const ALL_GRAPHICS: Self = PipelineStageFlags(0x8000);
     /// All stages supported on the queue
     pub const ALL_COMMANDS: Self = PipelineStageFlags(0x10000);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_EXT: Self = PipelineStageFlags(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = PipelineStageFlags(0x40000);
@@ -4182,13 +4199,13 @@ impl PipelineStageFlags {
         PipelineStageFlags(0)
     }
     pub fn all() -> Self {
-        PipelineStageFlags(0xffffff)
+        PipelineStageFlags(0x1ffffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0xffffff
+        self.0 == 0x1ffffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4252,6 +4269,7 @@ impl fmt::Display for PipelineStageFlags {
                 (0x4000, "HOST"),
                 (0x8000, "ALL_GRAPHICS"),
                 (0x10000, "ALL_COMMANDS"),
+                (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x20000, "COMMAND_PROCESS_NVX"),
                 (0x400000, "SHADING_RATE_IMAGE_NV"),
@@ -8595,6 +8613,73 @@ impl fmt::Display for ConditionalRenderingFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineRasterizationStateStreamCreateFlagsEXT(u32);
+impl PipelineRasterizationStateStreamCreateFlagsEXT {}
+impl default::Default for PipelineRasterizationStateStreamCreateFlagsEXT {
+    fn default() -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(0)
+    }
+}
+impl PipelineRasterizationStateStreamCreateFlagsEXT {
+    pub fn empty() -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(0)
+    }
+    pub fn all() -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineRasterizationStateStreamCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineRasterizationStateStreamCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineRasterizationStateStreamCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(ptr::NonNull<c_void>);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -10484,6 +10569,8 @@ impl QueryType {
     /// Optional
     pub const PIPELINE_STATISTICS: Self = QueryType(1);
     pub const TIMESTAMP: Self = QueryType(2);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = QueryType(1000028004);
     /// Added by extension VK_NVX_raytracing.
     pub const COMPACTED_SIZE_NVX: Self = QueryType(1000165000);
 }
@@ -10498,6 +10585,7 @@ impl fmt::Display for QueryType {
             0 => Some(&"OCCLUSION"),
             1 => Some(&"PIPELINE_STATISTICS"),
             2 => Some(&"TIMESTAMP"),
+            1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000165000 => Some(&"COMPACTED_SIZE_NVX"),
             _ => None,
         };
@@ -10857,6 +10945,12 @@ impl StructureType {
     pub const DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV: Self = StructureType(1000026001);
     /// Added by extension VK_NV_dedicated_allocation.
     pub const DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000026002);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT: Self = StructureType(1000028000);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT: Self = StructureType(1000028001);
+    /// Added by extension VK_EXT_transform_feedback.
+    pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = StructureType(1000028002);
     /// Added by extension VK_AMD_texture_gather_bias_lod.
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = StructureType(1000041000);
     /// Added by extension VK_NV_corner_sampled_image.
@@ -11195,6 +11289,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
     /// Added by extension VK_KHR_shader_atomic_int64.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = StructureType(1000180000);
+    /// Added by extension VK_EXT_calibrated_timestamps.
+    pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = StructureType(1000184000);
     /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = StructureType(1000185000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
@@ -11225,6 +11321,8 @@ impl StructureType {
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
     /// Added by extension VK_KHR_vulkan_memory_model.
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
+    /// Added by extension VK_EXT_pci_bus_info.
+    pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = StructureType(1000212000);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
     pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
 }
@@ -11376,6 +11474,9 @@ impl fmt::Display for StructureType {
             1000026000 => Some(&"DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV"),
             1000026001 => Some(&"DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV"),
             1000026002 => Some(&"DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV"),
+            1000028000 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT"),
+            1000028001 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT"),
+            1000028002 => Some(&"PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
             1000050000 => Some(&"PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
             1000056000 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
@@ -11513,6 +11614,7 @@ impl fmt::Display for StructureType {
             1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
             1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
             1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
+            1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_EXT"),
             1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
             1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
             1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
@@ -11528,6 +11630,7 @@ impl fmt::Display for StructureType {
             1000206000 => Some(&"CHECKPOINT_DATA_NV"),
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
+            1000212000 => Some(&"PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT"),
             1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
             _ => None,
         };
@@ -12152,6 +12255,36 @@ impl fmt::Display for QueueGlobalPriorityEXT {
             256 => Some(&"MEDIUM"),
             512 => Some(&"HIGH"),
             1024 => Some(&"REALTIME"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct TimeDomainEXT(i32);
+impl TimeDomainEXT {
+    pub const DEVICE: Self = TimeDomainEXT(0);
+    pub const CLOCK_MONOTONIC: Self = TimeDomainEXT(1);
+    pub const CLOCK_MONOTONIC_RAW: Self = TimeDomainEXT(2);
+    pub const QUERY_PERFORMANCE_COUNTER: Self = TimeDomainEXT(3);
+}
+impl default::Default for TimeDomainEXT {
+    fn default() -> Self {
+        TimeDomainEXT(0)
+    }
+}
+impl fmt::Display for TimeDomainEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEVICE"),
+            1 => Some(&"CLOCK_MONOTONIC"),
+            2 => Some(&"CLOCK_MONOTONIC_RAW"),
+            3 => Some(&"QUERY_PERFORMANCE_COUNTER"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12984,7 +13117,7 @@ pub type FnDebugReportCallbackEXT = unsafe extern "system" fn(
 pub type FnDebugUtilsMessengerCallbackEXT =
     unsafe extern "system" fn(
         message_severity: DebugUtilsMessageSeverityFlagsEXT,
-        message_type: DebugUtilsMessageTypeFlagsEXT,
+        message_types: DebugUtilsMessageTypeFlagsEXT,
         p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
         p_user_data: *mut c_void,
     ) -> Bool32;
@@ -19439,7 +19572,7 @@ impl fmt::Debug for ConformanceVersionKHR {
 pub struct PhysicalDeviceDriverPropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub driver_id: u32,
+    pub driver_id: DriverIdKHR,
     pub driver_name: [c_char; MAX_DRIVER_NAME_SIZE_KHR],
     pub driver_info: [c_char; MAX_DRIVER_INFO_SIZE_KHR],
     pub conformance_version: ConformanceVersionKHR,
@@ -19449,7 +19582,7 @@ impl default::Default for PhysicalDeviceDriverPropertiesKHR {
         PhysicalDeviceDriverPropertiesKHR {
             s_type: StructureType::PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            driver_id: u32::default(),
+            driver_id: DriverIdKHR::default(),
             driver_name: [c_char::default(); MAX_DRIVER_NAME_SIZE_KHR],
             driver_info: [c_char::default(); MAX_DRIVER_INFO_SIZE_KHR],
             conformance_version: ConformanceVersionKHR::default(),
@@ -24132,6 +24265,31 @@ impl fmt::Debug for PhysicalDeviceConservativeRasterizationPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct CalibratedTimestampInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub time_domain: TimeDomainEXT,
+}
+impl default::Default for CalibratedTimestampInfoEXT {
+    fn default() -> Self {
+        CalibratedTimestampInfoEXT {
+            s_type: StructureType::CALIBRATED_TIMESTAMP_INFO_EXT,
+            p_next: ptr::null(),
+            time_domain: TimeDomainEXT::default(),
+        }
+    }
+}
+impl fmt::Debug for CalibratedTimestampInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CalibratedTimestampInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("time_domain", &self.time_domain)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderCorePropertiesAMD {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -24937,6 +25095,40 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pci_domain: u16,
+    pub pci_bus: u8,
+    pub pci_device: u8,
+    pub pci_function: u8,
+}
+impl default::Default for PhysicalDevicePCIBusInfoPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDevicePCIBusInfoPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            pci_domain: u16::default(),
+            pci_bus: u8::default(),
+            pci_device: u8::default(),
+            pci_function: u8::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePCIBusInfoPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePCIBusInfoPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pci_domain", &self.pci_domain)
+            .field("pci_bus", &self.pci_bus)
+            .field("pci_device", &self.pci_device)
+            .field("pci_function", &self.pci_function)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ImportAndroidHardwareBufferInfoANDROID {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -25391,6 +25583,126 @@ impl fmt::Debug for PhysicalDeviceASTCDecodeFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("decode_mode_shared_exponent", &self.decode_mode_shared_exponent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTransformFeedbackFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub transform_feedback: Bool32,
+    pub geometry_streams: Bool32,
+}
+impl default::Default for PhysicalDeviceTransformFeedbackFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceTransformFeedbackFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            transform_feedback: Bool32::default(),
+            geometry_streams: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTransformFeedbackFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTransformFeedbackFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("transform_feedback", &self.transform_feedback)
+            .field("geometry_streams", &self.geometry_streams)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTransformFeedbackPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_transform_feedback_streams: u32,
+    pub max_transform_feedback_buffers: u32,
+    pub max_transform_feedback_buffer_size: DeviceSize,
+    pub max_transform_feedback_stream_data_size: u32,
+    pub max_transform_feedback_buffer_data_size: u32,
+    pub max_transform_feedback_buffer_data_stride: u32,
+    pub transform_feedback_queries: Bool32,
+    pub transform_feedback_streams_lines_triangles: Bool32,
+    pub transform_feedback_rasterization_stream_select: Bool32,
+    pub transform_feedback_draw: Bool32,
+}
+impl default::Default for PhysicalDeviceTransformFeedbackPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceTransformFeedbackPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_transform_feedback_streams: u32::default(),
+            max_transform_feedback_buffers: u32::default(),
+            max_transform_feedback_buffer_size: DeviceSize::default(),
+            max_transform_feedback_stream_data_size: u32::default(),
+            max_transform_feedback_buffer_data_size: u32::default(),
+            max_transform_feedback_buffer_data_stride: u32::default(),
+            transform_feedback_queries: Bool32::default(),
+            transform_feedback_streams_lines_triangles: Bool32::default(),
+            transform_feedback_rasterization_stream_select: Bool32::default(),
+            transform_feedback_draw: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTransformFeedbackPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTransformFeedbackPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_transform_feedback_streams", &self.max_transform_feedback_streams)
+            .field("max_transform_feedback_buffers", &self.max_transform_feedback_buffers)
+            .field(
+                "max_transform_feedback_buffer_size",
+                &self.max_transform_feedback_buffer_size,
+            ).field(
+                "max_transform_feedback_stream_data_size",
+                &self.max_transform_feedback_stream_data_size,
+            ).field(
+                "max_transform_feedback_buffer_data_size",
+                &self.max_transform_feedback_buffer_data_size,
+            ).field(
+                "max_transform_feedback_buffer_data_stride",
+                &self.max_transform_feedback_buffer_data_stride,
+            ).field("transform_feedback_queries", &self.transform_feedback_queries)
+            .field(
+                "transform_feedback_streams_lines_triangles",
+                &self.transform_feedback_streams_lines_triangles,
+            ).field(
+                "transform_feedback_rasterization_stream_select",
+                &self.transform_feedback_rasterization_stream_select,
+            ).field("transform_feedback_draw", &self.transform_feedback_draw)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRasterizationStateStreamCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineRasterizationStateStreamCreateFlagsEXT,
+    pub rasterization_stream: u32,
+}
+impl default::Default for PipelineRasterizationStateStreamCreateInfoEXT {
+    fn default() -> Self {
+        PipelineRasterizationStateStreamCreateInfoEXT {
+            s_type: StructureType::PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: PipelineRasterizationStateStreamCreateFlagsEXT::default(),
+            rasterization_stream: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRasterizationStateStreamCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRasterizationStateStreamCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("rasterization_stream", &self.rasterization_stream)
             .finish()
     }
 }
@@ -26339,6 +26651,9 @@ pub struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub drm_format_modifier: u64,
+    pub sharing_mode: SharingMode,
+    pub queue_family_index_count: u32,
+    pub p_queue_family_indices: *const u32,
 }
 impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
     fn default() -> Self {
@@ -26346,6 +26661,9 @@ impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
             p_next: ptr::null(),
             drm_format_modifier: u64::default(),
+            sharing_mode: SharingMode::default(),
+            queue_family_index_count: u32::default(),
+            p_queue_family_indices: ptr::null(),
         }
     }
 }
@@ -26355,6 +26673,9 @@ impl fmt::Debug for PhysicalDeviceImageDrmFormatModifierInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("drm_format_modifier", &self.drm_format_modifier)
+            .field("sharing_mode", &self.sharing_mode)
+            .field("queue_family_index_count", &self.queue_family_index_count)
+            .field("p_queue_family_indices", &self.p_queue_family_indices)
             .finish()
     }
 }
@@ -31548,6 +31869,185 @@ impl ExtDebugMarkerFn1_0 {
         (block, all_loaded)
     }
 }
+type FnCmdBindTransformFeedbackBuffersEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_binding: u32,
+    binding_count: u32,
+    p_buffers: *const Buffer,
+    p_offsets: *const DeviceSize,
+    p_sizes: *const DeviceSize,
+) -> c_void;
+type FnCmdBeginTransformFeedbackEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_counter_buffer: u32,
+    counter_buffer_count: u32,
+    p_counter_buffers: *const Buffer,
+    p_counter_buffer_offsets: *const DeviceSize,
+) -> c_void;
+type FnCmdEndTransformFeedbackEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_counter_buffer: u32,
+    counter_buffer_count: u32,
+    p_counter_buffers: *const Buffer,
+    p_counter_buffer_offsets: *const DeviceSize,
+) -> c_void;
+type FnCmdBeginQueryIndexedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+    flags: QueryControlFlags,
+    index: u32,
+) -> c_void;
+type FnCmdEndQueryIndexedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+    index: u32,
+) -> c_void;
+type FnCmdDrawIndirectByteCountEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    instance_count: u32,
+    first_instance: u32,
+    counter_buffer: Option<Buffer>,
+    counter_buffer_offset: DeviceSize,
+    counter_offset: u32,
+    vertex_stride: u32,
+) -> c_void;
+pub struct ExtTransformFeedbackFn1_0 {
+    pub cmd_bind_transform_feedback_buffers_ext: FnCmdBindTransformFeedbackBuffersEXT,
+    pub cmd_begin_transform_feedback_ext: FnCmdBeginTransformFeedbackEXT,
+    pub cmd_end_transform_feedback_ext: FnCmdEndTransformFeedbackEXT,
+    pub cmd_begin_query_indexed_ext: FnCmdBeginQueryIndexedEXT,
+    pub cmd_end_query_indexed_ext: FnCmdEndQueryIndexedEXT,
+    pub cmd_draw_indirect_byte_count_ext: FnCmdDrawIndirectByteCountEXT,
+}
+impl ExtTransformFeedbackFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtTransformFeedbackFn1_0 {
+            cmd_bind_transform_feedback_buffers_ext: unsafe {
+                extern "system" fn cmd_bind_transform_feedback_buffers_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: u32,
+                    _: u32,
+                    _: *const Buffer,
+                    _: *const DeviceSize,
+                    _: *const DeviceSize,
+                ) -> c_void {
+                    panic!("fn cmd_bind_transform_feedback_buffers_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdBindTransformFeedbackBuffersEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_bind_transform_feedback_buffers_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            cmd_begin_transform_feedback_ext: unsafe {
+                extern "system" fn cmd_begin_transform_feedback_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: u32,
+                    _: u32,
+                    _: *const Buffer,
+                    _: *const DeviceSize,
+                ) -> c_void {
+                    panic!("fn cmd_begin_transform_feedback_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginTransformFeedbackEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_begin_transform_feedback_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            cmd_end_transform_feedback_ext: unsafe {
+                extern "system" fn cmd_end_transform_feedback_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: u32,
+                    _: u32,
+                    _: *const Buffer,
+                    _: *const DeviceSize,
+                ) -> c_void {
+                    panic!("fn cmd_end_transform_feedback_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdEndTransformFeedbackEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_end_transform_feedback_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            cmd_begin_query_indexed_ext: unsafe {
+                extern "system" fn cmd_begin_query_indexed_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: Option<QueryPool>,
+                    _: u32,
+                    _: QueryControlFlags,
+                    _: u32,
+                ) -> c_void {
+                    panic!("fn cmd_begin_query_indexed_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQueryIndexedEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_begin_query_indexed_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            cmd_end_query_indexed_ext: unsafe {
+                extern "system" fn cmd_end_query_indexed_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: Option<QueryPool>,
+                    _: u32,
+                    _: u32,
+                ) -> c_void {
+                    panic!("fn cmd_end_query_indexed_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQueryIndexedEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_end_query_indexed_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            cmd_draw_indirect_byte_count_ext: unsafe {
+                extern "system" fn cmd_draw_indirect_byte_count_ext_fallback(
+                    _: Option<CommandBuffer>,
+                    _: u32,
+                    _: u32,
+                    _: Option<Buffer>,
+                    _: DeviceSize,
+                    _: u32,
+                    _: u32,
+                ) -> c_void {
+                    panic!("fn cmd_draw_indirect_byte_count_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectByteCountEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(cmd_draw_indirect_byte_count_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
 type FnCmdDrawIndirectCountAMD = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
@@ -34340,6 +34840,43 @@ impl KhrBindMemory2Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetImageDrmFormatModifierPropertiesEXT =
+    unsafe extern "system" fn(
+        device: Option<Device>,
+        image: Option<Image>,
+        p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
+    ) -> Result;
+pub struct ExtImageDrmFormatModifierFn1_0 {
+    pub get_image_drm_format_modifier_properties_ext: FnGetImageDrmFormatModifierPropertiesEXT,
+}
+impl ExtImageDrmFormatModifierFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtImageDrmFormatModifierFn1_0 {
+            get_image_drm_format_modifier_properties_ext: unsafe {
+                extern "system" fn get_image_drm_format_modifier_properties_ext_fallback(
+                    _: Option<Device>,
+                    _: Option<Image>,
+                    _: *mut ImageDrmFormatModifierPropertiesEXT,
+                ) -> Result {
+                    panic!("fn get_image_drm_format_modifier_properties_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageDrmFormatModifierPropertiesEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_image_drm_format_modifier_properties_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
 type FnCreateValidationCacheEXT = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const ValidationCacheCreateInfoEXT,
@@ -35093,6 +35630,70 @@ impl AmdBufferMarkerFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(cmd_write_buffer_marker_amd_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT =
+    unsafe extern "system" fn(
+        physical_device: Option<PhysicalDevice>,
+        p_time_domain_count: *mut u32,
+        p_time_domains: *mut TimeDomainEXT,
+    ) -> Result;
+type FnGetCalibratedTimestampsEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    timestamp_count: u32,
+    p_timestamp_infos: *const CalibratedTimestampInfoEXT,
+    p_timestamps: *mut u64,
+    p_max_deviation: *mut u64,
+) -> Result;
+pub struct ExtCalibratedTimestampsFn1_0 {
+    pub get_physical_device_calibrateable_time_domains_ext: FnGetPhysicalDeviceCalibrateableTimeDomainsEXT,
+    pub get_calibrated_timestamps_ext: FnGetCalibratedTimestampsEXT,
+}
+impl ExtCalibratedTimestampsFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtCalibratedTimestampsFn1_0 {
+            get_physical_device_calibrateable_time_domains_ext: unsafe {
+                extern "system" fn get_physical_device_calibrateable_time_domains_ext_fallback(
+                    _: Option<PhysicalDevice>,
+                    _: *mut u32,
+                    _: *mut TimeDomainEXT,
+                ) -> Result {
+                    panic!("fn get_physical_device_calibrateable_time_domains_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_physical_device_calibrateable_time_domains_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            get_calibrated_timestamps_ext: unsafe {
+                extern "system" fn get_calibrated_timestamps_ext_fallback(
+                    _: Option<Device>,
+                    _: u32,
+                    _: *const CalibratedTimestampInfoEXT,
+                    _: *mut u64,
+                    _: *mut u64,
+                ) -> Result {
+                    panic!("fn get_calibrated_timestamps_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_calibrated_timestamps_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

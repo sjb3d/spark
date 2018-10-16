@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 87
+//! Generated from vk.xml with `VK_HEADER_VERSION` 88
 
 #[macro_use]
 extern crate lazy_static;
@@ -3503,6 +3503,141 @@ impl ExtDebugMarker {
         (self.fp1_0.cmd_debug_marker_insert_ext)(Some(command_buffer), p_marker_info);
     }
 }
+/// Loader for the `VK_EXT_transform_feedback` device extension
+pub struct ExtTransformFeedback {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtTransformFeedbackFn1_0,
+}
+impl ExtTransformFeedback {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtTransformFeedbackFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_transform_feedback\0").unwrap()
+    }
+    pub unsafe fn cmd_bind_transform_feedback_buffers_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_binding: u32,
+        p_buffers: &[vk::Buffer],
+        p_offsets: &[vk::DeviceSize],
+        p_sizes: Option<&[vk::DeviceSize]>,
+    ) {
+        let binding_count = p_buffers.len() as u32;
+        assert_eq!(binding_count, p_offsets.len() as u32);
+        if let Some(s) = p_sizes {
+            assert_eq!(binding_count, s.len() as u32);
+        }
+        (self.fp1_0.cmd_bind_transform_feedback_buffers_ext)(
+            Some(command_buffer),
+            first_binding,
+            binding_count,
+            p_buffers.as_ptr(),
+            p_offsets.as_ptr(),
+            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
+        );
+    }
+    pub unsafe fn cmd_begin_transform_feedback_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_counter_buffer: u32,
+        counter_buffer_count: u32,
+        p_counter_buffers: Option<&[vk::Buffer]>,
+        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
+    ) {
+        if let Some(s) = p_counter_buffers {
+            assert_eq!(counter_buffer_count, s.len() as u32);
+        }
+        if let Some(s) = p_counter_buffer_offsets {
+            assert_eq!(counter_buffer_count, s.len() as u32);
+        }
+        (self.fp1_0.cmd_begin_transform_feedback_ext)(
+            Some(command_buffer),
+            first_counter_buffer,
+            counter_buffer_count,
+            p_counter_buffers.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+        );
+    }
+    pub unsafe fn cmd_end_transform_feedback_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_counter_buffer: u32,
+        counter_buffer_count: u32,
+        p_counter_buffers: Option<&[vk::Buffer]>,
+        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
+    ) {
+        if let Some(s) = p_counter_buffers {
+            assert_eq!(counter_buffer_count, s.len() as u32);
+        }
+        if let Some(s) = p_counter_buffer_offsets {
+            assert_eq!(counter_buffer_count, s.len() as u32);
+        }
+        (self.fp1_0.cmd_end_transform_feedback_ext)(
+            Some(command_buffer),
+            first_counter_buffer,
+            counter_buffer_count,
+            p_counter_buffers.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+        );
+    }
+    pub unsafe fn cmd_begin_query_indexed_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        query_pool: vk::QueryPool,
+        query: u32,
+        flags: vk::QueryControlFlags,
+        index: u32,
+    ) {
+        (self.fp1_0.cmd_begin_query_indexed_ext)(Some(command_buffer), Some(query_pool), query, flags, index);
+    }
+    pub unsafe fn cmd_end_query_indexed_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        query_pool: vk::QueryPool,
+        query: u32,
+        index: u32,
+    ) {
+        (self.fp1_0.cmd_end_query_indexed_ext)(Some(command_buffer), Some(query_pool), query, index);
+    }
+    pub unsafe fn cmd_draw_indirect_byte_count_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        instance_count: u32,
+        first_instance: u32,
+        counter_buffer: vk::Buffer,
+        counter_buffer_offset: vk::DeviceSize,
+        counter_offset: u32,
+        vertex_stride: u32,
+    ) {
+        (self.fp1_0.cmd_draw_indirect_byte_count_ext)(
+            Some(command_buffer),
+            instance_count,
+            first_instance,
+            Some(counter_buffer),
+            counter_buffer_offset,
+            counter_offset,
+            vertex_stride,
+        );
+    }
+}
 /// Loader for the `VK_AMD_draw_indirect_count` device extension
 pub struct AmdDrawIndirectCount {
     pub version: vk::Version,
@@ -6120,6 +6255,49 @@ impl KhrBindMemory2 {
         res
     }
 }
+/// Loader for the `VK_EXT_image_drm_format_modifier` device extension
+pub struct ExtImageDrmFormatModifier {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtImageDrmFormatModifierFn1_0,
+}
+impl ExtImageDrmFormatModifier {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtImageDrmFormatModifierFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_image_drm_format_modifier\0").unwrap()
+    }
+    pub unsafe fn get_image_drm_format_modifier_properties_ext(
+        &self,
+        image: vk::Image,
+        p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
+    ) -> Result<vk::Result> {
+        let err =
+            (self.fp1_0.get_image_drm_format_modifier_properties_ext)(Some(self.handle), Some(image), p_properties);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(err),
+            _ => Err(err),
+        };
+        res
+    }
+}
 /// Loader for the `VK_EXT_validation_cache` device extension
 pub struct ExtValidationCache {
     pub version: vk::Version,
@@ -6797,6 +6975,145 @@ impl AmdBufferMarker {
             dst_offset,
             marker,
         );
+    }
+}
+/// Loader for the `VK_EXT_calibrated_timestamps` device extension
+pub struct ExtCalibratedTimestamps {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtCalibratedTimestampsFn1_0,
+}
+impl ExtCalibratedTimestamps {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtCalibratedTimestampsFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_calibrated_timestamps\0").unwrap()
+    }
+    pub unsafe fn get_physical_device_calibrateable_time_domains_ext_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::TimeDomainEXT>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp1_0.get_physical_device_calibrateable_time_domains_ext)(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp1_0.get_physical_device_calibrateable_time_domains_ext)(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamps: *mut u64,
+        p_max_deviation: &mut u64,
+    ) -> Result<()> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            p_timestamps,
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_to_vec(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<Vec<u64>> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let mut v = Vec::with_capacity(timestamp_count as usize);
+        v.set_len(timestamp_count as usize);
+        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_array<A: Array<Item = u64>>(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<A> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        assert_eq!(timestamp_count, A::len() as u32);
+        let mut v: A = mem::uninitialized();
+        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_single(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<u64> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        assert_eq!(timestamp_count, 1);
+        let mut v = mem::uninitialized();
+        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            &mut v,
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
     }
 }
 /// Loader for the `VK_NV_mesh_shader` device extension

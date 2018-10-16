@@ -8957,6 +8957,42 @@ impl<'a> Deref for PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::CalibratedTimestampInfoEXT {
+    type Type = CalibratedTimestampInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        CalibratedTimestampInfoEXTBuilder::new()
+    }
+}
+pub struct CalibratedTimestampInfoEXTBuilder<'a> {
+    inner: vk::CalibratedTimestampInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CalibratedTimestampInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_time_domain(mut self, time_domain: vk::TimeDomainEXT) -> Self {
+        self.inner.time_domain = time_domain;
+        self
+    }
+}
+impl<'a> Deref for CalibratedTimestampInfoEXTBuilder<'a> {
+    type Target = vk::CalibratedTimestampInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PipelineRasterizationConservativeStateCreateInfoEXT {
     type Type = PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10204,6 +10240,86 @@ impl<'a> Deref for PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceTransformFeedbackFeaturesEXT {
+    type Type = PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceTransformFeedbackFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceTransformFeedbackFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_transform_feedback(mut self, transform_feedback: bool) -> Self {
+        self.inner.transform_feedback = if transform_feedback { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn set_geometry_streams(mut self, geometry_streams: bool) -> Self {
+        self.inner.geometry_streams = if geometry_streams { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceTransformFeedbackFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineRasterizationStateStreamCreateInfoEXT {
+    type Type = PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PipelineRasterizationStateStreamCreateInfoEXTBuilder::new()
+    }
+}
+pub struct PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineRasterizationStateStreamCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn set_flags(mut self, flags: vk::PipelineRasterizationStateStreamCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn set_rasterization_stream(mut self, rasterization_stream: u32) -> Self {
+        self.inner.rasterization_stream = rasterization_stream;
+        self
+    }
+}
+impl<'a> Deref for PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineRasterizationStateStreamCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     type Type = PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11351,6 +11467,15 @@ impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
     }
     pub fn set_drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
         self.inner.drm_format_modifier = drm_format_modifier;
+        self
+    }
+    pub fn set_sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
+        self.inner.sharing_mode = sharing_mode;
+        self
+    }
+    pub fn set_p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+        self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
+        self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
         self
     }
 }
