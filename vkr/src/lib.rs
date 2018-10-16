@@ -1,3 +1,5 @@
+//! Generated from vk.xml with `VK_HEADER_VERSION` 87
+
 #[macro_use]
 extern crate lazy_static;
 extern crate shared_library;

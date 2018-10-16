@@ -1399,7 +1399,10 @@ impl<'a> Generator<'a> {
                                 type_name: inner_type_name.clone(),
                                 is_optional,
                             };
-                            params[i].ty = LibParamType::Slice { inner_type_name, is_optional };
+                            params[i].ty = LibParamType::Slice {
+                                inner_type_name,
+                                is_optional,
+                            };
                             take_mut::take(&mut params[len_index].ty, |ty| match ty {
                                 LibParamType::SharedSliceLen { name, mut slice_infos } => if is_single {
                                     panic!("unsupported mix of slices")
@@ -1437,7 +1440,10 @@ impl<'a> Generator<'a> {
                         && vparam.len.is_none()
                     {
                         let is_optional = vparam.optional.as_ref_str() == Some("true");
-                        params[i].ty = LibParamType::Ref { inner_type_name, is_optional };
+                        params[i].ty = LibParamType::Ref {
+                            inner_type_name,
+                            is_optional,
+                        };
                         continue;
                     }
                 }
@@ -1573,7 +1579,10 @@ impl<'a> Generator<'a> {
                                     writeln!(w, "self.inner.{0} = {0}.as_ptr(); self }}", slice_info.name)?;
                                 }
                             }
-                            LibParamType::Ref { ref inner_type_name, is_optional } => {
+                            LibParamType::Ref {
+                                ref inner_type_name,
+                                is_optional,
+                            } => {
                                 if is_optional {
                                     writeln!(
                                         w,
@@ -1679,9 +1688,7 @@ impl<'a> Generator<'a> {
 
             // match slice (parameter or return)
             if let Some(len_name) = vparam.len.as_ref_str() {
-                if cparam.ty.name != "void"
-                    && cparam.ty.decoration == CDecoration::PointerToConst
-                {
+                if cparam.ty.name != "void" && cparam.ty.decoration == CDecoration::PointerToConst {
                     let len_index = decl
                         .parameters
                         .iter()
@@ -1694,7 +1701,10 @@ impl<'a> Generator<'a> {
                         type_name: inner_type_name.clone(),
                         is_optional,
                     };
-                    params[i].ty = LibParamType::Slice { inner_type_name, is_optional };
+                    params[i].ty = LibParamType::Slice {
+                        inner_type_name,
+                        is_optional,
+                    };
                     take_mut::take(&mut params[len_index].ty, |ty| match ty {
                         LibParamType::SharedSliceLen { name, mut slice_infos } => {
                             slice_infos.push(slice_info);
@@ -1876,7 +1886,10 @@ impl<'a> Generator<'a> {
             if cparam.ty.name != "void" && vparam.len.is_none() && !self.is_non_null_type(cparam.ty.name) {
                 if cparam.ty.decoration == CDecoration::PointerToConst {
                     let is_optional = vparam.optional.as_ref_str() == Some("true");
-                    params[i].ty = LibParamType::Ref { inner_type_name, is_optional };
+                    params[i].ty = LibParamType::Ref {
+                        inner_type_name,
+                        is_optional,
+                    };
                     continue;
                 }
                 if cparam.ty.decoration == CDecoration::Pointer && vparam.optional.is_none() {
@@ -1989,14 +2002,20 @@ impl<'a> Generator<'a> {
                         }
                     }
                     LibParamType::SingleSliceLen { .. } => {}
-                    LibParamType::Slice { ref inner_type_name, is_optional } => {
+                    LibParamType::Slice {
+                        ref inner_type_name,
+                        is_optional,
+                    } => {
                         if is_optional {
                             write!(w, "{}: Option<&[{}]>,", rparam.name, inner_type_name,)?;
                         } else {
                             write!(w, "{}: &[{}],", rparam.name, inner_type_name,)?;
                         }
                     }
-                    LibParamType::Ref { ref inner_type_name, is_optional } => {
+                    LibParamType::Ref {
+                        ref inner_type_name,
+                        is_optional,
+                    } => {
                         if is_optional {
                             write!(w, "{}: Option<&{}>,", rparam.name, inner_type_name,)?;
                         } else {
@@ -2072,7 +2091,11 @@ impl<'a> Generator<'a> {
                                 }
                             }
                             if slice_info.is_optional {
-                                writeln!(w, "if let Some(s) = {} {{ assert_eq!({}, s.len() as u32); }}", slice_info.name, name)?;
+                                writeln!(
+                                    w,
+                                    "if let Some(s) = {} {{ assert_eq!({}, s.len() as u32); }}",
+                                    slice_info.name, name
+                                )?;
                             } else {
                                 writeln!(w, "assert_eq!({}, {}.len() as u32);", name, slice_info.name)?;
                             }
@@ -2442,6 +2465,23 @@ impl<'a> Generator<'a> {
     pub fn write_lib(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
+
+        let mut header_version = None;
+        for ty in self.get_type_iterator() {
+            if Some("define") == ty.category.as_ref_str() {
+                if let vk::TypeSpec::Code(ref type_code) = ty.spec {
+                    let prefix = "#define VK_HEADER_VERSION";
+                    if let Some(offset) = type_code.code.find(&prefix) {
+                        header_version =
+                            Some(type_code.code[(offset + prefix.len())..].trim_matches(char::is_whitespace));
+                        break;
+                    }
+                }
+            }
+        }
+        if let Some(v) = header_version {
+            writeln!(&mut w, "//! Generated from vk.xml with `VK_HEADER_VERSION` {}", v);
+        }
 
         write!(&mut w, "{}", include_str!("lib_prefix.rs"))?;
         self.write_group_structs(&mut w)?;
