@@ -88,7 +88,7 @@ The remaining parameters are translated as follows:
 * `VkBool32` becomes `bool`
 * Pointer to constant null-terminated `char` data become `&CStr`
 * Pointers becomes references (wrapped in `Option` when optional)
-* Pointer and length pairs become slices
+* Pointer and length pairs become slices (wrapped in `Option` when optional)
 * Functions that fill an array of unknown size have a `_to_vec` variant to return all values in a `Vec`
 * Functions that fill an array of known size have `_array` and `_single` variants that do not allocate from the heap, in addition to a `_to_vec` variant
 

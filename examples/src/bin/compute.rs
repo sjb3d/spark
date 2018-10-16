@@ -24,7 +24,7 @@ fn main() -> Result<(), vkr::LoaderError> {
     let loader = Loader::new()?;
     let layer_names_raw =
         [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
-    let instance_create_info = vk::InstanceCreateInfo::builder().set_pp_enabled_layer_names(&layer_names_raw);
+    let instance_create_info = vk::InstanceCreateInfo::builder().pp_enabled_layer_names(&layer_names_raw);
     let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
 
     // find the first physical device
@@ -55,10 +55,10 @@ fn main() -> Result<(), vkr::LoaderError> {
     // create a device for this queue family
     let queue_priority = 1.0;
     let device_queue_create_info = vk::DeviceQueueCreateInfo::builder()
-        .set_queue_family_index(queue_family_index)
-        .set_p_queue_priorities(slice::from_ref(&queue_priority));
+        .queue_family_index(queue_family_index)
+        .p_queue_priorities(slice::from_ref(&queue_priority));
     let device_create_info =
-        vk::DeviceCreateInfo::builder().set_p_queue_create_infos(slice::from_ref(&device_queue_create_info));
+        vk::DeviceCreateInfo::builder().p_queue_create_infos(slice::from_ref(&device_queue_create_info));
     let device = unsafe { instance.create_device(physical_device, &device_create_info, None) }?;
 
     // load the compute shader
@@ -105,11 +105,11 @@ fn main() -> Result<(), vkr::LoaderError> {
         ..Default::default()
     }];
     let descriptor_set_layout_create_info =
-        vk::DescriptorSetLayoutCreateInfo::builder().set_p_bindings(&descriptor_set_layout_bindings);
+        vk::DescriptorSetLayoutCreateInfo::builder().p_bindings(&descriptor_set_layout_bindings);
     let descriptor_set_layout =
         unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }?;
     let pipeline_layout_create_info =
-        vk::PipelineLayoutCreateInfo::builder().set_p_set_layouts(slice::from_ref(&descriptor_set_layout));
+        vk::PipelineLayoutCreateInfo::builder().p_set_layouts(slice::from_ref(&descriptor_set_layout));
     let pipeline_layout = unsafe { device.create_pipeline_layout(&pipeline_layout_create_info, None) }?;
 
     // create the pipeline
@@ -132,14 +132,14 @@ fn main() -> Result<(), vkr::LoaderError> {
         descriptor_count: 1,
     }];
     let descriptor_pool_create_info = vk::DescriptorPoolCreateInfo::builder()
-        .set_max_sets(1)
-        .set_p_pool_sizes(&descriptor_pool_sizes);
+        .max_sets(1)
+        .p_pool_sizes(&descriptor_pool_sizes);
     let descriptor_pool = unsafe { device.create_descriptor_pool(&descriptor_pool_create_info, None) }?;
 
     // allocate and write the descriptor set
     let descriptor_set_allocate_info = vk::DescriptorSetAllocateInfo::builder()
-        .set_descriptor_pool(descriptor_pool)
-        .set_p_set_layouts(slice::from_ref(&descriptor_set_layout));
+        .descriptor_pool(descriptor_pool)
+        .p_set_layouts(slice::from_ref(&descriptor_set_layout));
     let descriptor_set = unsafe { device.allocate_descriptor_sets_single(&descriptor_set_allocate_info) }?;
 
     let descriptor_buffer_info = [vk::DescriptorBufferInfo {
@@ -148,10 +148,10 @@ fn main() -> Result<(), vkr::LoaderError> {
         range: vk::WHOLE_SIZE,
     }];
     let write_descriptor_set = vk::WriteDescriptorSet::builder()
-        .set_dst_set(descriptor_set)
-        .set_dst_binding(0)
-        .set_descriptor_type(vk::DescriptorType::STORAGE_BUFFER)
-        .set_p_buffer_info(&descriptor_buffer_info);
+        .dst_set(descriptor_set)
+        .dst_binding(0)
+        .descriptor_type(vk::DescriptorType::STORAGE_BUFFER)
+        .p_buffer_info(&descriptor_buffer_info);
     unsafe { device.update_descriptor_sets(slice::from_ref(&write_descriptor_set), &[]) };
 
     // run a command buffer to run the shader
@@ -190,7 +190,7 @@ fn main() -> Result<(), vkr::LoaderError> {
 
     // run it and wait until it is completed
     let queue = unsafe { device.get_device_queue(queue_family_index, 0) };
-    let submit_info = vk::SubmitInfo::builder().set_p_command_buffers(slice::from_ref(&command_buffer));
+    let submit_info = vk::SubmitInfo::builder().p_command_buffers(slice::from_ref(&command_buffer));
     unsafe { device.queue_submit(queue, slice::from_ref(&submit_info), None) }?;
     unsafe { device.device_wait_idle() }?;
 
