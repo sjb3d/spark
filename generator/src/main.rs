@@ -1804,12 +1804,14 @@ impl<'a> Generator<'a> {
             }
 
             // match single return type (last parameter only)
+            // TODO: add to return type (as tuple?) when one already exists from previous parameter?
             if i == decl.parameters.len() - 1
                 && (cparam.ty.decoration == CDecoration::Pointer
                     || cparam.ty.decoration == CDecoration::PointerToPointer)
                 && (vparam.optional.is_none() || vparam.optional.as_ref_str() == Some("false,true"))
                 && vparam.len.is_none()
                 && cmd_return_value != CommandReturnValue::Other
+                && return_type == LibReturnType::CDecl
             {
                 let has_member_values = self
                     .type_by_name
