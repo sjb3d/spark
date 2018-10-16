@@ -132,8 +132,8 @@ The builder struct implements the `Deref` trait to allow a reference to the buil
 
 ```rust
 let render_pass_create_info = vk::RenderPassCreateInfo::builder()
-    .set_p_attachments(&attachments)
-    .set_p_subpasses(&subpass_descriptions)
-    .set_p_dependencies(&subpass_dependencies);
+    .p_attachments(&attachments)
+    .p_subpasses(&subpass_descriptions)
+    .p_dependencies(&subpass_dependencies);
 let render_pass = unsafe { device.create_render_pass(&render_pass_create_info, None) }?;
 ```

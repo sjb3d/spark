@@ -27,11 +27,11 @@ impl<'a> BaseOutStructureBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut vk::BaseOutStructure) -> Self {
+    pub fn p_next(mut self, p_next: *mut vk::BaseOutStructure) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -59,11 +59,11 @@ impl<'a> BaseInStructureBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: &'a vk::BaseInStructure) -> Self {
+    pub fn p_next(mut self, p_next: &'a vk::BaseInStructure) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -91,31 +91,31 @@ impl<'a> ApplicationInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_application_name(mut self, p_application_name: &'a CStr) -> Self {
+    pub fn p_application_name(mut self, p_application_name: &'a CStr) -> Self {
         self.inner.p_application_name = p_application_name.as_ptr();
         self
     }
-    pub fn set_application_version(mut self, application_version: u32) -> Self {
+    pub fn application_version(mut self, application_version: u32) -> Self {
         self.inner.application_version = application_version;
         self
     }
-    pub fn set_p_engine_name(mut self, p_engine_name: &'a CStr) -> Self {
+    pub fn p_engine_name(mut self, p_engine_name: &'a CStr) -> Self {
         self.inner.p_engine_name = p_engine_name.as_ptr();
         self
     }
-    pub fn set_engine_version(mut self, engine_version: u32) -> Self {
+    pub fn engine_version(mut self, engine_version: u32) -> Self {
         self.inner.engine_version = engine_version;
         self
     }
-    pub fn set_api_version(mut self, api_version: vk::Version) -> Self {
+    pub fn api_version(mut self, api_version: vk::Version) -> Self {
         self.inner.api_version = api_version;
         self
     }
@@ -143,30 +143,30 @@ impl<'a> AllocationCallbacksBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_p_user_data(mut self, p_user_data: *mut c_void) -> Self {
+    pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
         self.inner.p_user_data = p_user_data;
         self
     }
-    pub fn set_pfn_allocation(mut self, pfn_allocation: vk::FnAllocationFunction) -> Self {
+    pub fn pfn_allocation(mut self, pfn_allocation: vk::FnAllocationFunction) -> Self {
         self.inner.pfn_allocation = Some(pfn_allocation);
         self
     }
-    pub fn set_pfn_reallocation(mut self, pfn_reallocation: vk::FnReallocationFunction) -> Self {
+    pub fn pfn_reallocation(mut self, pfn_reallocation: vk::FnReallocationFunction) -> Self {
         self.inner.pfn_reallocation = Some(pfn_reallocation);
         self
     }
-    pub fn set_pfn_free(mut self, pfn_free: vk::FnFreeFunction) -> Self {
+    pub fn pfn_free(mut self, pfn_free: vk::FnFreeFunction) -> Self {
         self.inner.pfn_free = Some(pfn_free);
         self
     }
-    pub fn set_pfn_internal_allocation(
+    pub fn pfn_internal_allocation(
         mut self,
         pfn_internal_allocation: Option<vk::FnInternalAllocationNotification>,
     ) -> Self {
         self.inner.pfn_internal_allocation = pfn_internal_allocation;
         self
     }
-    pub fn set_pfn_internal_free(mut self, pfn_internal_free: Option<vk::FnInternalFreeNotification>) -> Self {
+    pub fn pfn_internal_free(mut self, pfn_internal_free: Option<vk::FnInternalFreeNotification>) -> Self {
         self.inner.pfn_internal_free = pfn_internal_free;
         self
     }
@@ -194,23 +194,23 @@ impl<'a> DeviceQueueCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DeviceQueueCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DeviceQueueCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_queue_family_index(mut self, queue_family_index: u32) -> Self {
+    pub fn queue_family_index(mut self, queue_family_index: u32) -> Self {
         self.inner.queue_family_index = queue_family_index;
         self
     }
-    pub fn set_p_queue_priorities(mut self, p_queue_priorities: &'a [f32]) -> Self {
+    pub fn p_queue_priorities(mut self, p_queue_priorities: &'a [f32]) -> Self {
         self.inner.queue_count = p_queue_priorities.len() as u32;
         self.inner.p_queue_priorities = p_queue_priorities.as_ptr();
         self
@@ -239,34 +239,34 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DeviceCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DeviceCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_queue_create_infos(mut self, p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo]) -> Self {
+    pub fn p_queue_create_infos(mut self, p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo]) -> Self {
         self.inner.queue_create_info_count = p_queue_create_infos.len() as u32;
         self.inner.p_queue_create_infos = p_queue_create_infos.as_ptr();
         self
     }
-    pub fn set_pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
+    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
         self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
         self
     }
-    pub fn set_pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
+    pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
         self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
         self
     }
-    pub fn set_p_enabled_features(mut self, p_enabled_features: Option<&'a vk::PhysicalDeviceFeatures>) -> Self {
+    pub fn p_enabled_features(mut self, p_enabled_features: Option<&'a vk::PhysicalDeviceFeatures>) -> Self {
         self.inner.p_enabled_features = p_enabled_features.map_or(ptr::null(), |p| p);
         self
     }
@@ -294,28 +294,28 @@ impl<'a> InstanceCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::InstanceCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::InstanceCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_application_info(mut self, p_application_info: Option<&'a vk::ApplicationInfo>) -> Self {
+    pub fn p_application_info(mut self, p_application_info: Option<&'a vk::ApplicationInfo>) -> Self {
         self.inner.p_application_info = p_application_info.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
+    pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
         self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
         self
     }
-    pub fn set_pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
+    pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
         self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
         self
@@ -344,19 +344,19 @@ impl<'a> MemoryAllocateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_allocation_size(mut self, allocation_size: vk::DeviceSize) -> Self {
+    pub fn allocation_size(mut self, allocation_size: vk::DeviceSize) -> Self {
         self.inner.allocation_size = allocation_size;
         self
     }
-    pub fn set_memory_type_index(mut self, memory_type_index: u32) -> Self {
+    pub fn memory_type_index(mut self, memory_type_index: u32) -> Self {
         self.inner.memory_type_index = memory_type_index;
         self
     }
@@ -384,23 +384,23 @@ impl<'a> MappedMemoryRangeBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_offset(mut self, offset: vk::DeviceSize) -> Self {
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
         self.inner.offset = offset;
         self
     }
-    pub fn set_size(mut self, size: vk::DeviceSize) -> Self {
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
         self.inner.size = size;
         self
     }
@@ -428,42 +428,42 @@ impl<'a> WriteDescriptorSetBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_dst_set(mut self, dst_set: vk::DescriptorSet) -> Self {
+    pub fn dst_set(mut self, dst_set: vk::DescriptorSet) -> Self {
         self.inner.dst_set = Some(dst_set);
         self
     }
-    pub fn set_dst_binding(mut self, dst_binding: u32) -> Self {
+    pub fn dst_binding(mut self, dst_binding: u32) -> Self {
         self.inner.dst_binding = dst_binding;
         self
     }
-    pub fn set_dst_array_element(mut self, dst_array_element: u32) -> Self {
+    pub fn dst_array_element(mut self, dst_array_element: u32) -> Self {
         self.inner.dst_array_element = dst_array_element;
         self
     }
-    pub fn set_p_image_info(mut self, p_image_info: &'a [vk::DescriptorImageInfo]) -> Self {
+    pub fn p_image_info(mut self, p_image_info: &'a [vk::DescriptorImageInfo]) -> Self {
         self.inner.descriptor_count = p_image_info.len() as u32;
         self.inner.p_image_info = p_image_info.as_ptr();
         self
     }
-    pub fn set_p_buffer_info(mut self, p_buffer_info: &'a [vk::DescriptorBufferInfo]) -> Self {
+    pub fn p_buffer_info(mut self, p_buffer_info: &'a [vk::DescriptorBufferInfo]) -> Self {
         self.inner.descriptor_count = p_buffer_info.len() as u32;
         self.inner.p_buffer_info = p_buffer_info.as_ptr();
         self
     }
-    pub fn set_p_texel_buffer_view(mut self, p_texel_buffer_view: &'a [vk::BufferView]) -> Self {
+    pub fn p_texel_buffer_view(mut self, p_texel_buffer_view: &'a [vk::BufferView]) -> Self {
         self.inner.descriptor_count = p_texel_buffer_view.len() as u32;
         self.inner.p_texel_buffer_view = p_texel_buffer_view.as_ptr();
         self
     }
-    pub fn set_descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
+    pub fn descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
         self.inner.descriptor_type = descriptor_type;
         self
     }
@@ -491,39 +491,39 @@ impl<'a> CopyDescriptorSetBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_set(mut self, src_set: vk::DescriptorSet) -> Self {
+    pub fn src_set(mut self, src_set: vk::DescriptorSet) -> Self {
         self.inner.src_set = Some(src_set);
         self
     }
-    pub fn set_src_binding(mut self, src_binding: u32) -> Self {
+    pub fn src_binding(mut self, src_binding: u32) -> Self {
         self.inner.src_binding = src_binding;
         self
     }
-    pub fn set_src_array_element(mut self, src_array_element: u32) -> Self {
+    pub fn src_array_element(mut self, src_array_element: u32) -> Self {
         self.inner.src_array_element = src_array_element;
         self
     }
-    pub fn set_dst_set(mut self, dst_set: vk::DescriptorSet) -> Self {
+    pub fn dst_set(mut self, dst_set: vk::DescriptorSet) -> Self {
         self.inner.dst_set = Some(dst_set);
         self
     }
-    pub fn set_dst_binding(mut self, dst_binding: u32) -> Self {
+    pub fn dst_binding(mut self, dst_binding: u32) -> Self {
         self.inner.dst_binding = dst_binding;
         self
     }
-    pub fn set_dst_array_element(mut self, dst_array_element: u32) -> Self {
+    pub fn dst_array_element(mut self, dst_array_element: u32) -> Self {
         self.inner.dst_array_element = dst_array_element;
         self
     }
-    pub fn set_descriptor_count(mut self, descriptor_count: u32) -> Self {
+    pub fn descriptor_count(mut self, descriptor_count: u32) -> Self {
         self.inner.descriptor_count = descriptor_count;
         self
     }
@@ -551,31 +551,31 @@ impl<'a> BufferCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::BufferCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::BufferCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_size(mut self, size: vk::DeviceSize) -> Self {
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
         self.inner.size = size;
         self
     }
-    pub fn set_usage(mut self, usage: vk::BufferUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::BufferUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
-    pub fn set_sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
+    pub fn sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
         self.inner.sharing_mode = sharing_mode;
         self
     }
-    pub fn set_p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+    pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
         self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
         self
@@ -604,31 +604,31 @@ impl<'a> BufferViewCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::BufferViewCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::BufferViewCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_offset(mut self, offset: vk::DeviceSize) -> Self {
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
         self.inner.offset = offset;
         self
     }
-    pub fn set_range(mut self, range: vk::DeviceSize) -> Self {
+    pub fn range(mut self, range: vk::DeviceSize) -> Self {
         self.inner.range = range;
         self
     }
@@ -656,19 +656,19 @@ impl<'a> MemoryBarrierBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
         self.inner.src_access_mask = src_access_mask;
         self
     }
-    pub fn set_dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
         self.inner.dst_access_mask = dst_access_mask;
         self
     }
@@ -696,39 +696,39 @@ impl<'a> BufferMemoryBarrierBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
         self.inner.src_access_mask = src_access_mask;
         self
     }
-    pub fn set_dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
         self.inner.dst_access_mask = dst_access_mask;
         self
     }
-    pub fn set_src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
         self.inner.src_queue_family_index = src_queue_family_index;
         self
     }
-    pub fn set_dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
         self.inner.dst_queue_family_index = dst_queue_family_index;
         self
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
-    pub fn set_offset(mut self, offset: vk::DeviceSize) -> Self {
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
         self.inner.offset = offset;
         self
     }
-    pub fn set_size(mut self, size: vk::DeviceSize) -> Self {
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
         self.inner.size = size;
         self
     }
@@ -756,43 +756,43 @@ impl<'a> ImageMemoryBarrierBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
         self.inner.src_access_mask = src_access_mask;
         self
     }
-    pub fn set_dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
         self.inner.dst_access_mask = dst_access_mask;
         self
     }
-    pub fn set_old_layout(mut self, old_layout: vk::ImageLayout) -> Self {
+    pub fn old_layout(mut self, old_layout: vk::ImageLayout) -> Self {
         self.inner.old_layout = old_layout;
         self
     }
-    pub fn set_new_layout(mut self, new_layout: vk::ImageLayout) -> Self {
+    pub fn new_layout(mut self, new_layout: vk::ImageLayout) -> Self {
         self.inner.new_layout = new_layout;
         self
     }
-    pub fn set_src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
         self.inner.src_queue_family_index = src_queue_family_index;
         self
     }
-    pub fn set_dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
         self.inner.dst_queue_family_index = dst_queue_family_index;
         self
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
-    pub fn set_subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
+    pub fn subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
         self.inner.subresource_range = subresource_range;
         self
     }
@@ -820,60 +820,60 @@ impl<'a> ImageCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ImageCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::ImageCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_image_type(mut self, image_type: vk::ImageType) -> Self {
+    pub fn image_type(mut self, image_type: vk::ImageType) -> Self {
         self.inner.image_type = image_type;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_extent(mut self, extent: vk::Extent3D) -> Self {
+    pub fn extent(mut self, extent: vk::Extent3D) -> Self {
         self.inner.extent = extent;
         self
     }
-    pub fn set_mip_levels(mut self, mip_levels: u32) -> Self {
+    pub fn mip_levels(mut self, mip_levels: u32) -> Self {
         self.inner.mip_levels = mip_levels;
         self
     }
-    pub fn set_array_layers(mut self, array_layers: u32) -> Self {
+    pub fn array_layers(mut self, array_layers: u32) -> Self {
         self.inner.array_layers = array_layers;
         self
     }
-    pub fn set_samples(mut self, samples: vk::SampleCountFlags) -> Self {
+    pub fn samples(mut self, samples: vk::SampleCountFlags) -> Self {
         self.inner.samples = samples;
         self
     }
-    pub fn set_tiling(mut self, tiling: vk::ImageTiling) -> Self {
+    pub fn tiling(mut self, tiling: vk::ImageTiling) -> Self {
         self.inner.tiling = tiling;
         self
     }
-    pub fn set_usage(mut self, usage: vk::ImageUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::ImageUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
-    pub fn set_sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
+    pub fn sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
         self.inner.sharing_mode = sharing_mode;
         self
     }
-    pub fn set_p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+    pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
         self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
         self
     }
-    pub fn set_initial_layout(mut self, initial_layout: vk::ImageLayout) -> Self {
+    pub fn initial_layout(mut self, initial_layout: vk::ImageLayout) -> Self {
         self.inner.initial_layout = initial_layout;
         self
     }
@@ -901,35 +901,35 @@ impl<'a> ImageViewCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ImageViewCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::ImageViewCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
-    pub fn set_view_type(mut self, view_type: vk::ImageViewType) -> Self {
+    pub fn view_type(mut self, view_type: vk::ImageViewType) -> Self {
         self.inner.view_type = view_type;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_components(mut self, components: vk::ComponentMapping) -> Self {
+    pub fn components(mut self, components: vk::ComponentMapping) -> Self {
         self.inner.components = components;
         self
     }
-    pub fn set_subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
+    pub fn subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
         self.inner.subresource_range = subresource_range;
         self
     }
@@ -957,11 +957,11 @@ impl<'a> SparseBufferMemoryBindInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
-    pub fn set_p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
+    pub fn p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
         self.inner.p_binds = p_binds.as_ptr();
         self
@@ -990,11 +990,11 @@ impl<'a> SparseImageOpaqueMemoryBindInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
-    pub fn set_p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
+    pub fn p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
         self.inner.p_binds = p_binds.as_ptr();
         self
@@ -1023,11 +1023,11 @@ impl<'a> SparseImageMemoryBindInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
-    pub fn set_p_binds(mut self, p_binds: &'a [vk::SparseImageMemoryBind]) -> Self {
+    pub fn p_binds(mut self, p_binds: &'a [vk::SparseImageMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
         self.inner.p_binds = p_binds.as_ptr();
         self
@@ -1056,35 +1056,35 @@ impl<'a> BindSparseInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
+    pub fn p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
         self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
         self
     }
-    pub fn set_p_buffer_binds(mut self, p_buffer_binds: &'a [vk::SparseBufferMemoryBindInfo]) -> Self {
+    pub fn p_buffer_binds(mut self, p_buffer_binds: &'a [vk::SparseBufferMemoryBindInfo]) -> Self {
         self.inner.buffer_bind_count = p_buffer_binds.len() as u32;
         self.inner.p_buffer_binds = p_buffer_binds.as_ptr();
         self
     }
-    pub fn set_p_image_opaque_binds(mut self, p_image_opaque_binds: &'a [vk::SparseImageOpaqueMemoryBindInfo]) -> Self {
+    pub fn p_image_opaque_binds(mut self, p_image_opaque_binds: &'a [vk::SparseImageOpaqueMemoryBindInfo]) -> Self {
         self.inner.image_opaque_bind_count = p_image_opaque_binds.len() as u32;
         self.inner.p_image_opaque_binds = p_image_opaque_binds.as_ptr();
         self
     }
-    pub fn set_p_image_binds(mut self, p_image_binds: &'a [vk::SparseImageMemoryBindInfo]) -> Self {
+    pub fn p_image_binds(mut self, p_image_binds: &'a [vk::SparseImageMemoryBindInfo]) -> Self {
         self.inner.image_bind_count = p_image_binds.len() as u32;
         self.inner.p_image_binds = p_image_binds.as_ptr();
         self
     }
-    pub fn set_p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
+    pub fn p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphores.len() as u32;
         self.inner.p_signal_semaphores = p_signal_semaphores.as_ptr();
         self
@@ -1113,23 +1113,23 @@ impl<'a> ShaderModuleCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ShaderModuleCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::ShaderModuleCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_code_size(mut self, code_size: usize) -> Self {
+    pub fn code_size(mut self, code_size: usize) -> Self {
         self.inner.code_size = code_size;
         self
     }
-    pub fn set_p_code(mut self, p_code: *const u32) -> Self {
+    pub fn p_code(mut self, p_code: *const u32) -> Self {
         self.inner.p_code = p_code;
         self
     }
@@ -1157,24 +1157,24 @@ impl<'a> DescriptorSetLayoutBindingBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_binding(mut self, binding: u32) -> Self {
+    pub fn binding(mut self, binding: u32) -> Self {
         self.inner.binding = binding;
         self
     }
-    pub fn set_descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
+    pub fn descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
         self.inner.descriptor_type = descriptor_type;
         self
     }
-    pub fn set_descriptor_count(mut self, descriptor_count: u32) -> Self {
+    pub fn descriptor_count(mut self, descriptor_count: u32) -> Self {
         self.inner.descriptor_count = descriptor_count;
         self
     }
-    pub fn set_p_immutable_samplers(mut self, p_immutable_samplers: &'a [vk::Sampler]) -> Self {
+    pub fn p_immutable_samplers(mut self, p_immutable_samplers: &'a [vk::Sampler]) -> Self {
         self.inner.descriptor_count = p_immutable_samplers.len() as u32;
         self.inner.p_immutable_samplers = p_immutable_samplers.as_ptr();
         self
     }
-    pub fn set_stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
+    pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
         self.inner.stage_flags = stage_flags;
         self
     }
@@ -1202,19 +1202,19 @@ impl<'a> DescriptorSetLayoutCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DescriptorSetLayoutCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DescriptorSetLayoutCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_bindings(mut self, p_bindings: &'a [vk::DescriptorSetLayoutBinding]) -> Self {
+    pub fn p_bindings(mut self, p_bindings: &'a [vk::DescriptorSetLayoutBinding]) -> Self {
         self.inner.binding_count = p_bindings.len() as u32;
         self.inner.p_bindings = p_bindings.as_ptr();
         self
@@ -1243,23 +1243,23 @@ impl<'a> DescriptorPoolCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DescriptorPoolCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DescriptorPoolCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_max_sets(mut self, max_sets: u32) -> Self {
+    pub fn max_sets(mut self, max_sets: u32) -> Self {
         self.inner.max_sets = max_sets;
         self
     }
-    pub fn set_p_pool_sizes(mut self, p_pool_sizes: &'a [vk::DescriptorPoolSize]) -> Self {
+    pub fn p_pool_sizes(mut self, p_pool_sizes: &'a [vk::DescriptorPoolSize]) -> Self {
         self.inner.pool_size_count = p_pool_sizes.len() as u32;
         self.inner.p_pool_sizes = p_pool_sizes.as_ptr();
         self
@@ -1288,19 +1288,19 @@ impl<'a> DescriptorSetAllocateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_descriptor_pool(mut self, descriptor_pool: vk::DescriptorPool) -> Self {
+    pub fn descriptor_pool(mut self, descriptor_pool: vk::DescriptorPool) -> Self {
         self.inner.descriptor_pool = Some(descriptor_pool);
         self
     }
-    pub fn set_p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
+    pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
         self.inner.descriptor_set_count = p_set_layouts.len() as u32;
         self.inner.p_set_layouts = p_set_layouts.as_ptr();
         self
@@ -1329,16 +1329,16 @@ impl<'a> SpecializationInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_p_map_entries(mut self, p_map_entries: &'a [vk::SpecializationMapEntry]) -> Self {
+    pub fn p_map_entries(mut self, p_map_entries: &'a [vk::SpecializationMapEntry]) -> Self {
         self.inner.map_entry_count = p_map_entries.len() as u32;
         self.inner.p_map_entries = p_map_entries.as_ptr();
         self
     }
-    pub fn set_data_size(mut self, data_size: usize) -> Self {
+    pub fn data_size(mut self, data_size: usize) -> Self {
         self.inner.data_size = data_size;
         self
     }
-    pub fn set_p_data(mut self, p_data: *const c_void) -> Self {
+    pub fn p_data(mut self, p_data: *const c_void) -> Self {
         self.inner.p_data = p_data;
         self
     }
@@ -1366,31 +1366,31 @@ impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineShaderStageCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineShaderStageCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_stage(mut self, stage: vk::ShaderStageFlags) -> Self {
+    pub fn stage(mut self, stage: vk::ShaderStageFlags) -> Self {
         self.inner.stage = stage;
         self
     }
-    pub fn set_module(mut self, module: vk::ShaderModule) -> Self {
+    pub fn module(mut self, module: vk::ShaderModule) -> Self {
         self.inner.module = Some(module);
         self
     }
-    pub fn set_p_name(mut self, p_name: &'a CStr) -> Self {
+    pub fn p_name(mut self, p_name: &'a CStr) -> Self {
         self.inner.p_name = p_name.as_ptr();
         self
     }
-    pub fn set_p_specialization_info(mut self, p_specialization_info: Option<&'a vk::SpecializationInfo>) -> Self {
+    pub fn p_specialization_info(mut self, p_specialization_info: Option<&'a vk::SpecializationInfo>) -> Self {
         self.inner.p_specialization_info = p_specialization_info.map_or(ptr::null(), |p| p);
         self
     }
@@ -1418,31 +1418,31 @@ impl<'a> ComputePipelineCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_stage(mut self, stage: vk::PipelineShaderStageCreateInfo) -> Self {
+    pub fn stage(mut self, stage: vk::PipelineShaderStageCreateInfo) -> Self {
         self.inner.stage = stage;
         self
     }
-    pub fn set_layout(mut self, layout: vk::PipelineLayout) -> Self {
+    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
         self.inner.layout = Some(layout);
         self
     }
-    pub fn set_base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
+    pub fn base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
         self.inner.base_pipeline_handle = base_pipeline_handle;
         self
     }
-    pub fn set_base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
+    pub fn base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
         self.inner.base_pipeline_index = base_pipeline_index;
         self
     }
@@ -1470,19 +1470,19 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineVertexInputStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineVertexInputStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_vertex_binding_descriptions(
+    pub fn p_vertex_binding_descriptions(
         mut self,
         p_vertex_binding_descriptions: &'a [vk::VertexInputBindingDescription],
     ) -> Self {
@@ -1490,7 +1490,7 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
         self.inner.p_vertex_binding_descriptions = p_vertex_binding_descriptions.as_ptr();
         self
     }
-    pub fn set_p_vertex_attribute_descriptions(
+    pub fn p_vertex_attribute_descriptions(
         mut self,
         p_vertex_attribute_descriptions: &'a [vk::VertexInputAttributeDescription],
     ) -> Self {
@@ -1522,23 +1522,23 @@ impl<'a> PipelineInputAssemblyStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineInputAssemblyStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineInputAssemblyStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_topology(mut self, topology: vk::PrimitiveTopology) -> Self {
+    pub fn topology(mut self, topology: vk::PrimitiveTopology) -> Self {
         self.inner.topology = topology;
         self
     }
-    pub fn set_primitive_restart_enable(mut self, primitive_restart_enable: bool) -> Self {
+    pub fn primitive_restart_enable(mut self, primitive_restart_enable: bool) -> Self {
         self.inner.primitive_restart_enable = if primitive_restart_enable { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -1566,19 +1566,19 @@ impl<'a> PipelineTessellationStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineTessellationStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineTessellationStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_patch_control_points(mut self, patch_control_points: u32) -> Self {
+    pub fn patch_control_points(mut self, patch_control_points: u32) -> Self {
         self.inner.patch_control_points = patch_control_points;
         self
     }
@@ -1606,32 +1606,32 @@ impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineViewportStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineViewportStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_viewport_count(mut self, viewport_count: u32) -> Self {
+    pub fn viewport_count(mut self, viewport_count: u32) -> Self {
         self.inner.viewport_count = viewport_count;
         self
     }
-    pub fn set_p_viewports(mut self, p_viewports: &'a [vk::Viewport]) -> Self {
+    pub fn p_viewports(mut self, p_viewports: &'a [vk::Viewport]) -> Self {
         self.inner.viewport_count = p_viewports.len() as u32;
         self.inner.p_viewports = p_viewports.as_ptr();
         self
     }
-    pub fn set_scissor_count(mut self, scissor_count: u32) -> Self {
+    pub fn scissor_count(mut self, scissor_count: u32) -> Self {
         self.inner.scissor_count = scissor_count;
         self
     }
-    pub fn set_p_scissors(mut self, p_scissors: &'a [vk::Rect2D]) -> Self {
+    pub fn p_scissors(mut self, p_scissors: &'a [vk::Rect2D]) -> Self {
         self.inner.scissor_count = p_scissors.len() as u32;
         self.inner.p_scissors = p_scissors.as_ptr();
         self
@@ -1660,55 +1660,55 @@ impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineRasterizationStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineRasterizationStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_depth_clamp_enable(mut self, depth_clamp_enable: bool) -> Self {
+    pub fn depth_clamp_enable(mut self, depth_clamp_enable: bool) -> Self {
         self.inner.depth_clamp_enable = if depth_clamp_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_rasterizer_discard_enable(mut self, rasterizer_discard_enable: bool) -> Self {
+    pub fn rasterizer_discard_enable(mut self, rasterizer_discard_enable: bool) -> Self {
         self.inner.rasterizer_discard_enable = if rasterizer_discard_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_polygon_mode(mut self, polygon_mode: vk::PolygonMode) -> Self {
+    pub fn polygon_mode(mut self, polygon_mode: vk::PolygonMode) -> Self {
         self.inner.polygon_mode = polygon_mode;
         self
     }
-    pub fn set_cull_mode(mut self, cull_mode: vk::CullModeFlags) -> Self {
+    pub fn cull_mode(mut self, cull_mode: vk::CullModeFlags) -> Self {
         self.inner.cull_mode = cull_mode;
         self
     }
-    pub fn set_front_face(mut self, front_face: vk::FrontFace) -> Self {
+    pub fn front_face(mut self, front_face: vk::FrontFace) -> Self {
         self.inner.front_face = front_face;
         self
     }
-    pub fn set_depth_bias_enable(mut self, depth_bias_enable: bool) -> Self {
+    pub fn depth_bias_enable(mut self, depth_bias_enable: bool) -> Self {
         self.inner.depth_bias_enable = if depth_bias_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_depth_bias_constant_factor(mut self, depth_bias_constant_factor: f32) -> Self {
+    pub fn depth_bias_constant_factor(mut self, depth_bias_constant_factor: f32) -> Self {
         self.inner.depth_bias_constant_factor = depth_bias_constant_factor;
         self
     }
-    pub fn set_depth_bias_clamp(mut self, depth_bias_clamp: f32) -> Self {
+    pub fn depth_bias_clamp(mut self, depth_bias_clamp: f32) -> Self {
         self.inner.depth_bias_clamp = depth_bias_clamp;
         self
     }
-    pub fn set_depth_bias_slope_factor(mut self, depth_bias_slope_factor: f32) -> Self {
+    pub fn depth_bias_slope_factor(mut self, depth_bias_slope_factor: f32) -> Self {
         self.inner.depth_bias_slope_factor = depth_bias_slope_factor;
         self
     }
-    pub fn set_line_width(mut self, line_width: f32) -> Self {
+    pub fn line_width(mut self, line_width: f32) -> Self {
         self.inner.line_width = line_width;
         self
     }
@@ -1736,39 +1736,39 @@ impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineMultisampleStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineMultisampleStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_rasterization_samples(mut self, rasterization_samples: vk::SampleCountFlags) -> Self {
+    pub fn rasterization_samples(mut self, rasterization_samples: vk::SampleCountFlags) -> Self {
         self.inner.rasterization_samples = rasterization_samples;
         self
     }
-    pub fn set_sample_shading_enable(mut self, sample_shading_enable: bool) -> Self {
+    pub fn sample_shading_enable(mut self, sample_shading_enable: bool) -> Self {
         self.inner.sample_shading_enable = if sample_shading_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_min_sample_shading(mut self, min_sample_shading: f32) -> Self {
+    pub fn min_sample_shading(mut self, min_sample_shading: f32) -> Self {
         self.inner.min_sample_shading = min_sample_shading;
         self
     }
-    pub fn set_p_sample_mask(mut self, p_sample_mask: *const vk::SampleMask) -> Self {
+    pub fn p_sample_mask(mut self, p_sample_mask: *const vk::SampleMask) -> Self {
         self.inner.p_sample_mask = p_sample_mask;
         self
     }
-    pub fn set_alpha_to_coverage_enable(mut self, alpha_to_coverage_enable: bool) -> Self {
+    pub fn alpha_to_coverage_enable(mut self, alpha_to_coverage_enable: bool) -> Self {
         self.inner.alpha_to_coverage_enable = if alpha_to_coverage_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_alpha_to_one_enable(mut self, alpha_to_one_enable: bool) -> Self {
+    pub fn alpha_to_one_enable(mut self, alpha_to_one_enable: bool) -> Self {
         self.inner.alpha_to_one_enable = if alpha_to_one_enable { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -1796,27 +1796,27 @@ impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineColorBlendStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineColorBlendStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_logic_op_enable(mut self, logic_op_enable: bool) -> Self {
+    pub fn logic_op_enable(mut self, logic_op_enable: bool) -> Self {
         self.inner.logic_op_enable = if logic_op_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_logic_op(mut self, logic_op: vk::LogicOp) -> Self {
+    pub fn logic_op(mut self, logic_op: vk::LogicOp) -> Self {
         self.inner.logic_op = logic_op;
         self
     }
-    pub fn set_p_attachments(mut self, p_attachments: &'a [vk::PipelineColorBlendAttachmentState]) -> Self {
+    pub fn p_attachments(mut self, p_attachments: &'a [vk::PipelineColorBlendAttachmentState]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
         self.inner.p_attachments = p_attachments.as_ptr();
         self
@@ -1845,19 +1845,19 @@ impl<'a> PipelineDynamicStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineDynamicStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineDynamicStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_dynamic_states(mut self, p_dynamic_states: &'a [vk::DynamicState]) -> Self {
+    pub fn p_dynamic_states(mut self, p_dynamic_states: &'a [vk::DynamicState]) -> Self {
         self.inner.dynamic_state_count = p_dynamic_states.len() as u32;
         self.inner.p_dynamic_states = p_dynamic_states.as_ptr();
         self
@@ -1886,51 +1886,51 @@ impl<'a> PipelineDepthStencilStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineDepthStencilStateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineDepthStencilStateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_depth_test_enable(mut self, depth_test_enable: bool) -> Self {
+    pub fn depth_test_enable(mut self, depth_test_enable: bool) -> Self {
         self.inner.depth_test_enable = if depth_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_depth_write_enable(mut self, depth_write_enable: bool) -> Self {
+    pub fn depth_write_enable(mut self, depth_write_enable: bool) -> Self {
         self.inner.depth_write_enable = if depth_write_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_depth_compare_op(mut self, depth_compare_op: vk::CompareOp) -> Self {
+    pub fn depth_compare_op(mut self, depth_compare_op: vk::CompareOp) -> Self {
         self.inner.depth_compare_op = depth_compare_op;
         self
     }
-    pub fn set_depth_bounds_test_enable(mut self, depth_bounds_test_enable: bool) -> Self {
+    pub fn depth_bounds_test_enable(mut self, depth_bounds_test_enable: bool) -> Self {
         self.inner.depth_bounds_test_enable = if depth_bounds_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_stencil_test_enable(mut self, stencil_test_enable: bool) -> Self {
+    pub fn stencil_test_enable(mut self, stencil_test_enable: bool) -> Self {
         self.inner.stencil_test_enable = if stencil_test_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_front(mut self, front: vk::StencilOpState) -> Self {
+    pub fn front(mut self, front: vk::StencilOpState) -> Self {
         self.inner.front = front;
         self
     }
-    pub fn set_back(mut self, back: vk::StencilOpState) -> Self {
+    pub fn back(mut self, back: vk::StencilOpState) -> Self {
         self.inner.back = back;
         self
     }
-    pub fn set_min_depth_bounds(mut self, min_depth_bounds: f32) -> Self {
+    pub fn min_depth_bounds(mut self, min_depth_bounds: f32) -> Self {
         self.inner.min_depth_bounds = min_depth_bounds;
         self
     }
-    pub fn set_max_depth_bounds(mut self, max_depth_bounds: f32) -> Self {
+    pub fn max_depth_bounds(mut self, max_depth_bounds: f32) -> Self {
         self.inner.max_depth_bounds = max_depth_bounds;
         self
     }
@@ -1958,97 +1958,97 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
+    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
         self.inner.p_stages = p_stages.as_ptr();
         self
     }
-    pub fn set_p_vertex_input_state(
+    pub fn p_vertex_input_state(
         mut self,
         p_vertex_input_state: Option<&'a vk::PipelineVertexInputStateCreateInfo>,
     ) -> Self {
         self.inner.p_vertex_input_state = p_vertex_input_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_input_assembly_state(
+    pub fn p_input_assembly_state(
         mut self,
         p_input_assembly_state: Option<&'a vk::PipelineInputAssemblyStateCreateInfo>,
     ) -> Self {
         self.inner.p_input_assembly_state = p_input_assembly_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_tessellation_state(
+    pub fn p_tessellation_state(
         mut self,
         p_tessellation_state: Option<&'a vk::PipelineTessellationStateCreateInfo>,
     ) -> Self {
         self.inner.p_tessellation_state = p_tessellation_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_viewport_state(mut self, p_viewport_state: Option<&'a vk::PipelineViewportStateCreateInfo>) -> Self {
+    pub fn p_viewport_state(mut self, p_viewport_state: Option<&'a vk::PipelineViewportStateCreateInfo>) -> Self {
         self.inner.p_viewport_state = p_viewport_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_rasterization_state(
+    pub fn p_rasterization_state(
         mut self,
         p_rasterization_state: &'a vk::PipelineRasterizationStateCreateInfo,
     ) -> Self {
         self.inner.p_rasterization_state = p_rasterization_state;
         self
     }
-    pub fn set_p_multisample_state(
+    pub fn p_multisample_state(
         mut self,
         p_multisample_state: Option<&'a vk::PipelineMultisampleStateCreateInfo>,
     ) -> Self {
         self.inner.p_multisample_state = p_multisample_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_depth_stencil_state(
+    pub fn p_depth_stencil_state(
         mut self,
         p_depth_stencil_state: Option<&'a vk::PipelineDepthStencilStateCreateInfo>,
     ) -> Self {
         self.inner.p_depth_stencil_state = p_depth_stencil_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_color_blend_state(
+    pub fn p_color_blend_state(
         mut self,
         p_color_blend_state: Option<&'a vk::PipelineColorBlendStateCreateInfo>,
     ) -> Self {
         self.inner.p_color_blend_state = p_color_blend_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_dynamic_state(mut self, p_dynamic_state: Option<&'a vk::PipelineDynamicStateCreateInfo>) -> Self {
+    pub fn p_dynamic_state(mut self, p_dynamic_state: Option<&'a vk::PipelineDynamicStateCreateInfo>) -> Self {
         self.inner.p_dynamic_state = p_dynamic_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_layout(mut self, layout: vk::PipelineLayout) -> Self {
+    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
         self.inner.layout = Some(layout);
         self
     }
-    pub fn set_render_pass(mut self, render_pass: vk::RenderPass) -> Self {
+    pub fn render_pass(mut self, render_pass: vk::RenderPass) -> Self {
         self.inner.render_pass = Some(render_pass);
         self
     }
-    pub fn set_subpass(mut self, subpass: u32) -> Self {
+    pub fn subpass(mut self, subpass: u32) -> Self {
         self.inner.subpass = subpass;
         self
     }
-    pub fn set_base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
+    pub fn base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
         self.inner.base_pipeline_handle = base_pipeline_handle;
         self
     }
-    pub fn set_base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
+    pub fn base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
         self.inner.base_pipeline_index = base_pipeline_index;
         self
     }
@@ -2076,23 +2076,23 @@ impl<'a> PipelineCacheCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCacheCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCacheCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_initial_data_size(mut self, initial_data_size: usize) -> Self {
+    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
         self.inner.initial_data_size = initial_data_size;
         self
     }
-    pub fn set_p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
+    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
         self.inner.p_initial_data = p_initial_data;
         self
     }
@@ -2120,24 +2120,24 @@ impl<'a> PipelineLayoutCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineLayoutCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineLayoutCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
+    pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
         self.inner.set_layout_count = p_set_layouts.len() as u32;
         self.inner.p_set_layouts = p_set_layouts.as_ptr();
         self
     }
-    pub fn set_p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
+    pub fn p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
         self.inner.push_constant_range_count = p_push_constant_ranges.len() as u32;
         self.inner.p_push_constant_ranges = p_push_constant_ranges.as_ptr();
         self
@@ -2166,75 +2166,75 @@ impl<'a> SamplerCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::SamplerCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SamplerCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_mag_filter(mut self, mag_filter: vk::Filter) -> Self {
+    pub fn mag_filter(mut self, mag_filter: vk::Filter) -> Self {
         self.inner.mag_filter = mag_filter;
         self
     }
-    pub fn set_min_filter(mut self, min_filter: vk::Filter) -> Self {
+    pub fn min_filter(mut self, min_filter: vk::Filter) -> Self {
         self.inner.min_filter = min_filter;
         self
     }
-    pub fn set_mipmap_mode(mut self, mipmap_mode: vk::SamplerMipmapMode) -> Self {
+    pub fn mipmap_mode(mut self, mipmap_mode: vk::SamplerMipmapMode) -> Self {
         self.inner.mipmap_mode = mipmap_mode;
         self
     }
-    pub fn set_address_mode_u(mut self, address_mode_u: vk::SamplerAddressMode) -> Self {
+    pub fn address_mode_u(mut self, address_mode_u: vk::SamplerAddressMode) -> Self {
         self.inner.address_mode_u = address_mode_u;
         self
     }
-    pub fn set_address_mode_v(mut self, address_mode_v: vk::SamplerAddressMode) -> Self {
+    pub fn address_mode_v(mut self, address_mode_v: vk::SamplerAddressMode) -> Self {
         self.inner.address_mode_v = address_mode_v;
         self
     }
-    pub fn set_address_mode_w(mut self, address_mode_w: vk::SamplerAddressMode) -> Self {
+    pub fn address_mode_w(mut self, address_mode_w: vk::SamplerAddressMode) -> Self {
         self.inner.address_mode_w = address_mode_w;
         self
     }
-    pub fn set_mip_lod_bias(mut self, mip_lod_bias: f32) -> Self {
+    pub fn mip_lod_bias(mut self, mip_lod_bias: f32) -> Self {
         self.inner.mip_lod_bias = mip_lod_bias;
         self
     }
-    pub fn set_anisotropy_enable(mut self, anisotropy_enable: bool) -> Self {
+    pub fn anisotropy_enable(mut self, anisotropy_enable: bool) -> Self {
         self.inner.anisotropy_enable = if anisotropy_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_max_anisotropy(mut self, max_anisotropy: f32) -> Self {
+    pub fn max_anisotropy(mut self, max_anisotropy: f32) -> Self {
         self.inner.max_anisotropy = max_anisotropy;
         self
     }
-    pub fn set_compare_enable(mut self, compare_enable: bool) -> Self {
+    pub fn compare_enable(mut self, compare_enable: bool) -> Self {
         self.inner.compare_enable = if compare_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_compare_op(mut self, compare_op: vk::CompareOp) -> Self {
+    pub fn compare_op(mut self, compare_op: vk::CompareOp) -> Self {
         self.inner.compare_op = compare_op;
         self
     }
-    pub fn set_min_lod(mut self, min_lod: f32) -> Self {
+    pub fn min_lod(mut self, min_lod: f32) -> Self {
         self.inner.min_lod = min_lod;
         self
     }
-    pub fn set_max_lod(mut self, max_lod: f32) -> Self {
+    pub fn max_lod(mut self, max_lod: f32) -> Self {
         self.inner.max_lod = max_lod;
         self
     }
-    pub fn set_border_color(mut self, border_color: vk::BorderColor) -> Self {
+    pub fn border_color(mut self, border_color: vk::BorderColor) -> Self {
         self.inner.border_color = border_color;
         self
     }
-    pub fn set_unnormalized_coordinates(mut self, unnormalized_coordinates: bool) -> Self {
+    pub fn unnormalized_coordinates(mut self, unnormalized_coordinates: bool) -> Self {
         self.inner.unnormalized_coordinates = if unnormalized_coordinates { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -2262,19 +2262,19 @@ impl<'a> CommandPoolCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::CommandPoolCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::CommandPoolCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_queue_family_index(mut self, queue_family_index: u32) -> Self {
+    pub fn queue_family_index(mut self, queue_family_index: u32) -> Self {
         self.inner.queue_family_index = queue_family_index;
         self
     }
@@ -2302,23 +2302,23 @@ impl<'a> CommandBufferAllocateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_command_pool(mut self, command_pool: vk::CommandPool) -> Self {
+    pub fn command_pool(mut self, command_pool: vk::CommandPool) -> Self {
         self.inner.command_pool = Some(command_pool);
         self
     }
-    pub fn set_level(mut self, level: vk::CommandBufferLevel) -> Self {
+    pub fn level(mut self, level: vk::CommandBufferLevel) -> Self {
         self.inner.level = level;
         self
     }
-    pub fn set_command_buffer_count(mut self, command_buffer_count: u32) -> Self {
+    pub fn command_buffer_count(mut self, command_buffer_count: u32) -> Self {
         self.inner.command_buffer_count = command_buffer_count;
         self
     }
@@ -2346,35 +2346,35 @@ impl<'a> CommandBufferInheritanceInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_render_pass(mut self, render_pass: Option<vk::RenderPass>) -> Self {
+    pub fn render_pass(mut self, render_pass: Option<vk::RenderPass>) -> Self {
         self.inner.render_pass = render_pass;
         self
     }
-    pub fn set_subpass(mut self, subpass: u32) -> Self {
+    pub fn subpass(mut self, subpass: u32) -> Self {
         self.inner.subpass = subpass;
         self
     }
-    pub fn set_framebuffer(mut self, framebuffer: Option<vk::Framebuffer>) -> Self {
+    pub fn framebuffer(mut self, framebuffer: Option<vk::Framebuffer>) -> Self {
         self.inner.framebuffer = framebuffer;
         self
     }
-    pub fn set_occlusion_query_enable(mut self, occlusion_query_enable: bool) -> Self {
+    pub fn occlusion_query_enable(mut self, occlusion_query_enable: bool) -> Self {
         self.inner.occlusion_query_enable = if occlusion_query_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_query_flags(mut self, query_flags: vk::QueryControlFlags) -> Self {
+    pub fn query_flags(mut self, query_flags: vk::QueryControlFlags) -> Self {
         self.inner.query_flags = query_flags;
         self
     }
-    pub fn set_pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
+    pub fn pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
         self.inner.pipeline_statistics = pipeline_statistics;
         self
     }
@@ -2402,19 +2402,19 @@ impl<'a> CommandBufferBeginInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::CommandBufferUsageFlags) -> Self {
+    pub fn flags(mut self, flags: vk::CommandBufferUsageFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_inheritance_info(mut self, p_inheritance_info: Option<&'a vk::CommandBufferInheritanceInfo>) -> Self {
+    pub fn p_inheritance_info(mut self, p_inheritance_info: Option<&'a vk::CommandBufferInheritanceInfo>) -> Self {
         self.inner.p_inheritance_info = p_inheritance_info.map_or(ptr::null(), |p| p);
         self
     }
@@ -2442,27 +2442,27 @@ impl<'a> RenderPassBeginInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_render_pass(mut self, render_pass: vk::RenderPass) -> Self {
+    pub fn render_pass(mut self, render_pass: vk::RenderPass) -> Self {
         self.inner.render_pass = Some(render_pass);
         self
     }
-    pub fn set_framebuffer(mut self, framebuffer: vk::Framebuffer) -> Self {
+    pub fn framebuffer(mut self, framebuffer: vk::Framebuffer) -> Self {
         self.inner.framebuffer = Some(framebuffer);
         self
     }
-    pub fn set_render_area(mut self, render_area: vk::Rect2D) -> Self {
+    pub fn render_area(mut self, render_area: vk::Rect2D) -> Self {
         self.inner.render_area = render_area;
         self
     }
-    pub fn set_p_clear_values(mut self, p_clear_values: &'a [vk::ClearValue]) -> Self {
+    pub fn p_clear_values(mut self, p_clear_values: &'a [vk::ClearValue]) -> Self {
         self.inner.clear_value_count = p_clear_values.len() as u32;
         self.inner.p_clear_values = p_clear_values.as_ptr();
         self
@@ -2491,20 +2491,20 @@ impl<'a> SubpassDescriptionBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_flags(mut self, flags: vk::SubpassDescriptionFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SubpassDescriptionFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn set_p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference]) -> Self {
+    pub fn p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
         self.inner.p_input_attachments = p_input_attachments.as_ptr();
         self
     }
-    pub fn set_p_color_attachments(
+    pub fn p_color_attachments(
         mut self,
         p_color_attachments: &'a [vk::AttachmentReference],
         p_resolve_attachments: Option<&'a [vk::AttachmentReference]>,
@@ -2517,14 +2517,14 @@ impl<'a> SubpassDescriptionBuilder<'a> {
         self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
-    pub fn set_p_depth_stencil_attachment(
+    pub fn p_depth_stencil_attachment(
         mut self,
         p_depth_stencil_attachment: Option<&'a vk::AttachmentReference>,
     ) -> Self {
         self.inner.p_depth_stencil_attachment = p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
+    pub fn p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
         self.inner.preserve_attachment_count = p_preserve_attachments.len() as u32;
         self.inner.p_preserve_attachments = p_preserve_attachments.as_ptr();
         self
@@ -2553,29 +2553,29 @@ impl<'a> RenderPassCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::RenderPassCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::RenderPassCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription]) -> Self {
+    pub fn p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
         self.inner.p_attachments = p_attachments.as_ptr();
         self
     }
-    pub fn set_p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription]) -> Self {
+    pub fn p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription]) -> Self {
         self.inner.subpass_count = p_subpasses.len() as u32;
         self.inner.p_subpasses = p_subpasses.as_ptr();
         self
     }
-    pub fn set_p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency]) -> Self {
+    pub fn p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency]) -> Self {
         self.inner.dependency_count = p_dependencies.len() as u32;
         self.inner.p_dependencies = p_dependencies.as_ptr();
         self
@@ -2604,15 +2604,15 @@ impl<'a> EventCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::EventCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::EventCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -2640,15 +2640,15 @@ impl<'a> FenceCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::FenceCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::FenceCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -2676,15 +2676,15 @@ impl<'a> SemaphoreCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::SemaphoreCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SemaphoreCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -2712,27 +2712,27 @@ impl<'a> QueryPoolCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::QueryPoolCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::QueryPoolCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_query_type(mut self, query_type: vk::QueryType) -> Self {
+    pub fn query_type(mut self, query_type: vk::QueryType) -> Self {
         self.inner.query_type = query_type;
         self
     }
-    pub fn set_query_count(mut self, query_count: u32) -> Self {
+    pub fn query_count(mut self, query_count: u32) -> Self {
         self.inner.query_count = query_count;
         self
     }
-    pub fn set_pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
+    pub fn pipeline_statistics(mut self, pipeline_statistics: vk::QueryPipelineStatisticFlags) -> Self {
         self.inner.pipeline_statistics = pipeline_statistics;
         self
     }
@@ -2760,36 +2760,36 @@ impl<'a> FramebufferCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::FramebufferCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::FramebufferCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_render_pass(mut self, render_pass: vk::RenderPass) -> Self {
+    pub fn render_pass(mut self, render_pass: vk::RenderPass) -> Self {
         self.inner.render_pass = Some(render_pass);
         self
     }
-    pub fn set_p_attachments(mut self, p_attachments: &'a [vk::ImageView]) -> Self {
+    pub fn p_attachments(mut self, p_attachments: &'a [vk::ImageView]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
         self.inner.p_attachments = p_attachments.as_ptr();
         self
     }
-    pub fn set_width(mut self, width: u32) -> Self {
+    pub fn width(mut self, width: u32) -> Self {
         self.inner.width = width;
         self
     }
-    pub fn set_height(mut self, height: u32) -> Self {
+    pub fn height(mut self, height: u32) -> Self {
         self.inner.height = height;
         self
     }
-    pub fn set_layers(mut self, layers: u32) -> Self {
+    pub fn layers(mut self, layers: u32) -> Self {
         self.inner.layers = layers;
         self
     }
@@ -2817,15 +2817,15 @@ impl<'a> SubmitInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphores(
+    pub fn p_wait_semaphores(
         mut self,
         p_wait_semaphores: &'a [vk::Semaphore],
         p_wait_dst_stage_mask: &'a [vk::PipelineStageFlags],
@@ -2836,12 +2836,12 @@ impl<'a> SubmitInfoBuilder<'a> {
         self.inner.p_wait_dst_stage_mask = p_wait_dst_stage_mask.as_ptr();
         self
     }
-    pub fn set_p_command_buffers(mut self, p_command_buffers: &'a [vk::CommandBuffer]) -> Self {
+    pub fn p_command_buffers(mut self, p_command_buffers: &'a [vk::CommandBuffer]) -> Self {
         self.inner.command_buffer_count = p_command_buffers.len() as u32;
         self.inner.p_command_buffers = p_command_buffers.as_ptr();
         self
     }
-    pub fn set_p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
+    pub fn p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphores.len() as u32;
         self.inner.p_signal_semaphores = p_signal_semaphores.as_ptr();
         self
@@ -2870,19 +2870,19 @@ impl<'a> DisplayModeCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DisplayModeCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::DisplayModeCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_parameters(mut self, parameters: vk::DisplayModeParametersKHR) -> Self {
+    pub fn parameters(mut self, parameters: vk::DisplayModeParametersKHR) -> Self {
         self.inner.parameters = parameters;
         self
     }
@@ -2910,43 +2910,43 @@ impl<'a> DisplaySurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DisplaySurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::DisplaySurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_display_mode(mut self, display_mode: vk::DisplayModeKHR) -> Self {
+    pub fn display_mode(mut self, display_mode: vk::DisplayModeKHR) -> Self {
         self.inner.display_mode = Some(display_mode);
         self
     }
-    pub fn set_plane_index(mut self, plane_index: u32) -> Self {
+    pub fn plane_index(mut self, plane_index: u32) -> Self {
         self.inner.plane_index = plane_index;
         self
     }
-    pub fn set_plane_stack_index(mut self, plane_stack_index: u32) -> Self {
+    pub fn plane_stack_index(mut self, plane_stack_index: u32) -> Self {
         self.inner.plane_stack_index = plane_stack_index;
         self
     }
-    pub fn set_transform(mut self, transform: vk::SurfaceTransformFlagsKHR) -> Self {
+    pub fn transform(mut self, transform: vk::SurfaceTransformFlagsKHR) -> Self {
         self.inner.transform = transform;
         self
     }
-    pub fn set_global_alpha(mut self, global_alpha: f32) -> Self {
+    pub fn global_alpha(mut self, global_alpha: f32) -> Self {
         self.inner.global_alpha = global_alpha;
         self
     }
-    pub fn set_alpha_mode(mut self, alpha_mode: vk::DisplayPlaneAlphaFlagsKHR) -> Self {
+    pub fn alpha_mode(mut self, alpha_mode: vk::DisplayPlaneAlphaFlagsKHR) -> Self {
         self.inner.alpha_mode = alpha_mode;
         self
     }
-    pub fn set_image_extent(mut self, image_extent: vk::Extent2D) -> Self {
+    pub fn image_extent(mut self, image_extent: vk::Extent2D) -> Self {
         self.inner.image_extent = image_extent;
         self
     }
@@ -2974,23 +2974,23 @@ impl<'a> DisplayPresentInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_rect(mut self, src_rect: vk::Rect2D) -> Self {
+    pub fn src_rect(mut self, src_rect: vk::Rect2D) -> Self {
         self.inner.src_rect = src_rect;
         self
     }
-    pub fn set_dst_rect(mut self, dst_rect: vk::Rect2D) -> Self {
+    pub fn dst_rect(mut self, dst_rect: vk::Rect2D) -> Self {
         self.inner.dst_rect = dst_rect;
         self
     }
-    pub fn set_persistent(mut self, persistent: bool) -> Self {
+    pub fn persistent(mut self, persistent: bool) -> Self {
         self.inner.persistent = if persistent { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -3018,19 +3018,19 @@ impl<'a> AndroidSurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::AndroidSurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::AndroidSurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_window(mut self, window: *mut vk::ANativeWindow) -> Self {
+    pub fn window(mut self, window: *mut vk::ANativeWindow) -> Self {
         self.inner.window = window;
         self
     }
@@ -3058,23 +3058,23 @@ impl<'a> MirSurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::MirSurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::MirSurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_connection(mut self, connection: *mut vk::MirConnection) -> Self {
+    pub fn connection(mut self, connection: *mut vk::MirConnection) -> Self {
         self.inner.connection = connection;
         self
     }
-    pub fn set_mir_surface(mut self, mir_surface: *mut vk::MirSurface) -> Self {
+    pub fn mir_surface(mut self, mir_surface: *mut vk::MirSurface) -> Self {
         self.inner.mir_surface = mir_surface;
         self
     }
@@ -3102,19 +3102,19 @@ impl<'a> ViSurfaceCreateInfoNNBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ViSurfaceCreateFlagsNN) -> Self {
+    pub fn flags(mut self, flags: vk::ViSurfaceCreateFlagsNN) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_window(mut self, window: *mut c_void) -> Self {
+    pub fn window(mut self, window: *mut c_void) -> Self {
         self.inner.window = window;
         self
     }
@@ -3142,23 +3142,23 @@ impl<'a> WaylandSurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::WaylandSurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::WaylandSurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_display(mut self, display: *mut vk::wl_display) -> Self {
+    pub fn display(mut self, display: *mut vk::wl_display) -> Self {
         self.inner.display = display;
         self
     }
-    pub fn set_surface(mut self, surface: *mut vk::wl_surface) -> Self {
+    pub fn surface(mut self, surface: *mut vk::wl_surface) -> Self {
         self.inner.surface = surface;
         self
     }
@@ -3186,23 +3186,23 @@ impl<'a> Win32SurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::Win32SurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::Win32SurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_hinstance(mut self, hinstance: vk::HINSTANCE) -> Self {
+    pub fn hinstance(mut self, hinstance: vk::HINSTANCE) -> Self {
         self.inner.hinstance = hinstance;
         self
     }
-    pub fn set_hwnd(mut self, hwnd: vk::HWND) -> Self {
+    pub fn hwnd(mut self, hwnd: vk::HWND) -> Self {
         self.inner.hwnd = hwnd;
         self
     }
@@ -3230,23 +3230,23 @@ impl<'a> XlibSurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::XlibSurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::XlibSurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_dpy(mut self, dpy: *mut vk::Display) -> Self {
+    pub fn dpy(mut self, dpy: *mut vk::Display) -> Self {
         self.inner.dpy = dpy;
         self
     }
-    pub fn set_window(mut self, window: vk::Window) -> Self {
+    pub fn window(mut self, window: vk::Window) -> Self {
         self.inner.window = window;
         self
     }
@@ -3274,23 +3274,23 @@ impl<'a> XcbSurfaceCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::XcbSurfaceCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::XcbSurfaceCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_connection(mut self, connection: *mut vk::xcb_connection_t) -> Self {
+    pub fn connection(mut self, connection: *mut vk::xcb_connection_t) -> Self {
         self.inner.connection = connection;
         self
     }
-    pub fn set_window(mut self, window: vk::xcb_window_t) -> Self {
+    pub fn window(mut self, window: vk::xcb_window_t) -> Self {
         self.inner.window = window;
         self
     }
@@ -3318,19 +3318,19 @@ impl<'a> ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ImagePipeSurfaceCreateFlagsFUCHSIA) -> Self {
+    pub fn flags(mut self, flags: vk::ImagePipeSurfaceCreateFlagsFUCHSIA) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_image_pipe_handle(mut self, image_pipe_handle: vk::zx_handle_t) -> Self {
+    pub fn image_pipe_handle(mut self, image_pipe_handle: vk::zx_handle_t) -> Self {
         self.inner.image_pipe_handle = image_pipe_handle;
         self
     }
@@ -3358,72 +3358,72 @@ impl<'a> SwapchainCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::SwapchainCreateFlagsKHR) -> Self {
+    pub fn flags(mut self, flags: vk::SwapchainCreateFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_surface(mut self, surface: vk::SurfaceKHR) -> Self {
+    pub fn surface(mut self, surface: vk::SurfaceKHR) -> Self {
         self.inner.surface = Some(surface);
         self
     }
-    pub fn set_min_image_count(mut self, min_image_count: u32) -> Self {
+    pub fn min_image_count(mut self, min_image_count: u32) -> Self {
         self.inner.min_image_count = min_image_count;
         self
     }
-    pub fn set_image_format(mut self, image_format: vk::Format) -> Self {
+    pub fn image_format(mut self, image_format: vk::Format) -> Self {
         self.inner.image_format = image_format;
         self
     }
-    pub fn set_image_color_space(mut self, image_color_space: vk::ColorSpaceKHR) -> Self {
+    pub fn image_color_space(mut self, image_color_space: vk::ColorSpaceKHR) -> Self {
         self.inner.image_color_space = image_color_space;
         self
     }
-    pub fn set_image_extent(mut self, image_extent: vk::Extent2D) -> Self {
+    pub fn image_extent(mut self, image_extent: vk::Extent2D) -> Self {
         self.inner.image_extent = image_extent;
         self
     }
-    pub fn set_image_array_layers(mut self, image_array_layers: u32) -> Self {
+    pub fn image_array_layers(mut self, image_array_layers: u32) -> Self {
         self.inner.image_array_layers = image_array_layers;
         self
     }
-    pub fn set_image_usage(mut self, image_usage: vk::ImageUsageFlags) -> Self {
+    pub fn image_usage(mut self, image_usage: vk::ImageUsageFlags) -> Self {
         self.inner.image_usage = image_usage;
         self
     }
-    pub fn set_image_sharing_mode(mut self, image_sharing_mode: vk::SharingMode) -> Self {
+    pub fn image_sharing_mode(mut self, image_sharing_mode: vk::SharingMode) -> Self {
         self.inner.image_sharing_mode = image_sharing_mode;
         self
     }
-    pub fn set_p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+    pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
         self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
         self
     }
-    pub fn set_pre_transform(mut self, pre_transform: vk::SurfaceTransformFlagsKHR) -> Self {
+    pub fn pre_transform(mut self, pre_transform: vk::SurfaceTransformFlagsKHR) -> Self {
         self.inner.pre_transform = pre_transform;
         self
     }
-    pub fn set_composite_alpha(mut self, composite_alpha: vk::CompositeAlphaFlagsKHR) -> Self {
+    pub fn composite_alpha(mut self, composite_alpha: vk::CompositeAlphaFlagsKHR) -> Self {
         self.inner.composite_alpha = composite_alpha;
         self
     }
-    pub fn set_present_mode(mut self, present_mode: vk::PresentModeKHR) -> Self {
+    pub fn present_mode(mut self, present_mode: vk::PresentModeKHR) -> Self {
         self.inner.present_mode = present_mode;
         self
     }
-    pub fn set_clipped(mut self, clipped: bool) -> Self {
+    pub fn clipped(mut self, clipped: bool) -> Self {
         self.inner.clipped = if clipped { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_old_swapchain(mut self, old_swapchain: Option<vk::SwapchainKHR>) -> Self {
+    pub fn old_swapchain(mut self, old_swapchain: Option<vk::SwapchainKHR>) -> Self {
         self.inner.old_swapchain = old_swapchain;
         self
     }
@@ -3451,27 +3451,27 @@ impl<'a> PresentInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
+    pub fn p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
         self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
         self
     }
-    pub fn set_p_swapchains(mut self, p_swapchains: &'a [vk::SwapchainKHR], p_image_indices: &'a [u32]) -> Self {
+    pub fn p_swapchains(mut self, p_swapchains: &'a [vk::SwapchainKHR], p_image_indices: &'a [u32]) -> Self {
         self.inner.swapchain_count = p_swapchains.len() as u32;
         assert_eq!(self.inner.swapchain_count, p_image_indices.len() as u32);
         self.inner.p_swapchains = p_swapchains.as_ptr();
         self.inner.p_image_indices = p_image_indices.as_ptr();
         self
     }
-    pub fn set_p_results(mut self, p_results: *mut vk::Result) -> Self {
+    pub fn p_results(mut self, p_results: *mut vk::Result) -> Self {
         self.inner.p_results = p_results;
         self
     }
@@ -3499,23 +3499,23 @@ impl<'a> DebugReportCallbackCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DebugReportFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::DebugReportFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_pfn_callback(mut self, pfn_callback: vk::FnDebugReportCallbackEXT) -> Self {
+    pub fn pfn_callback(mut self, pfn_callback: vk::FnDebugReportCallbackEXT) -> Self {
         self.inner.pfn_callback = Some(pfn_callback);
         self
     }
-    pub fn set_p_user_data(mut self, p_user_data: *mut c_void) -> Self {
+    pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
         self.inner.p_user_data = p_user_data;
         self
     }
@@ -3543,18 +3543,15 @@ impl<'a> ValidationFlagsEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_disabled_validation_checks(
-        mut self,
-        p_disabled_validation_checks: &'a [vk::ValidationCheckEXT],
-    ) -> Self {
+    pub fn p_disabled_validation_checks(mut self, p_disabled_validation_checks: &'a [vk::ValidationCheckEXT]) -> Self {
         self.inner.disabled_validation_check_count = p_disabled_validation_checks.len() as u32;
         self.inner.p_disabled_validation_checks = p_disabled_validation_checks.as_ptr();
         self
@@ -3583,15 +3580,15 @@ impl<'a> PipelineRasterizationStateRasterizationOrderAMDBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_rasterization_order(mut self, rasterization_order: vk::RasterizationOrderAMD) -> Self {
+    pub fn rasterization_order(mut self, rasterization_order: vk::RasterizationOrderAMD) -> Self {
         self.inner.rasterization_order = rasterization_order;
         self
     }
@@ -3619,23 +3616,23 @@ impl<'a> DebugMarkerObjectNameInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_type(mut self, object_type: vk::DebugReportObjectTypeEXT) -> Self {
+    pub fn object_type(mut self, object_type: vk::DebugReportObjectTypeEXT) -> Self {
         self.inner.object_type = object_type;
         self
     }
-    pub fn set_object(mut self, object: u64) -> Self {
+    pub fn object(mut self, object: u64) -> Self {
         self.inner.object = object;
         self
     }
-    pub fn set_p_object_name(mut self, p_object_name: &'a CStr) -> Self {
+    pub fn p_object_name(mut self, p_object_name: &'a CStr) -> Self {
         self.inner.p_object_name = p_object_name.as_ptr();
         self
     }
@@ -3663,31 +3660,31 @@ impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_type(mut self, object_type: vk::DebugReportObjectTypeEXT) -> Self {
+    pub fn object_type(mut self, object_type: vk::DebugReportObjectTypeEXT) -> Self {
         self.inner.object_type = object_type;
         self
     }
-    pub fn set_object(mut self, object: u64) -> Self {
+    pub fn object(mut self, object: u64) -> Self {
         self.inner.object = object;
         self
     }
-    pub fn set_tag_name(mut self, tag_name: u64) -> Self {
+    pub fn tag_name(mut self, tag_name: u64) -> Self {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn set_tag_size(mut self, tag_size: usize) -> Self {
+    pub fn tag_size(mut self, tag_size: usize) -> Self {
         self.inner.tag_size = tag_size;
         self
     }
-    pub fn set_p_tag(mut self, p_tag: *const c_void) -> Self {
+    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
         self.inner.p_tag = p_tag;
         self
     }
@@ -3715,15 +3712,15 @@ impl<'a> DebugMarkerMarkerInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_marker_name(mut self, p_marker_name: &'a CStr) -> Self {
+    pub fn p_marker_name(mut self, p_marker_name: &'a CStr) -> Self {
         self.inner.p_marker_name = p_marker_name.as_ptr();
         self
     }
@@ -3751,15 +3748,15 @@ impl<'a> DedicatedAllocationImageCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
+    pub fn dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
         self.inner.dedicated_allocation = if dedicated_allocation { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -3787,15 +3784,15 @@ impl<'a> DedicatedAllocationBufferCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
+    pub fn dedicated_allocation(mut self, dedicated_allocation: bool) -> Self {
         self.inner.dedicated_allocation = if dedicated_allocation { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -3823,19 +3820,19 @@ impl<'a> DedicatedAllocationMemoryAllocateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image(mut self, image: Option<vk::Image>) -> Self {
+    pub fn image(mut self, image: Option<vk::Image>) -> Self {
         self.inner.image = image;
         self
     }
-    pub fn set_buffer(mut self, buffer: Option<vk::Buffer>) -> Self {
+    pub fn buffer(mut self, buffer: Option<vk::Buffer>) -> Self {
         self.inner.buffer = buffer;
         self
     }
@@ -3863,15 +3860,15 @@ impl<'a> ExternalMemoryImageCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -3899,15 +3896,15 @@ impl<'a> ExportMemoryAllocateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -3935,19 +3932,19 @@ impl<'a> ImportMemoryWin32HandleInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlagsNV) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_handle(mut self, handle: vk::HANDLE) -> Self {
+    pub fn handle(mut self, handle: vk::HANDLE) -> Self {
         self.inner.handle = handle;
         self
     }
@@ -3975,19 +3972,19 @@ impl<'a> ExportMemoryWin32HandleInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
+    pub fn p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
         self.inner.p_attributes = p_attributes.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_dw_access(mut self, dw_access: vk::DWORD) -> Self {
+    pub fn dw_access(mut self, dw_access: vk::DWORD) -> Self {
         self.inner.dw_access = dw_access;
         self
     }
@@ -4015,15 +4012,15 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_acquire_syncs(
+    pub fn p_acquire_syncs(
         mut self,
         p_acquire_syncs: &'a [vk::DeviceMemory],
         p_acquire_keys: &'a [u64],
@@ -4037,7 +4034,7 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
         self.inner.p_acquire_timeout_milliseconds = p_acquire_timeout_milliseconds.as_ptr();
         self
     }
-    pub fn set_p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
+    pub fn p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
         self.inner.p_release_syncs = p_release_syncs.as_ptr();
@@ -4068,15 +4065,15 @@ impl<'a> DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_compute_binding_point_support(mut self, compute_binding_point_support: bool) -> Self {
+    pub fn compute_binding_point_support(mut self, compute_binding_point_support: bool) -> Self {
         self.inner.compute_binding_point_support = if compute_binding_point_support {
             vk::TRUE
         } else {
@@ -4108,40 +4105,37 @@ impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_indirect_commands_layout_token_count(
-        mut self,
-        max_indirect_commands_layout_token_count: u32,
-    ) -> Self {
+    pub fn max_indirect_commands_layout_token_count(mut self, max_indirect_commands_layout_token_count: u32) -> Self {
         self.inner.max_indirect_commands_layout_token_count = max_indirect_commands_layout_token_count;
         self
     }
-    pub fn set_max_object_entry_counts(mut self, max_object_entry_counts: u32) -> Self {
+    pub fn max_object_entry_counts(mut self, max_object_entry_counts: u32) -> Self {
         self.inner.max_object_entry_counts = max_object_entry_counts;
         self
     }
-    pub fn set_min_sequence_count_buffer_offset_alignment(
+    pub fn min_sequence_count_buffer_offset_alignment(
         mut self,
         min_sequence_count_buffer_offset_alignment: u32,
     ) -> Self {
         self.inner.min_sequence_count_buffer_offset_alignment = min_sequence_count_buffer_offset_alignment;
         self
     }
-    pub fn set_min_sequence_index_buffer_offset_alignment(
+    pub fn min_sequence_index_buffer_offset_alignment(
         mut self,
         min_sequence_index_buffer_offset_alignment: u32,
     ) -> Self {
         self.inner.min_sequence_index_buffer_offset_alignment = min_sequence_index_buffer_offset_alignment;
         self
     }
-    pub fn set_min_commands_token_buffer_offset_alignment(
+    pub fn min_commands_token_buffer_offset_alignment(
         mut self,
         min_commands_token_buffer_offset_alignment: u32,
     ) -> Self {
@@ -4172,23 +4166,23 @@ impl<'a> IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn set_flags(mut self, flags: vk::IndirectCommandsLayoutUsageFlagsNVX) -> Self {
+    pub fn flags(mut self, flags: vk::IndirectCommandsLayoutUsageFlagsNVX) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenNVX]) -> Self {
+    pub fn p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenNVX]) -> Self {
         self.inner.token_count = p_tokens.len() as u32;
         self.inner.p_tokens = p_tokens.as_ptr();
         self
@@ -4217,23 +4211,23 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
+    pub fn object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
         self.inner.object_table = Some(object_table);
         self
     }
-    pub fn set_indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
         self.inner.indirect_commands_layout = Some(indirect_commands_layout);
         self
     }
-    pub fn set_p_indirect_commands_tokens(
+    pub fn p_indirect_commands_tokens(
         mut self,
         p_indirect_commands_tokens: &'a [vk::IndirectCommandsTokenNVX],
     ) -> Self {
@@ -4241,27 +4235,27 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
         self.inner.p_indirect_commands_tokens = p_indirect_commands_tokens.as_ptr();
         self
     }
-    pub fn set_max_sequences_count(mut self, max_sequences_count: u32) -> Self {
+    pub fn max_sequences_count(mut self, max_sequences_count: u32) -> Self {
         self.inner.max_sequences_count = max_sequences_count;
         self
     }
-    pub fn set_target_command_buffer(mut self, target_command_buffer: Option<vk::CommandBuffer>) -> Self {
+    pub fn target_command_buffer(mut self, target_command_buffer: Option<vk::CommandBuffer>) -> Self {
         self.inner.target_command_buffer = target_command_buffer;
         self
     }
-    pub fn set_sequences_count_buffer(mut self, sequences_count_buffer: Option<vk::Buffer>) -> Self {
+    pub fn sequences_count_buffer(mut self, sequences_count_buffer: Option<vk::Buffer>) -> Self {
         self.inner.sequences_count_buffer = sequences_count_buffer;
         self
     }
-    pub fn set_sequences_count_offset(mut self, sequences_count_offset: vk::DeviceSize) -> Self {
+    pub fn sequences_count_offset(mut self, sequences_count_offset: vk::DeviceSize) -> Self {
         self.inner.sequences_count_offset = sequences_count_offset;
         self
     }
-    pub fn set_sequences_index_buffer(mut self, sequences_index_buffer: Option<vk::Buffer>) -> Self {
+    pub fn sequences_index_buffer(mut self, sequences_index_buffer: Option<vk::Buffer>) -> Self {
         self.inner.sequences_index_buffer = sequences_index_buffer;
         self
     }
-    pub fn set_sequences_index_offset(mut self, sequences_index_offset: vk::DeviceSize) -> Self {
+    pub fn sequences_index_offset(mut self, sequences_index_offset: vk::DeviceSize) -> Self {
         self.inner.sequences_index_offset = sequences_index_offset;
         self
     }
@@ -4289,23 +4283,23 @@ impl<'a> CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
+    pub fn object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
         self.inner.object_table = Some(object_table);
         self
     }
-    pub fn set_indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
         self.inner.indirect_commands_layout = Some(indirect_commands_layout);
         self
     }
-    pub fn set_max_sequences_count(mut self, max_sequences_count: u32) -> Self {
+    pub fn max_sequences_count(mut self, max_sequences_count: u32) -> Self {
         self.inner.max_sequences_count = max_sequences_count;
         self
     }
@@ -4333,15 +4327,15 @@ impl<'a> ObjectTableCreateInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_object_entry_types(
+    pub fn p_object_entry_types(
         mut self,
         p_object_entry_types: &'a [vk::ObjectEntryTypeNVX],
         p_object_entry_counts: &'a [u32],
@@ -4355,23 +4349,23 @@ impl<'a> ObjectTableCreateInfoNVXBuilder<'a> {
         self.inner.p_object_entry_usage_flags = p_object_entry_usage_flags.as_ptr();
         self
     }
-    pub fn set_max_uniform_buffers_per_descriptor(mut self, max_uniform_buffers_per_descriptor: u32) -> Self {
+    pub fn max_uniform_buffers_per_descriptor(mut self, max_uniform_buffers_per_descriptor: u32) -> Self {
         self.inner.max_uniform_buffers_per_descriptor = max_uniform_buffers_per_descriptor;
         self
     }
-    pub fn set_max_storage_buffers_per_descriptor(mut self, max_storage_buffers_per_descriptor: u32) -> Self {
+    pub fn max_storage_buffers_per_descriptor(mut self, max_storage_buffers_per_descriptor: u32) -> Self {
         self.inner.max_storage_buffers_per_descriptor = max_storage_buffers_per_descriptor;
         self
     }
-    pub fn set_max_storage_images_per_descriptor(mut self, max_storage_images_per_descriptor: u32) -> Self {
+    pub fn max_storage_images_per_descriptor(mut self, max_storage_images_per_descriptor: u32) -> Self {
         self.inner.max_storage_images_per_descriptor = max_storage_images_per_descriptor;
         self
     }
-    pub fn set_max_sampled_images_per_descriptor(mut self, max_sampled_images_per_descriptor: u32) -> Self {
+    pub fn max_sampled_images_per_descriptor(mut self, max_sampled_images_per_descriptor: u32) -> Self {
         self.inner.max_sampled_images_per_descriptor = max_sampled_images_per_descriptor;
         self
     }
-    pub fn set_max_pipeline_layouts(mut self, max_pipeline_layouts: u32) -> Self {
+    pub fn max_pipeline_layouts(mut self, max_pipeline_layouts: u32) -> Self {
         self.inner.max_pipeline_layouts = max_pipeline_layouts;
         self
     }
@@ -4399,15 +4393,15 @@ impl<'a> PhysicalDeviceFeatures2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_features(mut self, features: vk::PhysicalDeviceFeatures) -> Self {
+    pub fn features(mut self, features: vk::PhysicalDeviceFeatures) -> Self {
         self.inner.features = features;
         self
     }
@@ -4435,31 +4429,31 @@ impl<'a> PhysicalDeviceImageFormatInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_ty(mut self, ty: vk::ImageType) -> Self {
+    pub fn ty(mut self, ty: vk::ImageType) -> Self {
         self.inner.ty = ty;
         self
     }
-    pub fn set_tiling(mut self, tiling: vk::ImageTiling) -> Self {
+    pub fn tiling(mut self, tiling: vk::ImageTiling) -> Self {
         self.inner.tiling = tiling;
         self
     }
-    pub fn set_usage(mut self, usage: vk::ImageUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::ImageUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ImageCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::ImageCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -4487,31 +4481,31 @@ impl<'a> PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_ty(mut self, ty: vk::ImageType) -> Self {
+    pub fn ty(mut self, ty: vk::ImageType) -> Self {
         self.inner.ty = ty;
         self
     }
-    pub fn set_samples(mut self, samples: vk::SampleCountFlags) -> Self {
+    pub fn samples(mut self, samples: vk::SampleCountFlags) -> Self {
         self.inner.samples = samples;
         self
     }
-    pub fn set_usage(mut self, usage: vk::ImageUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::ImageUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
-    pub fn set_tiling(mut self, tiling: vk::ImageTiling) -> Self {
+    pub fn tiling(mut self, tiling: vk::ImageTiling) -> Self {
         self.inner.tiling = tiling;
         self
     }
@@ -4539,15 +4533,15 @@ impl<'a> PhysicalDevicePushDescriptorPropertiesKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_push_descriptors(mut self, max_push_descriptors: u32) -> Self {
+    pub fn max_push_descriptors(mut self, max_push_descriptors: u32) -> Self {
         self.inner.max_push_descriptors = max_push_descriptors;
         self
     }
@@ -4575,15 +4569,15 @@ impl<'a> PresentRegionsKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_regions(mut self, p_regions: &'a [vk::PresentRegionKHR]) -> Self {
+    pub fn p_regions(mut self, p_regions: &'a [vk::PresentRegionKHR]) -> Self {
         self.inner.swapchain_count = p_regions.len() as u32;
         self.inner.p_regions = p_regions.as_ptr();
         self
@@ -4612,7 +4606,7 @@ impl<'a> PresentRegionKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_p_rectangles(mut self, p_rectangles: &'a [vk::RectLayerKHR]) -> Self {
+    pub fn p_rectangles(mut self, p_rectangles: &'a [vk::RectLayerKHR]) -> Self {
         self.inner.rectangle_count = p_rectangles.len() as u32;
         self.inner.p_rectangles = p_rectangles.as_ptr();
         self
@@ -4641,15 +4635,15 @@ impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_variable_pointers_storage_buffer(mut self, variable_pointers_storage_buffer: bool) -> Self {
+    pub fn variable_pointers_storage_buffer(mut self, variable_pointers_storage_buffer: bool) -> Self {
         self.inner.variable_pointers_storage_buffer = if variable_pointers_storage_buffer {
             vk::TRUE
         } else {
@@ -4657,7 +4651,7 @@ impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
         };
         self
     }
-    pub fn set_variable_pointers(mut self, variable_pointers: bool) -> Self {
+    pub fn variable_pointers(mut self, variable_pointers: bool) -> Self {
         self.inner.variable_pointers = if variable_pointers { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -4685,15 +4679,15 @@ impl<'a> PhysicalDeviceExternalImageFormatInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -4721,23 +4715,23 @@ impl<'a> PhysicalDeviceExternalBufferInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::BufferCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::BufferCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_usage(mut self, usage: vk::BufferUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::BufferUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -4765,15 +4759,15 @@ impl<'a> ExternalMemoryImageCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -4801,15 +4795,15 @@ impl<'a> ExternalMemoryBufferCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -4837,15 +4831,15 @@ impl<'a> ExportMemoryAllocateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -4873,23 +4867,23 @@ impl<'a> ImportMemoryWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_handle(mut self, handle: vk::HANDLE) -> Self {
+    pub fn handle(mut self, handle: vk::HANDLE) -> Self {
         self.inner.handle = handle;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -4917,23 +4911,23 @@ impl<'a> ExportMemoryWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
+    pub fn p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
         self.inner.p_attributes = p_attributes.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_dw_access(mut self, dw_access: vk::DWORD) -> Self {
+    pub fn dw_access(mut self, dw_access: vk::DWORD) -> Self {
         self.inner.dw_access = dw_access;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -4961,19 +4955,19 @@ impl<'a> MemoryGetWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5001,19 +4995,19 @@ impl<'a> ImportMemoryFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_fd(mut self, fd: c_int) -> Self {
+    pub fn fd(mut self, fd: c_int) -> Self {
         self.inner.fd = fd;
         self
     }
@@ -5041,19 +5035,19 @@ impl<'a> MemoryGetFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5081,15 +5075,15 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_acquire_syncs(
+    pub fn p_acquire_syncs(
         mut self,
         p_acquire_syncs: &'a [vk::DeviceMemory],
         p_acquire_keys: &'a [u64],
@@ -5103,7 +5097,7 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
         self.inner.p_acquire_timeouts = p_acquire_timeouts.as_ptr();
         self
     }
-    pub fn set_p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
+    pub fn p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
         self.inner.p_release_syncs = p_release_syncs.as_ptr();
@@ -5134,15 +5128,15 @@ impl<'a> PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5170,15 +5164,15 @@ impl<'a> ExportSemaphoreCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -5206,31 +5200,31 @@ impl<'a> ImportSemaphoreWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
         self.inner.semaphore = Some(semaphore);
         self
     }
-    pub fn set_flags(mut self, flags: vk::SemaphoreImportFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SemaphoreImportFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_handle(mut self, handle: vk::HANDLE) -> Self {
+    pub fn handle(mut self, handle: vk::HANDLE) -> Self {
         self.inner.handle = handle;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -5258,23 +5252,23 @@ impl<'a> ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
+    pub fn p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
         self.inner.p_attributes = p_attributes.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_dw_access(mut self, dw_access: vk::DWORD) -> Self {
+    pub fn dw_access(mut self, dw_access: vk::DWORD) -> Self {
         self.inner.dw_access = dw_access;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -5302,20 +5296,20 @@ impl<'a> D3D12FenceSubmitInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphore_values(mut self, p_wait_semaphore_values: &'a [u64]) -> Self {
+    pub fn p_wait_semaphore_values(mut self, p_wait_semaphore_values: &'a [u64]) -> Self {
         self.inner.wait_semaphore_values_count = p_wait_semaphore_values.len() as u32;
         self.inner.p_wait_semaphore_values = p_wait_semaphore_values.as_ptr();
         self
     }
-    pub fn set_p_signal_semaphore_values(mut self, p_signal_semaphore_values: &'a [u64]) -> Self {
+    pub fn p_signal_semaphore_values(mut self, p_signal_semaphore_values: &'a [u64]) -> Self {
         self.inner.signal_semaphore_values_count = p_signal_semaphore_values.len() as u32;
         self.inner.p_signal_semaphore_values = p_signal_semaphore_values.as_ptr();
         self
@@ -5344,19 +5338,19 @@ impl<'a> SemaphoreGetWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
         self.inner.semaphore = Some(semaphore);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5384,27 +5378,27 @@ impl<'a> ImportSemaphoreFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
         self.inner.semaphore = Some(semaphore);
         self
     }
-    pub fn set_flags(mut self, flags: vk::SemaphoreImportFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SemaphoreImportFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_fd(mut self, fd: c_int) -> Self {
+    pub fn fd(mut self, fd: c_int) -> Self {
         self.inner.fd = fd;
         self
     }
@@ -5432,19 +5426,19 @@ impl<'a> SemaphoreGetFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
         self.inner.semaphore = Some(semaphore);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5472,15 +5466,15 @@ impl<'a> PhysicalDeviceExternalFenceInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5508,15 +5502,15 @@ impl<'a> ExportFenceCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_types(mut self, handle_types: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_types(mut self, handle_types: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_types = handle_types;
         self
     }
@@ -5544,31 +5538,31 @@ impl<'a> ImportFenceWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_fence(mut self, fence: vk::Fence) -> Self {
+    pub fn fence(mut self, fence: vk::Fence) -> Self {
         self.inner.fence = Some(fence);
         self
     }
-    pub fn set_flags(mut self, flags: vk::FenceImportFlags) -> Self {
+    pub fn flags(mut self, flags: vk::FenceImportFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_handle(mut self, handle: vk::HANDLE) -> Self {
+    pub fn handle(mut self, handle: vk::HANDLE) -> Self {
         self.inner.handle = handle;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -5596,23 +5590,23 @@ impl<'a> ExportFenceWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
+    pub fn p_attributes(mut self, p_attributes: Option<&'a vk::SECURITY_ATTRIBUTES>) -> Self {
         self.inner.p_attributes = p_attributes.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_dw_access(mut self, dw_access: vk::DWORD) -> Self {
+    pub fn dw_access(mut self, dw_access: vk::DWORD) -> Self {
         self.inner.dw_access = dw_access;
         self
     }
-    pub fn set_name(mut self, name: vk::LPCWSTR) -> Self {
+    pub fn name(mut self, name: vk::LPCWSTR) -> Self {
         self.inner.name = name;
         self
     }
@@ -5640,19 +5634,19 @@ impl<'a> FenceGetWin32HandleInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_fence(mut self, fence: vk::Fence) -> Self {
+    pub fn fence(mut self, fence: vk::Fence) -> Self {
         self.inner.fence = Some(fence);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5680,27 +5674,27 @@ impl<'a> ImportFenceFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_fence(mut self, fence: vk::Fence) -> Self {
+    pub fn fence(mut self, fence: vk::Fence) -> Self {
         self.inner.fence = Some(fence);
         self
     }
-    pub fn set_flags(mut self, flags: vk::FenceImportFlags) -> Self {
+    pub fn flags(mut self, flags: vk::FenceImportFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_fd(mut self, fd: c_int) -> Self {
+    pub fn fd(mut self, fd: c_int) -> Self {
         self.inner.fd = fd;
         self
     }
@@ -5728,19 +5722,19 @@ impl<'a> FenceGetFdInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_fence(mut self, fence: vk::Fence) -> Self {
+    pub fn fence(mut self, fence: vk::Fence) -> Self {
         self.inner.fence = Some(fence);
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalFenceHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
@@ -5768,23 +5762,23 @@ impl<'a> PhysicalDeviceMultiviewFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_multiview(mut self, multiview: bool) -> Self {
+    pub fn multiview(mut self, multiview: bool) -> Self {
         self.inner.multiview = if multiview { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_multiview_geometry_shader(mut self, multiview_geometry_shader: bool) -> Self {
+    pub fn multiview_geometry_shader(mut self, multiview_geometry_shader: bool) -> Self {
         self.inner.multiview_geometry_shader = if multiview_geometry_shader { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_multiview_tessellation_shader(mut self, multiview_tessellation_shader: bool) -> Self {
+    pub fn multiview_tessellation_shader(mut self, multiview_tessellation_shader: bool) -> Self {
         self.inner.multiview_tessellation_shader = if multiview_tessellation_shader {
             vk::TRUE
         } else {
@@ -5816,25 +5810,25 @@ impl<'a> RenderPassMultiviewCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_view_masks(mut self, p_view_masks: &'a [u32]) -> Self {
+    pub fn p_view_masks(mut self, p_view_masks: &'a [u32]) -> Self {
         self.inner.subpass_count = p_view_masks.len() as u32;
         self.inner.p_view_masks = p_view_masks.as_ptr();
         self
     }
-    pub fn set_p_view_offsets(mut self, p_view_offsets: &'a [i32]) -> Self {
+    pub fn p_view_offsets(mut self, p_view_offsets: &'a [i32]) -> Self {
         self.inner.dependency_count = p_view_offsets.len() as u32;
         self.inner.p_view_offsets = p_view_offsets.as_ptr();
         self
     }
-    pub fn set_p_correlation_masks(mut self, p_correlation_masks: &'a [u32]) -> Self {
+    pub fn p_correlation_masks(mut self, p_correlation_masks: &'a [u32]) -> Self {
         self.inner.correlation_mask_count = p_correlation_masks.len() as u32;
         self.inner.p_correlation_masks = p_correlation_masks.as_ptr();
         self
@@ -5863,15 +5857,15 @@ impl<'a> DisplayPowerInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_power_state(mut self, power_state: vk::DisplayPowerStateEXT) -> Self {
+    pub fn power_state(mut self, power_state: vk::DisplayPowerStateEXT) -> Self {
         self.inner.power_state = power_state;
         self
     }
@@ -5899,15 +5893,15 @@ impl<'a> DeviceEventInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_device_event(mut self, device_event: vk::DeviceEventTypeEXT) -> Self {
+    pub fn device_event(mut self, device_event: vk::DeviceEventTypeEXT) -> Self {
         self.inner.device_event = device_event;
         self
     }
@@ -5935,15 +5929,15 @@ impl<'a> DisplayEventInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_display_event(mut self, display_event: vk::DisplayEventTypeEXT) -> Self {
+    pub fn display_event(mut self, display_event: vk::DisplayEventTypeEXT) -> Self {
         self.inner.display_event = display_event;
         self
     }
@@ -5971,15 +5965,15 @@ impl<'a> SwapchainCounterCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_surface_counters(mut self, surface_counters: vk::SurfaceCounterFlagsEXT) -> Self {
+    pub fn surface_counters(mut self, surface_counters: vk::SurfaceCounterFlagsEXT) -> Self {
         self.inner.surface_counters = surface_counters;
         self
     }
@@ -6007,19 +6001,19 @@ impl<'a> MemoryAllocateFlagsInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::MemoryAllocateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::MemoryAllocateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_device_mask(mut self, device_mask: u32) -> Self {
+    pub fn device_mask(mut self, device_mask: u32) -> Self {
         self.inner.device_mask = device_mask;
         self
     }
@@ -6047,23 +6041,23 @@ impl<'a> BindBufferMemoryInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
+    pub fn memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
         self.inner.memory_offset = memory_offset;
         self
     }
@@ -6091,15 +6085,15 @@ impl<'a> BindBufferMemoryDeviceGroupInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
+    pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
         self.inner.p_device_indices = p_device_indices.as_ptr();
         self
@@ -6128,23 +6122,23 @@ impl<'a> BindImageMemoryInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
+    pub fn memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
         self.inner.memory_offset = memory_offset;
         self
     }
@@ -6172,20 +6166,20 @@ impl<'a> BindImageMemoryDeviceGroupInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
+    pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
         self.inner.p_device_indices = p_device_indices.as_ptr();
         self
     }
-    pub fn set_p_split_instance_bind_regions(mut self, p_split_instance_bind_regions: &'a [vk::Rect2D]) -> Self {
+    pub fn p_split_instance_bind_regions(mut self, p_split_instance_bind_regions: &'a [vk::Rect2D]) -> Self {
         self.inner.split_instance_bind_region_count = p_split_instance_bind_regions.len() as u32;
         self.inner.p_split_instance_bind_regions = p_split_instance_bind_regions.as_ptr();
         self
@@ -6214,19 +6208,19 @@ impl<'a> DeviceGroupRenderPassBeginInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_device_mask(mut self, device_mask: u32) -> Self {
+    pub fn device_mask(mut self, device_mask: u32) -> Self {
         self.inner.device_mask = device_mask;
         self
     }
-    pub fn set_p_device_render_areas(mut self, p_device_render_areas: &'a [vk::Rect2D]) -> Self {
+    pub fn p_device_render_areas(mut self, p_device_render_areas: &'a [vk::Rect2D]) -> Self {
         self.inner.device_render_area_count = p_device_render_areas.len() as u32;
         self.inner.p_device_render_areas = p_device_render_areas.as_ptr();
         self
@@ -6255,15 +6249,15 @@ impl<'a> DeviceGroupCommandBufferBeginInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_device_mask(mut self, device_mask: u32) -> Self {
+    pub fn device_mask(mut self, device_mask: u32) -> Self {
         self.inner.device_mask = device_mask;
         self
     }
@@ -6291,25 +6285,25 @@ impl<'a> DeviceGroupSubmitInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_wait_semaphore_device_indices(mut self, p_wait_semaphore_device_indices: &'a [u32]) -> Self {
+    pub fn p_wait_semaphore_device_indices(mut self, p_wait_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphore_device_indices.len() as u32;
         self.inner.p_wait_semaphore_device_indices = p_wait_semaphore_device_indices.as_ptr();
         self
     }
-    pub fn set_p_command_buffer_device_masks(mut self, p_command_buffer_device_masks: &'a [u32]) -> Self {
+    pub fn p_command_buffer_device_masks(mut self, p_command_buffer_device_masks: &'a [u32]) -> Self {
         self.inner.command_buffer_count = p_command_buffer_device_masks.len() as u32;
         self.inner.p_command_buffer_device_masks = p_command_buffer_device_masks.as_ptr();
         self
     }
-    pub fn set_p_signal_semaphore_device_indices(mut self, p_signal_semaphore_device_indices: &'a [u32]) -> Self {
+    pub fn p_signal_semaphore_device_indices(mut self, p_signal_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphore_device_indices.len() as u32;
         self.inner.p_signal_semaphore_device_indices = p_signal_semaphore_device_indices.as_ptr();
         self
@@ -6338,19 +6332,19 @@ impl<'a> DeviceGroupBindSparseInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_resource_device_index(mut self, resource_device_index: u32) -> Self {
+    pub fn resource_device_index(mut self, resource_device_index: u32) -> Self {
         self.inner.resource_device_index = resource_device_index;
         self
     }
-    pub fn set_memory_device_index(mut self, memory_device_index: u32) -> Self {
+    pub fn memory_device_index(mut self, memory_device_index: u32) -> Self {
         self.inner.memory_device_index = memory_device_index;
         self
     }
@@ -6378,15 +6372,15 @@ impl<'a> ImageSwapchainCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_swapchain(mut self, swapchain: Option<vk::SwapchainKHR>) -> Self {
+    pub fn swapchain(mut self, swapchain: Option<vk::SwapchainKHR>) -> Self {
         self.inner.swapchain = swapchain;
         self
     }
@@ -6414,19 +6408,19 @@ impl<'a> BindImageMemorySwapchainInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
+    pub fn swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
         self.inner.swapchain = Some(swapchain);
         self
     }
-    pub fn set_image_index(mut self, image_index: u32) -> Self {
+    pub fn image_index(mut self, image_index: u32) -> Self {
         self.inner.image_index = image_index;
         self
     }
@@ -6454,31 +6448,31 @@ impl<'a> AcquireNextImageInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
+    pub fn swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
         self.inner.swapchain = Some(swapchain);
         self
     }
-    pub fn set_timeout(mut self, timeout: u64) -> Self {
+    pub fn timeout(mut self, timeout: u64) -> Self {
         self.inner.timeout = timeout;
         self
     }
-    pub fn set_semaphore(mut self, semaphore: Option<vk::Semaphore>) -> Self {
+    pub fn semaphore(mut self, semaphore: Option<vk::Semaphore>) -> Self {
         self.inner.semaphore = semaphore;
         self
     }
-    pub fn set_fence(mut self, fence: Option<vk::Fence>) -> Self {
+    pub fn fence(mut self, fence: Option<vk::Fence>) -> Self {
         self.inner.fence = fence;
         self
     }
-    pub fn set_device_mask(mut self, device_mask: u32) -> Self {
+    pub fn device_mask(mut self, device_mask: u32) -> Self {
         self.inner.device_mask = device_mask;
         self
     }
@@ -6506,20 +6500,20 @@ impl<'a> DeviceGroupPresentInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_device_masks(mut self, p_device_masks: &'a [u32]) -> Self {
+    pub fn p_device_masks(mut self, p_device_masks: &'a [u32]) -> Self {
         self.inner.swapchain_count = p_device_masks.len() as u32;
         self.inner.p_device_masks = p_device_masks.as_ptr();
         self
     }
-    pub fn set_mode(mut self, mode: vk::DeviceGroupPresentModeFlagsKHR) -> Self {
+    pub fn mode(mut self, mode: vk::DeviceGroupPresentModeFlagsKHR) -> Self {
         self.inner.mode = mode;
         self
     }
@@ -6547,15 +6541,15 @@ impl<'a> DeviceGroupDeviceCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_physical_devices(mut self, p_physical_devices: &'a [vk::PhysicalDevice]) -> Self {
+    pub fn p_physical_devices(mut self, p_physical_devices: &'a [vk::PhysicalDevice]) -> Self {
         self.inner.physical_device_count = p_physical_devices.len() as u32;
         self.inner.p_physical_devices = p_physical_devices.as_ptr();
         self
@@ -6584,15 +6578,15 @@ impl<'a> DeviceGroupSwapchainCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_modes(mut self, modes: vk::DeviceGroupPresentModeFlagsKHR) -> Self {
+    pub fn modes(mut self, modes: vk::DeviceGroupPresentModeFlagsKHR) -> Self {
         self.inner.modes = modes;
         self
     }
@@ -6620,19 +6614,19 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DescriptorUpdateTemplateCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DescriptorUpdateTemplateCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_descriptor_update_entries(
+    pub fn p_descriptor_update_entries(
         mut self,
         p_descriptor_update_entries: &'a [vk::DescriptorUpdateTemplateEntry],
     ) -> Self {
@@ -6640,23 +6634,23 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         self.inner.p_descriptor_update_entries = p_descriptor_update_entries.as_ptr();
         self
     }
-    pub fn set_template_type(mut self, template_type: vk::DescriptorUpdateTemplateType) -> Self {
+    pub fn template_type(mut self, template_type: vk::DescriptorUpdateTemplateType) -> Self {
         self.inner.template_type = template_type;
         self
     }
-    pub fn set_descriptor_set_layout(mut self, descriptor_set_layout: Option<vk::DescriptorSetLayout>) -> Self {
+    pub fn descriptor_set_layout(mut self, descriptor_set_layout: Option<vk::DescriptorSetLayout>) -> Self {
         self.inner.descriptor_set_layout = descriptor_set_layout;
         self
     }
-    pub fn set_pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn set_pipeline_layout(mut self, pipeline_layout: vk::PipelineLayout) -> Self {
+    pub fn pipeline_layout(mut self, pipeline_layout: vk::PipelineLayout) -> Self {
         self.inner.pipeline_layout = Some(pipeline_layout);
         self
     }
-    pub fn set_set(mut self, set: u32) -> Self {
+    pub fn set(mut self, set: u32) -> Self {
         self.inner.set = set;
         self
     }
@@ -6684,43 +6678,43 @@ impl<'a> HdrMetadataEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_display_primary_red(mut self, display_primary_red: vk::XYColorEXT) -> Self {
+    pub fn display_primary_red(mut self, display_primary_red: vk::XYColorEXT) -> Self {
         self.inner.display_primary_red = display_primary_red;
         self
     }
-    pub fn set_display_primary_green(mut self, display_primary_green: vk::XYColorEXT) -> Self {
+    pub fn display_primary_green(mut self, display_primary_green: vk::XYColorEXT) -> Self {
         self.inner.display_primary_green = display_primary_green;
         self
     }
-    pub fn set_display_primary_blue(mut self, display_primary_blue: vk::XYColorEXT) -> Self {
+    pub fn display_primary_blue(mut self, display_primary_blue: vk::XYColorEXT) -> Self {
         self.inner.display_primary_blue = display_primary_blue;
         self
     }
-    pub fn set_white_point(mut self, white_point: vk::XYColorEXT) -> Self {
+    pub fn white_point(mut self, white_point: vk::XYColorEXT) -> Self {
         self.inner.white_point = white_point;
         self
     }
-    pub fn set_max_luminance(mut self, max_luminance: f32) -> Self {
+    pub fn max_luminance(mut self, max_luminance: f32) -> Self {
         self.inner.max_luminance = max_luminance;
         self
     }
-    pub fn set_min_luminance(mut self, min_luminance: f32) -> Self {
+    pub fn min_luminance(mut self, min_luminance: f32) -> Self {
         self.inner.min_luminance = min_luminance;
         self
     }
-    pub fn set_max_content_light_level(mut self, max_content_light_level: f32) -> Self {
+    pub fn max_content_light_level(mut self, max_content_light_level: f32) -> Self {
         self.inner.max_content_light_level = max_content_light_level;
         self
     }
-    pub fn set_max_frame_average_light_level(mut self, max_frame_average_light_level: f32) -> Self {
+    pub fn max_frame_average_light_level(mut self, max_frame_average_light_level: f32) -> Self {
         self.inner.max_frame_average_light_level = max_frame_average_light_level;
         self
     }
@@ -6748,15 +6742,15 @@ impl<'a> PresentTimesInfoGOOGLEBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_times(mut self, p_times: &'a [vk::PresentTimeGOOGLE]) -> Self {
+    pub fn p_times(mut self, p_times: &'a [vk::PresentTimeGOOGLE]) -> Self {
         self.inner.swapchain_count = p_times.len() as u32;
         self.inner.p_times = p_times.as_ptr();
         self
@@ -6785,19 +6779,19 @@ impl<'a> IOSSurfaceCreateInfoMVKBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::IOSSurfaceCreateFlagsMVK) -> Self {
+    pub fn flags(mut self, flags: vk::IOSSurfaceCreateFlagsMVK) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_view(mut self, p_view: *const c_void) -> Self {
+    pub fn p_view(mut self, p_view: *const c_void) -> Self {
         self.inner.p_view = p_view;
         self
     }
@@ -6825,19 +6819,19 @@ impl<'a> MacOSSurfaceCreateInfoMVKBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::MacOSSurfaceCreateFlagsMVK) -> Self {
+    pub fn flags(mut self, flags: vk::MacOSSurfaceCreateFlagsMVK) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_view(mut self, p_view: *const c_void) -> Self {
+    pub fn p_view(mut self, p_view: *const c_void) -> Self {
         self.inner.p_view = p_view;
         self
     }
@@ -6865,19 +6859,19 @@ impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_viewport_w_scaling_enable(mut self, viewport_w_scaling_enable: bool) -> Self {
+    pub fn viewport_w_scaling_enable(mut self, viewport_w_scaling_enable: bool) -> Self {
         self.inner.viewport_w_scaling_enable = if viewport_w_scaling_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_p_viewport_w_scalings(mut self, p_viewport_w_scalings: &'a [vk::ViewportWScalingNV]) -> Self {
+    pub fn p_viewport_w_scalings(mut self, p_viewport_w_scalings: &'a [vk::ViewportWScalingNV]) -> Self {
         self.inner.viewport_count = p_viewport_w_scalings.len() as u32;
         self.inner.p_viewport_w_scalings = p_viewport_w_scalings.as_ptr();
         self
@@ -6906,23 +6900,23 @@ impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineViewportSwizzleStateCreateFlagsNV) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineViewportSwizzleStateCreateFlagsNV) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_viewport_count(mut self, viewport_count: u32) -> Self {
+    pub fn viewport_count(mut self, viewport_count: u32) -> Self {
         self.inner.viewport_count = viewport_count;
         self
     }
-    pub fn set_p_viewport_swizzles(mut self, p_viewport_swizzles: &'a [vk::ViewportSwizzleNV]) -> Self {
+    pub fn p_viewport_swizzles(mut self, p_viewport_swizzles: &'a [vk::ViewportSwizzleNV]) -> Self {
         self.inner.viewport_count = p_viewport_swizzles.len() as u32;
         self.inner.p_viewport_swizzles = p_viewport_swizzles.as_ptr();
         self
@@ -6951,15 +6945,15 @@ impl<'a> PhysicalDeviceDiscardRectanglePropertiesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_discard_rectangles(mut self, max_discard_rectangles: u32) -> Self {
+    pub fn max_discard_rectangles(mut self, max_discard_rectangles: u32) -> Self {
         self.inner.max_discard_rectangles = max_discard_rectangles;
         self
     }
@@ -6987,27 +6981,27 @@ impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineDiscardRectangleStateCreateFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineDiscardRectangleStateCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_discard_rectangle_mode(mut self, discard_rectangle_mode: vk::DiscardRectangleModeEXT) -> Self {
+    pub fn discard_rectangle_mode(mut self, discard_rectangle_mode: vk::DiscardRectangleModeEXT) -> Self {
         self.inner.discard_rectangle_mode = discard_rectangle_mode;
         self
     }
-    pub fn set_discard_rectangle_count(mut self, discard_rectangle_count: u32) -> Self {
+    pub fn discard_rectangle_count(mut self, discard_rectangle_count: u32) -> Self {
         self.inner.discard_rectangle_count = discard_rectangle_count;
         self
     }
-    pub fn set_p_discard_rectangles(mut self, p_discard_rectangles: &'a [vk::Rect2D]) -> Self {
+    pub fn p_discard_rectangles(mut self, p_discard_rectangles: &'a [vk::Rect2D]) -> Self {
         self.inner.discard_rectangle_count = p_discard_rectangles.len() as u32;
         self.inner.p_discard_rectangles = p_discard_rectangles.as_ptr();
         self
@@ -7036,15 +7030,15 @@ impl<'a> RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_aspect_references(mut self, p_aspect_references: &'a [vk::InputAttachmentAspectReference]) -> Self {
+    pub fn p_aspect_references(mut self, p_aspect_references: &'a [vk::InputAttachmentAspectReference]) -> Self {
         self.inner.aspect_reference_count = p_aspect_references.len() as u32;
         self.inner.p_aspect_references = p_aspect_references.as_ptr();
         self
@@ -7073,15 +7067,15 @@ impl<'a> PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_surface(mut self, surface: vk::SurfaceKHR) -> Self {
+    pub fn surface(mut self, surface: vk::SurfaceKHR) -> Self {
         self.inner.surface = Some(surface);
         self
     }
@@ -7109,19 +7103,19 @@ impl<'a> DisplayPlaneInfo2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_mode(mut self, mode: vk::DisplayModeKHR) -> Self {
+    pub fn mode(mut self, mode: vk::DisplayModeKHR) -> Self {
         self.inner.mode = Some(mode);
         self
     }
-    pub fn set_plane_index(mut self, plane_index: u32) -> Self {
+    pub fn plane_index(mut self, plane_index: u32) -> Self {
         self.inner.plane_index = plane_index;
         self
     }
@@ -7149,15 +7143,15 @@ impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_storage_buffer16_bit_access(mut self, storage_buffer16_bit_access: bool) -> Self {
+    pub fn storage_buffer16_bit_access(mut self, storage_buffer16_bit_access: bool) -> Self {
         self.inner.storage_buffer16_bit_access = if storage_buffer16_bit_access {
             vk::TRUE
         } else {
@@ -7165,10 +7159,7 @@ impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
         };
         self
     }
-    pub fn set_uniform_and_storage_buffer16_bit_access(
-        mut self,
-        uniform_and_storage_buffer16_bit_access: bool,
-    ) -> Self {
+    pub fn uniform_and_storage_buffer16_bit_access(mut self, uniform_and_storage_buffer16_bit_access: bool) -> Self {
         self.inner.uniform_and_storage_buffer16_bit_access = if uniform_and_storage_buffer16_bit_access {
             vk::TRUE
         } else {
@@ -7176,11 +7167,11 @@ impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
         };
         self
     }
-    pub fn set_storage_push_constant16(mut self, storage_push_constant16: bool) -> Self {
+    pub fn storage_push_constant16(mut self, storage_push_constant16: bool) -> Self {
         self.inner.storage_push_constant16 = if storage_push_constant16 { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_storage_input_output16(mut self, storage_input_output16: bool) -> Self {
+    pub fn storage_input_output16(mut self, storage_input_output16: bool) -> Self {
         self.inner.storage_input_output16 = if storage_input_output16 { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -7208,15 +7199,15 @@ impl<'a> BufferMemoryRequirementsInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
@@ -7244,15 +7235,15 @@ impl<'a> ImageMemoryRequirementsInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
@@ -7280,15 +7271,15 @@ impl<'a> ImageSparseMemoryRequirementsInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image(mut self, image: vk::Image) -> Self {
+    pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
     }
@@ -7316,19 +7307,19 @@ impl<'a> MemoryDedicatedAllocateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image(mut self, image: Option<vk::Image>) -> Self {
+    pub fn image(mut self, image: Option<vk::Image>) -> Self {
         self.inner.image = image;
         self
     }
-    pub fn set_buffer(mut self, buffer: Option<vk::Buffer>) -> Self {
+    pub fn buffer(mut self, buffer: Option<vk::Buffer>) -> Self {
         self.inner.buffer = buffer;
         self
     }
@@ -7356,15 +7347,15 @@ impl<'a> ImageViewUsageCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_usage(mut self, usage: vk::ImageUsageFlags) -> Self {
+    pub fn usage(mut self, usage: vk::ImageUsageFlags) -> Self {
         self.inner.usage = usage;
         self
     }
@@ -7392,15 +7383,15 @@ impl<'a> PipelineTessellationDomainOriginStateCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_domain_origin(mut self, domain_origin: vk::TessellationDomainOrigin) -> Self {
+    pub fn domain_origin(mut self, domain_origin: vk::TessellationDomainOrigin) -> Self {
         self.inner.domain_origin = domain_origin;
         self
     }
@@ -7428,15 +7419,15 @@ impl<'a> SamplerYcbcrConversionInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_conversion(mut self, conversion: vk::SamplerYcbcrConversion) -> Self {
+    pub fn conversion(mut self, conversion: vk::SamplerYcbcrConversion) -> Self {
         self.inner.conversion = Some(conversion);
         self
     }
@@ -7464,43 +7455,43 @@ impl<'a> SamplerYcbcrConversionCreateInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_ycbcr_model(mut self, ycbcr_model: vk::SamplerYcbcrModelConversion) -> Self {
+    pub fn ycbcr_model(mut self, ycbcr_model: vk::SamplerYcbcrModelConversion) -> Self {
         self.inner.ycbcr_model = ycbcr_model;
         self
     }
-    pub fn set_ycbcr_range(mut self, ycbcr_range: vk::SamplerYcbcrRange) -> Self {
+    pub fn ycbcr_range(mut self, ycbcr_range: vk::SamplerYcbcrRange) -> Self {
         self.inner.ycbcr_range = ycbcr_range;
         self
     }
-    pub fn set_components(mut self, components: vk::ComponentMapping) -> Self {
+    pub fn components(mut self, components: vk::ComponentMapping) -> Self {
         self.inner.components = components;
         self
     }
-    pub fn set_x_chroma_offset(mut self, x_chroma_offset: vk::ChromaLocation) -> Self {
+    pub fn x_chroma_offset(mut self, x_chroma_offset: vk::ChromaLocation) -> Self {
         self.inner.x_chroma_offset = x_chroma_offset;
         self
     }
-    pub fn set_y_chroma_offset(mut self, y_chroma_offset: vk::ChromaLocation) -> Self {
+    pub fn y_chroma_offset(mut self, y_chroma_offset: vk::ChromaLocation) -> Self {
         self.inner.y_chroma_offset = y_chroma_offset;
         self
     }
-    pub fn set_chroma_filter(mut self, chroma_filter: vk::Filter) -> Self {
+    pub fn chroma_filter(mut self, chroma_filter: vk::Filter) -> Self {
         self.inner.chroma_filter = chroma_filter;
         self
     }
-    pub fn set_force_explicit_reconstruction(mut self, force_explicit_reconstruction: bool) -> Self {
+    pub fn force_explicit_reconstruction(mut self, force_explicit_reconstruction: bool) -> Self {
         self.inner.force_explicit_reconstruction = if force_explicit_reconstruction {
             vk::TRUE
         } else {
@@ -7532,15 +7523,15 @@ impl<'a> BindImagePlaneMemoryInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_plane_aspect(mut self, plane_aspect: vk::ImageAspectFlags) -> Self {
+    pub fn plane_aspect(mut self, plane_aspect: vk::ImageAspectFlags) -> Self {
         self.inner.plane_aspect = plane_aspect;
         self
     }
@@ -7568,15 +7559,15 @@ impl<'a> ImagePlaneMemoryRequirementsInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_plane_aspect(mut self, plane_aspect: vk::ImageAspectFlags) -> Self {
+    pub fn plane_aspect(mut self, plane_aspect: vk::ImageAspectFlags) -> Self {
         self.inner.plane_aspect = plane_aspect;
         self
     }
@@ -7604,15 +7595,15 @@ impl<'a> PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_sampler_ycbcr_conversion(mut self, sampler_ycbcr_conversion: bool) -> Self {
+    pub fn sampler_ycbcr_conversion(mut self, sampler_ycbcr_conversion: bool) -> Self {
         self.inner.sampler_ycbcr_conversion = if sampler_ycbcr_conversion { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -7640,23 +7631,23 @@ impl<'a> ConditionalRenderingBeginInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_buffer(mut self, buffer: vk::Buffer) -> Self {
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
     }
-    pub fn set_offset(mut self, offset: vk::DeviceSize) -> Self {
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
         self.inner.offset = offset;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ConditionalRenderingFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::ConditionalRenderingFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -7684,15 +7675,15 @@ impl<'a> ProtectedSubmitInfoBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_protected_submit(mut self, protected_submit: bool) -> Self {
+    pub fn protected_submit(mut self, protected_submit: bool) -> Self {
         self.inner.protected_submit = if protected_submit { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -7720,15 +7711,15 @@ impl<'a> PhysicalDeviceProtectedMemoryFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_protected_memory(mut self, protected_memory: bool) -> Self {
+    pub fn protected_memory(mut self, protected_memory: bool) -> Self {
         self.inner.protected_memory = if protected_memory { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -7756,15 +7747,15 @@ impl<'a> PhysicalDeviceProtectedMemoryPropertiesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_protected_no_fault(mut self, protected_no_fault: bool) -> Self {
+    pub fn protected_no_fault(mut self, protected_no_fault: bool) -> Self {
         self.inner.protected_no_fault = if protected_no_fault { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -7792,23 +7783,23 @@ impl<'a> DeviceQueueInfo2Builder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DeviceQueueCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::DeviceQueueCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_queue_family_index(mut self, queue_family_index: u32) -> Self {
+    pub fn queue_family_index(mut self, queue_family_index: u32) -> Self {
         self.inner.queue_family_index = queue_family_index;
         self
     }
-    pub fn set_queue_index(mut self, queue_index: u32) -> Self {
+    pub fn queue_index(mut self, queue_index: u32) -> Self {
         self.inner.queue_index = queue_index;
         self
     }
@@ -7836,23 +7827,23 @@ impl<'a> PipelineCoverageToColorStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCoverageToColorStateCreateFlagsNV) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCoverageToColorStateCreateFlagsNV) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_coverage_to_color_enable(mut self, coverage_to_color_enable: bool) -> Self {
+    pub fn coverage_to_color_enable(mut self, coverage_to_color_enable: bool) -> Self {
         self.inner.coverage_to_color_enable = if coverage_to_color_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_coverage_to_color_location(mut self, coverage_to_color_location: u32) -> Self {
+    pub fn coverage_to_color_location(mut self, coverage_to_color_location: u32) -> Self {
         self.inner.coverage_to_color_location = coverage_to_color_location;
         self
     }
@@ -7880,23 +7871,23 @@ impl<'a> SampleLocationsInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_sample_locations_per_pixel(mut self, sample_locations_per_pixel: vk::SampleCountFlags) -> Self {
+    pub fn sample_locations_per_pixel(mut self, sample_locations_per_pixel: vk::SampleCountFlags) -> Self {
         self.inner.sample_locations_per_pixel = sample_locations_per_pixel;
         self
     }
-    pub fn set_sample_location_grid_size(mut self, sample_location_grid_size: vk::Extent2D) -> Self {
+    pub fn sample_location_grid_size(mut self, sample_location_grid_size: vk::Extent2D) -> Self {
         self.inner.sample_location_grid_size = sample_location_grid_size;
         self
     }
-    pub fn set_p_sample_locations(mut self, p_sample_locations: &'a [vk::SampleLocationEXT]) -> Self {
+    pub fn p_sample_locations(mut self, p_sample_locations: &'a [vk::SampleLocationEXT]) -> Self {
         self.inner.sample_locations_count = p_sample_locations.len() as u32;
         self.inner.p_sample_locations = p_sample_locations.as_ptr();
         self
@@ -7925,15 +7916,15 @@ impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_attachment_initial_sample_locations(
+    pub fn p_attachment_initial_sample_locations(
         mut self,
         p_attachment_initial_sample_locations: &'a [vk::AttachmentSampleLocationsEXT],
     ) -> Self {
@@ -7941,7 +7932,7 @@ impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
         self.inner.p_attachment_initial_sample_locations = p_attachment_initial_sample_locations.as_ptr();
         self
     }
-    pub fn set_p_post_subpass_sample_locations(
+    pub fn p_post_subpass_sample_locations(
         mut self,
         p_post_subpass_sample_locations: &'a [vk::SubpassSampleLocationsEXT],
     ) -> Self {
@@ -7973,19 +7964,19 @@ impl<'a> PipelineSampleLocationsStateCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_sample_locations_enable(mut self, sample_locations_enable: bool) -> Self {
+    pub fn sample_locations_enable(mut self, sample_locations_enable: bool) -> Self {
         self.inner.sample_locations_enable = if sample_locations_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_sample_locations_info(mut self, sample_locations_info: vk::SampleLocationsInfoEXT) -> Self {
+    pub fn sample_locations_info(mut self, sample_locations_info: vk::SampleLocationsInfoEXT) -> Self {
         self.inner.sample_locations_info = sample_locations_info;
         self
     }
@@ -8013,15 +8004,15 @@ impl<'a> SamplerReductionModeCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_reduction_mode(mut self, reduction_mode: vk::SamplerReductionModeEXT) -> Self {
+    pub fn reduction_mode(mut self, reduction_mode: vk::SamplerReductionModeEXT) -> Self {
         self.inner.reduction_mode = reduction_mode;
         self
     }
@@ -8049,15 +8040,15 @@ impl<'a> PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_advanced_blend_coherent_operations(mut self, advanced_blend_coherent_operations: bool) -> Self {
+    pub fn advanced_blend_coherent_operations(mut self, advanced_blend_coherent_operations: bool) -> Self {
         self.inner.advanced_blend_coherent_operations = if advanced_blend_coherent_operations {
             vk::TRUE
         } else {
@@ -8089,23 +8080,23 @@ impl<'a> PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_premultiplied(mut self, src_premultiplied: bool) -> Self {
+    pub fn src_premultiplied(mut self, src_premultiplied: bool) -> Self {
         self.inner.src_premultiplied = if src_premultiplied { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_dst_premultiplied(mut self, dst_premultiplied: bool) -> Self {
+    pub fn dst_premultiplied(mut self, dst_premultiplied: bool) -> Self {
         self.inner.dst_premultiplied = if dst_premultiplied { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_blend_overlap(mut self, blend_overlap: vk::BlendOverlapEXT) -> Self {
+    pub fn blend_overlap(mut self, blend_overlap: vk::BlendOverlapEXT) -> Self {
         self.inner.blend_overlap = blend_overlap;
         self
     }
@@ -8133,19 +8124,19 @@ impl<'a> WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_data_size(mut self, data_size: u32) -> Self {
+    pub fn data_size(mut self, data_size: u32) -> Self {
         self.inner.data_size = data_size;
         self
     }
-    pub fn set_p_data(mut self, p_data: *const c_void) -> Self {
+    pub fn p_data(mut self, p_data: *const c_void) -> Self {
         self.inner.p_data = p_data;
         self
     }
@@ -8173,15 +8164,15 @@ impl<'a> DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_inline_uniform_block_bindings(mut self, max_inline_uniform_block_bindings: u32) -> Self {
+    pub fn max_inline_uniform_block_bindings(mut self, max_inline_uniform_block_bindings: u32) -> Self {
         self.inner.max_inline_uniform_block_bindings = max_inline_uniform_block_bindings;
         self
     }
@@ -8209,23 +8200,23 @@ impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCoverageModulationStateCreateFlagsNV) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCoverageModulationStateCreateFlagsNV) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_coverage_modulation_mode(mut self, coverage_modulation_mode: vk::CoverageModulationModeNV) -> Self {
+    pub fn coverage_modulation_mode(mut self, coverage_modulation_mode: vk::CoverageModulationModeNV) -> Self {
         self.inner.coverage_modulation_mode = coverage_modulation_mode;
         self
     }
-    pub fn set_coverage_modulation_table_enable(mut self, coverage_modulation_table_enable: bool) -> Self {
+    pub fn coverage_modulation_table_enable(mut self, coverage_modulation_table_enable: bool) -> Self {
         self.inner.coverage_modulation_table_enable = if coverage_modulation_table_enable {
             vk::TRUE
         } else {
@@ -8233,11 +8224,11 @@ impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
         };
         self
     }
-    pub fn set_coverage_modulation_table_count(mut self, coverage_modulation_table_count: u32) -> Self {
+    pub fn coverage_modulation_table_count(mut self, coverage_modulation_table_count: u32) -> Self {
         self.inner.coverage_modulation_table_count = coverage_modulation_table_count;
         self
     }
-    pub fn set_p_coverage_modulation_table(mut self, p_coverage_modulation_table: &'a [f32]) -> Self {
+    pub fn p_coverage_modulation_table(mut self, p_coverage_modulation_table: &'a [f32]) -> Self {
         self.inner.coverage_modulation_table_count = p_coverage_modulation_table.len() as u32;
         self.inner.p_coverage_modulation_table = p_coverage_modulation_table.as_ptr();
         self
@@ -8266,15 +8257,15 @@ impl<'a> ImageFormatListCreateInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_view_formats(mut self, p_view_formats: &'a [vk::Format]) -> Self {
+    pub fn p_view_formats(mut self, p_view_formats: &'a [vk::Format]) -> Self {
         self.inner.view_format_count = p_view_formats.len() as u32;
         self.inner.p_view_formats = p_view_formats.as_ptr();
         self
@@ -8303,23 +8294,23 @@ impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::ValidationCacheCreateFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::ValidationCacheCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_initial_data_size(mut self, initial_data_size: usize) -> Self {
+    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
         self.inner.initial_data_size = initial_data_size;
         self
     }
-    pub fn set_p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
+    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
         self.inner.p_initial_data = p_initial_data;
         self
     }
@@ -8347,15 +8338,15 @@ impl<'a> ShaderModuleValidationCacheCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_validation_cache(mut self, validation_cache: vk::ValidationCacheEXT) -> Self {
+    pub fn validation_cache(mut self, validation_cache: vk::ValidationCacheEXT) -> Self {
         self.inner.validation_cache = Some(validation_cache);
         self
     }
@@ -8383,15 +8374,15 @@ impl<'a> PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shader_draw_parameters(mut self, shader_draw_parameters: bool) -> Self {
+    pub fn shader_draw_parameters(mut self, shader_draw_parameters: bool) -> Self {
         self.inner.shader_draw_parameters = if shader_draw_parameters { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -8419,27 +8410,27 @@ impl<'a> NativeBufferANDROIDBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle(mut self, handle: *const c_void) -> Self {
+    pub fn handle(mut self, handle: *const c_void) -> Self {
         self.inner.handle = handle;
         self
     }
-    pub fn set_stride(mut self, stride: c_int) -> Self {
+    pub fn stride(mut self, stride: c_int) -> Self {
         self.inner.stride = stride;
         self
     }
-    pub fn set_format(mut self, format: c_int) -> Self {
+    pub fn format(mut self, format: c_int) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_usage(mut self, usage: c_int) -> Self {
+    pub fn usage(mut self, usage: c_int) -> Self {
         self.inner.usage = usage;
         self
     }
@@ -8467,15 +8458,15 @@ impl<'a> DeviceQueueGlobalPriorityCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_global_priority(mut self, global_priority: vk::QueueGlobalPriorityEXT) -> Self {
+    pub fn global_priority(mut self, global_priority: vk::QueueGlobalPriorityEXT) -> Self {
         self.inner.global_priority = global_priority;
         self
     }
@@ -8503,23 +8494,23 @@ impl<'a> DebugUtilsObjectNameInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_type(mut self, object_type: vk::ObjectType) -> Self {
+    pub fn object_type(mut self, object_type: vk::ObjectType) -> Self {
         self.inner.object_type = object_type;
         self
     }
-    pub fn set_object_handle(mut self, object_handle: u64) -> Self {
+    pub fn object_handle(mut self, object_handle: u64) -> Self {
         self.inner.object_handle = object_handle;
         self
     }
-    pub fn set_p_object_name(mut self, p_object_name: &'a CStr) -> Self {
+    pub fn p_object_name(mut self, p_object_name: &'a CStr) -> Self {
         self.inner.p_object_name = p_object_name.as_ptr();
         self
     }
@@ -8547,31 +8538,31 @@ impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_object_type(mut self, object_type: vk::ObjectType) -> Self {
+    pub fn object_type(mut self, object_type: vk::ObjectType) -> Self {
         self.inner.object_type = object_type;
         self
     }
-    pub fn set_object_handle(mut self, object_handle: u64) -> Self {
+    pub fn object_handle(mut self, object_handle: u64) -> Self {
         self.inner.object_handle = object_handle;
         self
     }
-    pub fn set_tag_name(mut self, tag_name: u64) -> Self {
+    pub fn tag_name(mut self, tag_name: u64) -> Self {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn set_tag_size(mut self, tag_size: usize) -> Self {
+    pub fn tag_size(mut self, tag_size: usize) -> Self {
         self.inner.tag_size = tag_size;
         self
     }
-    pub fn set_p_tag(mut self, p_tag: *const c_void) -> Self {
+    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
         self.inner.p_tag = p_tag;
         self
     }
@@ -8599,15 +8590,15 @@ impl<'a> DebugUtilsLabelEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_label_name(mut self, p_label_name: &'a CStr) -> Self {
+    pub fn p_label_name(mut self, p_label_name: &'a CStr) -> Self {
         self.inner.p_label_name = p_label_name.as_ptr();
         self
     }
@@ -8635,31 +8626,31 @@ impl<'a> DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DebugUtilsMessengerCreateFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::DebugUtilsMessengerCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_message_severity(mut self, message_severity: vk::DebugUtilsMessageSeverityFlagsEXT) -> Self {
+    pub fn message_severity(mut self, message_severity: vk::DebugUtilsMessageSeverityFlagsEXT) -> Self {
         self.inner.message_severity = message_severity;
         self
     }
-    pub fn set_message_type(mut self, message_type: vk::DebugUtilsMessageTypeFlagsEXT) -> Self {
+    pub fn message_type(mut self, message_type: vk::DebugUtilsMessageTypeFlagsEXT) -> Self {
         self.inner.message_type = message_type;
         self
     }
-    pub fn set_pfn_user_callback(mut self, pfn_user_callback: vk::FnDebugUtilsMessengerCallbackEXT) -> Self {
+    pub fn pfn_user_callback(mut self, pfn_user_callback: vk::FnDebugUtilsMessengerCallbackEXT) -> Self {
         self.inner.pfn_user_callback = Some(pfn_user_callback);
         self
     }
-    pub fn set_p_user_data(mut self, p_user_data: *mut c_void) -> Self {
+    pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
         self.inner.p_user_data = p_user_data;
         self
     }
@@ -8687,51 +8678,51 @@ impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::DebugUtilsMessengerCallbackDataFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::DebugUtilsMessengerCallbackDataFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_message_id_name(mut self, p_message_id_name: &'a CStr) -> Self {
+    pub fn p_message_id_name(mut self, p_message_id_name: &'a CStr) -> Self {
         self.inner.p_message_id_name = p_message_id_name.as_ptr();
         self
     }
-    pub fn set_message_id_number(mut self, message_id_number: i32) -> Self {
+    pub fn message_id_number(mut self, message_id_number: i32) -> Self {
         self.inner.message_id_number = message_id_number;
         self
     }
-    pub fn set_p_message(mut self, p_message: &'a CStr) -> Self {
+    pub fn p_message(mut self, p_message: &'a CStr) -> Self {
         self.inner.p_message = p_message.as_ptr();
         self
     }
-    pub fn set_queue_label_count(mut self, queue_label_count: u32) -> Self {
+    pub fn queue_label_count(mut self, queue_label_count: u32) -> Self {
         self.inner.queue_label_count = queue_label_count;
         self
     }
-    pub fn set_p_queue_labels(mut self, p_queue_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
+    pub fn p_queue_labels(mut self, p_queue_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
         self.inner.p_queue_labels = p_queue_labels;
         self
     }
-    pub fn set_cmd_buf_label_count(mut self, cmd_buf_label_count: u32) -> Self {
+    pub fn cmd_buf_label_count(mut self, cmd_buf_label_count: u32) -> Self {
         self.inner.cmd_buf_label_count = cmd_buf_label_count;
         self
     }
-    pub fn set_p_cmd_buf_labels(mut self, p_cmd_buf_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
+    pub fn p_cmd_buf_labels(mut self, p_cmd_buf_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
         self.inner.p_cmd_buf_labels = p_cmd_buf_labels;
         self
     }
-    pub fn set_object_count(mut self, object_count: u32) -> Self {
+    pub fn object_count(mut self, object_count: u32) -> Self {
         self.inner.object_count = object_count;
         self
     }
-    pub fn set_p_objects(mut self, p_objects: *mut vk::DebugUtilsObjectNameInfoEXT) -> Self {
+    pub fn p_objects(mut self, p_objects: *mut vk::DebugUtilsObjectNameInfoEXT) -> Self {
         self.inner.p_objects = p_objects;
         self
     }
@@ -8759,19 +8750,19 @@ impl<'a> ImportMemoryHostPointerInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
         self.inner.handle_type = handle_type;
         self
     }
-    pub fn set_p_host_pointer(mut self, p_host_pointer: *mut c_void) -> Self {
+    pub fn p_host_pointer(mut self, p_host_pointer: *mut c_void) -> Self {
         self.inner.p_host_pointer = p_host_pointer;
         self
     }
@@ -8799,15 +8790,15 @@ impl<'a> MemoryHostPointerPropertiesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_memory_type_bits(mut self, memory_type_bits: u32) -> Self {
+    pub fn memory_type_bits(mut self, memory_type_bits: u32) -> Self {
         self.inner.memory_type_bits = memory_type_bits;
         self
     }
@@ -8835,18 +8826,15 @@ impl<'a> PhysicalDeviceExternalMemoryHostPropertiesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_min_imported_host_pointer_alignment(
-        mut self,
-        min_imported_host_pointer_alignment: vk::DeviceSize,
-    ) -> Self {
+    pub fn min_imported_host_pointer_alignment(mut self, min_imported_host_pointer_alignment: vk::DeviceSize) -> Self {
         self.inner.min_imported_host_pointer_alignment = min_imported_host_pointer_alignment;
         self
     }
@@ -8874,34 +8862,34 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_primitive_overestimation_size(mut self, primitive_overestimation_size: f32) -> Self {
+    pub fn primitive_overestimation_size(mut self, primitive_overestimation_size: f32) -> Self {
         self.inner.primitive_overestimation_size = primitive_overestimation_size;
         self
     }
-    pub fn set_max_extra_primitive_overestimation_size(mut self, max_extra_primitive_overestimation_size: f32) -> Self {
+    pub fn max_extra_primitive_overestimation_size(mut self, max_extra_primitive_overestimation_size: f32) -> Self {
         self.inner.max_extra_primitive_overestimation_size = max_extra_primitive_overestimation_size;
         self
     }
-    pub fn set_extra_primitive_overestimation_size_granularity(
+    pub fn extra_primitive_overestimation_size_granularity(
         mut self,
         extra_primitive_overestimation_size_granularity: f32,
     ) -> Self {
         self.inner.extra_primitive_overestimation_size_granularity = extra_primitive_overestimation_size_granularity;
         self
     }
-    pub fn set_primitive_underestimation(mut self, primitive_underestimation: bool) -> Self {
+    pub fn primitive_underestimation(mut self, primitive_underestimation: bool) -> Self {
         self.inner.primitive_underestimation = if primitive_underestimation { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_conservative_point_and_line_rasterization(
+    pub fn conservative_point_and_line_rasterization(
         mut self,
         conservative_point_and_line_rasterization: bool,
     ) -> Self {
@@ -8912,7 +8900,7 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_degenerate_triangles_rasterized(mut self, degenerate_triangles_rasterized: bool) -> Self {
+    pub fn degenerate_triangles_rasterized(mut self, degenerate_triangles_rasterized: bool) -> Self {
         self.inner.degenerate_triangles_rasterized = if degenerate_triangles_rasterized {
             vk::TRUE
         } else {
@@ -8920,7 +8908,7 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_degenerate_lines_rasterized(mut self, degenerate_lines_rasterized: bool) -> Self {
+    pub fn degenerate_lines_rasterized(mut self, degenerate_lines_rasterized: bool) -> Self {
         self.inner.degenerate_lines_rasterized = if degenerate_lines_rasterized {
             vk::TRUE
         } else {
@@ -8928,7 +8916,7 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_fully_covered_fragment_shader_input_variable(
+    pub fn fully_covered_fragment_shader_input_variable(
         mut self,
         fully_covered_fragment_shader_input_variable: bool,
     ) -> Self {
@@ -8939,7 +8927,7 @@ impl<'a> PhysicalDeviceConservativeRasterizationPropertiesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_conservative_rasterization_post_depth_coverage(
+    pub fn conservative_rasterization_post_depth_coverage(
         mut self,
         conservative_rasterization_post_depth_coverage: bool,
     ) -> Self {
@@ -8974,15 +8962,15 @@ impl<'a> CalibratedTimestampInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_time_domain(mut self, time_domain: vk::TimeDomainEXT) -> Self {
+    pub fn time_domain(mut self, time_domain: vk::TimeDomainEXT) -> Self {
         self.inner.time_domain = time_domain;
         self
     }
@@ -9010,26 +8998,26 @@ impl<'a> PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineRasterizationConservativeStateCreateFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineRasterizationConservativeStateCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_conservative_rasterization_mode(
+    pub fn conservative_rasterization_mode(
         mut self,
         conservative_rasterization_mode: vk::ConservativeRasterizationModeEXT,
     ) -> Self {
         self.inner.conservative_rasterization_mode = conservative_rasterization_mode;
         self
     }
-    pub fn set_extra_primitive_overestimation_size(mut self, extra_primitive_overestimation_size: f32) -> Self {
+    pub fn extra_primitive_overestimation_size(mut self, extra_primitive_overestimation_size: f32) -> Self {
         self.inner.extra_primitive_overestimation_size = extra_primitive_overestimation_size;
         self
     }
@@ -9057,15 +9045,15 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shader_input_attachment_array_dynamic_indexing(
+    pub fn shader_input_attachment_array_dynamic_indexing(
         mut self,
         shader_input_attachment_array_dynamic_indexing: bool,
     ) -> Self {
@@ -9076,7 +9064,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_shader_uniform_texel_buffer_array_dynamic_indexing(
+    pub fn shader_uniform_texel_buffer_array_dynamic_indexing(
         mut self,
         shader_uniform_texel_buffer_array_dynamic_indexing: bool,
     ) -> Self {
@@ -9088,7 +9076,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_storage_texel_buffer_array_dynamic_indexing(
+    pub fn shader_storage_texel_buffer_array_dynamic_indexing(
         mut self,
         shader_storage_texel_buffer_array_dynamic_indexing: bool,
     ) -> Self {
@@ -9100,7 +9088,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_uniform_buffer_array_non_uniform_indexing(
+    pub fn shader_uniform_buffer_array_non_uniform_indexing(
         mut self,
         shader_uniform_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9112,7 +9100,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_sampled_image_array_non_uniform_indexing(
+    pub fn shader_sampled_image_array_non_uniform_indexing(
         mut self,
         shader_sampled_image_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9124,7 +9112,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_shader_storage_buffer_array_non_uniform_indexing(
+    pub fn shader_storage_buffer_array_non_uniform_indexing(
         mut self,
         shader_storage_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9136,7 +9124,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_storage_image_array_non_uniform_indexing(
+    pub fn shader_storage_image_array_non_uniform_indexing(
         mut self,
         shader_storage_image_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9148,7 +9136,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_shader_input_attachment_array_non_uniform_indexing(
+    pub fn shader_input_attachment_array_non_uniform_indexing(
         mut self,
         shader_input_attachment_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9160,7 +9148,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_uniform_texel_buffer_array_non_uniform_indexing(
+    pub fn shader_uniform_texel_buffer_array_non_uniform_indexing(
         mut self,
         shader_uniform_texel_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9172,7 +9160,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_shader_storage_texel_buffer_array_non_uniform_indexing(
+    pub fn shader_storage_texel_buffer_array_non_uniform_indexing(
         mut self,
         shader_storage_texel_buffer_array_non_uniform_indexing: bool,
     ) -> Self {
@@ -9184,7 +9172,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_uniform_buffer_update_after_bind(
+    pub fn descriptor_binding_uniform_buffer_update_after_bind(
         mut self,
         descriptor_binding_uniform_buffer_update_after_bind: bool,
     ) -> Self {
@@ -9196,7 +9184,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_sampled_image_update_after_bind(
+    pub fn descriptor_binding_sampled_image_update_after_bind(
         mut self,
         descriptor_binding_sampled_image_update_after_bind: bool,
     ) -> Self {
@@ -9208,7 +9196,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_storage_image_update_after_bind(
+    pub fn descriptor_binding_storage_image_update_after_bind(
         mut self,
         descriptor_binding_storage_image_update_after_bind: bool,
     ) -> Self {
@@ -9220,7 +9208,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_storage_buffer_update_after_bind(
+    pub fn descriptor_binding_storage_buffer_update_after_bind(
         mut self,
         descriptor_binding_storage_buffer_update_after_bind: bool,
     ) -> Self {
@@ -9232,7 +9220,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_uniform_texel_buffer_update_after_bind(
+    pub fn descriptor_binding_uniform_texel_buffer_update_after_bind(
         mut self,
         descriptor_binding_uniform_texel_buffer_update_after_bind: bool,
     ) -> Self {
@@ -9244,7 +9232,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_storage_texel_buffer_update_after_bind(
+    pub fn descriptor_binding_storage_texel_buffer_update_after_bind(
         mut self,
         descriptor_binding_storage_texel_buffer_update_after_bind: bool,
     ) -> Self {
@@ -9256,7 +9244,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
             };
         self
     }
-    pub fn set_descriptor_binding_update_unused_while_pending(
+    pub fn descriptor_binding_update_unused_while_pending(
         mut self,
         descriptor_binding_update_unused_while_pending: bool,
     ) -> Self {
@@ -9267,7 +9255,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_descriptor_binding_partially_bound(mut self, descriptor_binding_partially_bound: bool) -> Self {
+    pub fn descriptor_binding_partially_bound(mut self, descriptor_binding_partially_bound: bool) -> Self {
         self.inner.descriptor_binding_partially_bound = if descriptor_binding_partially_bound {
             vk::TRUE
         } else {
@@ -9275,7 +9263,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_descriptor_binding_variable_descriptor_count(
+    pub fn descriptor_binding_variable_descriptor_count(
         mut self,
         descriptor_binding_variable_descriptor_count: bool,
     ) -> Self {
@@ -9286,7 +9274,7 @@ impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_runtime_descriptor_array(mut self, runtime_descriptor_array: bool) -> Self {
+    pub fn runtime_descriptor_array(mut self, runtime_descriptor_array: bool) -> Self {
         self.inner.runtime_descriptor_array = if runtime_descriptor_array { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -9314,15 +9302,15 @@ impl<'a> DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_binding_flags(mut self, p_binding_flags: &'a [vk::DescriptorBindingFlagsEXT]) -> Self {
+    pub fn p_binding_flags(mut self, p_binding_flags: &'a [vk::DescriptorBindingFlagsEXT]) -> Self {
         self.inner.binding_count = p_binding_flags.len() as u32;
         self.inner.p_binding_flags = p_binding_flags.as_ptr();
         self
@@ -9351,15 +9339,15 @@ impl<'a> DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_descriptor_counts(mut self, p_descriptor_counts: &'a [u32]) -> Self {
+    pub fn p_descriptor_counts(mut self, p_descriptor_counts: &'a [u32]) -> Self {
         self.inner.descriptor_set_count = p_descriptor_counts.len() as u32;
         self.inner.p_descriptor_counts = p_descriptor_counts.as_ptr();
         self
@@ -9388,47 +9376,47 @@ impl<'a> AttachmentDescription2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::AttachmentDescriptionFlags) -> Self {
+    pub fn flags(mut self, flags: vk::AttachmentDescriptionFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_format(mut self, format: vk::Format) -> Self {
+    pub fn format(mut self, format: vk::Format) -> Self {
         self.inner.format = format;
         self
     }
-    pub fn set_samples(mut self, samples: vk::SampleCountFlags) -> Self {
+    pub fn samples(mut self, samples: vk::SampleCountFlags) -> Self {
         self.inner.samples = samples;
         self
     }
-    pub fn set_load_op(mut self, load_op: vk::AttachmentLoadOp) -> Self {
+    pub fn load_op(mut self, load_op: vk::AttachmentLoadOp) -> Self {
         self.inner.load_op = load_op;
         self
     }
-    pub fn set_store_op(mut self, store_op: vk::AttachmentStoreOp) -> Self {
+    pub fn store_op(mut self, store_op: vk::AttachmentStoreOp) -> Self {
         self.inner.store_op = store_op;
         self
     }
-    pub fn set_stencil_load_op(mut self, stencil_load_op: vk::AttachmentLoadOp) -> Self {
+    pub fn stencil_load_op(mut self, stencil_load_op: vk::AttachmentLoadOp) -> Self {
         self.inner.stencil_load_op = stencil_load_op;
         self
     }
-    pub fn set_stencil_store_op(mut self, stencil_store_op: vk::AttachmentStoreOp) -> Self {
+    pub fn stencil_store_op(mut self, stencil_store_op: vk::AttachmentStoreOp) -> Self {
         self.inner.stencil_store_op = stencil_store_op;
         self
     }
-    pub fn set_initial_layout(mut self, initial_layout: vk::ImageLayout) -> Self {
+    pub fn initial_layout(mut self, initial_layout: vk::ImageLayout) -> Self {
         self.inner.initial_layout = initial_layout;
         self
     }
-    pub fn set_final_layout(mut self, final_layout: vk::ImageLayout) -> Self {
+    pub fn final_layout(mut self, final_layout: vk::ImageLayout) -> Self {
         self.inner.final_layout = final_layout;
         self
     }
@@ -9456,23 +9444,23 @@ impl<'a> AttachmentReference2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_attachment(mut self, attachment: u32) -> Self {
+    pub fn attachment(mut self, attachment: u32) -> Self {
         self.inner.attachment = attachment;
         self
     }
-    pub fn set_layout(mut self, layout: vk::ImageLayout) -> Self {
+    pub fn layout(mut self, layout: vk::ImageLayout) -> Self {
         self.inner.layout = layout;
         self
     }
-    pub fn set_aspect_mask(mut self, aspect_mask: vk::ImageAspectFlags) -> Self {
+    pub fn aspect_mask(mut self, aspect_mask: vk::ImageAspectFlags) -> Self {
         self.inner.aspect_mask = aspect_mask;
         self
     }
@@ -9500,32 +9488,32 @@ impl<'a> SubpassDescription2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::SubpassDescriptionFlags) -> Self {
+    pub fn flags(mut self, flags: vk::SubpassDescriptionFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn set_view_mask(mut self, view_mask: u32) -> Self {
+    pub fn view_mask(mut self, view_mask: u32) -> Self {
         self.inner.view_mask = view_mask;
         self
     }
-    pub fn set_p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference2KHR]) -> Self {
+    pub fn p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference2KHR]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
         self.inner.p_input_attachments = p_input_attachments.as_ptr();
         self
     }
-    pub fn set_p_color_attachments(
+    pub fn p_color_attachments(
         mut self,
         p_color_attachments: &'a [vk::AttachmentReference2KHR],
         p_resolve_attachments: Option<&'a [vk::AttachmentReference2KHR]>,
@@ -9538,14 +9526,14 @@ impl<'a> SubpassDescription2KHRBuilder<'a> {
         self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
-    pub fn set_p_depth_stencil_attachment(
+    pub fn p_depth_stencil_attachment(
         mut self,
         p_depth_stencil_attachment: Option<&'a vk::AttachmentReference2KHR>,
     ) -> Self {
         self.inner.p_depth_stencil_attachment = p_depth_stencil_attachment.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn set_p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
+    pub fn p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
         self.inner.preserve_attachment_count = p_preserve_attachments.len() as u32;
         self.inner.p_preserve_attachments = p_preserve_attachments.as_ptr();
         self
@@ -9574,43 +9562,43 @@ impl<'a> SubpassDependency2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_src_subpass(mut self, src_subpass: u32) -> Self {
+    pub fn src_subpass(mut self, src_subpass: u32) -> Self {
         self.inner.src_subpass = src_subpass;
         self
     }
-    pub fn set_dst_subpass(mut self, dst_subpass: u32) -> Self {
+    pub fn dst_subpass(mut self, dst_subpass: u32) -> Self {
         self.inner.dst_subpass = dst_subpass;
         self
     }
-    pub fn set_src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags) -> Self {
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags) -> Self {
         self.inner.src_stage_mask = src_stage_mask;
         self
     }
-    pub fn set_dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags) -> Self {
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags) -> Self {
         self.inner.dst_stage_mask = dst_stage_mask;
         self
     }
-    pub fn set_src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags) -> Self {
         self.inner.src_access_mask = src_access_mask;
         self
     }
-    pub fn set_dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags) -> Self {
         self.inner.dst_access_mask = dst_access_mask;
         self
     }
-    pub fn set_dependency_flags(mut self, dependency_flags: vk::DependencyFlags) -> Self {
+    pub fn dependency_flags(mut self, dependency_flags: vk::DependencyFlags) -> Self {
         self.inner.dependency_flags = dependency_flags;
         self
     }
-    pub fn set_view_offset(mut self, view_offset: i32) -> Self {
+    pub fn view_offset(mut self, view_offset: i32) -> Self {
         self.inner.view_offset = view_offset;
         self
     }
@@ -9638,34 +9626,34 @@ impl<'a> RenderPassCreateInfo2KHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::RenderPassCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::RenderPassCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription2KHR]) -> Self {
+    pub fn p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription2KHR]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
         self.inner.p_attachments = p_attachments.as_ptr();
         self
     }
-    pub fn set_p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription2KHR]) -> Self {
+    pub fn p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription2KHR]) -> Self {
         self.inner.subpass_count = p_subpasses.len() as u32;
         self.inner.p_subpasses = p_subpasses.as_ptr();
         self
     }
-    pub fn set_p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency2KHR]) -> Self {
+    pub fn p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency2KHR]) -> Self {
         self.inner.dependency_count = p_dependencies.len() as u32;
         self.inner.p_dependencies = p_dependencies.as_ptr();
         self
     }
-    pub fn set_p_correlated_view_masks(mut self, p_correlated_view_masks: &'a [u32]) -> Self {
+    pub fn p_correlated_view_masks(mut self, p_correlated_view_masks: &'a [u32]) -> Self {
         self.inner.correlated_view_mask_count = p_correlated_view_masks.len() as u32;
         self.inner.p_correlated_view_masks = p_correlated_view_masks.as_ptr();
         self
@@ -9694,15 +9682,15 @@ impl<'a> SubpassBeginInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_contents(mut self, contents: vk::SubpassContents) -> Self {
+    pub fn contents(mut self, contents: vk::SubpassContents) -> Self {
         self.inner.contents = contents;
         self
     }
@@ -9730,11 +9718,11 @@ impl<'a> SubpassEndInfoKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -9762,15 +9750,15 @@ impl<'a> PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_vertex_binding_divisors(
+    pub fn p_vertex_binding_divisors(
         mut self,
         p_vertex_binding_divisors: &'a [vk::VertexInputBindingDivisorDescriptionEXT],
     ) -> Self {
@@ -9802,15 +9790,15 @@ impl<'a> PhysicalDeviceVertexAttributeDivisorPropertiesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_vertex_attrib_divisor(mut self, max_vertex_attrib_divisor: u32) -> Self {
+    pub fn max_vertex_attrib_divisor(mut self, max_vertex_attrib_divisor: u32) -> Self {
         self.inner.max_vertex_attrib_divisor = max_vertex_attrib_divisor;
         self
     }
@@ -9838,15 +9826,15 @@ impl<'a> ImportAndroidHardwareBufferInfoANDROIDBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_buffer(mut self, buffer: *mut vk::AHardwareBuffer) -> Self {
+    pub fn buffer(mut self, buffer: *mut vk::AHardwareBuffer) -> Self {
         self.inner.buffer = buffer;
         self
     }
@@ -9874,15 +9862,15 @@ impl<'a> MemoryGetAndroidHardwareBufferInfoANDROIDBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
@@ -9910,15 +9898,15 @@ impl<'a> CommandBufferInheritanceConditionalRenderingInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_conditional_rendering_enable(mut self, conditional_rendering_enable: bool) -> Self {
+    pub fn conditional_rendering_enable(mut self, conditional_rendering_enable: bool) -> Self {
         self.inner.conditional_rendering_enable = if conditional_rendering_enable {
             vk::TRUE
         } else {
@@ -9950,15 +9938,15 @@ impl<'a> ExternalFormatANDROIDBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_external_format(mut self, external_format: u64) -> Self {
+    pub fn external_format(mut self, external_format: u64) -> Self {
         self.inner.external_format = external_format;
         self
     }
@@ -9986,15 +9974,15 @@ impl<'a> PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_storage_buffer8_bit_access(mut self, storage_buffer8_bit_access: bool) -> Self {
+    pub fn storage_buffer8_bit_access(mut self, storage_buffer8_bit_access: bool) -> Self {
         self.inner.storage_buffer8_bit_access = if storage_buffer8_bit_access {
             vk::TRUE
         } else {
@@ -10002,7 +9990,7 @@ impl<'a> PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
         };
         self
     }
-    pub fn set_uniform_and_storage_buffer8_bit_access(mut self, uniform_and_storage_buffer8_bit_access: bool) -> Self {
+    pub fn uniform_and_storage_buffer8_bit_access(mut self, uniform_and_storage_buffer8_bit_access: bool) -> Self {
         self.inner.uniform_and_storage_buffer8_bit_access = if uniform_and_storage_buffer8_bit_access {
             vk::TRUE
         } else {
@@ -10010,7 +9998,7 @@ impl<'a> PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
         };
         self
     }
-    pub fn set_storage_push_constant8(mut self, storage_push_constant8: bool) -> Self {
+    pub fn storage_push_constant8(mut self, storage_push_constant8: bool) -> Self {
         self.inner.storage_push_constant8 = if storage_push_constant8 { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10038,19 +10026,19 @@ impl<'a> PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_conditional_rendering(mut self, conditional_rendering: bool) -> Self {
+    pub fn conditional_rendering(mut self, conditional_rendering: bool) -> Self {
         self.inner.conditional_rendering = if conditional_rendering { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_inherited_conditional_rendering(mut self, inherited_conditional_rendering: bool) -> Self {
+    pub fn inherited_conditional_rendering(mut self, inherited_conditional_rendering: bool) -> Self {
         self.inner.inherited_conditional_rendering = if inherited_conditional_rendering {
             vk::TRUE
         } else {
@@ -10082,15 +10070,15 @@ impl<'a> PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shader_buffer_int64_atomics(mut self, shader_buffer_int64_atomics: bool) -> Self {
+    pub fn shader_buffer_int64_atomics(mut self, shader_buffer_int64_atomics: bool) -> Self {
         self.inner.shader_buffer_int64_atomics = if shader_buffer_int64_atomics {
             vk::TRUE
         } else {
@@ -10098,7 +10086,7 @@ impl<'a> PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
         };
         self
     }
-    pub fn set_shader_shared_int64_atomics(mut self, shader_shared_int64_atomics: bool) -> Self {
+    pub fn shader_shared_int64_atomics(mut self, shader_shared_int64_atomics: bool) -> Self {
         self.inner.shader_shared_int64_atomics = if shader_shared_int64_atomics {
             vk::TRUE
         } else {
@@ -10130,15 +10118,15 @@ impl<'a> PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_vertex_attribute_instance_rate_divisor(mut self, vertex_attribute_instance_rate_divisor: bool) -> Self {
+    pub fn vertex_attribute_instance_rate_divisor(mut self, vertex_attribute_instance_rate_divisor: bool) -> Self {
         self.inner.vertex_attribute_instance_rate_divisor = if vertex_attribute_instance_rate_divisor {
             vk::TRUE
         } else {
@@ -10146,7 +10134,7 @@ impl<'a> PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
         };
         self
     }
-    pub fn set_vertex_attribute_instance_rate_zero_divisor(
+    pub fn vertex_attribute_instance_rate_zero_divisor(
         mut self,
         vertex_attribute_instance_rate_zero_divisor: bool,
     ) -> Self {
@@ -10181,15 +10169,15 @@ impl<'a> ImageViewASTCDecodeModeEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_decode_mode(mut self, decode_mode: vk::Format) -> Self {
+    pub fn decode_mode(mut self, decode_mode: vk::Format) -> Self {
         self.inner.decode_mode = decode_mode;
         self
     }
@@ -10217,15 +10205,15 @@ impl<'a> PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_decode_mode_shared_exponent(mut self, decode_mode_shared_exponent: bool) -> Self {
+    pub fn decode_mode_shared_exponent(mut self, decode_mode_shared_exponent: bool) -> Self {
         self.inner.decode_mode_shared_exponent = if decode_mode_shared_exponent {
             vk::TRUE
         } else {
@@ -10257,19 +10245,19 @@ impl<'a> PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_transform_feedback(mut self, transform_feedback: bool) -> Self {
+    pub fn transform_feedback(mut self, transform_feedback: bool) -> Self {
         self.inner.transform_feedback = if transform_feedback { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_geometry_streams(mut self, geometry_streams: bool) -> Self {
+    pub fn geometry_streams(mut self, geometry_streams: bool) -> Self {
         self.inner.geometry_streams = if geometry_streams { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10297,19 +10285,19 @@ impl<'a> PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineRasterizationStateStreamCreateFlagsEXT) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineRasterizationStateStreamCreateFlagsEXT) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_rasterization_stream(mut self, rasterization_stream: u32) -> Self {
+    pub fn rasterization_stream(mut self, rasterization_stream: u32) -> Self {
         self.inner.rasterization_stream = rasterization_stream;
         self
     }
@@ -10337,15 +10325,15 @@ impl<'a> PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_representative_fragment_test(mut self, representative_fragment_test: bool) -> Self {
+    pub fn representative_fragment_test(mut self, representative_fragment_test: bool) -> Self {
         self.inner.representative_fragment_test = if representative_fragment_test {
             vk::TRUE
         } else {
@@ -10377,15 +10365,15 @@ impl<'a> PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_representative_fragment_test_enable(mut self, representative_fragment_test_enable: bool) -> Self {
+    pub fn representative_fragment_test_enable(mut self, representative_fragment_test_enable: bool) -> Self {
         self.inner.representative_fragment_test_enable = if representative_fragment_test_enable {
             vk::TRUE
         } else {
@@ -10417,15 +10405,15 @@ impl<'a> PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_exclusive_scissor(mut self, exclusive_scissor: bool) -> Self {
+    pub fn exclusive_scissor(mut self, exclusive_scissor: bool) -> Self {
         self.inner.exclusive_scissor = if exclusive_scissor { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10453,15 +10441,15 @@ impl<'a> PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_exclusive_scissors(mut self, p_exclusive_scissors: &'a [vk::Rect2D]) -> Self {
+    pub fn p_exclusive_scissors(mut self, p_exclusive_scissors: &'a [vk::Rect2D]) -> Self {
         self.inner.exclusive_scissor_count = p_exclusive_scissors.len() as u32;
         self.inner.p_exclusive_scissors = p_exclusive_scissors.as_ptr();
         self
@@ -10490,15 +10478,15 @@ impl<'a> PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_corner_sampled_image(mut self, corner_sampled_image: bool) -> Self {
+    pub fn corner_sampled_image(mut self, corner_sampled_image: bool) -> Self {
         self.inner.corner_sampled_image = if corner_sampled_image { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10526,15 +10514,15 @@ impl<'a> PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_compute_derivative_group_quads(mut self, compute_derivative_group_quads: bool) -> Self {
+    pub fn compute_derivative_group_quads(mut self, compute_derivative_group_quads: bool) -> Self {
         self.inner.compute_derivative_group_quads = if compute_derivative_group_quads {
             vk::TRUE
         } else {
@@ -10542,7 +10530,7 @@ impl<'a> PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
         };
         self
     }
-    pub fn set_compute_derivative_group_linear(mut self, compute_derivative_group_linear: bool) -> Self {
+    pub fn compute_derivative_group_linear(mut self, compute_derivative_group_linear: bool) -> Self {
         self.inner.compute_derivative_group_linear = if compute_derivative_group_linear {
             vk::TRUE
         } else {
@@ -10574,15 +10562,15 @@ impl<'a> PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_fragment_shader_barycentric(mut self, fragment_shader_barycentric: bool) -> Self {
+    pub fn fragment_shader_barycentric(mut self, fragment_shader_barycentric: bool) -> Self {
         self.inner.fragment_shader_barycentric = if fragment_shader_barycentric {
             vk::TRUE
         } else {
@@ -10614,15 +10602,15 @@ impl<'a> PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_image_footprint(mut self, image_footprint: bool) -> Self {
+    pub fn image_footprint(mut self, image_footprint: bool) -> Self {
         self.inner.image_footprint = if image_footprint { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10650,7 +10638,7 @@ impl<'a> ShadingRatePaletteNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_p_shading_rate_palette_entries(
+    pub fn p_shading_rate_palette_entries(
         mut self,
         p_shading_rate_palette_entries: &'a [vk::ShadingRatePaletteEntryNV],
     ) -> Self {
@@ -10682,19 +10670,19 @@ impl<'a> PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shading_rate_image_enable(mut self, shading_rate_image_enable: bool) -> Self {
+    pub fn shading_rate_image_enable(mut self, shading_rate_image_enable: bool) -> Self {
         self.inner.shading_rate_image_enable = if shading_rate_image_enable { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_p_shading_rate_palettes(mut self, p_shading_rate_palettes: &'a [vk::ShadingRatePaletteNV]) -> Self {
+    pub fn p_shading_rate_palettes(mut self, p_shading_rate_palettes: &'a [vk::ShadingRatePaletteNV]) -> Self {
         self.inner.viewport_count = p_shading_rate_palettes.len() as u32;
         self.inner.p_shading_rate_palettes = p_shading_rate_palettes.as_ptr();
         self
@@ -10723,19 +10711,19 @@ impl<'a> PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shading_rate_image(mut self, shading_rate_image: bool) -> Self {
+    pub fn shading_rate_image(mut self, shading_rate_image: bool) -> Self {
         self.inner.shading_rate_image = if shading_rate_image { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_shading_rate_coarse_sample_order(mut self, shading_rate_coarse_sample_order: bool) -> Self {
+    pub fn shading_rate_coarse_sample_order(mut self, shading_rate_coarse_sample_order: bool) -> Self {
         self.inner.shading_rate_coarse_sample_order = if shading_rate_coarse_sample_order {
             vk::TRUE
         } else {
@@ -10767,15 +10755,15 @@ impl<'a> CoarseSampleOrderCustomNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_shading_rate(mut self, shading_rate: vk::ShadingRatePaletteEntryNV) -> Self {
+    pub fn shading_rate(mut self, shading_rate: vk::ShadingRatePaletteEntryNV) -> Self {
         self.inner.shading_rate = shading_rate;
         self
     }
-    pub fn set_sample_count(mut self, sample_count: u32) -> Self {
+    pub fn sample_count(mut self, sample_count: u32) -> Self {
         self.inner.sample_count = sample_count;
         self
     }
-    pub fn set_p_sample_locations(mut self, p_sample_locations: &'a [vk::CoarseSampleLocationNV]) -> Self {
+    pub fn p_sample_locations(mut self, p_sample_locations: &'a [vk::CoarseSampleLocationNV]) -> Self {
         self.inner.sample_location_count = p_sample_locations.len() as u32;
         self.inner.p_sample_locations = p_sample_locations.as_ptr();
         self
@@ -10804,19 +10792,19 @@ impl<'a> PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_sample_order_type(mut self, sample_order_type: vk::CoarseSampleOrderTypeNV) -> Self {
+    pub fn sample_order_type(mut self, sample_order_type: vk::CoarseSampleOrderTypeNV) -> Self {
         self.inner.sample_order_type = sample_order_type;
         self
     }
-    pub fn set_p_custom_sample_orders(mut self, p_custom_sample_orders: &'a [vk::CoarseSampleOrderCustomNV]) -> Self {
+    pub fn p_custom_sample_orders(mut self, p_custom_sample_orders: &'a [vk::CoarseSampleOrderCustomNV]) -> Self {
         self.inner.custom_sample_order_count = p_custom_sample_orders.len() as u32;
         self.inner.p_custom_sample_orders = p_custom_sample_orders.as_ptr();
         self
@@ -10845,19 +10833,19 @@ impl<'a> PhysicalDeviceMeshShaderFeaturesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_task_shader(mut self, task_shader: bool) -> Self {
+    pub fn task_shader(mut self, task_shader: bool) -> Self {
         self.inner.task_shader = if task_shader { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn set_mesh_shader(mut self, mesh_shader: bool) -> Self {
+    pub fn mesh_shader(mut self, mesh_shader: bool) -> Self {
         self.inner.mesh_shader = if mesh_shader { vk::TRUE } else { vk::FALSE };
         self
     }
@@ -10885,55 +10873,55 @@ impl<'a> PhysicalDeviceMeshShaderPropertiesNVBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_max_draw_mesh_tasks_count(mut self, max_draw_mesh_tasks_count: u32) -> Self {
+    pub fn max_draw_mesh_tasks_count(mut self, max_draw_mesh_tasks_count: u32) -> Self {
         self.inner.max_draw_mesh_tasks_count = max_draw_mesh_tasks_count;
         self
     }
-    pub fn set_max_task_work_group_invocations(mut self, max_task_work_group_invocations: u32) -> Self {
+    pub fn max_task_work_group_invocations(mut self, max_task_work_group_invocations: u32) -> Self {
         self.inner.max_task_work_group_invocations = max_task_work_group_invocations;
         self
     }
-    pub fn set_max_task_total_memory_size(mut self, max_task_total_memory_size: u32) -> Self {
+    pub fn max_task_total_memory_size(mut self, max_task_total_memory_size: u32) -> Self {
         self.inner.max_task_total_memory_size = max_task_total_memory_size;
         self
     }
-    pub fn set_max_task_output_count(mut self, max_task_output_count: u32) -> Self {
+    pub fn max_task_output_count(mut self, max_task_output_count: u32) -> Self {
         self.inner.max_task_output_count = max_task_output_count;
         self
     }
-    pub fn set_max_mesh_work_group_invocations(mut self, max_mesh_work_group_invocations: u32) -> Self {
+    pub fn max_mesh_work_group_invocations(mut self, max_mesh_work_group_invocations: u32) -> Self {
         self.inner.max_mesh_work_group_invocations = max_mesh_work_group_invocations;
         self
     }
-    pub fn set_max_mesh_total_memory_size(mut self, max_mesh_total_memory_size: u32) -> Self {
+    pub fn max_mesh_total_memory_size(mut self, max_mesh_total_memory_size: u32) -> Self {
         self.inner.max_mesh_total_memory_size = max_mesh_total_memory_size;
         self
     }
-    pub fn set_max_mesh_output_vertices(mut self, max_mesh_output_vertices: u32) -> Self {
+    pub fn max_mesh_output_vertices(mut self, max_mesh_output_vertices: u32) -> Self {
         self.inner.max_mesh_output_vertices = max_mesh_output_vertices;
         self
     }
-    pub fn set_max_mesh_output_primitives(mut self, max_mesh_output_primitives: u32) -> Self {
+    pub fn max_mesh_output_primitives(mut self, max_mesh_output_primitives: u32) -> Self {
         self.inner.max_mesh_output_primitives = max_mesh_output_primitives;
         self
     }
-    pub fn set_max_mesh_multiview_view_count(mut self, max_mesh_multiview_view_count: u32) -> Self {
+    pub fn max_mesh_multiview_view_count(mut self, max_mesh_multiview_view_count: u32) -> Self {
         self.inner.max_mesh_multiview_view_count = max_mesh_multiview_view_count;
         self
     }
-    pub fn set_mesh_output_per_vertex_granularity(mut self, mesh_output_per_vertex_granularity: u32) -> Self {
+    pub fn mesh_output_per_vertex_granularity(mut self, mesh_output_per_vertex_granularity: u32) -> Self {
         self.inner.mesh_output_per_vertex_granularity = mesh_output_per_vertex_granularity;
         self
     }
-    pub fn set_mesh_output_per_primitive_granularity(mut self, mesh_output_per_primitive_granularity: u32) -> Self {
+    pub fn mesh_output_per_primitive_granularity(mut self, mesh_output_per_primitive_granularity: u32) -> Self {
         self.inner.mesh_output_per_primitive_granularity = mesh_output_per_primitive_granularity;
         self
     }
@@ -10961,42 +10949,38 @@ impl<'a> RaytracingPipelineCreateInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_p_stages(
-        mut self,
-        p_stages: &'a [vk::PipelineShaderStageCreateInfo],
-        p_group_numbers: &'a [u32],
-    ) -> Self {
+    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo], p_group_numbers: &'a [u32]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
         assert_eq!(self.inner.stage_count, p_group_numbers.len() as u32);
         self.inner.p_stages = p_stages.as_ptr();
         self.inner.p_group_numbers = p_group_numbers.as_ptr();
         self
     }
-    pub fn set_max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
+    pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
         self.inner.max_recursion_depth = max_recursion_depth;
         self
     }
-    pub fn set_layout(mut self, layout: vk::PipelineLayout) -> Self {
+    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
         self.inner.layout = Some(layout);
         self
     }
-    pub fn set_base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
+    pub fn base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
         self.inner.base_pipeline_handle = base_pipeline_handle;
         self
     }
-    pub fn set_base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
+    pub fn base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
         self.inner.base_pipeline_index = base_pipeline_index;
         self
     }
@@ -11024,55 +11008,55 @@ impl<'a> GeometryTrianglesNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_vertex_data(mut self, vertex_data: Option<vk::Buffer>) -> Self {
+    pub fn vertex_data(mut self, vertex_data: Option<vk::Buffer>) -> Self {
         self.inner.vertex_data = vertex_data;
         self
     }
-    pub fn set_vertex_offset(mut self, vertex_offset: vk::DeviceSize) -> Self {
+    pub fn vertex_offset(mut self, vertex_offset: vk::DeviceSize) -> Self {
         self.inner.vertex_offset = vertex_offset;
         self
     }
-    pub fn set_vertex_count(mut self, vertex_count: u32) -> Self {
+    pub fn vertex_count(mut self, vertex_count: u32) -> Self {
         self.inner.vertex_count = vertex_count;
         self
     }
-    pub fn set_vertex_stride(mut self, vertex_stride: vk::DeviceSize) -> Self {
+    pub fn vertex_stride(mut self, vertex_stride: vk::DeviceSize) -> Self {
         self.inner.vertex_stride = vertex_stride;
         self
     }
-    pub fn set_vertex_format(mut self, vertex_format: vk::Format) -> Self {
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
         self.inner.vertex_format = vertex_format;
         self
     }
-    pub fn set_index_data(mut self, index_data: Option<vk::Buffer>) -> Self {
+    pub fn index_data(mut self, index_data: Option<vk::Buffer>) -> Self {
         self.inner.index_data = index_data;
         self
     }
-    pub fn set_index_offset(mut self, index_offset: vk::DeviceSize) -> Self {
+    pub fn index_offset(mut self, index_offset: vk::DeviceSize) -> Self {
         self.inner.index_offset = index_offset;
         self
     }
-    pub fn set_index_count(mut self, index_count: u32) -> Self {
+    pub fn index_count(mut self, index_count: u32) -> Self {
         self.inner.index_count = index_count;
         self
     }
-    pub fn set_index_type(mut self, index_type: vk::IndexType) -> Self {
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
         self.inner.index_type = index_type;
         self
     }
-    pub fn set_transform_data(mut self, transform_data: Option<vk::Buffer>) -> Self {
+    pub fn transform_data(mut self, transform_data: Option<vk::Buffer>) -> Self {
         self.inner.transform_data = transform_data;
         self
     }
-    pub fn set_transform_offset(mut self, transform_offset: vk::DeviceSize) -> Self {
+    pub fn transform_offset(mut self, transform_offset: vk::DeviceSize) -> Self {
         self.inner.transform_offset = transform_offset;
         self
     }
@@ -11100,27 +11084,27 @@ impl<'a> GeometryAABBNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_aabb_data(mut self, aabb_data: Option<vk::Buffer>) -> Self {
+    pub fn aabb_data(mut self, aabb_data: Option<vk::Buffer>) -> Self {
         self.inner.aabb_data = aabb_data;
         self
     }
-    pub fn set_num_aab_bs(mut self, num_aab_bs: u32) -> Self {
+    pub fn num_aab_bs(mut self, num_aab_bs: u32) -> Self {
         self.inner.num_aab_bs = num_aab_bs;
         self
     }
-    pub fn set_stride(mut self, stride: u32) -> Self {
+    pub fn stride(mut self, stride: u32) -> Self {
         self.inner.stride = stride;
         self
     }
-    pub fn set_offset(mut self, offset: vk::DeviceSize) -> Self {
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
         self.inner.offset = offset;
         self
     }
@@ -11148,23 +11132,23 @@ impl<'a> GeometryNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_geometry_type(mut self, geometry_type: vk::GeometryTypeNVX) -> Self {
+    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeNVX) -> Self {
         self.inner.geometry_type = geometry_type;
         self
     }
-    pub fn set_geometry(mut self, geometry: vk::GeometryDataNVX) -> Self {
+    pub fn geometry(mut self, geometry: vk::GeometryDataNVX) -> Self {
         self.inner.geometry = geometry;
         self
     }
-    pub fn set_flags(mut self, flags: vk::GeometryFlagsNVX) -> Self {
+    pub fn flags(mut self, flags: vk::GeometryFlagsNVX) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -11192,31 +11176,31 @@ impl<'a> AccelerationStructureCreateInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_ty(mut self, ty: vk::AccelerationStructureTypeNVX) -> Self {
+    pub fn ty(mut self, ty: vk::AccelerationStructureTypeNVX) -> Self {
         self.inner.ty = ty;
         self
     }
-    pub fn set_flags(mut self, flags: vk::BuildAccelerationStructureFlagsNVX) -> Self {
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsNVX) -> Self {
         self.inner.flags = flags;
         self
     }
-    pub fn set_compacted_size(mut self, compacted_size: vk::DeviceSize) -> Self {
+    pub fn compacted_size(mut self, compacted_size: vk::DeviceSize) -> Self {
         self.inner.compacted_size = compacted_size;
         self
     }
-    pub fn set_instance_count(mut self, instance_count: u32) -> Self {
+    pub fn instance_count(mut self, instance_count: u32) -> Self {
         self.inner.instance_count = instance_count;
         self
     }
-    pub fn set_p_geometries(mut self, p_geometries: &'a [vk::GeometryNVX]) -> Self {
+    pub fn p_geometries(mut self, p_geometries: &'a [vk::GeometryNVX]) -> Self {
         self.inner.geometry_count = p_geometries.len() as u32;
         self.inner.p_geometries = p_geometries.as_ptr();
         self
@@ -11245,27 +11229,27 @@ impl<'a> BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
-    pub fn set_memory(mut self, memory: vk::DeviceMemory) -> Self {
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
         self.inner.memory = Some(memory);
         self
     }
-    pub fn set_memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
+    pub fn memory_offset(mut self, memory_offset: vk::DeviceSize) -> Self {
         self.inner.memory_offset = memory_offset;
         self
     }
-    pub fn set_p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
+    pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
         self.inner.p_device_indices = p_device_indices.as_ptr();
         self
@@ -11294,18 +11278,15 @@ impl<'a> DescriptorAccelerationStructureInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_acceleration_structures(
-        mut self,
-        p_acceleration_structures: &'a [vk::AccelerationStructureNVX],
-    ) -> Self {
+    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureNVX]) -> Self {
         self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
         self.inner.p_acceleration_structures = p_acceleration_structures.as_ptr();
         self
@@ -11334,15 +11315,15 @@ impl<'a> AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
@@ -11370,23 +11351,23 @@ impl<'a> PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_shader_header_size(mut self, shader_header_size: u32) -> Self {
+    pub fn shader_header_size(mut self, shader_header_size: u32) -> Self {
         self.inner.shader_header_size = shader_header_size;
         self
     }
-    pub fn set_max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
+    pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
         self.inner.max_recursion_depth = max_recursion_depth;
         self
     }
-    pub fn set_max_geometry_count(mut self, max_geometry_count: u32) -> Self {
+    pub fn max_geometry_count(mut self, max_geometry_count: u32) -> Self {
         self.inner.max_geometry_count = max_geometry_count;
         self
     }
@@ -11414,19 +11395,19 @@ impl<'a> DrmFormatModifierPropertiesListEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_drm_format_modifier_count(mut self, drm_format_modifier_count: u32) -> Self {
+    pub fn drm_format_modifier_count(mut self, drm_format_modifier_count: u32) -> Self {
         self.inner.drm_format_modifier_count = drm_format_modifier_count;
         self
     }
-    pub fn set_p_drm_format_modifier_properties(
+    pub fn p_drm_format_modifier_properties(
         mut self,
         p_drm_format_modifier_properties: *mut vk::DrmFormatModifierPropertiesEXT,
     ) -> Self {
@@ -11457,23 +11438,23 @@ impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
+    pub fn drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
         self.inner.drm_format_modifier = drm_format_modifier;
         self
     }
-    pub fn set_sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
+    pub fn sharing_mode(mut self, sharing_mode: vk::SharingMode) -> Self {
         self.inner.sharing_mode = sharing_mode;
         self
     }
-    pub fn set_p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
+    pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
         self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
         self
@@ -11502,15 +11483,15 @@ impl<'a> ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_p_drm_format_modifiers(mut self, p_drm_format_modifiers: &'a [u64]) -> Self {
+    pub fn p_drm_format_modifiers(mut self, p_drm_format_modifiers: &'a [u64]) -> Self {
         self.inner.drm_format_modifier_count = p_drm_format_modifiers.len() as u32;
         self.inner.p_drm_format_modifiers = p_drm_format_modifiers.as_ptr();
         self
@@ -11539,19 +11520,19 @@ impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
             phantom: PhantomData,
         }
     }
-    pub fn set_s_type(mut self, s_type: vk::StructureType) -> Self {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
     }
-    pub fn set_p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn set_drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
+    pub fn drm_format_modifier(mut self, drm_format_modifier: u64) -> Self {
         self.inner.drm_format_modifier = drm_format_modifier;
         self
     }
-    pub fn set_p_plane_layouts(mut self, p_plane_layouts: &'a [vk::SubresourceLayout]) -> Self {
+    pub fn p_plane_layouts(mut self, p_plane_layouts: &'a [vk::SubresourceLayout]) -> Self {
         self.inner.drm_format_modifier_plane_count = p_plane_layouts.len() as u32;
         self.inner.p_plane_layouts = p_plane_layouts.as_ptr();
         self

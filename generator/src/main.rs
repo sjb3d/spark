@@ -1483,7 +1483,7 @@ impl<'a> Generator<'a> {
                                 if cparam.ty.array_size.is_none() {
                                     writeln!(
                                         w,
-                                        "pub fn set_{0}(mut self, {0}: {1}) -> Self {{\
+                                        "pub fn {0}(mut self, {0}: {1}) -> Self {{\
                                          self.inner.{0} = {0}; self }}",
                                         rparam.name,
                                         self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
@@ -1493,7 +1493,7 @@ impl<'a> Generator<'a> {
                             LibParamType::Bool => {
                                 writeln!(
                                     w,
-                                    "pub fn set_{0}(mut self, {0}: bool) -> Self {{\
+                                    "pub fn {0}(mut self, {0}: bool) -> Self {{\
                                      self.inner.{0} = if {0} {{ vk::TRUE }} else {{ vk::FALSE }}; self }}",
                                     rparam.name
                                 )?;
@@ -1501,7 +1501,7 @@ impl<'a> Generator<'a> {
                             LibParamType::CStr => {
                                 writeln!(
                                     w,
-                                    "pub fn set_{0}(mut self, {0}: &'a CStr) -> Self {{\
+                                    "pub fn {0}(mut self, {0}: &'a CStr) -> Self {{\
                                      self.inner.{0} = {0}.as_ptr(); self }}",
                                     rparam.name
                                 )?;
@@ -1509,14 +1509,14 @@ impl<'a> Generator<'a> {
                             LibParamType::NonOptional { ref inner_type_name } => {
                                 writeln!(
                                     w,
-                                    "pub fn set_{0}(mut self, {0}: {1}) -> Self {{\
+                                    "pub fn {0}(mut self, {0}: {1}) -> Self {{\
                                      self.inner.{0} = Some({0}); self }}",
                                     rparam.name, inner_type_name,
                                 )?;
                             }
                             LibParamType::Slice { .. } => {}
                             LibParamType::SharedSliceLen { ref slice_infos, .. } => {
-                                write!(w, "pub fn set_{0}(mut self ", slice_infos[0].name)?;
+                                write!(w, "pub fn {0}(mut self ", slice_infos[0].name)?;
                                 let has_multiple_slices = slice_infos.len() > 1;
                                 for slice_info in slice_infos {
                                     if slice_info.is_optional && has_multiple_slices {
@@ -1563,7 +1563,7 @@ impl<'a> Generator<'a> {
                                 if slice_infos.iter().all(|s| s.is_optional) {
                                     writeln!(
                                         w,
-                                        "pub fn set_{0}(mut self, {0}: {1}) -> Self {{\
+                                        "pub fn {0}(mut self, {0}: {1}) -> Self {{\
                                          self.inner.{0} = {0}; self }}",
                                         rparam.name,
                                         self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
@@ -1572,7 +1572,7 @@ impl<'a> Generator<'a> {
                                 for slice_info in slice_infos {
                                     write!(
                                         w,
-                                        "pub fn set_{0}(mut self, {0}: &'a [{1}]) -> Self {{",
+                                        "pub fn {0}(mut self, {0}: &'a [{1}]) -> Self {{",
                                         slice_info.name, slice_info.type_name
                                     )?;
                                     write!(w, "self.inner.{} = {}.len() as u32;", rparam.name, slice_info.name)?;
@@ -1586,14 +1586,14 @@ impl<'a> Generator<'a> {
                                 if is_optional {
                                     writeln!(
                                         w,
-                                        "pub fn set_{0}(mut self, {0}: Option<&'a {1}>) -> Self {{\
+                                        "pub fn {0}(mut self, {0}: Option<&'a {1}>) -> Self {{\
                                          self.inner.{0} = {0}.map_or(ptr::null(), |p| p); self }}",
                                         rparam.name, inner_type_name,
                                     )?;
                                 } else {
                                     writeln!(
                                         w,
-                                        "pub fn set_{0}(mut self, {0}: &'a {1}) -> Self {{\
+                                        "pub fn {0}(mut self, {0}: &'a {1}) -> Self {{\
                                          self.inner.{0} = {0}; self }}",
                                         rparam.name, inner_type_name,
                                     )?;
