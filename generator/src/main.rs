@@ -572,6 +572,7 @@ impl<'a> Generator<'a> {
             "int" => "c_int".to_owned(),
             "float" => "f32".to_owned(),
             "uint8_t" => "u8".to_owned(),
+            "uint16_t" => "u16".to_owned(),
             "uint32_t" => "u32".to_owned(),
             "uint64_t" => "u64".to_owned(),
             "int32_t" => "i32".to_owned(),
@@ -611,6 +612,7 @@ impl<'a> Generator<'a> {
             "int" => "c_int::default()".to_owned(),
             "float" => "f32::default()".to_owned(),
             "uint8_t" => "u8::default()".to_owned(),
+            "uint16_t" => "u16::default()".to_owned(),
             "uint32_t" => "u32::default()".to_owned(),
             "uint64_t" => "u64::default()".to_owned(),
             "int32_t" => "i32::default()".to_owned(),
@@ -2009,7 +2011,7 @@ impl<'a> Generator<'a> {
                     LibParamType::ReturnVecLen { .. } => {}
                     LibParamType::ReturnVec { ref inner_type_name } => {
                         if *style == LibCommandStyle::Default {
-                            write!(w, "{}: *mut {}", rparam.name, inner_type_name)?;
+                            write!(w, "{}: *mut {},", rparam.name, inner_type_name)?;
                         }
                     }
                 }
