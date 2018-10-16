@@ -1859,13 +1859,10 @@ impl<'a> Generator<'a> {
                     };
                     take_mut::take(&mut return_type, |ty| match ty {
                         LibReturnType::CDecl => match cmd_return_value {
-                            CommandReturnValue::Result => {
-                                if cmd_def.successcodes.as_ref_str() == Some("VK_SUCCESS") {
-                                    LibReturnType::ResultObject
-                                } else {
-                                    LibReturnType::ResultEnumAndObject
-                                }
-                            }
+                            CommandReturnValue::Result => match cmd_def.successcodes.as_ref_str() {
+                                None | Some("VK_SUCCESS") => LibReturnType::ResultObject,
+                                _ => LibReturnType::ResultEnumAndObject,
+                            },
                             CommandReturnValue::Void => LibReturnType::Object,
                             CommandReturnValue::Other => panic!("cannot handle return type {:?}", cmd_def.proto),
                         },
@@ -2202,18 +2199,16 @@ impl<'a> Generator<'a> {
                         )?;
                     }
                     LibReturnType::ResultEnum => {
-                        let matches: Vec<String> = cmd_def
-                            .successcodes
-                            .as_ref_str()
-                            .unwrap()
-                            .split(',')
-                            .map(|s| format!("vk::Result::{}", s.skip_prefix("VK_")))
-                            .collect();
-                        write!(
-                            w,
-                            "let res = match err {{ {} => Ok(err), _ => Err(err) }};",
+                        let ok_matches = if let Some(successcodes) = cmd_def.successcodes.as_ref_str() {
+                            let matches: Vec<String> = successcodes
+                                .split(',')
+                                .map(|s| format!("vk::Result::{}", s.skip_prefix("VK_")))
+                                .collect();
                             matches.join("|")
-                        );
+                        } else {
+                            "vk::Result::SUCCESS".to_owned()
+                        };
+                        write!(w, "let res = match err {{ {} => Ok(err), _ => Err(err) }};", ok_matches);
                     }
                     LibReturnType::ResultObject => {
                         write!(
