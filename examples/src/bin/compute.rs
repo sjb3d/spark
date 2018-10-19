@@ -21,21 +21,25 @@ fn get_memory_type_index(
 
 fn main() -> Result<(), vkr::LoaderError> {
     // load the Vulkan lib
-    let loader = Loader::new()?;
-    let layer_names_raw =
-        [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
-    let instance_create_info = vk::InstanceCreateInfo::builder().pp_enabled_layer_names(&layer_names_raw);
-    let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
+    let instance = {
+        let loader = Loader::new()?;
+        let layer_names_raw =
+            [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
+        let instance_create_info = vk::InstanceCreateInfo::builder().pp_enabled_layer_names(&layer_names_raw);
+        unsafe { loader.create_instance(&instance_create_info, None) }?
+    };
 
     // find the first physical device
-    let physical_devices = unsafe { instance.enumerate_physical_devices_to_vec() }?;
-    for physical_device in &physical_devices {
-        let props = unsafe { instance.get_physical_device_properties(*physical_device) };
-        println!("physical device ({}): {:?}", props.device_type, unsafe {
-            CStr::from_ptr(props.device_name.as_ptr())
-        });
-    }
-    let physical_device = physical_devices.first().cloned().expect("no physical device found");
+    let physical_device = {
+        let physical_devices = unsafe { instance.enumerate_physical_devices_to_vec() }?;
+        for physical_device in &physical_devices {
+            let props = unsafe { instance.get_physical_device_properties(*physical_device) };
+            println!("physical device ({}): {:?}", props.device_type, unsafe {
+                CStr::from_ptr(props.device_name.as_ptr())
+            });
+        }
+        physical_devices.first().cloned().expect("no physical device found")
+    };
 
     // find the first queue family that supports compute
     let queue_family_properties =
@@ -53,64 +57,75 @@ fn main() -> Result<(), vkr::LoaderError> {
         .expect("no queue family supports compute");
 
     // create a device for this queue family
-    let queue_priority = 1.0;
-    let device_queue_create_info = vk::DeviceQueueCreateInfo::builder()
-        .queue_family_index(queue_family_index)
-        .p_queue_priorities(slice::from_ref(&queue_priority));
-    let device_create_info =
-        vk::DeviceCreateInfo::builder().p_queue_create_infos(slice::from_ref(&device_queue_create_info));
-    let device = unsafe { instance.create_device(physical_device, &device_create_info, None) }?;
+    let device = {
+        let queue_priority = 1.0;
+        let device_queue_create_info = vk::DeviceQueueCreateInfo::builder()
+            .queue_family_index(queue_family_index)
+            .p_queue_priorities(slice::from_ref(&queue_priority));
+        let device_create_info =
+            vk::DeviceCreateInfo::builder().p_queue_create_infos(slice::from_ref(&device_queue_create_info));
+        unsafe { instance.create_device(physical_device, &device_create_info, None) }?
+    };
 
     // load the compute shader
-    let shader_bytes = include_bytes!("compute_fill.comp.spv");
-    let shader_module_create_info = vk::ShaderModuleCreateInfo {
-        code_size: shader_bytes.len(),
-        p_code: shader_bytes.as_ptr() as _,
-        ..Default::default()
+    let shader_module = {
+        let shader_bytes = include_bytes!("compute_fill.comp.spv");
+        let shader_module_create_info = vk::ShaderModuleCreateInfo {
+            code_size: shader_bytes.len(),
+            p_code: shader_bytes.as_ptr() as _,
+            ..Default::default()
+        };
+        unsafe { device.create_shader_module(&shader_module_create_info, None) }?
     };
-    let shader_module = unsafe { device.create_shader_module(&shader_module_create_info, None) }?;
 
     // create a buffer for outputs
     let dispatch_size = 256;
     let buffer_size = dispatch_size * mem::size_of::<f32>();
-    let buffer_create_info = vk::BufferCreateInfo {
-        size: buffer_size as vk::DeviceSize,
-        usage: vk::BufferUsageFlags::STORAGE_BUFFER,
-        ..Default::default()
+    let buffer = {
+        let buffer_create_info = vk::BufferCreateInfo {
+            size: buffer_size as vk::DeviceSize,
+            usage: vk::BufferUsageFlags::STORAGE_BUFFER,
+            ..Default::default()
+        };
+        unsafe { device.create_buffer(&buffer_create_info, None) }?
     };
-    let buffer = unsafe { device.create_buffer(&buffer_create_info, None) }?;
     let mem_req = unsafe { device.get_buffer_memory_requirements(buffer) };
 
     // allocate memory for the buffer
-    let memory_properties = unsafe { instance.get_physical_device_memory_properties(physical_device) };
-    let memory_type_index = get_memory_type_index(
-        &memory_properties,
-        mem_req.memory_type_bits,
-        vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
-    ).expect("no suitable memory type found");
-    let memory_allocate_info = vk::MemoryAllocateInfo {
-        allocation_size: mem_req.size,
-        memory_type_index,
-        ..Default::default()
+    let mem = {
+        let memory_properties = unsafe { instance.get_physical_device_memory_properties(physical_device) };
+        let memory_type_index = get_memory_type_index(
+            &memory_properties,
+            mem_req.memory_type_bits,
+            vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
+        ).expect("no suitable memory type found");
+        let memory_allocate_info = vk::MemoryAllocateInfo {
+            allocation_size: mem_req.size,
+            memory_type_index,
+            ..Default::default()
+        };
+        unsafe { device.allocate_memory(&memory_allocate_info, None) }?
     };
-    let mem = unsafe { device.allocate_memory(&memory_allocate_info, None) }?;
     unsafe { device.bind_buffer_memory(buffer, mem, 0) }?;
 
     // make the pipeline layout
-    let descriptor_set_layout_bindings = [vk::DescriptorSetLayoutBinding {
-        binding: 0,
-        descriptor_type: vk::DescriptorType::STORAGE_BUFFER,
-        descriptor_count: 1,
-        stage_flags: vk::ShaderStageFlags::COMPUTE,
-        ..Default::default()
-    }];
-    let descriptor_set_layout_create_info =
-        vk::DescriptorSetLayoutCreateInfo::builder().p_bindings(&descriptor_set_layout_bindings);
-    let descriptor_set_layout =
-        unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }?;
-    let pipeline_layout_create_info =
-        vk::PipelineLayoutCreateInfo::builder().p_set_layouts(slice::from_ref(&descriptor_set_layout));
-    let pipeline_layout = unsafe { device.create_pipeline_layout(&pipeline_layout_create_info, None) }?;
+    let descriptor_set_layout = {
+        let descriptor_set_layout_bindings = [vk::DescriptorSetLayoutBinding {
+            binding: 0,
+            descriptor_type: vk::DescriptorType::STORAGE_BUFFER,
+            descriptor_count: 1,
+            stage_flags: vk::ShaderStageFlags::COMPUTE,
+            ..Default::default()
+        }];
+        let descriptor_set_layout_create_info =
+            vk::DescriptorSetLayoutCreateInfo::builder().p_bindings(&descriptor_set_layout_bindings);
+        unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }?
+    };
+    let pipeline_layout = {
+        let pipeline_layout_create_info =
+            vk::PipelineLayoutCreateInfo::builder().p_set_layouts(slice::from_ref(&descriptor_set_layout));
+        unsafe { device.create_pipeline_layout(&pipeline_layout_create_info, None) }?
+    };
 
     // create the pipeline
     let pipeline_create_info = vk::ComputePipelineCreateInfo {
@@ -127,14 +142,16 @@ fn main() -> Result<(), vkr::LoaderError> {
         unsafe { device.create_compute_pipelines_single(None, slice::from_ref(&pipeline_create_info), None) }?;
 
     // create a pool for the descriptor we need
-    let descriptor_pool_sizes = [vk::DescriptorPoolSize {
-        ty: vk::DescriptorType::STORAGE_BUFFER,
-        descriptor_count: 1,
-    }];
-    let descriptor_pool_create_info = vk::DescriptorPoolCreateInfo::builder()
-        .max_sets(1)
-        .p_pool_sizes(&descriptor_pool_sizes);
-    let descriptor_pool = unsafe { device.create_descriptor_pool(&descriptor_pool_create_info, None) }?;
+    let descriptor_pool =  {
+        let descriptor_pool_sizes = [vk::DescriptorPoolSize {
+            ty: vk::DescriptorType::STORAGE_BUFFER,
+            descriptor_count: 1,
+        }];
+        let descriptor_pool_create_info = vk::DescriptorPoolCreateInfo::builder()
+            .max_sets(1)
+            .p_pool_sizes(&descriptor_pool_sizes);
+        unsafe { device.create_descriptor_pool(&descriptor_pool_create_info, None) }?
+    };
 
     // allocate and write the descriptor set
     let descriptor_set_allocate_info = vk::DescriptorSetAllocateInfo::builder()
