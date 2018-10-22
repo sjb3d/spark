@@ -142,7 +142,7 @@ fn main() -> Result<(), vkr::LoaderError> {
         unsafe { device.create_compute_pipelines_single(None, slice::from_ref(&pipeline_create_info), None) }?;
 
     // create a pool for the descriptor we need
-    let descriptor_pool =  {
+    let descriptor_pool = {
         let descriptor_pool_sizes = [vk::DescriptorPoolSize {
             ty: vk::DescriptorType::STORAGE_BUFFER,
             descriptor_count: 1,
