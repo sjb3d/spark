@@ -1,0 +1,11 @@
+[package]
+name = "vkr-imgui"
+version = "0.1.0"
+authors = ["Simon Brown <si@sjbrown.co.uk>"]
+publish = false
+
+[dependencies]
+vkr = { path = "../vkr" }
+imgui = "0.0.21"
+arrayvec = "0.4.7"
+memoffset = "0.2"
