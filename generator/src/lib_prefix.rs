@@ -69,9 +69,15 @@ impl From<vk::Result> for LoaderError {
     }
 }
 
+#[cfg(unix)]
+const DL_PATH: &'static str = "libvulkan.so.1";
+
+#[cfg(windows)]
+const DL_PATH: &'static str = "vulkan-1.dll";
+
 impl Lib {
     pub fn new() -> result::Result<Self, LoaderError> {
-        match DynamicLibrary::open(Some(&Path::new("libvulkan.so.1"))) {
+        match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
             Ok(lib) => match unsafe {
                 lib.symbol("vkGetInstanceProcAddr")
                     .map(|f: *mut c_void| mem::transmute(f))

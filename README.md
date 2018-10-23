@@ -137,3 +137,7 @@ let render_pass_create_info = vk::RenderPassCreateInfo::builder()
     .p_dependencies(&subpass_dependencies);
 let render_pass = unsafe { device.create_render_pass(&render_pass_create_info, None) }?;
 ```
+
+## Platforms
+
+Currently only unix and windows are supported.
