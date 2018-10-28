@@ -11224,7 +11224,7 @@ impl StructureType {
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT: Self = StructureType(1000158003);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT: Self = StructureType(1000158004);
+    pub const IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT: Self = StructureType(1000158004);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = StructureType(1000158005);
     /// Added by extension VK_EXT_validation_cache.
@@ -11582,7 +11582,7 @@ impl fmt::Display for StructureType {
             1000158001 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000158002 => Some(&"PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
             1000158003 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
-            1000158004 => Some(&"IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT"),
+            1000158004 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT"),
             1000158005 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000160000 => Some(&"VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000160001 => Some(&"SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
@@ -26719,7 +26719,7 @@ pub struct ImageDrmFormatModifierExplicitCreateInfoEXT {
 impl default::Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
     fn default() -> Self {
         ImageDrmFormatModifierExplicitCreateInfoEXT {
-            s_type: StructureType::IMAGE_EXCPLICIT_DRM_FORMAT_MODIFIER_CREATE_INFO_EXT,
+            s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT,
             p_next: ptr::null(),
             drm_format_modifier: u64::default(),
             drm_format_modifier_plane_count: u32::default(),

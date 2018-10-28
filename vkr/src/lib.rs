@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 88
+//! Generated from vk.xml with `VK_HEADER_VERSION` 89
 
 #[macro_use]
 extern crate lazy_static;
@@ -6294,11 +6294,11 @@ impl ExtImageDrmFormatModifier {
         &self,
         image: vk::Image,
         p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
-    ) -> Result<vk::Result> {
+    ) -> Result<()> {
         let err =
             (self.fp1_0.get_image_drm_format_modifier_properties_ext)(Some(self.handle), Some(image), p_properties);
         let res = match err {
-            vk::Result::SUCCESS => Ok(err),
+            vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
         res
