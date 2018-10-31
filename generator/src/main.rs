@@ -2075,33 +2075,31 @@ impl<'a> Generator<'a> {
             writeln!(w, "{{")?;
 
             for rparam in &params {
-                match rparam.ty {
-                    LibParamType::SharedSliceLen {
-                        ref name,
-                        ref slice_infos,
-                    } => {
-                        let first_non_optional = slice_infos.iter().filter(|slice_info| !slice_info.is_optional).next();
+                if let LibParamType::SharedSliceLen {
+                    ref name,
+                    ref slice_infos,
+                } = rparam.ty
+                {
+                    let first_non_optional = slice_infos.iter().find(|slice_info| !slice_info.is_optional);
+                    if let Some(first_non_optional) = first_non_optional {
+                        writeln!(w, "let {} = {}.len() as u32;", name, first_non_optional.name)?;
+                    }
+                    for slice_info in slice_infos {
                         if let Some(first_non_optional) = first_non_optional {
-                            writeln!(w, "let {} = {}.len() as u32;", name, first_non_optional.name)?;
+                            if slice_info.name == first_non_optional.name {
+                                continue;
+                            }
                         }
-                        for slice_info in slice_infos {
-                            if let Some(first_non_optional) = first_non_optional {
-                                if slice_info.name == first_non_optional.name {
-                                    continue;
-                                }
-                            }
-                            if slice_info.is_optional {
-                                writeln!(
-                                    w,
-                                    "if let Some(s) = {} {{ assert_eq!({}, s.len() as u32); }}",
-                                    slice_info.name, name
-                                )?;
-                            } else {
-                                writeln!(w, "assert_eq!({}, {}.len() as u32);", name, slice_info.name)?;
-                            }
+                        if slice_info.is_optional {
+                            writeln!(
+                                w,
+                                "if let Some(s) = {} {{ assert_eq!({}, s.len() as u32); }}",
+                                slice_info.name, name
+                            )?;
+                        } else {
+                            writeln!(w, "assert_eq!({}, {}.len() as u32);", name, slice_info.name)?;
                         }
                     }
-                    _ => {}
                 }
             }
 
