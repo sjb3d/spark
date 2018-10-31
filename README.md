@@ -1,6 +1,7 @@
 # vkr
 
 Convenience wrapper for [Vulkan](https://www.khronos.org/registry/vulkan/) in Rust.
+Currently builds on windows and linux (pull requests for other platforms are welcome).
 
 The wrapper provides:
 * Function pointer loaders for the Vulkan core API and all extensions
@@ -138,6 +139,25 @@ let render_pass_create_info = vk::RenderPassCreateInfo::builder()
 let render_pass = unsafe { device.create_render_pass(&render_pass_create_info, None) }?;
 ```
 
-## Platforms
+## Examples
 
-Currently only unix and windows are supported.
+Examples can be found in the `examples` folder.
+
+### [`compute`](https://github.com/sjb3d/vkr/blob/master/examples/src/bin/compute.rs)
+
+A minimal console application that runs a compute shader to fill some memory.  Shows basic usage of a Vulkan device.
+
+### TODO: imgui example
+
+A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)) can be found in the `vkr-imgui` folder in this repository.  An example that demonstrates this is pending.
+
+## Other Libraries
+
+There are a few other rust crates for Vulkan:
+* [`vulkano`](http://vulkano.rs/): safe wrapper, necessarily higher level
+* [`ash`](https://github.com/MaikKlein/ash): similar level of wrapper, with some differences at this time:
+** Handles are not non-zero
+** Structures have defaults but not builders
+** Uses traits to handle versions, `vkr` prefers runtime checks to avoid generics
+** Loaders are not fully generated, do not cover all extensions
+* [`hephaestus`](`https://github.com/sheredom/hephaestus`): very thin wrapper making use of [`bindgen`](https://github.com/rust-lang-nursery/rust-bindgen)
