@@ -147,9 +147,9 @@ Examples can be found in the `examples` folder.
 
 A minimal console application that runs a compute shader to fill some memory.  Shows basic usage of a Vulkan device.
 
-### TODO: imgui example
+### `imgui` (soon)
 
-A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)) can be found in the `vkr-imgui` folder in this repository.  An example that demonstrates this is pending.
+A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)) can be found in [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) now.  An example that demonstrates this will be added soon.
 
 ## Other Libraries
 
