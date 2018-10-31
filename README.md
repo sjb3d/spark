@@ -153,11 +153,12 @@ A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (
 
 ## Other Libraries
 
-There are a few other rust crates for Vulkan:
+There are many other rust crates for Vulkan.  Here are some links to a few:
+
 * [`vulkano`](http://vulkano.rs/): safe wrapper, necessarily higher level
 * [`ash`](https://github.com/MaikKlein/ash): similar level of wrapper, with some differences at this time:
-** Handles are not non-zero
-** Structures have defaults but not builders
-** Uses traits to handle versions, `vkr` prefers runtime checks to avoid generics
-** Loaders are not fully generated, do not cover all extensions
-* [`hephaestus`](`https://github.com/sheredom/hephaestus`): very thin wrapper making use of [`bindgen`](https://github.com/rust-lang-nursery/rust-bindgen)
+ * Handles are not non-zero
+ * Structures have defaults but not builders
+ * Uses traits to handle versions, `vkr` prefers runtime checks to avoid generics
+ * Loaders are not fully generated, do not cover all extensions
+* [`hephaestus`](https://github.com/sheredom/hephaestus): very thin wrapper making use of [`bindgen`](https://github.com/rust-lang-nursery/rust-bindgen)
