@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 89
+//! Generated from vk.xml with `VK_HEADER_VERSION` 91
 
 #[macro_use]
 extern crate lazy_static;
@@ -3193,67 +3193,6 @@ impl KhrWaylandSurface {
             Some(physical_device),
             queue_family_index,
             display,
-        );
-        res
-    }
-}
-/// Loader for the `VK_KHR_mir_surface` instance extension
-pub struct KhrMirSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrMirSurfaceFn1_0,
-}
-impl KhrMirSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrMirSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_mir_surface\0").unwrap()
-    }
-    pub unsafe fn create_mir_surface_khr(
-        &self,
-        p_create_info: &vk::MirSurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_mir_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_mir_presentation_support_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-        connection: &mut vk::MirConnection,
-    ) -> vk::Bool32 {
-        let res = (self.fp1_0.get_physical_device_mir_presentation_support_khr)(
-            Some(physical_device),
-            queue_family_index,
-            connection,
         );
         res
     }
@@ -6461,13 +6400,13 @@ impl NvShadingRateImage {
         );
     }
 }
-/// Loader for the `VK_NVX_raytracing` device extension
-pub struct NvxRaytracing {
+/// Loader for the `VK_NV_ray_tracing` device extension
+pub struct NvRayTracing {
     pub version: vk::Version,
     pub handle: vk::Device,
-    pub fp1_0: vk::NvxRaytracingFn1_0,
+    pub fp1_0: vk::NvRayTracingFn1_0,
 }
-impl NvxRaytracing {
+impl NvRayTracing {
     pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
         let f = |name: &CStr| {
             instance
@@ -6476,7 +6415,7 @@ impl NvxRaytracing {
         };
         let mut version = vk::Version::from_raw(0);
         let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvxRaytracingFn1_0::load(f);
+        let (fp1_0, ok1_0) = vk::NvRayTracingFn1_0::load(f);
         ok = ok && ok1_0;
         if ok {
             version = vk::Version::from_raw_parts(1, 0, 0);
@@ -6488,15 +6427,15 @@ impl NvxRaytracing {
         })
     }
     pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NVX_raytracing\0").unwrap()
+        CStr::from_bytes_with_nul(b"VK_NV_ray_tracing\0").unwrap()
     }
-    pub unsafe fn create_acceleration_structure_nvx(
+    pub unsafe fn create_acceleration_structure_nv(
         &self,
-        p_create_info: &vk::AccelerationStructureCreateInfoNVX,
+        p_create_info: &vk::AccelerationStructureCreateInfoNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::AccelerationStructureNVX> {
+    ) -> Result<vk::AccelerationStructureNV> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_acceleration_structure_nvx)(
+        let err = (self.fp1_0.create_acceleration_structure_nv)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -6508,45 +6447,34 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn destroy_acceleration_structure_nvx(
+    pub unsafe fn destroy_acceleration_structure_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureNVX,
+        acceleration_structure: vk::AccelerationStructureNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_acceleration_structure_nvx)(
+        (self.fp1_0.destroy_acceleration_structure_nv)(
             Some(self.handle),
             Some(acceleration_structure),
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
-    pub unsafe fn get_acceleration_structure_memory_requirements_nvx(
+    pub unsafe fn get_acceleration_structure_memory_requirements_nv(
         &self,
-        p_info: &vk::AccelerationStructureMemoryRequirementsInfoNVX,
+        p_info: &vk::AccelerationStructureMemoryRequirementsInfoNV,
         p_memory_requirements: &mut vk::MemoryRequirements2KHR,
     ) {
-        (self.fp1_0.get_acceleration_structure_memory_requirements_nvx)(
+        (self.fp1_0.get_acceleration_structure_memory_requirements_nv)(
             Some(self.handle),
             p_info,
             p_memory_requirements,
         );
     }
-    pub unsafe fn get_acceleration_structure_scratch_memory_requirements_nvx(
+    pub unsafe fn bind_acceleration_structure_memory_nv(
         &self,
-        p_info: &vk::AccelerationStructureMemoryRequirementsInfoNVX,
-        p_memory_requirements: &mut vk::MemoryRequirements2KHR,
-    ) {
-        (self.fp1_0.get_acceleration_structure_scratch_memory_requirements_nvx)(
-            Some(self.handle),
-            p_info,
-            p_memory_requirements,
-        );
-    }
-    pub unsafe fn bind_acceleration_structure_memory_nvx(
-        &self,
-        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNVX],
+        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNV],
     ) -> Result<()> {
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_acceleration_structure_memory_nvx)(
+        let err = (self.fp1_0.bind_acceleration_structure_memory_nv)(
             Some(self.handle),
             bind_info_count,
             p_bind_infos.as_ptr(),
@@ -6557,31 +6485,23 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn cmd_build_acceleration_structure_nvx(
+    pub unsafe fn cmd_build_acceleration_structure_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        ty: vk::AccelerationStructureTypeNVX,
-        instance_count: u32,
+        p_info: &vk::AccelerationStructureInfoNV,
         instance_data: Option<vk::Buffer>,
         instance_offset: vk::DeviceSize,
-        p_geometries: &[vk::GeometryNVX],
-        flags: vk::BuildAccelerationStructureFlagsNVX,
         update: bool,
-        dst: vk::AccelerationStructureNVX,
-        src: Option<vk::AccelerationStructureNVX>,
+        dst: vk::AccelerationStructureNV,
+        src: Option<vk::AccelerationStructureNV>,
         scratch: vk::Buffer,
         scratch_offset: vk::DeviceSize,
     ) {
-        let geometry_count = p_geometries.len() as u32;
-        (self.fp1_0.cmd_build_acceleration_structure_nvx)(
+        (self.fp1_0.cmd_build_acceleration_structure_nv)(
             Some(command_buffer),
-            ty,
-            instance_count,
+            p_info,
             instance_data,
             instance_offset,
-            geometry_count,
-            p_geometries.as_ptr(),
-            flags,
             if update { vk::TRUE } else { vk::FALSE },
             Some(dst),
             src,
@@ -6589,52 +6509,60 @@ impl NvxRaytracing {
             scratch_offset,
         );
     }
-    pub unsafe fn cmd_copy_acceleration_structure_nvx(
+    pub unsafe fn cmd_copy_acceleration_structure_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        dst: vk::AccelerationStructureNVX,
-        src: vk::AccelerationStructureNVX,
-        mode: vk::CopyAccelerationStructureModeNVX,
+        dst: vk::AccelerationStructureNV,
+        src: vk::AccelerationStructureNV,
+        mode: vk::CopyAccelerationStructureModeNV,
     ) {
-        (self.fp1_0.cmd_copy_acceleration_structure_nvx)(Some(command_buffer), Some(dst), Some(src), mode);
+        (self.fp1_0.cmd_copy_acceleration_structure_nv)(Some(command_buffer), Some(dst), Some(src), mode);
     }
-    pub unsafe fn cmd_trace_rays_nvx(
+    pub unsafe fn cmd_trace_rays_nv(
         &self,
         command_buffer: vk::CommandBuffer,
         raygen_shader_binding_table_buffer: vk::Buffer,
         raygen_shader_binding_offset: vk::DeviceSize,
-        miss_shader_binding_table_buffer: vk::Buffer,
+        miss_shader_binding_table_buffer: Option<vk::Buffer>,
         miss_shader_binding_offset: vk::DeviceSize,
         miss_shader_binding_stride: vk::DeviceSize,
-        hit_shader_binding_table_buffer: vk::Buffer,
+        hit_shader_binding_table_buffer: Option<vk::Buffer>,
         hit_shader_binding_offset: vk::DeviceSize,
         hit_shader_binding_stride: vk::DeviceSize,
+        callable_shader_binding_table_buffer: Option<vk::Buffer>,
+        callable_shader_binding_offset: vk::DeviceSize,
+        callable_shader_binding_stride: vk::DeviceSize,
         width: u32,
         height: u32,
+        depth: u32,
     ) {
-        (self.fp1_0.cmd_trace_rays_nvx)(
+        (self.fp1_0.cmd_trace_rays_nv)(
             Some(command_buffer),
             Some(raygen_shader_binding_table_buffer),
             raygen_shader_binding_offset,
-            Some(miss_shader_binding_table_buffer),
+            miss_shader_binding_table_buffer,
             miss_shader_binding_offset,
             miss_shader_binding_stride,
-            Some(hit_shader_binding_table_buffer),
+            hit_shader_binding_table_buffer,
             hit_shader_binding_offset,
             hit_shader_binding_stride,
+            callable_shader_binding_table_buffer,
+            callable_shader_binding_offset,
+            callable_shader_binding_stride,
             width,
             height,
+            depth,
         );
     }
-    pub unsafe fn create_raytracing_pipelines_nvx(
+    pub unsafe fn create_ray_tracing_pipelines_nv(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
         p_allocator: Option<&vk::AllocationCallbacks>,
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
         let create_info_count = p_create_infos.len() as u32;
-        let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
+        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -6648,16 +6576,16 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn create_raytracing_pipelines_nvx_to_vec(
+    pub unsafe fn create_ray_tracing_pipelines_nv_to_vec(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<Vec<vk::Pipeline>> {
         let create_info_count = p_create_infos.len() as u32;
         let mut v = Vec::with_capacity(create_info_count as usize);
         v.set_len(create_info_count as usize);
-        let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
+        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -6671,16 +6599,16 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn create_raytracing_pipelines_nvx_array<A: Array<Item = vk::Pipeline>>(
+    pub unsafe fn create_ray_tracing_pipelines_nv_array<A: Array<Item = vk::Pipeline>>(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<A> {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
+        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -6694,16 +6622,16 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn create_raytracing_pipelines_nvx_single(
+    pub unsafe fn create_ray_tracing_pipelines_nv_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RaytracingPipelineCreateInfoNVX],
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.create_raytracing_pipelines_nvx)(
+        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -6717,7 +6645,7 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn get_raytracing_shader_handles_nvx(
+    pub unsafe fn get_ray_tracing_shader_group_handles_nv(
         &self,
         pipeline: vk::Pipeline,
         first_group: u32,
@@ -6725,7 +6653,7 @@ impl NvxRaytracing {
         data_size: usize,
         p_data: *mut c_void,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_raytracing_shader_handles_nvx)(
+        let err = (self.fp1_0.get_ray_tracing_shader_group_handles_nv)(
             Some(self.handle),
             Some(pipeline),
             first_group,
@@ -6739,13 +6667,13 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn get_acceleration_structure_handle_nvx(
+    pub unsafe fn get_acceleration_structure_handle_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureNVX,
+        acceleration_structure: vk::AccelerationStructureNV,
         data_size: usize,
         p_data: *mut c_void,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_acceleration_structure_handle_nvx)(
+        let err = (self.fp1_0.get_acceleration_structure_handle_nv)(
             Some(self.handle),
             Some(acceleration_structure),
             data_size,
@@ -6757,24 +6685,26 @@ impl NvxRaytracing {
         };
         res
     }
-    pub unsafe fn cmd_write_acceleration_structure_properties_nvx(
+    pub unsafe fn cmd_write_acceleration_structures_properties_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        acceleration_structure: vk::AccelerationStructureNVX,
+        p_acceleration_structures: &[vk::AccelerationStructureNV],
         query_type: vk::QueryType,
         query_pool: vk::QueryPool,
-        query: u32,
+        first_query: u32,
     ) {
-        (self.fp1_0.cmd_write_acceleration_structure_properties_nvx)(
+        let acceleration_structure_count = p_acceleration_structures.len() as u32;
+        (self.fp1_0.cmd_write_acceleration_structures_properties_nv)(
             Some(command_buffer),
-            Some(acceleration_structure),
+            acceleration_structure_count,
+            p_acceleration_structures.as_ptr(),
             query_type,
             Some(query_pool),
-            query,
+            first_query,
         );
     }
-    pub unsafe fn compile_deferred_nvx(&self, pipeline: vk::Pipeline, shader: u32) -> Result<()> {
-        let err = (self.fp1_0.compile_deferred_nvx)(Some(self.handle), Some(pipeline), shader);
+    pub unsafe fn compile_deferred_nv(&self, pipeline: vk::Pipeline, shader: u32) -> Result<()> {
+        let err = (self.fp1_0.compile_deferred_nv)(Some(self.handle), Some(pipeline), shader);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),

@@ -3041,50 +3041,6 @@ impl<'a> Deref for AndroidSurfaceCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::MirSurfaceCreateInfoKHR {
-    type Type = MirSurfaceCreateInfoKHRBuilder<'a>;
-    fn builder() -> Self::Type {
-        MirSurfaceCreateInfoKHRBuilder::new()
-    }
-}
-pub struct MirSurfaceCreateInfoKHRBuilder<'a> {
-    inner: vk::MirSurfaceCreateInfoKHR,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> MirSurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn flags(mut self, flags: vk::MirSurfaceCreateFlagsKHR) -> Self {
-        self.inner.flags = flags;
-        self
-    }
-    pub fn connection(mut self, connection: *mut vk::MirConnection) -> Self {
-        self.inner.connection = connection;
-        self
-    }
-    pub fn mir_surface(mut self, mir_surface: *mut vk::MirSurface) -> Self {
-        self.inner.mir_surface = mir_surface;
-        self
-    }
-}
-impl<'a> Deref for MirSurfaceCreateInfoKHRBuilder<'a> {
-    type Target = vk::MirSurfaceCreateInfoKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 impl<'a> Builder<'a> for vk::ViSurfaceCreateInfoNN {
     type Type = ViSurfaceCreateInfoNNBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10932,17 +10888,69 @@ impl<'a> Deref for PhysicalDeviceMeshShaderPropertiesNVBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::RaytracingPipelineCreateInfoNVX {
-    type Type = RaytracingPipelineCreateInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::RayTracingShaderGroupCreateInfoNV {
+    type Type = RayTracingShaderGroupCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        RaytracingPipelineCreateInfoNVXBuilder::new()
+        RayTracingShaderGroupCreateInfoNVBuilder::new()
     }
 }
-pub struct RaytracingPipelineCreateInfoNVXBuilder<'a> {
-    inner: vk::RaytracingPipelineCreateInfoNVX,
+pub struct RayTracingShaderGroupCreateInfoNVBuilder<'a> {
+    inner: vk::RayTracingShaderGroupCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> RaytracingPipelineCreateInfoNVXBuilder<'a> {
+impl<'a> RayTracingShaderGroupCreateInfoNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::RayTracingShaderGroupTypeNV) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn general_shader(mut self, general_shader: u32) -> Self {
+        self.inner.general_shader = general_shader;
+        self
+    }
+    pub fn closest_hit_shader(mut self, closest_hit_shader: u32) -> Self {
+        self.inner.closest_hit_shader = closest_hit_shader;
+        self
+    }
+    pub fn any_hit_shader(mut self, any_hit_shader: u32) -> Self {
+        self.inner.any_hit_shader = any_hit_shader;
+        self
+    }
+    pub fn intersection_shader(mut self, intersection_shader: u32) -> Self {
+        self.inner.intersection_shader = intersection_shader;
+        self
+    }
+}
+impl<'a> Deref for RayTracingShaderGroupCreateInfoNVBuilder<'a> {
+    type Target = vk::RayTracingShaderGroupCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoNV {
+    type Type = RayTracingPipelineCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        RayTracingPipelineCreateInfoNVBuilder::new()
+    }
+}
+pub struct RayTracingPipelineCreateInfoNVBuilder<'a> {
+    inner: vk::RayTracingPipelineCreateInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -10961,11 +10969,14 @@ impl<'a> RaytracingPipelineCreateInfoNVXBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo], p_group_numbers: &'a [u32]) -> Self {
+    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
-        assert_eq!(self.inner.stage_count, p_group_numbers.len() as u32);
         self.inner.p_stages = p_stages.as_ptr();
-        self.inner.p_group_numbers = p_group_numbers.as_ptr();
+        self
+    }
+    pub fn p_groups(mut self, p_groups: &'a [vk::RayTracingShaderGroupCreateInfoNV]) -> Self {
+        self.inner.group_count = p_groups.len() as u32;
+        self.inner.p_groups = p_groups.as_ptr();
         self
     }
     pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
@@ -10985,23 +10996,23 @@ impl<'a> RaytracingPipelineCreateInfoNVXBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for RaytracingPipelineCreateInfoNVXBuilder<'a> {
-    type Target = vk::RaytracingPipelineCreateInfoNVX;
+impl<'a> Deref for RayTracingPipelineCreateInfoNVBuilder<'a> {
+    type Target = vk::RayTracingPipelineCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::GeometryTrianglesNVX {
-    type Type = GeometryTrianglesNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::GeometryTrianglesNV {
+    type Type = GeometryTrianglesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryTrianglesNVXBuilder::new()
+        GeometryTrianglesNVBuilder::new()
     }
 }
-pub struct GeometryTrianglesNVXBuilder<'a> {
-    inner: vk::GeometryTrianglesNVX,
+pub struct GeometryTrianglesNVBuilder<'a> {
+    inner: vk::GeometryTrianglesNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> GeometryTrianglesNVXBuilder<'a> {
+impl<'a> GeometryTrianglesNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11061,23 +11072,23 @@ impl<'a> GeometryTrianglesNVXBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for GeometryTrianglesNVXBuilder<'a> {
-    type Target = vk::GeometryTrianglesNVX;
+impl<'a> Deref for GeometryTrianglesNVBuilder<'a> {
+    type Target = vk::GeometryTrianglesNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::GeometryAABBNVX {
-    type Type = GeometryAABBNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::GeometryAABBNV {
+    type Type = GeometryAABBNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryAABBNVXBuilder::new()
+        GeometryAABBNVBuilder::new()
     }
 }
-pub struct GeometryAABBNVXBuilder<'a> {
-    inner: vk::GeometryAABBNVX,
+pub struct GeometryAABBNVBuilder<'a> {
+    inner: vk::GeometryAABBNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> GeometryAABBNVXBuilder<'a> {
+impl<'a> GeometryAABBNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11109,23 +11120,23 @@ impl<'a> GeometryAABBNVXBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for GeometryAABBNVXBuilder<'a> {
-    type Target = vk::GeometryAABBNVX;
+impl<'a> Deref for GeometryAABBNVBuilder<'a> {
+    type Target = vk::GeometryAABBNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::GeometryNVX {
-    type Type = GeometryNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::GeometryNV {
+    type Type = GeometryNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryNVXBuilder::new()
+        GeometryNVBuilder::new()
     }
 }
-pub struct GeometryNVXBuilder<'a> {
-    inner: vk::GeometryNVX,
+pub struct GeometryNVBuilder<'a> {
+    inner: vk::GeometryNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> GeometryNVXBuilder<'a> {
+impl<'a> GeometryNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11140,36 +11151,36 @@ impl<'a> GeometryNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeNVX) -> Self {
+    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeNV) -> Self {
         self.inner.geometry_type = geometry_type;
         self
     }
-    pub fn geometry(mut self, geometry: vk::GeometryDataNVX) -> Self {
+    pub fn geometry(mut self, geometry: vk::GeometryDataNV) -> Self {
         self.inner.geometry = geometry;
         self
     }
-    pub fn flags(mut self, flags: vk::GeometryFlagsNVX) -> Self {
+    pub fn flags(mut self, flags: vk::GeometryFlagsNV) -> Self {
         self.inner.flags = flags;
         self
     }
 }
-impl<'a> Deref for GeometryNVXBuilder<'a> {
-    type Target = vk::GeometryNVX;
+impl<'a> Deref for GeometryNVBuilder<'a> {
+    type Target = vk::GeometryNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoNVX {
-    type Type = AccelerationStructureCreateInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::AccelerationStructureInfoNV {
+    type Type = AccelerationStructureInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        AccelerationStructureCreateInfoNVXBuilder::new()
+        AccelerationStructureInfoNVBuilder::new()
     }
 }
-pub struct AccelerationStructureCreateInfoNVXBuilder<'a> {
-    inner: vk::AccelerationStructureCreateInfoNVX,
+pub struct AccelerationStructureInfoNVBuilder<'a> {
+    inner: vk::AccelerationStructureInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> AccelerationStructureCreateInfoNVXBuilder<'a> {
+impl<'a> AccelerationStructureInfoNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11184,45 +11195,41 @@ impl<'a> AccelerationStructureCreateInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn ty(mut self, ty: vk::AccelerationStructureTypeNVX) -> Self {
+    pub fn ty(mut self, ty: vk::AccelerationStructureTypeNV) -> Self {
         self.inner.ty = ty;
         self
     }
-    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsNVX) -> Self {
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsNV) -> Self {
         self.inner.flags = flags;
-        self
-    }
-    pub fn compacted_size(mut self, compacted_size: vk::DeviceSize) -> Self {
-        self.inner.compacted_size = compacted_size;
         self
     }
     pub fn instance_count(mut self, instance_count: u32) -> Self {
         self.inner.instance_count = instance_count;
         self
     }
-    pub fn p_geometries(mut self, p_geometries: &'a [vk::GeometryNVX]) -> Self {
+    pub fn p_geometries(mut self, p_geometries: &'a [vk::GeometryNV]) -> Self {
         self.inner.geometry_count = p_geometries.len() as u32;
         self.inner.p_geometries = p_geometries.as_ptr();
         self
     }
 }
-impl<'a> Deref for AccelerationStructureCreateInfoNVXBuilder<'a> {
-    type Target = vk::AccelerationStructureCreateInfoNVX;
+impl<'a> Deref for AccelerationStructureInfoNVBuilder<'a> {
+    type Target = vk::AccelerationStructureInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::BindAccelerationStructureMemoryInfoNVX {
-    type Type = BindAccelerationStructureMemoryInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoNV {
+    type Type = AccelerationStructureCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        BindAccelerationStructureMemoryInfoNVXBuilder::new()
+        AccelerationStructureCreateInfoNVBuilder::new()
     }
 }
-pub struct BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
-    inner: vk::BindAccelerationStructureMemoryInfoNVX,
+pub struct AccelerationStructureCreateInfoNVBuilder<'a> {
+    inner: vk::AccelerationStructureCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
+impl<'a> AccelerationStructureCreateInfoNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11237,7 +11244,47 @@ impl<'a> BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
+    pub fn compacted_size(mut self, compacted_size: vk::DeviceSize) -> Self {
+        self.inner.compacted_size = compacted_size;
+        self
+    }
+    pub fn info(mut self, info: vk::AccelerationStructureInfoNV) -> Self {
+        self.inner.info = info;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureCreateInfoNVBuilder<'a> {
+    type Target = vk::AccelerationStructureCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BindAccelerationStructureMemoryInfoNV {
+    type Type = BindAccelerationStructureMemoryInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        BindAccelerationStructureMemoryInfoNVBuilder::new()
+    }
+}
+pub struct BindAccelerationStructureMemoryInfoNVBuilder<'a> {
+    inner: vk::BindAccelerationStructureMemoryInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNV) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
@@ -11255,23 +11302,23 @@ impl<'a> BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for BindAccelerationStructureMemoryInfoNVXBuilder<'a> {
-    type Target = vk::BindAccelerationStructureMemoryInfoNVX;
+impl<'a> Deref for BindAccelerationStructureMemoryInfoNVBuilder<'a> {
+    type Target = vk::BindAccelerationStructureMemoryInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::DescriptorAccelerationStructureInfoNVX {
-    type Type = DescriptorAccelerationStructureInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::WriteDescriptorSetAccelerationStructureNV {
+    type Type = WriteDescriptorSetAccelerationStructureNVBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorAccelerationStructureInfoNVXBuilder::new()
+        WriteDescriptorSetAccelerationStructureNVBuilder::new()
     }
 }
-pub struct DescriptorAccelerationStructureInfoNVXBuilder<'a> {
-    inner: vk::DescriptorAccelerationStructureInfoNVX,
+pub struct WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
+    inner: vk::WriteDescriptorSetAccelerationStructureNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> DescriptorAccelerationStructureInfoNVXBuilder<'a> {
+impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11286,29 +11333,29 @@ impl<'a> DescriptorAccelerationStructureInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureNVX]) -> Self {
+    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureNV]) -> Self {
         self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
         self.inner.p_acceleration_structures = p_acceleration_structures.as_ptr();
         self
     }
 }
-impl<'a> Deref for DescriptorAccelerationStructureInfoNVXBuilder<'a> {
-    type Target = vk::DescriptorAccelerationStructureInfoNVX;
+impl<'a> Deref for WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
+    type Target = vk::WriteDescriptorSetAccelerationStructureNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::AccelerationStructureMemoryRequirementsInfoNVX {
-    type Type = AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::AccelerationStructureMemoryRequirementsInfoNV {
+    type Type = AccelerationStructureMemoryRequirementsInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        AccelerationStructureMemoryRequirementsInfoNVXBuilder::new()
+        AccelerationStructureMemoryRequirementsInfoNVBuilder::new()
     }
 }
-pub struct AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
-    inner: vk::AccelerationStructureMemoryRequirementsInfoNVX,
+pub struct AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
+    inner: vk::AccelerationStructureMemoryRequirementsInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
+impl<'a> AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11323,28 +11370,32 @@ impl<'a> AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNVX) -> Self {
+    pub fn ty(mut self, ty: vk::AccelerationStructureMemoryRequirementsTypeNV) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNV) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
 }
-impl<'a> Deref for AccelerationStructureMemoryRequirementsInfoNVXBuilder<'a> {
-    type Target = vk::AccelerationStructureMemoryRequirementsInfoNVX;
+impl<'a> Deref for AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
+    type Target = vk::AccelerationStructureMemoryRequirementsInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceRaytracingPropertiesNVX {
-    type Type = PhysicalDeviceRaytracingPropertiesNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceRayTracingPropertiesNV {
+    type Type = PhysicalDeviceRayTracingPropertiesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceRaytracingPropertiesNVXBuilder::new()
+        PhysicalDeviceRayTracingPropertiesNVBuilder::new()
     }
 }
-pub struct PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
-    inner: vk::PhysicalDeviceRaytracingPropertiesNVX,
+pub struct PhysicalDeviceRayTracingPropertiesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceRayTracingPropertiesNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
+impl<'a> PhysicalDeviceRayTracingPropertiesNVBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11359,21 +11410,44 @@ impl<'a> PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn shader_header_size(mut self, shader_header_size: u32) -> Self {
-        self.inner.shader_header_size = shader_header_size;
+    pub fn shader_group_handle_size(mut self, shader_group_handle_size: u32) -> Self {
+        self.inner.shader_group_handle_size = shader_group_handle_size;
         self
     }
     pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
         self.inner.max_recursion_depth = max_recursion_depth;
         self
     }
-    pub fn max_geometry_count(mut self, max_geometry_count: u32) -> Self {
+    pub fn max_shader_group_stride(mut self, max_shader_group_stride: u32) -> Self {
+        self.inner.max_shader_group_stride = max_shader_group_stride;
+        self
+    }
+    pub fn shader_group_base_alignment(mut self, shader_group_base_alignment: u32) -> Self {
+        self.inner.shader_group_base_alignment = shader_group_base_alignment;
+        self
+    }
+    pub fn max_geometry_count(mut self, max_geometry_count: u64) -> Self {
         self.inner.max_geometry_count = max_geometry_count;
         self
     }
+    pub fn max_instance_count(mut self, max_instance_count: u64) -> Self {
+        self.inner.max_instance_count = max_instance_count;
+        self
+    }
+    pub fn max_triangle_count(mut self, max_triangle_count: u64) -> Self {
+        self.inner.max_triangle_count = max_triangle_count;
+        self
+    }
+    pub fn max_descriptor_set_acceleration_structures(
+        mut self,
+        max_descriptor_set_acceleration_structures: u32,
+    ) -> Self {
+        self.inner.max_descriptor_set_acceleration_structures = max_descriptor_set_acceleration_structures;
+        self
+    }
 }
-impl<'a> Deref for PhysicalDeviceRaytracingPropertiesNVXBuilder<'a> {
-    type Target = vk::PhysicalDeviceRaytracingPropertiesNVX;
+impl<'a> Deref for PhysicalDeviceRayTracingPropertiesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceRayTracingPropertiesNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11540,6 +11614,42 @@ impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
     type Target = vk::ImageDrmFormatModifierExplicitCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DeviceMemoryOverallocationCreateInfoAMD {
+    type Type = DeviceMemoryOverallocationCreateInfoAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        DeviceMemoryOverallocationCreateInfoAMDBuilder::new()
+    }
+}
+pub struct DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
+    inner: vk::DeviceMemoryOverallocationCreateInfoAMD,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn overallocation_behavior(mut self, overallocation_behavior: vk::MemoryOverallocationBehaviorAMD) -> Self {
+        self.inner.overallocation_behavior = overallocation_behavior;
+        self
+    }
+}
+impl<'a> Deref for DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
+    type Target = vk::DeviceMemoryOverallocationCreateInfoAMD;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
