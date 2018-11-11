@@ -40,12 +40,12 @@ Function pointers for versions beyond this will be present but their implementat
 Each Vulkan extension has its own loader that must be created manually for an `Instance` or `Device`.  For example:
 
 ```rust
-// load functions for the VK_NVX_raytracing extension for this device
+// load functions for the VK_NV_ray_tracing extension for this device
 // (expects instance to have been created with this extension listed)
-let nvx_raytracing = NvxRaytracing::new(&instance, &device)?;
+let nv_ray_tracing = NvRayTracing::new(&instance, &device)?;
 
 // can now call functions from this extension
-let accel = nvx_raytracing.create_acceleration_structure_nvx(&create_info, None)?;
+let accel = nv_ray_tracing.create_acceleration_structure_nv(&create_info, None)?;
 ```
 
 ## Vulkan Handles
