@@ -822,7 +822,7 @@ impl<'a> Generator<'a> {
                 match value {
                     EnumEntryValue::Number { value, ref comment } => {
                         if let Some(comment) = comment {
-                            writeln!(w, "/// {}", comment);
+                            writeln!(w, "/// {}", comment)?;
                         }
                         if let Some(ext) = ext {
                             writeln!(w, "/// Added by extension {}.", ext.name)?;
@@ -2251,7 +2251,7 @@ impl<'a> Generator<'a> {
                         } else {
                             "vk::Result::SUCCESS".to_owned()
                         };
-                        write!(w, "let res = match err {{ {} => Ok(err), _ => Err(err) }};", ok_matches);
+                        write!(w, "let res = match err {{ {} => Ok(err), _ => Err(err) }};", ok_matches)?;
                     }
                     LibReturnType::ResultObject => {
                         write!(
@@ -2271,7 +2271,7 @@ impl<'a> Generator<'a> {
                             w,
                             "let res = match err {{ {} => Ok((err, res)), _ => Err(err) }};",
                             matches.join("|"),
-                        );
+                        )?;
                     }
                     LibReturnType::Object => {}
                     LibReturnType::ResultVecUnknownLen => {
@@ -2319,7 +2319,7 @@ impl<'a> Generator<'a> {
                                 "res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r))"
                             }
                         }
-                    );
+                    )?;
                 }
             }
 
@@ -2363,7 +2363,7 @@ impl<'a> Generator<'a> {
                 let version = version_names.version.skip_prefix(VERSION_PREFIX);
                 write!(w, "pub fp{0}: vk::{1}Fn{0},", version, group_names.group)?;
             }
-            writeln!(w, "}}");
+            writeln!(w, "}}")?;
             writeln!(w, "impl {} {{", group_names.group)?;
             match group_names.group {
                 Group::Loader => {
@@ -2436,7 +2436,7 @@ impl<'a> Generator<'a> {
             }
             for version_names in &group_names.versions {
                 let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                write!(w, "fp{},", version);
+                write!(w, "fp{},", version)?;
             }
             writeln!(w, "}}) }}")?;
             match group_names.group {
@@ -2478,7 +2478,7 @@ impl<'a> Generator<'a> {
             }
         }
         if let Some(v) = header_version {
-            writeln!(&mut w, "//! Generated from vk.xml with `VK_HEADER_VERSION` {}", v);
+            writeln!(&mut w, "//! Generated from vk.xml with `VK_HEADER_VERSION` {}", v)?;
         }
 
         write!(&mut w, "{}", include_str!("lib_prefix.rs"))?;
