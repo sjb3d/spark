@@ -1,12 +1,8 @@
 //! Generated from vk.xml with `VK_HEADER_VERSION` 91
-
-#[macro_use]
-extern crate lazy_static;
-extern crate shared_library;
-
 pub mod builder;
 pub mod vk;
 
+use lazy_static::lazy_static;
 use shared_library::dynamic_library::DynamicLibrary;
 use std::ffi::CStr;
 use std::mem;

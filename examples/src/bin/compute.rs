@@ -1,5 +1,3 @@
-extern crate vkr;
-
 use std::ffi::CStr;
 use std::mem;
 use std::slice;
@@ -53,7 +51,8 @@ fn main() -> Result<(), vkr::LoaderError> {
             } else {
                 None
             }
-        }).next()
+        })
+        .next()
         .expect("no queue family supports compute");
 
     // create a device for this queue family
@@ -98,7 +97,8 @@ fn main() -> Result<(), vkr::LoaderError> {
             &memory_properties,
             mem_req.memory_type_bits,
             vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
-        ).expect("no suitable memory type found");
+        )
+        .expect("no suitable memory type found");
         let memory_allocate_info = vk::MemoryAllocateInfo {
             allocation_size: mem_req.size,
             memory_type_index,

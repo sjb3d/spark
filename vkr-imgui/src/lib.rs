@@ -1,11 +1,6 @@
-extern crate arrayvec;
-extern crate imgui;
-extern crate vkr;
-#[macro_use]
-extern crate memoffset;
-
 use arrayvec::ArrayVec;
 use imgui::{FrameSize, ImDrawIdx, ImDrawVert, ImGui, Ui};
+use memoffset::offset_of;
 use std::ffi::CStr;
 use std::mem;
 use std::os::raw::{c_uchar, c_void};
@@ -222,7 +217,8 @@ impl Renderer {
                     slice::from_ref(&pipeline_create_info),
                     None,
                 )
-            }.unwrap()
+            }
+            .unwrap()
         };
 
         unsafe { device.destroy_shader_module(Some(vertex_shader), None) };
@@ -307,7 +303,8 @@ impl Renderer {
                     | vk::MemoryPropertyFlags::HOST_VISIBLE
                     | vk::MemoryPropertyFlags::HOST_COHERENT,
                 vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
-            ).unwrap();
+            )
+            .unwrap();
             let memory_allocate_info = vk::MemoryAllocateInfo {
                 allocation_size: host_allocation_size,
                 memory_type_index,
@@ -324,7 +321,8 @@ impl Renderer {
         }
         unsafe {
             device.bind_buffer_memory(image_buffer, host_mem, image_mem_offset as vk::DeviceSize)
-        }.unwrap();
+        }
+        .unwrap();
 
         let host_mapping =
             unsafe { device.map_memory(host_mem, 0, vk::WHOLE_SIZE, Default::default()) }.unwrap();
@@ -358,7 +356,8 @@ impl Renderer {
                 local_memory_type_filter,
                 vk::MemoryPropertyFlags::DEVICE_LOCAL,
                 vk::MemoryPropertyFlags::DEVICE_LOCAL,
-            ).unwrap();
+            )
+            .unwrap();
             let memory_allocate_info = vk::MemoryAllocateInfo {
                 allocation_size: local_allocation_size,
                 memory_type_index,
@@ -693,7 +692,8 @@ impl Renderer {
             unsafe { device.flush_mapped_memory_ranges(&mapped_ranges) }.unwrap();
 
             Ok(())
-        }).unwrap();
+        })
+        .unwrap();
 
         self.frame_index = (1 + self.frame_index) % Renderer::FRAME_COUNT;
     }

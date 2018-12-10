@@ -13138,13 +13138,12 @@ pub type FnDebugReportCallbackEXT = unsafe extern "system" fn(
     p_message: *const c_char,
     p_user_data: *mut c_void,
 ) -> Bool32;
-pub type FnDebugUtilsMessengerCallbackEXT =
-    unsafe extern "system" fn(
-        message_severity: DebugUtilsMessageSeverityFlagsEXT,
-        message_types: DebugUtilsMessageTypeFlagsEXT,
-        p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
-        p_user_data: *mut c_void,
-    ) -> Bool32;
+pub type FnDebugUtilsMessengerCallbackEXT = unsafe extern "system" fn(
+    message_severity: DebugUtilsMessageSeverityFlagsEXT,
+    message_types: DebugUtilsMessageTypeFlagsEXT,
+    p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
+    p_user_data: *mut c_void,
+) -> Bool32;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BaseOutStructure {
@@ -13456,7 +13455,8 @@ impl fmt::Debug for ExtensionProperties {
         fmt.debug_struct("ExtensionProperties")
             .field("extension_name", &unsafe {
                 CStr::from_ptr(self.extension_name.as_ptr())
-            }).field("spec_version", &self.spec_version)
+            })
+            .field("spec_version", &self.spec_version)
             .finish()
     }
 }
@@ -13562,14 +13562,16 @@ impl fmt::Debug for AllocationCallbacks {
                 } else {
                     &"None"
                 },
-            ).field(
+            )
+            .field(
                 "pfn_reallocation",
                 if self.pfn_reallocation.is_some() {
                     &"Some"
                 } else {
                     &"None"
                 },
-            ).field("pfn_free", if self.pfn_free.is_some() { &"Some" } else { &"None" })
+            )
+            .field("pfn_free", if self.pfn_free.is_some() { &"Some" } else { &"None" })
             .field(
                 "pfn_internal_allocation",
                 if self.pfn_internal_allocation.is_some() {
@@ -13577,14 +13579,16 @@ impl fmt::Debug for AllocationCallbacks {
                 } else {
                     &"None"
                 },
-            ).field(
+            )
+            .field(
                 "pfn_internal_free",
                 if self.pfn_internal_free.is_some() {
                     &"Some"
                 } else {
                     &"None"
                 },
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -15417,11 +15421,13 @@ impl fmt::Debug for PipelineVertexInputStateCreateInfo {
             .field(
                 "vertex_binding_description_count",
                 &self.vertex_binding_description_count,
-            ).field("p_vertex_binding_descriptions", &self.p_vertex_binding_descriptions)
+            )
+            .field("p_vertex_binding_descriptions", &self.p_vertex_binding_descriptions)
             .field(
                 "vertex_attribute_description_count",
                 &self.vertex_attribute_description_count,
-            ).field("p_vertex_attribute_descriptions", &self.p_vertex_attribute_descriptions)
+            )
+            .field("p_vertex_attribute_descriptions", &self.p_vertex_attribute_descriptions)
             .finish()
     }
 }
@@ -16796,36 +16802,46 @@ impl fmt::Debug for PhysicalDeviceFeatures {
             .field(
                 "vertex_pipeline_stores_and_atomics",
                 &self.vertex_pipeline_stores_and_atomics,
-            ).field("fragment_stores_and_atomics", &self.fragment_stores_and_atomics)
+            )
+            .field("fragment_stores_and_atomics", &self.fragment_stores_and_atomics)
             .field(
                 "shader_tessellation_and_geometry_point_size",
                 &self.shader_tessellation_and_geometry_point_size,
-            ).field("shader_image_gather_extended", &self.shader_image_gather_extended)
+            )
+            .field("shader_image_gather_extended", &self.shader_image_gather_extended)
             .field(
                 "shader_storage_image_extended_formats",
                 &self.shader_storage_image_extended_formats,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_multisample",
                 &self.shader_storage_image_multisample,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_read_without_format",
                 &self.shader_storage_image_read_without_format,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_write_without_format",
                 &self.shader_storage_image_write_without_format,
-            ).field(
+            )
+            .field(
                 "shader_uniform_buffer_array_dynamic_indexing",
                 &self.shader_uniform_buffer_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_sampled_image_array_dynamic_indexing",
                 &self.shader_sampled_image_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_buffer_array_dynamic_indexing",
                 &self.shader_storage_buffer_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_array_dynamic_indexing",
                 &self.shader_storage_image_array_dynamic_indexing,
-            ).field("shader_clip_distance", &self.shader_clip_distance)
+            )
+            .field("shader_clip_distance", &self.shader_clip_distance)
             .field("shader_cull_distance", &self.shader_cull_distance)
             .field("shader_float64", &self.shader_float64)
             .field("shader_int64", &self.shader_int64)
@@ -16877,13 +16893,16 @@ impl fmt::Debug for PhysicalDeviceSparseProperties {
             .field(
                 "residency_standard2_d_block_shape",
                 &self.residency_standard2_d_block_shape,
-            ).field(
+            )
+            .field(
                 "residency_standard2_d_multisample_block_shape",
                 &self.residency_standard2_d_multisample_block_shape,
-            ).field(
+            )
+            .field(
                 "residency_standard3_d_block_shape",
                 &self.residency_standard3_d_block_shape,
-            ).field("residency_aligned_mip_size", &self.residency_aligned_mip_size)
+            )
+            .field("residency_aligned_mip_size", &self.residency_aligned_mip_size)
             .field("residency_non_resident_strict", &self.residency_non_resident_strict)
             .finish()
     }
@@ -17236,94 +17255,119 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "max_per_stage_descriptor_samplers",
                 &self.max_per_stage_descriptor_samplers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_uniform_buffers",
                 &self.max_per_stage_descriptor_uniform_buffers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_storage_buffers",
                 &self.max_per_stage_descriptor_storage_buffers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_sampled_images",
                 &self.max_per_stage_descriptor_sampled_images,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_storage_images",
                 &self.max_per_stage_descriptor_storage_images,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_input_attachments",
                 &self.max_per_stage_descriptor_input_attachments,
-            ).field("max_per_stage_resources", &self.max_per_stage_resources)
+            )
+            .field("max_per_stage_resources", &self.max_per_stage_resources)
             .field("max_descriptor_set_samplers", &self.max_descriptor_set_samplers)
             .field(
                 "max_descriptor_set_uniform_buffers",
                 &self.max_descriptor_set_uniform_buffers,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_uniform_buffers_dynamic",
                 &self.max_descriptor_set_uniform_buffers_dynamic,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_storage_buffers",
                 &self.max_descriptor_set_storage_buffers,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_storage_buffers_dynamic",
                 &self.max_descriptor_set_storage_buffers_dynamic,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_sampled_images",
                 &self.max_descriptor_set_sampled_images,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_storage_images",
                 &self.max_descriptor_set_storage_images,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_input_attachments",
                 &self.max_descriptor_set_input_attachments,
-            ).field("max_vertex_input_attributes", &self.max_vertex_input_attributes)
+            )
+            .field("max_vertex_input_attributes", &self.max_vertex_input_attributes)
             .field("max_vertex_input_bindings", &self.max_vertex_input_bindings)
             .field(
                 "max_vertex_input_attribute_offset",
                 &self.max_vertex_input_attribute_offset,
-            ).field("max_vertex_input_binding_stride", &self.max_vertex_input_binding_stride)
+            )
+            .field("max_vertex_input_binding_stride", &self.max_vertex_input_binding_stride)
             .field("max_vertex_output_components", &self.max_vertex_output_components)
             .field(
                 "max_tessellation_generation_level",
                 &self.max_tessellation_generation_level,
-            ).field("max_tessellation_patch_size", &self.max_tessellation_patch_size)
+            )
+            .field("max_tessellation_patch_size", &self.max_tessellation_patch_size)
             .field(
                 "max_tessellation_control_per_vertex_input_components",
                 &self.max_tessellation_control_per_vertex_input_components,
-            ).field(
+            )
+            .field(
                 "max_tessellation_control_per_vertex_output_components",
                 &self.max_tessellation_control_per_vertex_output_components,
-            ).field(
+            )
+            .field(
                 "max_tessellation_control_per_patch_output_components",
                 &self.max_tessellation_control_per_patch_output_components,
-            ).field(
+            )
+            .field(
                 "max_tessellation_control_total_output_components",
                 &self.max_tessellation_control_total_output_components,
-            ).field(
+            )
+            .field(
                 "max_tessellation_evaluation_input_components",
                 &self.max_tessellation_evaluation_input_components,
-            ).field(
+            )
+            .field(
                 "max_tessellation_evaluation_output_components",
                 &self.max_tessellation_evaluation_output_components,
-            ).field("max_geometry_shader_invocations", &self.max_geometry_shader_invocations)
+            )
+            .field("max_geometry_shader_invocations", &self.max_geometry_shader_invocations)
             .field("max_geometry_input_components", &self.max_geometry_input_components)
             .field("max_geometry_output_components", &self.max_geometry_output_components)
             .field("max_geometry_output_vertices", &self.max_geometry_output_vertices)
             .field(
                 "max_geometry_total_output_components",
                 &self.max_geometry_total_output_components,
-            ).field("max_fragment_input_components", &self.max_fragment_input_components)
+            )
+            .field("max_fragment_input_components", &self.max_fragment_input_components)
             .field("max_fragment_output_attachments", &self.max_fragment_output_attachments)
             .field(
                 "max_fragment_dual_src_attachments",
                 &self.max_fragment_dual_src_attachments,
-            ).field(
+            )
+            .field(
                 "max_fragment_combined_output_resources",
                 &self.max_fragment_combined_output_resources,
-            ).field("max_compute_shared_memory_size", &self.max_compute_shared_memory_size)
+            )
+            .field("max_compute_shared_memory_size", &self.max_compute_shared_memory_size)
             .field("max_compute_work_group_count", &self.max_compute_work_group_count)
             .field(
                 "max_compute_work_group_invocations",
                 &self.max_compute_work_group_invocations,
-            ).field("max_compute_work_group_size", &self.max_compute_work_group_size)
+            )
+            .field("max_compute_work_group_size", &self.max_compute_work_group_size)
             .field("sub_pixel_precision_bits", &self.sub_pixel_precision_bits)
             .field("sub_texel_precision_bits", &self.sub_texel_precision_bits)
             .field("mipmap_precision_bits", &self.mipmap_precision_bits)
@@ -17339,13 +17383,16 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "min_texel_buffer_offset_alignment",
                 &self.min_texel_buffer_offset_alignment,
-            ).field(
+            )
+            .field(
                 "min_uniform_buffer_offset_alignment",
                 &self.min_uniform_buffer_offset_alignment,
-            ).field(
+            )
+            .field(
                 "min_storage_buffer_offset_alignment",
                 &self.min_storage_buffer_offset_alignment,
-            ).field("min_texel_offset", &self.min_texel_offset)
+            )
+            .field("min_texel_offset", &self.min_texel_offset)
             .field("max_texel_offset", &self.max_texel_offset)
             .field("min_texel_gather_offset", &self.min_texel_gather_offset)
             .field("max_texel_gather_offset", &self.max_texel_gather_offset)
@@ -17354,7 +17401,8 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "sub_pixel_interpolation_offset_bits",
                 &self.sub_pixel_interpolation_offset_bits,
-            ).field("max_framebuffer_width", &self.max_framebuffer_width)
+            )
+            .field("max_framebuffer_width", &self.max_framebuffer_width)
             .field("max_framebuffer_height", &self.max_framebuffer_height)
             .field("max_framebuffer_layers", &self.max_framebuffer_layers)
             .field("framebuffer_color_sample_counts", &self.framebuffer_color_sample_counts)
@@ -17362,23 +17410,29 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "framebuffer_stencil_sample_counts",
                 &self.framebuffer_stencil_sample_counts,
-            ).field(
+            )
+            .field(
                 "framebuffer_no_attachments_sample_counts",
                 &self.framebuffer_no_attachments_sample_counts,
-            ).field("max_color_attachments", &self.max_color_attachments)
+            )
+            .field("max_color_attachments", &self.max_color_attachments)
             .field(
                 "sampled_image_color_sample_counts",
                 &self.sampled_image_color_sample_counts,
-            ).field(
+            )
+            .field(
                 "sampled_image_integer_sample_counts",
                 &self.sampled_image_integer_sample_counts,
-            ).field(
+            )
+            .field(
                 "sampled_image_depth_sample_counts",
                 &self.sampled_image_depth_sample_counts,
-            ).field(
+            )
+            .field(
                 "sampled_image_stencil_sample_counts",
                 &self.sampled_image_stencil_sample_counts,
-            ).field("storage_image_sample_counts", &self.storage_image_sample_counts)
+            )
+            .field("storage_image_sample_counts", &self.storage_image_sample_counts)
             .field("max_sample_mask_words", &self.max_sample_mask_words)
             .field("timestamp_compute_and_graphics", &self.timestamp_compute_and_graphics)
             .field("timestamp_period", &self.timestamp_period)
@@ -17387,7 +17441,8 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "max_combined_clip_and_cull_distances",
                 &self.max_combined_clip_and_cull_distances,
-            ).field("discrete_queue_priorities", &self.discrete_queue_priorities)
+            )
+            .field("discrete_queue_priorities", &self.discrete_queue_priorities)
             .field("point_size_range", &self.point_size_range)
             .field("line_width_range", &self.line_width_range)
             .field("point_size_granularity", &self.point_size_granularity)
@@ -17397,10 +17452,12 @@ impl fmt::Debug for PhysicalDeviceLimits {
             .field(
                 "optimal_buffer_copy_offset_alignment",
                 &self.optimal_buffer_copy_offset_alignment,
-            ).field(
+            )
+            .field(
                 "optimal_buffer_copy_row_pitch_alignment",
                 &self.optimal_buffer_copy_row_pitch_alignment,
-            ).field("non_coherent_atom_size", &self.non_coherent_atom_size)
+            )
+            .field("non_coherent_atom_size", &self.non_coherent_atom_size)
             .finish()
     }
 }
@@ -18363,7 +18420,8 @@ impl fmt::Debug for DebugReportCallbackCreateInfoEXT {
             .field(
                 "pfn_callback",
                 if self.pfn_callback.is_some() { &"Some" } else { &"None" },
-            ).field("p_user_data", &self.p_user_data)
+            )
+            .field("p_user_data", &self.p_user_data)
             .finish()
     }
 }
@@ -18638,7 +18696,8 @@ impl fmt::Debug for ExternalImageFormatPropertiesNV {
             .field(
                 "export_from_imported_handle_types",
                 &self.export_from_imported_handle_types,
-            ).field("compatible_handle_types", &self.compatible_handle_types)
+            )
+            .field("compatible_handle_types", &self.compatible_handle_types)
             .finish()
     }
 }
@@ -18848,17 +18907,21 @@ impl fmt::Debug for DeviceGeneratedCommandsLimitsNVX {
             .field(
                 "max_indirect_commands_layout_token_count",
                 &self.max_indirect_commands_layout_token_count,
-            ).field("max_object_entry_counts", &self.max_object_entry_counts)
+            )
+            .field("max_object_entry_counts", &self.max_object_entry_counts)
             .field(
                 "min_sequence_count_buffer_offset_alignment",
                 &self.min_sequence_count_buffer_offset_alignment,
-            ).field(
+            )
+            .field(
                 "min_sequence_index_buffer_offset_alignment",
                 &self.min_sequence_index_buffer_offset_alignment,
-            ).field(
+            )
+            .field(
                 "min_commands_token_buffer_offset_alignment",
                 &self.min_commands_token_buffer_offset_alignment,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -19080,16 +19143,20 @@ impl fmt::Debug for ObjectTableCreateInfoNVX {
             .field(
                 "max_uniform_buffers_per_descriptor",
                 &self.max_uniform_buffers_per_descriptor,
-            ).field(
+            )
+            .field(
                 "max_storage_buffers_per_descriptor",
                 &self.max_storage_buffers_per_descriptor,
-            ).field(
+            )
+            .field(
                 "max_storage_images_per_descriptor",
                 &self.max_storage_images_per_descriptor,
-            ).field(
+            )
+            .field(
                 "max_sampled_images_per_descriptor",
                 &self.max_sampled_images_per_descriptor,
-            ).field("max_pipeline_layouts", &self.max_pipeline_layouts)
+            )
+            .field("max_pipeline_layouts", &self.max_pipeline_layouts)
             .finish()
     }
 }
@@ -19702,7 +19769,8 @@ impl fmt::Debug for PhysicalDeviceVariablePointerFeatures {
             .field(
                 "variable_pointers_storage_buffer",
                 &self.variable_pointers_storage_buffer,
-            ).field("variable_pointers", &self.variable_pointers)
+            )
+            .field("variable_pointers", &self.variable_pointers)
             .finish()
     }
 }
@@ -19730,7 +19798,8 @@ impl fmt::Debug for ExternalMemoryProperties {
             .field(
                 "export_from_imported_handle_types",
                 &self.export_from_imported_handle_types,
-            ).field("compatible_handle_types", &self.compatible_handle_types)
+            )
+            .field("compatible_handle_types", &self.compatible_handle_types)
             .finish()
     }
 }
@@ -20254,7 +20323,8 @@ impl fmt::Debug for ExternalSemaphoreProperties {
             .field(
                 "export_from_imported_handle_types",
                 &self.export_from_imported_handle_types,
-            ).field("compatible_handle_types", &self.compatible_handle_types)
+            )
+            .field("compatible_handle_types", &self.compatible_handle_types)
             .field("external_semaphore_features", &self.external_semaphore_features)
             .finish()
     }
@@ -20532,7 +20602,8 @@ impl fmt::Debug for ExternalFenceProperties {
             .field(
                 "export_from_imported_handle_types",
                 &self.export_from_imported_handle_types,
-            ).field("compatible_handle_types", &self.compatible_handle_types)
+            )
+            .field("compatible_handle_types", &self.compatible_handle_types)
             .field("external_fence_features", &self.external_fence_features)
             .finish()
     }
@@ -21180,7 +21251,8 @@ impl fmt::Debug for BindImageMemoryDeviceGroupInfo {
             .field(
                 "split_instance_bind_region_count",
                 &self.split_instance_bind_region_count,
-            ).field("p_split_instance_bind_regions", &self.p_split_instance_bind_regions)
+            )
+            .field("p_split_instance_bind_regions", &self.p_split_instance_bind_regions)
             .finish()
     }
 }
@@ -21282,7 +21354,8 @@ impl fmt::Debug for DeviceGroupSubmitInfo {
             .field(
                 "p_signal_semaphore_device_indices",
                 &self.p_signal_semaphore_device_indices,
-            ).finish()
+            )
+            .finish()
     }
 }
 pub type DeviceGroupSubmitInfoKHR = DeviceGroupSubmitInfo;
@@ -22047,7 +22120,8 @@ impl fmt::Debug for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
             .field(
                 "per_view_position_all_components",
                 &self.per_view_position_all_components,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -22333,7 +22407,8 @@ impl fmt::Debug for SharedPresentSurfaceCapabilitiesKHR {
             .field(
                 "shared_present_supported_usage_flags",
                 &self.shared_present_supported_usage_flags,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -22371,7 +22446,8 @@ impl fmt::Debug for PhysicalDevice16BitStorageFeatures {
             .field(
                 "uniform_and_storage_buffer16_bit_access",
                 &self.uniform_and_storage_buffer16_bit_access,
-            ).field("storage_push_constant16", &self.storage_push_constant16)
+            )
+            .field("storage_push_constant16", &self.storage_push_constant16)
             .field("storage_input_output16", &self.storage_input_output16)
             .finish()
     }
@@ -22859,7 +22935,8 @@ impl fmt::Debug for SamplerYcbcrConversionImageFormatProperties {
             .field(
                 "combined_image_sampler_descriptor_count",
                 &self.combined_image_sampler_descriptor_count,
-            ).finish()
+            )
+            .finish()
     }
 }
 pub type SamplerYcbcrConversionImageFormatPropertiesKHR = SamplerYcbcrConversionImageFormatProperties;
@@ -22887,7 +22964,8 @@ impl fmt::Debug for TextureLODGatherFormatPropertiesAMD {
             .field(
                 "supports_texture_gather_lod_bias_amd",
                 &self.supports_texture_gather_lod_bias_amd,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23085,10 +23163,12 @@ impl fmt::Debug for PhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
             .field(
                 "filter_minmax_single_component_formats",
                 &self.filter_minmax_single_component_formats,
-            ).field(
+            )
+            .field(
                 "filter_minmax_image_component_mapping",
                 &self.filter_minmax_image_component_mapping,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23221,13 +23301,16 @@ impl fmt::Debug for RenderPassSampleLocationsBeginInfoEXT {
             .field(
                 "attachment_initial_sample_locations_count",
                 &self.attachment_initial_sample_locations_count,
-            ).field(
+            )
+            .field(
                 "p_attachment_initial_sample_locations",
                 &self.p_attachment_initial_sample_locations,
-            ).field(
+            )
+            .field(
                 "post_subpass_sample_locations_count",
                 &self.post_subpass_sample_locations_count,
-            ).field("p_post_subpass_sample_locations", &self.p_post_subpass_sample_locations)
+            )
+            .field("p_post_subpass_sample_locations", &self.p_post_subpass_sample_locations)
             .finish()
     }
 }
@@ -23293,7 +23376,8 @@ impl fmt::Debug for PhysicalDeviceSampleLocationsPropertiesEXT {
             .field(
                 "sample_location_coordinate_range",
                 &self.sample_location_coordinate_range,
-            ).field("sample_location_sub_pixel_bits", &self.sample_location_sub_pixel_bits)
+            )
+            .field("sample_location_sub_pixel_bits", &self.sample_location_sub_pixel_bits)
             .field("variable_sample_locations", &self.variable_sample_locations)
             .finish()
     }
@@ -23372,7 +23456,8 @@ impl fmt::Debug for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
             .field(
                 "advanced_blend_coherent_operations",
                 &self.advanced_blend_coherent_operations,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23409,19 +23494,24 @@ impl fmt::Debug for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
             .field(
                 "advanced_blend_max_color_attachments",
                 &self.advanced_blend_max_color_attachments,
-            ).field(
+            )
+            .field(
                 "advanced_blend_independent_blend",
                 &self.advanced_blend_independent_blend,
-            ).field(
+            )
+            .field(
                 "advanced_blend_non_premultiplied_src_color",
                 &self.advanced_blend_non_premultiplied_src_color,
-            ).field(
+            )
+            .field(
                 "advanced_blend_non_premultiplied_dst_color",
                 &self.advanced_blend_non_premultiplied_dst_color,
-            ).field(
+            )
+            .field(
                 "advanced_blend_correlated_overlap",
                 &self.advanced_blend_correlated_overlap,
-            ).field("advanced_blend_all_operations", &self.advanced_blend_all_operations)
+            )
+            .field("advanced_blend_all_operations", &self.advanced_blend_all_operations)
             .finish()
     }
 }
@@ -23483,7 +23573,8 @@ impl fmt::Debug for PhysicalDeviceInlineUniformBlockFeaturesEXT {
             .field(
                 "descriptor_binding_inline_uniform_block_update_after_bind",
                 &self.descriptor_binding_inline_uniform_block_update_after_bind,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23519,16 +23610,20 @@ impl fmt::Debug for PhysicalDeviceInlineUniformBlockPropertiesEXT {
             .field(
                 "max_per_stage_descriptor_inline_uniform_blocks",
                 &self.max_per_stage_descriptor_inline_uniform_blocks,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_inline_uniform_blocks",
                 &self.max_per_stage_descriptor_update_after_bind_inline_uniform_blocks,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_inline_uniform_blocks",
                 &self.max_descriptor_set_inline_uniform_blocks,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_inline_uniform_blocks",
                 &self.max_descriptor_set_update_after_bind_inline_uniform_blocks,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23583,7 +23678,8 @@ impl fmt::Debug for DescriptorPoolInlineUniformBlockCreateInfoEXT {
             .field(
                 "max_inline_uniform_block_bindings",
                 &self.max_inline_uniform_block_bindings,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -23620,7 +23716,8 @@ impl fmt::Debug for PipelineCoverageModulationStateCreateInfoNV {
             .field(
                 "coverage_modulation_table_enable",
                 &self.coverage_modulation_table_enable,
-            ).field("coverage_modulation_table_count", &self.coverage_modulation_table_count)
+            )
+            .field("coverage_modulation_table_count", &self.coverage_modulation_table_count)
             .field("p_coverage_modulation_table", &self.p_coverage_modulation_table)
             .finish()
     }
@@ -24051,7 +24148,8 @@ impl fmt::Debug for DebugUtilsMessengerCreateInfoEXT {
                 } else {
                     &"None"
                 },
-            ).field("p_user_data", &self.p_user_data)
+            )
+            .field("p_user_data", &self.p_user_data)
             .finish()
     }
 }
@@ -24184,7 +24282,8 @@ impl fmt::Debug for PhysicalDeviceExternalMemoryHostPropertiesEXT {
             .field(
                 "min_imported_host_pointer_alignment",
                 &self.min_imported_host_pointer_alignment,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -24238,22 +24337,27 @@ impl fmt::Debug for PhysicalDeviceConservativeRasterizationPropertiesEXT {
             .field(
                 "max_extra_primitive_overestimation_size",
                 &self.max_extra_primitive_overestimation_size,
-            ).field(
+            )
+            .field(
                 "extra_primitive_overestimation_size_granularity",
                 &self.extra_primitive_overestimation_size_granularity,
-            ).field("primitive_underestimation", &self.primitive_underestimation)
+            )
+            .field("primitive_underestimation", &self.primitive_underestimation)
             .field(
                 "conservative_point_and_line_rasterization",
                 &self.conservative_point_and_line_rasterization,
-            ).field("degenerate_triangles_rasterized", &self.degenerate_triangles_rasterized)
+            )
+            .field("degenerate_triangles_rasterized", &self.degenerate_triangles_rasterized)
             .field("degenerate_lines_rasterized", &self.degenerate_lines_rasterized)
             .field(
                 "fully_covered_fragment_shader_input_variable",
                 &self.fully_covered_fragment_shader_input_variable,
-            ).field(
+            )
+            .field(
                 "conservative_rasterization_post_depth_coverage",
                 &self.conservative_rasterization_post_depth_coverage,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -24390,7 +24494,8 @@ impl fmt::Debug for PipelineRasterizationConservativeStateCreateInfoEXT {
             .field(
                 "extra_primitive_overestimation_size",
                 &self.extra_primitive_overestimation_size,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -24455,61 +24560,80 @@ impl fmt::Debug for PhysicalDeviceDescriptorIndexingFeaturesEXT {
             .field(
                 "shader_input_attachment_array_dynamic_indexing",
                 &self.shader_input_attachment_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_uniform_texel_buffer_array_dynamic_indexing",
                 &self.shader_uniform_texel_buffer_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_texel_buffer_array_dynamic_indexing",
                 &self.shader_storage_texel_buffer_array_dynamic_indexing,
-            ).field(
+            )
+            .field(
                 "shader_uniform_buffer_array_non_uniform_indexing",
                 &self.shader_uniform_buffer_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_sampled_image_array_non_uniform_indexing",
                 &self.shader_sampled_image_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_buffer_array_non_uniform_indexing",
                 &self.shader_storage_buffer_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_array_non_uniform_indexing",
                 &self.shader_storage_image_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_input_attachment_array_non_uniform_indexing",
                 &self.shader_input_attachment_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_uniform_texel_buffer_array_non_uniform_indexing",
                 &self.shader_uniform_texel_buffer_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "shader_storage_texel_buffer_array_non_uniform_indexing",
                 &self.shader_storage_texel_buffer_array_non_uniform_indexing,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_uniform_buffer_update_after_bind",
                 &self.descriptor_binding_uniform_buffer_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_sampled_image_update_after_bind",
                 &self.descriptor_binding_sampled_image_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_storage_image_update_after_bind",
                 &self.descriptor_binding_storage_image_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_storage_buffer_update_after_bind",
                 &self.descriptor_binding_storage_buffer_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_uniform_texel_buffer_update_after_bind",
                 &self.descriptor_binding_uniform_texel_buffer_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_storage_texel_buffer_update_after_bind",
                 &self.descriptor_binding_storage_texel_buffer_update_after_bind,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_update_unused_while_pending",
                 &self.descriptor_binding_update_unused_while_pending,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_partially_bound",
                 &self.descriptor_binding_partially_bound,
-            ).field(
+            )
+            .field(
                 "descriptor_binding_variable_descriptor_count",
                 &self.descriptor_binding_variable_descriptor_count,
-            ).field("runtime_descriptor_array", &self.runtime_descriptor_array)
+            )
+            .field("runtime_descriptor_array", &self.runtime_descriptor_array)
             .finish()
     }
 }
@@ -24581,71 +24705,93 @@ impl fmt::Debug for PhysicalDeviceDescriptorIndexingPropertiesEXT {
             .field(
                 "max_update_after_bind_descriptors_in_all_pools",
                 &self.max_update_after_bind_descriptors_in_all_pools,
-            ).field(
+            )
+            .field(
                 "shader_uniform_buffer_array_non_uniform_indexing_native",
                 &self.shader_uniform_buffer_array_non_uniform_indexing_native,
-            ).field(
+            )
+            .field(
                 "shader_sampled_image_array_non_uniform_indexing_native",
                 &self.shader_sampled_image_array_non_uniform_indexing_native,
-            ).field(
+            )
+            .field(
                 "shader_storage_buffer_array_non_uniform_indexing_native",
                 &self.shader_storage_buffer_array_non_uniform_indexing_native,
-            ).field(
+            )
+            .field(
                 "shader_storage_image_array_non_uniform_indexing_native",
                 &self.shader_storage_image_array_non_uniform_indexing_native,
-            ).field(
+            )
+            .field(
                 "shader_input_attachment_array_non_uniform_indexing_native",
                 &self.shader_input_attachment_array_non_uniform_indexing_native,
-            ).field(
+            )
+            .field(
                 "robust_buffer_access_update_after_bind",
                 &self.robust_buffer_access_update_after_bind,
-            ).field("quad_divergent_implicit_lod", &self.quad_divergent_implicit_lod)
+            )
+            .field("quad_divergent_implicit_lod", &self.quad_divergent_implicit_lod)
             .field(
                 "max_per_stage_descriptor_update_after_bind_samplers",
                 &self.max_per_stage_descriptor_update_after_bind_samplers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_uniform_buffers",
                 &self.max_per_stage_descriptor_update_after_bind_uniform_buffers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_storage_buffers",
                 &self.max_per_stage_descriptor_update_after_bind_storage_buffers,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_sampled_images",
                 &self.max_per_stage_descriptor_update_after_bind_sampled_images,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_storage_images",
                 &self.max_per_stage_descriptor_update_after_bind_storage_images,
-            ).field(
+            )
+            .field(
                 "max_per_stage_descriptor_update_after_bind_input_attachments",
                 &self.max_per_stage_descriptor_update_after_bind_input_attachments,
-            ).field(
+            )
+            .field(
                 "max_per_stage_update_after_bind_resources",
                 &self.max_per_stage_update_after_bind_resources,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_samplers",
                 &self.max_descriptor_set_update_after_bind_samplers,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_uniform_buffers",
                 &self.max_descriptor_set_update_after_bind_uniform_buffers,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_uniform_buffers_dynamic",
                 &self.max_descriptor_set_update_after_bind_uniform_buffers_dynamic,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_storage_buffers",
                 &self.max_descriptor_set_update_after_bind_storage_buffers,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_storage_buffers_dynamic",
                 &self.max_descriptor_set_update_after_bind_storage_buffers_dynamic,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_sampled_images",
                 &self.max_descriptor_set_update_after_bind_sampled_images,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_storage_images",
                 &self.max_descriptor_set_update_after_bind_storage_images,
-            ).field(
+            )
+            .field(
                 "max_descriptor_set_update_after_bind_input_attachments",
                 &self.max_descriptor_set_update_after_bind_input_attachments,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -25264,7 +25410,8 @@ impl fmt::Debug for AndroidHardwareBufferFormatPropertiesANDROID {
             .field(
                 "sampler_ycbcr_conversion_components",
                 &self.sampler_ycbcr_conversion_components,
-            ).field("suggested_ycbcr_model", &self.suggested_ycbcr_model)
+            )
+            .field("suggested_ycbcr_model", &self.suggested_ycbcr_model)
             .field("suggested_ycbcr_range", &self.suggested_ycbcr_range)
             .field("suggested_x_chroma_offset", &self.suggested_x_chroma_offset)
             .field("suggested_y_chroma_offset", &self.suggested_y_chroma_offset)
@@ -25354,7 +25501,8 @@ impl fmt::Debug for PhysicalDevice8BitStorageFeaturesKHR {
             .field(
                 "uniform_and_storage_buffer8_bit_access",
                 &self.uniform_and_storage_buffer8_bit_access,
-            ).field("storage_push_constant8", &self.storage_push_constant8)
+            )
+            .field("storage_push_constant8", &self.storage_push_constant8)
             .finish()
     }
 }
@@ -25413,7 +25561,8 @@ impl fmt::Debug for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
             .field(
                 "vulkan_memory_model_device_scope",
                 &self.vulkan_memory_model_device_scope,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -25470,10 +25619,12 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
             .field(
                 "vertex_attribute_instance_rate_divisor",
                 &self.vertex_attribute_instance_rate_divisor,
-            ).field(
+            )
+            .field(
                 "vertex_attribute_instance_rate_zero_divisor",
                 &self.vertex_attribute_instance_rate_zero_divisor,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -25651,23 +25802,29 @@ impl fmt::Debug for PhysicalDeviceTransformFeedbackPropertiesEXT {
             .field(
                 "max_transform_feedback_buffer_size",
                 &self.max_transform_feedback_buffer_size,
-            ).field(
+            )
+            .field(
                 "max_transform_feedback_stream_data_size",
                 &self.max_transform_feedback_stream_data_size,
-            ).field(
+            )
+            .field(
                 "max_transform_feedback_buffer_data_size",
                 &self.max_transform_feedback_buffer_data_size,
-            ).field(
+            )
+            .field(
                 "max_transform_feedback_buffer_data_stride",
                 &self.max_transform_feedback_buffer_data_stride,
-            ).field("transform_feedback_queries", &self.transform_feedback_queries)
+            )
+            .field("transform_feedback_queries", &self.transform_feedback_queries)
             .field(
                 "transform_feedback_streams_lines_triangles",
                 &self.transform_feedback_streams_lines_triangles,
-            ).field(
+            )
+            .field(
                 "transform_feedback_rasterization_stream_select",
                 &self.transform_feedback_rasterization_stream_select,
-            ).field("transform_feedback_draw", &self.transform_feedback_draw)
+            )
+            .field("transform_feedback_draw", &self.transform_feedback_draw)
             .finish()
     }
 }
@@ -25748,7 +25905,8 @@ impl fmt::Debug for PipelineRepresentativeFragmentTestStateCreateInfoNV {
             .field(
                 "representative_fragment_test_enable",
                 &self.representative_fragment_test_enable,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -25927,7 +26085,8 @@ impl fmt::Debug for ShadingRatePaletteNV {
             .field(
                 "shading_rate_palette_entry_count",
                 &self.shading_rate_palette_entry_count,
-            ).field("p_shading_rate_palette_entries", &self.p_shading_rate_palette_entries)
+            )
+            .field("p_shading_rate_palette_entries", &self.p_shading_rate_palette_entries)
             .finish()
     }
 }
@@ -25989,7 +26148,8 @@ impl fmt::Debug for PhysicalDeviceShadingRateImageFeaturesNV {
             .field(
                 "shading_rate_coarse_sample_order",
                 &self.shading_rate_coarse_sample_order,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -26194,10 +26354,12 @@ impl fmt::Debug for PhysicalDeviceMeshShaderPropertiesNV {
             .field(
                 "mesh_output_per_vertex_granularity",
                 &self.mesh_output_per_vertex_granularity,
-            ).field(
+            )
+            .field(
                 "mesh_output_per_primitive_granularity",
                 &self.mesh_output_per_primitive_granularity,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -26661,7 +26823,8 @@ impl fmt::Debug for PhysicalDeviceRayTracingPropertiesNV {
             .field(
                 "max_descriptor_set_acceleration_structures",
                 &self.max_descriptor_set_acceleration_structures,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -26691,7 +26854,8 @@ impl fmt::Debug for DrmFormatModifierPropertiesListEXT {
             .field(
                 "p_drm_format_modifier_properties",
                 &self.p_drm_format_modifier_properties,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -26718,7 +26882,8 @@ impl fmt::Debug for DrmFormatModifierPropertiesEXT {
             .field(
                 "drm_format_modifier_tiling_features",
                 &self.drm_format_modifier_tiling_features,
-            ).finish()
+            )
+            .finish()
     }
 }
 #[repr(C)]
@@ -26977,38 +27142,37 @@ type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
     p_physical_device_count: *mut u32,
     p_physical_devices: *mut PhysicalDevice,
 ) -> Result;
-type FnGetPhysicalDeviceFeatures =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_features: *mut PhysicalDeviceFeatures)
-        -> c_void;
+type FnGetPhysicalDeviceFeatures = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut PhysicalDeviceFeatures,
+) -> c_void;
 type FnGetPhysicalDeviceFormatProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     format: Format,
     p_format_properties: *mut FormatProperties,
 ) -> c_void;
-type FnGetPhysicalDeviceImageFormatProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        format: Format,
-        ty: ImageType,
-        tiling: ImageTiling,
-        usage: ImageUsageFlags,
-        flags: ImageCreateFlags,
-        p_image_format_properties: *mut ImageFormatProperties,
-    ) -> Result;
-type FnGetPhysicalDeviceProperties =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_properties: *mut PhysicalDeviceProperties)
-        -> c_void;
-type FnGetPhysicalDeviceQueueFamilyProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_queue_family_property_count: *mut u32,
-        p_queue_family_properties: *mut QueueFamilyProperties,
-    ) -> c_void;
-type FnGetPhysicalDeviceMemoryProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_memory_properties: *mut PhysicalDeviceMemoryProperties,
-    ) -> c_void;
+type FnGetPhysicalDeviceImageFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    tiling: ImageTiling,
+    usage: ImageUsageFlags,
+    flags: ImageCreateFlags,
+    p_image_format_properties: *mut ImageFormatProperties,
+) -> Result;
+type FnGetPhysicalDeviceProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_properties: *mut PhysicalDeviceProperties,
+) -> c_void;
+type FnGetPhysicalDeviceQueueFamilyProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_queue_family_property_count: *mut u32,
+    p_queue_family_properties: *mut QueueFamilyProperties,
+) -> c_void;
+type FnGetPhysicalDeviceMemoryProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_memory_properties: *mut PhysicalDeviceMemoryProperties,
+) -> c_void;
 type FnGetDeviceProcAddr =
     unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
 type FnCreateDevice = unsafe extern "system" fn(
@@ -27028,17 +27192,16 @@ type FnEnumerateDeviceLayerProperties = unsafe extern "system" fn(
     p_property_count: *mut u32,
     p_properties: *mut LayerProperties,
 ) -> Result;
-type FnGetPhysicalDeviceSparseImageFormatProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        format: Format,
-        ty: ImageType,
-        samples: SampleCountFlags,
-        usage: ImageUsageFlags,
-        tiling: ImageTiling,
-        p_property_count: *mut u32,
-        p_properties: *mut SparseImageFormatProperties,
-    ) -> c_void;
+type FnGetPhysicalDeviceSparseImageFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    samples: SampleCountFlags,
+    usage: ImageUsageFlags,
+    tiling: ImageTiling,
+    p_property_count: *mut u32,
+    p_properties: *mut SparseImageFormatProperties,
+) -> c_void;
 pub struct InstanceFn1_0 {
     pub destroy_instance: FnDestroyInstance,
     pub enumerate_physical_devices: FnEnumeratePhysicalDevices,
@@ -27292,65 +27455,59 @@ impl InstanceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnEnumeratePhysicalDeviceGroups =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_physical_device_group_count: *mut u32,
-        p_physical_device_group_properties: *mut PhysicalDeviceGroupProperties,
-    ) -> Result;
-type FnGetPhysicalDeviceFeatures2 =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_features: *mut PhysicalDeviceFeatures2)
-        -> c_void;
-type FnGetPhysicalDeviceProperties2 =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, p_properties: *mut PhysicalDeviceProperties2)
-        -> c_void;
+type FnEnumeratePhysicalDeviceGroups = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_physical_device_group_count: *mut u32,
+    p_physical_device_group_properties: *mut PhysicalDeviceGroupProperties,
+) -> Result;
+type FnGetPhysicalDeviceFeatures2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut PhysicalDeviceFeatures2,
+) -> c_void;
+type FnGetPhysicalDeviceProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_properties: *mut PhysicalDeviceProperties2,
+) -> c_void;
 type FnGetPhysicalDeviceFormatProperties2 = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     format: Format,
     p_format_properties: *mut FormatProperties2,
 ) -> c_void;
-type FnGetPhysicalDeviceImageFormatProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_image_format_info: *const PhysicalDeviceImageFormatInfo2,
-        p_image_format_properties: *mut ImageFormatProperties2,
-    ) -> Result;
-type FnGetPhysicalDeviceQueueFamilyProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_queue_family_property_count: *mut u32,
-        p_queue_family_properties: *mut QueueFamilyProperties2,
-    ) -> c_void;
-type FnGetPhysicalDeviceMemoryProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_memory_properties: *mut PhysicalDeviceMemoryProperties2,
-    ) -> c_void;
-type FnGetPhysicalDeviceSparseImageFormatProperties2 =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
-        p_property_count: *mut u32,
-        p_properties: *mut SparseImageFormatProperties2,
-    ) -> c_void;
-type FnGetPhysicalDeviceExternalBufferProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_external_buffer_info: *const PhysicalDeviceExternalBufferInfo,
-        p_external_buffer_properties: *mut ExternalBufferProperties,
-    ) -> c_void;
-type FnGetPhysicalDeviceExternalFenceProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_external_fence_info: *const PhysicalDeviceExternalFenceInfo,
-        p_external_fence_properties: *mut ExternalFenceProperties,
-    ) -> c_void;
-type FnGetPhysicalDeviceExternalSemaphoreProperties =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
-        p_external_semaphore_properties: *mut ExternalSemaphoreProperties,
-    ) -> c_void;
+type FnGetPhysicalDeviceImageFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_image_format_info: *const PhysicalDeviceImageFormatInfo2,
+    p_image_format_properties: *mut ImageFormatProperties2,
+) -> Result;
+type FnGetPhysicalDeviceQueueFamilyProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_queue_family_property_count: *mut u32,
+    p_queue_family_properties: *mut QueueFamilyProperties2,
+) -> c_void;
+type FnGetPhysicalDeviceMemoryProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_memory_properties: *mut PhysicalDeviceMemoryProperties2,
+) -> c_void;
+type FnGetPhysicalDeviceSparseImageFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
+    p_property_count: *mut u32,
+    p_properties: *mut SparseImageFormatProperties2,
+) -> c_void;
+type FnGetPhysicalDeviceExternalBufferProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_buffer_info: *const PhysicalDeviceExternalBufferInfo,
+    p_external_buffer_properties: *mut ExternalBufferProperties,
+) -> c_void;
+type FnGetPhysicalDeviceExternalFenceProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_fence_info: *const PhysicalDeviceExternalFenceInfo,
+    p_external_fence_properties: *mut ExternalFenceProperties,
+) -> c_void;
+type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
+    p_external_semaphore_properties: *mut ExternalSemaphoreProperties,
+) -> c_void;
 pub struct InstanceFn1_1 {
     pub enumerate_physical_device_groups: FnEnumeratePhysicalDeviceGroups,
     pub get_physical_device_features2: FnGetPhysicalDeviceFeatures2,
@@ -27562,9 +27719,12 @@ impl InstanceFn1_1 {
 }
 type FnDestroyDevice =
     unsafe extern "system" fn(device: Option<Device>, p_allocator: *const AllocationCallbacks) -> c_void;
-type FnGetDeviceQueue =
-    unsafe extern "system" fn(device: Option<Device>, queue_family_index: u32, queue_index: u32, p_queue: *mut Queue)
-        -> c_void;
+type FnGetDeviceQueue = unsafe extern "system" fn(
+    device: Option<Device>,
+    queue_family_index: u32,
+    queue_index: u32,
+    p_queue: *mut Queue,
+) -> c_void;
 type FnQueueSubmit = unsafe extern "system" fn(
     queue: Option<Queue>,
     submit_count: u32,
@@ -27630,13 +27790,12 @@ type FnGetImageMemoryRequirements = unsafe extern "system" fn(
     image: Option<Image>,
     p_memory_requirements: *mut MemoryRequirements,
 ) -> c_void;
-type FnGetImageSparseMemoryRequirements =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        image: Option<Image>,
-        p_sparse_memory_requirement_count: *mut u32,
-        p_sparse_memory_requirements: *mut SparseImageMemoryRequirements,
-    ) -> c_void;
+type FnGetImageSparseMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_sparse_memory_requirement_count: *mut u32,
+    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements,
+) -> c_void;
 type FnQueueBindSparse = unsafe extern "system" fn(
     queue: Option<Queue>,
     bind_info_count: u32,
@@ -27649,9 +27808,11 @@ type FnCreateFence = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_fence: *mut Fence,
 ) -> Result;
-type FnDestroyFence =
-    unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>, p_allocator: *const AllocationCallbacks)
-        -> c_void;
+type FnDestroyFence = unsafe extern "system" fn(
+    device: Option<Device>,
+    fence: Option<Fence>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnResetFences =
     unsafe extern "system" fn(device: Option<Device>, fence_count: u32, p_fences: *const Fence) -> Result;
 type FnGetFenceStatus = unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>) -> Result;
@@ -27679,9 +27840,11 @@ type FnCreateEvent = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_event: *mut Event,
 ) -> Result;
-type FnDestroyEvent =
-    unsafe extern "system" fn(device: Option<Device>, event: Option<Event>, p_allocator: *const AllocationCallbacks)
-        -> c_void;
+type FnDestroyEvent = unsafe extern "system" fn(
+    device: Option<Device>,
+    event: Option<Event>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnGetEventStatus = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
 type FnSetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
 type FnResetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
@@ -27712,9 +27875,11 @@ type FnCreateBuffer = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_buffer: *mut Buffer,
 ) -> Result;
-type FnDestroyBuffer =
-    unsafe extern "system" fn(device: Option<Device>, buffer: Option<Buffer>, p_allocator: *const AllocationCallbacks)
-        -> c_void;
+type FnDestroyBuffer = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: Option<Buffer>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnCreateBufferView = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const BufferViewCreateInfo,
@@ -27732,9 +27897,11 @@ type FnCreateImage = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_image: *mut Image,
 ) -> Result;
-type FnDestroyImage =
-    unsafe extern "system" fn(device: Option<Device>, image: Option<Image>, p_allocator: *const AllocationCallbacks)
-        -> c_void;
+type FnDestroyImage = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnGetImageSubresourceLayout = unsafe extern "system" fn(
     device: Option<Device>,
     image: Option<Image>,
@@ -27896,9 +28063,11 @@ type FnDestroyRenderPass = unsafe extern "system" fn(
     render_pass: Option<RenderPass>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnGetRenderAreaGranularity =
-    unsafe extern "system" fn(device: Option<Device>, render_pass: Option<RenderPass>, p_granularity: *mut Extent2D)
-        -> c_void;
+type FnGetRenderAreaGranularity = unsafe extern "system" fn(
+    device: Option<Device>,
+    render_pass: Option<RenderPass>,
+    p_granularity: *mut Extent2D,
+) -> c_void;
 type FnCreateCommandPool = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const CommandPoolCreateInfo,
@@ -27910,9 +28079,11 @@ type FnDestroyCommandPool = unsafe extern "system" fn(
     command_pool: Option<CommandPool>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnResetCommandPool =
-    unsafe extern "system" fn(device: Option<Device>, command_pool: Option<CommandPool>, flags: CommandPoolResetFlags)
-        -> Result;
+type FnResetCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    flags: CommandPoolResetFlags,
+) -> Result;
 type FnAllocateCommandBuffers = unsafe extern "system" fn(
     device: Option<Device>,
     p_allocate_info: *const CommandBufferAllocateInfo,
@@ -27924,9 +28095,10 @@ type FnFreeCommandBuffers = unsafe extern "system" fn(
     command_buffer_count: u32,
     p_command_buffers: *const CommandBuffer,
 ) -> c_void;
-type FnBeginCommandBuffer =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_begin_info: *const CommandBufferBeginInfo)
-        -> Result;
+type FnBeginCommandBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_begin_info: *const CommandBufferBeginInfo,
+) -> Result;
 type FnEndCommandBuffer = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> Result;
 type FnResetCommandBuffer =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, flags: CommandBufferResetFlags) -> Result;
@@ -27956,18 +28128,26 @@ type FnCmdSetDepthBias = unsafe extern "system" fn(
 ) -> c_void;
 type FnCmdSetBlendConstants =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4]) -> c_void;
-type FnCmdSetDepthBounds =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, min_depth_bounds: f32, max_depth_bounds: f32)
-        -> c_void;
-type FnCmdSetStencilCompareMask =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, compare_mask: u32)
-        -> c_void;
-type FnCmdSetStencilWriteMask =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, write_mask: u32)
-        -> c_void;
-type FnCmdSetStencilReference =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, face_mask: StencilFaceFlags, reference: u32)
-        -> c_void;
+type FnCmdSetDepthBounds = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    min_depth_bounds: f32,
+    max_depth_bounds: f32,
+) -> c_void;
+type FnCmdSetStencilCompareMask = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    compare_mask: u32,
+) -> c_void;
+type FnCmdSetStencilWriteMask = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    write_mask: u32,
+) -> c_void;
+type FnCmdSetStencilReference = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    reference: u32,
+) -> c_void;
 type FnCmdBindDescriptorSets = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     pipeline_bind_point: PipelineBindPoint,
@@ -28026,9 +28206,11 @@ type FnCmdDispatch = unsafe extern "system" fn(
     group_count_y: u32,
     group_count_z: u32,
 ) -> c_void;
-type FnCmdDispatchIndirect =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize)
-        -> c_void;
+type FnCmdDispatchIndirect = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+) -> c_void;
 type FnCmdCopyBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     src_buffer: Option<Buffer>,
@@ -28158,9 +28340,11 @@ type FnCmdBeginQuery = unsafe extern "system" fn(
     query: u32,
     flags: QueryControlFlags,
 ) -> c_void;
-type FnCmdEndQuery =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, query_pool: Option<QueryPool>, query: u32)
-        -> c_void;
+type FnCmdEndQuery = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+) -> c_void;
 type FnCmdResetQueryPool = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     query_pool: Option<QueryPool>,
@@ -30437,20 +30621,23 @@ impl DeviceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnBindBufferMemory2 =
-    unsafe extern "system" fn(device: Option<Device>, bind_info_count: u32, p_bind_infos: *const BindBufferMemoryInfo)
-        -> Result;
-type FnBindImageMemory2 =
-    unsafe extern "system" fn(device: Option<Device>, bind_info_count: u32, p_bind_infos: *const BindImageMemoryInfo)
-        -> Result;
-type FnGetDeviceGroupPeerMemoryFeatures =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        heap_index: u32,
-        local_device_index: u32,
-        remote_device_index: u32,
-        p_peer_memory_features: *mut PeerMemoryFeatureFlags,
-    ) -> c_void;
+type FnBindBufferMemory2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindBufferMemoryInfo,
+) -> Result;
+type FnBindImageMemory2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindImageMemoryInfo,
+) -> Result;
+type FnGetDeviceGroupPeerMemoryFeatures = unsafe extern "system" fn(
+    device: Option<Device>,
+    heap_index: u32,
+    local_device_index: u32,
+    remote_device_index: u32,
+    p_peer_memory_features: *mut PeerMemoryFeatureFlags,
+) -> c_void;
 type FnCmdSetDeviceMask = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, device_mask: u32) -> c_void;
 type FnCmdDispatchBase = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
@@ -30471,19 +30658,22 @@ type FnGetBufferMemoryRequirements2 = unsafe extern "system" fn(
     p_info: *const BufferMemoryRequirementsInfo2,
     p_memory_requirements: *mut MemoryRequirements2,
 ) -> c_void;
-type FnGetImageSparseMemoryRequirements2 =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_info: *const ImageSparseMemoryRequirementsInfo2,
-        p_sparse_memory_requirement_count: *mut u32,
-        p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
-    ) -> c_void;
-type FnTrimCommandPool =
-    unsafe extern "system" fn(device: Option<Device>, command_pool: Option<CommandPool>, flags: CommandPoolTrimFlags)
-        -> c_void;
-type FnGetDeviceQueue2 =
-    unsafe extern "system" fn(device: Option<Device>, p_queue_info: *const DeviceQueueInfo2, p_queue: *mut Queue)
-        -> c_void;
+type FnGetImageSparseMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageSparseMemoryRequirementsInfo2,
+    p_sparse_memory_requirement_count: *mut u32,
+    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
+) -> c_void;
+type FnTrimCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    flags: CommandPoolTrimFlags,
+) -> c_void;
+type FnGetDeviceQueue2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_queue_info: *const DeviceQueueInfo2,
+    p_queue: *mut Queue,
+) -> c_void;
 type FnCreateSamplerYcbcrConversion = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const SamplerYcbcrConversionCreateInfo,
@@ -30495,26 +30685,23 @@ type FnDestroySamplerYcbcrConversion = unsafe extern "system" fn(
     ycbcr_conversion: Option<SamplerYcbcrConversion>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnCreateDescriptorUpdateTemplate =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const DescriptorUpdateTemplateCreateInfo,
-        p_allocator: *const AllocationCallbacks,
-        p_descriptor_update_template: *mut DescriptorUpdateTemplate,
-    ) -> Result;
-type FnDestroyDescriptorUpdateTemplate =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        descriptor_update_template: Option<DescriptorUpdateTemplate>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
-type FnUpdateDescriptorSetWithTemplate =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        descriptor_set: Option<DescriptorSet>,
-        descriptor_update_template: Option<DescriptorUpdateTemplate>,
-        p_data: *const c_void,
-    ) -> c_void;
+type FnCreateDescriptorUpdateTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorUpdateTemplateCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_descriptor_update_template: *mut DescriptorUpdateTemplate,
+) -> Result;
+type FnDestroyDescriptorUpdateTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+type FnUpdateDescriptorSetWithTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_set: Option<DescriptorSet>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    p_data: *const c_void,
+) -> c_void;
 type FnGetDescriptorSetLayoutSupport = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const DescriptorSetLayoutCreateInfo,
@@ -30838,12 +31025,11 @@ type FnGetPhysicalDeviceSurfaceSupportKHR = unsafe extern "system" fn(
     surface: Option<SurfaceKHR>,
     p_supported: *mut Bool32,
 ) -> Result;
-type FnGetPhysicalDeviceSurfaceCapabilitiesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        surface: Option<SurfaceKHR>,
-        p_surface_capabilities: *mut SurfaceCapabilitiesKHR,
-    ) -> Result;
+type FnGetPhysicalDeviceSurfaceCapabilitiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_capabilities: *mut SurfaceCapabilitiesKHR,
+) -> Result;
 type FnGetPhysicalDeviceSurfaceFormatsKHR = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     surface: Option<SurfaceKHR>,
@@ -31093,11 +31279,10 @@ impl KhrSwapchainFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetDeviceGroupPresentCapabilitiesKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_device_group_present_capabilities: *mut DeviceGroupPresentCapabilitiesKHR,
-    ) -> Result;
+type FnGetDeviceGroupPresentCapabilitiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_device_group_present_capabilities: *mut DeviceGroupPresentCapabilitiesKHR,
+) -> Result;
 type FnGetDeviceGroupSurfacePresentModesKHR = unsafe extern "system" fn(
     device: Option<Device>,
     surface: Option<SurfaceKHR>,
@@ -31204,12 +31389,11 @@ type FnGetPhysicalDeviceDisplayPropertiesKHR = unsafe extern "system" fn(
     p_property_count: *mut u32,
     p_properties: *mut DisplayPropertiesKHR,
 ) -> Result;
-type FnGetPhysicalDeviceDisplayPlanePropertiesKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayPlanePropertiesKHR,
-    ) -> Result;
+type FnGetPhysicalDeviceDisplayPlanePropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPlanePropertiesKHR,
+) -> Result;
 type FnGetDisplayPlaneSupportedDisplaysKHR = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     plane_index: u32,
@@ -31558,12 +31742,11 @@ type FnCreateWaylandSurfaceKHR = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_surface: *mut SurfaceKHR,
 ) -> Result;
-type FnGetPhysicalDeviceWaylandPresentationSupportKHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        queue_family_index: u32,
-        display: *mut wl_display,
-    ) -> Bool32;
+type FnGetPhysicalDeviceWaylandPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    display: *mut wl_display,
+) -> Bool32;
 pub struct KhrWaylandSurfaceFn1_0 {
     pub create_wayland_surface_khr: FnCreateWaylandSurfaceKHR,
     pub get_physical_device_wayland_presentation_support_khr: FnGetPhysicalDeviceWaylandPresentationSupportKHR,
@@ -31807,13 +31990,15 @@ type FnDebugMarkerSetObjectTagEXT =
     unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugMarkerObjectTagInfoEXT) -> Result;
 type FnDebugMarkerSetObjectNameEXT =
     unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugMarkerObjectNameInfoEXT) -> Result;
-type FnCmdDebugMarkerBeginEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_marker_info: *const DebugMarkerMarkerInfoEXT)
-        -> c_void;
+type FnCmdDebugMarkerBeginEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const DebugMarkerMarkerInfoEXT,
+) -> c_void;
 type FnCmdDebugMarkerEndEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
-type FnCmdDebugMarkerInsertEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_marker_info: *const DebugMarkerMarkerInfoEXT)
-        -> c_void;
+type FnCmdDebugMarkerInsertEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const DebugMarkerMarkerInfoEXT,
+) -> c_void;
 pub struct ExtDebugMarkerFn1_0 {
     pub debug_marker_set_object_tag_ext: FnDebugMarkerSetObjectTagEXT,
     pub debug_marker_set_object_name_ext: FnDebugMarkerSetObjectNameEXT,
@@ -32205,17 +32390,16 @@ impl AmdShaderInfoFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalImageFormatPropertiesNV =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        format: Format,
-        ty: ImageType,
-        tiling: ImageTiling,
-        usage: ImageUsageFlags,
-        flags: ImageCreateFlags,
-        external_handle_type: ExternalMemoryHandleTypeFlagsNV,
-        p_external_image_format_properties: *mut ExternalImageFormatPropertiesNV,
-    ) -> Result;
+type FnGetPhysicalDeviceExternalImageFormatPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    tiling: ImageTiling,
+    usage: ImageUsageFlags,
+    flags: ImageCreateFlags,
+    external_handle_type: ExternalMemoryHandleTypeFlagsNV,
+    p_external_image_format_properties: *mut ExternalImageFormatPropertiesNV,
+) -> Result;
 pub struct NvExternalMemoryCapabilitiesFn1_0 {
     pub get_physical_device_external_image_format_properties_nv: FnGetPhysicalDeviceExternalImageFormatPropertiesNV,
 }
@@ -32706,13 +32890,12 @@ type FnGetMemoryWin32HandleKHR = unsafe extern "system" fn(
     p_get_win32_handle_info: *const MemoryGetWin32HandleInfoKHR,
     p_handle: *mut HANDLE,
 ) -> Result;
-type FnGetMemoryWin32HandlePropertiesKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        handle_type: ExternalMemoryHandleTypeFlags,
-        handle: HANDLE,
-        p_memory_win32_handle_properties: *mut MemoryWin32HandlePropertiesKHR,
-    ) -> Result;
+type FnGetMemoryWin32HandlePropertiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    handle: HANDLE,
+    p_memory_win32_handle_properties: *mut MemoryWin32HandlePropertiesKHR,
+) -> Result;
 pub struct KhrExternalMemoryWin32Fn1_0 {
     pub get_memory_win32_handle_khr: FnGetMemoryWin32HandleKHR,
     pub get_memory_win32_handle_properties_khr: FnGetMemoryWin32HandlePropertiesKHR,
@@ -32763,9 +32946,11 @@ impl KhrExternalMemoryWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryFdKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const MemoryGetFdInfoKHR, p_fd: *mut c_int)
-        -> Result;
+type FnGetMemoryFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const MemoryGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
 type FnGetMemoryFdPropertiesKHR = unsafe extern "system" fn(
     device: Option<Device>,
     handle_type: ExternalMemoryHandleTypeFlags,
@@ -32853,17 +33038,15 @@ impl KhrExternalSemaphoreCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportSemaphoreWin32HandleKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_import_semaphore_win32_handle_info: *const ImportSemaphoreWin32HandleInfoKHR,
-    ) -> Result;
-type FnGetSemaphoreWin32HandleKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_get_win32_handle_info: *const SemaphoreGetWin32HandleInfoKHR,
-        p_handle: *mut HANDLE,
-    ) -> Result;
+type FnImportSemaphoreWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_semaphore_win32_handle_info: *const ImportSemaphoreWin32HandleInfoKHR,
+) -> Result;
+type FnGetSemaphoreWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const SemaphoreGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
 pub struct KhrExternalSemaphoreWin32Fn1_0 {
     pub import_semaphore_win32_handle_khr: FnImportSemaphoreWin32HandleKHR,
     pub get_semaphore_win32_handle_khr: FnGetSemaphoreWin32HandleKHR,
@@ -32912,12 +33095,15 @@ impl KhrExternalSemaphoreWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportSemaphoreFdKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR)
-        -> Result;
-type FnGetSemaphoreFdKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const SemaphoreGetFdInfoKHR, p_fd: *mut c_int)
-        -> Result;
+type FnImportSemaphoreFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR,
+) -> Result;
+type FnGetSemaphoreFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const SemaphoreGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
 pub struct KhrExternalSemaphoreFdFn1_0 {
     pub import_semaphore_fd_khr: FnImportSemaphoreFdKHR,
     pub get_semaphore_fd_khr: FnGetSemaphoreFdKHR,
@@ -33008,14 +33194,13 @@ impl KhrPushDescriptorFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdPushDescriptorSetWithTemplateKHR =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        descriptor_update_template: Option<DescriptorUpdateTemplate>,
-        layout: Option<PipelineLayout>,
-        set: u32,
-        p_data: *const c_void,
-    ) -> c_void;
+type FnCmdPushDescriptorSetWithTemplateKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    layout: Option<PipelineLayout>,
+    set: u32,
+    p_data: *const c_void,
+) -> c_void;
 pub struct KhrPushDescriptorFn1_1 {
     pub cmd_push_descriptor_set_with_template_khr: FnCmdPushDescriptorSetWithTemplateKHR,
 }
@@ -33049,11 +33234,10 @@ impl KhrPushDescriptorFn1_1 {
         (block, all_loaded)
     }
 }
-type FnCmdBeginConditionalRenderingEXT =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
-    ) -> c_void;
+type FnCmdBeginConditionalRenderingEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
+) -> c_void;
 type FnCmdEndConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 pub struct ExtConditionalRenderingFn1_0 {
     pub cmd_begin_conditional_rendering_ext: FnCmdBeginConditionalRenderingEXT,
@@ -33192,24 +33376,21 @@ type FnCmdProcessCommandsNVX = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_process_commands_info: *const CmdProcessCommandsInfoNVX,
 ) -> c_void;
-type FnCmdReserveSpaceForCommandsNVX =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        p_reserve_space_info: *const CmdReserveSpaceForCommandsInfoNVX,
-    ) -> c_void;
-type FnCreateIndirectCommandsLayoutNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const IndirectCommandsLayoutCreateInfoNVX,
-        p_allocator: *const AllocationCallbacks,
-        p_indirect_commands_layout: *mut IndirectCommandsLayoutNVX,
-    ) -> Result;
-type FnDestroyIndirectCommandsLayoutNVX =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
+type FnCmdReserveSpaceForCommandsNVX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_reserve_space_info: *const CmdReserveSpaceForCommandsInfoNVX,
+) -> c_void;
+type FnCreateIndirectCommandsLayoutNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const IndirectCommandsLayoutCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_indirect_commands_layout: *mut IndirectCommandsLayoutNVX,
+) -> Result;
+type FnDestroyIndirectCommandsLayoutNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
 type FnCreateObjectTableNVX = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const ObjectTableCreateInfoNVX,
@@ -33235,12 +33416,11 @@ type FnUnregisterObjectsNVX = unsafe extern "system" fn(
     p_object_entry_types: *const ObjectEntryTypeNVX,
     p_object_indices: *const u32,
 ) -> Result;
-type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_features: *mut DeviceGeneratedCommandsFeaturesNVX,
-        p_limits: *mut DeviceGeneratedCommandsLimitsNVX,
-    ) -> c_void;
+type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut DeviceGeneratedCommandsFeaturesNVX,
+    p_limits: *mut DeviceGeneratedCommandsLimitsNVX,
+) -> c_void;
 pub struct NvxDeviceGeneratedCommandsFn1_0 {
     pub cmd_process_commands_nvx: FnCmdProcessCommandsNVX,
     pub cmd_reserve_space_for_commands_nvx: FnCmdReserveSpaceForCommandsNVX,
@@ -33490,9 +33670,11 @@ impl ExtDirectModeDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnAcquireXlibDisplayEXT =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, dpy: *mut Display, display: Option<DisplayKHR>)
-        -> Result;
+type FnAcquireXlibDisplayEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    dpy: *mut Display,
+    display: Option<DisplayKHR>,
+) -> Result;
 type FnGetRandROutputDisplayEXT = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     dpy: *mut Display,
@@ -33549,12 +33731,11 @@ impl ExtAcquireXlibDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceSurfaceCapabilities2EXT =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        surface: Option<SurfaceKHR>,
-        p_surface_capabilities: *mut SurfaceCapabilities2EXT,
-    ) -> Result;
+type FnGetPhysicalDeviceSurfaceCapabilities2EXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_capabilities: *mut SurfaceCapabilities2EXT,
+) -> Result;
 pub struct ExtDisplaySurfaceCounterFn1_0 {
     pub get_physical_device_surface_capabilities2_ext: FnGetPhysicalDeviceSurfaceCapabilities2EXT,
 }
@@ -33699,19 +33880,17 @@ impl ExtDisplayControlFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetRefreshCycleDurationGOOGLE =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        swapchain: Option<SwapchainKHR>,
-        p_display_timing_properties: *mut RefreshCycleDurationGOOGLE,
-    ) -> Result;
-type FnGetPastPresentationTimingGOOGLE =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        swapchain: Option<SwapchainKHR>,
-        p_presentation_timing_count: *mut u32,
-        p_presentation_timings: *mut PastPresentationTimingGOOGLE,
-    ) -> Result;
+type FnGetRefreshCycleDurationGOOGLE = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_display_timing_properties: *mut RefreshCycleDurationGOOGLE,
+) -> Result;
+type FnGetPastPresentationTimingGOOGLE = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_presentation_timing_count: *mut u32,
+    p_presentation_timings: *mut PastPresentationTimingGOOGLE,
+) -> Result;
 pub struct GoogleDisplayTimingFn1_0 {
     pub get_refresh_cycle_duration_google: FnGetRefreshCycleDurationGOOGLE,
     pub get_past_presentation_timing_google: FnGetPastPresentationTimingGOOGLE,
@@ -33854,9 +34033,10 @@ type FnCmdNextSubpass2KHR = unsafe extern "system" fn(
     p_subpass_begin_info: *const SubpassBeginInfoKHR,
     p_subpass_end_info: *const SubpassEndInfoKHR,
 ) -> c_void;
-type FnCmdEndRenderPass2KHR =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_subpass_end_info: *const SubpassEndInfoKHR)
-        -> c_void;
+type FnCmdEndRenderPass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_subpass_end_info: *const SubpassEndInfoKHR,
+) -> c_void;
 pub struct KhrCreateRenderpass2Fn1_0 {
     pub create_render_pass2_khr: FnCreateRenderPass2KHR,
     pub cmd_begin_render_pass2_khr: FnCmdBeginRenderPass2KHR,
@@ -34005,11 +34185,10 @@ impl KhrExternalFenceCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportFenceWin32HandleKHR =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_import_fence_win32_handle_info: *const ImportFenceWin32HandleInfoKHR,
-    ) -> Result;
+type FnImportFenceWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_fence_win32_handle_info: *const ImportFenceWin32HandleInfoKHR,
+) -> Result;
 type FnGetFenceWin32HandleKHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_get_win32_handle_info: *const FenceGetWin32HandleInfoKHR,
@@ -34065,9 +34244,11 @@ impl KhrExternalFenceWin32Fn1_0 {
 }
 type FnImportFenceFdKHR =
     unsafe extern "system" fn(device: Option<Device>, p_import_fence_fd_info: *const ImportFenceFdInfoKHR) -> Result;
-type FnGetFenceFdKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_get_fd_info: *const FenceGetFdInfoKHR, p_fd: *mut c_int)
-        -> Result;
+type FnGetFenceFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const FenceGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
 pub struct KhrExternalFenceFdFn1_0 {
     pub import_fence_fd_khr: FnImportFenceFdKHR,
     pub get_fence_fd_khr: FnGetFenceFdKHR,
@@ -34116,19 +34297,17 @@ impl KhrExternalFenceFdFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceSurfaceCapabilities2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-        p_surface_capabilities: *mut SurfaceCapabilities2KHR,
-    ) -> Result;
-type FnGetPhysicalDeviceSurfaceFormats2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-        p_surface_format_count: *mut u32,
-        p_surface_formats: *mut SurfaceFormat2KHR,
-    ) -> Result;
+type FnGetPhysicalDeviceSurfaceCapabilities2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_surface_capabilities: *mut SurfaceCapabilities2KHR,
+) -> Result;
+type FnGetPhysicalDeviceSurfaceFormats2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_surface_format_count: *mut u32,
+    p_surface_formats: *mut SurfaceFormat2KHR,
+) -> Result;
 pub struct KhrGetSurfaceCapabilities2Fn1_0 {
     pub get_physical_device_surface_capabilities2_khr: FnGetPhysicalDeviceSurfaceCapabilities2KHR,
     pub get_physical_device_surface_formats2_khr: FnGetPhysicalDeviceSurfaceFormats2KHR,
@@ -34184,12 +34363,11 @@ type FnGetPhysicalDeviceDisplayProperties2KHR = unsafe extern "system" fn(
     p_property_count: *mut u32,
     p_properties: *mut DisplayProperties2KHR,
 ) -> Result;
-type FnGetPhysicalDeviceDisplayPlaneProperties2KHR =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_property_count: *mut u32,
-        p_properties: *mut DisplayPlaneProperties2KHR,
-    ) -> Result;
+type FnGetPhysicalDeviceDisplayPlaneProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPlaneProperties2KHR,
+) -> Result;
 type FnGetDisplayModeProperties2KHR = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     display: Option<DisplayKHR>,
@@ -34388,13 +34566,12 @@ type FnDestroyDebugUtilsMessengerEXT = unsafe extern "system" fn(
     messenger: Option<DebugUtilsMessengerEXT>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-type FnSubmitDebugUtilsMessageEXT =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        message_severity: DebugUtilsMessageSeverityFlagsEXT,
-        message_types: DebugUtilsMessageTypeFlagsEXT,
-        p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
-    ) -> c_void;
+type FnSubmitDebugUtilsMessageEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    message_severity: DebugUtilsMessageSeverityFlagsEXT,
+    message_types: DebugUtilsMessageTypeFlagsEXT,
+    p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
+) -> c_void;
 pub struct ExtDebugUtilsFn1_0 {
     pub set_debug_utils_object_name_ext: FnSetDebugUtilsObjectNameEXT,
     pub set_debug_utils_object_tag_ext: FnSetDebugUtilsObjectTagEXT,
@@ -34594,18 +34771,16 @@ impl ExtDebugUtilsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetAndroidHardwareBufferPropertiesANDROID =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        buffer: *const AHardwareBuffer,
-        p_properties: *mut AndroidHardwareBufferPropertiesANDROID,
-    ) -> Result;
-type FnGetMemoryAndroidHardwareBufferANDROID =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_info: *const MemoryGetAndroidHardwareBufferInfoANDROID,
-        p_buffer: *mut *mut AHardwareBuffer,
-    ) -> Result;
+type FnGetAndroidHardwareBufferPropertiesANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: *const AHardwareBuffer,
+    p_properties: *mut AndroidHardwareBufferPropertiesANDROID,
+) -> Result;
+type FnGetMemoryAndroidHardwareBufferANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const MemoryGetAndroidHardwareBufferInfoANDROID,
+    p_buffer: *mut *mut AHardwareBuffer,
+) -> Result;
 pub struct AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
     pub get_android_hardware_buffer_properties_android: FnGetAndroidHardwareBufferPropertiesANDROID,
     pub get_memory_android_hardware_buffer_android: FnGetMemoryAndroidHardwareBufferANDROID,
@@ -34659,12 +34834,11 @@ type FnCmdSetSampleLocationsEXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_sample_locations_info: *const SampleLocationsInfoEXT,
 ) -> c_void;
-type FnGetPhysicalDeviceMultisamplePropertiesEXT =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        samples: SampleCountFlags,
-        p_multisample_properties: *mut MultisamplePropertiesEXT,
-    ) -> c_void;
+type FnGetPhysicalDeviceMultisamplePropertiesEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    samples: SampleCountFlags,
+    p_multisample_properties: *mut MultisamplePropertiesEXT,
+) -> c_void;
 pub struct ExtSampleLocationsFn1_0 {
     pub cmd_set_sample_locations_ext: FnCmdSetSampleLocationsEXT,
     pub get_physical_device_multisample_properties_ext: FnGetPhysicalDeviceMultisamplePropertiesEXT,
@@ -34880,12 +35054,11 @@ impl KhrBindMemory2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetImageDrmFormatModifierPropertiesEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        image: Option<Image>,
-        p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
-    ) -> Result;
+type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
+) -> Result;
 pub struct ExtImageDrmFormatModifierFn1_0 {
     pub get_image_drm_format_modifier_properties_ext: FnGetImageDrmFormatModifierPropertiesEXT,
 }
@@ -35033,13 +35206,12 @@ type FnCmdBindShadingRateImageNV = unsafe extern "system" fn(
     image_view: Option<ImageView>,
     image_layout: ImageLayout,
 ) -> c_void;
-type FnCmdSetViewportShadingRatePaletteNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        first_viewport: u32,
-        viewport_count: u32,
-        p_shading_rate_palettes: *const ShadingRatePaletteNV,
-    ) -> c_void;
+type FnCmdSetViewportShadingRatePaletteNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_shading_rate_palettes: *const ShadingRatePaletteNV,
+) -> c_void;
 type FnCmdSetCoarseSampleOrderNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     sample_order_type: CoarseSampleOrderTypeNV,
@@ -35115,31 +35287,27 @@ impl NvShadingRateImageFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateAccelerationStructureNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_create_info: *const AccelerationStructureCreateInfoNV,
-        p_allocator: *const AllocationCallbacks,
-        p_acceleration_structure: *mut AccelerationStructureNV,
-    ) -> Result;
-type FnDestroyAccelerationStructureNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        acceleration_structure: Option<AccelerationStructureNV>,
-        p_allocator: *const AllocationCallbacks,
-    ) -> c_void;
-type FnGetAccelerationStructureMemoryRequirementsNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
-        p_memory_requirements: *mut MemoryRequirements2KHR,
-    ) -> c_void;
-type FnBindAccelerationStructureMemoryNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        bind_info_count: u32,
-        p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
-    ) -> Result;
+type FnCreateAccelerationStructureNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const AccelerationStructureCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_acceleration_structure: *mut AccelerationStructureNV,
+) -> Result;
+type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    acceleration_structure: Option<AccelerationStructureNV>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
+    p_memory_requirements: *mut MemoryRequirements2KHR,
+) -> c_void;
+type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
+) -> Result;
 type FnCmdBuildAccelerationStructureNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_info: *const AccelerationStructureInfoNV,
@@ -35190,22 +35358,20 @@ type FnGetRayTracingShaderGroupHandlesNV = unsafe extern "system" fn(
     data_size: usize,
     p_data: *mut c_void,
 ) -> Result;
-type FnGetAccelerationStructureHandleNV =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        acceleration_structure: Option<AccelerationStructureNV>,
-        data_size: usize,
-        p_data: *mut c_void,
-    ) -> Result;
-type FnCmdWriteAccelerationStructuresPropertiesNV =
-    unsafe extern "system" fn(
-        command_buffer: Option<CommandBuffer>,
-        acceleration_structure_count: u32,
-        p_acceleration_structures: *const AccelerationStructureNV,
-        query_type: QueryType,
-        query_pool: Option<QueryPool>,
-        first_query: u32,
-    ) -> c_void;
+type FnGetAccelerationStructureHandleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    acceleration_structure: Option<AccelerationStructureNV>,
+    data_size: usize,
+    p_data: *mut c_void,
+) -> Result;
+type FnCmdWriteAccelerationStructuresPropertiesNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    acceleration_structure_count: u32,
+    p_acceleration_structures: *const AccelerationStructureNV,
+    query_type: QueryType,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+) -> c_void;
 type FnCompileDeferredNV =
     unsafe extern "system" fn(device: Option<Device>, pipeline: Option<Pipeline>, shader: u32) -> Result;
 pub struct NvRayTracingFn1_0 {
@@ -35573,13 +35739,12 @@ impl KhrDrawIndirectCountFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryHostPointerPropertiesEXT =
-    unsafe extern "system" fn(
-        device: Option<Device>,
-        handle_type: ExternalMemoryHandleTypeFlags,
-        p_host_pointer: *const c_void,
-        p_memory_host_pointer_properties: *mut MemoryHostPointerPropertiesEXT,
-    ) -> Result;
+type FnGetMemoryHostPointerPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    p_host_pointer: *const c_void,
+    p_memory_host_pointer_properties: *mut MemoryHostPointerPropertiesEXT,
+) -> Result;
 pub struct ExtExternalMemoryHostFn1_0 {
     pub get_memory_host_pointer_properties_ext: FnGetMemoryHostPointerPropertiesEXT,
 }
@@ -35652,12 +35817,11 @@ impl AmdBufferMarkerFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT =
-    unsafe extern "system" fn(
-        physical_device: Option<PhysicalDevice>,
-        p_time_domain_count: *mut u32,
-        p_time_domains: *mut TimeDomainEXT,
-    ) -> Result;
+type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_time_domain_count: *mut u32,
+    p_time_domains: *mut TimeDomainEXT,
+) -> Result;
 type FnGetCalibratedTimestampsEXT = unsafe extern "system" fn(
     device: Option<Device>,
     timestamp_count: u32,
@@ -35896,13 +36060,12 @@ impl NvDeviceDiagnosticCheckpointsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateImagePipeSurfaceFUCHSIA =
-    unsafe extern "system" fn(
-        instance: Option<Instance>,
-        p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
-        p_allocator: *const AllocationCallbacks,
-        p_surface: *mut SurfaceKHR,
-    ) -> Result;
+type FnCreateImagePipeSurfaceFUCHSIA = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct FuchsiaImagepipeSurfaceFn1_0 {
     pub create_image_pipe_surface_fuchsia: FnCreateImagePipeSurfaceFUCHSIA,
 }

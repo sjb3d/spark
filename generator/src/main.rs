@@ -1,12 +1,6 @@
-extern crate heck;
-#[macro_use]
-extern crate nom;
-extern crate take_mut;
-extern crate vk_parse;
-
 mod c_parse;
 
-use c_parse::*;
+use crate::c_parse::*;
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use std::collections::{HashMap, HashSet};
 use std::env;
@@ -48,11 +42,13 @@ impl<I: Iterator> CollectOne for I {
     type Item = I::Item;
     fn collect_one(mut self) -> Option<Self::Item> {
         match self.next() {
-            Some(item) => if self.next().is_some() {
-                None
-            } else {
-                Some(item)
-            },
+            Some(item) => {
+                if self.next().is_some() {
+                    None
+                } else {
+                    Some(item)
+                }
+            }
             None => None,
         }
     }
@@ -105,7 +101,8 @@ impl GetTypeName for vk::Type {
                             .filter_map(|markup| match markup {
                                 vk::TypeCodeMarkup::Name(name) => Some(name.as_str()),
                                 _ => None,
-                            }).collect_one()
+                            })
+                            .collect_one()
                             .expect("missing bitmask or enum type name")
                     } else {
                         panic!("failed to get type name for {:?}", self)
@@ -262,7 +259,8 @@ impl<'a> Generator<'a> {
             .filter_map(|registry_child| match registry_child {
                 vk::RegistryChild::Types(types) => Some(types),
                 _ => None,
-            }).flat_map(|types| types.children.iter())
+            })
+            .flat_map(|types| types.children.iter())
             .filter_map(|types_child| match types_child {
                 vk::TypesChild::Type(ty) => Some(ty),
                 _ => None,
@@ -300,7 +298,8 @@ impl<'a> Generator<'a> {
             .filter_map(|registry_child| match registry_child {
                 vk::RegistryChild::Tags(tags) => Some(tags),
                 _ => None,
-            }).flat_map(|types| types.children.iter())
+            })
+            .flat_map(|types| types.children.iter())
         {
             if !self.tag_names.insert(tag.name.as_str()) {
                 panic!("duplicate tag name from {:?}", tag);
@@ -338,7 +337,8 @@ impl<'a> Generator<'a> {
                             .filter_map(|enums_child| match enums_child {
                                 vk::EnumsChild::Enum(en) => Some(en),
                                 _ => None,
-                            }).collect();
+                            })
+                            .collect();
                         if self.enums_by_name.insert(name, enums).is_some() {
                             panic!("duplicate enum name {}", name);
                         }
@@ -358,11 +358,13 @@ impl<'a> Generator<'a> {
                         .filter_map(|ext_child| match ext_child {
                             vk::ExtensionChild::Require { items, .. } => Some(items),
                             _ => None,
-                        }).flat_map(|items| items.iter())
+                        })
+                        .flat_map(|items| items.iter())
                         .filter_map(|item| match item {
                             vk::InterfaceItem::Enum(en) => Some(en),
                             _ => None,
-                        }) {
+                        })
+                    {
                         self.collect_extension_enum(en);
                     }
                 }
@@ -374,11 +376,13 @@ impl<'a> Generator<'a> {
                             .filter_map(|ext_child| match ext_child {
                                 vk::ExtensionChild::Require { items, .. } => Some(items),
                                 _ => None,
-                            }).flat_map(|items| items.iter())
+                            })
+                            .flat_map(|items| items.iter())
                             .filter_map(|item| match item {
                                 vk::InterfaceItem::Enum(en) => Some(en),
                                 _ => None,
-                            }) {
+                            })
+                        {
                             self.collect_extension_enum(en);
                             self.extension_by_enum_name.insert(en.name.as_str(), ext);
                         }
@@ -432,7 +436,8 @@ impl<'a> Generator<'a> {
                     .map(|type_name| match type_name.as_str() {
                         "VkDevice" | "VkCommandBuffer" | "VkQueue" => true,
                         _ => false,
-                    }).unwrap_or(false);
+                    })
+                    .unwrap_or(false);
                 if is_first_param_from_device {
                     Some(Group::Device)
                 } else {
@@ -454,7 +459,8 @@ impl<'a> Generator<'a> {
             .filter_map(|registry_child| match registry_child {
                 vk::RegistryChild::Feature(feature) => Some(feature),
                 _ => None,
-            }) {
+            })
+        {
             let mut names = Vec::new();
             for name in feature
                 .children
@@ -462,11 +468,13 @@ impl<'a> Generator<'a> {
                 .filter_map(|ext_child| match ext_child {
                     vk::ExtensionChild::Require { items, .. } => Some(items),
                     _ => None,
-                }).flat_map(|items| items.iter())
+                })
+                .flat_map(|items| items.iter())
                 .filter_map(|item| match item {
                     vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
                     _ => None,
-                }) {
+                })
+            {
                 if Some(group) == self.get_command_group(name) {
                     names.push(name);
                 }
@@ -805,7 +813,8 @@ impl<'a> Generator<'a> {
                         self.get_enum_entry_value(value_type_name, enum_type, en),
                         self.extension_by_enum_name.get(en.name.as_str()).cloned(),
                     )
-                }).collect();
+                })
+                .collect();
 
             let (derives, interior_type) = match enum_type {
                 EnumType::Bitmask => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u32"),
@@ -1010,7 +1019,8 @@ impl<'a> Generator<'a> {
                 CDecoration::PointerToConstPointerToConst => "*const *const ",
             },
             self.get_rust_type_name(&ty.name, ty.decoration == CDecoration::None, vk_prefix)
-        ).unwrap();
+        )
+        .unwrap();
         if let Some(mut array_size) = ty.array_size {
             if array_size.starts_with(CONST_PREFIX) {
                 array_size = &array_size[3..];
@@ -1097,7 +1107,8 @@ impl<'a> Generator<'a> {
                 .filter_map(|member| match member {
                     vk::TypeMember::Definition(ref member_def) => Some(member_def),
                     _ => None,
-                }).collect();
+                })
+                .collect();
             let decls: Vec<CVariableDecl> = member_defs
                 .iter()
                 .map(|member_def| c_parse_variable_decl(member_def.code.as_str()))
@@ -1245,7 +1256,8 @@ impl<'a> Generator<'a> {
                             take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
                         }
                         decl
-                    }).collect();
+                    })
+                    .collect();
                 for function_decl in &decls {
                     let name_part = function_decl.proto.name.skip_prefix(FN_PREFIX);
                     if cmd_names.insert(name_part) {
@@ -1330,7 +1342,8 @@ impl<'a> Generator<'a> {
                     .filter_map(|member| match member {
                         vk::TypeMember::Definition(ref member_def) => Some(member_def),
                         _ => None,
-                    }).collect();
+                    })
+                    .collect();
                 let decls: Vec<CVariableDecl> = member_defs
                     .iter()
                     .map(|member_def| c_parse_variable_decl(member_def.code.as_str()))
@@ -1341,7 +1354,8 @@ impl<'a> Generator<'a> {
                     .map(|decl| LibParam {
                         name: get_rust_variable_name(decl.name.to_snake_case().as_str()),
                         ty: LibParamType::CDecl,
-                    }).collect();
+                    })
+                    .collect();
                 for (i, cparam) in decls.iter().enumerate() {
                     let vparam = &member_defs[i];
                     let inner_type_name = self.get_rust_type_name(
@@ -1404,28 +1418,34 @@ impl<'a> Generator<'a> {
                                 is_optional,
                             };
                             take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                                LibParamType::SharedSliceLen { name, mut slice_infos } => if is_single {
-                                    panic!("unsupported mix of slices")
-                                } else {
-                                    slice_infos.push(slice_info);
-                                    LibParamType::SharedSliceLen { name, slice_infos }
-                                },
-                                LibParamType::SingleSliceLen { mut slice_infos } => if is_single {
-                                    slice_infos.push(slice_info);
-                                    LibParamType::SingleSliceLen { slice_infos }
-                                } else {
-                                    panic!("unsupported mix of slices")
-                                },
-                                LibParamType::CDecl => if is_single {
-                                    LibParamType::SingleSliceLen {
-                                        slice_infos: vec![slice_info; 1],
+                                LibParamType::SharedSliceLen { name, mut slice_infos } => {
+                                    if is_single {
+                                        panic!("unsupported mix of slices")
+                                    } else {
+                                        slice_infos.push(slice_info);
+                                        LibParamType::SharedSliceLen { name, slice_infos }
                                     }
-                                } else {
-                                    LibParamType::SharedSliceLen {
-                                        name: len_cparam.name.to_snake_case(),
-                                        slice_infos: vec![slice_info; 1],
+                                }
+                                LibParamType::SingleSliceLen { mut slice_infos } => {
+                                    if is_single {
+                                        slice_infos.push(slice_info);
+                                        LibParamType::SingleSliceLen { slice_infos }
+                                    } else {
+                                        panic!("unsupported mix of slices")
                                     }
-                                },
+                                }
+                                LibParamType::CDecl => {
+                                    if is_single {
+                                        LibParamType::SingleSliceLen {
+                                            slice_infos: vec![slice_info; 1],
+                                        }
+                                    } else {
+                                        LibParamType::SharedSliceLen {
+                                            name: len_cparam.name.to_snake_case(),
+                                            slice_infos: vec![slice_info; 1],
+                                        }
+                                    }
+                                }
                                 _ => {
                                     panic!("purpose already found for {:?}", len_cparam);
                                 }
@@ -1829,17 +1849,21 @@ impl<'a> Generator<'a> {
                         } else {
                             Some(vtype)
                         }
-                    }).and_then(|vtype| match vtype.spec {
+                    })
+                    .and_then(|vtype| match vtype.spec {
                         vk::TypeSpec::Members(ref members) => Some(members),
                         _ => None,
-                    }).map(|members| {
+                    })
+                    .map(|members| {
                         members
                             .iter()
                             .filter_map(|member| match member {
                                 vk::TypeMember::Definition(ref def) => Some(def),
                                 _ => None,
-                            }).any(|def| def.values.is_some())
-                    }).unwrap_or(false);
+                            })
+                            .any(|def| def.values.is_some())
+                    })
+                    .unwrap_or(false);
                 if !has_member_values {
                     let mut inner_type_name = if cparam.ty.decoration == CDecoration::PointerToPointer {
                         format!("*mut {}", inner_type_name)
@@ -1931,7 +1955,8 @@ impl<'a> Generator<'a> {
             .map(|cparam| LibParam {
                 name: get_rust_variable_name(cparam.name.to_snake_case().as_str()),
                 ty: LibParamType::CDecl,
-            }).collect();
+            })
+            .collect();
         let cmd_return_value = match cmd_def.proto.type_name.as_ref_str() {
             Some("VkResult") => CommandReturnValue::Result,
             Some("void") => CommandReturnValue::Void,

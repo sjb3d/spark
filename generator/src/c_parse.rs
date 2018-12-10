@@ -1,5 +1,5 @@
-use nom;
 use nom::types::CompleteStr as Input;
+use nom::*;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum CDecoration {

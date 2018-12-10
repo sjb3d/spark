@@ -1,11 +1,7 @@
-
-#[macro_use]
-extern crate lazy_static;
-extern crate shared_library;
-
 pub mod vk;
 pub mod builder;
 
+use lazy_static::lazy_static;
 use std::ffi::CStr;
 use std::os::raw::{c_void, c_char, c_int};
 use std::mem;
