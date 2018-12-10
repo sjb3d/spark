@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 91
+//! Generated from vk.xml with `VK_HEADER_VERSION` 95
 pub mod builder;
 pub mod vk;
 

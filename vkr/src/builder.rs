@@ -6574,7 +6574,7 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         self.inner.s_type = s_type;
         self
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -8063,6 +8063,54 @@ impl<'a> Deref for PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceInlineUniformBlockFeaturesEXT {
+    type Type = PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceInlineUniformBlockFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn inline_uniform_block(mut self, inline_uniform_block: bool) -> Self {
+        self.inner.inline_uniform_block = if inline_uniform_block { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn descriptor_binding_inline_uniform_block_update_after_bind(
+        mut self,
+        descriptor_binding_inline_uniform_block_update_after_bind: bool,
+    ) -> Self {
+        self.inner.descriptor_binding_inline_uniform_block_update_after_bind =
+            if descriptor_binding_inline_uniform_block_update_after_bind {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceInlineUniformBlockFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::WriteDescriptorSetInlineUniformBlockEXT {
     type Type = WriteDescriptorSetInlineUniformBlockEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8345,6 +8393,219 @@ impl<'a> PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
     type Target = vk::PhysicalDeviceShaderDrawParameterFeatures;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceFloat16Int8FeaturesKHR {
+    type Type = PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceFloat16Int8FeaturesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceFloat16Int8FeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_float16(mut self, shader_float16: bool) -> Self {
+        self.inner.shader_float16 = if shader_float16 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_int8(mut self, shader_int8: bool) -> Self {
+        self.inner.shader_int8 = if shader_int8 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceFloat16Int8FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceFloatControlsPropertiesKHR {
+    type Type = PhysicalDeviceFloatControlsPropertiesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceFloatControlsPropertiesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceFloatControlsPropertiesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceFloatControlsPropertiesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceFloatControlsPropertiesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn separate_denorm_settings(mut self, separate_denorm_settings: bool) -> Self {
+        self.inner.separate_denorm_settings = if separate_denorm_settings { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn separate_rounding_mode_settings(mut self, separate_rounding_mode_settings: bool) -> Self {
+        self.inner.separate_rounding_mode_settings = if separate_rounding_mode_settings {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_signed_zero_inf_nan_preserve_float16(
+        mut self,
+        shader_signed_zero_inf_nan_preserve_float16: bool,
+    ) -> Self {
+        self.inner.shader_signed_zero_inf_nan_preserve_float16 = if shader_signed_zero_inf_nan_preserve_float16 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_signed_zero_inf_nan_preserve_float32(
+        mut self,
+        shader_signed_zero_inf_nan_preserve_float32: bool,
+    ) -> Self {
+        self.inner.shader_signed_zero_inf_nan_preserve_float32 = if shader_signed_zero_inf_nan_preserve_float32 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_signed_zero_inf_nan_preserve_float64(
+        mut self,
+        shader_signed_zero_inf_nan_preserve_float64: bool,
+    ) -> Self {
+        self.inner.shader_signed_zero_inf_nan_preserve_float64 = if shader_signed_zero_inf_nan_preserve_float64 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_preserve_float16(mut self, shader_denorm_preserve_float16: bool) -> Self {
+        self.inner.shader_denorm_preserve_float16 = if shader_denorm_preserve_float16 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_preserve_float32(mut self, shader_denorm_preserve_float32: bool) -> Self {
+        self.inner.shader_denorm_preserve_float32 = if shader_denorm_preserve_float32 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_preserve_float64(mut self, shader_denorm_preserve_float64: bool) -> Self {
+        self.inner.shader_denorm_preserve_float64 = if shader_denorm_preserve_float64 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_flush_to_zero_float16(mut self, shader_denorm_flush_to_zero_float16: bool) -> Self {
+        self.inner.shader_denorm_flush_to_zero_float16 = if shader_denorm_flush_to_zero_float16 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_flush_to_zero_float32(mut self, shader_denorm_flush_to_zero_float32: bool) -> Self {
+        self.inner.shader_denorm_flush_to_zero_float32 = if shader_denorm_flush_to_zero_float32 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_denorm_flush_to_zero_float64(mut self, shader_denorm_flush_to_zero_float64: bool) -> Self {
+        self.inner.shader_denorm_flush_to_zero_float64 = if shader_denorm_flush_to_zero_float64 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rte_float16(mut self, shader_rounding_mode_rte_float16: bool) -> Self {
+        self.inner.shader_rounding_mode_rte_float16 = if shader_rounding_mode_rte_float16 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rte_float32(mut self, shader_rounding_mode_rte_float32: bool) -> Self {
+        self.inner.shader_rounding_mode_rte_float32 = if shader_rounding_mode_rte_float32 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rte_float64(mut self, shader_rounding_mode_rte_float64: bool) -> Self {
+        self.inner.shader_rounding_mode_rte_float64 = if shader_rounding_mode_rte_float64 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rtz_float16(mut self, shader_rounding_mode_rtz_float16: bool) -> Self {
+        self.inner.shader_rounding_mode_rtz_float16 = if shader_rounding_mode_rtz_float16 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rtz_float32(mut self, shader_rounding_mode_rtz_float32: bool) -> Self {
+        self.inner.shader_rounding_mode_rtz_float32 = if shader_rounding_mode_rtz_float32 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_rounding_mode_rtz_float64(mut self, shader_rounding_mode_rtz_float64: bool) -> Self {
+        self.inner.shader_rounding_mode_rtz_float64 = if shader_rounding_mode_rtz_float64 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceFloatControlsPropertiesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceFloatControlsPropertiesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -8658,28 +8919,19 @@ impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
         self.inner.p_message = p_message.as_ptr();
         self
     }
-    pub fn queue_label_count(mut self, queue_label_count: u32) -> Self {
-        self.inner.queue_label_count = queue_label_count;
+    pub fn p_queue_labels(mut self, p_queue_labels: &'a [vk::DebugUtilsLabelEXT]) -> Self {
+        self.inner.queue_label_count = p_queue_labels.len() as u32;
+        self.inner.p_queue_labels = p_queue_labels.as_ptr();
         self
     }
-    pub fn p_queue_labels(mut self, p_queue_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
-        self.inner.p_queue_labels = p_queue_labels;
+    pub fn p_cmd_buf_labels(mut self, p_cmd_buf_labels: &'a [vk::DebugUtilsLabelEXT]) -> Self {
+        self.inner.cmd_buf_label_count = p_cmd_buf_labels.len() as u32;
+        self.inner.p_cmd_buf_labels = p_cmd_buf_labels.as_ptr();
         self
     }
-    pub fn cmd_buf_label_count(mut self, cmd_buf_label_count: u32) -> Self {
-        self.inner.cmd_buf_label_count = cmd_buf_label_count;
-        self
-    }
-    pub fn p_cmd_buf_labels(mut self, p_cmd_buf_labels: *mut vk::DebugUtilsLabelEXT) -> Self {
-        self.inner.p_cmd_buf_labels = p_cmd_buf_labels;
-        self
-    }
-    pub fn object_count(mut self, object_count: u32) -> Self {
-        self.inner.object_count = object_count;
-        self
-    }
-    pub fn p_objects(mut self, p_objects: *mut vk::DebugUtilsObjectNameInfoEXT) -> Self {
-        self.inner.p_objects = p_objects;
+    pub fn p_objects(mut self, p_objects: &'a [vk::DebugUtilsObjectNameInfoEXT]) -> Self {
+        self.inner.object_count = p_objects.len() as u32;
+        self.inner.p_objects = p_objects.as_ptr();
         self
     }
 }
@@ -10005,6 +10257,50 @@ impl<'a> PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
     type Target = vk::PhysicalDeviceConditionalRenderingFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR {
+    type Type = PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vulkan_memory_model(mut self, vulkan_memory_model: bool) -> Self {
+        self.inner.vulkan_memory_model = if vulkan_memory_model { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn vulkan_memory_model_device_scope(mut self, vulkan_memory_model_device_scope: bool) -> Self {
+        self.inner.vulkan_memory_model_device_scope = if vulkan_memory_model_device_scope {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11618,6 +11914,42 @@ impl<'a> Deref for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::ImageStencilUsageCreateInfoEXT {
+    type Type = ImageStencilUsageCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        ImageStencilUsageCreateInfoEXTBuilder::new()
+    }
+}
+pub struct ImageStencilUsageCreateInfoEXTBuilder<'a> {
+    inner: vk::ImageStencilUsageCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ImageStencilUsageCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stencil_usage(mut self, stencil_usage: vk::ImageUsageFlags) -> Self {
+        self.inner.stencil_usage = stencil_usage;
+        self
+    }
+}
+impl<'a> Deref for ImageStencilUsageCreateInfoEXTBuilder<'a> {
+    type Target = vk::ImageStencilUsageCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::DeviceMemoryOverallocationCreateInfoAMD {
     type Type = DeviceMemoryOverallocationCreateInfoAMDBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11650,6 +11982,78 @@ impl<'a> DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
 }
 impl<'a> Deref for DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
     type Target = vk::DeviceMemoryOverallocationCreateInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RenderPassFragmentDensityMapCreateInfoEXT {
+    type Type = RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        RenderPassFragmentDensityMapCreateInfoEXTBuilder::new()
+    }
+}
+pub struct RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
+    inner: vk::RenderPassFragmentDensityMapCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_density_map_attachment(mut self, fragment_density_map_attachment: vk::AttachmentReference) -> Self {
+        self.inner.fragment_density_map_attachment = fragment_density_map_attachment;
+        self
+    }
+}
+impl<'a> Deref for RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
+    type Target = vk::RenderPassFragmentDensityMapCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+    type Type = PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn scalar_block_layout(mut self, scalar_block_layout: bool) -> Self {
+        self.inner.scalar_block_layout = if scalar_block_layout { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

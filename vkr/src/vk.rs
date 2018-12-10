@@ -353,7 +353,12 @@ impl fmt::Display for RenderPassCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SamplerCreateFlags(u32);
-impl SamplerCreateFlags {}
+impl SamplerCreateFlags {
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const SUBSAMPLED_EXT: Self = SamplerCreateFlags(0x1);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = SamplerCreateFlags(0x2);
+}
 impl default::Default for SamplerCreateFlags {
     fn default() -> Self {
         SamplerCreateFlags(0)
@@ -364,13 +369,13 @@ impl SamplerCreateFlags {
         SamplerCreateFlags(0)
     }
     pub fn all() -> Self {
-        SamplerCreateFlags(0x0)
+        SamplerCreateFlags(0x3)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x3
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -414,7 +419,11 @@ impl ops::BitXorAssign for SamplerCreateFlags {
 }
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(
+            self.0,
+            &[(0x1, "SUBSAMPLED_EXT"), (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -1583,6 +1592,10 @@ impl QueueFlags {
     pub const SPARSE_BINDING: Self = QueueFlags(0x8);
     /// Queues may support protected operations
     pub const PROTECTED: Self = QueueFlags(0x10);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_6_KHR: Self = QueueFlags(0x40);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_5_KHR: Self = QueueFlags(0x20);
 }
 impl default::Default for QueueFlags {
     fn default() -> Self {
@@ -1594,13 +1607,13 @@ impl QueueFlags {
         QueueFlags(0)
     }
     pub fn all() -> Self {
-        QueueFlags(0x1f)
+        QueueFlags(0x7f)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0x7f
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1652,6 +1665,8 @@ impl fmt::Display for QueueFlags {
                 (0x4, "TRANSFER"),
                 (0x8, "SPARSE_BINDING"),
                 (0x10, "PROTECTED"),
+                (0x40, "RESERVED_6_KHR"),
+                (0x20, "RESERVED_5_KHR"),
             ],
             f,
         )
@@ -1859,6 +1874,14 @@ impl AccessFlags {
     pub const MEMORY_READ: Self = AccessFlags(0x8000);
     /// Controls coherency of memory writes
     pub const MEMORY_WRITE: Self = AccessFlags(0x10000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_30_KHR: Self = AccessFlags(0x40000000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_31_KHR: Self = AccessFlags(0x80000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_28_KHR: Self = AccessFlags(0x10000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_29_KHR: Self = AccessFlags(0x20000000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = AccessFlags(0x2000000);
     /// Added by extension VK_EXT_transform_feedback.
@@ -1880,8 +1903,8 @@ impl AccessFlags {
     pub const ACCELERATION_STRUCTURE_READ_NV: Self = AccessFlags(0x200000);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = AccessFlags(0x400000);
-    /// Added by extension VK_EXT_extension_219.
-    pub const RESERVED_24_EXT: Self = AccessFlags(0x1000000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = AccessFlags(0x1000000);
 }
 impl default::Default for AccessFlags {
     fn default() -> Self {
@@ -1893,13 +1916,13 @@ impl AccessFlags {
         AccessFlags(0)
     }
     pub fn all() -> Self {
-        AccessFlags(0xfffffff)
+        AccessFlags(0xffffffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0xfffffff
+        self.0 == 0xffffffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1963,6 +1986,10 @@ impl fmt::Display for AccessFlags {
                 (0x4000, "HOST_WRITE"),
                 (0x8000, "MEMORY_READ"),
                 (0x10000, "MEMORY_WRITE"),
+                (0x40000000, "RESERVED_30_KHR"),
+                (0x80000000, "RESERVED_31_KHR"),
+                (0x10000000, "RESERVED_28_KHR"),
+                (0x20000000, "RESERVED_29_KHR"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
@@ -1973,7 +2000,7 @@ impl fmt::Display for AccessFlags {
                 (0x800000, "SHADING_RATE_IMAGE_READ_NV"),
                 (0x200000, "ACCELERATION_STRUCTURE_READ_NV"),
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE_NV"),
-                (0x1000000, "RESERVED_24_EXT"),
+                (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
             ],
             f,
         )
@@ -2001,6 +2028,10 @@ impl BufferUsageFlags {
     pub const VERTEX_BUFFER: Self = BufferUsageFlags(0x80);
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
     pub const INDIRECT_BUFFER: Self = BufferUsageFlags(0x100);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_14_KHR: Self = BufferUsageFlags(0x4000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_13_KHR: Self = BufferUsageFlags(0x2000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = BufferUsageFlags(0x800);
     /// Added by extension VK_EXT_transform_feedback.
@@ -2021,13 +2052,13 @@ impl BufferUsageFlags {
         BufferUsageFlags(0)
     }
     pub fn all() -> Self {
-        BufferUsageFlags(0x1fff)
+        BufferUsageFlags(0x7fff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x1fff
+        self.0 == 0x7fff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2083,6 +2114,8 @@ impl fmt::Display for BufferUsageFlags {
                 (0x40, "INDEX_BUFFER"),
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
+                (0x4000, "RESERVED_14_KHR"),
+                (0x2000, "RESERVED_13_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
@@ -2310,10 +2343,22 @@ impl ImageUsageFlags {
     pub const TRANSIENT_ATTACHMENT: Self = ImageUsageFlags(0x40);
     /// Can be used as framebuffer input attachment
     pub const INPUT_ATTACHMENT: Self = ImageUsageFlags(0x80);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_13_KHR: Self = ImageUsageFlags(0x2000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_14_KHR: Self = ImageUsageFlags(0x4000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_15_KHR: Self = ImageUsageFlags(0x8000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_10_KHR: Self = ImageUsageFlags(0x400);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_11_KHR: Self = ImageUsageFlags(0x800);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_12_KHR: Self = ImageUsageFlags(0x1000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = ImageUsageFlags(0x100);
-    /// Added by extension VK_EXT_extension_219.
-    pub const RESERVED_9_EXT: Self = ImageUsageFlags(0x200);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = ImageUsageFlags(0x200);
 }
 impl default::Default for ImageUsageFlags {
     fn default() -> Self {
@@ -2325,13 +2370,13 @@ impl ImageUsageFlags {
         ImageUsageFlags(0)
     }
     pub fn all() -> Self {
-        ImageUsageFlags(0x3ff)
+        ImageUsageFlags(0xffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x3ff
+        self.0 == 0xffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2386,8 +2431,14 @@ impl fmt::Display for ImageUsageFlags {
                 (0x20, "DEPTH_STENCIL_ATTACHMENT"),
                 (0x40, "TRANSIENT_ATTACHMENT"),
                 (0x80, "INPUT_ATTACHMENT"),
+                (0x2000, "RESERVED_13_KHR"),
+                (0x4000, "RESERVED_14_KHR"),
+                (0x8000, "RESERVED_15_KHR"),
+                (0x400, "RESERVED_10_KHR"),
+                (0x800, "RESERVED_11_KHR"),
+                (0x1000, "RESERVED_12_KHR"),
                 (0x100, "SHADING_RATE_IMAGE_NV"),
-                (0x200, "RESERVED_9_EXT"),
+                (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
             ],
             f,
         )
@@ -2427,8 +2478,8 @@ impl ImageCreateFlags {
     pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = ImageCreateFlags(0x1000);
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const ALIAS_KHR: Self = Self::ALIAS;
-    /// Added by extension VK_EXT_extension_219.
-    pub const RESERVED_14_EXT: Self = ImageCreateFlags(0x4000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const SUBSAMPLED_EXT: Self = ImageCreateFlags(0x4000);
 }
 impl default::Default for ImageCreateFlags {
     fn default() -> Self {
@@ -2507,7 +2558,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x200, "DISJOINT"),
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
-                (0x4000, "RESERVED_14_EXT"),
+                (0x4000, "SUBSAMPLED_EXT"),
             ],
             f,
         )
@@ -2516,7 +2567,10 @@ impl fmt::Display for ImageCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageViewCreateFlags(u32);
-impl ImageViewCreateFlags {}
+impl ImageViewCreateFlags {
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = ImageViewCreateFlags(0x1);
+}
 impl default::Default for ImageViewCreateFlags {
     fn default() -> Self {
         ImageViewCreateFlags(0)
@@ -2527,13 +2581,13 @@ impl ImageViewCreateFlags {
         ImageViewCreateFlags(0)
     }
     pub fn all() -> Self {
-        ImageViewCreateFlags(0x0)
+        ImageViewCreateFlags(0x1)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2577,7 +2631,7 @@ impl ops::BitXorAssign for ImageViewCreateFlags {
 }
 impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0, &[(0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -2926,6 +2980,14 @@ impl FormatFeatureFlags {
     /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
     /// Added by extension VK_IMG_filter_cubic.
     pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = FormatFeatureFlags(0x2000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_27_KHR: Self = FormatFeatureFlags(0x8000000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_28_KHR: Self = FormatFeatureFlags(0x10000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_25_KHR: Self = FormatFeatureFlags(0x2000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_26_KHR: Self = FormatFeatureFlags(0x4000000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     /// Format can be used with min/max reduction filtering
@@ -2942,8 +3004,8 @@ impl FormatFeatureFlags {
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
-    /// Added by extension VK_EXT_extension_219.
-    pub const RESERVED_24_EXT: Self = FormatFeatureFlags(0x1000000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = FormatFeatureFlags(0x1000000);
 }
 impl default::Default for FormatFeatureFlags {
     fn default() -> Self {
@@ -2955,13 +3017,13 @@ impl FormatFeatureFlags {
         FormatFeatureFlags(0)
     }
     pub fn all() -> Self {
-        FormatFeatureFlags(0x1ffffff)
+        FormatFeatureFlags(0x1fffffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x1ffffff
+        self.0 == 0x1fffffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3037,8 +3099,12 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x400000, "DISJOINT"),
                 (0x800000, "COSITED_CHROMA_SAMPLES"),
                 (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
+                (0x8000000, "RESERVED_27_KHR"),
+                (0x10000000, "RESERVED_28_KHR"),
+                (0x2000000, "RESERVED_25_KHR"),
+                (0x4000000, "RESERVED_26_KHR"),
                 (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX_EXT"),
-                (0x1000000, "RESERVED_24_EXT"),
+                (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
             ],
             f,
         )
@@ -4172,6 +4238,10 @@ impl PipelineStageFlags {
     pub const ALL_GRAPHICS: Self = PipelineStageFlags(0x8000);
     /// All stages supported on the queue
     pub const ALL_COMMANDS: Self = PipelineStageFlags(0x10000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_27_KHR: Self = PipelineStageFlags(0x8000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_26_KHR: Self = PipelineStageFlags(0x4000000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_EXT: Self = PipelineStageFlags(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
@@ -4189,8 +4259,8 @@ impl PipelineStageFlags {
     pub const TASK_SHADER_NV: Self = PipelineStageFlags(0x80000);
     /// Added by extension VK_NV_mesh_shader.
     pub const MESH_SHADER_NV: Self = PipelineStageFlags(0x100000);
-    /// Added by extension VK_EXT_extension_219.
-    pub const RESERVED_23_EXT: Self = PipelineStageFlags(0x800000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = PipelineStageFlags(0x800000);
 }
 impl default::Default for PipelineStageFlags {
     fn default() -> Self {
@@ -4202,13 +4272,13 @@ impl PipelineStageFlags {
         PipelineStageFlags(0)
     }
     pub fn all() -> Self {
-        PipelineStageFlags(0x3ffffff)
+        PipelineStageFlags(0xfffffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x3ffffff
+        self.0 == 0xfffffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4272,6 +4342,8 @@ impl fmt::Display for PipelineStageFlags {
                 (0x4000, "HOST"),
                 (0x8000, "ALL_GRAPHICS"),
                 (0x10000, "ALL_COMMANDS"),
+                (0x8000000, "RESERVED_27_KHR"),
+                (0x4000000, "RESERVED_26_KHR"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x20000, "COMMAND_PROCESS_NVX"),
@@ -4280,7 +4352,7 @@ impl fmt::Display for PipelineStageFlags {
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_NV"),
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
-                (0x800000, "RESERVED_23_EXT"),
+                (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
             ],
             f,
         )
@@ -5638,6 +5710,8 @@ impl SwapchainCreateFlagsKHR {
     /// Swapchain is protected
     /// Added by extension VK_KHR_swapchain.
     pub const PROTECTED: Self = SwapchainCreateFlagsKHR(0x2);
+    /// Added by extension VK_KHR_swapchain_mutable_format.
+    pub const MUTABLE_FORMAT: Self = SwapchainCreateFlagsKHR(0x4);
 }
 impl default::Default for SwapchainCreateFlagsKHR {
     fn default() -> Self {
@@ -5649,13 +5723,13 @@ impl SwapchainCreateFlagsKHR {
         SwapchainCreateFlagsKHR(0)
     }
     pub fn all() -> Self {
-        SwapchainCreateFlagsKHR(0x3)
+        SwapchainCreateFlagsKHR(0x7)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x7
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5699,7 +5773,15 @@ impl ops::BitXorAssign for SwapchainCreateFlagsKHR {
 }
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "SPLIT_INSTANCE_BIND_REGIONS"), (0x2, "PROTECTED")], f)
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "SPLIT_INSTANCE_BIND_REGIONS"),
+                (0x2, "PROTECTED"),
+                (0x4, "MUTABLE_FORMAT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9101,20 +9183,6 @@ impl fmt::Display for RenderPassCreateFlagBits {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerCreateFlagBits(i32);
-impl SamplerCreateFlagBits {}
-impl default::Default for SamplerCreateFlagBits {
-    fn default() -> Self {
-        SamplerCreateFlagBits(0)
-    }
-}
-impl fmt::Display for SamplerCreateFlagBits {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineCacheHeaderVersion(i32);
 impl PipelineCacheHeaderVersion {
     pub const ONE: Self = PipelineCacheHeaderVersion(1);
@@ -10162,6 +10230,8 @@ impl ImageLayout {
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_OPTIMAL_NV: Self = ImageLayout(1000164003);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = ImageLayout(1000218000);
 }
 impl default::Default for ImageLayout {
     fn default() -> Self {
@@ -10185,6 +10255,7 @@ impl fmt::Display for ImageLayout {
             1000001002 => Some(&"PRESENT_SRC_KHR"),
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
             1000164003 => Some(&"SHADING_RATE_OPTIMAL_NV"),
+            1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10509,6 +10580,10 @@ impl QueryType {
     /// Optional
     pub const PIPELINE_STATISTICS: Self = QueryType(1);
     pub const TIMESTAMP: Self = QueryType(2);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_8: Self = QueryType(1000023008);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_4: Self = QueryType(1000024004);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = QueryType(1000028004);
     /// Added by extension VK_NV_ray_tracing.
@@ -10525,6 +10600,8 @@ impl fmt::Display for QueryType {
             0 => Some(&"OCCLUSION"),
             1 => Some(&"PIPELINE_STATISTICS"),
             2 => Some(&"TIMESTAMP"),
+            1000023008 => Some(&"RESERVED_8"),
+            1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             _ => None,
@@ -10979,6 +11056,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT: Self = StructureType(1000081001);
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = StructureType(1000081002);
+    /// Added by extension VK_KHR_shader_float16_int8.
+    pub const PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR: Self = StructureType(1000082000);
     pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
     /// Added by extension VK_KHR_incremental_present.
     pub const PRESENT_REGIONS_KHR: Self = StructureType(1000084000);
@@ -11241,6 +11320,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
     /// Added by extension VK_KHR_driver_properties.
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = StructureType(1000196000);
+    /// Added by extension VK_KHR_shader_float_controls.
+    pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = StructureType(1000197000);
     /// Added by extension VK_NV_compute_shader_derivatives.
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
     /// Added by extension VK_NV_mesh_shader.
@@ -11265,6 +11346,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = StructureType(1000212000);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
     pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT: Self = StructureType(1000218000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT: Self = StructureType(1000218001);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT: Self = StructureType(1000218002);
+    /// Added by extension VK_EXT_scalar_block_layout.
+    pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT: Self = StructureType(1000221000);
+    /// Added by extension VK_EXT_separate_stencil_usage.
+    pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = StructureType(1000246000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11445,6 +11536,7 @@ impl fmt::Display for StructureType {
             1000081000 => Some(&"COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT"),
             1000081001 => Some(&"PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
             1000081002 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
+            1000082000 => Some(&"PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR"),
             1000084000 => Some(&"PRESENT_REGIONS_KHR"),
             1000086000 => Some(&"OBJECT_TABLE_CREATE_INFO_NVX"),
             1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX"),
@@ -11560,6 +11652,7 @@ impl fmt::Display for StructureType {
             1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
             1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
             1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
+            1000197000 => Some(&"PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR"),
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
@@ -11572,6 +11665,11 @@ impl fmt::Display for StructureType {
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
             1000212000 => Some(&"PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT"),
             1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
+            1000218000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT"),
+            1000218001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT"),
+            1000218002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT"),
+            1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT"),
+            1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12998,6 +13096,8 @@ impl DriverIdKHR {
     pub const QUALCOMM_PROPRIETARY: Self = DriverIdKHR(8);
     /// Arm Limited
     pub const ARM_PROPRIETARY: Self = DriverIdKHR(9);
+    /// Google LLC
+    pub const GOOGLE_PASTEL: Self = DriverIdKHR(10);
 }
 impl default::Default for DriverIdKHR {
     fn default() -> Self {
@@ -13016,6 +13116,7 @@ impl fmt::Display for DriverIdKHR {
             7 => Some(&"IMAGINATION_PROPRIETARY"),
             8 => Some(&"QUALCOMM_PROPRIETARY"),
             9 => Some(&"ARM_PROPRIETARY"),
+            10 => Some(&"GOOGLE_PASTEL"),
             _ => None,
         };
         if let Some(name) = name {
@@ -21636,7 +21737,7 @@ pub type DescriptorUpdateTemplateEntryKHR = DescriptorUpdateTemplateEntry;
 #[derive(Copy, Clone)]
 pub struct DescriptorUpdateTemplateCreateInfo {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub flags: DescriptorUpdateTemplateCreateFlags,
     /// Number of descriptor update entries to use for the update template
     pub descriptor_update_entry_count: u32,
@@ -21653,7 +21754,7 @@ impl default::Default for DescriptorUpdateTemplateCreateInfo {
     fn default() -> Self {
         DescriptorUpdateTemplateCreateInfo {
             s_type: StructureType::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             flags: DescriptorUpdateTemplateCreateFlags::default(),
             descriptor_update_entry_count: u32::default(),
             p_descriptor_update_entries: ptr::null(),
@@ -23888,6 +23989,143 @@ impl fmt::Debug for PhysicalDeviceShaderDrawParameterFeatures {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceFloat16Int8FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_float16: Bool32,
+    pub shader_int8: Bool32,
+}
+impl default::Default for PhysicalDeviceFloat16Int8FeaturesKHR {
+    fn default() -> Self {
+        PhysicalDeviceFloat16Int8FeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_float16: Bool32::default(),
+            shader_int8: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFloat16Int8FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFloat16Int8FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_float16", &self.shader_float16)
+            .field("shader_int8", &self.shader_int8)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFloatControlsPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub separate_denorm_settings: Bool32,
+    pub separate_rounding_mode_settings: Bool32,
+    pub shader_signed_zero_inf_nan_preserve_float16: Bool32,
+    pub shader_signed_zero_inf_nan_preserve_float32: Bool32,
+    pub shader_signed_zero_inf_nan_preserve_float64: Bool32,
+    pub shader_denorm_preserve_float16: Bool32,
+    pub shader_denorm_preserve_float32: Bool32,
+    pub shader_denorm_preserve_float64: Bool32,
+    pub shader_denorm_flush_to_zero_float16: Bool32,
+    pub shader_denorm_flush_to_zero_float32: Bool32,
+    pub shader_denorm_flush_to_zero_float64: Bool32,
+    pub shader_rounding_mode_rte_float16: Bool32,
+    pub shader_rounding_mode_rte_float32: Bool32,
+    pub shader_rounding_mode_rte_float64: Bool32,
+    pub shader_rounding_mode_rtz_float16: Bool32,
+    pub shader_rounding_mode_rtz_float32: Bool32,
+    pub shader_rounding_mode_rtz_float64: Bool32,
+}
+impl default::Default for PhysicalDeviceFloatControlsPropertiesKHR {
+    fn default() -> Self {
+        PhysicalDeviceFloatControlsPropertiesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            separate_denorm_settings: Bool32::default(),
+            separate_rounding_mode_settings: Bool32::default(),
+            shader_signed_zero_inf_nan_preserve_float16: Bool32::default(),
+            shader_signed_zero_inf_nan_preserve_float32: Bool32::default(),
+            shader_signed_zero_inf_nan_preserve_float64: Bool32::default(),
+            shader_denorm_preserve_float16: Bool32::default(),
+            shader_denorm_preserve_float32: Bool32::default(),
+            shader_denorm_preserve_float64: Bool32::default(),
+            shader_denorm_flush_to_zero_float16: Bool32::default(),
+            shader_denorm_flush_to_zero_float32: Bool32::default(),
+            shader_denorm_flush_to_zero_float64: Bool32::default(),
+            shader_rounding_mode_rte_float16: Bool32::default(),
+            shader_rounding_mode_rte_float32: Bool32::default(),
+            shader_rounding_mode_rte_float64: Bool32::default(),
+            shader_rounding_mode_rtz_float16: Bool32::default(),
+            shader_rounding_mode_rtz_float32: Bool32::default(),
+            shader_rounding_mode_rtz_float64: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFloatControlsPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFloatControlsPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("separate_denorm_settings", &self.separate_denorm_settings)
+            .field("separate_rounding_mode_settings", &self.separate_rounding_mode_settings)
+            .field(
+                "shader_signed_zero_inf_nan_preserve_float16",
+                &self.shader_signed_zero_inf_nan_preserve_float16,
+            )
+            .field(
+                "shader_signed_zero_inf_nan_preserve_float32",
+                &self.shader_signed_zero_inf_nan_preserve_float32,
+            )
+            .field(
+                "shader_signed_zero_inf_nan_preserve_float64",
+                &self.shader_signed_zero_inf_nan_preserve_float64,
+            )
+            .field("shader_denorm_preserve_float16", &self.shader_denorm_preserve_float16)
+            .field("shader_denorm_preserve_float32", &self.shader_denorm_preserve_float32)
+            .field("shader_denorm_preserve_float64", &self.shader_denorm_preserve_float64)
+            .field(
+                "shader_denorm_flush_to_zero_float16",
+                &self.shader_denorm_flush_to_zero_float16,
+            )
+            .field(
+                "shader_denorm_flush_to_zero_float32",
+                &self.shader_denorm_flush_to_zero_float32,
+            )
+            .field(
+                "shader_denorm_flush_to_zero_float64",
+                &self.shader_denorm_flush_to_zero_float64,
+            )
+            .field(
+                "shader_rounding_mode_rte_float16",
+                &self.shader_rounding_mode_rte_float16,
+            )
+            .field(
+                "shader_rounding_mode_rte_float32",
+                &self.shader_rounding_mode_rte_float32,
+            )
+            .field(
+                "shader_rounding_mode_rte_float64",
+                &self.shader_rounding_mode_rte_float64,
+            )
+            .field(
+                "shader_rounding_mode_rtz_float16",
+                &self.shader_rounding_mode_rtz_float16,
+            )
+            .field(
+                "shader_rounding_mode_rtz_float32",
+                &self.shader_rounding_mode_rtz_float32,
+            )
+            .field(
+                "shader_rounding_mode_rtz_float64",
+                &self.shader_rounding_mode_rtz_float64,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct NativeBufferANDROID {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -24163,11 +24401,11 @@ pub struct DebugUtilsMessengerCallbackDataEXT {
     pub message_id_number: i32,
     pub p_message: *const c_char,
     pub queue_label_count: u32,
-    pub p_queue_labels: *mut DebugUtilsLabelEXT,
+    pub p_queue_labels: *const DebugUtilsLabelEXT,
     pub cmd_buf_label_count: u32,
-    pub p_cmd_buf_labels: *mut DebugUtilsLabelEXT,
+    pub p_cmd_buf_labels: *const DebugUtilsLabelEXT,
     pub object_count: u32,
-    pub p_objects: *mut DebugUtilsObjectNameInfoEXT,
+    pub p_objects: *const DebugUtilsObjectNameInfoEXT,
 }
 impl default::Default for DebugUtilsMessengerCallbackDataEXT {
     fn default() -> Self {
@@ -24179,11 +24417,11 @@ impl default::Default for DebugUtilsMessengerCallbackDataEXT {
             message_id_number: i32::default(),
             p_message: ptr::null(),
             queue_label_count: u32::default(),
-            p_queue_labels: ptr::null_mut(),
+            p_queue_labels: ptr::null(),
             cmd_buf_label_count: u32::default(),
-            p_cmd_buf_labels: ptr::null_mut(),
+            p_cmd_buf_labels: ptr::null(),
             object_count: u32::default(),
-            p_objects: ptr::null_mut(),
+            p_objects: ptr::null(),
         }
     }
 }
@@ -27006,6 +27244,31 @@ impl fmt::Debug for ImageDrmFormatModifierPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct ImageStencilUsageCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stencil_usage: ImageUsageFlags,
+}
+impl default::Default for ImageStencilUsageCreateInfoEXT {
+    fn default() -> Self {
+        ImageStencilUsageCreateInfoEXT {
+            s_type: StructureType::IMAGE_STENCIL_USAGE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            stencil_usage: ImageUsageFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageStencilUsageCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageStencilUsageCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stencil_usage", &self.stencil_usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DeviceMemoryOverallocationCreateInfoAMD {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -27026,6 +27289,121 @@ impl fmt::Debug for DeviceMemoryOverallocationCreateInfoAMD {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("overallocation_behavior", &self.overallocation_behavior)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMapFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub fragment_density_map: Bool32,
+    pub fragment_density_map_dynamic: Bool32,
+    pub fragment_density_map_non_subsampled_images: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentDensityMapFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceFragmentDensityMapFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            fragment_density_map: Bool32::default(),
+            fragment_density_map_dynamic: Bool32::default(),
+            fragment_density_map_non_subsampled_images: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_density_map", &self.fragment_density_map)
+            .field("fragment_density_map_dynamic", &self.fragment_density_map_dynamic)
+            .field(
+                "fragment_density_map_non_subsampled_images",
+                &self.fragment_density_map_non_subsampled_images,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub min_fragment_density_texel_size: Extent2D,
+    pub max_fragment_density_texel_size: Extent2D,
+    pub fragment_density_invocations: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentDensityMapPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceFragmentDensityMapPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            min_fragment_density_texel_size: Extent2D::default(),
+            max_fragment_density_texel_size: Extent2D::default(),
+            fragment_density_invocations: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMapPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMapPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_fragment_density_texel_size", &self.min_fragment_density_texel_size)
+            .field("max_fragment_density_texel_size", &self.max_fragment_density_texel_size)
+            .field("fragment_density_invocations", &self.fragment_density_invocations)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassFragmentDensityMapCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub fragment_density_map_attachment: AttachmentReference,
+}
+impl default::Default for RenderPassFragmentDensityMapCreateInfoEXT {
+    fn default() -> Self {
+        RenderPassFragmentDensityMapCreateInfoEXT {
+            s_type: StructureType::RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            fragment_density_map_attachment: AttachmentReference::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassFragmentDensityMapCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassFragmentDensityMapCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_density_map_attachment", &self.fragment_density_map_attachment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub scalar_block_layout: Bool32,
+}
+impl default::Default for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            scalar_block_layout: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceScalarBlockLayoutFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("scalar_block_layout", &self.scalar_block_layout)
             .finish()
     }
 }
