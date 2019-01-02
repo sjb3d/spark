@@ -25475,20 +25475,20 @@ impl fmt::Debug for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
 pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub pci_domain: u16,
-    pub pci_bus: u8,
-    pub pci_device: u8,
-    pub pci_function: u8,
+    pub pci_domain: u32,
+    pub pci_bus: u32,
+    pub pci_device: u32,
+    pub pci_function: u32,
 }
 impl default::Default for PhysicalDevicePCIBusInfoPropertiesEXT {
     fn default() -> Self {
         PhysicalDevicePCIBusInfoPropertiesEXT {
             s_type: StructureType::PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            pci_domain: u16::default(),
-            pci_bus: u8::default(),
-            pci_device: u8::default(),
-            pci_function: u8::default(),
+            pci_domain: u32::default(),
+            pci_bus: u32::default(),
+            pci_device: u32::default(),
+            pci_function: u32::default(),
         }
     }
 }

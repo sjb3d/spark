@@ -6868,10 +6868,6 @@ impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn viewport_count(mut self, viewport_count: u32) -> Self {
-        self.inner.viewport_count = viewport_count;
-        self
-    }
     pub fn p_viewport_swizzles(mut self, p_viewport_swizzles: &'a [vk::ViewportSwizzleNV]) -> Self {
         self.inner.viewport_count = p_viewport_swizzles.len() as u32;
         self.inner.p_viewport_swizzles = p_viewport_swizzles.as_ptr();
