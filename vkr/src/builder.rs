@@ -3519,6 +3519,54 @@ impl<'a> Deref for ValidationFlagsEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::ValidationFeaturesEXT {
+    type Type = ValidationFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        ValidationFeaturesEXTBuilder::new()
+    }
+}
+pub struct ValidationFeaturesEXTBuilder<'a> {
+    inner: vk::ValidationFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ValidationFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_enabled_validation_features(
+        mut self,
+        p_enabled_validation_features: &'a [vk::ValidationFeatureEnableEXT],
+    ) -> Self {
+        self.inner.enabled_validation_feature_count = p_enabled_validation_features.len() as u32;
+        self.inner.p_enabled_validation_features = p_enabled_validation_features.as_ptr();
+        self
+    }
+    pub fn p_disabled_validation_features(
+        mut self,
+        p_disabled_validation_features: &'a [vk::ValidationFeatureDisableEXT],
+    ) -> Self {
+        self.inner.disabled_validation_feature_count = p_disabled_validation_features.len() as u32;
+        self.inner.p_disabled_validation_features = p_disabled_validation_features.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for ValidationFeaturesEXTBuilder<'a> {
+    type Target = vk::ValidationFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PipelineRasterizationStateRasterizationOrderAMD {
     type Type = PipelineRasterizationStateRasterizationOrderAMDBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6825,6 +6873,10 @@ impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
     }
     pub fn viewport_w_scaling_enable(mut self, viewport_w_scaling_enable: bool) -> Self {
         self.inner.viewport_w_scaling_enable = if viewport_w_scaling_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn viewport_count(mut self, viewport_count: u32) -> Self {
+        self.inner.viewport_count = viewport_count;
         self
     }
     pub fn p_viewport_w_scalings(mut self, p_viewport_w_scalings: &'a [vk::ViewportWScalingNV]) -> Self {
@@ -10400,6 +10452,53 @@ impl<'a> Deref for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::SubpassDescriptionDepthStencilResolveKHR {
+    type Type = SubpassDescriptionDepthStencilResolveKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        SubpassDescriptionDepthStencilResolveKHRBuilder::new()
+    }
+}
+pub struct SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
+    inner: vk::SubpassDescriptionDepthStencilResolveKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_resolve_mode(mut self, depth_resolve_mode: vk::ResolveModeFlagsKHR) -> Self {
+        self.inner.depth_resolve_mode = depth_resolve_mode;
+        self
+    }
+    pub fn stencil_resolve_mode(mut self, stencil_resolve_mode: vk::ResolveModeFlagsKHR) -> Self {
+        self.inner.stencil_resolve_mode = stencil_resolve_mode;
+        self
+    }
+    pub fn p_depth_stencil_resolve_attachment(
+        mut self,
+        p_depth_stencil_resolve_attachment: Option<&'a vk::AttachmentReference2KHR>,
+    ) -> Self {
+        self.inner.p_depth_stencil_resolve_attachment = p_depth_stencil_resolve_attachment.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
+    type Target = vk::SubpassDescriptionDepthStencilResolveKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::ImageViewASTCDecodeModeEXT {
     type Type = ImageViewASTCDecodeModeEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -12050,6 +12149,202 @@ impl<'a> PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
     type Target = vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {
+    type Type = PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceMemoryPriorityFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceMemoryPriorityFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory_priority(mut self, memory_priority: bool) -> Self {
+        self.inner.memory_priority = if memory_priority { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceMemoryPriorityFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::MemoryPriorityAllocateInfoEXT {
+    type Type = MemoryPriorityAllocateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        MemoryPriorityAllocateInfoEXTBuilder::new()
+    }
+}
+pub struct MemoryPriorityAllocateInfoEXTBuilder<'a> {
+    inner: vk::MemoryPriorityAllocateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> MemoryPriorityAllocateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn priority(mut self, priority: f32) -> Self {
+        self.inner.priority = priority;
+        self
+    }
+}
+impl<'a> Deref for MemoryPriorityAllocateInfoEXTBuilder<'a> {
+    type Target = vk::MemoryPriorityAllocateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceBufferAddressFeaturesEXT {
+    type Type = PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceBufferAddressFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceBufferAddressFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer_device_address(mut self, buffer_device_address: bool) -> Self {
+        self.inner.buffer_device_address = if buffer_device_address { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn buffer_device_address_capture_replay(mut self, buffer_device_address_capture_replay: bool) -> Self {
+        self.inner.buffer_device_address_capture_replay = if buffer_device_address_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn buffer_device_address_multi_device(mut self, buffer_device_address_multi_device: bool) -> Self {
+        self.inner.buffer_device_address_multi_device = if buffer_device_address_multi_device {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceBufferAddressFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BufferDeviceAddressInfoEXT {
+    type Type = BufferDeviceAddressInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        BufferDeviceAddressInfoEXTBuilder::new()
+    }
+}
+pub struct BufferDeviceAddressInfoEXTBuilder<'a> {
+    inner: vk::BufferDeviceAddressInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> BufferDeviceAddressInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
+        self.inner.buffer = Some(buffer);
+        self
+    }
+}
+impl<'a> Deref for BufferDeviceAddressInfoEXTBuilder<'a> {
+    type Target = vk::BufferDeviceAddressInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BufferDeviceAddressCreateInfoEXT {
+    type Type = BufferDeviceAddressCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        BufferDeviceAddressCreateInfoEXTBuilder::new()
+    }
+}
+pub struct BufferDeviceAddressCreateInfoEXTBuilder<'a> {
+    inner: vk::BufferDeviceAddressCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> BufferDeviceAddressCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_address(mut self, device_address: vk::DeviceSize) -> Self {
+        self.inner.device_address = device_address;
+        self
+    }
+}
+impl<'a> Deref for BufferDeviceAddressCreateInfoEXTBuilder<'a> {
+    type Target = vk::BufferDeviceAddressCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

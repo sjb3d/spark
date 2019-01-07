@@ -149,6 +149,7 @@ pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
 pub type DeviceSize = u64;
+pub type DeviceAddress = u64;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct FramebufferCreateFlags(u32);
@@ -2029,9 +2030,13 @@ impl BufferUsageFlags {
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
     pub const INDIRECT_BUFFER: Self = BufferUsageFlags(0x100);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_14_KHR: Self = BufferUsageFlags(0x4000);
+    pub const RESERVED_15_KHR: Self = BufferUsageFlags(0x8000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_16_KHR: Self = BufferUsageFlags(0x10000);
     /// Added by extension VK_AMD_extension_25.
     pub const RESERVED_13_KHR: Self = BufferUsageFlags(0x2000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_14_KHR: Self = BufferUsageFlags(0x4000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = BufferUsageFlags(0x800);
     /// Added by extension VK_EXT_transform_feedback.
@@ -2041,6 +2046,8 @@ impl BufferUsageFlags {
     pub const CONDITIONAL_RENDERING_EXT: Self = BufferUsageFlags(0x200);
     /// Added by extension VK_NV_ray_tracing.
     pub const RAY_TRACING_NV: Self = BufferUsageFlags(0x400);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const SHADER_DEVICE_ADDRESS_EXT: Self = BufferUsageFlags(0x20000);
 }
 impl default::Default for BufferUsageFlags {
     fn default() -> Self {
@@ -2052,13 +2059,13 @@ impl BufferUsageFlags {
         BufferUsageFlags(0)
     }
     pub fn all() -> Self {
-        BufferUsageFlags(0x7fff)
+        BufferUsageFlags(0x3ffff)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x7fff
+        self.0 == 0x3ffff
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2114,12 +2121,15 @@ impl fmt::Display for BufferUsageFlags {
                 (0x40, "INDEX_BUFFER"),
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
-                (0x4000, "RESERVED_14_KHR"),
+                (0x8000, "RESERVED_15_KHR"),
+                (0x10000, "RESERVED_16_KHR"),
                 (0x2000, "RESERVED_13_KHR"),
+                (0x4000, "RESERVED_14_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "RAY_TRACING_NV"),
+                (0x20000, "SHADER_DEVICE_ADDRESS_EXT"),
             ],
             f,
         )
@@ -2137,6 +2147,8 @@ impl BufferCreateFlags {
     pub const SPARSE_ALIASED: Self = BufferCreateFlags(0x4);
     /// Buffer requires protected memory
     pub const PROTECTED: Self = BufferCreateFlags(0x8);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = BufferCreateFlags(0x10);
 }
 impl default::Default for BufferCreateFlags {
     fn default() -> Self {
@@ -2148,13 +2160,13 @@ impl BufferCreateFlags {
         BufferCreateFlags(0)
     }
     pub fn all() -> Self {
-        BufferCreateFlags(0xf)
+        BufferCreateFlags(0x1f)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x1f
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2205,6 +2217,7 @@ impl fmt::Display for BufferCreateFlags {
                 (0x2, "SPARSE_RESIDENCY"),
                 (0x4, "SPARSE_ALIASED"),
                 (0x8, "PROTECTED"),
+                (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY_EXT"),
             ],
             f,
         )
@@ -8632,6 +8645,89 @@ impl fmt::Display for ConditionalRenderingFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ResolveModeFlagsKHR(u32);
+impl ResolveModeFlagsKHR {
+    pub const NONE: Self = ResolveModeFlagsKHR(0x0);
+    pub const SAMPLE_ZERO: Self = ResolveModeFlagsKHR(0x1);
+    pub const AVERAGE: Self = ResolveModeFlagsKHR(0x2);
+    pub const MIN: Self = ResolveModeFlagsKHR(0x4);
+    pub const MAX: Self = ResolveModeFlagsKHR(0x8);
+}
+impl default::Default for ResolveModeFlagsKHR {
+    fn default() -> Self {
+        ResolveModeFlagsKHR(0)
+    }
+}
+impl ResolveModeFlagsKHR {
+    pub fn empty() -> Self {
+        ResolveModeFlagsKHR(0)
+    }
+    pub fn all() -> Self {
+        ResolveModeFlagsKHR(0xf)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0xf
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ResolveModeFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        ResolveModeFlagsKHR(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ResolveModeFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ResolveModeFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        ResolveModeFlagsKHR(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ResolveModeFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ResolveModeFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        ResolveModeFlagsKHR(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ResolveModeFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ResolveModeFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0,
+            &[
+                (0x0, "NONE"),
+                (0x1, "SAMPLE_ZERO"),
+                (0x2, "AVERAGE"),
+                (0x4, "MIN"),
+                (0x8, "MAX"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationStateStreamCreateFlagsEXT(u32);
 impl PipelineRasterizationStateStreamCreateFlagsEXT {}
 impl default::Default for PipelineRasterizationStateStreamCreateFlagsEXT {
@@ -10703,6 +10799,8 @@ impl Result {
     pub const ERROR_FRAGMENTATION_EXT: Self = Result(-1000161000);
     /// Added by extension VK_EXT_global_priority.
     pub const ERROR_NOT_PERMITTED_EXT: Self = Result(-1000174001);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Result(-1000244000);
 }
 impl default::Default for Result {
     fn default() -> Self {
@@ -10742,6 +10840,7 @@ impl fmt::Display for Result {
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000161000 => Some(&"ERROR_FRAGMENTATION_EXT"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
+            -1000244000 => Some(&"ERROR_INVALID_DEVICE_ADDRESS_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11322,6 +11421,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = StructureType(1000196000);
     /// Added by extension VK_KHR_shader_float_controls.
     pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = StructureType(1000197000);
+    /// Added by extension VK_KHR_depth_stencil_resolve.
+    pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR: Self = StructureType(1000199000);
+    /// Added by extension VK_KHR_depth_stencil_resolve.
+    pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR: Self = StructureType(1000199001);
     /// Added by extension VK_NV_compute_shader_derivatives.
     pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
     /// Added by extension VK_NV_mesh_shader.
@@ -11354,8 +11457,22 @@ impl StructureType {
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT: Self = StructureType(1000218002);
     /// Added by extension VK_EXT_scalar_block_layout.
     pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT: Self = StructureType(1000221000);
+    /// Added by extension VK_EXT_memory_budget.
+    pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = StructureType(1000237000);
+    /// Added by extension VK_EXT_memory_priority.
+    pub const PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT: Self = StructureType(1000238000);
+    /// Added by extension VK_EXT_memory_priority.
+    pub const MEMORY_PRIORITY_ALLOCATE_INFO_EXT: Self = StructureType(1000238001);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self = StructureType(1000244000);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = StructureType(1000244001);
+    /// Added by extension VK_EXT_buffer_device_address.
+    pub const BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT: Self = StructureType(1000244002);
     /// Added by extension VK_EXT_separate_stencil_usage.
     pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = StructureType(1000246000);
+    /// Added by extension VK_EXT_validation_features.
+    pub const VALIDATION_FEATURES_EXT: Self = StructureType(1000247000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11653,6 +11770,8 @@ impl fmt::Display for StructureType {
             1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
             1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
             1000197000 => Some(&"PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR"),
+            1000199000 => Some(&"PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR"),
+            1000199001 => Some(&"SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR"),
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
@@ -11669,7 +11788,14 @@ impl fmt::Display for StructureType {
             1000218001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT"),
             1000218002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT"),
             1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT"),
+            1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
+            1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
+            1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
+            1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT"),
+            1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
+            1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
             1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
+            1000247000 => Some(&"VALIDATION_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12771,6 +12897,68 @@ impl fmt::Display for ValidationCheckEXT {
         let name = match self.0 {
             0 => Some(&"ALL"),
             1 => Some(&"SHADERS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ValidationFeatureEnableEXT(i32);
+impl ValidationFeatureEnableEXT {
+    pub const GPU_ASSISTED: Self = ValidationFeatureEnableEXT(0);
+    pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = ValidationFeatureEnableEXT(1);
+}
+impl default::Default for ValidationFeatureEnableEXT {
+    fn default() -> Self {
+        ValidationFeatureEnableEXT(0)
+    }
+}
+impl fmt::Display for ValidationFeatureEnableEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"GPU_ASSISTED"),
+            1 => Some(&"GPU_ASSISTED_RESERVE_BINDING_SLOT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ValidationFeatureDisableEXT(i32);
+impl ValidationFeatureDisableEXT {
+    pub const ALL: Self = ValidationFeatureDisableEXT(0);
+    pub const SHADERS: Self = ValidationFeatureDisableEXT(1);
+    pub const THREAD_SAFETY: Self = ValidationFeatureDisableEXT(2);
+    pub const API_PARAMETERS: Self = ValidationFeatureDisableEXT(3);
+    pub const OBJECT_LIFETIMES: Self = ValidationFeatureDisableEXT(4);
+    pub const CORE_CHECKS: Self = ValidationFeatureDisableEXT(5);
+    pub const UNIQUE_HANDLES: Self = ValidationFeatureDisableEXT(6);
+}
+impl default::Default for ValidationFeatureDisableEXT {
+    fn default() -> Self {
+        ValidationFeatureDisableEXT(0)
+    }
+}
+impl fmt::Display for ValidationFeatureDisableEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"ALL"),
+            1 => Some(&"SHADERS"),
+            2 => Some(&"THREAD_SAFETY"),
+            3 => Some(&"API_PARAMETERS"),
+            4 => Some(&"OBJECT_LIFETIMES"),
+            5 => Some(&"CORE_CHECKS"),
+            6 => Some(&"UNIQUE_HANDLES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -18554,6 +18742,51 @@ impl fmt::Debug for ValidationFlagsEXT {
             .field("p_next", &self.p_next)
             .field("disabled_validation_check_count", &self.disabled_validation_check_count)
             .field("p_disabled_validation_checks", &self.p_disabled_validation_checks)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ValidationFeaturesEXT {
+    /// Must be VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Number of validation features to enable
+    pub enabled_validation_feature_count: u32,
+    /// Validation features to enable
+    pub p_enabled_validation_features: *const ValidationFeatureEnableEXT,
+    /// Number of validation features to disable
+    pub disabled_validation_feature_count: u32,
+    /// Validation features to disable
+    pub p_disabled_validation_features: *const ValidationFeatureDisableEXT,
+}
+impl default::Default for ValidationFeaturesEXT {
+    fn default() -> Self {
+        ValidationFeaturesEXT {
+            s_type: StructureType::VALIDATION_FEATURES_EXT,
+            p_next: ptr::null(),
+            enabled_validation_feature_count: u32::default(),
+            p_enabled_validation_features: ptr::null(),
+            disabled_validation_feature_count: u32::default(),
+            p_disabled_validation_features: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ValidationFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ValidationFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "enabled_validation_feature_count",
+                &self.enabled_validation_feature_count,
+            )
+            .field("p_enabled_validation_features", &self.p_enabled_validation_features)
+            .field(
+                "disabled_validation_feature_count",
+                &self.disabled_validation_feature_count,
+            )
+            .field("p_disabled_validation_features", &self.p_disabled_validation_features)
             .finish()
     }
 }
@@ -25920,6 +26153,81 @@ impl fmt::Debug for CheckpointDataNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthStencilResolvePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// supported depth resolve modes
+    pub supported_depth_resolve_modes: ResolveModeFlagsKHR,
+    /// supported stencil resolve modes
+    pub supported_stencil_resolve_modes: ResolveModeFlagsKHR,
+    /// depth and stencil resolve modes can be set independently if one of them is none
+    pub independent_resolve_none: Bool32,
+    /// depth and stencil resolve modes can be set independently
+    pub independent_resolve: Bool32,
+}
+impl default::Default for PhysicalDeviceDepthStencilResolvePropertiesKHR {
+    fn default() -> Self {
+        PhysicalDeviceDepthStencilResolvePropertiesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            supported_depth_resolve_modes: ResolveModeFlagsKHR::default(),
+            supported_stencil_resolve_modes: ResolveModeFlagsKHR::default(),
+            independent_resolve_none: Bool32::default(),
+            independent_resolve: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthStencilResolvePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthStencilResolvePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_depth_resolve_modes", &self.supported_depth_resolve_modes)
+            .field("supported_stencil_resolve_modes", &self.supported_stencil_resolve_modes)
+            .field("independent_resolve_none", &self.independent_resolve_none)
+            .field("independent_resolve", &self.independent_resolve)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubpassDescriptionDepthStencilResolveKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// depth resolve mode
+    pub depth_resolve_mode: ResolveModeFlagsKHR,
+    /// stencil resolve mode
+    pub stencil_resolve_mode: ResolveModeFlagsKHR,
+    /// depth/stencil resolve attachment
+    pub p_depth_stencil_resolve_attachment: *const AttachmentReference2KHR,
+}
+impl default::Default for SubpassDescriptionDepthStencilResolveKHR {
+    fn default() -> Self {
+        SubpassDescriptionDepthStencilResolveKHR {
+            s_type: StructureType::SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR,
+            p_next: ptr::null(),
+            depth_resolve_mode: ResolveModeFlagsKHR::default(),
+            stencil_resolve_mode: ResolveModeFlagsKHR::default(),
+            p_depth_stencil_resolve_attachment: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SubpassDescriptionDepthStencilResolveKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubpassDescriptionDepthStencilResolveKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_resolve_mode", &self.depth_resolve_mode)
+            .field("stencil_resolve_mode", &self.stencil_resolve_mode)
+            .field(
+                "p_depth_stencil_resolve_attachment",
+                &self.p_depth_stencil_resolve_attachment,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ImageViewASTCDecodeModeEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -27404,6 +27712,171 @@ impl fmt::Debug for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("scalar_block_layout", &self.scalar_block_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMemoryBudgetPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub heap_budget: [DeviceSize; MAX_MEMORY_HEAPS],
+    pub heap_usage: [DeviceSize; MAX_MEMORY_HEAPS],
+}
+impl default::Default for PhysicalDeviceMemoryBudgetPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceMemoryBudgetPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            heap_budget: [DeviceSize::default(); MAX_MEMORY_HEAPS],
+            heap_usage: [DeviceSize::default(); MAX_MEMORY_HEAPS],
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMemoryBudgetPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMemoryBudgetPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("heap_budget", &self.heap_budget)
+            .field("heap_usage", &self.heap_usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMemoryPriorityFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_priority: Bool32,
+}
+impl default::Default for PhysicalDeviceMemoryPriorityFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceMemoryPriorityFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            memory_priority: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMemoryPriorityFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMemoryPriorityFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_priority", &self.memory_priority)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryPriorityAllocateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub priority: f32,
+}
+impl default::Default for MemoryPriorityAllocateInfoEXT {
+    fn default() -> Self {
+        MemoryPriorityAllocateInfoEXT {
+            s_type: StructureType::MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
+            p_next: ptr::null(),
+            priority: f32::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryPriorityAllocateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryPriorityAllocateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("priority", &self.priority)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceBufferAddressFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub buffer_device_address: Bool32,
+    pub buffer_device_address_capture_replay: Bool32,
+    pub buffer_device_address_multi_device: Bool32,
+}
+impl default::Default for PhysicalDeviceBufferAddressFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceBufferAddressFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            buffer_device_address: Bool32::default(),
+            buffer_device_address_capture_replay: Bool32::default(),
+            buffer_device_address_multi_device: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceBufferAddressFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceBufferAddressFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer_device_address", &self.buffer_device_address)
+            .field(
+                "buffer_device_address_capture_replay",
+                &self.buffer_device_address_capture_replay,
+            )
+            .field(
+                "buffer_device_address_multi_device",
+                &self.buffer_device_address_multi_device,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferDeviceAddressInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub buffer: Option<Buffer>,
+}
+impl default::Default for BufferDeviceAddressInfoEXT {
+    fn default() -> Self {
+        BufferDeviceAddressInfoEXT {
+            s_type: StructureType::BUFFER_DEVICE_ADDRESS_INFO_EXT,
+            p_next: ptr::null(),
+            buffer: None,
+        }
+    }
+}
+impl fmt::Debug for BufferDeviceAddressInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferDeviceAddressInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer", &self.buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferDeviceAddressCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub device_address: DeviceSize,
+}
+impl default::Default for BufferDeviceAddressCreateInfoEXT {
+    fn default() -> Self {
+        BufferDeviceAddressCreateInfoEXT {
+            s_type: StructureType::BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            device_address: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferDeviceAddressCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferDeviceAddressCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_address", &self.device_address)
             .finish()
     }
 }
@@ -36468,6 +36941,38 @@ impl FuchsiaImagepipeSurfaceFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(create_image_pipe_surface_fuchsia_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnGetBufferDeviceAddressEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
+pub struct ExtBufferDeviceAddressFn1_0 {
+    pub get_buffer_device_address_ext: FnGetBufferDeviceAddressEXT,
+}
+impl ExtBufferDeviceAddressFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtBufferDeviceAddressFn1_0 {
+            get_buffer_device_address_ext: unsafe {
+                extern "system" fn get_buffer_device_address_ext_fallback(
+                    _: Option<Device>,
+                    _: *const BufferDeviceAddressInfoEXT,
+                ) -> DeviceAddress {
+                    panic!("fn get_buffer_device_address_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_buffer_device_address_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

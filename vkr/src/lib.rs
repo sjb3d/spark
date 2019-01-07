@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 96
+//! Generated from vk.xml with `VK_HEADER_VERSION` 97
 pub mod builder;
 pub mod vk;
 
@@ -7242,6 +7242,40 @@ impl FuchsiaImagepipeSurface {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
+        res
+    }
+}
+/// Loader for the `VK_EXT_buffer_device_address` device extension
+pub struct ExtBufferDeviceAddress {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtBufferDeviceAddressFn1_0,
+}
+impl ExtBufferDeviceAddress {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtBufferDeviceAddressFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_buffer_device_address\0").unwrap()
+    }
+    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
+        let res = (self.fp1_0.get_buffer_device_address_ext)(Some(self.handle), p_info);
         res
     }
 }
