@@ -44,22 +44,22 @@ fn is_ident(c: char) -> bool {
     }
 }
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_ident<Input, Input>, take_while1!(is_ident));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_const_keyword<Input, Input>, do_parse!(
     keyword:    tag!("const")           >>
                 peek!(not!(c_ident))    >>
     (keyword)));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_struct_keyword<Input, Input>, do_parse!(
     keyword:    tag!("struct")          >>
                 peek!(not!(c_ident))    >>
     (keyword)));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_variable_decl<Input, CVariableDecl>, ws!(do_parse!(
     const0:     opt!(c_const_keyword)                                   >>
                 opt!(c_struct_keyword)                                  >>
@@ -85,7 +85,7 @@ named!(c_variable_decl<Input, CVariableDecl>, ws!(do_parse!(
         },
     }))));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_function_decl<Input, CFunctionDecl>, ws!(do_parse!(
     ret_type_name:  c_ident                                             >>
     ret_ptr:        opt!(char!('*'))                                    >>
@@ -108,7 +108,7 @@ named!(c_function_decl<Input, CFunctionDecl>, ws!(do_parse!(
         parameters,
     }))));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_func_pointer_typedef<Input, CFunctionDecl>, ws!(do_parse!(
                     tag!("typedef")                                     >>
     ret_type_name:  c_ident                                             >>
@@ -136,7 +136,7 @@ named!(c_func_pointer_typedef<Input, CFunctionDecl>, ws!(do_parse!(
         parameters,
     }))));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_typedef<Input, CVariableDecl>, ws!(do_parse!(
                     tag!("typedef")                                     >>
     type_name:      c_ident                                             >>
@@ -151,7 +151,7 @@ named!(c_typedef<Input, CVariableDecl>, ws!(do_parse!(
         }
     }))));
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_expr2<Input, CExpr>, alt!(
     terminated!(flat_map!(call!(nom::recognize_float), parse_to!(f32)), char!('f'))
         => { |x| CExpr::Float(x) } |
@@ -172,7 +172,7 @@ named!(c_expr2<Input, CExpr>, alt!(
 ));
 
 // TODO: something more generic?
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 named!(c_expr<Input, CExpr>, alt!(
     separated_pair!(c_expr2, char!('-'), c_expr2)
         => { |(a, b)| match a {
