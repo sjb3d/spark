@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 97
+//! Generated from vk.xml with `VK_HEADER_VERSION` 98
 pub mod builder;
 pub mod vk;
 
@@ -3499,13 +3499,10 @@ impl ExtTransformFeedback {
         &self,
         command_buffer: vk::CommandBuffer,
         first_counter_buffer: u32,
-        counter_buffer_count: u32,
-        p_counter_buffers: Option<&[vk::Buffer]>,
+        p_counter_buffers: &[vk::Buffer],
         p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
     ) {
-        if let Some(s) = p_counter_buffers {
-            assert_eq!(counter_buffer_count, s.len() as u32);
-        }
+        let counter_buffer_count = p_counter_buffers.len() as u32;
         if let Some(s) = p_counter_buffer_offsets {
             assert_eq!(counter_buffer_count, s.len() as u32);
         }
@@ -3513,7 +3510,7 @@ impl ExtTransformFeedback {
             Some(command_buffer),
             first_counter_buffer,
             counter_buffer_count,
-            p_counter_buffers.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffers.as_ptr(),
             p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
         );
     }
@@ -3521,13 +3518,10 @@ impl ExtTransformFeedback {
         &self,
         command_buffer: vk::CommandBuffer,
         first_counter_buffer: u32,
-        counter_buffer_count: u32,
-        p_counter_buffers: Option<&[vk::Buffer]>,
+        p_counter_buffers: &[vk::Buffer],
         p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
     ) {
-        if let Some(s) = p_counter_buffers {
-            assert_eq!(counter_buffer_count, s.len() as u32);
-        }
+        let counter_buffer_count = p_counter_buffers.len() as u32;
         if let Some(s) = p_counter_buffer_offsets {
             assert_eq!(counter_buffer_count, s.len() as u32);
         }
@@ -3535,7 +3529,7 @@ impl ExtTransformFeedback {
             Some(command_buffer),
             first_counter_buffer,
             counter_buffer_count,
-            p_counter_buffers.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffers.as_ptr(),
             p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
         );
     }

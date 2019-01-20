@@ -26012,6 +26012,7 @@ pub struct PhysicalDeviceVulkanMemoryModelFeaturesKHR {
     pub p_next: *mut c_void,
     pub vulkan_memory_model: Bool32,
     pub vulkan_memory_model_device_scope: Bool32,
+    pub vulkan_memory_model_availability_visibility_chains: Bool32,
 }
 impl default::Default for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
     fn default() -> Self {
@@ -26020,6 +26021,7 @@ impl default::Default for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
             p_next: ptr::null_mut(),
             vulkan_memory_model: Bool32::default(),
             vulkan_memory_model_device_scope: Bool32::default(),
+            vulkan_memory_model_availability_visibility_chains: Bool32::default(),
         }
     }
 }
@@ -26032,6 +26034,10 @@ impl fmt::Debug for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
             .field(
                 "vulkan_memory_model_device_scope",
                 &self.vulkan_memory_model_device_scope,
+            )
+            .field(
+                "vulkan_memory_model_availability_visibility_chains",
+                &self.vulkan_memory_model_availability_visibility_chains,
             )
             .finish()
     }
