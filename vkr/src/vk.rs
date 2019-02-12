@@ -2990,9 +2990,9 @@ impl FormatFeatureFlags {
     pub const DISJOINT: Self = FormatFeatureFlags(0x400000);
     /// Format can have cosited rather than midpoint chroma samples
     pub const COSITED_CHROMA_SAMPLES: Self = FormatFeatureFlags(0x800000);
-    /// Format can be filtered with VK_FILTER_CUBIC_EXT when being sampled
+    /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
     /// Added by extension VK_IMG_filter_cubic.
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = FormatFeatureFlags(0x2000);
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = FormatFeatureFlags(0x2000);
     /// Added by extension VK_AMD_extension_24.
     pub const RESERVED_27_KHR: Self = FormatFeatureFlags(0x8000000);
     /// Added by extension VK_AMD_extension_24.
@@ -3017,6 +3017,7 @@ impl FormatFeatureFlags {
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_IMG;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = FormatFeatureFlags(0x1000000);
 }
@@ -3111,7 +3112,7 @@ impl fmt::Display for FormatFeatureFlags {
                 ),
                 (0x400000, "DISJOINT"),
                 (0x800000, "COSITED_CHROMA_SAMPLES"),
-                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_EXT"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
                 (0x8000000, "RESERVED_27_KHR"),
                 (0x10000000, "RESERVED_28_KHR"),
                 (0x2000000, "RESERVED_25_KHR"),
@@ -11911,7 +11912,8 @@ impl Filter {
     pub const NEAREST: Self = Filter(0);
     pub const LINEAR: Self = Filter(1);
     /// Added by extension VK_IMG_filter_cubic.
-    pub const CUBIC_EXT: Self = Filter(1000015000);
+    pub const CUBIC_IMG: Self = Filter(1000015000);
+    pub const CUBIC_EXT: Self = Self::CUBIC_IMG;
 }
 impl default::Default for Filter {
     fn default() -> Self {
@@ -11923,7 +11925,7 @@ impl fmt::Display for Filter {
         let name = match self.0 {
             0 => Some(&"NEAREST"),
             1 => Some(&"LINEAR"),
-            1000015000 => Some(&"CUBIC_EXT"),
+            1000015000 => Some(&"CUBIC_IMG"),
             _ => None,
         };
         if let Some(name) = name {
