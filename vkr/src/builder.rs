@@ -10491,6 +10491,46 @@ impl<'a> Deref for PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+    type Type = PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder::new()
+    }
+}
+pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dedicated_allocation_image_aliasing(mut self, dedicated_allocation_image_aliasing: bool) -> Self {
+        self.inner.dedicated_allocation_image_aliasing = if dedicated_allocation_image_aliasing {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::ShadingRatePaletteNV {
     type Type = ShadingRatePaletteNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11682,6 +11722,42 @@ impl<'a> BufferDeviceAddressCreateInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for BufferDeviceAddressCreateInfoEXTBuilder<'a> {
     type Target = vk::BufferDeviceAddressCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceImageViewImageFormatInfoEXT {
+    type Type = PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceImageViewImageFormatInfoEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceImageViewImageFormatInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view_type(mut self, image_view_type: vk::ImageViewType) -> Self {
+        self.inner.image_view_type = image_view_type;
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceImageViewImageFormatInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

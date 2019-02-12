@@ -2990,9 +2990,9 @@ impl FormatFeatureFlags {
     pub const DISJOINT: Self = FormatFeatureFlags(0x400000);
     /// Format can have cosited rather than midpoint chroma samples
     pub const COSITED_CHROMA_SAMPLES: Self = FormatFeatureFlags(0x800000);
-    /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
+    /// Format can be filtered with VK_FILTER_CUBIC_EXT when being sampled
     /// Added by extension VK_IMG_filter_cubic.
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = FormatFeatureFlags(0x2000);
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = FormatFeatureFlags(0x2000);
     /// Added by extension VK_AMD_extension_24.
     pub const RESERVED_27_KHR: Self = FormatFeatureFlags(0x8000000);
     /// Added by extension VK_AMD_extension_24.
@@ -3111,7 +3111,7 @@ impl fmt::Display for FormatFeatureFlags {
                 ),
                 (0x400000, "DISJOINT"),
                 (0x800000, "COSITED_CHROMA_SAMPLES"),
-                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_EXT"),
                 (0x8000000, "RESERVED_27_KHR"),
                 (0x10000000, "RESERVED_28_KHR"),
                 (0x2000000, "RESERVED_25_KHR"),
@@ -11393,6 +11393,10 @@ impl StructureType {
     pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self = StructureType(1000166001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR: Self = Self::DESCRIPTOR_SET_LAYOUT_SUPPORT;
+    /// Added by extension VK_EXT_filter_cubic.
+    pub const PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT: Self = StructureType(1000170000);
+    /// Added by extension VK_EXT_filter_cubic.
+    pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = StructureType(1000170001);
     /// Added by extension VK_EXT_global_priority.
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = StructureType(1000174000);
     /// Added by extension VK_KHR_8bit_storage.
@@ -11463,6 +11467,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT: Self = StructureType(1000238000);
     /// Added by extension VK_EXT_memory_priority.
     pub const MEMORY_PRIORITY_ALLOCATE_INFO_EXT: Self = StructureType(1000238001);
+    /// Added by extension VK_NV_dedicated_allocation_image_aliasing.
+    pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = StructureType(1000240000);
     /// Added by extension VK_EXT_buffer_device_address.
     pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self = StructureType(1000244000);
     /// Added by extension VK_EXT_buffer_device_address.
@@ -11756,6 +11762,8 @@ impl fmt::Display for StructureType {
             1000165012 => Some(&"ACCELERATION_STRUCTURE_INFO_NV"),
             1000166000 => Some(&"PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV"),
             1000166001 => Some(&"PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV"),
+            1000170000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT"),
+            1000170001 => Some(&"FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT"),
             1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT"),
             1000177000 => Some(&"PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR"),
             1000178000 => Some(&"IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
@@ -11791,6 +11799,7 @@ impl fmt::Display for StructureType {
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
+            1000240000 => Some(&"PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV"),
             1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT"),
             1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
@@ -11902,7 +11911,7 @@ impl Filter {
     pub const NEAREST: Self = Filter(0);
     pub const LINEAR: Self = Filter(1);
     /// Added by extension VK_IMG_filter_cubic.
-    pub const CUBIC_IMG: Self = Filter(1000015000);
+    pub const CUBIC_EXT: Self = Filter(1000015000);
 }
 impl default::Default for Filter {
     fn default() -> Self {
@@ -11914,7 +11923,7 @@ impl fmt::Display for Filter {
         let name = match self.0 {
             0 => Some(&"NEAREST"),
             1 => Some(&"LINEAR"),
-            1000015000 => Some(&"CUBIC_IMG"),
+            1000015000 => Some(&"CUBIC_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -26619,6 +26628,34 @@ impl fmt::Debug for PhysicalDeviceShaderImageFootprintFeaturesNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub dedicated_allocation_image_aliasing: Bool32,
+}
+impl default::Default for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+    fn default() -> Self {
+        PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            dedicated_allocation_image_aliasing: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "dedicated_allocation_image_aliasing",
+                &self.dedicated_allocation_image_aliasing,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ShadingRatePaletteNV {
     pub shading_rate_palette_entry_count: u32,
     pub p_shading_rate_palette_entries: *const ShadingRatePaletteEntryNV,
@@ -27883,6 +27920,59 @@ impl fmt::Debug for BufferDeviceAddressCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("device_address", &self.device_address)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageViewImageFormatInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_view_type: ImageViewType,
+}
+impl default::Default for PhysicalDeviceImageViewImageFormatInfoEXT {
+    fn default() -> Self {
+        PhysicalDeviceImageViewImageFormatInfoEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT,
+            p_next: ptr::null_mut(),
+            image_view_type: ImageViewType::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageViewImageFormatInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageViewImageFormatInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view_type", &self.image_view_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FilterCubicImageViewImageFormatPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub filter_cubic: Bool32,
+    pub filter_cubic_minmax: Bool32,
+}
+impl default::Default for FilterCubicImageViewImageFormatPropertiesEXT {
+    fn default() -> Self {
+        FilterCubicImageViewImageFormatPropertiesEXT {
+            s_type: StructureType::FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            filter_cubic: Bool32::default(),
+            filter_cubic_minmax: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for FilterCubicImageViewImageFormatPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FilterCubicImageViewImageFormatPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("filter_cubic", &self.filter_cubic)
+            .field("filter_cubic_minmax", &self.filter_cubic_minmax)
             .finish()
     }
 }
