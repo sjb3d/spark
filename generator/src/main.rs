@@ -775,7 +775,7 @@ impl<'a> Generator<'a> {
 
     fn write_enum_type(&self, w: &mut impl IoWrite, ty: &vk::Type, enum_type: EnumType) -> WriteResult {
         if let Some(ref comment) = ty.comment {
-            writeln!(w, "/// {}", comment.as_str().trim_left_matches('/'))?;
+            writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
         let type_name = ty.get_type_name();
         if let Some(alias) = ty.alias.as_ref_str() {
@@ -1072,7 +1072,7 @@ impl<'a> Generator<'a> {
 
     fn write_aggregrate_type(&self, w: &mut impl IoWrite, ty: &vk::Type, agg_type: AggregateType) -> WriteResult {
         if let Some(ref comment) = ty.comment {
-            writeln!(w, "/// {}", comment.as_str().trim_left_matches('/'))?;
+            writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
         let type_name = ty.name.as_ref_str().expect("missing struct name");
         if let Some(ref alias) = ty.alias {
