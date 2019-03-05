@@ -270,22 +270,20 @@ impl<'a> Generator<'a> {
     fn collect_types(&mut self) {
         for ty in self.get_type_iterator() {
             let category = ty.category.as_ref_str();
-            match category {
-                Some("bitmask") | Some("enum") | Some("handle") | Some("funcpointer") | Some("struct")
-                | Some("union") => {
-                    let name = ty.get_type_name();
-                    if self.type_by_name.insert(name, ty).is_some() {
-                        panic!("duplicate type name from {:?}", ty)
-                    }
-                    if category == Some("bitmask") {
-                        if let Some(requires) = ty.requires.as_ref_str() {
-                            if self.bitmask_from_value.insert(requires, name).is_some() {
-                                panic!("duplicate value for bitmask {}", requires);
-                            }
+            if let Some("bitmask") | Some("enum") | Some("handle") | Some("funcpointer") | Some("struct")
+            | Some("union") = category
+            {
+                let name = ty.get_type_name();
+                if self.type_by_name.insert(name, ty).is_some() {
+                    panic!("duplicate type name from {:?}", ty)
+                }
+                if category == Some("bitmask") {
+                    if let Some(requires) = ty.requires.as_ref_str() {
+                        if self.bitmask_from_value.insert(requires, name).is_some() {
+                            panic!("duplicate value for bitmask {}", requires);
                         }
                     }
                 }
-                _ => {}
             }
         }
     }
@@ -2464,15 +2462,12 @@ impl<'a> Generator<'a> {
                 write!(w, "fp{},", version)?;
             }
             writeln!(w, "}}) }}")?;
-            match group_names.group {
-                Group::InstanceExtension(ref name) | Group::DeviceExtension(ref name) => {
-                    write!(
-                        w,
-                        r#"pub fn name() -> &'static CStr {{ CStr::from_bytes_with_nul(b"{}\0").unwrap() }}"#,
-                        name
-                    )?;
-                }
-                _ => {}
+            if let Group::InstanceExtension(ref name) | Group::DeviceExtension(ref name) = group_names.group {
+                write!(
+                    w,
+                    r#"pub fn name() -> &'static CStr {{ CStr::from_bytes_with_nul(b"{}\0").unwrap() }}"#,
+                    name
+                )?;
             }
             for version_names in &group_names.versions {
                 let version = version_names.version.skip_prefix(VERSION_PREFIX);
