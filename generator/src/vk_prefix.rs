@@ -91,6 +91,9 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+// Metal
+pub type CAMetalLayer = Never;
+
 // Zircon
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
