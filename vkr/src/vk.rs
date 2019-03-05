@@ -91,6 +91,9 @@ pub type xcb_visualid_t = Never;
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
 
+// Metal
+pub type CAMetalLayer = Never;
+
 // Zircon
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
@@ -6470,6 +6473,73 @@ impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct MetalSurfaceCreateFlagsEXT(u32);
+impl MetalSurfaceCreateFlagsEXT {}
+impl default::Default for MetalSurfaceCreateFlagsEXT {
+    fn default() -> Self {
+        MetalSurfaceCreateFlagsEXT(0)
+    }
+}
+impl MetalSurfaceCreateFlagsEXT {
+    pub fn empty() -> Self {
+        MetalSurfaceCreateFlagsEXT(0)
+    }
+    pub fn all() -> Self {
+        MetalSurfaceCreateFlagsEXT(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for MetalSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        MetalSurfaceCreateFlagsEXT(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for MetalSurfaceCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for MetalSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        MetalSurfaceCreateFlagsEXT(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for MetalSurfaceCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for MetalSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        MetalSurfaceCreateFlagsEXT(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for MetalSurfaceCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for MetalSurfaceCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(u32);
 impl ImagePipeSurfaceCreateFlagsFUCHSIA {}
 impl default::Default for ImagePipeSurfaceCreateFlagsFUCHSIA {
@@ -11133,6 +11203,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT: Self = StructureType(1000028001);
     /// Added by extension VK_EXT_transform_feedback.
     pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = StructureType(1000028002);
+    /// Added by extension VK_NVX_image_view_handle.
+    pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = StructureType(1000030000);
     /// Added by extension VK_AMD_texture_gather_bias_lod.
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = StructureType(1000041000);
     /// Added by extension VK_NV_corner_sampled_image.
@@ -11525,6 +11597,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = StructureType(1000212000);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
     pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
+    /// Added by extension VK_EXT_metal_surface.
+    pub const METAL_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000217000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT: Self = StructureType(1000218000);
     /// Added by extension VK_EXT_fragment_density_map.
@@ -11557,6 +11631,8 @@ impl StructureType {
     pub const COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249001);
     /// Added by extension VK_NV_cooperative_matrix.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249002);
+    /// Added by extension VK_EXT_ycbcr_image_arrays.
+    pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = StructureType(1000252000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11708,6 +11784,7 @@ impl fmt::Display for StructureType {
             1000028000 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT"),
             1000028001 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT"),
             1000028002 => Some(&"PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT"),
+            1000030000 => Some(&"IMAGE_VIEW_HANDLE_INFO_NVX"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
             1000050000 => Some(&"PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
             1000056000 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
@@ -11872,6 +11949,7 @@ impl fmt::Display for StructureType {
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
             1000212000 => Some(&"PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT"),
             1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
+            1000217000 => Some(&"METAL_SURFACE_CREATE_INFO_EXT"),
             1000218000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT"),
             1000218001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT"),
             1000218002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT"),
@@ -11888,6 +11966,7 @@ impl fmt::Display for StructureType {
             1000249000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV"),
             1000249001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_NV"),
             1000249002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV"),
+            1000252000 => Some(&"PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -22427,6 +22506,34 @@ impl fmt::Debug for MacOSSurfaceCreateInfoMVK {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct MetalSurfaceCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: MetalSurfaceCreateFlagsEXT,
+    pub p_layer: *const CAMetalLayer,
+}
+impl default::Default for MetalSurfaceCreateInfoEXT {
+    fn default() -> Self {
+        MetalSurfaceCreateInfoEXT {
+            s_type: StructureType::METAL_SURFACE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: MetalSurfaceCreateFlagsEXT::default(),
+            p_layer: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MetalSurfaceCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MetalSurfaceCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("p_layer", &self.p_layer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ViewportWScalingNV {
     pub xcoeff: f32,
     pub ycoeff: f32,
@@ -28293,6 +28400,62 @@ impl fmt::Debug for CooperativeMatrixPropertiesNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ycbcr_image_arrays: Bool32,
+}
+impl default::Default for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            ycbcr_image_arrays: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceYcbcrImageArraysFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ycbcr_image_arrays", &self.ycbcr_image_arrays)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewHandleInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_view: Option<ImageView>,
+    pub descriptor_type: DescriptorType,
+    pub sampler: Option<Sampler>,
+}
+impl default::Default for ImageViewHandleInfoNVX {
+    fn default() -> Self {
+        ImageViewHandleInfoNVX {
+            s_type: StructureType::IMAGE_VIEW_HANDLE_INFO_NVX,
+            p_next: ptr::null(),
+            image_view: None,
+            descriptor_type: DescriptorType::default(),
+            sampler: None,
+        }
+    }
+}
+impl fmt::Debug for ImageViewHandleInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewHandleInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view", &self.image_view)
+            .field("descriptor_type", &self.descriptor_type)
+            .field("sampler", &self.sampler)
+            .finish()
+    }
+}
 type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -33537,6 +33700,38 @@ impl ExtTransformFeedbackFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetImageViewHandleNVX =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
+pub struct NvxImageViewHandleFn1_0 {
+    pub get_image_view_handle_nvx: FnGetImageViewHandleNVX,
+}
+impl NvxImageViewHandleFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = NvxImageViewHandleFn1_0 {
+            get_image_view_handle_nvx: unsafe {
+                extern "system" fn get_image_view_handle_nvx_fallback(
+                    _: Option<Device>,
+                    _: *const ImageViewHandleInfoNVX,
+                ) -> u32 {
+                    panic!("fn get_image_view_handle_nvx not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_image_view_handle_nvx_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
 type FnCmdDrawIndirectCountAMD = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
@@ -37354,6 +37549,44 @@ impl FuchsiaImagepipeSurfaceFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(create_image_pipe_surface_fuchsia_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnCreateMetalSurfaceEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const MetalSurfaceCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub struct ExtMetalSurfaceFn1_0 {
+    pub create_metal_surface_ext: FnCreateMetalSurfaceEXT,
+}
+impl ExtMetalSurfaceFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtMetalSurfaceFn1_0 {
+            create_metal_surface_ext: unsafe {
+                extern "system" fn create_metal_surface_ext_fallback(
+                    _: Option<Instance>,
+                    _: *const MetalSurfaceCreateInfoEXT,
+                    _: *const AllocationCallbacks,
+                    _: *mut SurfaceKHR,
+                ) -> Result {
+                    panic!("fn create_metal_surface_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateMetalSurfaceEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(create_metal_surface_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

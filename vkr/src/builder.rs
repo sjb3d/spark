@@ -6810,6 +6810,46 @@ impl<'a> Deref for MacOSSurfaceCreateInfoMVKBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::MetalSurfaceCreateInfoEXT {
+    type Type = MetalSurfaceCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        MetalSurfaceCreateInfoEXTBuilder::new()
+    }
+}
+pub struct MetalSurfaceCreateInfoEXTBuilder<'a> {
+    inner: vk::MetalSurfaceCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> MetalSurfaceCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::MetalSurfaceCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_layer(mut self, p_layer: &'a vk::CAMetalLayer) -> Self {
+        self.inner.p_layer = p_layer;
+        self
+    }
+}
+impl<'a> Deref for MetalSurfaceCreateInfoEXTBuilder<'a> {
+    type Target = vk::MetalSurfaceCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PipelineViewportWScalingStateCreateInfoNV {
     type Type = PipelineViewportWScalingStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11942,6 +11982,86 @@ impl<'a> CooperativeMatrixPropertiesNVBuilder<'a> {
 }
 impl<'a> Deref for CooperativeMatrixPropertiesNVBuilder<'a> {
     type Target = vk::CooperativeMatrixPropertiesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+    type Type = PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ycbcr_image_arrays(mut self, ycbcr_image_arrays: bool) -> Self {
+        self.inner.ycbcr_image_arrays = if ycbcr_image_arrays { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageViewHandleInfoNVX {
+    type Type = ImageViewHandleInfoNVXBuilder<'a>;
+    fn builder() -> Self::Type {
+        ImageViewHandleInfoNVXBuilder::new()
+    }
+}
+pub struct ImageViewHandleInfoNVXBuilder<'a> {
+    inner: vk::ImageViewHandleInfoNVX,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> ImageViewHandleInfoNVXBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view(mut self, image_view: vk::ImageView) -> Self {
+        self.inner.image_view = Some(image_view);
+        self
+    }
+    pub fn descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
+        self.inner.descriptor_type = descriptor_type;
+        self
+    }
+    pub fn sampler(mut self, sampler: Option<vk::Sampler>) -> Self {
+        self.inner.sampler = sampler;
+        self
+    }
+}
+impl<'a> Deref for ImageViewHandleInfoNVXBuilder<'a> {
+    type Target = vk::ImageViewHandleInfoNVX;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

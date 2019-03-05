@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 101
+//! Generated from vk.xml with `VK_HEADER_VERSION` 102
 pub mod builder;
 pub mod vk;
 
@@ -3571,6 +3571,40 @@ impl ExtTransformFeedback {
             counter_offset,
             vertex_stride,
         );
+    }
+}
+/// Loader for the `VK_NVX_image_view_handle` device extension
+pub struct NvxImageViewHandle {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::NvxImageViewHandleFn1_0,
+}
+impl NvxImageViewHandle {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::NvxImageViewHandleFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_NVX_image_view_handle\0").unwrap()
+    }
+    pub unsafe fn get_image_view_handle_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u32 {
+        let res = (self.fp1_0.get_image_view_handle_nvx)(Some(self.handle), p_info);
+        res
     }
 }
 /// Loader for the `VK_AMD_draw_indirect_count` device extension
@@ -7227,6 +7261,54 @@ impl FuchsiaImagepipeSurface {
     ) -> Result<vk::SurfaceKHR> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_0.create_image_pipe_surface_fuchsia)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+}
+/// Loader for the `VK_EXT_metal_surface` instance extension
+pub struct ExtMetalSurface {
+    pub version: vk::Version,
+    pub handle: vk::Instance,
+    pub fp1_0: vk::ExtMetalSurfaceFn1_0,
+}
+impl ExtMetalSurface {
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
+        let f = |name: &CStr| {
+            lib.get_instance_proc_addr(Some(instance.handle), name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtMetalSurfaceFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: instance.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_metal_surface\0").unwrap()
+    }
+    pub unsafe fn create_metal_surface_ext(
+        &self,
+        p_create_info: &vk::MetalSurfaceCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp1_0.create_metal_surface_ext)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
