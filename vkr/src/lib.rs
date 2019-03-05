@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 100
+//! Generated from vk.xml with `VK_HEADER_VERSION` 101
 pub mod builder;
 pub mod vk;
 
@@ -7270,6 +7270,62 @@ impl ExtBufferDeviceAddress {
     }
     pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
         let res = (self.fp1_0.get_buffer_device_address_ext)(Some(self.handle), p_info);
+        res
+    }
+}
+/// Loader for the `VK_NV_cooperative_matrix` device extension
+pub struct NvCooperativeMatrix {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::NvCooperativeMatrixFn1_0,
+}
+impl NvCooperativeMatrix {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::NvCooperativeMatrixFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_NV_cooperative_matrix\0").unwrap()
+    }
+    pub unsafe fn get_physical_device_cooperative_matrix_properties_nv_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::CooperativeMatrixPropertiesNV>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp1_0.get_physical_device_cooperative_matrix_properties_nv)(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp1_0.get_physical_device_cooperative_matrix_properties_nv)(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
         res
     }
 }

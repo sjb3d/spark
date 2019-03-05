@@ -11530,6 +11530,82 @@ impl<'a> Deref for PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {
+    type Type = PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceDepthClipEnableFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceDepthClipEnableFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clip_enable(mut self, depth_clip_enable: bool) -> Self {
+        self.inner.depth_clip_enable = if depth_clip_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceDepthClipEnableFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineRasterizationDepthClipStateCreateInfoEXT {
+    type Type = PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PipelineRasterizationDepthClipStateCreateInfoEXTBuilder::new()
+    }
+}
+pub struct PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineRasterizationDepthClipStateCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PipelineRasterizationDepthClipStateCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn depth_clip_enable(mut self, depth_clip_enable: bool) -> Self {
+        self.inner.depth_clip_enable = if depth_clip_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineRasterizationDepthClipStateCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {
     type Type = PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11758,6 +11834,114 @@ impl<'a> PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
     type Target = vk::PhysicalDeviceImageViewImageFormatInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {
+    type Type = PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceCooperativeMatrixFeaturesNVBuilder::new()
+    }
+}
+pub struct PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceCooperativeMatrixFeaturesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix(mut self, cooperative_matrix: bool) -> Self {
+        self.inner.cooperative_matrix = if cooperative_matrix { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn cooperative_matrix_robust_buffer_access(mut self, cooperative_matrix_robust_buffer_access: bool) -> Self {
+        self.inner.cooperative_matrix_robust_buffer_access = if cooperative_matrix_robust_buffer_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceCooperativeMatrixFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CooperativeMatrixPropertiesNV {
+    type Type = CooperativeMatrixPropertiesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        CooperativeMatrixPropertiesNVBuilder::new()
+    }
+}
+pub struct CooperativeMatrixPropertiesNVBuilder<'a> {
+    inner: vk::CooperativeMatrixPropertiesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CooperativeMatrixPropertiesNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn m_size(mut self, m_size: u32) -> Self {
+        self.inner.m_size = m_size;
+        self
+    }
+    pub fn n_size(mut self, n_size: u32) -> Self {
+        self.inner.n_size = n_size;
+        self
+    }
+    pub fn k_size(mut self, k_size: u32) -> Self {
+        self.inner.k_size = k_size;
+        self
+    }
+    pub fn a_type(mut self, a_type: vk::ComponentTypeNV) -> Self {
+        self.inner.a_type = a_type;
+        self
+    }
+    pub fn b_type(mut self, b_type: vk::ComponentTypeNV) -> Self {
+        self.inner.b_type = b_type;
+        self
+    }
+    pub fn c_type(mut self, c_type: vk::ComponentTypeNV) -> Self {
+        self.inner.c_type = c_type;
+        self
+    }
+    pub fn d_type(mut self, d_type: vk::ComponentTypeNV) -> Self {
+        self.inner.d_type = d_type;
+        self
+    }
+    pub fn scope(mut self, scope: vk::ScopeNV) -> Self {
+        self.inner.scope = scope;
+        self
+    }
+}
+impl<'a> Deref for CooperativeMatrixPropertiesNVBuilder<'a> {
+    type Target = vk::CooperativeMatrixPropertiesNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

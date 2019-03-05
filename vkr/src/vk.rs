@@ -8796,6 +8796,73 @@ impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineRasterizationDepthClipStateCreateFlagsEXT(u32);
+impl PipelineRasterizationDepthClipStateCreateFlagsEXT {}
+impl default::Default for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    fn default() -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(0)
+    }
+}
+impl PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    pub fn empty() -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(0)
+    }
+    pub fn all() -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(ptr::NonNull<c_void>);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -11201,6 +11268,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000101000);
     /// Added by extension VK_EXT_conservative_rasterization.
     pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self = StructureType(1000101001);
+    /// Added by extension VK_EXT_depth_clip_enable.
+    pub const PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT: Self = StructureType(1000102000);
+    /// Added by extension VK_EXT_depth_clip_enable.
+    pub const PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT: Self = StructureType(1000102001);
     /// Added by extension VK_EXT_hdr_metadata.
     pub const HDR_METADATA_EXT: Self = StructureType(1000105000);
     /// Added by extension VK_KHR_create_renderpass2.
@@ -11480,6 +11551,12 @@ impl StructureType {
     pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = StructureType(1000246000);
     /// Added by extension VK_EXT_validation_features.
     pub const VALIDATION_FEATURES_EXT: Self = StructureType(1000247000);
+    /// Added by extension VK_NV_cooperative_matrix.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV: Self = StructureType(1000249000);
+    /// Added by extension VK_NV_cooperative_matrix.
+    pub const COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249001);
+    /// Added by extension VK_NV_cooperative_matrix.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249002);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11681,6 +11758,8 @@ impl fmt::Display for StructureType {
             1000099001 => Some(&"PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT"),
             1000101000 => Some(&"PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT"),
             1000101001 => Some(&"PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT"),
+            1000102000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT"),
+            1000102001 => Some(&"PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT"),
             1000105000 => Some(&"HDR_METADATA_EXT"),
             1000109000 => Some(&"ATTACHMENT_DESCRIPTION_2_KHR"),
             1000109001 => Some(&"ATTACHMENT_REFERENCE_2_KHR"),
@@ -11806,6 +11885,9 @@ impl fmt::Display for StructureType {
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
             1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
             1000247000 => Some(&"VALIDATION_FEATURES_EXT"),
+            1000249000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV"),
+            1000249001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_NV"),
+            1000249002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12650,6 +12732,80 @@ impl fmt::Display for MemoryOverallocationBehaviorAMD {
             0 => Some(&"DEFAULT"),
             1 => Some(&"ALLOWED"),
             2 => Some(&"DISALLOWED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ScopeNV(i32);
+impl ScopeNV {
+    pub const DEVICE: Self = ScopeNV(1);
+    pub const WORKGROUP: Self = ScopeNV(2);
+    pub const SUBGROUP: Self = ScopeNV(3);
+    pub const QUEUE_FAMILY: Self = ScopeNV(5);
+}
+impl default::Default for ScopeNV {
+    fn default() -> Self {
+        ScopeNV(0)
+    }
+}
+impl fmt::Display for ScopeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"DEVICE"),
+            2 => Some(&"WORKGROUP"),
+            3 => Some(&"SUBGROUP"),
+            5 => Some(&"QUEUE_FAMILY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ComponentTypeNV(i32);
+impl ComponentTypeNV {
+    pub const FLOAT16: Self = ComponentTypeNV(0);
+    pub const FLOAT32: Self = ComponentTypeNV(1);
+    pub const FLOAT64: Self = ComponentTypeNV(2);
+    pub const SINT8: Self = ComponentTypeNV(3);
+    pub const SINT16: Self = ComponentTypeNV(4);
+    pub const SINT32: Self = ComponentTypeNV(5);
+    pub const SINT64: Self = ComponentTypeNV(6);
+    pub const UINT8: Self = ComponentTypeNV(7);
+    pub const UINT16: Self = ComponentTypeNV(8);
+    pub const UINT32: Self = ComponentTypeNV(9);
+    pub const UINT64: Self = ComponentTypeNV(10);
+}
+impl default::Default for ComponentTypeNV {
+    fn default() -> Self {
+        ComponentTypeNV(0)
+    }
+}
+impl fmt::Display for ComponentTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"FLOAT16"),
+            1 => Some(&"FLOAT32"),
+            2 => Some(&"FLOAT64"),
+            3 => Some(&"SINT8"),
+            4 => Some(&"SINT16"),
+            5 => Some(&"SINT32"),
+            6 => Some(&"SINT64"),
+            7 => Some(&"UINT8"),
+            8 => Some(&"UINT16"),
+            9 => Some(&"UINT32"),
+            10 => Some(&"UINT64"),
             _ => None,
         };
         if let Some(name) = name {
@@ -27762,6 +27918,60 @@ impl fmt::Debug for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
+    pub s_type: StructureType,
+    /// Pointer to next structure
+    pub p_next: *mut c_void,
+    pub depth_clip_enable: Bool32,
+}
+impl default::Default for PhysicalDeviceDepthClipEnableFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceDepthClipEnableFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            depth_clip_enable: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthClipEnableFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthClipEnableFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clip_enable", &self.depth_clip_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRasterizationDepthClipStateCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineRasterizationDepthClipStateCreateFlagsEXT,
+    pub depth_clip_enable: Bool32,
+}
+impl default::Default for PipelineRasterizationDepthClipStateCreateInfoEXT {
+    fn default() -> Self {
+        PipelineRasterizationDepthClipStateCreateInfoEXT {
+            s_type: StructureType::PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: PipelineRasterizationDepthClipStateCreateFlagsEXT::default(),
+            depth_clip_enable: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRasterizationDepthClipStateCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRasterizationDepthClipStateCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("depth_clip_enable", &self.depth_clip_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceMemoryBudgetPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -27975,6 +28185,111 @@ impl fmt::Debug for FilterCubicImageViewImageFormatPropertiesEXT {
             .field("p_next", &self.p_next)
             .field("filter_cubic", &self.filter_cubic)
             .field("filter_cubic_minmax", &self.filter_cubic_minmax)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix: Bool32,
+    pub cooperative_matrix_robust_buffer_access: Bool32,
+}
+impl default::Default for PhysicalDeviceCooperativeMatrixFeaturesNV {
+    fn default() -> Self {
+        PhysicalDeviceCooperativeMatrixFeaturesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_matrix: Bool32::default(),
+            cooperative_matrix_robust_buffer_access: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cooperative_matrix", &self.cooperative_matrix)
+            .field(
+                "cooperative_matrix_robust_buffer_access",
+                &self.cooperative_matrix_robust_buffer_access,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_supported_stages: ShaderStageFlags,
+}
+impl default::Default for PhysicalDeviceCooperativeMatrixPropertiesNV {
+    fn default() -> Self {
+        PhysicalDeviceCooperativeMatrixPropertiesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_supported_stages: ShaderStageFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_matrix_supported_stages",
+                &self.cooperative_matrix_supported_stages,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CooperativeMatrixPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub m_size: u32,
+    pub n_size: u32,
+    pub k_size: u32,
+    pub a_type: ComponentTypeNV,
+    pub b_type: ComponentTypeNV,
+    pub c_type: ComponentTypeNV,
+    pub d_type: ComponentTypeNV,
+    pub scope: ScopeNV,
+}
+impl default::Default for CooperativeMatrixPropertiesNV {
+    fn default() -> Self {
+        CooperativeMatrixPropertiesNV {
+            s_type: StructureType::COOPERATIVE_MATRIX_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            m_size: u32::default(),
+            n_size: u32::default(),
+            k_size: u32::default(),
+            a_type: ComponentTypeNV::default(),
+            b_type: ComponentTypeNV::default(),
+            c_type: ComponentTypeNV::default(),
+            d_type: ComponentTypeNV::default(),
+            scope: ScopeNV::default(),
+        }
+    }
+}
+impl fmt::Debug for CooperativeMatrixPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CooperativeMatrixPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("m_size", &self.m_size)
+            .field("n_size", &self.n_size)
+            .field("k_size", &self.k_size)
+            .field("a_type", &self.a_type)
+            .field("b_type", &self.b_type)
+            .field("c_type", &self.c_type)
+            .field("d_type", &self.d_type)
+            .field("scope", &self.scope)
             .finish()
     }
 }
@@ -37071,6 +37386,42 @@ impl ExtBufferDeviceAddressFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(get_buffer_device_address_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeMatrixPropertiesNV,
+) -> Result;
+pub struct NvCooperativeMatrixFn1_0 {
+    pub get_physical_device_cooperative_matrix_properties_nv: FnGetPhysicalDeviceCooperativeMatrixPropertiesNV,
+}
+impl NvCooperativeMatrixFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = NvCooperativeMatrixFn1_0 {
+            get_physical_device_cooperative_matrix_properties_nv: unsafe {
+                extern "system" fn get_physical_device_cooperative_matrix_properties_nv_fallback(
+                    _: Option<PhysicalDevice>,
+                    _: *mut u32,
+                    _: *mut CooperativeMatrixPropertiesNV,
+                ) -> Result {
+                    panic!("fn get_physical_device_cooperative_matrix_properties_nv not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_physical_device_cooperative_matrix_properties_nv_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
