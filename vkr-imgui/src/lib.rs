@@ -44,7 +44,11 @@ fn align_up(x: u32, alignment: u32) -> u32 {
 
 pub struct Renderer {
     pipeline_layout: vk::PipelineLayout,
-    pipeline: vk::Pipeline,
+    vertex_shader: vk::ShaderModule,
+    fragment_shader: vk::ShaderModule,
+    render_pass: Option<vk::RenderPass>,
+    pipeline: Option<vk::Pipeline>,
+    old_pipeline: Option<vk::Pipeline>,
     vertex_buffers: [vk::Buffer; Renderer::FRAME_COUNT],
     vertex_mem_offsets: [usize; Renderer::FRAME_COUNT],
     index_buffers: [vk::Buffer; Renderer::FRAME_COUNT],
@@ -73,7 +77,6 @@ impl Renderer {
         device: &Device,
         physical_device_properties: &vk::PhysicalDeviceProperties,
         physical_device_memory_properties: &vk::PhysicalDeviceMemoryProperties,
-        render_pass: vk::RenderPass,
         imgui: &mut ImGui,
     ) -> Self {
         let vertex_shader = load_shader_module(device, include_bytes!("imgui.vert.spv"));
@@ -111,118 +114,6 @@ impl Renderer {
                 .p_push_constant_ranges(slice::from_ref(&push_constant_range));
             unsafe { device.create_pipeline_layout(&pipeline_layout_create_info, None) }.unwrap()
         };
-
-        let pipeline = {
-            let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
-            let shader_stage_create_info = [
-                vk::PipelineShaderStageCreateInfo {
-                    stage: vk::ShaderStageFlags::VERTEX,
-                    module: Some(vertex_shader),
-                    p_name: shader_entry_name.as_ptr(),
-                    ..Default::default()
-                },
-                vk::PipelineShaderStageCreateInfo {
-                    stage: vk::ShaderStageFlags::FRAGMENT,
-                    module: Some(fragment_shader),
-                    p_name: shader_entry_name.as_ptr(),
-                    ..Default::default()
-                },
-            ];
-
-            let vertex_input_binding = vk::VertexInputBindingDescription {
-                binding: 0,
-                stride: mem::size_of::<ImDrawVert>() as u32,
-                input_rate: vk::VertexInputRate::VERTEX,
-            };
-            let vertex_input_attributes = [
-                vk::VertexInputAttributeDescription {
-                    location: 0,
-                    binding: 0,
-                    format: vk::Format::R32G32_SFLOAT,
-                    offset: offset_of!(ImDrawVert, pos) as u32,
-                },
-                vk::VertexInputAttributeDescription {
-                    location: 1,
-                    binding: 0,
-                    format: vk::Format::R32G32_SFLOAT,
-                    offset: offset_of!(ImDrawVert, uv) as u32,
-                },
-                vk::VertexInputAttributeDescription {
-                    location: 2,
-                    binding: 0,
-                    format: vk::Format::R8G8B8A8_UNORM,
-                    offset: offset_of!(ImDrawVert, col) as u32,
-                },
-            ];
-
-            let vertex_input_state_create_info = vk::PipelineVertexInputStateCreateInfo::builder()
-                .p_vertex_binding_descriptions(slice::from_ref(&vertex_input_binding))
-                .p_vertex_attribute_descriptions(&vertex_input_attributes);
-
-            let input_assembly_state_create_info = vk::PipelineInputAssemblyStateCreateInfo {
-                topology: vk::PrimitiveTopology::TRIANGLE_LIST,
-                ..Default::default()
-            };
-
-            let viewport_state_create_info = vk::PipelineViewportStateCreateInfo {
-                viewport_count: 1,
-                scissor_count: 1,
-                ..Default::default()
-            };
-
-            let rasterization_state_create_info = vk::PipelineRasterizationStateCreateInfo {
-                polygon_mode: vk::PolygonMode::FILL,
-                cull_mode: vk::CullModeFlags::BACK,
-                front_face: vk::FrontFace::CLOCKWISE,
-                line_width: 1.0,
-                ..Default::default()
-            };
-            let multisample_state_create_info = vk::PipelineMultisampleStateCreateInfo {
-                rasterization_samples: vk::SampleCountFlags::N1,
-                ..Default::default()
-            };
-
-            let color_blend_attachment_state = vk::PipelineColorBlendAttachmentState {
-                blend_enable: vk::TRUE,
-                src_color_blend_factor: vk::BlendFactor::SRC_ALPHA,
-                dst_color_blend_factor: vk::BlendFactor::ONE_MINUS_SRC_ALPHA,
-                color_blend_op: vk::BlendOp::ADD,
-                src_alpha_blend_factor: vk::BlendFactor::ONE_MINUS_SRC_ALPHA,
-                dst_alpha_blend_factor: vk::BlendFactor::ZERO,
-                alpha_blend_op: vk::BlendOp::ADD,
-                color_write_mask: vk::ColorComponentFlags::all(),
-            };
-            let color_blend_state_create_info = vk::PipelineColorBlendStateCreateInfo::builder()
-                .p_attachments(slice::from_ref(&color_blend_attachment_state));
-
-            let dynamic_states = [vk::DynamicState::VIEWPORT, vk::DynamicState::SCISSOR];
-            let pipeline_dynamic_state_create_info =
-                vk::PipelineDynamicStateCreateInfo::builder().p_dynamic_states(&dynamic_states);
-
-            let pipeline_create_info = vk::GraphicsPipelineCreateInfo::builder()
-                .p_stages(&shader_stage_create_info)
-                .p_vertex_input_state(Some(&vertex_input_state_create_info))
-                .p_input_assembly_state(Some(&input_assembly_state_create_info))
-                .p_viewport_state(Some(&viewport_state_create_info))
-                .p_rasterization_state(&rasterization_state_create_info)
-                .p_multisample_state(Some(&multisample_state_create_info))
-                .p_color_blend_state(Some(&color_blend_state_create_info))
-                .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
-                .layout(pipeline_layout)
-                .render_pass(render_pass);
-
-            unsafe {
-                device.create_graphics_pipelines_single(
-                    None,
-                    slice::from_ref(&pipeline_create_info),
-                    None,
-                )
-            }
-            .unwrap()
-        };
-
-        unsafe { device.destroy_shader_module(Some(vertex_shader), None) };
-        unsafe { device.destroy_shader_module(Some(fragment_shader), None) };
 
         let mut host_allocation_size = 0;
         let mut host_memory_type_filter = 0xffffffff;
@@ -444,7 +335,11 @@ impl Renderer {
 
         Self {
             pipeline_layout,
-            pipeline,
+            vertex_shader,
+            fragment_shader,
+            render_pass: None,
+            pipeline: None,
+            old_pipeline: None,
             vertex_buffers,
             vertex_mem_offsets,
             index_buffers,
@@ -544,9 +439,136 @@ impl Renderer {
 
             self.image_is_valid = true;
         }
+
+        if let Some(pipeline) = self.old_pipeline.take() {
+            unsafe { device.destroy_pipeline(Some(pipeline), None) };
+        }
     }
 
-    pub fn render(&mut self, ui: Ui, device: &Device, command_buffer: vk::CommandBuffer) {
+    pub fn render(
+        &mut self,
+        ui: Ui,
+        device: &Device,
+        render_pass: vk::RenderPass,
+        command_buffer: vk::CommandBuffer,
+    ) {
+        // TODO: safer way to detect render pass change?
+        if Some(render_pass) != self.render_pass {
+            self.old_pipeline = self.pipeline;
+
+            self.render_pass = Some(render_pass);
+            self.pipeline = Some({
+                let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
+                let shader_stage_create_info = [
+                    vk::PipelineShaderStageCreateInfo {
+                        stage: vk::ShaderStageFlags::VERTEX,
+                        module: Some(self.vertex_shader),
+                        p_name: shader_entry_name.as_ptr(),
+                        ..Default::default()
+                    },
+                    vk::PipelineShaderStageCreateInfo {
+                        stage: vk::ShaderStageFlags::FRAGMENT,
+                        module: Some(self.fragment_shader),
+                        p_name: shader_entry_name.as_ptr(),
+                        ..Default::default()
+                    },
+                ];
+
+                let vertex_input_binding = vk::VertexInputBindingDescription {
+                    binding: 0,
+                    stride: mem::size_of::<ImDrawVert>() as u32,
+                    input_rate: vk::VertexInputRate::VERTEX,
+                };
+                let vertex_input_attributes = [
+                    vk::VertexInputAttributeDescription {
+                        location: 0,
+                        binding: 0,
+                        format: vk::Format::R32G32_SFLOAT,
+                        offset: offset_of!(ImDrawVert, pos) as u32,
+                    },
+                    vk::VertexInputAttributeDescription {
+                        location: 1,
+                        binding: 0,
+                        format: vk::Format::R32G32_SFLOAT,
+                        offset: offset_of!(ImDrawVert, uv) as u32,
+                    },
+                    vk::VertexInputAttributeDescription {
+                        location: 2,
+                        binding: 0,
+                        format: vk::Format::R8G8B8A8_UNORM,
+                        offset: offset_of!(ImDrawVert, col) as u32,
+                    },
+                ];
+
+                let vertex_input_state_create_info =
+                    vk::PipelineVertexInputStateCreateInfo::builder()
+                        .p_vertex_binding_descriptions(slice::from_ref(&vertex_input_binding))
+                        .p_vertex_attribute_descriptions(&vertex_input_attributes);
+
+                let input_assembly_state_create_info = vk::PipelineInputAssemblyStateCreateInfo {
+                    topology: vk::PrimitiveTopology::TRIANGLE_LIST,
+                    ..Default::default()
+                };
+
+                let viewport_state_create_info = vk::PipelineViewportStateCreateInfo {
+                    viewport_count: 1,
+                    scissor_count: 1,
+                    ..Default::default()
+                };
+
+                let rasterization_state_create_info = vk::PipelineRasterizationStateCreateInfo {
+                    polygon_mode: vk::PolygonMode::FILL,
+                    cull_mode: vk::CullModeFlags::BACK,
+                    front_face: vk::FrontFace::CLOCKWISE,
+                    line_width: 1.0,
+                    ..Default::default()
+                };
+                let multisample_state_create_info = vk::PipelineMultisampleStateCreateInfo {
+                    rasterization_samples: vk::SampleCountFlags::N1,
+                    ..Default::default()
+                };
+
+                let color_blend_attachment_state = vk::PipelineColorBlendAttachmentState {
+                    blend_enable: vk::TRUE,
+                    src_color_blend_factor: vk::BlendFactor::SRC_ALPHA,
+                    dst_color_blend_factor: vk::BlendFactor::ONE_MINUS_SRC_ALPHA,
+                    color_blend_op: vk::BlendOp::ADD,
+                    src_alpha_blend_factor: vk::BlendFactor::ONE_MINUS_SRC_ALPHA,
+                    dst_alpha_blend_factor: vk::BlendFactor::ZERO,
+                    alpha_blend_op: vk::BlendOp::ADD,
+                    color_write_mask: vk::ColorComponentFlags::all(),
+                };
+                let color_blend_state_create_info =
+                    vk::PipelineColorBlendStateCreateInfo::builder()
+                        .p_attachments(slice::from_ref(&color_blend_attachment_state));
+
+                let dynamic_states = [vk::DynamicState::VIEWPORT, vk::DynamicState::SCISSOR];
+                let pipeline_dynamic_state_create_info =
+                    vk::PipelineDynamicStateCreateInfo::builder().p_dynamic_states(&dynamic_states);
+
+                let pipeline_create_info = vk::GraphicsPipelineCreateInfo::builder()
+                    .p_stages(&shader_stage_create_info)
+                    .p_vertex_input_state(Some(&vertex_input_state_create_info))
+                    .p_input_assembly_state(Some(&input_assembly_state_create_info))
+                    .p_viewport_state(Some(&viewport_state_create_info))
+                    .p_rasterization_state(&rasterization_state_create_info)
+                    .p_multisample_state(Some(&multisample_state_create_info))
+                    .p_color_blend_state(Some(&color_blend_state_create_info))
+                    .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
+                    .layout(self.pipeline_layout)
+                    .render_pass(render_pass);
+
+                unsafe {
+                    device.create_graphics_pipelines_single(
+                        None,
+                        slice::from_ref(&pipeline_create_info),
+                        None,
+                    )
+                }
+                .unwrap()
+            });
+        }
+
         let FrameSize {
             logical_size: (width, height),
             ..
@@ -566,7 +588,7 @@ impl Renderer {
                 device.cmd_bind_pipeline(
                     command_buffer,
                     vk::PipelineBindPoint::GRAPHICS,
-                    self.pipeline,
+                    self.pipeline.unwrap(),
                 );
                 device.cmd_bind_descriptor_sets(
                     command_buffer,
