@@ -75,6 +75,7 @@ pub type wl_surface = Never;
 pub type HINSTANCE = *mut c_void;
 pub type HWND = *mut c_void;
 pub type HANDLE = *mut c_void;
+pub type HMONITOR = *mut c_void;
 #[allow(non_camel_case_types)]
 pub type SECURITY_ATTRIBUTES = Never;
 pub type DWORD = c_ulong;
@@ -5464,6 +5465,85 @@ impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
     }
 }
 pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineCreationFeedbackFlagsEXT(u32);
+impl PipelineCreationFeedbackFlagsEXT {
+    pub const VALID: Self = PipelineCreationFeedbackFlagsEXT(0x1);
+    pub const APPLICATION_PIPELINE_CACHE_HIT: Self = PipelineCreationFeedbackFlagsEXT(0x2);
+    pub const BASE_PIPELINE_ACCELERATION: Self = PipelineCreationFeedbackFlagsEXT(0x4);
+}
+impl default::Default for PipelineCreationFeedbackFlagsEXT {
+    fn default() -> Self {
+        PipelineCreationFeedbackFlagsEXT(0)
+    }
+}
+impl PipelineCreationFeedbackFlagsEXT {
+    pub fn empty() -> Self {
+        PipelineCreationFeedbackFlagsEXT(0)
+    }
+    pub fn all() -> Self {
+        PipelineCreationFeedbackFlagsEXT(0x7)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x7
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineCreationFeedbackFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        PipelineCreationFeedbackFlagsEXT(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineCreationFeedbackFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineCreationFeedbackFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        PipelineCreationFeedbackFlagsEXT(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineCreationFeedbackFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineCreationFeedbackFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        PipelineCreationFeedbackFlagsEXT(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineCreationFeedbackFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineCreationFeedbackFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "VALID"),
+                (0x2, "APPLICATION_PIPELINE_CACHE_HIT"),
+                (0x4, "BASE_PIPELINE_ACCELERATION"),
+            ],
+            f,
+        )
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
@@ -10939,6 +11019,8 @@ impl Result {
     pub const ERROR_NOT_PERMITTED_EXT: Self = Result(-1000174001);
     /// Added by extension VK_EXT_buffer_device_address.
     pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Result(-1000244000);
+    /// Added by extension VK_EXT_full_screen_exclusive.
+    pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Result(-1000255000);
 }
 impl default::Default for Result {
     fn default() -> Self {
@@ -10979,6 +11061,7 @@ impl fmt::Display for Result {
             -1000161000 => Some(&"ERROR_FRAGMENTATION_EXT"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
             -1000244000 => Some(&"ERROR_INVALID_DEVICE_ADDRESS_EXT"),
+            -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11565,6 +11648,8 @@ impl StructureType {
     pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = StructureType(1000190001);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
     pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
+    /// Added by extension VK_EXT_pipeline_creation_feedback.
+    pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = StructureType(1000192000);
     /// Added by extension VK_KHR_driver_properties.
     pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = StructureType(1000196000);
     /// Added by extension VK_KHR_shader_float_controls.
@@ -11595,6 +11680,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
     /// Added by extension VK_EXT_pci_bus_info.
     pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = StructureType(1000212000);
+    /// Added by extension VK_AMD_display_native_hdr.
+    pub const DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD: Self = StructureType(1000213000);
+    /// Added by extension VK_AMD_display_native_hdr.
+    pub const SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD: Self = StructureType(1000213001);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
     pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
     /// Added by extension VK_EXT_metal_surface.
@@ -11613,6 +11702,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT: Self = StructureType(1000238000);
     /// Added by extension VK_EXT_memory_priority.
     pub const MEMORY_PRIORITY_ALLOCATE_INFO_EXT: Self = StructureType(1000238001);
+    /// Added by extension VK_KHR_surface_protected_capabilities.
+    pub const SURFACE_PROTECTED_CAPABILITIES_KHR: Self = StructureType(1000239000);
     /// Added by extension VK_NV_dedicated_allocation_image_aliasing.
     pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = StructureType(1000240000);
     /// Added by extension VK_EXT_buffer_device_address.
@@ -11633,6 +11724,14 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249002);
     /// Added by extension VK_EXT_ycbcr_image_arrays.
     pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = StructureType(1000252000);
+    /// Added by extension VK_EXT_full_screen_exclusive.
+    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT: Self = StructureType(1000255000);
+    /// Added by extension VK_EXT_full_screen_exclusive.
+    pub const SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT: Self = StructureType(1000255002);
+    /// Added by extension VK_EXT_full_screen_exclusive.
+    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = StructureType(1000255001);
+    /// Added by extension VK_EXT_host_query_reset.
+    pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -11933,6 +12032,7 @@ impl fmt::Display for StructureType {
             1000190000 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT"),
             1000190001 => Some(&"PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT"),
             1000190002 => Some(&"PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT"),
+            1000192000 => Some(&"PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT"),
             1000196000 => Some(&"PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR"),
             1000197000 => Some(&"PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR"),
             1000199000 => Some(&"PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR"),
@@ -11948,6 +12048,8 @@ impl fmt::Display for StructureType {
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
             1000212000 => Some(&"PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT"),
+            1000213000 => Some(&"DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD"),
+            1000213001 => Some(&"SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD"),
             1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
             1000217000 => Some(&"METAL_SURFACE_CREATE_INFO_EXT"),
             1000218000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT"),
@@ -11957,6 +12059,7 @@ impl fmt::Display for StructureType {
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
+            1000239000 => Some(&"SURFACE_PROTECTED_CAPABILITIES_KHR"),
             1000240000 => Some(&"PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV"),
             1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT"),
             1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
@@ -11967,6 +12070,10 @@ impl fmt::Display for StructureType {
             1000249001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_NV"),
             1000249002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV"),
             1000252000 => Some(&"PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT"),
+            1000255000 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT"),
+            1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
+            1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
+            1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12928,6 +13035,8 @@ impl ColorSpaceKHR {
     pub const PASS_THROUGH_EXT: Self = ColorSpaceKHR(1000104013);
     /// Added by extension VK_EXT_swapchain_colorspace.
     pub const EXTENDED_SRGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104014);
+    /// Added by extension VK_AMD_display_native_hdr.
+    pub const DISPLAY_NATIVE_AMD: Self = ColorSpaceKHR(1000213000);
 }
 impl default::Default for ColorSpaceKHR {
     fn default() -> Self {
@@ -12952,6 +13061,7 @@ impl fmt::Display for ColorSpaceKHR {
             1000104012 => Some(&"ADOBERGB_NONLINEAR_EXT"),
             1000104013 => Some(&"PASS_THROUGH_EXT"),
             1000104014 => Some(&"EXTENDED_SRGB_NONLINEAR_EXT"),
+            1000213000 => Some(&"DISPLAY_NATIVE_AMD"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13468,6 +13578,36 @@ impl fmt::Display for BlendOverlapEXT {
             0 => Some(&"UNCORRELATED"),
             1 => Some(&"DISJOINT"),
             2 => Some(&"CONJOINT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct FullScreenExclusiveEXT(i32);
+impl FullScreenExclusiveEXT {
+    pub const DEFAULT: Self = FullScreenExclusiveEXT(0);
+    pub const ALLOWED: Self = FullScreenExclusiveEXT(1);
+    pub const DISALLOWED: Self = FullScreenExclusiveEXT(2);
+    pub const APPLICATION_CONTROLLED: Self = FullScreenExclusiveEXT(3);
+}
+impl default::Default for FullScreenExclusiveEXT {
+    fn default() -> Self {
+        FullScreenExclusiveEXT(0)
+    }
+}
+impl fmt::Display for FullScreenExclusiveEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"ALLOWED"),
+            2 => Some(&"DISALLOWED"),
+            3 => Some(&"APPLICATION_CONTROLLED"),
             _ => None,
         };
         if let Some(name) = name {
@@ -22340,6 +22480,56 @@ impl fmt::Debug for HdrMetadataEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct DisplayNativeHdrSurfaceCapabilitiesAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub local_dimming_support: Bool32,
+}
+impl default::Default for DisplayNativeHdrSurfaceCapabilitiesAMD {
+    fn default() -> Self {
+        DisplayNativeHdrSurfaceCapabilitiesAMD {
+            s_type: StructureType::DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD,
+            p_next: ptr::null_mut(),
+            local_dimming_support: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for DisplayNativeHdrSurfaceCapabilitiesAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DisplayNativeHdrSurfaceCapabilitiesAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("local_dimming_support", &self.local_dimming_support)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainDisplayNativeHdrCreateInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub local_dimming_enable: Bool32,
+}
+impl default::Default for SwapchainDisplayNativeHdrCreateInfoAMD {
+    fn default() -> Self {
+        SwapchainDisplayNativeHdrCreateInfoAMD {
+            s_type: StructureType::SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD,
+            p_next: ptr::null(),
+            local_dimming_enable: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainDisplayNativeHdrCreateInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainDisplayNativeHdrCreateInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("local_dimming_enable", &self.local_dimming_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RefreshCycleDurationGOOGLE {
     /// Number of nanoseconds from the start of one refresh cycle to the next
     pub refresh_duration: u64,
@@ -24628,6 +24818,31 @@ impl fmt::Debug for PhysicalDeviceFloatControlsPropertiesKHR {
                 "shader_rounding_mode_rtz_float64",
                 &self.shader_rounding_mode_rtz_float64,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceHostQueryResetFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub host_query_reset: Bool32,
+}
+impl default::Default for PhysicalDeviceHostQueryResetFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceHostQueryResetFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            host_query_reset: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceHostQueryResetFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceHostQueryResetFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("host_query_reset", &self.host_query_reset)
             .finish()
     }
 }
@@ -28025,6 +28240,32 @@ impl fmt::Debug for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SurfaceProtectedCapabilitiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Represents if surface can be protected
+    pub supports_protected: Bool32,
+}
+impl default::Default for SurfaceProtectedCapabilitiesKHR {
+    fn default() -> Self {
+        SurfaceProtectedCapabilitiesKHR {
+            s_type: StructureType::SURFACE_PROTECTED_CAPABILITIES_KHR,
+            p_next: ptr::null(),
+            supports_protected: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceProtectedCapabilitiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceProtectedCapabilitiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supports_protected", &self.supports_protected)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -28222,14 +28463,14 @@ impl fmt::Debug for BufferDeviceAddressInfoEXT {
 pub struct BufferDeviceAddressCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub device_address: DeviceSize,
+    pub device_address: DeviceAddress,
 }
 impl default::Default for BufferDeviceAddressCreateInfoEXT {
     fn default() -> Self {
         BufferDeviceAddressCreateInfoEXT {
             s_type: StructureType::BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            device_address: DeviceSize::default(),
+            device_address: DeviceAddress::default(),
         }
     }
 }
@@ -28453,6 +28694,142 @@ impl fmt::Debug for ImageViewHandleInfoNVX {
             .field("image_view", &self.image_view)
             .field("descriptor_type", &self.descriptor_type)
             .field("sampler", &self.sampler)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCreationFeedbackEXT {
+    pub flags: PipelineCreationFeedbackFlagsEXT,
+    pub duration: u64,
+}
+impl default::Default for PipelineCreationFeedbackEXT {
+    fn default() -> Self {
+        PipelineCreationFeedbackEXT {
+            flags: PipelineCreationFeedbackFlagsEXT::default(),
+            duration: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCreationFeedbackEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCreationFeedbackEXT")
+            .field("flags", &self.flags)
+            .field("duration", &self.duration)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCreationFeedbackCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Output pipeline creation feedback.
+    pub p_pipeline_creation_feedback: *mut PipelineCreationFeedbackEXT,
+    pub pipeline_stage_creation_feedback_count: u32,
+    /// One entry for each shader stage specified in the parent Vk*PipelineCreateInfo struct
+    pub p_pipeline_stage_creation_feedbacks: *mut PipelineCreationFeedbackEXT,
+}
+impl default::Default for PipelineCreationFeedbackCreateInfoEXT {
+    fn default() -> Self {
+        PipelineCreationFeedbackCreateInfoEXT {
+            s_type: StructureType::PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            p_pipeline_creation_feedback: ptr::null_mut(),
+            pipeline_stage_creation_feedback_count: u32::default(),
+            p_pipeline_stage_creation_feedbacks: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCreationFeedbackCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCreationFeedbackCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_pipeline_creation_feedback", &self.p_pipeline_creation_feedback)
+            .field(
+                "pipeline_stage_creation_feedback_count",
+                &self.pipeline_stage_creation_feedback_count,
+            )
+            .field(
+                "p_pipeline_stage_creation_feedbacks",
+                &self.p_pipeline_stage_creation_feedbacks,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceFullScreenExclusiveInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub full_screen_exclusive: FullScreenExclusiveEXT,
+}
+impl default::Default for SurfaceFullScreenExclusiveInfoEXT {
+    fn default() -> Self {
+        SurfaceFullScreenExclusiveInfoEXT {
+            s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            full_screen_exclusive: FullScreenExclusiveEXT::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceFullScreenExclusiveInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceFullScreenExclusiveInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("full_screen_exclusive", &self.full_screen_exclusive)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceFullScreenExclusiveWin32InfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub hmonitor: HMONITOR,
+}
+impl default::Default for SurfaceFullScreenExclusiveWin32InfoEXT {
+    fn default() -> Self {
+        SurfaceFullScreenExclusiveWin32InfoEXT {
+            s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
+            p_next: ptr::null(),
+            hmonitor: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for SurfaceFullScreenExclusiveWin32InfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceFullScreenExclusiveWin32InfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("hmonitor", &self.hmonitor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceCapabilitiesFullScreenExclusiveEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub full_screen_exclusive_supported: Bool32,
+}
+impl default::Default for SurfaceCapabilitiesFullScreenExclusiveEXT {
+    fn default() -> Self {
+        SurfaceCapabilitiesFullScreenExclusiveEXT {
+            s_type: StructureType::SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT,
+            p_next: ptr::null_mut(),
+            full_screen_exclusive_supported: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceCapabilitiesFullScreenExclusiveEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceCapabilitiesFullScreenExclusiveEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("full_screen_exclusive_supported", &self.full_screen_exclusive_supported)
             .finish()
     }
 }
@@ -34072,6 +34449,11 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetDeviceGroupSurfacePresentModes2EXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
+) -> Result;
 pub struct KhrDeviceGroupFn1_0 {
     pub get_device_group_peer_memory_features: FnGetDeviceGroupPeerMemoryFeatures,
     pub cmd_set_device_mask: FnCmdSetDeviceMask,
@@ -34080,6 +34462,7 @@ pub struct KhrDeviceGroupFn1_0 {
     pub get_device_group_surface_present_modes_khr: FnGetDeviceGroupSurfacePresentModesKHR,
     pub get_physical_device_present_rectangles_khr: FnGetPhysicalDevicePresentRectanglesKHR,
     pub acquire_next_image2_khr: FnAcquireNextImage2KHR,
+    pub get_device_group_surface_present_modes2_ext: FnGetDeviceGroupSurfacePresentModes2EXT,
 }
 impl KhrDeviceGroupFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34205,6 +34588,23 @@ impl KhrDeviceGroupFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(acquire_next_image2_khr_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            get_device_group_surface_present_modes2_ext: unsafe {
+                extern "system" fn get_device_group_surface_present_modes2_ext_fallback(
+                    _: Option<Device>,
+                    _: *const PhysicalDeviceSurfaceInfo2KHR,
+                    _: *mut DeviceGroupPresentModeFlagsKHR,
+                ) -> Result {
+                    panic!("fn get_device_group_surface_present_modes2_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupSurfacePresentModes2EXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_device_group_surface_present_modes2_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37519,6 +37919,35 @@ impl NvDeviceDiagnosticCheckpointsFn1_0 {
         (block, all_loaded)
     }
 }
+type FnSetLocalDimmingAMD =
+    unsafe extern "system" fn(swap_chain: Option<SwapchainKHR>, local_dimming_enable: Bool32) -> c_void;
+pub struct AmdDisplayNativeHdrFn1_0 {
+    pub set_local_dimming_amd: FnSetLocalDimmingAMD,
+}
+impl AmdDisplayNativeHdrFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = AmdDisplayNativeHdrFn1_0 {
+            set_local_dimming_amd: unsafe {
+                extern "system" fn set_local_dimming_amd_fallback(_: Option<SwapchainKHR>, _: Bool32) -> c_void {
+                    panic!("fn set_local_dimming_amd not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkSetLocalDimmingAMD\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(set_local_dimming_amd_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
 type FnCreateImagePipeSurfaceFUCHSIA = unsafe extern "system" fn(
     instance: Option<Instance>,
     p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
@@ -37655,6 +38084,151 @@ impl NvCooperativeMatrixFn1_0 {
                     || {
                         all_loaded = false;
                         mem::transmute(get_physical_device_cooperative_matrix_properties_nv_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_present_mode_count: *mut u32,
+    p_present_modes: *mut PresentModeKHR,
+) -> Result;
+type FnAcquireFullScreenExclusiveModeEXT =
+    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+type FnReleaseFullScreenExclusiveModeEXT =
+    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+pub struct ExtFullScreenExclusiveFn1_0 {
+    pub get_physical_device_surface_present_modes2_ext: FnGetPhysicalDeviceSurfacePresentModes2EXT,
+    pub acquire_full_screen_exclusive_mode_ext: FnAcquireFullScreenExclusiveModeEXT,
+    pub release_full_screen_exclusive_mode_ext: FnReleaseFullScreenExclusiveModeEXT,
+}
+impl ExtFullScreenExclusiveFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtFullScreenExclusiveFn1_0 {
+            get_physical_device_surface_present_modes2_ext: unsafe {
+                extern "system" fn get_physical_device_surface_present_modes2_ext_fallback(
+                    _: Option<PhysicalDevice>,
+                    _: *const PhysicalDeviceSurfaceInfo2KHR,
+                    _: *mut u32,
+                    _: *mut PresentModeKHR,
+                ) -> Result {
+                    panic!("fn get_physical_device_surface_present_modes2_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSurfacePresentModes2EXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_physical_device_surface_present_modes2_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            acquire_full_screen_exclusive_mode_ext: unsafe {
+                extern "system" fn acquire_full_screen_exclusive_mode_ext_fallback(
+                    _: Option<Device>,
+                    _: Option<SwapchainKHR>,
+                ) -> Result {
+                    panic!("fn acquire_full_screen_exclusive_mode_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkAcquireFullScreenExclusiveModeEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(acquire_full_screen_exclusive_mode_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+            release_full_screen_exclusive_mode_ext: unsafe {
+                extern "system" fn release_full_screen_exclusive_mode_ext_fallback(
+                    _: Option<Device>,
+                    _: Option<SwapchainKHR>,
+                ) -> Result {
+                    panic!("fn release_full_screen_exclusive_mode_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkReleaseFullScreenExclusiveModeEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(release_full_screen_exclusive_mode_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+pub struct ExtFullScreenExclusiveFn1_1 {
+    pub get_device_group_surface_present_modes2_ext: FnGetDeviceGroupSurfacePresentModes2EXT,
+}
+impl ExtFullScreenExclusiveFn1_1 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtFullScreenExclusiveFn1_1 {
+            get_device_group_surface_present_modes2_ext: unsafe {
+                extern "system" fn get_device_group_surface_present_modes2_ext_fallback(
+                    _: Option<Device>,
+                    _: *const PhysicalDeviceSurfaceInfo2KHR,
+                    _: *mut DeviceGroupPresentModeFlagsKHR,
+                ) -> Result {
+                    panic!("fn get_device_group_surface_present_modes2_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupSurfacePresentModes2EXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(get_device_group_surface_present_modes2_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnResetQueryPoolEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+    query_count: u32,
+) -> c_void;
+pub struct ExtHostQueryResetFn1_0 {
+    pub reset_query_pool_ext: FnResetQueryPoolEXT,
+}
+impl ExtHostQueryResetFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtHostQueryResetFn1_0 {
+            reset_query_pool_ext: unsafe {
+                extern "system" fn reset_query_pool_ext_fallback(
+                    _: Option<Device>,
+                    _: Option<QueryPool>,
+                    _: u32,
+                    _: u32,
+                ) -> c_void {
+                    panic!("fn reset_query_pool_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPoolEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(reset_query_pool_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

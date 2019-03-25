@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 102
+//! Generated from vk.xml with `VK_HEADER_VERSION` 104
 pub mod builder;
 pub mod vk;
 
@@ -4077,6 +4077,18 @@ impl KhrDeviceGroup {
         };
         res
     }
+    pub unsafe fn get_device_group_surface_present_modes2_ext(
+        &self,
+        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
+    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp1_0.get_device_group_surface_present_modes2_ext)(Some(self.handle), p_surface_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
 }
 /// Loader for the `VK_NN_vi_surface` instance extension
 pub struct NnViSurface {
@@ -7225,6 +7237,42 @@ impl NvDeviceDiagnosticCheckpoints {
         res
     }
 }
+/// Loader for the `VK_AMD_display_native_hdr` device extension
+pub struct AmdDisplayNativeHdr {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::AmdDisplayNativeHdrFn1_0,
+}
+impl AmdDisplayNativeHdr {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::AmdDisplayNativeHdrFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_AMD_display_native_hdr\0").unwrap()
+    }
+    pub unsafe fn set_local_dimming_amd(&self, swap_chain: vk::SwapchainKHR, local_dimming_enable: bool) {
+        (self.fp1_0.set_local_dimming_amd)(
+            Some(swap_chain),
+            if local_dimming_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+}
 /// Loader for the `VK_FUCHSIA_imagepipe_surface` instance extension
 pub struct FuchsiaImagepipeSurface {
     pub version: vk::Version,
@@ -7409,6 +7457,133 @@ impl NvCooperativeMatrix {
             _ => Err(v_err),
         };
         res
+    }
+}
+/// Loader for the `VK_EXT_full_screen_exclusive` device extension
+pub struct ExtFullScreenExclusive {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtFullScreenExclusiveFn1_0,
+    pub fp1_1: vk::ExtFullScreenExclusiveFn1_1,
+}
+impl ExtFullScreenExclusive {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtFullScreenExclusiveFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        let (fp1_1, ok1_1) = vk::ExtFullScreenExclusiveFn1_1::load(f);
+        ok = ok && ok1_1;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 1, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+            fp1_1,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_full_screen_exclusive\0").unwrap()
+    }
+    pub unsafe fn get_physical_device_surface_present_modes2_ext_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
+    ) -> Result<Vec<vk::PresentModeKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp1_0.get_physical_device_surface_present_modes2_ext)(
+            Some(physical_device),
+            p_surface_info,
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp1_0.get_physical_device_surface_present_modes2_ext)(
+            Some(physical_device),
+            p_surface_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn acquire_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
+        let err = (self.fp1_0.acquire_full_screen_exclusive_mode_ext)(Some(self.handle), Some(swapchain));
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn release_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
+        let err = (self.fp1_0.release_full_screen_exclusive_mode_ext)(Some(self.handle), Some(swapchain));
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_device_group_surface_present_modes2_ext(
+        &self,
+        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
+    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp1_1.get_device_group_surface_present_modes2_ext)(Some(self.handle), p_surface_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+}
+/// Loader for the `VK_EXT_host_query_reset` device extension
+pub struct ExtHostQueryReset {
+    pub version: vk::Version,
+    pub handle: vk::Device,
+    pub fp1_0: vk::ExtHostQueryResetFn1_0,
+}
+impl ExtHostQueryReset {
+    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
+        let f = |name: &CStr| {
+            instance
+                .get_device_proc_addr(device.handle, name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtHostQueryResetFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: device.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_host_query_reset\0").unwrap()
+    }
+    pub unsafe fn reset_query_pool_ext(&self, query_pool: vk::QueryPool, first_query: u32, query_count: u32) {
+        (self.fp1_0.reset_query_pool_ext)(Some(self.handle), Some(query_pool), first_query, query_count);
     }
 }
 

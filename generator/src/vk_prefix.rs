@@ -75,6 +75,7 @@ pub type wl_surface = Never;
 pub type HINSTANCE = *mut c_void;
 pub type HWND = *mut c_void;
 pub type HANDLE = *mut c_void;
+pub type HMONITOR = *mut c_void;
 #[allow(non_camel_case_types)]
 pub type SECURITY_ATTRIBUTES = Never;
 pub type DWORD = c_ulong;

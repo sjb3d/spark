@@ -6693,6 +6693,42 @@ impl<'a> Deref for HdrMetadataEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::SwapchainDisplayNativeHdrCreateInfoAMD {
+    type Type = SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        SwapchainDisplayNativeHdrCreateInfoAMDBuilder::new()
+    }
+}
+pub struct SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
+    inner: vk::SwapchainDisplayNativeHdrCreateInfoAMD,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn local_dimming_enable(mut self, local_dimming_enable: bool) -> Self {
+        self.inner.local_dimming_enable = if local_dimming_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
+    type Target = vk::SwapchainDisplayNativeHdrCreateInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PresentTimesInfoGOOGLE {
     type Type = PresentTimesInfoGOOGLEBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8413,6 +8449,42 @@ impl<'a> PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
     type Target = vk::PhysicalDeviceFloat16Int8FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceHostQueryResetFeaturesEXT {
+    type Type = PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceHostQueryResetFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceHostQueryResetFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn host_query_reset(mut self, host_query_reset: bool) -> Self {
+        self.inner.host_query_reset = if host_query_reset { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceHostQueryResetFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11570,6 +11642,42 @@ impl<'a> Deref for PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::SurfaceProtectedCapabilitiesKHR {
+    type Type = SurfaceProtectedCapabilitiesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        SurfaceProtectedCapabilitiesKHRBuilder::new()
+    }
+}
+pub struct SurfaceProtectedCapabilitiesKHRBuilder<'a> {
+    inner: vk::SurfaceProtectedCapabilitiesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SurfaceProtectedCapabilitiesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn supports_protected(mut self, supports_protected: bool) -> Self {
+        self.inner.supports_protected = if supports_protected { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for SurfaceProtectedCapabilitiesKHRBuilder<'a> {
+    type Target = vk::SurfaceProtectedCapabilitiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {
     type Type = PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11831,7 +11939,7 @@ impl<'a> BufferDeviceAddressCreateInfoEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn device_address(mut self, device_address: vk::DeviceSize) -> Self {
+    pub fn device_address(mut self, device_address: vk::DeviceAddress) -> Self {
         self.inner.device_address = device_address;
         self
     }
@@ -12062,6 +12170,168 @@ impl<'a> ImageViewHandleInfoNVXBuilder<'a> {
 }
 impl<'a> Deref for ImageViewHandleInfoNVXBuilder<'a> {
     type Target = vk::ImageViewHandleInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineCreationFeedbackCreateInfoEXT {
+    type Type = PipelineCreationFeedbackCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PipelineCreationFeedbackCreateInfoEXTBuilder::new()
+    }
+}
+pub struct PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineCreationFeedbackCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_pipeline_creation_feedback(
+        mut self,
+        p_pipeline_creation_feedback: *mut vk::PipelineCreationFeedbackEXT,
+    ) -> Self {
+        self.inner.p_pipeline_creation_feedback = p_pipeline_creation_feedback;
+        self
+    }
+    pub fn pipeline_stage_creation_feedback_count(mut self, pipeline_stage_creation_feedback_count: u32) -> Self {
+        self.inner.pipeline_stage_creation_feedback_count = pipeline_stage_creation_feedback_count;
+        self
+    }
+    pub fn p_pipeline_stage_creation_feedbacks(
+        mut self,
+        p_pipeline_stage_creation_feedbacks: *mut vk::PipelineCreationFeedbackEXT,
+    ) -> Self {
+        self.inner.p_pipeline_stage_creation_feedbacks = p_pipeline_stage_creation_feedbacks;
+        self
+    }
+}
+impl<'a> Deref for PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineCreationFeedbackCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SurfaceFullScreenExclusiveInfoEXT {
+    type Type = SurfaceFullScreenExclusiveInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        SurfaceFullScreenExclusiveInfoEXTBuilder::new()
+    }
+}
+pub struct SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
+    inner: vk::SurfaceFullScreenExclusiveInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn full_screen_exclusive(mut self, full_screen_exclusive: vk::FullScreenExclusiveEXT) -> Self {
+        self.inner.full_screen_exclusive = full_screen_exclusive;
+        self
+    }
+}
+impl<'a> Deref for SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
+    type Target = vk::SurfaceFullScreenExclusiveInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SurfaceFullScreenExclusiveWin32InfoEXT {
+    type Type = SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        SurfaceFullScreenExclusiveWin32InfoEXTBuilder::new()
+    }
+}
+pub struct SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
+    inner: vk::SurfaceFullScreenExclusiveWin32InfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn hmonitor(mut self, hmonitor: vk::HMONITOR) -> Self {
+        self.inner.hmonitor = hmonitor;
+        self
+    }
+}
+impl<'a> Deref for SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
+    type Target = vk::SurfaceFullScreenExclusiveWin32InfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {
+    type Type = SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        SurfaceCapabilitiesFullScreenExclusiveEXTBuilder::new()
+    }
+}
+pub struct SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
+    inner: vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn full_screen_exclusive_supported(mut self, full_screen_exclusive_supported: bool) -> Self {
+        self.inner.full_screen_exclusive_supported = if full_screen_exclusive_supported {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
+    type Target = vk::SurfaceCapabilitiesFullScreenExclusiveEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
