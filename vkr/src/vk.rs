@@ -13672,6 +13672,8 @@ impl DriverIdKHR {
     pub const ARM_PROPRIETARY: Self = DriverIdKHR(9);
     /// Google LLC
     pub const GOOGLE_PASTEL: Self = DriverIdKHR(10);
+    /// Google LLC
+    pub const GGP_PROPRIETARY: Self = DriverIdKHR(11);
 }
 impl default::Default for DriverIdKHR {
     fn default() -> Self {
@@ -13691,6 +13693,7 @@ impl fmt::Display for DriverIdKHR {
             8 => Some(&"QUALCOMM_PROPRIETARY"),
             9 => Some(&"ARM_PROPRIETARY"),
             10 => Some(&"GOOGLE_PASTEL"),
+            11 => Some(&"GGP_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {
