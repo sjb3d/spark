@@ -115,6 +115,16 @@ impl GetTypeName for vk::Type {
     }
 }
 
+trait IsBlacklisted {
+    fn is_blacklisted(&self) -> bool;
+}
+
+impl IsBlacklisted for vk::Extension {
+    fn is_blacklisted(&self) -> bool {
+        self.author.as_ref_str() == Some("GGP")
+    }
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum CommandReturnValue {
     Void,
@@ -242,6 +252,7 @@ enum LibCommandStyle {
 struct Generator<'a> {
     registry: &'a vk::Registry,
     type_by_name: HashMap<&'a str, &'a vk::Type>,
+    type_name_blacklist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
     bitmask_from_value: HashMap<&'a str, &'a str>,
     enums_by_name: HashMap<&'a str, Vec<&'a vk::Enum>>,
@@ -285,6 +296,34 @@ impl<'a> Generator<'a> {
                     }
                 }
             }
+        }
+        for registry_child in &self.registry.0 {
+            match registry_child {
+                vk::RegistryChild::Extensions(extensions) => {
+                    for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
+                        for item in ext
+                            .children
+                            .iter()
+                            .filter_map(|ext_child| match ext_child {
+                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                                _ => None,
+                            })
+                            .flat_map(|items| items.iter())
+                        {
+                            match item {
+                                vk::InterfaceItem::Type { name, .. } => {
+                                    self.type_name_blacklist.insert(name.as_str());
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        for name in self.type_name_blacklist.iter() {
+            println!("Blacklisted: {}", name);
         }
     }
 
@@ -367,7 +406,7 @@ impl<'a> Generator<'a> {
                     }
                 }
                 vk::RegistryChild::Extensions(extensions) => {
-                    for ext in &extensions.children {
+                    for ext in extensions.children.iter().filter(|ext| !ext.is_blacklisted()) {
                         for en in ext
                             .children
                             .iter()
@@ -500,7 +539,7 @@ impl<'a> Generator<'a> {
                     feature_names.push(feature.name.as_str());
                 }
                 vk::RegistryChild::Extensions(extensions) => {
-                    for extension in &extensions.children {
+                    for extension in extensions.children.iter().filter(|ext| !ext.is_blacklisted()) {
                         if extension.supported.as_ref_str() == Some("vulkan") {
                             let mut feature_commands: Vec<Vec<_>> = vec![Vec::new(); feature_names.len()];
                             for ext_child in &extension.children {
@@ -546,6 +585,7 @@ impl<'a> Generator<'a> {
         let mut gen = Self {
             registry,
             type_by_name: HashMap::new(),
+            type_name_blacklist: HashSet::new(),
             tag_names: HashSet::new(),
             bitmask_from_value: HashMap::new(),
             enums_by_name: HashMap::new(),
@@ -772,10 +812,13 @@ impl<'a> Generator<'a> {
     }
 
     fn write_enum_type(&self, w: &mut impl IoWrite, ty: &vk::Type, enum_type: EnumType) -> WriteResult {
+        let type_name = ty.get_type_name();
+        if self.type_name_blacklist.contains(type_name) {
+            return Ok(());
+        }
         if let Some(ref comment) = ty.comment {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
-        let type_name = ty.get_type_name();
         if let Some(alias) = ty.alias.as_ref_str() {
             if enum_type == EnumType::Value && !self.is_enum_value_type_used(alias) {
                 return Ok(());
@@ -1069,10 +1112,13 @@ impl<'a> Generator<'a> {
     }
 
     fn write_aggregrate_type(&self, w: &mut impl IoWrite, ty: &vk::Type, agg_type: AggregateType) -> WriteResult {
+        let type_name = ty.name.as_ref_str().expect("missing struct name");
+        if self.type_name_blacklist.contains(type_name) {
+            return Ok(());
+        }
         if let Some(ref comment) = ty.comment {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
-        let type_name = ty.name.as_ref_str().expect("missing struct name");
         if let Some(ref alias) = ty.alias {
             writeln!(
                 w,
@@ -1331,6 +1377,7 @@ impl<'a> Generator<'a> {
         for ty in self
             .get_type_iterator()
             .filter(|ty| ty.category.as_ref_str() == Some("struct") && ty.alias.is_none() && ty.returnedonly.is_none())
+            .filter(|ty| !self.type_name_blacklist.contains(ty.get_type_name()))
         {
             if let vk::TypeSpec::Members(ref members) = ty.spec {
                 let type_name = ty.name.as_ref_str().expect("missing struct name");
