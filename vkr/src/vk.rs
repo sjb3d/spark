@@ -9013,19 +9013,19 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Instance(ptr::NonNull<c_void>);
+pub struct Instance(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct PhysicalDevice(ptr::NonNull<c_void>);
+pub struct PhysicalDevice(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Device(ptr::NonNull<c_void>);
+pub struct Device(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Queue(ptr::NonNull<c_void>);
+pub struct Queue(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct CommandBuffer(ptr::NonNull<c_void>);
+pub struct CommandBuffer(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DeviceMemory(num::NonZeroU64);

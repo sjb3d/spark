@@ -984,7 +984,7 @@ impl<'a> Generator<'a> {
                 Some("VK_DEFINE_HANDLE") => {
                     writeln!(
                         w,
-                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(ptr::NonNull<c_void>);",
+                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroUsize);",
                         handle_name
                     )?;
                 }

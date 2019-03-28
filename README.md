@@ -50,7 +50,7 @@ let accel = nv_ray_tracing.create_acceleration_structure_nv(&create_info, None)?
 
 ## Vulkan Handles
 
-Handle types make use of the `std::ptr::NonNull` and `std::num::NonZeroU64` rust types and must always be valid.
+Handle types make use of the `std::num::NonZeroUsize` and `std::num::NonZeroU64` rust types and must always be valid.
 
 When used as part of other structures, handles will be wrapped in `Option<T>` to allow encoding of `VK_NULL_HANDLE` as `None`. For example:
 
