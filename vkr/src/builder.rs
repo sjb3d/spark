@@ -12336,3 +12336,39 @@ impl<'a> Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::HeadlessSurfaceCreateInfoEXT {
+    type Type = HeadlessSurfaceCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        HeadlessSurfaceCreateInfoEXTBuilder::new()
+    }
+}
+pub struct HeadlessSurfaceCreateInfoEXTBuilder<'a> {
+    inner: vk::HeadlessSurfaceCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> HeadlessSurfaceCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::HeadlessSurfaceCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for HeadlessSurfaceCreateInfoEXTBuilder<'a> {
+    type Target = vk::HeadlessSurfaceCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

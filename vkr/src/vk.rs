@@ -6696,6 +6696,73 @@ impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct HeadlessSurfaceCreateFlagsEXT(u32);
+impl HeadlessSurfaceCreateFlagsEXT {}
+impl default::Default for HeadlessSurfaceCreateFlagsEXT {
+    fn default() -> Self {
+        HeadlessSurfaceCreateFlagsEXT(0)
+    }
+}
+impl HeadlessSurfaceCreateFlagsEXT {
+    pub fn empty() -> Self {
+        HeadlessSurfaceCreateFlagsEXT(0)
+    }
+    pub fn all() -> Self {
+        HeadlessSurfaceCreateFlagsEXT(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for HeadlessSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        HeadlessSurfaceCreateFlagsEXT(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for HeadlessSurfaceCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for HeadlessSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        HeadlessSurfaceCreateFlagsEXT(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for HeadlessSurfaceCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for HeadlessSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        HeadlessSurfaceCreateFlagsEXT(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for HeadlessSurfaceCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PeerMemoryFeatureFlags(u32);
 impl PeerMemoryFeatureFlags {
     /// Can read with vkCmdCopy commands
@@ -11745,6 +11812,8 @@ impl StructureType {
     pub const SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT: Self = StructureType(1000255002);
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = StructureType(1000255001);
+    /// Added by extension VK_EXT_headless_surface.
+    pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000256000);
     /// Added by extension VK_EXT_host_query_reset.
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
 }
@@ -12088,6 +12157,7 @@ impl fmt::Display for StructureType {
             1000255000 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT"),
             1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
+            1000256000 => Some(&"HEADLESS_SURFACE_CREATE_INFO_EXT"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT"),
             _ => None,
         };
@@ -28855,6 +28925,31 @@ impl fmt::Debug for SurfaceCapabilitiesFullScreenExclusiveEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HeadlessSurfaceCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: HeadlessSurfaceCreateFlagsEXT,
+}
+impl default::Default for HeadlessSurfaceCreateInfoEXT {
+    fn default() -> Self {
+        HeadlessSurfaceCreateInfoEXT {
+            s_type: StructureType::HEADLESS_SURFACE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: HeadlessSurfaceCreateFlagsEXT::default(),
+        }
+    }
+}
+impl fmt::Debug for HeadlessSurfaceCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HeadlessSurfaceCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
 type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -34131,7 +34226,7 @@ impl NvxImageViewHandleFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdDrawIndirectCountAMD = unsafe extern "system" fn(
+type FnCmdDrawIndirectCountKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
     offset: DeviceSize,
@@ -34140,7 +34235,8 @@ type FnCmdDrawIndirectCountAMD = unsafe extern "system" fn(
     max_draw_count: u32,
     stride: u32,
 ) -> c_void;
-type FnCmdDrawIndexedIndirectCountAMD = unsafe extern "system" fn(
+type FnCmdDrawIndirectCountAMD = FnCmdDrawIndirectCountKHR;
+type FnCmdDrawIndexedIndirectCountKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
     offset: DeviceSize,
@@ -34149,6 +34245,7 @@ type FnCmdDrawIndexedIndirectCountAMD = unsafe extern "system" fn(
     max_draw_count: u32,
     stride: u32,
 ) -> c_void;
+type FnCmdDrawIndexedIndirectCountAMD = FnCmdDrawIndexedIndirectCountKHR;
 pub struct AmdDrawIndirectCountFn1_0 {
     pub cmd_draw_indirect_count_amd: FnCmdDrawIndirectCountAMD,
     pub cmd_draw_indexed_indirect_count_amd: FnCmdDrawIndexedIndirectCountAMD,
@@ -37573,24 +37670,6 @@ impl KhrMaintenance3Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdDrawIndirectCountKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    count_buffer: Option<Buffer>,
-    count_buffer_offset: DeviceSize,
-    max_draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDrawIndexedIndirectCountKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    count_buffer: Option<Buffer>,
-    count_buffer_offset: DeviceSize,
-    max_draw_count: u32,
-    stride: u32,
-) -> c_void;
 pub struct KhrDrawIndirectCountFn1_0 {
     pub cmd_draw_indirect_count_khr: FnCmdDrawIndirectCountKHR,
     pub cmd_draw_indexed_indirect_count_khr: FnCmdDrawIndexedIndirectCountKHR,
@@ -38248,6 +38327,44 @@ impl ExtFullScreenExclusiveFn1_1 {
                     || {
                         all_loaded = false;
                         mem::transmute(get_device_group_surface_present_modes2_ext_fallback as *const c_void)
+                    },
+                    |f| mem::transmute(f),
+                )
+            },
+        };
+        (block, all_loaded)
+    }
+}
+type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const HeadlessSurfaceCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub struct ExtHeadlessSurfaceFn1_0 {
+    pub create_headless_surface_ext: FnCreateHeadlessSurfaceEXT,
+}
+impl ExtHeadlessSurfaceFn1_0 {
+    pub fn load<F>(mut f: F) -> (Self, bool)
+    where
+        F: FnMut(&CStr) -> Option<FnVoidFunction>,
+    {
+        let mut all_loaded = true;
+        let block = ExtHeadlessSurfaceFn1_0 {
+            create_headless_surface_ext: unsafe {
+                extern "system" fn create_headless_surface_ext_fallback(
+                    _: Option<Instance>,
+                    _: *const HeadlessSurfaceCreateInfoEXT,
+                    _: *const AllocationCallbacks,
+                    _: *mut SurfaceKHR,
+                ) -> Result {
+                    panic!("fn create_headless_surface_ext not loaded");
+                }
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateHeadlessSurfaceEXT\0");
+                f(name).map_or_else(
+                    || {
+                        all_loaded = false;
+                        mem::transmute(create_headless_surface_ext_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

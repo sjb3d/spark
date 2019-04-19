@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 106
+//! Generated from vk.xml with `VK_HEADER_VERSION` 107
 pub mod builder;
 pub mod vk;
 
@@ -7547,6 +7547,54 @@ impl ExtFullScreenExclusive {
     ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
         let mut res = mem::uninitialized();
         let err = (self.fp1_1.get_device_group_surface_present_modes2_ext)(Some(self.handle), p_surface_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+}
+/// Loader for the `VK_EXT_headless_surface` instance extension
+pub struct ExtHeadlessSurface {
+    pub version: vk::Version,
+    pub handle: vk::Instance,
+    pub fp1_0: vk::ExtHeadlessSurfaceFn1_0,
+}
+impl ExtHeadlessSurface {
+    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
+        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
+        let f = |name: &CStr| {
+            lib.get_instance_proc_addr(Some(instance.handle), name)
+                .map(|p| mem::transmute(p))
+        };
+        let mut version = vk::Version::from_raw(0);
+        let mut ok = true;
+        let (fp1_0, ok1_0) = vk::ExtHeadlessSurfaceFn1_0::load(f);
+        ok = ok && ok1_0;
+        if ok {
+            version = vk::Version::from_raw_parts(1, 0, 0);
+        }
+        Ok(Self {
+            version,
+            handle: instance.handle,
+            fp1_0,
+        })
+    }
+    pub fn name() -> &'static CStr {
+        CStr::from_bytes_with_nul(b"VK_EXT_headless_surface\0").unwrap()
+    }
+    pub unsafe fn create_headless_surface_ext(
+        &self,
+        p_create_info: &vk::HeadlessSurfaceCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp1_0.create_headless_surface_ext)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
