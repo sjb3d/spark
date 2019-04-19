@@ -4586,17 +4586,17 @@ impl<'a> Deref for PresentRegionKHRBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceVariablePointerFeatures {
-    type Type = PhysicalDeviceVariablePointerFeaturesBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceVariablePointersFeatures {
+    type Type = PhysicalDeviceVariablePointersFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceVariablePointerFeaturesBuilder::new()
+        PhysicalDeviceVariablePointersFeaturesBuilder::new()
     }
 }
-pub struct PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
-    inner: vk::PhysicalDeviceVariablePointerFeatures,
+pub struct PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
+    inner: vk::PhysicalDeviceVariablePointersFeatures,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
+impl<'a> PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -4624,8 +4624,8 @@ impl<'a> PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for PhysicalDeviceVariablePointerFeaturesBuilder<'a> {
-    type Target = vk::PhysicalDeviceVariablePointerFeatures;
+impl<'a> Deref for PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
+    type Target = vk::PhysicalDeviceVariablePointersFeatures;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -8377,17 +8377,17 @@ impl<'a> Deref for ShaderModuleValidationCacheCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDrawParameterFeatures {
-    type Type = PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDrawParametersFeatures {
+    type Type = PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderDrawParameterFeaturesBuilder::new()
+        PhysicalDeviceShaderDrawParametersFeaturesBuilder::new()
     }
 }
-pub struct PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
-    inner: vk::PhysicalDeviceShaderDrawParameterFeatures,
+pub struct PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderDrawParametersFeatures,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
+impl<'a> PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -8407,8 +8407,8 @@ impl<'a> PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for PhysicalDeviceShaderDrawParameterFeaturesBuilder<'a> {
-    type Target = vk::PhysicalDeviceShaderDrawParameterFeatures;
+impl<'a> Deref for PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderDrawParametersFeatures;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11826,17 +11826,17 @@ impl<'a> Deref for MemoryPriorityAllocateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceBufferAddressFeaturesEXT {
-    type Type = PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {
+    type Type = PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceBufferAddressFeaturesEXTBuilder::new()
+        PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder::new()
     }
 }
-pub struct PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
-    inner: vk::PhysicalDeviceBufferAddressFeaturesEXT,
+pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
+impl<'a> PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -11872,8 +11872,8 @@ impl<'a> PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for PhysicalDeviceBufferAddressFeaturesEXTBuilder<'a> {
-    type Target = vk::PhysicalDeviceBufferAddressFeaturesEXT;
+impl<'a> Deref for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

@@ -4150,6 +4150,10 @@ impl SubpassDescriptionFlags {
     pub const PER_VIEW_ATTRIBUTES_NVX: Self = SubpassDescriptionFlags(0x1);
     /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = SubpassDescriptionFlags(0x2);
+    /// Added by extension VK_QCOM_extension_172.
+    pub const RESERVED_2_QCOM: Self = SubpassDescriptionFlags(0x4);
+    /// Added by extension VK_QCOM_extension_172.
+    pub const RESERVED_3_QCOM: Self = SubpassDescriptionFlags(0x8);
 }
 impl default::Default for SubpassDescriptionFlags {
     fn default() -> Self {
@@ -4161,13 +4165,13 @@ impl SubpassDescriptionFlags {
         SubpassDescriptionFlags(0)
     }
     pub fn all() -> Self {
-        SubpassDescriptionFlags(0x3)
+        SubpassDescriptionFlags(0xf)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x3
+        self.0 == 0xf
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4213,7 +4217,12 @@ impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
-            &[(0x1, "PER_VIEW_ATTRIBUTES_NVX"), (0x2, "PER_VIEW_POSITION_X_ONLY_NVX")],
+            &[
+                (0x1, "PER_VIEW_ATTRIBUTES_NVX"),
+                (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
+                (0x4, "RESERVED_2_QCOM"),
+                (0x8, "RESERVED_3_QCOM"),
+            ],
             f,
         )
     }
@@ -11200,7 +11209,8 @@ impl StructureType {
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = StructureType(1000053000);
     pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = StructureType(1000053001);
     pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = StructureType(1000053002);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES: Self = StructureType(1000120000);
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES: Self = StructureType(1000120000);
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES;
     pub const PROTECTED_SUBMIT_INFO: Self = StructureType(1000145000);
     pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES: Self = StructureType(1000145001);
     pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES: Self = StructureType(1000145002);
@@ -11228,7 +11238,9 @@ impl StructureType {
     pub const EXTERNAL_SEMAPHORE_PROPERTIES: Self = StructureType(1000076001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES: Self = StructureType(1000168000);
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT: Self = StructureType(1000168001);
-    pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self = StructureType(1000063000);
+    pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES: Self = StructureType(1000063000);
+    pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self =
+        Self::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
     /// Added by extension VK_KHR_swapchain.
     pub const SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000001000);
     /// Added by extension VK_KHR_swapchain.
@@ -11471,6 +11483,7 @@ impl StructureType {
     /// Added by extension VK_KHR_get_surface_capabilities2.
     pub const SURFACE_FORMAT_2_KHR: Self = StructureType(1000119002);
     pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
     /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PROPERTIES_2_KHR: Self = StructureType(1000121000);
     /// Added by extension VK_KHR_get_display_properties2.
@@ -11707,7 +11720,9 @@ impl StructureType {
     /// Added by extension VK_NV_dedicated_allocation_image_aliasing.
     pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = StructureType(1000240000);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self = StructureType(1000244000);
+    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT: Self = StructureType(1000244000);
+    pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self =
+        Self::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT;
     /// Added by extension VK_EXT_buffer_device_address.
     pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = StructureType(1000244001);
     /// Added by extension VK_EXT_buffer_device_address.
@@ -11826,7 +11841,7 @@ impl fmt::Display for StructureType {
             1000053000 => Some(&"RENDER_PASS_MULTIVIEW_CREATE_INFO"),
             1000053001 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_FEATURES"),
             1000053002 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES"),
-            1000120000 => Some(&"PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES"),
+            1000120000 => Some(&"PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES"),
             1000145000 => Some(&"PROTECTED_SUBMIT_INFO"),
             1000145001 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES"),
             1000145002 => Some(&"PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES"),
@@ -11854,7 +11869,7 @@ impl fmt::Display for StructureType {
             1000076001 => Some(&"EXTERNAL_SEMAPHORE_PROPERTIES"),
             1000168000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES"),
             1000168001 => Some(&"DESCRIPTOR_SET_LAYOUT_SUPPORT"),
-            1000063000 => Some(&"PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES"),
+            1000063000 => Some(&"PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES"),
             1000001000 => Some(&"SWAPCHAIN_CREATE_INFO_KHR"),
             1000001001 => Some(&"PRESENT_INFO_KHR"),
             1000060007 => Some(&"DEVICE_GROUP_PRESENT_CAPABILITIES_KHR"),
@@ -12061,7 +12076,7 @@ impl fmt::Display for StructureType {
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
             1000239000 => Some(&"SURFACE_PROTECTED_CAPABILITIES_KHR"),
             1000240000 => Some(&"PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV"),
-            1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT"),
+            1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT"),
             1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
             1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
@@ -20468,25 +20483,25 @@ impl fmt::Debug for RectLayerKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceVariablePointerFeatures {
+pub struct PhysicalDeviceVariablePointersFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub variable_pointers_storage_buffer: Bool32,
     pub variable_pointers: Bool32,
 }
-impl default::Default for PhysicalDeviceVariablePointerFeatures {
+impl default::Default for PhysicalDeviceVariablePointersFeatures {
     fn default() -> Self {
-        PhysicalDeviceVariablePointerFeatures {
-            s_type: StructureType::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES,
+        PhysicalDeviceVariablePointersFeatures {
+            s_type: StructureType::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES,
             p_next: ptr::null_mut(),
             variable_pointers_storage_buffer: Bool32::default(),
             variable_pointers: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceVariablePointerFeatures {
+impl fmt::Debug for PhysicalDeviceVariablePointersFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceVariablePointerFeatures")
+        fmt.debug_struct("PhysicalDeviceVariablePointersFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -20497,7 +20512,9 @@ impl fmt::Debug for PhysicalDeviceVariablePointerFeatures {
             .finish()
     }
 }
-pub type PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointerFeatures;
+pub type PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
+pub type PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
+pub type PhysicalDeviceVariablePointerFeatures = PhysicalDeviceVariablePointersFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct ExternalMemoryProperties {
@@ -24664,29 +24681,30 @@ impl fmt::Debug for DescriptorSetLayoutSupport {
 pub type DescriptorSetLayoutSupportKHR = DescriptorSetLayoutSupport;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderDrawParameterFeatures {
+pub struct PhysicalDeviceShaderDrawParametersFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_draw_parameters: Bool32,
 }
-impl default::Default for PhysicalDeviceShaderDrawParameterFeatures {
+impl default::Default for PhysicalDeviceShaderDrawParametersFeatures {
     fn default() -> Self {
-        PhysicalDeviceShaderDrawParameterFeatures {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES,
+        PhysicalDeviceShaderDrawParametersFeatures {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES,
             p_next: ptr::null_mut(),
             shader_draw_parameters: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderDrawParameterFeatures {
+impl fmt::Debug for PhysicalDeviceShaderDrawParametersFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderDrawParameterFeatures")
+        fmt.debug_struct("PhysicalDeviceShaderDrawParametersFeatures")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_draw_parameters", &self.shader_draw_parameters)
             .finish()
     }
 }
+pub type PhysicalDeviceShaderDrawParameterFeatures = PhysicalDeviceShaderDrawParametersFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceFloat16Int8FeaturesKHR {
@@ -28401,17 +28419,17 @@ impl fmt::Debug for MemoryPriorityAllocateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceBufferAddressFeaturesEXT {
+pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub buffer_device_address: Bool32,
     pub buffer_device_address_capture_replay: Bool32,
     pub buffer_device_address_multi_device: Bool32,
 }
-impl default::Default for PhysicalDeviceBufferAddressFeaturesEXT {
+impl default::Default for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceBufferAddressFeaturesEXT {
-            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT,
+        PhysicalDeviceBufferDeviceAddressFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT,
             p_next: ptr::null_mut(),
             buffer_device_address: Bool32::default(),
             buffer_device_address_capture_replay: Bool32::default(),
@@ -28419,9 +28437,9 @@ impl default::Default for PhysicalDeviceBufferAddressFeaturesEXT {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceBufferAddressFeaturesEXT {
+impl fmt::Debug for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceBufferAddressFeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceBufferDeviceAddressFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("buffer_device_address", &self.buffer_device_address)
@@ -28436,6 +28454,7 @@ impl fmt::Debug for PhysicalDeviceBufferAddressFeaturesEXT {
             .finish()
     }
 }
+pub type PhysicalDeviceBufferAddressFeaturesEXT = PhysicalDeviceBufferDeviceAddressFeaturesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BufferDeviceAddressInfoEXT {
@@ -37922,8 +37941,11 @@ impl NvDeviceDiagnosticCheckpointsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnSetLocalDimmingAMD =
-    unsafe extern "system" fn(swap_chain: Option<SwapchainKHR>, local_dimming_enable: Bool32) -> c_void;
+type FnSetLocalDimmingAMD = unsafe extern "system" fn(
+    device: Option<Device>,
+    swap_chain: Option<SwapchainKHR>,
+    local_dimming_enable: Bool32,
+) -> c_void;
 pub struct AmdDisplayNativeHdrFn1_0 {
     pub set_local_dimming_amd: FnSetLocalDimmingAMD,
 }
@@ -37935,7 +37957,11 @@ impl AmdDisplayNativeHdrFn1_0 {
         let mut all_loaded = true;
         let block = AmdDisplayNativeHdrFn1_0 {
             set_local_dimming_amd: unsafe {
-                extern "system" fn set_local_dimming_amd_fallback(_: Option<SwapchainKHR>, _: Bool32) -> c_void {
+                extern "system" fn set_local_dimming_amd_fallback(
+                    _: Option<Device>,
+                    _: Option<SwapchainKHR>,
+                    _: Bool32,
+                ) -> c_void {
                     panic!("fn set_local_dimming_amd not loaded");
                 }
                 let name = CStr::from_bytes_with_nul_unchecked(b"vkSetLocalDimmingAMD\0");

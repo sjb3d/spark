@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 105
+//! Generated from vk.xml with `VK_HEADER_VERSION` 106
 pub mod builder;
 pub mod vk;
 
@@ -7268,6 +7268,7 @@ impl AmdDisplayNativeHdr {
     }
     pub unsafe fn set_local_dimming_amd(&self, swap_chain: vk::SwapchainKHR, local_dimming_enable: bool) {
         (self.fp1_0.set_local_dimming_amd)(
+            Some(self.handle),
             Some(swap_chain),
             if local_dimming_enable { vk::TRUE } else { vk::FALSE },
         );
