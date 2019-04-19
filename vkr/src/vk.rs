@@ -34334,14 +34334,21 @@ impl NvExternalMemoryWin32Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetPhysicalDeviceFeatures2KHR = FnGetPhysicalDeviceFeatures2;
+type FnGetPhysicalDeviceProperties2KHR = FnGetPhysicalDeviceProperties2;
+type FnGetPhysicalDeviceFormatProperties2KHR = FnGetPhysicalDeviceFormatProperties2;
+type FnGetPhysicalDeviceImageFormatProperties2KHR = FnGetPhysicalDeviceImageFormatProperties2;
+type FnGetPhysicalDeviceQueueFamilyProperties2KHR = FnGetPhysicalDeviceQueueFamilyProperties2;
+type FnGetPhysicalDeviceMemoryProperties2KHR = FnGetPhysicalDeviceMemoryProperties2;
+type FnGetPhysicalDeviceSparseImageFormatProperties2KHR = FnGetPhysicalDeviceSparseImageFormatProperties2;
 pub struct KhrGetPhysicalDeviceProperties2Fn1_0 {
-    pub get_physical_device_features2: FnGetPhysicalDeviceFeatures2,
-    pub get_physical_device_properties2: FnGetPhysicalDeviceProperties2,
-    pub get_physical_device_format_properties2: FnGetPhysicalDeviceFormatProperties2,
-    pub get_physical_device_image_format_properties2: FnGetPhysicalDeviceImageFormatProperties2,
-    pub get_physical_device_queue_family_properties2: FnGetPhysicalDeviceQueueFamilyProperties2,
-    pub get_physical_device_memory_properties2: FnGetPhysicalDeviceMemoryProperties2,
-    pub get_physical_device_sparse_image_format_properties2: FnGetPhysicalDeviceSparseImageFormatProperties2,
+    pub get_physical_device_features2_khr: FnGetPhysicalDeviceFeatures2KHR,
+    pub get_physical_device_properties2_khr: FnGetPhysicalDeviceProperties2KHR,
+    pub get_physical_device_format_properties2_khr: FnGetPhysicalDeviceFormatProperties2KHR,
+    pub get_physical_device_image_format_properties2_khr: FnGetPhysicalDeviceImageFormatProperties2KHR,
+    pub get_physical_device_queue_family_properties2_khr: FnGetPhysicalDeviceQueueFamilyProperties2KHR,
+    pub get_physical_device_memory_properties2_khr: FnGetPhysicalDeviceMemoryProperties2KHR,
+    pub get_physical_device_sparse_image_format_properties2_khr: FnGetPhysicalDeviceSparseImageFormatProperties2KHR,
 }
 impl KhrGetPhysicalDeviceProperties2Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34350,119 +34357,121 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrGetPhysicalDeviceProperties2Fn1_0 {
-            get_physical_device_features2: unsafe {
-                extern "system" fn get_physical_device_features2_fallback(
+            get_physical_device_features2_khr: unsafe {
+                extern "system" fn get_physical_device_features2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *mut PhysicalDeviceFeatures2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_features2 not loaded");
+                    panic!("fn get_physical_device_features2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_features2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_features2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_properties2: unsafe {
-                extern "system" fn get_physical_device_properties2_fallback(
+            get_physical_device_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *mut PhysicalDeviceProperties2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_properties2 not loaded");
+                    panic!("fn get_physical_device_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_properties2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_format_properties2: unsafe {
-                extern "system" fn get_physical_device_format_properties2_fallback(
+            get_physical_device_format_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_format_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: Format,
                     _: *mut FormatProperties2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_format_properties2 not loaded");
+                    panic!("fn get_physical_device_format_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFormatProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_format_properties2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_format_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_image_format_properties2: unsafe {
-                extern "system" fn get_physical_device_image_format_properties2_fallback(
+            get_physical_device_image_format_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_image_format_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *const PhysicalDeviceImageFormatInfo2,
                     _: *mut ImageFormatProperties2,
                 ) -> Result {
-                    panic!("fn get_physical_device_image_format_properties2 not loaded");
+                    panic!("fn get_physical_device_image_format_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceImageFormatProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceImageFormatProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_image_format_properties2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_image_format_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_queue_family_properties2: unsafe {
-                extern "system" fn get_physical_device_queue_family_properties2_fallback(
+            get_physical_device_queue_family_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_queue_family_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *mut u32,
                     _: *mut QueueFamilyProperties2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_queue_family_properties2 not loaded");
+                    panic!("fn get_physical_device_queue_family_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceQueueFamilyProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceQueueFamilyProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_queue_family_properties2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_queue_family_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_memory_properties2: unsafe {
-                extern "system" fn get_physical_device_memory_properties2_fallback(
+            get_physical_device_memory_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_memory_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *mut PhysicalDeviceMemoryProperties2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_memory_properties2 not loaded");
+                    panic!("fn get_physical_device_memory_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceMemoryProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_memory_properties2_fallback as *const c_void)
+                        mem::transmute(get_physical_device_memory_properties2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_physical_device_sparse_image_format_properties2: unsafe {
-                extern "system" fn get_physical_device_sparse_image_format_properties2_fallback(
+            get_physical_device_sparse_image_format_properties2_khr: unsafe {
+                extern "system" fn get_physical_device_sparse_image_format_properties2_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *const PhysicalDeviceSparseImageFormatInfo2,
                     _: *mut u32,
                     _: *mut SparseImageFormatProperties2,
                 ) -> c_void {
-                    panic!("fn get_physical_device_sparse_image_format_properties2 not loaded");
+                    panic!("fn get_physical_device_sparse_image_format_properties2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSparseImageFormatProperties2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_sparse_image_format_properties2_fallback as *const c_void)
+                        mem::transmute(
+                            get_physical_device_sparse_image_format_properties2_khr_fallback as *const c_void,
+                        )
                     },
                     |f| mem::transmute(f),
                 )
@@ -34471,15 +34480,18 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetDeviceGroupPeerMemoryFeaturesKHR = FnGetDeviceGroupPeerMemoryFeatures;
+type FnCmdSetDeviceMaskKHR = FnCmdSetDeviceMask;
+type FnCmdDispatchBaseKHR = FnCmdDispatchBase;
 type FnGetDeviceGroupSurfacePresentModes2EXT = unsafe extern "system" fn(
     device: Option<Device>,
     p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
     p_modes: *mut DeviceGroupPresentModeFlagsKHR,
 ) -> Result;
 pub struct KhrDeviceGroupFn1_0 {
-    pub get_device_group_peer_memory_features: FnGetDeviceGroupPeerMemoryFeatures,
-    pub cmd_set_device_mask: FnCmdSetDeviceMask,
-    pub cmd_dispatch_base: FnCmdDispatchBase,
+    pub get_device_group_peer_memory_features_khr: FnGetDeviceGroupPeerMemoryFeaturesKHR,
+    pub cmd_set_device_mask_khr: FnCmdSetDeviceMaskKHR,
+    pub cmd_dispatch_base_khr: FnCmdDispatchBaseKHR,
     pub get_device_group_present_capabilities_khr: FnGetDeviceGroupPresentCapabilitiesKHR,
     pub get_device_group_surface_present_modes_khr: FnGetDeviceGroupSurfacePresentModesKHR,
     pub get_physical_device_present_rectangles_khr: FnGetPhysicalDevicePresentRectanglesKHR,
@@ -34493,40 +34505,40 @@ impl KhrDeviceGroupFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrDeviceGroupFn1_0 {
-            get_device_group_peer_memory_features: unsafe {
-                extern "system" fn get_device_group_peer_memory_features_fallback(
+            get_device_group_peer_memory_features_khr: unsafe {
+                extern "system" fn get_device_group_peer_memory_features_khr_fallback(
                     _: Option<Device>,
                     _: u32,
                     _: u32,
                     _: u32,
                     _: *mut PeerMemoryFeatureFlags,
                 ) -> c_void {
-                    panic!("fn get_device_group_peer_memory_features not loaded");
+                    panic!("fn get_device_group_peer_memory_features_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeatures\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceGroupPeerMemoryFeaturesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_device_group_peer_memory_features_fallback as *const c_void)
+                        mem::transmute(get_device_group_peer_memory_features_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            cmd_set_device_mask: unsafe {
-                extern "system" fn cmd_set_device_mask_fallback(_: Option<CommandBuffer>, _: u32) -> c_void {
-                    panic!("fn cmd_set_device_mask not loaded");
+            cmd_set_device_mask_khr: unsafe {
+                extern "system" fn cmd_set_device_mask_khr_fallback(_: Option<CommandBuffer>, _: u32) -> c_void {
+                    panic!("fn cmd_set_device_mask_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMaskKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(cmd_set_device_mask_fallback as *const c_void)
+                        mem::transmute(cmd_set_device_mask_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            cmd_dispatch_base: unsafe {
-                extern "system" fn cmd_dispatch_base_fallback(
+            cmd_dispatch_base_khr: unsafe {
+                extern "system" fn cmd_dispatch_base_khr_fallback(
                     _: Option<CommandBuffer>,
                     _: u32,
                     _: u32,
@@ -34535,13 +34547,13 @@ impl KhrDeviceGroupFn1_0 {
                     _: u32,
                     _: u32,
                 ) -> c_void {
-                    panic!("fn cmd_dispatch_base not loaded");
+                    panic!("fn cmd_dispatch_base_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBase\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBaseKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(cmd_dispatch_base_fallback as *const c_void)
+                        mem::transmute(cmd_dispatch_base_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34673,8 +34685,9 @@ impl NnViSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
+type FnTrimCommandPoolKHR = FnTrimCommandPool;
 pub struct KhrMaintenance1Fn1_0 {
-    pub trim_command_pool: FnTrimCommandPool,
+    pub trim_command_pool_khr: FnTrimCommandPoolKHR,
 }
 impl KhrMaintenance1Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34683,19 +34696,19 @@ impl KhrMaintenance1Fn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrMaintenance1Fn1_0 {
-            trim_command_pool: unsafe {
-                extern "system" fn trim_command_pool_fallback(
+            trim_command_pool_khr: unsafe {
+                extern "system" fn trim_command_pool_khr_fallback(
                     _: Option<Device>,
                     _: Option<CommandPool>,
                     _: CommandPoolTrimFlags,
                 ) -> c_void {
-                    panic!("fn trim_command_pool not loaded");
+                    panic!("fn trim_command_pool_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPool\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPoolKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(trim_command_pool_fallback as *const c_void)
+                        mem::transmute(trim_command_pool_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34704,8 +34717,9 @@ impl KhrMaintenance1Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnEnumeratePhysicalDeviceGroupsKHR = FnEnumeratePhysicalDeviceGroups;
 pub struct KhrDeviceGroupCreationFn1_0 {
-    pub enumerate_physical_device_groups: FnEnumeratePhysicalDeviceGroups,
+    pub enumerate_physical_device_groups_khr: FnEnumeratePhysicalDeviceGroupsKHR,
 }
 impl KhrDeviceGroupCreationFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34714,19 +34728,19 @@ impl KhrDeviceGroupCreationFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrDeviceGroupCreationFn1_0 {
-            enumerate_physical_device_groups: unsafe {
-                extern "system" fn enumerate_physical_device_groups_fallback(
+            enumerate_physical_device_groups_khr: unsafe {
+                extern "system" fn enumerate_physical_device_groups_khr_fallback(
                     _: Option<Instance>,
                     _: *mut u32,
                     _: *mut PhysicalDeviceGroupProperties,
                 ) -> Result {
-                    panic!("fn enumerate_physical_device_groups not loaded");
+                    panic!("fn enumerate_physical_device_groups_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroups\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDeviceGroupsKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(enumerate_physical_device_groups_fallback as *const c_void)
+                        mem::transmute(enumerate_physical_device_groups_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34735,8 +34749,9 @@ impl KhrDeviceGroupCreationFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetPhysicalDeviceExternalBufferPropertiesKHR = FnGetPhysicalDeviceExternalBufferProperties;
 pub struct KhrExternalMemoryCapabilitiesFn1_0 {
-    pub get_physical_device_external_buffer_properties: FnGetPhysicalDeviceExternalBufferProperties,
+    pub get_physical_device_external_buffer_properties_khr: FnGetPhysicalDeviceExternalBufferPropertiesKHR,
 }
 impl KhrExternalMemoryCapabilitiesFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34745,19 +34760,19 @@ impl KhrExternalMemoryCapabilitiesFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrExternalMemoryCapabilitiesFn1_0 {
-            get_physical_device_external_buffer_properties: unsafe {
-                extern "system" fn get_physical_device_external_buffer_properties_fallback(
+            get_physical_device_external_buffer_properties_khr: unsafe {
+                extern "system" fn get_physical_device_external_buffer_properties_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *const PhysicalDeviceExternalBufferInfo,
                     _: *mut ExternalBufferProperties,
                 ) -> c_void {
-                    panic!("fn get_physical_device_external_buffer_properties not loaded");
+                    panic!("fn get_physical_device_external_buffer_properties_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalBufferProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalBufferPropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_external_buffer_properties_fallback as *const c_void)
+                        mem::transmute(get_physical_device_external_buffer_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -34888,8 +34903,9 @@ impl KhrExternalMemoryFdFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetPhysicalDeviceExternalSemaphorePropertiesKHR = FnGetPhysicalDeviceExternalSemaphoreProperties;
 pub struct KhrExternalSemaphoreCapabilitiesFn1_0 {
-    pub get_physical_device_external_semaphore_properties: FnGetPhysicalDeviceExternalSemaphoreProperties,
+    pub get_physical_device_external_semaphore_properties_khr: FnGetPhysicalDeviceExternalSemaphorePropertiesKHR,
 }
 impl KhrExternalSemaphoreCapabilitiesFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -34898,19 +34914,19 @@ impl KhrExternalSemaphoreCapabilitiesFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrExternalSemaphoreCapabilitiesFn1_0 {
-            get_physical_device_external_semaphore_properties: unsafe {
-                extern "system" fn get_physical_device_external_semaphore_properties_fallback(
+            get_physical_device_external_semaphore_properties_khr: unsafe {
+                extern "system" fn get_physical_device_external_semaphore_properties_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *const PhysicalDeviceExternalSemaphoreInfo,
                     _: *mut ExternalSemaphoreProperties,
                 ) -> c_void {
-                    panic!("fn get_physical_device_external_semaphore_properties not loaded");
+                    panic!("fn get_physical_device_external_semaphore_properties_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalSemaphoreProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_external_semaphore_properties_fallback as *const c_void)
+                        mem::transmute(get_physical_device_external_semaphore_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -35164,10 +35180,13 @@ impl ExtConditionalRenderingFn1_0 {
         (block, all_loaded)
     }
 }
+type FnCreateDescriptorUpdateTemplateKHR = FnCreateDescriptorUpdateTemplate;
+type FnDestroyDescriptorUpdateTemplateKHR = FnDestroyDescriptorUpdateTemplate;
+type FnUpdateDescriptorSetWithTemplateKHR = FnUpdateDescriptorSetWithTemplate;
 pub struct KhrDescriptorUpdateTemplateFn1_0 {
-    pub create_descriptor_update_template: FnCreateDescriptorUpdateTemplate,
-    pub destroy_descriptor_update_template: FnDestroyDescriptorUpdateTemplate,
-    pub update_descriptor_set_with_template: FnUpdateDescriptorSetWithTemplate,
+    pub create_descriptor_update_template_khr: FnCreateDescriptorUpdateTemplateKHR,
+    pub destroy_descriptor_update_template_khr: FnDestroyDescriptorUpdateTemplateKHR,
+    pub update_descriptor_set_with_template_khr: FnUpdateDescriptorSetWithTemplateKHR,
     pub cmd_push_descriptor_set_with_template_khr: FnCmdPushDescriptorSetWithTemplateKHR,
 }
 impl KhrDescriptorUpdateTemplateFn1_0 {
@@ -35177,55 +35196,55 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrDescriptorUpdateTemplateFn1_0 {
-            create_descriptor_update_template: unsafe {
-                extern "system" fn create_descriptor_update_template_fallback(
+            create_descriptor_update_template_khr: unsafe {
+                extern "system" fn create_descriptor_update_template_khr_fallback(
                     _: Option<Device>,
                     _: *const DescriptorUpdateTemplateCreateInfo,
                     _: *const AllocationCallbacks,
                     _: *mut DescriptorUpdateTemplate,
                 ) -> Result {
-                    panic!("fn create_descriptor_update_template not loaded");
+                    panic!("fn create_descriptor_update_template_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorUpdateTemplateKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(create_descriptor_update_template_fallback as *const c_void)
+                        mem::transmute(create_descriptor_update_template_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            destroy_descriptor_update_template: unsafe {
-                extern "system" fn destroy_descriptor_update_template_fallback(
+            destroy_descriptor_update_template_khr: unsafe {
+                extern "system" fn destroy_descriptor_update_template_khr_fallback(
                     _: Option<Device>,
                     _: Option<DescriptorUpdateTemplate>,
                     _: *const AllocationCallbacks,
                 ) -> c_void {
-                    panic!("fn destroy_descriptor_update_template not loaded");
+                    panic!("fn destroy_descriptor_update_template_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorUpdateTemplateKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(destroy_descriptor_update_template_fallback as *const c_void)
+                        mem::transmute(destroy_descriptor_update_template_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            update_descriptor_set_with_template: unsafe {
-                extern "system" fn update_descriptor_set_with_template_fallback(
+            update_descriptor_set_with_template_khr: unsafe {
+                extern "system" fn update_descriptor_set_with_template_khr_fallback(
                     _: Option<Device>,
                     _: Option<DescriptorSet>,
                     _: Option<DescriptorUpdateTemplate>,
                     _: *const c_void,
                 ) -> c_void {
-                    panic!("fn update_descriptor_set_with_template not loaded");
+                    panic!("fn update_descriptor_set_with_template_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplate\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSetWithTemplateKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(update_descriptor_set_with_template_fallback as *const c_void)
+                        mem::transmute(update_descriptor_set_with_template_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36035,8 +36054,9 @@ impl KhrSharedPresentableImageFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetPhysicalDeviceExternalFencePropertiesKHR = FnGetPhysicalDeviceExternalFenceProperties;
 pub struct KhrExternalFenceCapabilitiesFn1_0 {
-    pub get_physical_device_external_fence_properties: FnGetPhysicalDeviceExternalFenceProperties,
+    pub get_physical_device_external_fence_properties_khr: FnGetPhysicalDeviceExternalFencePropertiesKHR,
 }
 impl KhrExternalFenceCapabilitiesFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -36045,19 +36065,19 @@ impl KhrExternalFenceCapabilitiesFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrExternalFenceCapabilitiesFn1_0 {
-            get_physical_device_external_fence_properties: unsafe {
-                extern "system" fn get_physical_device_external_fence_properties_fallback(
+            get_physical_device_external_fence_properties_khr: unsafe {
+                extern "system" fn get_physical_device_external_fence_properties_khr_fallback(
                     _: Option<PhysicalDevice>,
                     _: *const PhysicalDeviceExternalFenceInfo,
                     _: *mut ExternalFenceProperties,
                 ) -> c_void {
-                    panic!("fn get_physical_device_external_fence_properties not loaded");
+                    panic!("fn get_physical_device_external_fence_properties_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalFenceProperties\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceExternalFencePropertiesKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_physical_device_external_fence_properties_fallback as *const c_void)
+                        mem::transmute(get_physical_device_external_fence_properties_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36768,10 +36788,13 @@ impl ExtSampleLocationsFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetImageMemoryRequirements2KHR = FnGetImageMemoryRequirements2;
+type FnGetBufferMemoryRequirements2KHR = FnGetBufferMemoryRequirements2;
+type FnGetImageSparseMemoryRequirements2KHR = FnGetImageSparseMemoryRequirements2;
 pub struct KhrGetMemoryRequirements2Fn1_0 {
-    pub get_image_memory_requirements2: FnGetImageMemoryRequirements2,
-    pub get_buffer_memory_requirements2: FnGetBufferMemoryRequirements2,
-    pub get_image_sparse_memory_requirements2: FnGetImageSparseMemoryRequirements2,
+    pub get_image_memory_requirements2_khr: FnGetImageMemoryRequirements2KHR,
+    pub get_buffer_memory_requirements2_khr: FnGetBufferMemoryRequirements2KHR,
+    pub get_image_sparse_memory_requirements2_khr: FnGetImageSparseMemoryRequirements2KHR,
 }
 impl KhrGetMemoryRequirements2Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -36780,54 +36803,54 @@ impl KhrGetMemoryRequirements2Fn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrGetMemoryRequirements2Fn1_0 {
-            get_image_memory_requirements2: unsafe {
-                extern "system" fn get_image_memory_requirements2_fallback(
+            get_image_memory_requirements2_khr: unsafe {
+                extern "system" fn get_image_memory_requirements2_khr_fallback(
                     _: Option<Device>,
                     _: *const ImageMemoryRequirementsInfo2,
                     _: *mut MemoryRequirements2,
                 ) -> c_void {
-                    panic!("fn get_image_memory_requirements2 not loaded");
+                    panic!("fn get_image_memory_requirements2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageMemoryRequirements2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageMemoryRequirements2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_image_memory_requirements2_fallback as *const c_void)
+                        mem::transmute(get_image_memory_requirements2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_buffer_memory_requirements2: unsafe {
-                extern "system" fn get_buffer_memory_requirements2_fallback(
+            get_buffer_memory_requirements2_khr: unsafe {
+                extern "system" fn get_buffer_memory_requirements2_khr_fallback(
                     _: Option<Device>,
                     _: *const BufferMemoryRequirementsInfo2,
                     _: *mut MemoryRequirements2,
                 ) -> c_void {
-                    panic!("fn get_buffer_memory_requirements2 not loaded");
+                    panic!("fn get_buffer_memory_requirements2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetBufferMemoryRequirements2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetBufferMemoryRequirements2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_buffer_memory_requirements2_fallback as *const c_void)
+                        mem::transmute(get_buffer_memory_requirements2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            get_image_sparse_memory_requirements2: unsafe {
-                extern "system" fn get_image_sparse_memory_requirements2_fallback(
+            get_image_sparse_memory_requirements2_khr: unsafe {
+                extern "system" fn get_image_sparse_memory_requirements2_khr_fallback(
                     _: Option<Device>,
                     _: *const ImageSparseMemoryRequirementsInfo2,
                     _: *mut u32,
                     _: *mut SparseImageMemoryRequirements2,
                 ) -> c_void {
-                    panic!("fn get_image_sparse_memory_requirements2 not loaded");
+                    panic!("fn get_image_sparse_memory_requirements2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetImageSparseMemoryRequirements2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_image_sparse_memory_requirements2_fallback as *const c_void)
+                        mem::transmute(get_image_sparse_memory_requirements2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36836,9 +36859,11 @@ impl KhrGetMemoryRequirements2Fn1_0 {
         (block, all_loaded)
     }
 }
+type FnCreateSamplerYcbcrConversionKHR = FnCreateSamplerYcbcrConversion;
+type FnDestroySamplerYcbcrConversionKHR = FnDestroySamplerYcbcrConversion;
 pub struct KhrSamplerYcbcrConversionFn1_0 {
-    pub create_sampler_ycbcr_conversion: FnCreateSamplerYcbcrConversion,
-    pub destroy_sampler_ycbcr_conversion: FnDestroySamplerYcbcrConversion,
+    pub create_sampler_ycbcr_conversion_khr: FnCreateSamplerYcbcrConversionKHR,
+    pub destroy_sampler_ycbcr_conversion_khr: FnDestroySamplerYcbcrConversionKHR,
 }
 impl KhrSamplerYcbcrConversionFn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -36847,37 +36872,37 @@ impl KhrSamplerYcbcrConversionFn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrSamplerYcbcrConversionFn1_0 {
-            create_sampler_ycbcr_conversion: unsafe {
-                extern "system" fn create_sampler_ycbcr_conversion_fallback(
+            create_sampler_ycbcr_conversion_khr: unsafe {
+                extern "system" fn create_sampler_ycbcr_conversion_khr_fallback(
                     _: Option<Device>,
                     _: *const SamplerYcbcrConversionCreateInfo,
                     _: *const AllocationCallbacks,
                     _: *mut SamplerYcbcrConversion,
                 ) -> Result {
-                    panic!("fn create_sampler_ycbcr_conversion not loaded");
+                    panic!("fn create_sampler_ycbcr_conversion_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateSamplerYcbcrConversion\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkCreateSamplerYcbcrConversionKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(create_sampler_ycbcr_conversion_fallback as *const c_void)
+                        mem::transmute(create_sampler_ycbcr_conversion_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            destroy_sampler_ycbcr_conversion: unsafe {
-                extern "system" fn destroy_sampler_ycbcr_conversion_fallback(
+            destroy_sampler_ycbcr_conversion_khr: unsafe {
+                extern "system" fn destroy_sampler_ycbcr_conversion_khr_fallback(
                     _: Option<Device>,
                     _: Option<SamplerYcbcrConversion>,
                     _: *const AllocationCallbacks,
                 ) -> c_void {
-                    panic!("fn destroy_sampler_ycbcr_conversion not loaded");
+                    panic!("fn destroy_sampler_ycbcr_conversion_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversion\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkDestroySamplerYcbcrConversionKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(destroy_sampler_ycbcr_conversion_fallback as *const c_void)
+                        mem::transmute(destroy_sampler_ycbcr_conversion_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -36886,9 +36911,11 @@ impl KhrSamplerYcbcrConversionFn1_0 {
         (block, all_loaded)
     }
 }
+type FnBindBufferMemory2KHR = FnBindBufferMemory2;
+type FnBindImageMemory2KHR = FnBindImageMemory2;
 pub struct KhrBindMemory2Fn1_0 {
-    pub bind_buffer_memory2: FnBindBufferMemory2,
-    pub bind_image_memory2: FnBindImageMemory2,
+    pub bind_buffer_memory2_khr: FnBindBufferMemory2KHR,
+    pub bind_image_memory2_khr: FnBindImageMemory2KHR,
 }
 impl KhrBindMemory2Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -36897,36 +36924,36 @@ impl KhrBindMemory2Fn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrBindMemory2Fn1_0 {
-            bind_buffer_memory2: unsafe {
-                extern "system" fn bind_buffer_memory2_fallback(
+            bind_buffer_memory2_khr: unsafe {
+                extern "system" fn bind_buffer_memory2_khr_fallback(
                     _: Option<Device>,
                     _: u32,
                     _: *const BindBufferMemoryInfo,
                 ) -> Result {
-                    panic!("fn bind_buffer_memory2 not loaded");
+                    panic!("fn bind_buffer_memory2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(bind_buffer_memory2_fallback as *const c_void)
+                        mem::transmute(bind_buffer_memory2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
             },
-            bind_image_memory2: unsafe {
-                extern "system" fn bind_image_memory2_fallback(
+            bind_image_memory2_khr: unsafe {
+                extern "system" fn bind_image_memory2_khr_fallback(
                     _: Option<Device>,
                     _: u32,
                     _: *const BindImageMemoryInfo,
                 ) -> Result {
-                    panic!("fn bind_image_memory2 not loaded");
+                    panic!("fn bind_image_memory2_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2KHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(bind_image_memory2_fallback as *const c_void)
+                        mem::transmute(bind_image_memory2_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )
@@ -37514,8 +37541,9 @@ impl NvRayTracingFn1_0 {
         (block, all_loaded)
     }
 }
+type FnGetDescriptorSetLayoutSupportKHR = FnGetDescriptorSetLayoutSupport;
 pub struct KhrMaintenance3Fn1_0 {
-    pub get_descriptor_set_layout_support: FnGetDescriptorSetLayoutSupport,
+    pub get_descriptor_set_layout_support_khr: FnGetDescriptorSetLayoutSupportKHR,
 }
 impl KhrMaintenance3Fn1_0 {
     pub fn load<F>(mut f: F) -> (Self, bool)
@@ -37524,19 +37552,19 @@ impl KhrMaintenance3Fn1_0 {
     {
         let mut all_loaded = true;
         let block = KhrMaintenance3Fn1_0 {
-            get_descriptor_set_layout_support: unsafe {
-                extern "system" fn get_descriptor_set_layout_support_fallback(
+            get_descriptor_set_layout_support_khr: unsafe {
+                extern "system" fn get_descriptor_set_layout_support_khr_fallback(
                     _: Option<Device>,
                     _: *const DescriptorSetLayoutCreateInfo,
                     _: *mut DescriptorSetLayoutSupport,
                 ) -> c_void {
-                    panic!("fn get_descriptor_set_layout_support not loaded");
+                    panic!("fn get_descriptor_set_layout_support_khr not loaded");
                 }
-                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupport\0");
+                let name = CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorSetLayoutSupportKHR\0");
                 f(name).map_or_else(
                     || {
                         all_loaded = false;
-                        mem::transmute(get_descriptor_set_layout_support_fallback as *const c_void)
+                        mem::transmute(get_descriptor_set_layout_support_khr_fallback as *const c_void)
                     },
                     |f| mem::transmute(f),
                 )

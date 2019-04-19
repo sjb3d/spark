@@ -3858,35 +3858,35 @@ impl KhrGetPhysicalDeviceProperties2 {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_get_physical_device_properties2\0").unwrap()
     }
-    pub unsafe fn get_physical_device_features2(
+    pub unsafe fn get_physical_device_features2_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_features: &mut vk::PhysicalDeviceFeatures2,
     ) {
-        (self.fp1_0.get_physical_device_features2)(Some(physical_device), p_features);
+        (self.fp1_0.get_physical_device_features2_khr)(Some(physical_device), p_features);
     }
-    pub unsafe fn get_physical_device_properties2(
+    pub unsafe fn get_physical_device_properties2_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_properties: &mut vk::PhysicalDeviceProperties2,
     ) {
-        (self.fp1_0.get_physical_device_properties2)(Some(physical_device), p_properties);
+        (self.fp1_0.get_physical_device_properties2_khr)(Some(physical_device), p_properties);
     }
-    pub unsafe fn get_physical_device_format_properties2(
+    pub unsafe fn get_physical_device_format_properties2_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         format: vk::Format,
         p_format_properties: &mut vk::FormatProperties2,
     ) {
-        (self.fp1_0.get_physical_device_format_properties2)(Some(physical_device), format, p_format_properties);
+        (self.fp1_0.get_physical_device_format_properties2_khr)(Some(physical_device), format, p_format_properties);
     }
-    pub unsafe fn get_physical_device_image_format_properties2(
+    pub unsafe fn get_physical_device_image_format_properties2_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_image_format_info: &vk::PhysicalDeviceImageFormatInfo2,
         p_image_format_properties: &mut vk::ImageFormatProperties2,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_physical_device_image_format_properties2)(
+        let err = (self.fp1_0.get_physical_device_image_format_properties2_khr)(
             Some(physical_device),
             p_image_format_info,
             p_image_format_properties,
@@ -3897,39 +3897,39 @@ impl KhrGetPhysicalDeviceProperties2 {
         };
         res
     }
-    pub unsafe fn get_physical_device_queue_family_properties2_to_vec(
+    pub unsafe fn get_physical_device_queue_family_properties2_khr_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
     ) -> Vec<vk::QueueFamilyProperties2> {
         let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, ptr::null_mut());
+        (self.fp1_0.get_physical_device_queue_family_properties2_khr)(Some(physical_device), &mut len, ptr::null_mut());
         let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, v.as_mut_ptr());
+        (self.fp1_0.get_physical_device_queue_family_properties2_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         let res = v;
         res
     }
-    pub unsafe fn get_physical_device_memory_properties2(
+    pub unsafe fn get_physical_device_memory_properties2_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_memory_properties: &mut vk::PhysicalDeviceMemoryProperties2,
     ) {
-        (self.fp1_0.get_physical_device_memory_properties2)(Some(physical_device), p_memory_properties);
+        (self.fp1_0.get_physical_device_memory_properties2_khr)(Some(physical_device), p_memory_properties);
     }
-    pub unsafe fn get_physical_device_sparse_image_format_properties2_to_vec(
+    pub unsafe fn get_physical_device_sparse_image_format_properties2_khr_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
         p_format_info: &vk::PhysicalDeviceSparseImageFormatInfo2,
     ) -> Vec<vk::SparseImageFormatProperties2> {
         let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_sparse_image_format_properties2)(
+        (self.fp1_0.get_physical_device_sparse_image_format_properties2_khr)(
             Some(physical_device),
             p_format_info,
             &mut len,
             ptr::null_mut(),
         );
         let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_sparse_image_format_properties2)(
+        (self.fp1_0.get_physical_device_sparse_image_format_properties2_khr)(
             Some(physical_device),
             p_format_info,
             &mut len,
@@ -3969,14 +3969,14 @@ impl KhrDeviceGroup {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_device_group\0").unwrap()
     }
-    pub unsafe fn get_device_group_peer_memory_features(
+    pub unsafe fn get_device_group_peer_memory_features_khr(
         &self,
         heap_index: u32,
         local_device_index: u32,
         remote_device_index: u32,
     ) -> vk::PeerMemoryFeatureFlags {
         let mut res = mem::uninitialized();
-        (self.fp1_0.get_device_group_peer_memory_features)(
+        (self.fp1_0.get_device_group_peer_memory_features_khr)(
             Some(self.handle),
             heap_index,
             local_device_index,
@@ -3985,10 +3985,10 @@ impl KhrDeviceGroup {
         );
         res
     }
-    pub unsafe fn cmd_set_device_mask(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
-        (self.fp1_0.cmd_set_device_mask)(Some(command_buffer), device_mask);
+    pub unsafe fn cmd_set_device_mask_khr(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
+        (self.fp1_0.cmd_set_device_mask_khr)(Some(command_buffer), device_mask);
     }
-    pub unsafe fn cmd_dispatch_base(
+    pub unsafe fn cmd_dispatch_base_khr(
         &self,
         command_buffer: vk::CommandBuffer,
         base_group_x: u32,
@@ -3998,7 +3998,7 @@ impl KhrDeviceGroup {
         group_count_y: u32,
         group_count_z: u32,
     ) {
-        (self.fp1_0.cmd_dispatch_base)(
+        (self.fp1_0.cmd_dispatch_base_khr)(
             Some(command_buffer),
             base_group_x,
             base_group_y,
@@ -4167,8 +4167,8 @@ impl KhrMaintenance1 {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_maintenance1\0").unwrap()
     }
-    pub unsafe fn trim_command_pool(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
-        (self.fp1_0.trim_command_pool)(Some(self.handle), Some(command_pool), flags);
+    pub unsafe fn trim_command_pool_khr(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
+        (self.fp1_0.trim_command_pool_khr)(Some(self.handle), Some(command_pool), flags);
     }
 }
 /// Loader for the `VK_KHR_device_group_creation` instance extension
@@ -4200,14 +4200,14 @@ impl KhrDeviceGroupCreation {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_device_group_creation\0").unwrap()
     }
-    pub unsafe fn enumerate_physical_device_groups_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
+    pub unsafe fn enumerate_physical_device_groups_khr_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
         let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_physical_device_groups)(Some(self.handle), &mut len, ptr::null_mut());
+        let len_err = (self.fp1_0.enumerate_physical_device_groups_khr)(Some(self.handle), &mut len, ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_physical_device_groups)(Some(self.handle), &mut len, v.as_mut_ptr());
+        let v_err = (self.fp1_0.enumerate_physical_device_groups_khr)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
@@ -4245,13 +4245,13 @@ impl KhrExternalMemoryCapabilities {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_external_memory_capabilities\0").unwrap()
     }
-    pub unsafe fn get_physical_device_external_buffer_properties(
+    pub unsafe fn get_physical_device_external_buffer_properties_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_external_buffer_info: &vk::PhysicalDeviceExternalBufferInfo,
         p_external_buffer_properties: &mut vk::ExternalBufferProperties,
     ) {
-        (self.fp1_0.get_physical_device_external_buffer_properties)(
+        (self.fp1_0.get_physical_device_external_buffer_properties_khr)(
             Some(physical_device),
             p_external_buffer_info,
             p_external_buffer_properties,
@@ -4399,13 +4399,13 @@ impl KhrExternalSemaphoreCapabilities {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_external_semaphore_capabilities\0").unwrap()
     }
-    pub unsafe fn get_physical_device_external_semaphore_properties(
+    pub unsafe fn get_physical_device_external_semaphore_properties_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_external_semaphore_info: &vk::PhysicalDeviceExternalSemaphoreInfo,
         p_external_semaphore_properties: &mut vk::ExternalSemaphoreProperties,
     ) {
-        (self.fp1_0.get_physical_device_external_semaphore_properties)(
+        (self.fp1_0.get_physical_device_external_semaphore_properties_khr)(
             Some(physical_device),
             p_external_semaphore_info,
             p_external_semaphore_properties,
@@ -4656,13 +4656,13 @@ impl KhrDescriptorUpdateTemplate {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_descriptor_update_template\0").unwrap()
     }
-    pub unsafe fn create_descriptor_update_template(
+    pub unsafe fn create_descriptor_update_template_khr(
         &self,
         p_create_info: &vk::DescriptorUpdateTemplateCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DescriptorUpdateTemplate> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_descriptor_update_template)(
+        let err = (self.fp1_0.create_descriptor_update_template_khr)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -4674,24 +4674,24 @@ impl KhrDescriptorUpdateTemplate {
         };
         res
     }
-    pub unsafe fn destroy_descriptor_update_template(
+    pub unsafe fn destroy_descriptor_update_template_khr(
         &self,
         descriptor_update_template: Option<vk::DescriptorUpdateTemplate>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_descriptor_update_template)(
+        (self.fp1_0.destroy_descriptor_update_template_khr)(
             Some(self.handle),
             descriptor_update_template,
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
-    pub unsafe fn update_descriptor_set_with_template(
+    pub unsafe fn update_descriptor_set_with_template_khr(
         &self,
         descriptor_set: vk::DescriptorSet,
         descriptor_update_template: vk::DescriptorUpdateTemplate,
         p_data: *const c_void,
     ) {
-        (self.fp1_0.update_descriptor_set_with_template)(
+        (self.fp1_0.update_descriptor_set_with_template_khr)(
             Some(self.handle),
             Some(descriptor_set),
             Some(descriptor_update_template),
@@ -5441,13 +5441,13 @@ impl KhrExternalFenceCapabilities {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_external_fence_capabilities\0").unwrap()
     }
-    pub unsafe fn get_physical_device_external_fence_properties(
+    pub unsafe fn get_physical_device_external_fence_properties_khr(
         &self,
         physical_device: vk::PhysicalDevice,
         p_external_fence_info: &vk::PhysicalDeviceExternalFenceInfo,
         p_external_fence_properties: &mut vk::ExternalFenceProperties,
     ) {
-        (self.fp1_0.get_physical_device_external_fence_properties)(
+        (self.fp1_0.get_physical_device_external_fence_properties_khr)(
             Some(physical_device),
             p_external_fence_info,
             p_external_fence_properties,
@@ -6102,28 +6102,28 @@ impl KhrGetMemoryRequirements2 {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_get_memory_requirements2\0").unwrap()
     }
-    pub unsafe fn get_image_memory_requirements2(
+    pub unsafe fn get_image_memory_requirements2_khr(
         &self,
         p_info: &vk::ImageMemoryRequirementsInfo2,
         p_memory_requirements: &mut vk::MemoryRequirements2,
     ) {
-        (self.fp1_0.get_image_memory_requirements2)(Some(self.handle), p_info, p_memory_requirements);
+        (self.fp1_0.get_image_memory_requirements2_khr)(Some(self.handle), p_info, p_memory_requirements);
     }
-    pub unsafe fn get_buffer_memory_requirements2(
+    pub unsafe fn get_buffer_memory_requirements2_khr(
         &self,
         p_info: &vk::BufferMemoryRequirementsInfo2,
         p_memory_requirements: &mut vk::MemoryRequirements2,
     ) {
-        (self.fp1_0.get_buffer_memory_requirements2)(Some(self.handle), p_info, p_memory_requirements);
+        (self.fp1_0.get_buffer_memory_requirements2_khr)(Some(self.handle), p_info, p_memory_requirements);
     }
-    pub unsafe fn get_image_sparse_memory_requirements2_to_vec(
+    pub unsafe fn get_image_sparse_memory_requirements2_khr_to_vec(
         &self,
         p_info: &vk::ImageSparseMemoryRequirementsInfo2,
     ) -> Vec<vk::SparseImageMemoryRequirements2> {
         let mut len = mem::uninitialized();
-        (self.fp1_0.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, ptr::null_mut());
+        (self.fp1_0.get_image_sparse_memory_requirements2_khr)(Some(self.handle), p_info, &mut len, ptr::null_mut());
         let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
+        (self.fp1_0.get_image_sparse_memory_requirements2_khr)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         let res = v;
         res
@@ -6158,13 +6158,13 @@ impl KhrSamplerYcbcrConversion {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_sampler_ycbcr_conversion\0").unwrap()
     }
-    pub unsafe fn create_sampler_ycbcr_conversion(
+    pub unsafe fn create_sampler_ycbcr_conversion_khr(
         &self,
         p_create_info: &vk::SamplerYcbcrConversionCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::SamplerYcbcrConversion> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_sampler_ycbcr_conversion)(
+        let err = (self.fp1_0.create_sampler_ycbcr_conversion_khr)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -6176,12 +6176,12 @@ impl KhrSamplerYcbcrConversion {
         };
         res
     }
-    pub unsafe fn destroy_sampler_ycbcr_conversion(
+    pub unsafe fn destroy_sampler_ycbcr_conversion_khr(
         &self,
         ycbcr_conversion: Option<vk::SamplerYcbcrConversion>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_sampler_ycbcr_conversion)(
+        (self.fp1_0.destroy_sampler_ycbcr_conversion_khr)(
             Some(self.handle),
             ycbcr_conversion,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -6217,18 +6217,18 @@ impl KhrBindMemory2 {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_bind_memory2\0").unwrap()
     }
-    pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
+    pub unsafe fn bind_buffer_memory2_khr(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_buffer_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (self.fp1_0.bind_buffer_memory2_khr)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
         res
     }
-    pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
+    pub unsafe fn bind_image_memory2_khr(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_image_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (self.fp1_0.bind_image_memory2_khr)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -6777,12 +6777,12 @@ impl KhrMaintenance3 {
     pub fn name() -> &'static CStr {
         CStr::from_bytes_with_nul(b"VK_KHR_maintenance3\0").unwrap()
     }
-    pub unsafe fn get_descriptor_set_layout_support(
+    pub unsafe fn get_descriptor_set_layout_support_khr(
         &self,
         p_create_info: &vk::DescriptorSetLayoutCreateInfo,
         p_support: &mut vk::DescriptorSetLayoutSupport,
     ) {
-        (self.fp1_0.get_descriptor_set_layout_support)(Some(self.handle), p_create_info, p_support);
+        (self.fp1_0.get_descriptor_set_layout_support_khr)(Some(self.handle), p_create_info, p_support);
     }
 }
 /// Loader for the `VK_KHR_draw_indirect_count` device extension

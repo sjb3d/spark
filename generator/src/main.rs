@@ -1289,7 +1289,7 @@ impl<'a> Generator<'a> {
             for version_names in &group_names.versions {
                 let version = version_names.version.skip_prefix(VERSION_PREFIX);
                 let struct_name = format!("{}Fn{}", group_names.group, version);
-                let decls: Vec<CFunctionDecl> = version_names
+                let decls: Vec<(&str, CFunctionDecl)> = version_names
                     .names
                     .iter()
                     .map(|name| {
@@ -1299,10 +1299,10 @@ impl<'a> Generator<'a> {
                         for param in decl.parameters.iter_mut() {
                             take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
                         }
-                        decl
+                        (*name, decl)
                     })
                     .collect();
-                for function_decl in &decls {
+                for (function_name, function_decl) in &decls {
                     let name_part = function_decl.proto.name.skip_prefix(FN_PREFIX);
                     if cmd_names.insert(name_part) {
                         write!(w, r#"type Fn{} = unsafe extern "system" fn("#, name_part)?;
@@ -1320,10 +1320,16 @@ impl<'a> Generator<'a> {
                             self.get_rust_parameter_type(&function_decl.proto.ty, None)
                         )?;
                     }
+                    if *function_name != function_decl.proto.name {
+                        let alias_part = function_name.skip_prefix(FN_PREFIX);
+                        if cmd_names.insert(alias_part) {
+                            write!(w, r#"type Fn{} = Fn{};"#, alias_part, name_part)?;
+                        }
+                    }
                 }
                 writeln!(w, "pub struct {} {{", struct_name)?;
-                for function_decl in &decls {
-                    let name_part = function_decl.proto.name.skip_prefix(FN_PREFIX);
+                for (function_name, _) in &decls {
+                    let name_part = function_name.skip_prefix(FN_PREFIX);
                     writeln!(w, "pub {}: Fn{},", name_part.to_snake_case(), name_part)?;
                 }
                 writeln!(w, "}}")?;
@@ -1335,8 +1341,8 @@ impl<'a> Generator<'a> {
                      let block = {} {{",
                     struct_name
                 )?;
-                for function_decl in &decls {
-                    let fn_name = function_decl.proto.name.skip_prefix(FN_PREFIX).to_snake_case();
+                for (function_name, function_decl) in &decls {
+                    let fn_name = function_name.skip_prefix(FN_PREFIX).to_snake_case();
                     write!(w, "{}: unsafe {{", fn_name)?;
                     write!(w, r#"extern "system" fn {}_fallback("#, fn_name)?;
                     for param in &function_decl.parameters {
@@ -1351,7 +1357,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         r#"let name = CStr::from_bytes_with_nul_unchecked(b"{}\0");"#,
-                        function_decl.proto.name
+                        function_name
                     )?;
                     writeln!(w, "f(name).map_or_else(|| {{ all_loaded = false; mem::transmute({}_fallback as *const c_void) }}, |f| mem::transmute(f)) }},", fn_name)?;
                 }
@@ -2011,7 +2017,7 @@ impl<'a> Generator<'a> {
         let (return_type, return_transform, return_type_name) =
             self.wrap_group_command_arguments(group, &cmd_def, cmd_return_value, &decl, &mut params);
 
-        let fn_name = decl.proto.name.skip_prefix(FN_PREFIX).to_snake_case();
+        let fn_name = cmd_name.skip_prefix(FN_PREFIX).to_snake_case();
 
         let styles: &[LibCommandStyle] = match return_type {
             LibReturnType::VecUnknownLen | LibReturnType::ResultVecUnknownLen => &[LibCommandStyle::ToVecUnknownLen],
