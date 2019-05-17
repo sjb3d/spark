@@ -251,6 +251,7 @@ enum LibCommandStyle {
 
 struct Generator<'a> {
     registry: &'a vk::Registry,
+    extension_by_name: HashMap<&'a str, &'a vk::Extension>,
     type_by_name: HashMap<&'a str, &'a vk::Type>,
     type_name_blacklist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
@@ -259,6 +260,7 @@ struct Generator<'a> {
     constant_enums: Vec<&'a vk::Enum>,
     extension_by_enum_name: HashMap<&'a str, &'a vk::Extension>,
     cmd_def_by_name: HashMap<&'a str, &'a vk::CommandDefinition>,
+    cmd_name_blacklist: HashSet<&'a str>,
     group_names: Vec<GroupNames<'a>>,
 }
 
@@ -276,6 +278,19 @@ impl<'a> Generator<'a> {
                 vk::TypesChild::Type(ty) => Some(ty),
                 _ => None,
             })
+    }
+
+    fn collect_extensions(&mut self) {
+        for registry_child in &self.registry.0 {
+            match registry_child {
+                vk::RegistryChild::Extensions(extensions) => {
+                    for ext in &extensions.children {
+                        self.extension_by_name.insert(&ext.name, ext);
+                    }
+                }
+                _ => {}
+            }
+        }
     }
 
     fn collect_types(&mut self) {
@@ -454,6 +469,33 @@ impl<'a> Generator<'a> {
                 .expect("command alias not found");
             self.cmd_def_by_name.insert(name, cmd_def);
         }
+        for registry_child in &self.registry.0 {
+            match registry_child {
+                vk::RegistryChild::Extensions(extensions) => {
+                    for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
+                        for name in ext
+                            .children
+                            .iter()
+                            .filter_map(|ext_child| match ext_child {
+                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                                _ => None,
+                            })
+                            .flat_map(|items| items.iter())
+                            .filter_map(|item| match item {
+                                vk::InterfaceItem::Command { name, .. } => Some(name),
+                                _ => None,
+                            })
+                        {
+                            self.cmd_name_blacklist.insert(name);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        for name in self.cmd_name_blacklist.iter() {
+            println!("Blacklisted: {}", name);
+        }
     }
 
     fn get_command_group(&self, name: &str) -> Option<Group<'a>> {
@@ -584,6 +626,7 @@ impl<'a> Generator<'a> {
     pub fn new(registry: &'a vk::Registry) -> Self {
         let mut gen = Self {
             registry,
+            extension_by_name: HashMap::new(),
             type_by_name: HashMap::new(),
             type_name_blacklist: HashSet::new(),
             tag_names: HashSet::new(),
@@ -592,8 +635,10 @@ impl<'a> Generator<'a> {
             constant_enums: Vec::new(),
             extension_by_enum_name: HashMap::new(),
             cmd_def_by_name: HashMap::new(),
+            cmd_name_blacklist: HashSet::new(),
             group_names: Vec::new(),
         };
+        gen.collect_extensions();
         gen.collect_types();
         gen.collect_tags();
         gen.collect_enums();
@@ -1283,8 +1328,44 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
+    fn write_command_types(&self, w: &mut impl IoWrite) -> WriteResult {
+        for registry_child in &self.registry.0 {
+            if let vk::RegistryChild::Commands(commands) = registry_child {
+                for cmd_child in &commands.children {
+                    match cmd_child {
+                        vk::Command::Alias { name, alias } => {
+                            let name_part = name.skip_prefix(FN_PREFIX);
+                            let alias_part = alias.skip_prefix(FN_PREFIX);
+                            write!(w, r#"pub type Fn{} = Fn{};"#, name_part, alias_part)?;
+                        }
+                        vk::Command::Definition(cmd_def) => {
+                            let mut decl = c_parse_function_decl(cmd_def.code.as_str());
+                            if !self.cmd_name_blacklist.contains(decl.proto.name) {
+                                let context = decl.proto.name;
+                                for param in decl.parameters.iter_mut() {
+                                    take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
+                                }
+                                let name_part = decl.proto.name.skip_prefix(FN_PREFIX);
+                                write!(w, r#"pub type Fn{} = unsafe extern "system" fn("#, name_part)?;
+                                for param in &decl.parameters {
+                                    write!(
+                                        w,
+                                        "{}: {},",
+                                        get_rust_variable_name(param.name.to_snake_case().as_str()),
+                                        self.get_rust_parameter_type(&param.ty, None),
+                                    )?;
+                                }
+                                writeln!(w, ") -> {};", self.get_rust_parameter_type(&decl.proto.ty, None))?;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
     fn write_blocks(&self, w: &mut impl IoWrite) -> WriteResult {
-        let mut cmd_names = HashSet::new();
         for group_names in &self.group_names {
             for version_names in &group_names.versions {
                 let version = version_names.version.skip_prefix(VERSION_PREFIX);
@@ -1302,31 +1383,6 @@ impl<'a> Generator<'a> {
                         (*name, decl)
                     })
                     .collect();
-                for (function_name, function_decl) in &decls {
-                    let name_part = function_decl.proto.name.skip_prefix(FN_PREFIX);
-                    if cmd_names.insert(name_part) {
-                        write!(w, r#"type Fn{} = unsafe extern "system" fn("#, name_part)?;
-                        for param in &function_decl.parameters {
-                            write!(
-                                w,
-                                "{}: {},",
-                                get_rust_variable_name(param.name.to_snake_case().as_str()),
-                                self.get_rust_parameter_type(&param.ty, None),
-                            )?;
-                        }
-                        writeln!(
-                            w,
-                            ") -> {};",
-                            self.get_rust_parameter_type(&function_decl.proto.ty, None)
-                        )?;
-                    }
-                    if *function_name != function_decl.proto.name {
-                        let alias_part = function_name.skip_prefix(FN_PREFIX);
-                        if cmd_names.insert(alias_part) {
-                            write!(w, r#"type Fn{} = Fn{};"#, alias_part, name_part)?;
-                        }
-                    }
-                }
                 writeln!(w, "pub struct {} {{", struct_name)?;
                 for (function_name, _) in &decls {
                     let name_part = function_name.skip_prefix(FN_PREFIX);
@@ -1357,7 +1413,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         r#"let name = CStr::from_bytes_with_nul_unchecked(b"{}\0");"#,
-                        function_name
+                        function_name,
                     )?;
                     writeln!(w, "f(name).map_or_else(|| {{ all_loaded = false; mem::transmute({}_fallback as *const c_void) }}, |f| mem::transmute(f)) }},", fn_name)?;
                 }
@@ -1375,6 +1431,7 @@ impl<'a> Generator<'a> {
         write!(&mut w, "{}", include_str!("vk_prefix.rs"))?;
         self.write_constants(&mut w)?;
         self.write_types(&mut w)?;
+        self.write_command_types(&mut w)?;
         self.write_blocks(&mut w)?;
         Ok(())
     }
@@ -2572,8 +2629,8 @@ fn main() -> WriteResult {
 
     let generator = Generator::new(&registry);
     generator.write_vk(Path::new("../vkr/src/vk.rs"))?;
-    generator.write_builder(Path::new("../vkr/src/builder.rs"))?;
     generator.write_lib(Path::new("../vkr/src/lib.rs"))?;
+    generator.write_builder(Path::new("../vkr/src/builder.rs"))?;
 
     Spawn::new("cargo")
         .arg("fmt")

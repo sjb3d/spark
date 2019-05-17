@@ -28950,18 +28950,1799 @@ impl fmt::Debug for HeadlessSurfaceCreateInfoEXT {
             .finish()
     }
 }
-type FnCreateInstance = unsafe extern "system" fn(
+pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
     p_instance: *mut Instance,
 ) -> Result;
-type FnEnumerateInstanceExtensionProperties = unsafe extern "system" fn(
+pub type FnDestroyInstance =
+    unsafe extern "system" fn(instance: Option<Instance>, p_allocator: *const AllocationCallbacks) -> c_void;
+pub type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_physical_device_count: *mut u32,
+    p_physical_devices: *mut PhysicalDevice,
+) -> Result;
+pub type FnGetDeviceProcAddr =
+    unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
+pub type FnGetInstanceProcAddr =
+    unsafe extern "system" fn(instance: Option<Instance>, p_name: *const c_char) -> Option<FnVoidFunction>;
+pub type FnGetPhysicalDeviceProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_properties: *mut PhysicalDeviceProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceQueueFamilyProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_queue_family_property_count: *mut u32,
+    p_queue_family_properties: *mut QueueFamilyProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceMemoryProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_memory_properties: *mut PhysicalDeviceMemoryProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceFeatures = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut PhysicalDeviceFeatures,
+) -> c_void;
+pub type FnGetPhysicalDeviceFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    p_format_properties: *mut FormatProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceImageFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    tiling: ImageTiling,
+    usage: ImageUsageFlags,
+    flags: ImageCreateFlags,
+    p_image_format_properties: *mut ImageFormatProperties,
+) -> Result;
+pub type FnCreateDevice = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_create_info: *const DeviceCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_device: *mut Device,
+) -> Result;
+pub type FnDestroyDevice =
+    unsafe extern "system" fn(device: Option<Device>, p_allocator: *const AllocationCallbacks) -> c_void;
+pub type FnEnumerateInstanceVersion = unsafe extern "system" fn(p_api_version: *mut Version) -> Result;
+pub type FnEnumerateInstanceLayerProperties =
+    unsafe extern "system" fn(p_property_count: *mut u32, p_properties: *mut LayerProperties) -> Result;
+pub type FnEnumerateInstanceExtensionProperties = unsafe extern "system" fn(
     p_layer_name: *const c_char,
     p_property_count: *mut u32,
     p_properties: *mut ExtensionProperties,
 ) -> Result;
-type FnEnumerateInstanceLayerProperties =
-    unsafe extern "system" fn(p_property_count: *mut u32, p_properties: *mut LayerProperties) -> Result;
+pub type FnEnumerateDeviceLayerProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut LayerProperties,
+) -> Result;
+pub type FnEnumerateDeviceExtensionProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_layer_name: *const c_char,
+    p_property_count: *mut u32,
+    p_properties: *mut ExtensionProperties,
+) -> Result;
+pub type FnGetDeviceQueue = unsafe extern "system" fn(
+    device: Option<Device>,
+    queue_family_index: u32,
+    queue_index: u32,
+    p_queue: *mut Queue,
+) -> c_void;
+pub type FnQueueSubmit = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    submit_count: u32,
+    p_submits: *const SubmitInfo,
+    fence: Option<Fence>,
+) -> Result;
+pub type FnQueueWaitIdle = unsafe extern "system" fn(queue: Option<Queue>) -> Result;
+pub type FnDeviceWaitIdle = unsafe extern "system" fn(device: Option<Device>) -> Result;
+pub type FnAllocateMemory = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_allocate_info: *const MemoryAllocateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_memory: *mut DeviceMemory,
+) -> Result;
+pub type FnFreeMemory = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnMapMemory = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    offset: DeviceSize,
+    size: DeviceSize,
+    flags: MemoryMapFlags,
+    pp_data: *mut *mut c_void,
+) -> Result;
+pub type FnUnmapMemory = unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>) -> c_void;
+pub type FnFlushMappedMemoryRanges = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory_range_count: u32,
+    p_memory_ranges: *const MappedMemoryRange,
+) -> Result;
+pub type FnInvalidateMappedMemoryRanges = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory_range_count: u32,
+    p_memory_ranges: *const MappedMemoryRange,
+) -> Result;
+pub type FnGetDeviceMemoryCommitment = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    p_committed_memory_in_bytes: *mut DeviceSize,
+) -> c_void;
+pub type FnGetBufferMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: Option<Buffer>,
+    p_memory_requirements: *mut MemoryRequirements,
+) -> c_void;
+pub type FnBindBufferMemory = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: Option<Buffer>,
+    memory: Option<DeviceMemory>,
+    memory_offset: DeviceSize,
+) -> Result;
+pub type FnGetImageMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_memory_requirements: *mut MemoryRequirements,
+) -> c_void;
+pub type FnBindImageMemory = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    memory: Option<DeviceMemory>,
+    memory_offset: DeviceSize,
+) -> Result;
+pub type FnGetImageSparseMemoryRequirements = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_sparse_memory_requirement_count: *mut u32,
+    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements,
+) -> c_void;
+pub type FnGetPhysicalDeviceSparseImageFormatProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    samples: SampleCountFlags,
+    usage: ImageUsageFlags,
+    tiling: ImageTiling,
+    p_property_count: *mut u32,
+    p_properties: *mut SparseImageFormatProperties,
+) -> c_void;
+pub type FnQueueBindSparse = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    bind_info_count: u32,
+    p_bind_info: *const BindSparseInfo,
+    fence: Option<Fence>,
+) -> Result;
+pub type FnCreateFence = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const FenceCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_fence: *mut Fence,
+) -> Result;
+pub type FnDestroyFence = unsafe extern "system" fn(
+    device: Option<Device>,
+    fence: Option<Fence>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnResetFences =
+    unsafe extern "system" fn(device: Option<Device>, fence_count: u32, p_fences: *const Fence) -> Result;
+pub type FnGetFenceStatus = unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>) -> Result;
+pub type FnWaitForFences = unsafe extern "system" fn(
+    device: Option<Device>,
+    fence_count: u32,
+    p_fences: *const Fence,
+    wait_all: Bool32,
+    timeout: u64,
+) -> Result;
+pub type FnCreateSemaphore = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const SemaphoreCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_semaphore: *mut Semaphore,
+) -> Result;
+pub type FnDestroySemaphore = unsafe extern "system" fn(
+    device: Option<Device>,
+    semaphore: Option<Semaphore>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateEvent = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const EventCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_event: *mut Event,
+) -> Result;
+pub type FnDestroyEvent = unsafe extern "system" fn(
+    device: Option<Device>,
+    event: Option<Event>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetEventStatus = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
+pub type FnSetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
+pub type FnResetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
+pub type FnCreateQueryPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const QueryPoolCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_query_pool: *mut QueryPool,
+) -> Result;
+pub type FnDestroyQueryPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    query_pool: Option<QueryPool>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetQueryPoolResults = unsafe extern "system" fn(
+    device: Option<Device>,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+    query_count: u32,
+    data_size: usize,
+    p_data: *mut c_void,
+    stride: DeviceSize,
+    flags: QueryResultFlags,
+) -> Result;
+pub type FnResetQueryPoolEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+    query_count: u32,
+) -> c_void;
+pub type FnCreateBuffer = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const BufferCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_buffer: *mut Buffer,
+) -> Result;
+pub type FnDestroyBuffer = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: Option<Buffer>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateBufferView = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const BufferViewCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_view: *mut BufferView,
+) -> Result;
+pub type FnDestroyBufferView = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer_view: Option<BufferView>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateImage = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ImageCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_image: *mut Image,
+) -> Result;
+pub type FnDestroyImage = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetImageSubresourceLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_subresource: *const ImageSubresource,
+    p_layout: *mut SubresourceLayout,
+) -> c_void;
+pub type FnCreateImageView = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ImageViewCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_view: *mut ImageView,
+) -> Result;
+pub type FnDestroyImageView = unsafe extern "system" fn(
+    device: Option<Device>,
+    image_view: Option<ImageView>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateShaderModule = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ShaderModuleCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_shader_module: *mut ShaderModule,
+) -> Result;
+pub type FnDestroyShaderModule = unsafe extern "system" fn(
+    device: Option<Device>,
+    shader_module: Option<ShaderModule>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreatePipelineCache = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PipelineCacheCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipeline_cache: *mut PipelineCache,
+) -> Result;
+pub type FnDestroyPipelineCache = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetPipelineCacheData = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    p_data_size: *mut usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnMergePipelineCaches = unsafe extern "system" fn(
+    device: Option<Device>,
+    dst_cache: Option<PipelineCache>,
+    src_cache_count: u32,
+    p_src_caches: *const PipelineCache,
+) -> Result;
+pub type FnCreateGraphicsPipelines = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const GraphicsPipelineCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+pub type FnCreateComputePipelines = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const ComputePipelineCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+pub type FnDestroyPipeline = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline: Option<Pipeline>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreatePipelineLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PipelineLayoutCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_pipeline_layout: *mut PipelineLayout,
+) -> Result;
+pub type FnDestroyPipelineLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_layout: Option<PipelineLayout>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateSampler = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const SamplerCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_sampler: *mut Sampler,
+) -> Result;
+pub type FnDestroySampler = unsafe extern "system" fn(
+    device: Option<Device>,
+    sampler: Option<Sampler>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateDescriptorSetLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorSetLayoutCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_set_layout: *mut DescriptorSetLayout,
+) -> Result;
+pub type FnDestroyDescriptorSetLayout = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_set_layout: Option<DescriptorSetLayout>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateDescriptorPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorPoolCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_descriptor_pool: *mut DescriptorPool,
+) -> Result;
+pub type FnDestroyDescriptorPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_pool: Option<DescriptorPool>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnResetDescriptorPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_pool: Option<DescriptorPool>,
+    flags: DescriptorPoolResetFlags,
+) -> Result;
+pub type FnAllocateDescriptorSets = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_allocate_info: *const DescriptorSetAllocateInfo,
+    p_descriptor_sets: *mut DescriptorSet,
+) -> Result;
+pub type FnFreeDescriptorSets = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_pool: Option<DescriptorPool>,
+    descriptor_set_count: u32,
+    p_descriptor_sets: *const DescriptorSet,
+) -> Result;
+pub type FnUpdateDescriptorSets = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_write_count: u32,
+    p_descriptor_writes: *const WriteDescriptorSet,
+    descriptor_copy_count: u32,
+    p_descriptor_copies: *const CopyDescriptorSet,
+) -> c_void;
+pub type FnCreateFramebuffer = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const FramebufferCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_framebuffer: *mut Framebuffer,
+) -> Result;
+pub type FnDestroyFramebuffer = unsafe extern "system" fn(
+    device: Option<Device>,
+    framebuffer: Option<Framebuffer>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateRenderPass = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const RenderPassCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_render_pass: *mut RenderPass,
+) -> Result;
+pub type FnDestroyRenderPass = unsafe extern "system" fn(
+    device: Option<Device>,
+    render_pass: Option<RenderPass>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetRenderAreaGranularity = unsafe extern "system" fn(
+    device: Option<Device>,
+    render_pass: Option<RenderPass>,
+    p_granularity: *mut Extent2D,
+) -> c_void;
+pub type FnCreateCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const CommandPoolCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_command_pool: *mut CommandPool,
+) -> Result;
+pub type FnDestroyCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnResetCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    flags: CommandPoolResetFlags,
+) -> Result;
+pub type FnAllocateCommandBuffers = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_allocate_info: *const CommandBufferAllocateInfo,
+    p_command_buffers: *mut CommandBuffer,
+) -> Result;
+pub type FnFreeCommandBuffers = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    command_buffer_count: u32,
+    p_command_buffers: *const CommandBuffer,
+) -> c_void;
+pub type FnBeginCommandBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_begin_info: *const CommandBufferBeginInfo,
+) -> Result;
+pub type FnEndCommandBuffer = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> Result;
+pub type FnResetCommandBuffer =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, flags: CommandBufferResetFlags) -> Result;
+pub type FnCmdBindPipeline = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    pipeline: Option<Pipeline>,
+) -> c_void;
+pub type FnCmdSetViewport = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_viewports: *const Viewport,
+) -> c_void;
+pub type FnCmdSetScissor = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_scissor: u32,
+    scissor_count: u32,
+    p_scissors: *const Rect2D,
+) -> c_void;
+pub type FnCmdSetLineWidth =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, line_width: f32) -> c_void;
+pub type FnCmdSetDepthBias = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    depth_bias_constant_factor: f32,
+    depth_bias_clamp: f32,
+    depth_bias_slope_factor: f32,
+) -> c_void;
+pub type FnCmdSetBlendConstants =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4]) -> c_void;
+pub type FnCmdSetDepthBounds = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    min_depth_bounds: f32,
+    max_depth_bounds: f32,
+) -> c_void;
+pub type FnCmdSetStencilCompareMask = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    compare_mask: u32,
+) -> c_void;
+pub type FnCmdSetStencilWriteMask = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    write_mask: u32,
+) -> c_void;
+pub type FnCmdSetStencilReference = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    reference: u32,
+) -> c_void;
+pub type FnCmdBindDescriptorSets = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    layout: Option<PipelineLayout>,
+    first_set: u32,
+    descriptor_set_count: u32,
+    p_descriptor_sets: *const DescriptorSet,
+    dynamic_offset_count: u32,
+    p_dynamic_offsets: *const u32,
+) -> c_void;
+pub type FnCmdBindIndexBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    index_type: IndexType,
+) -> c_void;
+pub type FnCmdBindVertexBuffers = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_binding: u32,
+    binding_count: u32,
+    p_buffers: *const Buffer,
+    p_offsets: *const DeviceSize,
+) -> c_void;
+pub type FnCmdDraw = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    vertex_count: u32,
+    instance_count: u32,
+    first_vertex: u32,
+    first_instance: u32,
+) -> c_void;
+pub type FnCmdDrawIndexed = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    index_count: u32,
+    instance_count: u32,
+    first_index: u32,
+    vertex_offset: i32,
+    first_instance: u32,
+) -> c_void;
+pub type FnCmdDrawIndirect = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCmdDrawIndexedIndirect = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCmdDispatch = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    group_count_x: u32,
+    group_count_y: u32,
+    group_count_z: u32,
+) -> c_void;
+pub type FnCmdDispatchIndirect = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+) -> c_void;
+pub type FnCmdCopyBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_buffer: Option<Buffer>,
+    dst_buffer: Option<Buffer>,
+    region_count: u32,
+    p_regions: *const BufferCopy,
+) -> c_void;
+pub type FnCmdCopyImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_image: Option<Image>,
+    src_image_layout: ImageLayout,
+    dst_image: Option<Image>,
+    dst_image_layout: ImageLayout,
+    region_count: u32,
+    p_regions: *const ImageCopy,
+) -> c_void;
+pub type FnCmdBlitImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_image: Option<Image>,
+    src_image_layout: ImageLayout,
+    dst_image: Option<Image>,
+    dst_image_layout: ImageLayout,
+    region_count: u32,
+    p_regions: *const ImageBlit,
+    filter: Filter,
+) -> c_void;
+pub type FnCmdCopyBufferToImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_buffer: Option<Buffer>,
+    dst_image: Option<Image>,
+    dst_image_layout: ImageLayout,
+    region_count: u32,
+    p_regions: *const BufferImageCopy,
+) -> c_void;
+pub type FnCmdCopyImageToBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_image: Option<Image>,
+    src_image_layout: ImageLayout,
+    dst_buffer: Option<Buffer>,
+    region_count: u32,
+    p_regions: *const BufferImageCopy,
+) -> c_void;
+pub type FnCmdUpdateBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    dst_buffer: Option<Buffer>,
+    dst_offset: DeviceSize,
+    data_size: DeviceSize,
+    p_data: *const c_void,
+) -> c_void;
+pub type FnCmdFillBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    dst_buffer: Option<Buffer>,
+    dst_offset: DeviceSize,
+    size: DeviceSize,
+    data: u32,
+) -> c_void;
+pub type FnCmdClearColorImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    image: Option<Image>,
+    image_layout: ImageLayout,
+    p_color: *const ClearColorValue,
+    range_count: u32,
+    p_ranges: *const ImageSubresourceRange,
+) -> c_void;
+pub type FnCmdClearDepthStencilImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    image: Option<Image>,
+    image_layout: ImageLayout,
+    p_depth_stencil: *const ClearDepthStencilValue,
+    range_count: u32,
+    p_ranges: *const ImageSubresourceRange,
+) -> c_void;
+pub type FnCmdClearAttachments = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    attachment_count: u32,
+    p_attachments: *const ClearAttachment,
+    rect_count: u32,
+    p_rects: *const ClearRect,
+) -> c_void;
+pub type FnCmdResolveImage = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_image: Option<Image>,
+    src_image_layout: ImageLayout,
+    dst_image: Option<Image>,
+    dst_image_layout: ImageLayout,
+    region_count: u32,
+    p_regions: *const ImageResolve,
+) -> c_void;
+pub type FnCmdSetEvent = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event: Option<Event>,
+    stage_mask: PipelineStageFlags,
+) -> c_void;
+pub type FnCmdResetEvent = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event: Option<Event>,
+    stage_mask: PipelineStageFlags,
+) -> c_void;
+pub type FnCmdWaitEvents = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event_count: u32,
+    p_events: *const Event,
+    src_stage_mask: PipelineStageFlags,
+    dst_stage_mask: PipelineStageFlags,
+    memory_barrier_count: u32,
+    p_memory_barriers: *const MemoryBarrier,
+    buffer_memory_barrier_count: u32,
+    p_buffer_memory_barriers: *const BufferMemoryBarrier,
+    image_memory_barrier_count: u32,
+    p_image_memory_barriers: *const ImageMemoryBarrier,
+) -> c_void;
+pub type FnCmdPipelineBarrier = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    src_stage_mask: PipelineStageFlags,
+    dst_stage_mask: PipelineStageFlags,
+    dependency_flags: DependencyFlags,
+    memory_barrier_count: u32,
+    p_memory_barriers: *const MemoryBarrier,
+    buffer_memory_barrier_count: u32,
+    p_buffer_memory_barriers: *const BufferMemoryBarrier,
+    image_memory_barrier_count: u32,
+    p_image_memory_barriers: *const ImageMemoryBarrier,
+) -> c_void;
+pub type FnCmdBeginQuery = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+    flags: QueryControlFlags,
+) -> c_void;
+pub type FnCmdEndQuery = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+) -> c_void;
+pub type FnCmdBeginConditionalRenderingEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
+) -> c_void;
+pub type FnCmdEndConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+pub type FnCmdResetQueryPool = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+    query_count: u32,
+) -> c_void;
+pub type FnCmdWriteTimestamp = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_stage: PipelineStageFlags,
+    query_pool: Option<QueryPool>,
+    query: u32,
+) -> c_void;
+pub type FnCmdCopyQueryPoolResults = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+    query_count: u32,
+    dst_buffer: Option<Buffer>,
+    dst_offset: DeviceSize,
+    stride: DeviceSize,
+    flags: QueryResultFlags,
+) -> c_void;
+pub type FnCmdPushConstants = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    layout: Option<PipelineLayout>,
+    stage_flags: ShaderStageFlags,
+    offset: u32,
+    size: u32,
+    p_values: *const c_void,
+) -> c_void;
+pub type FnCmdBeginRenderPass = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_render_pass_begin: *const RenderPassBeginInfo,
+    contents: SubpassContents,
+) -> c_void;
+pub type FnCmdNextSubpass =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, contents: SubpassContents) -> c_void;
+pub type FnCmdEndRenderPass = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+pub type FnCmdExecuteCommands = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    command_buffer_count: u32,
+    p_command_buffers: *const CommandBuffer,
+) -> c_void;
+pub type FnCreateAndroidSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const AndroidSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceDisplayPropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPropertiesKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceDisplayPlanePropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPlanePropertiesKHR,
+) -> Result;
+pub type FnGetDisplayPlaneSupportedDisplaysKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    plane_index: u32,
+    p_display_count: *mut u32,
+    p_displays: *mut DisplayKHR,
+) -> Result;
+pub type FnGetDisplayModePropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayModePropertiesKHR,
+) -> Result;
+pub type FnCreateDisplayModeKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_create_info: *const DisplayModeCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_mode: *mut DisplayModeKHR,
+) -> Result;
+pub type FnGetDisplayPlaneCapabilitiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    mode: Option<DisplayModeKHR>,
+    plane_index: u32,
+    p_capabilities: *mut DisplayPlaneCapabilitiesKHR,
+) -> Result;
+pub type FnCreateDisplayPlaneSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DisplaySurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateSharedSwapchainsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain_count: u32,
+    p_create_infos: *const SwapchainCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_swapchains: *mut SwapchainKHR,
+) -> Result;
+pub type FnDestroySurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    surface: Option<SurfaceKHR>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetPhysicalDeviceSurfaceSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    surface: Option<SurfaceKHR>,
+    p_supported: *mut Bool32,
+) -> Result;
+pub type FnGetPhysicalDeviceSurfaceCapabilitiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_capabilities: *mut SurfaceCapabilitiesKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceSurfaceFormatsKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_format_count: *mut u32,
+    p_surface_formats: *mut SurfaceFormatKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceSurfacePresentModesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_present_mode_count: *mut u32,
+    p_present_modes: *mut PresentModeKHR,
+) -> Result;
+pub type FnCreateSwapchainKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const SwapchainCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_swapchain: *mut SwapchainKHR,
+) -> Result;
+pub type FnDestroySwapchainKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetSwapchainImagesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_swapchain_image_count: *mut u32,
+    p_swapchain_images: *mut Image,
+) -> Result;
+pub type FnAcquireNextImageKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    timeout: u64,
+    semaphore: Option<Semaphore>,
+    fence: Option<Fence>,
+    p_image_index: *mut u32,
+) -> Result;
+pub type FnQueuePresentKHR =
+    unsafe extern "system" fn(queue: Option<Queue>, p_present_info: *const PresentInfoKHR) -> Result;
+pub type FnCreateViSurfaceNN = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const ViSurfaceCreateInfoNN,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateWaylandSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const WaylandSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceWaylandPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    display: *mut wl_display,
+) -> Bool32;
+pub type FnCreateWin32SurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const Win32SurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceWin32PresentationSupportKHR =
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, queue_family_index: u32) -> Bool32;
+pub type FnCreateXlibSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const XlibSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceXlibPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    dpy: *mut Display,
+    visual_id: VisualID,
+) -> Bool32;
+pub type FnCreateXcbSurfaceKHR = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const XcbSurfaceCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceXcbPresentationSupportKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    connection: *mut xcb_connection_t,
+    visual_id: xcb_visualid_t,
+) -> Bool32;
+pub type FnCreateImagePipeSurfaceFUCHSIA = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateDebugReportCallbackEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DebugReportCallbackCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_callback: *mut DebugReportCallbackEXT,
+) -> Result;
+pub type FnDestroyDebugReportCallbackEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    callback: Option<DebugReportCallbackEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnDebugReportMessageEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    flags: DebugReportFlagsEXT,
+    object_type: DebugReportObjectTypeEXT,
+    object: u64,
+    location: usize,
+    message_code: i32,
+    p_layer_prefix: *const c_char,
+    p_message: *const c_char,
+) -> c_void;
+pub type FnDebugMarkerSetObjectNameEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugMarkerObjectNameInfoEXT) -> Result;
+pub type FnDebugMarkerSetObjectTagEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugMarkerObjectTagInfoEXT) -> Result;
+pub type FnCmdDebugMarkerBeginEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const DebugMarkerMarkerInfoEXT,
+) -> c_void;
+pub type FnCmdDebugMarkerEndEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+pub type FnCmdDebugMarkerInsertEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const DebugMarkerMarkerInfoEXT,
+) -> c_void;
+pub type FnGetPhysicalDeviceExternalImageFormatPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    ty: ImageType,
+    tiling: ImageTiling,
+    usage: ImageUsageFlags,
+    flags: ImageCreateFlags,
+    external_handle_type: ExternalMemoryHandleTypeFlagsNV,
+    p_external_image_format_properties: *mut ExternalImageFormatPropertiesNV,
+) -> Result;
+pub type FnGetMemoryWin32HandleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    memory: Option<DeviceMemory>,
+    handle_type: ExternalMemoryHandleTypeFlagsNV,
+    p_handle: *mut HANDLE,
+) -> Result;
+pub type FnCmdProcessCommandsNVX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_process_commands_info: *const CmdProcessCommandsInfoNVX,
+) -> c_void;
+pub type FnCmdReserveSpaceForCommandsNVX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_reserve_space_info: *const CmdReserveSpaceForCommandsInfoNVX,
+) -> c_void;
+pub type FnCreateIndirectCommandsLayoutNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const IndirectCommandsLayoutCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_indirect_commands_layout: *mut IndirectCommandsLayoutNVX,
+) -> Result;
+pub type FnDestroyIndirectCommandsLayoutNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnCreateObjectTableNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ObjectTableCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_object_table: *mut ObjectTableNVX,
+) -> Result;
+pub type FnDestroyObjectTableNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_table: Option<ObjectTableNVX>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnRegisterObjectsNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_table: Option<ObjectTableNVX>,
+    object_count: u32,
+    pp_object_table_entries: *const *const ObjectTableEntryNVX,
+    p_object_indices: *const u32,
+) -> Result;
+pub type FnUnregisterObjectsNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_table: Option<ObjectTableNVX>,
+    object_count: u32,
+    p_object_entry_types: *const ObjectEntryTypeNVX,
+    p_object_indices: *const u32,
+) -> Result;
+pub type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut DeviceGeneratedCommandsFeaturesNVX,
+    p_limits: *mut DeviceGeneratedCommandsLimitsNVX,
+) -> c_void;
+pub type FnGetPhysicalDeviceFeatures2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_features: *mut PhysicalDeviceFeatures2,
+) -> c_void;
+pub type FnGetPhysicalDeviceFeatures2KHR = FnGetPhysicalDeviceFeatures2;
+pub type FnGetPhysicalDeviceProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_properties: *mut PhysicalDeviceProperties2,
+) -> c_void;
+pub type FnGetPhysicalDeviceProperties2KHR = FnGetPhysicalDeviceProperties2;
+pub type FnGetPhysicalDeviceFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    format: Format,
+    p_format_properties: *mut FormatProperties2,
+) -> c_void;
+pub type FnGetPhysicalDeviceFormatProperties2KHR = FnGetPhysicalDeviceFormatProperties2;
+pub type FnGetPhysicalDeviceImageFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_image_format_info: *const PhysicalDeviceImageFormatInfo2,
+    p_image_format_properties: *mut ImageFormatProperties2,
+) -> Result;
+pub type FnGetPhysicalDeviceImageFormatProperties2KHR = FnGetPhysicalDeviceImageFormatProperties2;
+pub type FnGetPhysicalDeviceQueueFamilyProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_queue_family_property_count: *mut u32,
+    p_queue_family_properties: *mut QueueFamilyProperties2,
+) -> c_void;
+pub type FnGetPhysicalDeviceQueueFamilyProperties2KHR = FnGetPhysicalDeviceQueueFamilyProperties2;
+pub type FnGetPhysicalDeviceMemoryProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_memory_properties: *mut PhysicalDeviceMemoryProperties2,
+) -> c_void;
+pub type FnGetPhysicalDeviceMemoryProperties2KHR = FnGetPhysicalDeviceMemoryProperties2;
+pub type FnGetPhysicalDeviceSparseImageFormatProperties2 = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
+    p_property_count: *mut u32,
+    p_properties: *mut SparseImageFormatProperties2,
+) -> c_void;
+pub type FnGetPhysicalDeviceSparseImageFormatProperties2KHR = FnGetPhysicalDeviceSparseImageFormatProperties2;
+pub type FnCmdPushDescriptorSetKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    layout: Option<PipelineLayout>,
+    set: u32,
+    descriptor_write_count: u32,
+    p_descriptor_writes: *const WriteDescriptorSet,
+) -> c_void;
+pub type FnTrimCommandPool = unsafe extern "system" fn(
+    device: Option<Device>,
+    command_pool: Option<CommandPool>,
+    flags: CommandPoolTrimFlags,
+) -> c_void;
+pub type FnTrimCommandPoolKHR = FnTrimCommandPool;
+pub type FnGetPhysicalDeviceExternalBufferProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_buffer_info: *const PhysicalDeviceExternalBufferInfo,
+    p_external_buffer_properties: *mut ExternalBufferProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceExternalBufferPropertiesKHR = FnGetPhysicalDeviceExternalBufferProperties;
+pub type FnGetMemoryWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const MemoryGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
+pub type FnGetMemoryWin32HandlePropertiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    handle: HANDLE,
+    p_memory_win32_handle_properties: *mut MemoryWin32HandlePropertiesKHR,
+) -> Result;
+pub type FnGetMemoryFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const MemoryGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
+pub type FnGetMemoryFdPropertiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    fd: c_int,
+    p_memory_fd_properties: *mut MemoryFdPropertiesKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
+    p_external_semaphore_properties: *mut ExternalSemaphoreProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceExternalSemaphorePropertiesKHR = FnGetPhysicalDeviceExternalSemaphoreProperties;
+pub type FnGetSemaphoreWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const SemaphoreGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
+pub type FnImportSemaphoreWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_semaphore_win32_handle_info: *const ImportSemaphoreWin32HandleInfoKHR,
+) -> Result;
+pub type FnGetSemaphoreFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const SemaphoreGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
+pub type FnImportSemaphoreFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceExternalFenceProperties = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_external_fence_info: *const PhysicalDeviceExternalFenceInfo,
+    p_external_fence_properties: *mut ExternalFenceProperties,
+) -> c_void;
+pub type FnGetPhysicalDeviceExternalFencePropertiesKHR = FnGetPhysicalDeviceExternalFenceProperties;
+pub type FnGetFenceWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_win32_handle_info: *const FenceGetWin32HandleInfoKHR,
+    p_handle: *mut HANDLE,
+) -> Result;
+pub type FnImportFenceWin32HandleKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_fence_win32_handle_info: *const ImportFenceWin32HandleInfoKHR,
+) -> Result;
+pub type FnGetFenceFdKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_fd_info: *const FenceGetFdInfoKHR,
+    p_fd: *mut c_int,
+) -> Result;
+pub type FnImportFenceFdKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_import_fence_fd_info: *const ImportFenceFdInfoKHR) -> Result;
+pub type FnReleaseDisplayEXT =
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, display: Option<DisplayKHR>) -> Result;
+pub type FnAcquireXlibDisplayEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    dpy: *mut Display,
+    display: Option<DisplayKHR>,
+) -> Result;
+pub type FnGetRandROutputDisplayEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    dpy: *mut Display,
+    rr_output: RROutput,
+    p_display: *mut DisplayKHR,
+) -> Result;
+pub type FnDisplayPowerControlEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    display: Option<DisplayKHR>,
+    p_display_power_info: *const DisplayPowerInfoEXT,
+) -> Result;
+pub type FnRegisterDeviceEventEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_device_event_info: *const DeviceEventInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_fence: *mut Fence,
+) -> Result;
+pub type FnRegisterDisplayEventEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    display: Option<DisplayKHR>,
+    p_display_event_info: *const DisplayEventInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_fence: *mut Fence,
+) -> Result;
+pub type FnGetSwapchainCounterEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    counter: SurfaceCounterFlagsEXT,
+    p_counter_value: *mut u64,
+) -> Result;
+pub type FnGetPhysicalDeviceSurfaceCapabilities2EXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_surface_capabilities: *mut SurfaceCapabilities2EXT,
+) -> Result;
+pub type FnEnumeratePhysicalDeviceGroups = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_physical_device_group_count: *mut u32,
+    p_physical_device_group_properties: *mut PhysicalDeviceGroupProperties,
+) -> Result;
+pub type FnEnumeratePhysicalDeviceGroupsKHR = FnEnumeratePhysicalDeviceGroups;
+pub type FnGetDeviceGroupPeerMemoryFeatures = unsafe extern "system" fn(
+    device: Option<Device>,
+    heap_index: u32,
+    local_device_index: u32,
+    remote_device_index: u32,
+    p_peer_memory_features: *mut PeerMemoryFeatureFlags,
+) -> c_void;
+pub type FnGetDeviceGroupPeerMemoryFeaturesKHR = FnGetDeviceGroupPeerMemoryFeatures;
+pub type FnBindBufferMemory2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindBufferMemoryInfo,
+) -> Result;
+pub type FnBindBufferMemory2KHR = FnBindBufferMemory2;
+pub type FnBindImageMemory2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindImageMemoryInfo,
+) -> Result;
+pub type FnBindImageMemory2KHR = FnBindImageMemory2;
+pub type FnCmdSetDeviceMask =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, device_mask: u32) -> c_void;
+pub type FnCmdSetDeviceMaskKHR = FnCmdSetDeviceMask;
+pub type FnGetDeviceGroupPresentCapabilitiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_device_group_present_capabilities: *mut DeviceGroupPresentCapabilitiesKHR,
+) -> Result;
+pub type FnGetDeviceGroupSurfacePresentModesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    surface: Option<SurfaceKHR>,
+    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
+) -> Result;
+pub type FnAcquireNextImage2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_acquire_info: *const AcquireNextImageInfoKHR,
+    p_image_index: *mut u32,
+) -> Result;
+pub type FnCmdDispatchBase = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    base_group_x: u32,
+    base_group_y: u32,
+    base_group_z: u32,
+    group_count_x: u32,
+    group_count_y: u32,
+    group_count_z: u32,
+) -> c_void;
+pub type FnCmdDispatchBaseKHR = FnCmdDispatchBase;
+pub type FnGetPhysicalDevicePresentRectanglesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    surface: Option<SurfaceKHR>,
+    p_rect_count: *mut u32,
+    p_rects: *mut Rect2D,
+) -> Result;
+pub type FnCreateDescriptorUpdateTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorUpdateTemplateCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_descriptor_update_template: *mut DescriptorUpdateTemplate,
+) -> Result;
+pub type FnCreateDescriptorUpdateTemplateKHR = FnCreateDescriptorUpdateTemplate;
+pub type FnDestroyDescriptorUpdateTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnDestroyDescriptorUpdateTemplateKHR = FnDestroyDescriptorUpdateTemplate;
+pub type FnUpdateDescriptorSetWithTemplate = unsafe extern "system" fn(
+    device: Option<Device>,
+    descriptor_set: Option<DescriptorSet>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    p_data: *const c_void,
+) -> c_void;
+pub type FnUpdateDescriptorSetWithTemplateKHR = FnUpdateDescriptorSetWithTemplate;
+pub type FnCmdPushDescriptorSetWithTemplateKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    descriptor_update_template: Option<DescriptorUpdateTemplate>,
+    layout: Option<PipelineLayout>,
+    set: u32,
+    p_data: *const c_void,
+) -> c_void;
+pub type FnSetHdrMetadataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain_count: u32,
+    p_swapchains: *const SwapchainKHR,
+    p_metadata: *const HdrMetadataEXT,
+) -> c_void;
+pub type FnGetSwapchainStatusKHR =
+    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+pub type FnGetRefreshCycleDurationGOOGLE = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_display_timing_properties: *mut RefreshCycleDurationGOOGLE,
+) -> Result;
+pub type FnGetPastPresentationTimingGOOGLE = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_presentation_timing_count: *mut u32,
+    p_presentation_timings: *mut PastPresentationTimingGOOGLE,
+) -> Result;
+pub type FnCreateIOSSurfaceMVK = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const IOSSurfaceCreateInfoMVK,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateMacOSSurfaceMVK = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const MacOSSurfaceCreateInfoMVK,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCreateMetalSurfaceEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const MetalSurfaceCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnCmdSetViewportWScalingNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_viewport_w_scalings: *const ViewportWScalingNV,
+) -> c_void;
+pub type FnCmdSetDiscardRectangleEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_discard_rectangle: u32,
+    discard_rectangle_count: u32,
+    p_discard_rectangles: *const Rect2D,
+) -> c_void;
+pub type FnCmdSetSampleLocationsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_sample_locations_info: *const SampleLocationsInfoEXT,
+) -> c_void;
+pub type FnGetPhysicalDeviceMultisamplePropertiesEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    samples: SampleCountFlags,
+    p_multisample_properties: *mut MultisamplePropertiesEXT,
+) -> c_void;
+pub type FnGetPhysicalDeviceSurfaceCapabilities2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_surface_capabilities: *mut SurfaceCapabilities2KHR,
+) -> Result;
+pub type FnGetPhysicalDeviceSurfaceFormats2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_surface_format_count: *mut u32,
+    p_surface_formats: *mut SurfaceFormat2KHR,
+) -> Result;
+pub type FnGetPhysicalDeviceDisplayProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayProperties2KHR,
+) -> Result;
+pub type FnGetPhysicalDeviceDisplayPlaneProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayPlaneProperties2KHR,
+) -> Result;
+pub type FnGetDisplayModeProperties2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    display: Option<DisplayKHR>,
+    p_property_count: *mut u32,
+    p_properties: *mut DisplayModeProperties2KHR,
+) -> Result;
+pub type FnGetDisplayPlaneCapabilities2KHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_display_plane_info: *const DisplayPlaneInfo2KHR,
+    p_capabilities: *mut DisplayPlaneCapabilities2KHR,
+) -> Result;
+pub type FnGetBufferMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const BufferMemoryRequirementsInfo2,
+    p_memory_requirements: *mut MemoryRequirements2,
+) -> c_void;
+pub type FnGetBufferMemoryRequirements2KHR = FnGetBufferMemoryRequirements2;
+pub type FnGetImageMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageMemoryRequirementsInfo2,
+    p_memory_requirements: *mut MemoryRequirements2,
+) -> c_void;
+pub type FnGetImageMemoryRequirements2KHR = FnGetImageMemoryRequirements2;
+pub type FnGetImageSparseMemoryRequirements2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageSparseMemoryRequirementsInfo2,
+    p_sparse_memory_requirement_count: *mut u32,
+    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
+) -> c_void;
+pub type FnGetImageSparseMemoryRequirements2KHR = FnGetImageSparseMemoryRequirements2;
+pub type FnCreateSamplerYcbcrConversion = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const SamplerYcbcrConversionCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_ycbcr_conversion: *mut SamplerYcbcrConversion,
+) -> Result;
+pub type FnCreateSamplerYcbcrConversionKHR = FnCreateSamplerYcbcrConversion;
+pub type FnDestroySamplerYcbcrConversion = unsafe extern "system" fn(
+    device: Option<Device>,
+    ycbcr_conversion: Option<SamplerYcbcrConversion>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnDestroySamplerYcbcrConversionKHR = FnDestroySamplerYcbcrConversion;
+pub type FnGetDeviceQueue2 = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_queue_info: *const DeviceQueueInfo2,
+    p_queue: *mut Queue,
+) -> c_void;
+pub type FnCreateValidationCacheEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ValidationCacheCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_validation_cache: *mut ValidationCacheEXT,
+) -> Result;
+pub type FnDestroyValidationCacheEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    validation_cache: Option<ValidationCacheEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetValidationCacheDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    validation_cache: Option<ValidationCacheEXT>,
+    p_data_size: *mut usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnMergeValidationCachesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    dst_cache: Option<ValidationCacheEXT>,
+    src_cache_count: u32,
+    p_src_caches: *const ValidationCacheEXT,
+) -> Result;
+pub type FnGetDescriptorSetLayoutSupport = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const DescriptorSetLayoutCreateInfo,
+    p_support: *mut DescriptorSetLayoutSupport,
+) -> c_void;
+pub type FnGetDescriptorSetLayoutSupportKHR = FnGetDescriptorSetLayoutSupport;
+pub type FnGetSwapchainGrallocUsageANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    format: Format,
+    image_usage: ImageUsageFlags,
+    gralloc_usage: *mut c_int,
+) -> Result;
+pub type FnAcquireImageANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    native_fence_fd: c_int,
+    semaphore: Option<Semaphore>,
+    fence: Option<Fence>,
+) -> Result;
+pub type FnQueueSignalReleaseImageANDROID = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    wait_semaphore_count: u32,
+    p_wait_semaphores: *const Semaphore,
+    image: Option<Image>,
+    p_native_fence_fd: *mut c_int,
+) -> Result;
+pub type FnGetShaderInfoAMD = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline: Option<Pipeline>,
+    shader_stage: ShaderStageFlags,
+    info_type: ShaderInfoTypeAMD,
+    p_info_size: *mut usize,
+    p_info: *mut c_void,
+) -> Result;
+pub type FnSetLocalDimmingAMD = unsafe extern "system" fn(
+    device: Option<Device>,
+    swap_chain: Option<SwapchainKHR>,
+    local_dimming_enable: Bool32,
+) -> c_void;
+pub type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_time_domain_count: *mut u32,
+    p_time_domains: *mut TimeDomainEXT,
+) -> Result;
+pub type FnGetCalibratedTimestampsEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    timestamp_count: u32,
+    p_timestamp_infos: *const CalibratedTimestampInfoEXT,
+    p_timestamps: *mut u64,
+    p_max_deviation: *mut u64,
+) -> Result;
+pub type FnSetDebugUtilsObjectNameEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugUtilsObjectNameInfoEXT) -> Result;
+pub type FnSetDebugUtilsObjectTagEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugUtilsObjectTagInfoEXT) -> Result;
+pub type FnQueueBeginDebugUtilsLabelEXT =
+    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+pub type FnQueueEndDebugUtilsLabelEXT = unsafe extern "system" fn(queue: Option<Queue>) -> c_void;
+pub type FnQueueInsertDebugUtilsLabelEXT =
+    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+pub type FnCmdBeginDebugUtilsLabelEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+pub type FnCmdEndDebugUtilsLabelEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
+pub type FnCmdInsertDebugUtilsLabelEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
+pub type FnCreateDebugUtilsMessengerEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DebugUtilsMessengerCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_messenger: *mut DebugUtilsMessengerEXT,
+) -> Result;
+pub type FnDestroyDebugUtilsMessengerEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    messenger: Option<DebugUtilsMessengerEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnSubmitDebugUtilsMessageEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    message_severity: DebugUtilsMessageSeverityFlagsEXT,
+    message_types: DebugUtilsMessageTypeFlagsEXT,
+    p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
+) -> c_void;
+pub type FnGetMemoryHostPointerPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    p_host_pointer: *const c_void,
+    p_memory_host_pointer_properties: *mut MemoryHostPointerPropertiesEXT,
+) -> Result;
+pub type FnCmdWriteBufferMarkerAMD = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_stage: PipelineStageFlags,
+    dst_buffer: Option<Buffer>,
+    dst_offset: DeviceSize,
+    marker: u32,
+) -> c_void;
+pub type FnCreateRenderPass2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const RenderPassCreateInfo2KHR,
+    p_allocator: *const AllocationCallbacks,
+    p_render_pass: *mut RenderPass,
+) -> Result;
+pub type FnCmdBeginRenderPass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_render_pass_begin: *const RenderPassBeginInfo,
+    p_subpass_begin_info: *const SubpassBeginInfoKHR,
+) -> c_void;
+pub type FnCmdNextSubpass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_subpass_begin_info: *const SubpassBeginInfoKHR,
+    p_subpass_end_info: *const SubpassEndInfoKHR,
+) -> c_void;
+pub type FnCmdEndRenderPass2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_subpass_end_info: *const SubpassEndInfoKHR,
+) -> c_void;
+pub type FnGetAndroidHardwareBufferPropertiesANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    buffer: *const AHardwareBuffer,
+    p_properties: *mut AndroidHardwareBufferPropertiesANDROID,
+) -> Result;
+pub type FnGetMemoryAndroidHardwareBufferANDROID = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const MemoryGetAndroidHardwareBufferInfoANDROID,
+    p_buffer: *mut *mut AHardwareBuffer,
+) -> Result;
+pub type FnCmdDrawIndirectCountKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCmdDrawIndirectCountAMD = FnCmdDrawIndirectCountKHR;
+pub type FnCmdDrawIndexedIndirectCountKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCmdDrawIndexedIndirectCountAMD = FnCmdDrawIndexedIndirectCountKHR;
+pub type FnCmdSetCheckpointNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_checkpoint_marker: *const c_void) -> c_void;
+pub type FnGetQueueCheckpointDataNV = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    p_checkpoint_data_count: *mut u32,
+    p_checkpoint_data: *mut CheckpointDataNV,
+) -> c_void;
+pub type FnCmdBindTransformFeedbackBuffersEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_binding: u32,
+    binding_count: u32,
+    p_buffers: *const Buffer,
+    p_offsets: *const DeviceSize,
+    p_sizes: *const DeviceSize,
+) -> c_void;
+pub type FnCmdBeginTransformFeedbackEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_counter_buffer: u32,
+    counter_buffer_count: u32,
+    p_counter_buffers: *const Buffer,
+    p_counter_buffer_offsets: *const DeviceSize,
+) -> c_void;
+pub type FnCmdEndTransformFeedbackEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_counter_buffer: u32,
+    counter_buffer_count: u32,
+    p_counter_buffers: *const Buffer,
+    p_counter_buffer_offsets: *const DeviceSize,
+) -> c_void;
+pub type FnCmdBeginQueryIndexedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+    flags: QueryControlFlags,
+    index: u32,
+) -> c_void;
+pub type FnCmdEndQueryIndexedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    query_pool: Option<QueryPool>,
+    query: u32,
+    index: u32,
+) -> c_void;
+pub type FnCmdDrawIndirectByteCountEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    instance_count: u32,
+    first_instance: u32,
+    counter_buffer: Option<Buffer>,
+    counter_buffer_offset: DeviceSize,
+    counter_offset: u32,
+    vertex_stride: u32,
+) -> c_void;
+pub type FnCmdSetExclusiveScissorNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_exclusive_scissor: u32,
+    exclusive_scissor_count: u32,
+    p_exclusive_scissors: *const Rect2D,
+) -> c_void;
+pub type FnCmdBindShadingRateImageNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    image_view: Option<ImageView>,
+    image_layout: ImageLayout,
+) -> c_void;
+pub type FnCmdSetViewportShadingRatePaletteNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_shading_rate_palettes: *const ShadingRatePaletteNV,
+) -> c_void;
+pub type FnCmdSetCoarseSampleOrderNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    sample_order_type: CoarseSampleOrderTypeNV,
+    custom_sample_order_count: u32,
+    p_custom_sample_orders: *const CoarseSampleOrderCustomNV,
+) -> c_void;
+pub type FnCmdDrawMeshTasksNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, task_count: u32, first_task: u32) -> c_void;
+pub type FnCmdDrawMeshTasksIndirectNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCmdDrawMeshTasksIndirectCountNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+) -> c_void;
+pub type FnCompileDeferredNV =
+    unsafe extern "system" fn(device: Option<Device>, pipeline: Option<Pipeline>, shader: u32) -> Result;
+pub type FnCreateAccelerationStructureNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const AccelerationStructureCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_acceleration_structure: *mut AccelerationStructureNV,
+) -> Result;
+pub type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    acceleration_structure: Option<AccelerationStructureNV>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
+    p_memory_requirements: *mut MemoryRequirements2KHR,
+) -> c_void;
+pub type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    bind_info_count: u32,
+    p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
+) -> Result;
+pub type FnCmdCopyAccelerationStructureNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    dst: Option<AccelerationStructureNV>,
+    src: Option<AccelerationStructureNV>,
+    mode: CopyAccelerationStructureModeNV,
+) -> c_void;
+pub type FnCmdWriteAccelerationStructuresPropertiesNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    acceleration_structure_count: u32,
+    p_acceleration_structures: *const AccelerationStructureNV,
+    query_type: QueryType,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+) -> c_void;
+pub type FnCmdBuildAccelerationStructureNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_info: *const AccelerationStructureInfoNV,
+    instance_data: Option<Buffer>,
+    instance_offset: DeviceSize,
+    update: Bool32,
+    dst: Option<AccelerationStructureNV>,
+    src: Option<AccelerationStructureNV>,
+    scratch: Option<Buffer>,
+    scratch_offset: DeviceSize,
+) -> c_void;
+pub type FnCmdTraceRaysNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    raygen_shader_binding_table_buffer: Option<Buffer>,
+    raygen_shader_binding_offset: DeviceSize,
+    miss_shader_binding_table_buffer: Option<Buffer>,
+    miss_shader_binding_offset: DeviceSize,
+    miss_shader_binding_stride: DeviceSize,
+    hit_shader_binding_table_buffer: Option<Buffer>,
+    hit_shader_binding_offset: DeviceSize,
+    hit_shader_binding_stride: DeviceSize,
+    callable_shader_binding_table_buffer: Option<Buffer>,
+    callable_shader_binding_offset: DeviceSize,
+    callable_shader_binding_stride: DeviceSize,
+    width: u32,
+    height: u32,
+    depth: u32,
+) -> c_void;
+pub type FnGetRayTracingShaderGroupHandlesNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline: Option<Pipeline>,
+    first_group: u32,
+    group_count: u32,
+    data_size: usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetAccelerationStructureHandleNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    acceleration_structure: Option<AccelerationStructureNV>,
+    data_size: usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnCreateRayTracingPipelinesNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const RayTracingPipelineCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+pub type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
+) -> Result;
+pub type FnGetBufferDeviceAddressEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
+pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeMatrixPropertiesNV,
+) -> Result;
+pub type FnGetImageViewHandleNVX =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
+pub type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_present_mode_count: *mut u32,
+    p_present_modes: *mut PresentModeKHR,
+) -> Result;
+pub type FnGetDeviceGroupSurfacePresentModes2EXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
+    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
+) -> Result;
+pub type FnAcquireFullScreenExclusiveModeEXT =
+    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+pub type FnReleaseFullScreenExclusiveModeEXT =
+    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+pub type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const HeadlessSurfaceCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
 pub struct LoaderFn1_0 {
     pub create_instance: FnCreateInstance,
     pub enumerate_instance_extension_properties: FnEnumerateInstanceExtensionProperties,
@@ -29028,7 +30809,6 @@ impl LoaderFn1_0 {
         (block, all_loaded)
     }
 }
-type FnEnumerateInstanceVersion = unsafe extern "system" fn(p_api_version: *mut Version) -> Result;
 pub struct LoaderFn1_1 {
     pub enumerate_instance_version: FnEnumerateInstanceVersion,
 }
@@ -29056,73 +30836,6 @@ impl LoaderFn1_1 {
         (block, all_loaded)
     }
 }
-type FnDestroyInstance =
-    unsafe extern "system" fn(instance: Option<Instance>, p_allocator: *const AllocationCallbacks) -> c_void;
-type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_physical_device_count: *mut u32,
-    p_physical_devices: *mut PhysicalDevice,
-) -> Result;
-type FnGetPhysicalDeviceFeatures = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_features: *mut PhysicalDeviceFeatures,
-) -> c_void;
-type FnGetPhysicalDeviceFormatProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    format: Format,
-    p_format_properties: *mut FormatProperties,
-) -> c_void;
-type FnGetPhysicalDeviceImageFormatProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    format: Format,
-    ty: ImageType,
-    tiling: ImageTiling,
-    usage: ImageUsageFlags,
-    flags: ImageCreateFlags,
-    p_image_format_properties: *mut ImageFormatProperties,
-) -> Result;
-type FnGetPhysicalDeviceProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_properties: *mut PhysicalDeviceProperties,
-) -> c_void;
-type FnGetPhysicalDeviceQueueFamilyProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_queue_family_property_count: *mut u32,
-    p_queue_family_properties: *mut QueueFamilyProperties,
-) -> c_void;
-type FnGetPhysicalDeviceMemoryProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_memory_properties: *mut PhysicalDeviceMemoryProperties,
-) -> c_void;
-type FnGetDeviceProcAddr =
-    unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
-type FnCreateDevice = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_create_info: *const DeviceCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_device: *mut Device,
-) -> Result;
-type FnEnumerateDeviceExtensionProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_layer_name: *const c_char,
-    p_property_count: *mut u32,
-    p_properties: *mut ExtensionProperties,
-) -> Result;
-type FnEnumerateDeviceLayerProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut LayerProperties,
-) -> Result;
-type FnGetPhysicalDeviceSparseImageFormatProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    format: Format,
-    ty: ImageType,
-    samples: SampleCountFlags,
-    usage: ImageUsageFlags,
-    tiling: ImageTiling,
-    p_property_count: *mut u32,
-    p_properties: *mut SparseImageFormatProperties,
-) -> c_void;
 pub struct InstanceFn1_0 {
     pub destroy_instance: FnDestroyInstance,
     pub enumerate_physical_devices: FnEnumeratePhysicalDevices,
@@ -29376,59 +31089,6 @@ impl InstanceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnEnumeratePhysicalDeviceGroups = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_physical_device_group_count: *mut u32,
-    p_physical_device_group_properties: *mut PhysicalDeviceGroupProperties,
-) -> Result;
-type FnGetPhysicalDeviceFeatures2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_features: *mut PhysicalDeviceFeatures2,
-) -> c_void;
-type FnGetPhysicalDeviceProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_properties: *mut PhysicalDeviceProperties2,
-) -> c_void;
-type FnGetPhysicalDeviceFormatProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    format: Format,
-    p_format_properties: *mut FormatProperties2,
-) -> c_void;
-type FnGetPhysicalDeviceImageFormatProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_image_format_info: *const PhysicalDeviceImageFormatInfo2,
-    p_image_format_properties: *mut ImageFormatProperties2,
-) -> Result;
-type FnGetPhysicalDeviceQueueFamilyProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_queue_family_property_count: *mut u32,
-    p_queue_family_properties: *mut QueueFamilyProperties2,
-) -> c_void;
-type FnGetPhysicalDeviceMemoryProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_memory_properties: *mut PhysicalDeviceMemoryProperties2,
-) -> c_void;
-type FnGetPhysicalDeviceSparseImageFormatProperties2 = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_format_info: *const PhysicalDeviceSparseImageFormatInfo2,
-    p_property_count: *mut u32,
-    p_properties: *mut SparseImageFormatProperties2,
-) -> c_void;
-type FnGetPhysicalDeviceExternalBufferProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_external_buffer_info: *const PhysicalDeviceExternalBufferInfo,
-    p_external_buffer_properties: *mut ExternalBufferProperties,
-) -> c_void;
-type FnGetPhysicalDeviceExternalFenceProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_external_fence_info: *const PhysicalDeviceExternalFenceInfo,
-    p_external_fence_properties: *mut ExternalFenceProperties,
-) -> c_void;
-type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
-    p_external_semaphore_properties: *mut ExternalSemaphoreProperties,
-) -> c_void;
 pub struct InstanceFn1_1 {
     pub enumerate_physical_device_groups: FnEnumeratePhysicalDeviceGroups,
     pub get_physical_device_features2: FnGetPhysicalDeviceFeatures2,
@@ -29638,677 +31298,6 @@ impl InstanceFn1_1 {
         (block, all_loaded)
     }
 }
-type FnDestroyDevice =
-    unsafe extern "system" fn(device: Option<Device>, p_allocator: *const AllocationCallbacks) -> c_void;
-type FnGetDeviceQueue = unsafe extern "system" fn(
-    device: Option<Device>,
-    queue_family_index: u32,
-    queue_index: u32,
-    p_queue: *mut Queue,
-) -> c_void;
-type FnQueueSubmit = unsafe extern "system" fn(
-    queue: Option<Queue>,
-    submit_count: u32,
-    p_submits: *const SubmitInfo,
-    fence: Option<Fence>,
-) -> Result;
-type FnQueueWaitIdle = unsafe extern "system" fn(queue: Option<Queue>) -> Result;
-type FnDeviceWaitIdle = unsafe extern "system" fn(device: Option<Device>) -> Result;
-type FnAllocateMemory = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_allocate_info: *const MemoryAllocateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_memory: *mut DeviceMemory,
-) -> Result;
-type FnFreeMemory = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory: Option<DeviceMemory>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnMapMemory = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory: Option<DeviceMemory>,
-    offset: DeviceSize,
-    size: DeviceSize,
-    flags: MemoryMapFlags,
-    pp_data: *mut *mut c_void,
-) -> Result;
-type FnUnmapMemory = unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>) -> c_void;
-type FnFlushMappedMemoryRanges = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory_range_count: u32,
-    p_memory_ranges: *const MappedMemoryRange,
-) -> Result;
-type FnInvalidateMappedMemoryRanges = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory_range_count: u32,
-    p_memory_ranges: *const MappedMemoryRange,
-) -> Result;
-type FnGetDeviceMemoryCommitment = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory: Option<DeviceMemory>,
-    p_committed_memory_in_bytes: *mut DeviceSize,
-) -> c_void;
-type FnBindBufferMemory = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer: Option<Buffer>,
-    memory: Option<DeviceMemory>,
-    memory_offset: DeviceSize,
-) -> Result;
-type FnBindImageMemory = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    memory: Option<DeviceMemory>,
-    memory_offset: DeviceSize,
-) -> Result;
-type FnGetBufferMemoryRequirements = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer: Option<Buffer>,
-    p_memory_requirements: *mut MemoryRequirements,
-) -> c_void;
-type FnGetImageMemoryRequirements = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_memory_requirements: *mut MemoryRequirements,
-) -> c_void;
-type FnGetImageSparseMemoryRequirements = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_sparse_memory_requirement_count: *mut u32,
-    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements,
-) -> c_void;
-type FnQueueBindSparse = unsafe extern "system" fn(
-    queue: Option<Queue>,
-    bind_info_count: u32,
-    p_bind_info: *const BindSparseInfo,
-    fence: Option<Fence>,
-) -> Result;
-type FnCreateFence = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const FenceCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_fence: *mut Fence,
-) -> Result;
-type FnDestroyFence = unsafe extern "system" fn(
-    device: Option<Device>,
-    fence: Option<Fence>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnResetFences =
-    unsafe extern "system" fn(device: Option<Device>, fence_count: u32, p_fences: *const Fence) -> Result;
-type FnGetFenceStatus = unsafe extern "system" fn(device: Option<Device>, fence: Option<Fence>) -> Result;
-type FnWaitForFences = unsafe extern "system" fn(
-    device: Option<Device>,
-    fence_count: u32,
-    p_fences: *const Fence,
-    wait_all: Bool32,
-    timeout: u64,
-) -> Result;
-type FnCreateSemaphore = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const SemaphoreCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_semaphore: *mut Semaphore,
-) -> Result;
-type FnDestroySemaphore = unsafe extern "system" fn(
-    device: Option<Device>,
-    semaphore: Option<Semaphore>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateEvent = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const EventCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_event: *mut Event,
-) -> Result;
-type FnDestroyEvent = unsafe extern "system" fn(
-    device: Option<Device>,
-    event: Option<Event>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetEventStatus = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
-type FnSetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
-type FnResetEvent = unsafe extern "system" fn(device: Option<Device>, event: Option<Event>) -> Result;
-type FnCreateQueryPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const QueryPoolCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_query_pool: *mut QueryPool,
-) -> Result;
-type FnDestroyQueryPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    query_pool: Option<QueryPool>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetQueryPoolResults = unsafe extern "system" fn(
-    device: Option<Device>,
-    query_pool: Option<QueryPool>,
-    first_query: u32,
-    query_count: u32,
-    data_size: usize,
-    p_data: *mut c_void,
-    stride: DeviceSize,
-    flags: QueryResultFlags,
-) -> Result;
-type FnCreateBuffer = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const BufferCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_buffer: *mut Buffer,
-) -> Result;
-type FnDestroyBuffer = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer: Option<Buffer>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateBufferView = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const BufferViewCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_view: *mut BufferView,
-) -> Result;
-type FnDestroyBufferView = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer_view: Option<BufferView>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateImage = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const ImageCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_image: *mut Image,
-) -> Result;
-type FnDestroyImage = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetImageSubresourceLayout = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_subresource: *const ImageSubresource,
-    p_layout: *mut SubresourceLayout,
-) -> c_void;
-type FnCreateImageView = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const ImageViewCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_view: *mut ImageView,
-) -> Result;
-type FnDestroyImageView = unsafe extern "system" fn(
-    device: Option<Device>,
-    image_view: Option<ImageView>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateShaderModule = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const ShaderModuleCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_shader_module: *mut ShaderModule,
-) -> Result;
-type FnDestroyShaderModule = unsafe extern "system" fn(
-    device: Option<Device>,
-    shader_module: Option<ShaderModule>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreatePipelineCache = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const PipelineCacheCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_pipeline_cache: *mut PipelineCache,
-) -> Result;
-type FnDestroyPipelineCache = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_cache: Option<PipelineCache>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetPipelineCacheData = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_cache: Option<PipelineCache>,
-    p_data_size: *mut usize,
-    p_data: *mut c_void,
-) -> Result;
-type FnMergePipelineCaches = unsafe extern "system" fn(
-    device: Option<Device>,
-    dst_cache: Option<PipelineCache>,
-    src_cache_count: u32,
-    p_src_caches: *const PipelineCache,
-) -> Result;
-type FnCreateGraphicsPipelines = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_cache: Option<PipelineCache>,
-    create_info_count: u32,
-    p_create_infos: *const GraphicsPipelineCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_pipelines: *mut Pipeline,
-) -> Result;
-type FnCreateComputePipelines = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_cache: Option<PipelineCache>,
-    create_info_count: u32,
-    p_create_infos: *const ComputePipelineCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_pipelines: *mut Pipeline,
-) -> Result;
-type FnDestroyPipeline = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline: Option<Pipeline>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreatePipelineLayout = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const PipelineLayoutCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_pipeline_layout: *mut PipelineLayout,
-) -> Result;
-type FnDestroyPipelineLayout = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_layout: Option<PipelineLayout>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateSampler = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const SamplerCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_sampler: *mut Sampler,
-) -> Result;
-type FnDestroySampler = unsafe extern "system" fn(
-    device: Option<Device>,
-    sampler: Option<Sampler>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateDescriptorSetLayout = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const DescriptorSetLayoutCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_set_layout: *mut DescriptorSetLayout,
-) -> Result;
-type FnDestroyDescriptorSetLayout = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_set_layout: Option<DescriptorSetLayout>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateDescriptorPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const DescriptorPoolCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_descriptor_pool: *mut DescriptorPool,
-) -> Result;
-type FnDestroyDescriptorPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_pool: Option<DescriptorPool>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnResetDescriptorPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_pool: Option<DescriptorPool>,
-    flags: DescriptorPoolResetFlags,
-) -> Result;
-type FnAllocateDescriptorSets = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_allocate_info: *const DescriptorSetAllocateInfo,
-    p_descriptor_sets: *mut DescriptorSet,
-) -> Result;
-type FnFreeDescriptorSets = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_pool: Option<DescriptorPool>,
-    descriptor_set_count: u32,
-    p_descriptor_sets: *const DescriptorSet,
-) -> Result;
-type FnUpdateDescriptorSets = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_write_count: u32,
-    p_descriptor_writes: *const WriteDescriptorSet,
-    descriptor_copy_count: u32,
-    p_descriptor_copies: *const CopyDescriptorSet,
-) -> c_void;
-type FnCreateFramebuffer = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const FramebufferCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_framebuffer: *mut Framebuffer,
-) -> Result;
-type FnDestroyFramebuffer = unsafe extern "system" fn(
-    device: Option<Device>,
-    framebuffer: Option<Framebuffer>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateRenderPass = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const RenderPassCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_render_pass: *mut RenderPass,
-) -> Result;
-type FnDestroyRenderPass = unsafe extern "system" fn(
-    device: Option<Device>,
-    render_pass: Option<RenderPass>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetRenderAreaGranularity = unsafe extern "system" fn(
-    device: Option<Device>,
-    render_pass: Option<RenderPass>,
-    p_granularity: *mut Extent2D,
-) -> c_void;
-type FnCreateCommandPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const CommandPoolCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_command_pool: *mut CommandPool,
-) -> Result;
-type FnDestroyCommandPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnResetCommandPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    flags: CommandPoolResetFlags,
-) -> Result;
-type FnAllocateCommandBuffers = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_allocate_info: *const CommandBufferAllocateInfo,
-    p_command_buffers: *mut CommandBuffer,
-) -> Result;
-type FnFreeCommandBuffers = unsafe extern "system" fn(
-    device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    command_buffer_count: u32,
-    p_command_buffers: *const CommandBuffer,
-) -> c_void;
-type FnBeginCommandBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_begin_info: *const CommandBufferBeginInfo,
-) -> Result;
-type FnEndCommandBuffer = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> Result;
-type FnResetCommandBuffer =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, flags: CommandBufferResetFlags) -> Result;
-type FnCmdBindPipeline = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    pipeline_bind_point: PipelineBindPoint,
-    pipeline: Option<Pipeline>,
-) -> c_void;
-type FnCmdSetViewport = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_viewport: u32,
-    viewport_count: u32,
-    p_viewports: *const Viewport,
-) -> c_void;
-type FnCmdSetScissor = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_scissor: u32,
-    scissor_count: u32,
-    p_scissors: *const Rect2D,
-) -> c_void;
-type FnCmdSetLineWidth = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, line_width: f32) -> c_void;
-type FnCmdSetDepthBias = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    depth_bias_constant_factor: f32,
-    depth_bias_clamp: f32,
-    depth_bias_slope_factor: f32,
-) -> c_void;
-type FnCmdSetBlendConstants =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4]) -> c_void;
-type FnCmdSetDepthBounds = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    min_depth_bounds: f32,
-    max_depth_bounds: f32,
-) -> c_void;
-type FnCmdSetStencilCompareMask = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    compare_mask: u32,
-) -> c_void;
-type FnCmdSetStencilWriteMask = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    write_mask: u32,
-) -> c_void;
-type FnCmdSetStencilReference = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    face_mask: StencilFaceFlags,
-    reference: u32,
-) -> c_void;
-type FnCmdBindDescriptorSets = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    pipeline_bind_point: PipelineBindPoint,
-    layout: Option<PipelineLayout>,
-    first_set: u32,
-    descriptor_set_count: u32,
-    p_descriptor_sets: *const DescriptorSet,
-    dynamic_offset_count: u32,
-    p_dynamic_offsets: *const u32,
-) -> c_void;
-type FnCmdBindIndexBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    index_type: IndexType,
-) -> c_void;
-type FnCmdBindVertexBuffers = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_binding: u32,
-    binding_count: u32,
-    p_buffers: *const Buffer,
-    p_offsets: *const DeviceSize,
-) -> c_void;
-type FnCmdDraw = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    vertex_count: u32,
-    instance_count: u32,
-    first_vertex: u32,
-    first_instance: u32,
-) -> c_void;
-type FnCmdDrawIndexed = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    index_count: u32,
-    instance_count: u32,
-    first_index: u32,
-    vertex_offset: i32,
-    first_instance: u32,
-) -> c_void;
-type FnCmdDrawIndirect = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDrawIndexedIndirect = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDispatch = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    group_count_x: u32,
-    group_count_y: u32,
-    group_count_z: u32,
-) -> c_void;
-type FnCmdDispatchIndirect = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-) -> c_void;
-type FnCmdCopyBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_buffer: Option<Buffer>,
-    dst_buffer: Option<Buffer>,
-    region_count: u32,
-    p_regions: *const BufferCopy,
-) -> c_void;
-type FnCmdCopyImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_image: Option<Image>,
-    src_image_layout: ImageLayout,
-    dst_image: Option<Image>,
-    dst_image_layout: ImageLayout,
-    region_count: u32,
-    p_regions: *const ImageCopy,
-) -> c_void;
-type FnCmdBlitImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_image: Option<Image>,
-    src_image_layout: ImageLayout,
-    dst_image: Option<Image>,
-    dst_image_layout: ImageLayout,
-    region_count: u32,
-    p_regions: *const ImageBlit,
-    filter: Filter,
-) -> c_void;
-type FnCmdCopyBufferToImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_buffer: Option<Buffer>,
-    dst_image: Option<Image>,
-    dst_image_layout: ImageLayout,
-    region_count: u32,
-    p_regions: *const BufferImageCopy,
-) -> c_void;
-type FnCmdCopyImageToBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_image: Option<Image>,
-    src_image_layout: ImageLayout,
-    dst_buffer: Option<Buffer>,
-    region_count: u32,
-    p_regions: *const BufferImageCopy,
-) -> c_void;
-type FnCmdUpdateBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    dst_buffer: Option<Buffer>,
-    dst_offset: DeviceSize,
-    data_size: DeviceSize,
-    p_data: *const c_void,
-) -> c_void;
-type FnCmdFillBuffer = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    dst_buffer: Option<Buffer>,
-    dst_offset: DeviceSize,
-    size: DeviceSize,
-    data: u32,
-) -> c_void;
-type FnCmdClearColorImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    image: Option<Image>,
-    image_layout: ImageLayout,
-    p_color: *const ClearColorValue,
-    range_count: u32,
-    p_ranges: *const ImageSubresourceRange,
-) -> c_void;
-type FnCmdClearDepthStencilImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    image: Option<Image>,
-    image_layout: ImageLayout,
-    p_depth_stencil: *const ClearDepthStencilValue,
-    range_count: u32,
-    p_ranges: *const ImageSubresourceRange,
-) -> c_void;
-type FnCmdClearAttachments = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    attachment_count: u32,
-    p_attachments: *const ClearAttachment,
-    rect_count: u32,
-    p_rects: *const ClearRect,
-) -> c_void;
-type FnCmdResolveImage = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_image: Option<Image>,
-    src_image_layout: ImageLayout,
-    dst_image: Option<Image>,
-    dst_image_layout: ImageLayout,
-    region_count: u32,
-    p_regions: *const ImageResolve,
-) -> c_void;
-type FnCmdSetEvent = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    event: Option<Event>,
-    stage_mask: PipelineStageFlags,
-) -> c_void;
-type FnCmdResetEvent = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    event: Option<Event>,
-    stage_mask: PipelineStageFlags,
-) -> c_void;
-type FnCmdWaitEvents = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    event_count: u32,
-    p_events: *const Event,
-    src_stage_mask: PipelineStageFlags,
-    dst_stage_mask: PipelineStageFlags,
-    memory_barrier_count: u32,
-    p_memory_barriers: *const MemoryBarrier,
-    buffer_memory_barrier_count: u32,
-    p_buffer_memory_barriers: *const BufferMemoryBarrier,
-    image_memory_barrier_count: u32,
-    p_image_memory_barriers: *const ImageMemoryBarrier,
-) -> c_void;
-type FnCmdPipelineBarrier = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    src_stage_mask: PipelineStageFlags,
-    dst_stage_mask: PipelineStageFlags,
-    dependency_flags: DependencyFlags,
-    memory_barrier_count: u32,
-    p_memory_barriers: *const MemoryBarrier,
-    buffer_memory_barrier_count: u32,
-    p_buffer_memory_barriers: *const BufferMemoryBarrier,
-    image_memory_barrier_count: u32,
-    p_image_memory_barriers: *const ImageMemoryBarrier,
-) -> c_void;
-type FnCmdBeginQuery = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    query: u32,
-    flags: QueryControlFlags,
-) -> c_void;
-type FnCmdEndQuery = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    query: u32,
-) -> c_void;
-type FnCmdResetQueryPool = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    first_query: u32,
-    query_count: u32,
-) -> c_void;
-type FnCmdWriteTimestamp = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    pipeline_stage: PipelineStageFlags,
-    query_pool: Option<QueryPool>,
-    query: u32,
-) -> c_void;
-type FnCmdCopyQueryPoolResults = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    first_query: u32,
-    query_count: u32,
-    dst_buffer: Option<Buffer>,
-    dst_offset: DeviceSize,
-    stride: DeviceSize,
-    flags: QueryResultFlags,
-) -> c_void;
-type FnCmdPushConstants = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    layout: Option<PipelineLayout>,
-    stage_flags: ShaderStageFlags,
-    offset: u32,
-    size: u32,
-    p_values: *const c_void,
-) -> c_void;
-type FnCmdBeginRenderPass = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_render_pass_begin: *const RenderPassBeginInfo,
-    contents: SubpassContents,
-) -> c_void;
-type FnCmdNextSubpass =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, contents: SubpassContents) -> c_void;
-type FnCmdEndRenderPass = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
-type FnCmdExecuteCommands = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    command_buffer_count: u32,
-    p_command_buffers: *const CommandBuffer,
-) -> c_void;
 pub struct DeviceFn1_0 {
     pub destroy_device: FnDestroyDevice,
     pub get_device_queue: FnGetDeviceQueue,
@@ -32542,92 +33531,6 @@ impl DeviceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnBindBufferMemory2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    bind_info_count: u32,
-    p_bind_infos: *const BindBufferMemoryInfo,
-) -> Result;
-type FnBindImageMemory2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    bind_info_count: u32,
-    p_bind_infos: *const BindImageMemoryInfo,
-) -> Result;
-type FnGetDeviceGroupPeerMemoryFeatures = unsafe extern "system" fn(
-    device: Option<Device>,
-    heap_index: u32,
-    local_device_index: u32,
-    remote_device_index: u32,
-    p_peer_memory_features: *mut PeerMemoryFeatureFlags,
-) -> c_void;
-type FnCmdSetDeviceMask = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, device_mask: u32) -> c_void;
-type FnCmdDispatchBase = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    base_group_x: u32,
-    base_group_y: u32,
-    base_group_z: u32,
-    group_count_x: u32,
-    group_count_y: u32,
-    group_count_z: u32,
-) -> c_void;
-type FnGetImageMemoryRequirements2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_info: *const ImageMemoryRequirementsInfo2,
-    p_memory_requirements: *mut MemoryRequirements2,
-) -> c_void;
-type FnGetBufferMemoryRequirements2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_info: *const BufferMemoryRequirementsInfo2,
-    p_memory_requirements: *mut MemoryRequirements2,
-) -> c_void;
-type FnGetImageSparseMemoryRequirements2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_info: *const ImageSparseMemoryRequirementsInfo2,
-    p_sparse_memory_requirement_count: *mut u32,
-    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
-) -> c_void;
-type FnTrimCommandPool = unsafe extern "system" fn(
-    device: Option<Device>,
-    command_pool: Option<CommandPool>,
-    flags: CommandPoolTrimFlags,
-) -> c_void;
-type FnGetDeviceQueue2 = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_queue_info: *const DeviceQueueInfo2,
-    p_queue: *mut Queue,
-) -> c_void;
-type FnCreateSamplerYcbcrConversion = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const SamplerYcbcrConversionCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_ycbcr_conversion: *mut SamplerYcbcrConversion,
-) -> Result;
-type FnDestroySamplerYcbcrConversion = unsafe extern "system" fn(
-    device: Option<Device>,
-    ycbcr_conversion: Option<SamplerYcbcrConversion>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateDescriptorUpdateTemplate = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const DescriptorUpdateTemplateCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_descriptor_update_template: *mut DescriptorUpdateTemplate,
-) -> Result;
-type FnDestroyDescriptorUpdateTemplate = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_update_template: Option<DescriptorUpdateTemplate>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnUpdateDescriptorSetWithTemplate = unsafe extern "system" fn(
-    device: Option<Device>,
-    descriptor_set: Option<DescriptorSet>,
-    descriptor_update_template: Option<DescriptorUpdateTemplate>,
-    p_data: *const c_void,
-) -> c_void;
-type FnGetDescriptorSetLayoutSupport = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const DescriptorSetLayoutCreateInfo,
-    p_support: *mut DescriptorSetLayoutSupport,
-) -> c_void;
 pub struct DeviceFn1_1 {
     pub bind_buffer_memory2: FnBindBufferMemory2,
     pub bind_image_memory2: FnBindImageMemory2,
@@ -32935,34 +33838,6 @@ impl DeviceFn1_1 {
         (block, all_loaded)
     }
 }
-type FnDestroySurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    surface: Option<SurfaceKHR>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetPhysicalDeviceSurfaceSupportKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    queue_family_index: u32,
-    surface: Option<SurfaceKHR>,
-    p_supported: *mut Bool32,
-) -> Result;
-type FnGetPhysicalDeviceSurfaceCapabilitiesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    surface: Option<SurfaceKHR>,
-    p_surface_capabilities: *mut SurfaceCapabilitiesKHR,
-) -> Result;
-type FnGetPhysicalDeviceSurfaceFormatsKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    surface: Option<SurfaceKHR>,
-    p_surface_format_count: *mut u32,
-    p_surface_formats: *mut SurfaceFormatKHR,
-) -> Result;
-type FnGetPhysicalDeviceSurfacePresentModesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    surface: Option<SurfaceKHR>,
-    p_present_mode_count: *mut u32,
-    p_present_modes: *mut PresentModeKHR,
-) -> Result;
 pub struct KhrSurfaceFn1_0 {
     pub destroy_surface_khr: FnDestroySurfaceKHR,
     pub get_physical_device_surface_support_khr: FnGetPhysicalDeviceSurfaceSupportKHR,
@@ -33069,33 +33944,6 @@ impl KhrSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateSwapchainKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const SwapchainCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_swapchain: *mut SwapchainKHR,
-) -> Result;
-type FnDestroySwapchainKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetSwapchainImagesKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    p_swapchain_image_count: *mut u32,
-    p_swapchain_images: *mut Image,
-) -> Result;
-type FnAcquireNextImageKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    timeout: u64,
-    semaphore: Option<Semaphore>,
-    fence: Option<Fence>,
-    p_image_index: *mut u32,
-) -> Result;
-type FnQueuePresentKHR =
-    unsafe extern "system" fn(queue: Option<Queue>, p_present_info: *const PresentInfoKHR) -> Result;
 pub struct KhrSwapchainFn1_0 {
     pub create_swapchain_khr: FnCreateSwapchainKHR,
     pub destroy_swapchain_khr: FnDestroySwapchainKHR,
@@ -33200,26 +34048,6 @@ impl KhrSwapchainFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetDeviceGroupPresentCapabilitiesKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_device_group_present_capabilities: *mut DeviceGroupPresentCapabilitiesKHR,
-) -> Result;
-type FnGetDeviceGroupSurfacePresentModesKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    surface: Option<SurfaceKHR>,
-    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
-) -> Result;
-type FnGetPhysicalDevicePresentRectanglesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    surface: Option<SurfaceKHR>,
-    p_rect_count: *mut u32,
-    p_rects: *mut Rect2D,
-) -> Result;
-type FnAcquireNextImage2KHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_acquire_info: *const AcquireNextImageInfoKHR,
-    p_image_index: *mut u32,
-) -> Result;
 pub struct KhrSwapchainFn1_1 {
     pub get_device_group_present_capabilities_khr: FnGetDeviceGroupPresentCapabilitiesKHR,
     pub get_device_group_surface_present_modes_khr: FnGetDeviceGroupSurfacePresentModesKHR,
@@ -33305,47 +34133,6 @@ impl KhrSwapchainFn1_1 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceDisplayPropertiesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayPropertiesKHR,
-) -> Result;
-type FnGetPhysicalDeviceDisplayPlanePropertiesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayPlanePropertiesKHR,
-) -> Result;
-type FnGetDisplayPlaneSupportedDisplaysKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    plane_index: u32,
-    p_display_count: *mut u32,
-    p_displays: *mut DisplayKHR,
-) -> Result;
-type FnGetDisplayModePropertiesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    display: Option<DisplayKHR>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayModePropertiesKHR,
-) -> Result;
-type FnCreateDisplayModeKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    display: Option<DisplayKHR>,
-    p_create_info: *const DisplayModeCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_mode: *mut DisplayModeKHR,
-) -> Result;
-type FnGetDisplayPlaneCapabilitiesKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    mode: Option<DisplayModeKHR>,
-    plane_index: u32,
-    p_capabilities: *mut DisplayPlaneCapabilitiesKHR,
-) -> Result;
-type FnCreateDisplayPlaneSurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const DisplaySurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct KhrDisplayFn1_0 {
     pub get_physical_device_display_properties_khr: FnGetPhysicalDeviceDisplayPropertiesKHR,
     pub get_physical_device_display_plane_properties_khr: FnGetPhysicalDeviceDisplayPlanePropertiesKHR,
@@ -33491,13 +34278,6 @@ impl KhrDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateSharedSwapchainsKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain_count: u32,
-    p_create_infos: *const SwapchainCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_swapchains: *mut SwapchainKHR,
-) -> Result;
 pub struct KhrDisplaySwapchainFn1_0 {
     pub create_shared_swapchains_khr: FnCreateSharedSwapchainsKHR,
 }
@@ -33531,18 +34311,6 @@ impl KhrDisplaySwapchainFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateXlibSurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const XlibSurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
-type FnGetPhysicalDeviceXlibPresentationSupportKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    queue_family_index: u32,
-    dpy: *mut Display,
-    visual_id: VisualID,
-) -> Bool32;
 pub struct KhrXlibSurfaceFn1_0 {
     pub create_xlib_surface_khr: FnCreateXlibSurfaceKHR,
     pub get_physical_device_xlib_presentation_support_khr: FnGetPhysicalDeviceXlibPresentationSupportKHR,
@@ -33594,18 +34362,6 @@ impl KhrXlibSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateXcbSurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const XcbSurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
-type FnGetPhysicalDeviceXcbPresentationSupportKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    queue_family_index: u32,
-    connection: *mut xcb_connection_t,
-    visual_id: xcb_visualid_t,
-) -> Bool32;
 pub struct KhrXcbSurfaceFn1_0 {
     pub create_xcb_surface_khr: FnCreateXcbSurfaceKHR,
     pub get_physical_device_xcb_presentation_support_khr: FnGetPhysicalDeviceXcbPresentationSupportKHR,
@@ -33657,17 +34413,6 @@ impl KhrXcbSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateWaylandSurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const WaylandSurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
-type FnGetPhysicalDeviceWaylandPresentationSupportKHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    queue_family_index: u32,
-    display: *mut wl_display,
-) -> Bool32;
 pub struct KhrWaylandSurfaceFn1_0 {
     pub create_wayland_surface_khr: FnCreateWaylandSurfaceKHR,
     pub get_physical_device_wayland_presentation_support_khr: FnGetPhysicalDeviceWaylandPresentationSupportKHR,
@@ -33718,12 +34463,6 @@ impl KhrWaylandSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateAndroidSurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const AndroidSurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct KhrAndroidSurfaceFn1_0 {
     pub create_android_surface_khr: FnCreateAndroidSurfaceKHR,
 }
@@ -33756,14 +34495,6 @@ impl KhrAndroidSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateWin32SurfaceKHR = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const Win32SurfaceCreateInfoKHR,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
-type FnGetPhysicalDeviceWin32PresentationSupportKHR =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, queue_family_index: u32) -> Bool32;
 pub struct KhrWin32SurfaceFn1_0 {
     pub create_win32_surface_khr: FnCreateWin32SurfaceKHR,
     pub get_physical_device_win32_presentation_support_khr: FnGetPhysicalDeviceWin32PresentationSupportKHR,
@@ -33813,27 +34544,6 @@ impl KhrWin32SurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateDebugReportCallbackEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const DebugReportCallbackCreateInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_callback: *mut DebugReportCallbackEXT,
-) -> Result;
-type FnDestroyDebugReportCallbackEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    callback: Option<DebugReportCallbackEXT>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnDebugReportMessageEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    flags: DebugReportFlagsEXT,
-    object_type: DebugReportObjectTypeEXT,
-    object: u64,
-    location: usize,
-    message_code: i32,
-    p_layer_prefix: *const c_char,
-    p_message: *const c_char,
-) -> c_void;
 pub struct ExtDebugReportFn1_0 {
     pub create_debug_report_callback_ext: FnCreateDebugReportCallbackEXT,
     pub destroy_debug_report_callback_ext: FnDestroyDebugReportCallbackEXT,
@@ -33907,19 +34617,6 @@ impl ExtDebugReportFn1_0 {
         (block, all_loaded)
     }
 }
-type FnDebugMarkerSetObjectTagEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugMarkerObjectTagInfoEXT) -> Result;
-type FnDebugMarkerSetObjectNameEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugMarkerObjectNameInfoEXT) -> Result;
-type FnCmdDebugMarkerBeginEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_marker_info: *const DebugMarkerMarkerInfoEXT,
-) -> c_void;
-type FnCmdDebugMarkerEndEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
-type FnCmdDebugMarkerInsertEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_marker_info: *const DebugMarkerMarkerInfoEXT,
-) -> c_void;
 pub struct ExtDebugMarkerFn1_0 {
     pub debug_marker_set_object_tag_ext: FnDebugMarkerSetObjectTagEXT,
     pub debug_marker_set_object_name_ext: FnDebugMarkerSetObjectNameEXT,
@@ -34015,50 +34712,6 @@ impl ExtDebugMarkerFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdBindTransformFeedbackBuffersEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_binding: u32,
-    binding_count: u32,
-    p_buffers: *const Buffer,
-    p_offsets: *const DeviceSize,
-    p_sizes: *const DeviceSize,
-) -> c_void;
-type FnCmdBeginTransformFeedbackEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_counter_buffer: u32,
-    counter_buffer_count: u32,
-    p_counter_buffers: *const Buffer,
-    p_counter_buffer_offsets: *const DeviceSize,
-) -> c_void;
-type FnCmdEndTransformFeedbackEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_counter_buffer: u32,
-    counter_buffer_count: u32,
-    p_counter_buffers: *const Buffer,
-    p_counter_buffer_offsets: *const DeviceSize,
-) -> c_void;
-type FnCmdBeginQueryIndexedEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    query: u32,
-    flags: QueryControlFlags,
-    index: u32,
-) -> c_void;
-type FnCmdEndQueryIndexedEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    query_pool: Option<QueryPool>,
-    query: u32,
-    index: u32,
-) -> c_void;
-type FnCmdDrawIndirectByteCountEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    instance_count: u32,
-    first_instance: u32,
-    counter_buffer: Option<Buffer>,
-    counter_buffer_offset: DeviceSize,
-    counter_offset: u32,
-    vertex_stride: u32,
-) -> c_void;
 pub struct ExtTransformFeedbackFn1_0 {
     pub cmd_bind_transform_feedback_buffers_ext: FnCmdBindTransformFeedbackBuffersEXT,
     pub cmd_begin_transform_feedback_ext: FnCmdBeginTransformFeedbackEXT,
@@ -34194,8 +34847,6 @@ impl ExtTransformFeedbackFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetImageViewHandleNVX =
-    unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
 pub struct NvxImageViewHandleFn1_0 {
     pub get_image_view_handle_nvx: FnGetImageViewHandleNVX,
 }
@@ -34226,26 +34877,6 @@ impl NvxImageViewHandleFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdDrawIndirectCountKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    count_buffer: Option<Buffer>,
-    count_buffer_offset: DeviceSize,
-    max_draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDrawIndirectCountAMD = FnCmdDrawIndirectCountKHR;
-type FnCmdDrawIndexedIndirectCountKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    count_buffer: Option<Buffer>,
-    count_buffer_offset: DeviceSize,
-    max_draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDrawIndexedIndirectCountAMD = FnCmdDrawIndexedIndirectCountKHR;
 pub struct AmdDrawIndirectCountFn1_0 {
     pub cmd_draw_indirect_count_amd: FnCmdDrawIndirectCountAMD,
     pub cmd_draw_indexed_indirect_count_amd: FnCmdDrawIndexedIndirectCountAMD,
@@ -34303,14 +34934,6 @@ impl AmdDrawIndirectCountFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetShaderInfoAMD = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline: Option<Pipeline>,
-    shader_stage: ShaderStageFlags,
-    info_type: ShaderInfoTypeAMD,
-    p_info_size: *mut usize,
-    p_info: *mut c_void,
-) -> Result;
 pub struct AmdShaderInfoFn1_0 {
     pub get_shader_info_amd: FnGetShaderInfoAMD,
 }
@@ -34345,16 +34968,6 @@ impl AmdShaderInfoFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalImageFormatPropertiesNV = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    format: Format,
-    ty: ImageType,
-    tiling: ImageTiling,
-    usage: ImageUsageFlags,
-    flags: ImageCreateFlags,
-    external_handle_type: ExternalMemoryHandleTypeFlagsNV,
-    p_external_image_format_properties: *mut ExternalImageFormatPropertiesNV,
-) -> Result;
 pub struct NvExternalMemoryCapabilitiesFn1_0 {
     pub get_physical_device_external_image_format_properties_nv: FnGetPhysicalDeviceExternalImageFormatPropertiesNV,
 }
@@ -34393,12 +35006,6 @@ impl NvExternalMemoryCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryWin32HandleNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    memory: Option<DeviceMemory>,
-    handle_type: ExternalMemoryHandleTypeFlagsNV,
-    p_handle: *mut HANDLE,
-) -> Result;
 pub struct NvExternalMemoryWin32Fn1_0 {
     pub get_memory_win32_handle_nv: FnGetMemoryWin32HandleNV,
 }
@@ -34431,13 +35038,6 @@ impl NvExternalMemoryWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceFeatures2KHR = FnGetPhysicalDeviceFeatures2;
-type FnGetPhysicalDeviceProperties2KHR = FnGetPhysicalDeviceProperties2;
-type FnGetPhysicalDeviceFormatProperties2KHR = FnGetPhysicalDeviceFormatProperties2;
-type FnGetPhysicalDeviceImageFormatProperties2KHR = FnGetPhysicalDeviceImageFormatProperties2;
-type FnGetPhysicalDeviceQueueFamilyProperties2KHR = FnGetPhysicalDeviceQueueFamilyProperties2;
-type FnGetPhysicalDeviceMemoryProperties2KHR = FnGetPhysicalDeviceMemoryProperties2;
-type FnGetPhysicalDeviceSparseImageFormatProperties2KHR = FnGetPhysicalDeviceSparseImageFormatProperties2;
 pub struct KhrGetPhysicalDeviceProperties2Fn1_0 {
     pub get_physical_device_features2_khr: FnGetPhysicalDeviceFeatures2KHR,
     pub get_physical_device_properties2_khr: FnGetPhysicalDeviceProperties2KHR,
@@ -34577,14 +35177,6 @@ impl KhrGetPhysicalDeviceProperties2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetDeviceGroupPeerMemoryFeaturesKHR = FnGetDeviceGroupPeerMemoryFeatures;
-type FnCmdSetDeviceMaskKHR = FnCmdSetDeviceMask;
-type FnCmdDispatchBaseKHR = FnCmdDispatchBase;
-type FnGetDeviceGroupSurfacePresentModes2EXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-    p_modes: *mut DeviceGroupPresentModeFlagsKHR,
-) -> Result;
 pub struct KhrDeviceGroupFn1_0 {
     pub get_device_group_peer_memory_features_khr: FnGetDeviceGroupPeerMemoryFeaturesKHR,
     pub cmd_set_device_mask_khr: FnCmdSetDeviceMaskKHR,
@@ -34744,12 +35336,6 @@ impl KhrDeviceGroupFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateViSurfaceNN = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const ViSurfaceCreateInfoNN,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct NnViSurfaceFn1_0 {
     pub create_vi_surface_nn: FnCreateViSurfaceNN,
 }
@@ -34782,7 +35368,6 @@ impl NnViSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnTrimCommandPoolKHR = FnTrimCommandPool;
 pub struct KhrMaintenance1Fn1_0 {
     pub trim_command_pool_khr: FnTrimCommandPoolKHR,
 }
@@ -34814,7 +35399,6 @@ impl KhrMaintenance1Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnEnumeratePhysicalDeviceGroupsKHR = FnEnumeratePhysicalDeviceGroups;
 pub struct KhrDeviceGroupCreationFn1_0 {
     pub enumerate_physical_device_groups_khr: FnEnumeratePhysicalDeviceGroupsKHR,
 }
@@ -34846,7 +35430,6 @@ impl KhrDeviceGroupCreationFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalBufferPropertiesKHR = FnGetPhysicalDeviceExternalBufferProperties;
 pub struct KhrExternalMemoryCapabilitiesFn1_0 {
     pub get_physical_device_external_buffer_properties_khr: FnGetPhysicalDeviceExternalBufferPropertiesKHR,
 }
@@ -34878,17 +35461,6 @@ impl KhrExternalMemoryCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryWin32HandleKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_win32_handle_info: *const MemoryGetWin32HandleInfoKHR,
-    p_handle: *mut HANDLE,
-) -> Result;
-type FnGetMemoryWin32HandlePropertiesKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    handle_type: ExternalMemoryHandleTypeFlags,
-    handle: HANDLE,
-    p_memory_win32_handle_properties: *mut MemoryWin32HandlePropertiesKHR,
-) -> Result;
 pub struct KhrExternalMemoryWin32Fn1_0 {
     pub get_memory_win32_handle_khr: FnGetMemoryWin32HandleKHR,
     pub get_memory_win32_handle_properties_khr: FnGetMemoryWin32HandlePropertiesKHR,
@@ -34939,17 +35511,6 @@ impl KhrExternalMemoryWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_fd_info: *const MemoryGetFdInfoKHR,
-    p_fd: *mut c_int,
-) -> Result;
-type FnGetMemoryFdPropertiesKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    handle_type: ExternalMemoryHandleTypeFlags,
-    fd: c_int,
-    p_memory_fd_properties: *mut MemoryFdPropertiesKHR,
-) -> Result;
 pub struct KhrExternalMemoryFdFn1_0 {
     pub get_memory_fd_khr: FnGetMemoryFdKHR,
     pub get_memory_fd_properties_khr: FnGetMemoryFdPropertiesKHR,
@@ -35000,7 +35561,6 @@ impl KhrExternalMemoryFdFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalSemaphorePropertiesKHR = FnGetPhysicalDeviceExternalSemaphoreProperties;
 pub struct KhrExternalSemaphoreCapabilitiesFn1_0 {
     pub get_physical_device_external_semaphore_properties_khr: FnGetPhysicalDeviceExternalSemaphorePropertiesKHR,
 }
@@ -35032,15 +35592,6 @@ impl KhrExternalSemaphoreCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportSemaphoreWin32HandleKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_import_semaphore_win32_handle_info: *const ImportSemaphoreWin32HandleInfoKHR,
-) -> Result;
-type FnGetSemaphoreWin32HandleKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_win32_handle_info: *const SemaphoreGetWin32HandleInfoKHR,
-    p_handle: *mut HANDLE,
-) -> Result;
 pub struct KhrExternalSemaphoreWin32Fn1_0 {
     pub import_semaphore_win32_handle_khr: FnImportSemaphoreWin32HandleKHR,
     pub get_semaphore_win32_handle_khr: FnGetSemaphoreWin32HandleKHR,
@@ -35089,15 +35640,6 @@ impl KhrExternalSemaphoreWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportSemaphoreFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR,
-) -> Result;
-type FnGetSemaphoreFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_fd_info: *const SemaphoreGetFdInfoKHR,
-    p_fd: *mut c_int,
-) -> Result;
 pub struct KhrExternalSemaphoreFdFn1_0 {
     pub import_semaphore_fd_khr: FnImportSemaphoreFdKHR,
     pub get_semaphore_fd_khr: FnGetSemaphoreFdKHR,
@@ -35146,14 +35688,6 @@ impl KhrExternalSemaphoreFdFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdPushDescriptorSetKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    pipeline_bind_point: PipelineBindPoint,
-    layout: Option<PipelineLayout>,
-    set: u32,
-    descriptor_write_count: u32,
-    p_descriptor_writes: *const WriteDescriptorSet,
-) -> c_void;
 pub struct KhrPushDescriptorFn1_0 {
     pub cmd_push_descriptor_set_khr: FnCmdPushDescriptorSetKHR,
 }
@@ -35188,13 +35722,6 @@ impl KhrPushDescriptorFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdPushDescriptorSetWithTemplateKHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    descriptor_update_template: Option<DescriptorUpdateTemplate>,
-    layout: Option<PipelineLayout>,
-    set: u32,
-    p_data: *const c_void,
-) -> c_void;
 pub struct KhrPushDescriptorFn1_1 {
     pub cmd_push_descriptor_set_with_template_khr: FnCmdPushDescriptorSetWithTemplateKHR,
 }
@@ -35228,11 +35755,6 @@ impl KhrPushDescriptorFn1_1 {
         (block, all_loaded)
     }
 }
-type FnCmdBeginConditionalRenderingEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_conditional_rendering_begin: *const ConditionalRenderingBeginInfoEXT,
-) -> c_void;
-type FnCmdEndConditionalRenderingEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
 pub struct ExtConditionalRenderingFn1_0 {
     pub cmd_begin_conditional_rendering_ext: FnCmdBeginConditionalRenderingEXT,
     pub cmd_end_conditional_rendering_ext: FnCmdEndConditionalRenderingEXT,
@@ -35277,9 +35799,6 @@ impl ExtConditionalRenderingFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateDescriptorUpdateTemplateKHR = FnCreateDescriptorUpdateTemplate;
-type FnDestroyDescriptorUpdateTemplateKHR = FnDestroyDescriptorUpdateTemplate;
-type FnUpdateDescriptorSetWithTemplateKHR = FnUpdateDescriptorSetWithTemplate;
 pub struct KhrDescriptorUpdateTemplateFn1_0 {
     pub create_descriptor_update_template_khr: FnCreateDescriptorUpdateTemplateKHR,
     pub destroy_descriptor_update_template_khr: FnDestroyDescriptorUpdateTemplateKHR,
@@ -35369,55 +35888,6 @@ impl KhrDescriptorUpdateTemplateFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdProcessCommandsNVX = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_process_commands_info: *const CmdProcessCommandsInfoNVX,
-) -> c_void;
-type FnCmdReserveSpaceForCommandsNVX = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_reserve_space_info: *const CmdReserveSpaceForCommandsInfoNVX,
-) -> c_void;
-type FnCreateIndirectCommandsLayoutNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const IndirectCommandsLayoutCreateInfoNVX,
-    p_allocator: *const AllocationCallbacks,
-    p_indirect_commands_layout: *mut IndirectCommandsLayoutNVX,
-) -> Result;
-type FnDestroyIndirectCommandsLayoutNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnCreateObjectTableNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const ObjectTableCreateInfoNVX,
-    p_allocator: *const AllocationCallbacks,
-    p_object_table: *mut ObjectTableNVX,
-) -> Result;
-type FnDestroyObjectTableNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnRegisterObjectsNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    object_count: u32,
-    pp_object_table_entries: *const *const ObjectTableEntryNVX,
-    p_object_indices: *const u32,
-) -> Result;
-type FnUnregisterObjectsNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    object_count: u32,
-    p_object_entry_types: *const ObjectEntryTypeNVX,
-    p_object_indices: *const u32,
-) -> Result;
-type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_features: *mut DeviceGeneratedCommandsFeaturesNVX,
-    p_limits: *mut DeviceGeneratedCommandsLimitsNVX,
-) -> c_void;
 pub struct NvxDeviceGeneratedCommandsFn1_0 {
     pub cmd_process_commands_nvx: FnCmdProcessCommandsNVX,
     pub cmd_reserve_space_for_commands_nvx: FnCmdReserveSpaceForCommandsNVX,
@@ -35597,12 +36067,6 @@ impl NvxDeviceGeneratedCommandsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetViewportWScalingNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_viewport: u32,
-    viewport_count: u32,
-    p_viewport_w_scalings: *const ViewportWScalingNV,
-) -> c_void;
 pub struct NvClipSpaceWScalingFn1_0 {
     pub cmd_set_viewport_w_scaling_nv: FnCmdSetViewportWScalingNV,
 }
@@ -35635,8 +36099,6 @@ impl NvClipSpaceWScalingFn1_0 {
         (block, all_loaded)
     }
 }
-type FnReleaseDisplayEXT =
-    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, display: Option<DisplayKHR>) -> Result;
 pub struct ExtDirectModeDisplayFn1_0 {
     pub release_display_ext: FnReleaseDisplayEXT,
 }
@@ -35667,17 +36129,6 @@ impl ExtDirectModeDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnAcquireXlibDisplayEXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    dpy: *mut Display,
-    display: Option<DisplayKHR>,
-) -> Result;
-type FnGetRandROutputDisplayEXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    dpy: *mut Display,
-    rr_output: RROutput,
-    p_display: *mut DisplayKHR,
-) -> Result;
 pub struct ExtAcquireXlibDisplayFn1_0 {
     pub acquire_xlib_display_ext: FnAcquireXlibDisplayEXT,
     pub get_rand_r_output_display_ext: FnGetRandROutputDisplayEXT,
@@ -35728,11 +36179,6 @@ impl ExtAcquireXlibDisplayFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceSurfaceCapabilities2EXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    surface: Option<SurfaceKHR>,
-    p_surface_capabilities: *mut SurfaceCapabilities2EXT,
-) -> Result;
 pub struct ExtDisplaySurfaceCounterFn1_0 {
     pub get_physical_device_surface_capabilities2_ext: FnGetPhysicalDeviceSurfaceCapabilities2EXT,
 }
@@ -35764,30 +36210,6 @@ impl ExtDisplaySurfaceCounterFn1_0 {
         (block, all_loaded)
     }
 }
-type FnDisplayPowerControlEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    display: Option<DisplayKHR>,
-    p_display_power_info: *const DisplayPowerInfoEXT,
-) -> Result;
-type FnRegisterDeviceEventEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_device_event_info: *const DeviceEventInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_fence: *mut Fence,
-) -> Result;
-type FnRegisterDisplayEventEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    display: Option<DisplayKHR>,
-    p_display_event_info: *const DisplayEventInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_fence: *mut Fence,
-) -> Result;
-type FnGetSwapchainCounterEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    counter: SurfaceCounterFlagsEXT,
-    p_counter_value: *mut u64,
-) -> Result;
 pub struct ExtDisplayControlFn1_0 {
     pub display_power_control_ext: FnDisplayPowerControlEXT,
     pub register_device_event_ext: FnRegisterDeviceEventEXT,
@@ -35877,17 +36299,6 @@ impl ExtDisplayControlFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetRefreshCycleDurationGOOGLE = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    p_display_timing_properties: *mut RefreshCycleDurationGOOGLE,
-) -> Result;
-type FnGetPastPresentationTimingGOOGLE = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain: Option<SwapchainKHR>,
-    p_presentation_timing_count: *mut u32,
-    p_presentation_timings: *mut PastPresentationTimingGOOGLE,
-) -> Result;
 pub struct GoogleDisplayTimingFn1_0 {
     pub get_refresh_cycle_duration_google: FnGetRefreshCycleDurationGOOGLE,
     pub get_past_presentation_timing_google: FnGetPastPresentationTimingGOOGLE,
@@ -35938,12 +36349,6 @@ impl GoogleDisplayTimingFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetDiscardRectangleEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_discard_rectangle: u32,
-    discard_rectangle_count: u32,
-    p_discard_rectangles: *const Rect2D,
-) -> c_void;
 pub struct ExtDiscardRectanglesFn1_0 {
     pub cmd_set_discard_rectangle_ext: FnCmdSetDiscardRectangleEXT,
 }
@@ -35976,12 +36381,6 @@ impl ExtDiscardRectanglesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnSetHdrMetadataEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    swapchain_count: u32,
-    p_swapchains: *const SwapchainKHR,
-    p_metadata: *const HdrMetadataEXT,
-) -> c_void;
 pub struct ExtHdrMetadataFn1_0 {
     pub set_hdr_metadata_ext: FnSetHdrMetadataEXT,
 }
@@ -36014,26 +36413,6 @@ impl ExtHdrMetadataFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateRenderPass2KHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const RenderPassCreateInfo2KHR,
-    p_allocator: *const AllocationCallbacks,
-    p_render_pass: *mut RenderPass,
-) -> Result;
-type FnCmdBeginRenderPass2KHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_render_pass_begin: *const RenderPassBeginInfo,
-    p_subpass_begin_info: *const SubpassBeginInfoKHR,
-) -> c_void;
-type FnCmdNextSubpass2KHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_subpass_begin_info: *const SubpassBeginInfoKHR,
-    p_subpass_end_info: *const SubpassEndInfoKHR,
-) -> c_void;
-type FnCmdEndRenderPass2KHR = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_subpass_end_info: *const SubpassEndInfoKHR,
-) -> c_void;
 pub struct KhrCreateRenderpass2Fn1_0 {
     pub create_render_pass2_khr: FnCreateRenderPass2KHR,
     pub cmd_begin_render_pass2_khr: FnCmdBeginRenderPass2KHR,
@@ -36119,8 +36498,6 @@ impl KhrCreateRenderpass2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetSwapchainStatusKHR =
-    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
 pub struct KhrSharedPresentableImageFn1_0 {
     pub get_swapchain_status_khr: FnGetSwapchainStatusKHR,
 }
@@ -36151,7 +36528,6 @@ impl KhrSharedPresentableImageFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceExternalFencePropertiesKHR = FnGetPhysicalDeviceExternalFenceProperties;
 pub struct KhrExternalFenceCapabilitiesFn1_0 {
     pub get_physical_device_external_fence_properties_khr: FnGetPhysicalDeviceExternalFencePropertiesKHR,
 }
@@ -36183,15 +36559,6 @@ impl KhrExternalFenceCapabilitiesFn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportFenceWin32HandleKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_import_fence_win32_handle_info: *const ImportFenceWin32HandleInfoKHR,
-) -> Result;
-type FnGetFenceWin32HandleKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_win32_handle_info: *const FenceGetWin32HandleInfoKHR,
-    p_handle: *mut HANDLE,
-) -> Result;
 pub struct KhrExternalFenceWin32Fn1_0 {
     pub import_fence_win32_handle_khr: FnImportFenceWin32HandleKHR,
     pub get_fence_win32_handle_khr: FnGetFenceWin32HandleKHR,
@@ -36240,13 +36607,6 @@ impl KhrExternalFenceWin32Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnImportFenceFdKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_import_fence_fd_info: *const ImportFenceFdInfoKHR) -> Result;
-type FnGetFenceFdKHR = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_get_fd_info: *const FenceGetFdInfoKHR,
-    p_fd: *mut c_int,
-) -> Result;
 pub struct KhrExternalFenceFdFn1_0 {
     pub import_fence_fd_khr: FnImportFenceFdKHR,
     pub get_fence_fd_khr: FnGetFenceFdKHR,
@@ -36295,17 +36655,6 @@ impl KhrExternalFenceFdFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceSurfaceCapabilities2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-    p_surface_capabilities: *mut SurfaceCapabilities2KHR,
-) -> Result;
-type FnGetPhysicalDeviceSurfaceFormats2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-    p_surface_format_count: *mut u32,
-    p_surface_formats: *mut SurfaceFormat2KHR,
-) -> Result;
 pub struct KhrGetSurfaceCapabilities2Fn1_0 {
     pub get_physical_device_surface_capabilities2_khr: FnGetPhysicalDeviceSurfaceCapabilities2KHR,
     pub get_physical_device_surface_formats2_khr: FnGetPhysicalDeviceSurfaceFormats2KHR,
@@ -36356,27 +36705,6 @@ impl KhrGetSurfaceCapabilities2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceDisplayProperties2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayProperties2KHR,
-) -> Result;
-type FnGetPhysicalDeviceDisplayPlaneProperties2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayPlaneProperties2KHR,
-) -> Result;
-type FnGetDisplayModeProperties2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    display: Option<DisplayKHR>,
-    p_property_count: *mut u32,
-    p_properties: *mut DisplayModeProperties2KHR,
-) -> Result;
-type FnGetDisplayPlaneCapabilities2KHR = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_display_plane_info: *const DisplayPlaneInfo2KHR,
-    p_capabilities: *mut DisplayPlaneCapabilities2KHR,
-) -> Result;
 pub struct KhrGetDisplayProperties2Fn1_0 {
     pub get_physical_device_display_properties2_khr: FnGetPhysicalDeviceDisplayProperties2KHR,
     pub get_physical_device_display_plane_properties2_khr: FnGetPhysicalDeviceDisplayPlaneProperties2KHR,
@@ -36463,12 +36791,6 @@ impl KhrGetDisplayProperties2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateIOSSurfaceMVK = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const IOSSurfaceCreateInfoMVK,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct MvkIosSurfaceFn1_0 {
     pub create_ios_surface_mvk: FnCreateIOSSurfaceMVK,
 }
@@ -36501,12 +36823,6 @@ impl MvkIosSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateMacOSSurfaceMVK = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const MacOSSurfaceCreateInfoMVK,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct MvkMacosSurfaceFn1_0 {
     pub create_mac_os_surface_mvk: FnCreateMacOSSurfaceMVK,
 }
@@ -36539,37 +36855,6 @@ impl MvkMacosSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnSetDebugUtilsObjectNameEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_name_info: *const DebugUtilsObjectNameInfoEXT) -> Result;
-type FnSetDebugUtilsObjectTagEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_tag_info: *const DebugUtilsObjectTagInfoEXT) -> Result;
-type FnQueueBeginDebugUtilsLabelEXT =
-    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
-type FnQueueEndDebugUtilsLabelEXT = unsafe extern "system" fn(queue: Option<Queue>) -> c_void;
-type FnQueueInsertDebugUtilsLabelEXT =
-    unsafe extern "system" fn(queue: Option<Queue>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
-type FnCmdBeginDebugUtilsLabelEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
-type FnCmdEndDebugUtilsLabelEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>) -> c_void;
-type FnCmdInsertDebugUtilsLabelEXT =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_label_info: *const DebugUtilsLabelEXT) -> c_void;
-type FnCreateDebugUtilsMessengerEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const DebugUtilsMessengerCreateInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_messenger: *mut DebugUtilsMessengerEXT,
-) -> Result;
-type FnDestroyDebugUtilsMessengerEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    messenger: Option<DebugUtilsMessengerEXT>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnSubmitDebugUtilsMessageEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    message_severity: DebugUtilsMessageSeverityFlagsEXT,
-    message_types: DebugUtilsMessageTypeFlagsEXT,
-    p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
-) -> c_void;
 pub struct ExtDebugUtilsFn1_0 {
     pub set_debug_utils_object_name_ext: FnSetDebugUtilsObjectNameEXT,
     pub set_debug_utils_object_tag_ext: FnSetDebugUtilsObjectTagEXT,
@@ -36769,16 +37054,6 @@ impl ExtDebugUtilsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetAndroidHardwareBufferPropertiesANDROID = unsafe extern "system" fn(
-    device: Option<Device>,
-    buffer: *const AHardwareBuffer,
-    p_properties: *mut AndroidHardwareBufferPropertiesANDROID,
-) -> Result;
-type FnGetMemoryAndroidHardwareBufferANDROID = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_info: *const MemoryGetAndroidHardwareBufferInfoANDROID,
-    p_buffer: *mut *mut AHardwareBuffer,
-) -> Result;
 pub struct AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
     pub get_android_hardware_buffer_properties_android: FnGetAndroidHardwareBufferPropertiesANDROID,
     pub get_memory_android_hardware_buffer_android: FnGetMemoryAndroidHardwareBufferANDROID,
@@ -36828,15 +37103,6 @@ impl AndroidExternalMemoryAndroidHardwareBufferFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetSampleLocationsEXT = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_sample_locations_info: *const SampleLocationsInfoEXT,
-) -> c_void;
-type FnGetPhysicalDeviceMultisamplePropertiesEXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    samples: SampleCountFlags,
-    p_multisample_properties: *mut MultisamplePropertiesEXT,
-) -> c_void;
 pub struct ExtSampleLocationsFn1_0 {
     pub cmd_set_sample_locations_ext: FnCmdSetSampleLocationsEXT,
     pub get_physical_device_multisample_properties_ext: FnGetPhysicalDeviceMultisamplePropertiesEXT,
@@ -36885,9 +37151,6 @@ impl ExtSampleLocationsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetImageMemoryRequirements2KHR = FnGetImageMemoryRequirements2;
-type FnGetBufferMemoryRequirements2KHR = FnGetBufferMemoryRequirements2;
-type FnGetImageSparseMemoryRequirements2KHR = FnGetImageSparseMemoryRequirements2;
 pub struct KhrGetMemoryRequirements2Fn1_0 {
     pub get_image_memory_requirements2_khr: FnGetImageMemoryRequirements2KHR,
     pub get_buffer_memory_requirements2_khr: FnGetBufferMemoryRequirements2KHR,
@@ -36956,8 +37219,6 @@ impl KhrGetMemoryRequirements2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateSamplerYcbcrConversionKHR = FnCreateSamplerYcbcrConversion;
-type FnDestroySamplerYcbcrConversionKHR = FnDestroySamplerYcbcrConversion;
 pub struct KhrSamplerYcbcrConversionFn1_0 {
     pub create_sampler_ycbcr_conversion_khr: FnCreateSamplerYcbcrConversionKHR,
     pub destroy_sampler_ycbcr_conversion_khr: FnDestroySamplerYcbcrConversionKHR,
@@ -37008,8 +37269,6 @@ impl KhrSamplerYcbcrConversionFn1_0 {
         (block, all_loaded)
     }
 }
-type FnBindBufferMemory2KHR = FnBindBufferMemory2;
-type FnBindImageMemory2KHR = FnBindImageMemory2;
 pub struct KhrBindMemory2Fn1_0 {
     pub bind_buffer_memory2_khr: FnBindBufferMemory2KHR,
     pub bind_image_memory2_khr: FnBindImageMemory2KHR,
@@ -37059,11 +37318,6 @@ impl KhrBindMemory2Fn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
-) -> Result;
 pub struct ExtImageDrmFormatModifierFn1_0 {
     pub get_image_drm_format_modifier_properties_ext: FnGetImageDrmFormatModifierPropertiesEXT,
 }
@@ -37095,29 +37349,6 @@ impl ExtImageDrmFormatModifierFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateValidationCacheEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const ValidationCacheCreateInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_validation_cache: *mut ValidationCacheEXT,
-) -> Result;
-type FnDestroyValidationCacheEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    validation_cache: Option<ValidationCacheEXT>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnMergeValidationCachesEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    dst_cache: Option<ValidationCacheEXT>,
-    src_cache_count: u32,
-    p_src_caches: *const ValidationCacheEXT,
-) -> Result;
-type FnGetValidationCacheDataEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    validation_cache: Option<ValidationCacheEXT>,
-    p_data_size: *mut usize,
-    p_data: *mut c_void,
-) -> Result;
 pub struct ExtValidationCacheFn1_0 {
     pub create_validation_cache_ext: FnCreateValidationCacheEXT,
     pub destroy_validation_cache_ext: FnDestroyValidationCacheEXT,
@@ -37206,23 +37437,6 @@ impl ExtValidationCacheFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdBindShadingRateImageNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    image_view: Option<ImageView>,
-    image_layout: ImageLayout,
-) -> c_void;
-type FnCmdSetViewportShadingRatePaletteNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_viewport: u32,
-    viewport_count: u32,
-    p_shading_rate_palettes: *const ShadingRatePaletteNV,
-) -> c_void;
-type FnCmdSetCoarseSampleOrderNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    sample_order_type: CoarseSampleOrderTypeNV,
-    custom_sample_order_count: u32,
-    p_custom_sample_orders: *const CoarseSampleOrderCustomNV,
-) -> c_void;
 pub struct NvShadingRateImageFn1_0 {
     pub cmd_bind_shading_rate_image_nv: FnCmdBindShadingRateImageNV,
     pub cmd_set_viewport_shading_rate_palette_nv: FnCmdSetViewportShadingRatePaletteNV,
@@ -37292,93 +37506,6 @@ impl NvShadingRateImageFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateAccelerationStructureNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const AccelerationStructureCreateInfoNV,
-    p_allocator: *const AllocationCallbacks,
-    p_acceleration_structure: *mut AccelerationStructureNV,
-) -> Result;
-type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    acceleration_structure: Option<AccelerationStructureNV>,
-    p_allocator: *const AllocationCallbacks,
-) -> c_void;
-type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
-    p_memory_requirements: *mut MemoryRequirements2KHR,
-) -> c_void;
-type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    bind_info_count: u32,
-    p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
-) -> Result;
-type FnCmdBuildAccelerationStructureNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    p_info: *const AccelerationStructureInfoNV,
-    instance_data: Option<Buffer>,
-    instance_offset: DeviceSize,
-    update: Bool32,
-    dst: Option<AccelerationStructureNV>,
-    src: Option<AccelerationStructureNV>,
-    scratch: Option<Buffer>,
-    scratch_offset: DeviceSize,
-) -> c_void;
-type FnCmdCopyAccelerationStructureNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    dst: Option<AccelerationStructureNV>,
-    src: Option<AccelerationStructureNV>,
-    mode: CopyAccelerationStructureModeNV,
-) -> c_void;
-type FnCmdTraceRaysNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    raygen_shader_binding_table_buffer: Option<Buffer>,
-    raygen_shader_binding_offset: DeviceSize,
-    miss_shader_binding_table_buffer: Option<Buffer>,
-    miss_shader_binding_offset: DeviceSize,
-    miss_shader_binding_stride: DeviceSize,
-    hit_shader_binding_table_buffer: Option<Buffer>,
-    hit_shader_binding_offset: DeviceSize,
-    hit_shader_binding_stride: DeviceSize,
-    callable_shader_binding_table_buffer: Option<Buffer>,
-    callable_shader_binding_offset: DeviceSize,
-    callable_shader_binding_stride: DeviceSize,
-    width: u32,
-    height: u32,
-    depth: u32,
-) -> c_void;
-type FnCreateRayTracingPipelinesNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline_cache: Option<PipelineCache>,
-    create_info_count: u32,
-    p_create_infos: *const RayTracingPipelineCreateInfoNV,
-    p_allocator: *const AllocationCallbacks,
-    p_pipelines: *mut Pipeline,
-) -> Result;
-type FnGetRayTracingShaderGroupHandlesNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    pipeline: Option<Pipeline>,
-    first_group: u32,
-    group_count: u32,
-    data_size: usize,
-    p_data: *mut c_void,
-) -> Result;
-type FnGetAccelerationStructureHandleNV = unsafe extern "system" fn(
-    device: Option<Device>,
-    acceleration_structure: Option<AccelerationStructureNV>,
-    data_size: usize,
-    p_data: *mut c_void,
-) -> Result;
-type FnCmdWriteAccelerationStructuresPropertiesNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    acceleration_structure_count: u32,
-    p_acceleration_structures: *const AccelerationStructureNV,
-    query_type: QueryType,
-    query_pool: Option<QueryPool>,
-    first_query: u32,
-) -> c_void;
-type FnCompileDeferredNV =
-    unsafe extern "system" fn(device: Option<Device>, pipeline: Option<Pipeline>, shader: u32) -> Result;
 pub struct NvRayTracingFn1_0 {
     pub create_acceleration_structure_nv: FnCreateAccelerationStructureNV,
     pub destroy_acceleration_structure_nv: FnDestroyAccelerationStructureNV,
@@ -37638,7 +37765,6 @@ impl NvRayTracingFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetDescriptorSetLayoutSupportKHR = FnGetDescriptorSetLayoutSupport;
 pub struct KhrMaintenance3Fn1_0 {
     pub get_descriptor_set_layout_support_khr: FnGetDescriptorSetLayoutSupportKHR,
 }
@@ -37727,12 +37853,6 @@ impl KhrDrawIndirectCountFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetMemoryHostPointerPropertiesEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    handle_type: ExternalMemoryHandleTypeFlags,
-    p_host_pointer: *const c_void,
-    p_memory_host_pointer_properties: *mut MemoryHostPointerPropertiesEXT,
-) -> Result;
 pub struct ExtExternalMemoryHostFn1_0 {
     pub get_memory_host_pointer_properties_ext: FnGetMemoryHostPointerPropertiesEXT,
 }
@@ -37765,13 +37885,6 @@ impl ExtExternalMemoryHostFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdWriteBufferMarkerAMD = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    pipeline_stage: PipelineStageFlags,
-    dst_buffer: Option<Buffer>,
-    dst_offset: DeviceSize,
-    marker: u32,
-) -> c_void;
 pub struct AmdBufferMarkerFn1_0 {
     pub cmd_write_buffer_marker_amd: FnCmdWriteBufferMarkerAMD,
 }
@@ -37805,18 +37918,6 @@ impl AmdBufferMarkerFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceCalibrateableTimeDomainsEXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_time_domain_count: *mut u32,
-    p_time_domains: *mut TimeDomainEXT,
-) -> Result;
-type FnGetCalibratedTimestampsEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    timestamp_count: u32,
-    p_timestamp_infos: *const CalibratedTimestampInfoEXT,
-    p_timestamps: *mut u64,
-    p_max_deviation: *mut u64,
-) -> Result;
 pub struct ExtCalibratedTimestampsFn1_0 {
     pub get_physical_device_calibrateable_time_domains_ext: FnGetPhysicalDeviceCalibrateableTimeDomainsEXT,
     pub get_calibrated_timestamps_ext: FnGetCalibratedTimestampsEXT,
@@ -37868,24 +37969,6 @@ impl ExtCalibratedTimestampsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdDrawMeshTasksNV =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, task_count: u32, first_task: u32) -> c_void;
-type FnCmdDrawMeshTasksIndirectNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    draw_count: u32,
-    stride: u32,
-) -> c_void;
-type FnCmdDrawMeshTasksIndirectCountNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
-    count_buffer: Option<Buffer>,
-    count_buffer_offset: DeviceSize,
-    max_draw_count: u32,
-    stride: u32,
-) -> c_void;
 pub struct NvMeshShaderFn1_0 {
     pub cmd_draw_mesh_tasks_nv: FnCmdDrawMeshTasksNV,
     pub cmd_draw_mesh_tasks_indirect_nv: FnCmdDrawMeshTasksIndirectNV,
@@ -37955,12 +38038,6 @@ impl NvMeshShaderFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetExclusiveScissorNV = unsafe extern "system" fn(
-    command_buffer: Option<CommandBuffer>,
-    first_exclusive_scissor: u32,
-    exclusive_scissor_count: u32,
-    p_exclusive_scissors: *const Rect2D,
-) -> c_void;
 pub struct NvScissorExclusiveFn1_0 {
     pub cmd_set_exclusive_scissor_nv: FnCmdSetExclusiveScissorNV,
 }
@@ -37993,13 +38070,6 @@ impl NvScissorExclusiveFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCmdSetCheckpointNV =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_checkpoint_marker: *const c_void) -> c_void;
-type FnGetQueueCheckpointDataNV = unsafe extern "system" fn(
-    queue: Option<Queue>,
-    p_checkpoint_data_count: *mut u32,
-    p_checkpoint_data: *mut CheckpointDataNV,
-) -> c_void;
 pub struct NvDeviceDiagnosticCheckpointsFn1_0 {
     pub cmd_set_checkpoint_nv: FnCmdSetCheckpointNV,
     pub get_queue_checkpoint_data_nv: FnGetQueueCheckpointDataNV,
@@ -38048,11 +38118,6 @@ impl NvDeviceDiagnosticCheckpointsFn1_0 {
         (block, all_loaded)
     }
 }
-type FnSetLocalDimmingAMD = unsafe extern "system" fn(
-    device: Option<Device>,
-    swap_chain: Option<SwapchainKHR>,
-    local_dimming_enable: Bool32,
-) -> c_void;
 pub struct AmdDisplayNativeHdrFn1_0 {
     pub set_local_dimming_amd: FnSetLocalDimmingAMD,
 }
@@ -38084,12 +38149,6 @@ impl AmdDisplayNativeHdrFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateImagePipeSurfaceFUCHSIA = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const ImagePipeSurfaceCreateInfoFUCHSIA,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct FuchsiaImagepipeSurfaceFn1_0 {
     pub create_image_pipe_surface_fuchsia: FnCreateImagePipeSurfaceFUCHSIA,
 }
@@ -38122,12 +38181,6 @@ impl FuchsiaImagepipeSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnCreateMetalSurfaceEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const MetalSurfaceCreateInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct ExtMetalSurfaceFn1_0 {
     pub create_metal_surface_ext: FnCreateMetalSurfaceEXT,
 }
@@ -38160,8 +38213,6 @@ impl ExtMetalSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetBufferDeviceAddressEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
 pub struct ExtBufferDeviceAddressFn1_0 {
     pub get_buffer_device_address_ext: FnGetBufferDeviceAddressEXT,
 }
@@ -38192,11 +38243,6 @@ impl ExtBufferDeviceAddressFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_property_count: *mut u32,
-    p_properties: *mut CooperativeMatrixPropertiesNV,
-) -> Result;
 pub struct NvCooperativeMatrixFn1_0 {
     pub get_physical_device_cooperative_matrix_properties_nv: FnGetPhysicalDeviceCooperativeMatrixPropertiesNV,
 }
@@ -38228,16 +38274,6 @@ impl NvCooperativeMatrixFn1_0 {
         (block, all_loaded)
     }
 }
-type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,
-    p_present_mode_count: *mut u32,
-    p_present_modes: *mut PresentModeKHR,
-) -> Result;
-type FnAcquireFullScreenExclusiveModeEXT =
-    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
-type FnReleaseFullScreenExclusiveModeEXT =
-    unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
 pub struct ExtFullScreenExclusiveFn1_0 {
     pub get_physical_device_surface_present_modes2_ext: FnGetPhysicalDeviceSurfacePresentModes2EXT,
     pub acquire_full_screen_exclusive_mode_ext: FnAcquireFullScreenExclusiveModeEXT,
@@ -38335,12 +38371,6 @@ impl ExtFullScreenExclusiveFn1_1 {
         (block, all_loaded)
     }
 }
-type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
-    instance: Option<Instance>,
-    p_create_info: *const HeadlessSurfaceCreateInfoEXT,
-    p_allocator: *const AllocationCallbacks,
-    p_surface: *mut SurfaceKHR,
-) -> Result;
 pub struct ExtHeadlessSurfaceFn1_0 {
     pub create_headless_surface_ext: FnCreateHeadlessSurfaceEXT,
 }
@@ -38373,12 +38403,6 @@ impl ExtHeadlessSurfaceFn1_0 {
         (block, all_loaded)
     }
 }
-type FnResetQueryPoolEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    query_pool: Option<QueryPool>,
-    first_query: u32,
-    query_count: u32,
-) -> c_void;
 pub struct ExtHostQueryResetFn1_0 {
     pub reset_query_pool_ext: FnResetQueryPoolEXT,
 }
