@@ -179,13 +179,78 @@ impl<'a> fmt::Display for Group<'a> {
 }
 
 struct VersionNames<'a> {
-    pub version: &'a str,
-    pub names: Vec<&'a str>,
+    version: &'a str,
+    names: Vec<&'a str>,
 }
 
 struct GroupNames<'a> {
-    pub group: Group<'a>,
-    pub versions: Vec<VersionNames<'a>>,
+    group: Group<'a>,
+    versions: Vec<VersionNames<'a>>,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum Category {
+    Loader,
+    Instance,
+    Device,
+}
+
+trait GetCommandCategory {
+    fn get_command_category(&self) -> Option<Category>;
+
+    fn get_command_group<'a>(&self) -> Option<Group<'a>> {
+        self.get_command_category().map(|category| match category {
+            Category::Loader => Group::Loader,
+            Category::Instance => Group::Instance,
+            Category::Device => Group::Device,
+        })
+    }
+}
+
+impl GetCommandCategory for vk::CommandDefinition {
+    fn get_command_category(&self) -> Option<Category> {
+        match self.proto.name.as_str() {
+            "vkGetInstanceProcAddr" => None,
+            "vkCreateInstance"
+            | "vkEnumerateInstanceLayerProperties"
+            | "vkEnumerateInstanceExtensionProperties"
+            | "vkEnumerateInstanceVersion" => Some(Category::Loader),
+            "vkGetDeviceProcAddr" => Some(Category::Instance),
+            _ => {
+                let is_first_param_from_device = self
+                    .params
+                    .get(0)
+                    .and_then(|param| param.definition.type_name.as_ref())
+                    .map(|type_name| match type_name.as_str() {
+                        "VkDevice" | "VkCommandBuffer" | "VkQueue" => true,
+                        _ => false,
+                    })
+                    .unwrap_or(false);
+                if is_first_param_from_device {
+                    Some(Category::Device)
+                } else {
+                    Some(Category::Instance)
+                }
+            }
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+enum CommandRef<'a> {
+    Feature(&'a str),
+    Extension(&'a str),
+}
+
+struct CommandRefPair<'a> {
+    primary: CommandRef<'a>,
+    secondary: Option<CommandRef<'a>>,
+}
+
+struct CommandInfo<'a> {
+    cmd_def: &'a vk::CommandDefinition,
+    category: Option<Category>,
+    refs: Vec<CommandRefPair<'a>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -259,8 +324,7 @@ struct Generator<'a> {
     enums_by_name: HashMap<&'a str, Vec<&'a vk::Enum>>,
     constant_enums: Vec<&'a vk::Enum>,
     extension_by_enum_name: HashMap<&'a str, &'a vk::Extension>,
-    cmd_def_by_name: HashMap<&'a str, &'a vk::CommandDefinition>,
-    cmd_name_blacklist: HashSet<&'a str>,
+    cmd_info_by_name: HashMap<&'a str, CommandInfo<'a>>,
     group_names: Vec<GroupNames<'a>>,
 }
 
@@ -455,7 +519,14 @@ impl<'a> Generator<'a> {
                             cmd_aliases.push((name.as_str(), alias.as_str()));
                         }
                         vk::Command::Definition(cmd_def) => {
-                            self.cmd_def_by_name.insert(cmd_def.proto.name.as_str(), cmd_def);
+                            self.cmd_info_by_name.insert(
+                                cmd_def.proto.name.as_str(),
+                                CommandInfo {
+                                    cmd_def,
+                                    category: None,
+                                    refs: Vec::new(),
+                                },
+                            );
                         }
                     }
                 }
@@ -463,65 +534,92 @@ impl<'a> Generator<'a> {
         }
         for (name, alias) in &cmd_aliases {
             let cmd_def = self
-                .cmd_def_by_name
+                .cmd_info_by_name
                 .get(alias)
-                .cloned()
-                .expect("command alias not found");
-            self.cmd_def_by_name.insert(name, cmd_def);
+                .expect("command alias not found")
+                .cmd_def;
+            self.cmd_info_by_name.insert(
+                name,
+                CommandInfo {
+                    cmd_def,
+                    category: None,
+                    refs: Vec::new(),
+                },
+            );
         }
         for registry_child in &self.registry.0 {
             match registry_child {
+                vk::RegistryChild::Feature(feature) => {
+                    for name in feature
+                        .children
+                        .iter()
+                        .filter_map(|ext_child| match ext_child {
+                            vk::ExtensionChild::Require { items, .. } => Some(items),
+                            _ => None,
+                        })
+                        .flat_map(|items| items.iter())
+                        .filter_map(|item| match item {
+                            vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
+                            _ => None,
+                        })
+                    {
+                        let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
+
+                        let cmd_category = info.cmd_def.get_command_category();
+                        info.category = info.category.or(cmd_category);
+                        assert_eq!(info.category, cmd_category);
+
+                        info.refs.push(CommandRefPair {
+                            primary: CommandRef::Feature(feature.name.as_str()),
+                            secondary: None,
+                        });
+                    }
+                }
                 vk::RegistryChild::Extensions(extensions) => {
-                    for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
-                        for name in ext
-                            .children
-                            .iter()
-                            .filter_map(|ext_child| match ext_child {
-                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                    for ext in extensions
+                        .children
+                        .iter()
+                        .filter(|ext| ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted())
+                    {
+                        let ext_category = match ext.ext_type.as_ref_str() {
+                            Some("instance") => Some(Category::Instance),
+                            Some("device") => Some(Category::Device),
+                            _ => panic!("unknown extension type {:?}", ext),
+                        };
+
+                        for (cmd_ref, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
+                            vk::ExtensionChild::Require {
+                                feature,
+                                extension,
+                                items,
+                                ..
+                            } => {
+                                let cmd_ref = feature
+                                    .as_ref_str()
+                                    .map(|s| CommandRef::Feature(s))
+                                    .or(extension.as_ref_str().map(|s| CommandRef::Extension(s)));
+                                Some((cmd_ref, items))
+                            }
+                            _ => None,
+                        }) {
+                            for name in items.iter().filter_map(|item| match item {
+                                vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
                                 _ => None,
-                            })
-                            .flat_map(|items| items.iter())
-                            .filter_map(|item| match item {
-                                vk::InterfaceItem::Command { name, .. } => Some(name),
-                                _ => None,
-                            })
-                        {
-                            self.cmd_name_blacklist.insert(name);
+                            }) {
+                                let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
+
+                                info.category = info.category.or(ext_category);
+                                assert_eq!(info.category, ext_category);
+
+                                info.refs.push(CommandRefPair {
+                                    primary: CommandRef::Extension(ext.name.as_str()),
+                                    secondary: cmd_ref.clone(),
+                                });
+                            }
                         }
                     }
                 }
                 _ => {}
-            }
-        }
-        for name in self.cmd_name_blacklist.iter() {
-            println!("Blacklisted: {}", name);
-        }
-    }
-
-    fn get_command_group(&self, name: &str) -> Option<Group<'a>> {
-        match name {
-            "vkGetInstanceProcAddr" => None,
-            "vkCreateInstance"
-            | "vkEnumerateInstanceLayerProperties"
-            | "vkEnumerateInstanceExtensionProperties"
-            | "vkEnumerateInstanceVersion" => Some(Group::Loader),
-            "vkGetDeviceProcAddr" => Some(Group::Instance),
-            _ => {
-                let cmd_def = self.cmd_def_by_name.get(name).cloned().expect("command not found");
-                let is_first_param_from_device = cmd_def
-                    .params
-                    .get(0)
-                    .and_then(|param| param.definition.type_name.as_ref())
-                    .map(|type_name| match type_name.as_str() {
-                        "VkDevice" | "VkCommandBuffer" | "VkQueue" => true,
-                        _ => false,
-                    })
-                    .unwrap_or(false);
-                if is_first_param_from_device {
-                    Some(Group::Device)
-                } else {
-                    Some(Group::Instance)
-                }
             }
         }
     }
@@ -554,7 +652,8 @@ impl<'a> Generator<'a> {
                     _ => None,
                 })
             {
-                if Some(group) == self.get_command_group(name) {
+                let cmd_def = self.cmd_info_by_name.get(name).expect("command not found").cmd_def;
+                if Some(group) == cmd_def.get_command_group() {
                     names.push(name);
                 }
             }
@@ -623,7 +722,7 @@ impl<'a> Generator<'a> {
         }
     }
 
-    pub fn new(registry: &'a vk::Registry) -> Self {
+    fn new(registry: &'a vk::Registry) -> Self {
         let mut gen = Self {
             registry,
             extension_by_name: HashMap::new(),
@@ -634,8 +733,7 @@ impl<'a> Generator<'a> {
             enums_by_name: HashMap::new(),
             constant_enums: Vec::new(),
             extension_by_enum_name: HashMap::new(),
-            cmd_def_by_name: HashMap::new(),
-            cmd_name_blacklist: HashSet::new(),
+            cmd_info_by_name: HashMap::new(),
             group_names: Vec::new(),
         };
         gen.collect_extensions();
@@ -1041,7 +1139,7 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    pub fn write_handle_type(&self, w: &mut impl IoWrite, ty: &'a vk::Type) -> WriteResult {
+    fn write_handle_type(&self, w: &mut impl IoWrite, ty: &'a vk::Type) -> WriteResult {
         if let Some(ref alias) = ty.alias {
             let type_name = ty.name.as_ref_str().expect("missing handle alias name");
             writeln!(
@@ -1340,7 +1438,13 @@ impl<'a> Generator<'a> {
                         }
                         vk::Command::Definition(cmd_def) => {
                             let mut decl = c_parse_function_decl(cmd_def.code.as_str());
-                            if !self.cmd_name_blacklist.contains(decl.proto.name) {
+                            if self
+                                .cmd_info_by_name
+                                .get(decl.proto.name)
+                                .expect("missing command info")
+                                .category
+                                .is_some()
+                            {
                                 let context = decl.proto.name;
                                 for param in decl.parameters.iter_mut() {
                                     take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
@@ -1374,7 +1478,7 @@ impl<'a> Generator<'a> {
                     .names
                     .iter()
                     .map(|name| {
-                        let cmd_def = self.cmd_def_by_name.get(name).expect("missing cmd def");
+                        let cmd_def = self.cmd_info_by_name.get(name).expect("missing command info").cmd_def;
                         let mut decl = c_parse_function_decl(cmd_def.code.as_str());
                         let context = decl.proto.name;
                         for param in decl.parameters.iter_mut() {
@@ -1424,7 +1528,7 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    pub fn write_vk(&self, path: &Path) -> WriteResult {
+    fn write_vk(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
 
@@ -1748,7 +1852,7 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    pub fn write_builder(&self, path: &Path) -> WriteResult {
+    fn write_builder(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
 
@@ -2048,7 +2152,11 @@ impl<'a> Generator<'a> {
     }
 
     fn write_group_command(&self, w: &mut impl IoWrite, group: Group, version: &str, cmd_name: &str) -> WriteResult {
-        let cmd_def = self.cmd_def_by_name.get(cmd_name).expect("missing cmd def");
+        let cmd_def = self
+            .cmd_info_by_name
+            .get(cmd_name)
+            .expect("missing command info")
+            .cmd_def;
         let decl = {
             let mut decl = c_parse_function_decl(cmd_def.code.as_str());
             let context = decl.proto.name;
@@ -2590,7 +2698,7 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    pub fn write_lib(&self, path: &Path) -> WriteResult {
+    fn write_lib(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
 

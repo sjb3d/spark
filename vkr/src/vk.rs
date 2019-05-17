@@ -28964,8 +28964,6 @@ pub type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
 ) -> Result;
 pub type FnGetDeviceProcAddr =
     unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
-pub type FnGetInstanceProcAddr =
-    unsafe extern "system" fn(instance: Option<Instance>, p_name: *const c_char) -> Option<FnVoidFunction>;
 pub type FnGetPhysicalDeviceProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_properties: *mut PhysicalDeviceProperties,
@@ -30390,26 +30388,6 @@ pub type FnGetDescriptorSetLayoutSupport = unsafe extern "system" fn(
     p_support: *mut DescriptorSetLayoutSupport,
 ) -> c_void;
 pub type FnGetDescriptorSetLayoutSupportKHR = FnGetDescriptorSetLayoutSupport;
-pub type FnGetSwapchainGrallocUsageANDROID = unsafe extern "system" fn(
-    device: Option<Device>,
-    format: Format,
-    image_usage: ImageUsageFlags,
-    gralloc_usage: *mut c_int,
-) -> Result;
-pub type FnAcquireImageANDROID = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    native_fence_fd: c_int,
-    semaphore: Option<Semaphore>,
-    fence: Option<Fence>,
-) -> Result;
-pub type FnQueueSignalReleaseImageANDROID = unsafe extern "system" fn(
-    queue: Option<Queue>,
-    wait_semaphore_count: u32,
-    p_wait_semaphores: *const Semaphore,
-    image: Option<Image>,
-    p_native_fence_fd: *mut c_int,
-) -> Result;
 pub type FnGetShaderInfoAMD = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
