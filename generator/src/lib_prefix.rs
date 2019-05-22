@@ -41,10 +41,8 @@ array_impl!(8);
 
 pub type Result<T> = result::Result<T, vk::Result>;
 
-type FnGetInstanceProcAddr = extern "system" fn(instance: Option<vk::Instance>, p_name: *const c_char,) -> Option<vk::FnVoidFunction>;
-
 struct LibFn {
-    pub get_instance_proc_addr: FnGetInstanceProcAddr,
+    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 struct Lib {

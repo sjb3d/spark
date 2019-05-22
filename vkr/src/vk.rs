@@ -28964,6 +28964,8 @@ pub type FnEnumeratePhysicalDevices = unsafe extern "system" fn(
 ) -> Result;
 pub type FnGetDeviceProcAddr =
     unsafe extern "system" fn(device: Option<Device>, p_name: *const c_char) -> Option<FnVoidFunction>;
+pub type FnGetInstanceProcAddr =
+    unsafe extern "system" fn(instance: Option<Instance>, p_name: *const c_char) -> Option<FnVoidFunction>;
 pub type FnGetPhysicalDeviceProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_properties: *mut PhysicalDeviceProperties,

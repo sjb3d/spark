@@ -59,6 +59,7 @@ const FN_PREFIX: &str = "vk";
 const PFN_PREFIX: &str = "PFN_vk";
 const CONST_PREFIX: &str = "VK_";
 const VERSION_PREFIX: &str = "VK_VERSION_";
+const FN_GET_INSTANCE_PROC_ADDR: &str = "vkGetInstanceProcAddr";
 
 trait SkipPrefix {
     fn skip_prefix(&self, prefix: &str) -> &str;
@@ -195,27 +196,31 @@ enum Category {
     Device,
 }
 
-trait GetCommandCategory {
-    fn get_command_category(&self) -> Option<Category>;
-
-    fn get_command_group<'a>(&self) -> Option<Group<'a>> {
-        self.get_command_category().map(|category| match category {
-            Category::Loader => Group::Loader,
-            Category::Instance => Group::Instance,
-            Category::Device => Group::Device,
-        })
+impl fmt::Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Category::Loader => write!(f, "Loader2"),
+            Category::Instance => write!(f, "Instance2"),
+            Category::Device => write!(f, "Device2"),
+        }
     }
 }
 
+trait GetCommandCategory {
+    fn get_command_category(&self) -> Category;
+
+    fn get_command_group<'a>(&self) -> Option<Group<'a>>;
+}
+
 impl GetCommandCategory for vk::CommandDefinition {
-    fn get_command_category(&self) -> Option<Category> {
+    fn get_command_category(&self) -> Category {
         match self.proto.name.as_str() {
-            "vkGetInstanceProcAddr" => None,
-            "vkCreateInstance"
+            FN_GET_INSTANCE_PROC_ADDR
+            | "vkCreateInstance"
             | "vkEnumerateInstanceLayerProperties"
             | "vkEnumerateInstanceExtensionProperties"
-            | "vkEnumerateInstanceVersion" => Some(Category::Loader),
-            "vkGetDeviceProcAddr" => Some(Category::Instance),
+            | "vkEnumerateInstanceVersion" => Category::Loader,
+            "vkGetDeviceProcAddr" => Category::Instance,
             _ => {
                 let is_first_param_from_device = self
                     .params
@@ -227,28 +232,45 @@ impl GetCommandCategory for vk::CommandDefinition {
                     })
                     .unwrap_or(false);
                 if is_first_param_from_device {
-                    Some(Category::Device)
+                    Category::Device
                 } else {
-                    Some(Category::Instance)
+                    Category::Instance
                 }
             }
         }
     }
+
+    fn get_command_group<'a>(&self) -> Option<Group<'a>> {
+        match self.get_command_category() {
+            Category::Loader => {
+                if self.proto.name.as_str() == FN_GET_INSTANCE_PROC_ADDR {
+                    None
+                } else {
+                    Some(Group::Loader)
+                }
+            }
+            Category::Instance => Some(Group::Instance),
+            Category::Device => Some(Group::Device),
+        }
+    }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 enum CommandRef<'a> {
     Feature(&'a str),
     Extension(&'a str),
 }
 
+#[derive(Debug)]
 struct CommandRefPair<'a> {
     primary: CommandRef<'a>,
     secondary: Option<CommandRef<'a>>,
 }
 
+#[derive(Debug)]
 struct CommandInfo<'a> {
     cmd_def: &'a vk::CommandDefinition,
+    alias: Option<&'a str>,
     category: Option<Category>,
     refs: Vec<CommandRefPair<'a>>,
 }
@@ -324,6 +346,7 @@ struct Generator<'a> {
     enums_by_name: HashMap<&'a str, Vec<&'a vk::Enum>>,
     constant_enums: Vec<&'a vk::Enum>,
     extension_by_enum_name: HashMap<&'a str, &'a vk::Extension>,
+    cmd_names: Vec<&'a str>,
     cmd_info_by_name: HashMap<&'a str, CommandInfo<'a>>,
     group_names: Vec<GroupNames<'a>>,
 }
@@ -516,13 +539,16 @@ impl<'a> Generator<'a> {
                 for cmd_child in &commands.children {
                     match cmd_child {
                         vk::Command::Alias { name, alias } => {
+                            self.cmd_names.push(name.as_str());
                             cmd_aliases.push((name.as_str(), alias.as_str()));
                         }
                         vk::Command::Definition(cmd_def) => {
+                            self.cmd_names.push(cmd_def.proto.name.as_str());
                             self.cmd_info_by_name.insert(
                                 cmd_def.proto.name.as_str(),
                                 CommandInfo {
                                     cmd_def,
+                                    alias: None,
                                     category: None,
                                     refs: Vec::new(),
                                 },
@@ -542,6 +568,7 @@ impl<'a> Generator<'a> {
                 name,
                 CommandInfo {
                     cmd_def,
+                    alias: Some(alias),
                     category: None,
                     refs: Vec::new(),
                 },
@@ -565,7 +592,7 @@ impl<'a> Generator<'a> {
                     {
                         let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
 
-                        let cmd_category = info.cmd_def.get_command_category();
+                        let cmd_category = Some(info.cmd_def.get_command_category());
                         info.category = info.category.or(cmd_category);
                         assert_eq!(info.category, cmd_category);
 
@@ -733,6 +760,7 @@ impl<'a> Generator<'a> {
             enums_by_name: HashMap::new(),
             constant_enums: Vec::new(),
             extension_by_enum_name: HashMap::new(),
+            cmd_names: Vec::new(),
             cmd_info_by_name: HashMap::new(),
             group_names: Vec::new(),
         };
@@ -1427,43 +1455,31 @@ impl<'a> Generator<'a> {
     }
 
     fn write_command_types(&self, w: &mut impl IoWrite) -> WriteResult {
-        for registry_child in &self.registry.0 {
-            if let vk::RegistryChild::Commands(commands) = registry_child {
-                for cmd_child in &commands.children {
-                    match cmd_child {
-                        vk::Command::Alias { name, alias } => {
-                            let name_part = name.skip_prefix(FN_PREFIX);
-                            let alias_part = alias.skip_prefix(FN_PREFIX);
-                            write!(w, r#"pub type Fn{} = Fn{};"#, name_part, alias_part)?;
-                        }
-                        vk::Command::Definition(cmd_def) => {
-                            let mut decl = c_parse_function_decl(cmd_def.code.as_str());
-                            if self
-                                .cmd_info_by_name
-                                .get(decl.proto.name)
-                                .expect("missing command info")
-                                .category
-                                .is_some()
-                            {
-                                let context = decl.proto.name;
-                                for param in decl.parameters.iter_mut() {
-                                    take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
-                                }
-                                let name_part = decl.proto.name.skip_prefix(FN_PREFIX);
-                                write!(w, r#"pub type Fn{} = unsafe extern "system" fn("#, name_part)?;
-                                for param in &decl.parameters {
-                                    write!(
-                                        w,
-                                        "{}: {},",
-                                        get_rust_variable_name(param.name.to_snake_case().as_str()),
-                                        self.get_rust_parameter_type(&param.ty, None),
-                                    )?;
-                                }
-                                writeln!(w, ") -> {};", self.get_rust_parameter_type(&decl.proto.ty, None))?;
-                            }
-                        }
-                    }
+        for (name, info) in self.cmd_names.iter().filter_map(|name| {
+            let info = self.cmd_info_by_name.get(name).expect("missing command info");
+            info.category.and(Some((name, info)))
+        }) {
+            if let Some(alias) = info.alias {
+                let name_part = name.skip_prefix(FN_PREFIX);
+                let alias_part = alias.skip_prefix(FN_PREFIX);
+                write!(w, r#"pub type Fn{} = Fn{};"#, name_part, alias_part)?;
+            } else {
+                let mut decl = c_parse_function_decl(info.cmd_def.code.as_str());
+                let context = decl.proto.name;
+                for param in decl.parameters.iter_mut() {
+                    take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
                 }
+                let name_part = decl.proto.name.skip_prefix(FN_PREFIX);
+                write!(w, r#"pub type Fn{} = unsafe extern "system" fn("#, name_part)?;
+                for param in &decl.parameters {
+                    write!(
+                        w,
+                        "{}: {},",
+                        get_rust_variable_name(param.name.to_snake_case().as_str()),
+                        self.get_rust_parameter_type(&param.ty, None),
+                    )?;
+                }
+                writeln!(w, ") -> {};", self.get_rust_parameter_type(&decl.proto.ty, None))?;
             }
         }
         Ok(())
@@ -2698,6 +2714,24 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
+    fn write_struct(&self, category: Category, w: &mut impl IoWrite) -> WriteResult {
+        writeln!(w, "pub struct {} {{", category)?;
+        match category {
+            Category::Loader => {}
+            Category::Instance => writeln!(w, "pub handle: vk::Instance,")?,
+            Category::Device => writeln!(w, "pub handle: vk::Device,")?,
+        }
+        for name in self.cmd_names.iter().filter(|&name| {
+            let info = self.cmd_info_by_name.get(name).expect("missing command info");
+            info.category == Some(category)
+        }) {
+            let name_part = name.skip_prefix(FN_PREFIX);
+            writeln!(w, "pub fp_{}: Option<vk::Fn{}>,", name_part.to_snake_case(), name_part)?;
+        }
+        writeln!(w, "}}")?;
+        Ok(())
+    }
+
     fn write_lib(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
@@ -2720,6 +2754,9 @@ impl<'a> Generator<'a> {
         }
 
         write!(&mut w, "{}", include_str!("lib_prefix.rs"))?;
+        self.write_struct(Category::Loader, &mut w)?;
+        self.write_struct(Category::Instance, &mut w)?;
+        self.write_struct(Category::Device, &mut w)?;
         self.write_group_structs(&mut w)?;
         write!(&mut w, "{}", include_str!("lib_postfix.rs"))?;
 
@@ -2737,8 +2774,8 @@ fn main() -> WriteResult {
 
     let generator = Generator::new(&registry);
     generator.write_vk(Path::new("../vkr/src/vk.rs"))?;
-    generator.write_lib(Path::new("../vkr/src/lib.rs"))?;
     generator.write_builder(Path::new("../vkr/src/builder.rs"))?;
+    generator.write_lib(Path::new("../vkr/src/lib.rs"))?;
 
     Spawn::new("cargo")
         .arg("fmt")
