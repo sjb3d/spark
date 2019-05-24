@@ -6,7 +6,7 @@ use lazy_static::lazy_static;
 use shared_library::dynamic_library::DynamicLibrary;
 use std::ffi::CStr;
 use std::mem;
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_int, c_void};
 use std::path::Path;
 use std::ptr;
 use std::result;
@@ -46,13 +46,9 @@ array_impl!(8);
 
 pub type Result<T> = result::Result<T, vk::Result>;
 
-struct LibFn {
-    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
-}
-
 struct Lib {
     pub lib: DynamicLibrary,
-    pub fp: LibFn,
+    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 #[derive(Debug, Clone)]
@@ -68,6 +64,8 @@ impl From<vk::Result> for LoaderError {
     }
 }
 
+pub type LoaderResult<T> = result::Result<T, LoaderError>;
+
 #[cfg(unix)]
 const DL_PATH: &'static str = "libvulkan.so.1";
 
@@ -75,7 +73,7 @@ const DL_PATH: &'static str = "libvulkan.so.1";
 const DL_PATH: &'static str = "vulkan-1.dll";
 
 impl Lib {
-    pub fn new() -> result::Result<Self, LoaderError> {
+    pub fn new() -> LoaderResult<Self> {
         match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
             Ok(lib) => match unsafe {
                 lib.symbol("vkGetInstanceProcAddr")
@@ -83,7 +81,7 @@ impl Lib {
             } {
                 Ok(get_instance_proc_addr) => Ok(Self {
                     lib,
-                    fp: LibFn { get_instance_proc_addr },
+                    get_instance_proc_addr,
                 }),
                 Err(s) => Err(LoaderError::MissingSymbol(s)),
             },
@@ -96,21 +94,113 @@ impl Lib {
         instance: Option<vk::Instance>,
         name: &CStr,
     ) -> Option<vk::FnVoidFunction> {
-        (self.fp.get_instance_proc_addr)(instance, name.as_ptr())
+        (self.get_instance_proc_addr)(instance, name.as_ptr())
     }
 }
 
 lazy_static! {
-    static ref LIB: result::Result<Lib, LoaderError> = Lib::new();
+    static ref LIB: LoaderResult<Lib> = Lib::new();
 }
-pub struct Loader2 {
+pub struct Loader {
     pub fp_create_instance: Option<vk::FnCreateInstance>,
     pub fp_get_instance_proc_addr: Option<vk::FnGetInstanceProcAddr>,
     pub fp_enumerate_instance_version: Option<vk::FnEnumerateInstanceVersion>,
     pub fp_enumerate_instance_layer_properties: Option<vk::FnEnumerateInstanceLayerProperties>,
     pub fp_enumerate_instance_extension_properties: Option<vk::FnEnumerateInstanceExtensionProperties>,
 }
-pub struct Instance2 {
+impl Loader {
+    pub fn new() -> LoaderResult<Self> {
+        let lib = LIB.as_ref().map_err(|e| e.clone())?;
+        unsafe {
+            let f = |name: &CStr| lib.get_instance_proc_addr(None, name);
+            Ok(Self {
+                fp_create_instance: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateInstance\0"))
+                    .map(|f| mem::transmute(f)),
+                fp_get_instance_proc_addr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetInstanceProcAddr\0"))
+                    .map(|f| mem::transmute(f)),
+                fp_enumerate_instance_version: f(CStr::from_bytes_with_nul_unchecked(b"vkEnumerateInstanceVersion\0"))
+                    .map(|f| mem::transmute(f)),
+                fp_enumerate_instance_layer_properties: f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkEnumerateInstanceLayerProperties\0",
+                ))
+                .map(|f| mem::transmute(f)),
+                fp_enumerate_instance_extension_properties: f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkEnumerateInstanceExtensionProperties\0",
+                ))
+                .map(|f| mem::transmute(f)),
+            })
+        }
+    }
+    pub unsafe fn create_instance(
+        &self,
+        p_create_info: &vk::InstanceCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> result::Result<Instance, LoaderError> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_instance.unwrap())(p_create_info, p_allocator.map_or(ptr::null(), |r| r), &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))
+    }
+    pub unsafe fn get_instance_proc_addr(
+        &self,
+        instance: Option<vk::Instance>,
+        p_name: &CStr,
+    ) -> Option<vk::FnVoidFunction> {
+        let res = (self.fp_get_instance_proc_addr.unwrap())(instance, p_name.as_ptr());
+        res
+    }
+    pub unsafe fn enumerate_instance_version(&self) -> Result<vk::Version> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_enumerate_instance_version.unwrap())(&mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn enumerate_instance_layer_properties_to_vec(&self) -> Result<Vec<vk::LayerProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_enumerate_instance_layer_properties.unwrap())(&mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_enumerate_instance_layer_properties.unwrap())(&mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn enumerate_instance_extension_properties_to_vec(
+        &self,
+        p_layer_name: &CStr,
+    ) -> Result<Vec<vk::ExtensionProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_enumerate_instance_extension_properties.unwrap())(
+            p_layer_name.as_ptr(),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err =
+            (self.fp_enumerate_instance_extension_properties.unwrap())(p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+}
+pub struct Instance {
     pub handle: vk::Instance,
     pub fp_destroy_instance: Option<vk::FnDestroyInstance>,
     pub fp_enumerate_physical_devices: Option<vk::FnEnumeratePhysicalDevices>,
@@ -209,7 +299,1691 @@ pub struct Instance2 {
     pub fp_submit_debug_utils_message_ext: Option<vk::FnSubmitDebugUtilsMessageEXT>,
     pub fp_create_headless_surface_ext: Option<vk::FnCreateHeadlessSurfaceEXT>,
 }
-pub struct Device2 {
+impl Instance {
+    unsafe fn load(instance: vk::Instance) -> LoaderResult<Self> {
+        let lib = LIB.as_ref().map_err(|e| e.clone())?;
+        let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name);
+        Ok(Self {
+            handle: instance,
+            fp_destroy_instance: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyInstance\0"))
+                .map(|f| mem::transmute(f)),
+            fp_enumerate_physical_devices: f(CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDevices\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_device_proc_addr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceProcAddr\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_queue_family_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceQueueFamilyProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_memory_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceMemoryProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_features: f(CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_format_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceFormatProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_image_format_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceImageFormatProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_device: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDevice\0")).map(|f| mem::transmute(f)),
+            fp_enumerate_device_layer_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkEnumerateDeviceLayerProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_enumerate_device_extension_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkEnumerateDeviceExtensionProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_sparse_image_format_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSparseImageFormatProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_android_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateAndroidSurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_display_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceDisplayPropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_display_plane_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_display_plane_supported_displays_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDisplayPlaneSupportedDisplaysKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_display_mode_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDisplayModePropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_display_mode_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDisplayModeKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_display_plane_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDisplayPlaneCapabilitiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_display_plane_surface_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateDisplayPlaneSurfaceKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_formats_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceFormatsKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_present_modes_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfacePresentModesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_vi_surface_nn: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateViSurfaceNN\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_wayland_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWaylandSurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_wayland_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_win32_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWin32SurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_win32_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceWin32PresentationSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_xlib_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXlibSurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_xlib_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceXlibPresentationSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_xcb_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXcbSurfaceKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_xcb_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_image_pipe_surface_fuchsia: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateImagePipeSurfaceFUCHSIA\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_debug_report_callback_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateDebugReportCallbackEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_debug_report_callback_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyDebugReportCallbackEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_debug_report_message_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDebugReportMessageEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_image_format_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_features2: f(CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures2\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_features2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceFeatures2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceFormatProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceFormatProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_image_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceImageFormatProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_image_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceImageFormatProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_queue_family_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceQueueFamilyProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_queue_family_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceQueueFamilyProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_memory_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceMemoryProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_memory_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceMemoryProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_sparse_image_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSparseImageFormatProperties2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_sparse_image_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_buffer_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalBufferProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_buffer_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalBufferPropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_semaphore_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalSemaphoreProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_semaphore_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_fence_properties: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalFenceProperties\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_external_fence_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceExternalFencePropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_release_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseDisplayEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_acquire_xlib_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireXlibDisplayEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_rand_r_output_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetRandROutputDisplayEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_capabilities2_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_enumerate_physical_device_groups: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkEnumeratePhysicalDeviceGroups\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_enumerate_physical_device_groups_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkEnumeratePhysicalDeviceGroupsKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_ios_surface_mvk: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateIOSSurfaceMVK\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_mac_os_surface_mvk: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMacOSSurfaceMVK\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_metal_surface_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMetalSurfaceEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_capabilities2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_formats2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfaceFormats2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_display_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceDisplayProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_physical_device_display_plane_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_display_mode_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDisplayModeProperties2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_display_plane_capabilities2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDisplayPlaneCapabilities2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_set_debug_utils_object_name_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkSetDebugUtilsObjectNameEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_set_debug_utils_object_tag_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkSetDebugUtilsObjectTagEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_queue_begin_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkQueueBeginDebugUtilsLabelEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_queue_end_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkQueueEndDebugUtilsLabelEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_queue_insert_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkQueueInsertDebugUtilsLabelEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_begin_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdBeginDebugUtilsLabelEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_end_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndDebugUtilsLabelEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_insert_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdInsertDebugUtilsLabelEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_debug_utils_messenger_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateDebugUtilsMessengerEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_debug_utils_messenger_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyDebugUtilsMessengerEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_submit_debug_utils_message_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkSubmitDebugUtilsMessageEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_headless_surface_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateHeadlessSurfaceEXT\0"))
+                .map(|f| mem::transmute(f)),
+        })
+    }
+    pub unsafe fn destroy_instance(&self, p_allocator: Option<&vk::AllocationCallbacks>) {
+        (self.fp_destroy_instance.unwrap())(Some(self.handle), p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn enumerate_physical_devices_to_vec(&self) -> Result<Vec<vk::PhysicalDevice>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_enumerate_physical_devices.unwrap())(Some(self.handle), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_enumerate_physical_devices.unwrap())(Some(self.handle), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_device_proc_addr(&self, device: vk::Device, p_name: &CStr) -> Option<vk::FnVoidFunction> {
+        let res = (self.fp_get_device_proc_addr.unwrap())(Some(device), p_name.as_ptr());
+        res
+    }
+    pub unsafe fn get_physical_device_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> vk::PhysicalDeviceProperties {
+        let mut res = mem::uninitialized();
+        (self.fp_get_physical_device_properties.unwrap())(Some(physical_device), &mut res);
+        res
+    }
+    pub unsafe fn get_physical_device_queue_family_properties_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Vec<vk::QueueFamilyProperties> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_queue_family_properties.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_queue_family_properties.unwrap())(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_physical_device_memory_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> vk::PhysicalDeviceMemoryProperties {
+        let mut res = mem::uninitialized();
+        (self.fp_get_physical_device_memory_properties.unwrap())(Some(physical_device), &mut res);
+        res
+    }
+    pub unsafe fn get_physical_device_features(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> vk::PhysicalDeviceFeatures {
+        let mut res = mem::uninitialized();
+        (self.fp_get_physical_device_features.unwrap())(Some(physical_device), &mut res);
+        res
+    }
+    pub unsafe fn get_physical_device_format_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+    ) -> vk::FormatProperties {
+        let mut res = mem::uninitialized();
+        (self.fp_get_physical_device_format_properties.unwrap())(Some(physical_device), format, &mut res);
+        res
+    }
+    pub unsafe fn get_physical_device_image_format_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+        ty: vk::ImageType,
+        tiling: vk::ImageTiling,
+        usage: vk::ImageUsageFlags,
+        flags: vk::ImageCreateFlags,
+    ) -> Result<vk::ImageFormatProperties> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_physical_device_image_format_properties.unwrap())(
+            Some(physical_device),
+            format,
+            ty,
+            tiling,
+            usage,
+            flags,
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_device(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_create_info: &vk::DeviceCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> result::Result<Device, LoaderError> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_device.unwrap())(
+            Some(physical_device),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res.map_err(|e| LoaderError::Vulkan(e))
+            .and_then(|r| Device::load(&self, r))
+    }
+    pub unsafe fn enumerate_device_layer_properties_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::LayerProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err =
+            (self.fp_enumerate_device_layer_properties.unwrap())(Some(physical_device), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err =
+            (self.fp_enumerate_device_layer_properties.unwrap())(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn enumerate_device_extension_properties_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_layer_name: &CStr,
+    ) -> Result<Vec<vk::ExtensionProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_enumerate_device_extension_properties.unwrap())(
+            Some(physical_device),
+            p_layer_name.as_ptr(),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_enumerate_device_extension_properties.unwrap())(
+            Some(physical_device),
+            p_layer_name.as_ptr(),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_sparse_image_format_properties_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+        ty: vk::ImageType,
+        samples: vk::SampleCountFlags,
+        usage: vk::ImageUsageFlags,
+        tiling: vk::ImageTiling,
+    ) -> Vec<vk::SparseImageFormatProperties> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_sparse_image_format_properties.unwrap())(
+            Some(physical_device),
+            format,
+            ty,
+            samples,
+            usage,
+            tiling,
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_sparse_image_format_properties.unwrap())(
+            Some(physical_device),
+            format,
+            ty,
+            samples,
+            usage,
+            tiling,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn create_android_surface_khr(
+        &self,
+        p_create_info: &vk::AndroidSurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_android_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_display_properties_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::DisplayPropertiesKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_display_properties_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_display_properties_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_display_plane_properties_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::DisplayPlanePropertiesKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_display_plane_properties_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_display_plane_properties_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_display_plane_supported_displays_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        plane_index: u32,
+    ) -> Result<Vec<vk::DisplayKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_display_plane_supported_displays_khr.unwrap())(
+            Some(physical_device),
+            plane_index,
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_display_plane_supported_displays_khr.unwrap())(
+            Some(physical_device),
+            plane_index,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_display_mode_properties_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        display: vk::DisplayKHR,
+    ) -> Result<Vec<vk::DisplayModePropertiesKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_display_mode_properties_khr.unwrap())(
+            Some(physical_device),
+            Some(display),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_display_mode_properties_khr.unwrap())(
+            Some(physical_device),
+            Some(display),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn create_display_mode_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        display: vk::DisplayKHR,
+        p_create_info: &vk::DisplayModeCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DisplayModeKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_display_mode_khr.unwrap())(
+            Some(physical_device),
+            Some(display),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_display_plane_capabilities_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        mode: vk::DisplayModeKHR,
+        plane_index: u32,
+    ) -> Result<vk::DisplayPlaneCapabilitiesKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_display_plane_capabilities_khr.unwrap())(
+            Some(physical_device),
+            Some(mode),
+            plane_index,
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_display_plane_surface_khr(
+        &self,
+        p_create_info: &vk::DisplaySurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_display_plane_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_surface_khr(
+        &self,
+        surface: Option<vk::SurfaceKHR>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_surface_khr.unwrap())(Some(self.handle), surface, p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn get_physical_device_surface_support_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        surface: vk::SurfaceKHR,
+    ) -> Result<bool> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_physical_device_surface_support_khr.unwrap())(
+            Some(physical_device),
+            queue_family_index,
+            Some(surface),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res.map(|r| r != vk::FALSE)
+    }
+    pub unsafe fn get_physical_device_surface_capabilities_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        surface: vk::SurfaceKHR,
+    ) -> Result<vk::SurfaceCapabilitiesKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_physical_device_surface_capabilities_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_surface_formats_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        surface: vk::SurfaceKHR,
+    ) -> Result<Vec<vk::SurfaceFormatKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_surface_formats_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_surface_formats_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_surface_present_modes_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        surface: vk::SurfaceKHR,
+    ) -> Result<Vec<vk::PresentModeKHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_surface_present_modes_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_surface_present_modes_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn create_vi_surface_nn(
+        &self,
+        p_create_info: &vk::ViSurfaceCreateInfoNN,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_vi_surface_nn.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_wayland_surface_khr(
+        &self,
+        p_create_info: &vk::WaylandSurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_wayland_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_wayland_presentation_support_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        display: &mut vk::wl_display,
+    ) -> vk::Bool32 {
+        let res = (self.fp_get_physical_device_wayland_presentation_support_khr.unwrap())(
+            Some(physical_device),
+            queue_family_index,
+            display,
+        );
+        res
+    }
+    pub unsafe fn create_win32_surface_khr(
+        &self,
+        p_create_info: &vk::Win32SurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_win32_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_win32_presentation_support_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+    ) -> vk::Bool32 {
+        let res = (self.fp_get_physical_device_win32_presentation_support_khr.unwrap())(
+            Some(physical_device),
+            queue_family_index,
+        );
+        res
+    }
+    pub unsafe fn create_xlib_surface_khr(
+        &self,
+        p_create_info: &vk::XlibSurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_xlib_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_xlib_presentation_support_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        dpy: &mut vk::Display,
+        visual_id: vk::VisualID,
+    ) -> vk::Bool32 {
+        let res = (self.fp_get_physical_device_xlib_presentation_support_khr.unwrap())(
+            Some(physical_device),
+            queue_family_index,
+            dpy,
+            visual_id,
+        );
+        res
+    }
+    pub unsafe fn create_xcb_surface_khr(
+        &self,
+        p_create_info: &vk::XcbSurfaceCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_xcb_surface_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_xcb_presentation_support_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        connection: &mut vk::xcb_connection_t,
+        visual_id: vk::xcb_visualid_t,
+    ) -> vk::Bool32 {
+        let res = (self.fp_get_physical_device_xcb_presentation_support_khr.unwrap())(
+            Some(physical_device),
+            queue_family_index,
+            connection,
+            visual_id,
+        );
+        res
+    }
+    pub unsafe fn create_image_pipe_surface_fuchsia(
+        &self,
+        p_create_info: &vk::ImagePipeSurfaceCreateInfoFUCHSIA,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_image_pipe_surface_fuchsia.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_debug_report_callback_ext(
+        &self,
+        p_create_info: &vk::DebugReportCallbackCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DebugReportCallbackEXT> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_debug_report_callback_ext.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_debug_report_callback_ext(
+        &self,
+        callback: vk::DebugReportCallbackEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_debug_report_callback_ext.unwrap())(
+            Some(self.handle),
+            Some(callback),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn debug_report_message_ext(
+        &self,
+        flags: vk::DebugReportFlagsEXT,
+        object_type: vk::DebugReportObjectTypeEXT,
+        object: u64,
+        location: usize,
+        message_code: i32,
+        p_layer_prefix: &CStr,
+        p_message: &CStr,
+    ) {
+        (self.fp_debug_report_message_ext.unwrap())(
+            Some(self.handle),
+            flags,
+            object_type,
+            object,
+            location,
+            message_code,
+            p_layer_prefix.as_ptr(),
+            p_message.as_ptr(),
+        );
+    }
+    pub unsafe fn get_physical_device_external_image_format_properties_nv(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+        ty: vk::ImageType,
+        tiling: vk::ImageTiling,
+        usage: vk::ImageUsageFlags,
+        flags: vk::ImageCreateFlags,
+        external_handle_type: vk::ExternalMemoryHandleTypeFlagsNV,
+    ) -> Result<vk::ExternalImageFormatPropertiesNV> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_physical_device_external_image_format_properties_nv.unwrap())(
+            Some(physical_device),
+            format,
+            ty,
+            tiling,
+            usage,
+            flags,
+            external_handle_type,
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_features2(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_features: &mut vk::PhysicalDeviceFeatures2,
+    ) {
+        (self.fp_get_physical_device_features2.unwrap())(Some(physical_device), p_features);
+    }
+    pub unsafe fn get_physical_device_features2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_features: &mut vk::PhysicalDeviceFeatures2,
+    ) {
+        (self.fp_get_physical_device_features2_khr.unwrap())(Some(physical_device), p_features);
+    }
+    pub unsafe fn get_physical_device_properties2(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_properties: &mut vk::PhysicalDeviceProperties2,
+    ) {
+        (self.fp_get_physical_device_properties2.unwrap())(Some(physical_device), p_properties);
+    }
+    pub unsafe fn get_physical_device_properties2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_properties: &mut vk::PhysicalDeviceProperties2,
+    ) {
+        (self.fp_get_physical_device_properties2_khr.unwrap())(Some(physical_device), p_properties);
+    }
+    pub unsafe fn get_physical_device_format_properties2(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+        p_format_properties: &mut vk::FormatProperties2,
+    ) {
+        (self.fp_get_physical_device_format_properties2.unwrap())(Some(physical_device), format, p_format_properties);
+    }
+    pub unsafe fn get_physical_device_format_properties2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        format: vk::Format,
+        p_format_properties: &mut vk::FormatProperties2,
+    ) {
+        (self.fp_get_physical_device_format_properties2_khr.unwrap())(
+            Some(physical_device),
+            format,
+            p_format_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_image_format_properties2(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_image_format_info: &vk::PhysicalDeviceImageFormatInfo2,
+        p_image_format_properties: &mut vk::ImageFormatProperties2,
+    ) -> Result<()> {
+        let err = (self.fp_get_physical_device_image_format_properties2.unwrap())(
+            Some(physical_device),
+            p_image_format_info,
+            p_image_format_properties,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_image_format_properties2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_image_format_info: &vk::PhysicalDeviceImageFormatInfo2,
+        p_image_format_properties: &mut vk::ImageFormatProperties2,
+    ) -> Result<()> {
+        let err = (self.fp_get_physical_device_image_format_properties2_khr.unwrap())(
+            Some(physical_device),
+            p_image_format_info,
+            p_image_format_properties,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_queue_family_properties2_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Vec<vk::QueueFamilyProperties2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_queue_family_properties2.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_queue_family_properties2.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_physical_device_queue_family_properties2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Vec<vk::QueueFamilyProperties2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_queue_family_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_queue_family_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_physical_device_memory_properties2(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_memory_properties: &mut vk::PhysicalDeviceMemoryProperties2,
+    ) {
+        (self.fp_get_physical_device_memory_properties2.unwrap())(Some(physical_device), p_memory_properties);
+    }
+    pub unsafe fn get_physical_device_memory_properties2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_memory_properties: &mut vk::PhysicalDeviceMemoryProperties2,
+    ) {
+        (self.fp_get_physical_device_memory_properties2_khr.unwrap())(Some(physical_device), p_memory_properties);
+    }
+    pub unsafe fn get_physical_device_sparse_image_format_properties2_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_format_info: &vk::PhysicalDeviceSparseImageFormatInfo2,
+    ) -> Vec<vk::SparseImageFormatProperties2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_sparse_image_format_properties2.unwrap())(
+            Some(physical_device),
+            p_format_info,
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_sparse_image_format_properties2.unwrap())(
+            Some(physical_device),
+            p_format_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_physical_device_sparse_image_format_properties2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_format_info: &vk::PhysicalDeviceSparseImageFormatInfo2,
+    ) -> Vec<vk::SparseImageFormatProperties2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_physical_device_sparse_image_format_properties2_khr.unwrap())(
+            Some(physical_device),
+            p_format_info,
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_physical_device_sparse_image_format_properties2_khr.unwrap())(
+            Some(physical_device),
+            p_format_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_physical_device_external_buffer_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_buffer_info: &vk::PhysicalDeviceExternalBufferInfo,
+        p_external_buffer_properties: &mut vk::ExternalBufferProperties,
+    ) {
+        (self.fp_get_physical_device_external_buffer_properties.unwrap())(
+            Some(physical_device),
+            p_external_buffer_info,
+            p_external_buffer_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_external_buffer_properties_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_buffer_info: &vk::PhysicalDeviceExternalBufferInfo,
+        p_external_buffer_properties: &mut vk::ExternalBufferProperties,
+    ) {
+        (self.fp_get_physical_device_external_buffer_properties_khr.unwrap())(
+            Some(physical_device),
+            p_external_buffer_info,
+            p_external_buffer_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_external_semaphore_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_semaphore_info: &vk::PhysicalDeviceExternalSemaphoreInfo,
+        p_external_semaphore_properties: &mut vk::ExternalSemaphoreProperties,
+    ) {
+        (self.fp_get_physical_device_external_semaphore_properties.unwrap())(
+            Some(physical_device),
+            p_external_semaphore_info,
+            p_external_semaphore_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_external_semaphore_properties_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_semaphore_info: &vk::PhysicalDeviceExternalSemaphoreInfo,
+        p_external_semaphore_properties: &mut vk::ExternalSemaphoreProperties,
+    ) {
+        (self.fp_get_physical_device_external_semaphore_properties_khr.unwrap())(
+            Some(physical_device),
+            p_external_semaphore_info,
+            p_external_semaphore_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_external_fence_properties(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_fence_info: &vk::PhysicalDeviceExternalFenceInfo,
+        p_external_fence_properties: &mut vk::ExternalFenceProperties,
+    ) {
+        (self.fp_get_physical_device_external_fence_properties.unwrap())(
+            Some(physical_device),
+            p_external_fence_info,
+            p_external_fence_properties,
+        );
+    }
+    pub unsafe fn get_physical_device_external_fence_properties_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_external_fence_info: &vk::PhysicalDeviceExternalFenceInfo,
+        p_external_fence_properties: &mut vk::ExternalFenceProperties,
+    ) {
+        (self.fp_get_physical_device_external_fence_properties_khr.unwrap())(
+            Some(physical_device),
+            p_external_fence_info,
+            p_external_fence_properties,
+        );
+    }
+    pub unsafe fn release_display_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        display: vk::DisplayKHR,
+    ) -> Result<()> {
+        let err = (self.fp_release_display_ext.unwrap())(Some(physical_device), Some(display));
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn acquire_xlib_display_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        dpy: &mut vk::Display,
+        display: vk::DisplayKHR,
+    ) -> Result<()> {
+        let err = (self.fp_acquire_xlib_display_ext.unwrap())(Some(physical_device), dpy, Some(display));
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_rand_r_output_display_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        dpy: &mut vk::Display,
+        rr_output: vk::RROutput,
+    ) -> Result<vk::DisplayKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_rand_r_output_display_ext.unwrap())(Some(physical_device), dpy, rr_output, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_surface_capabilities2_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        surface: vk::SurfaceKHR,
+        p_surface_capabilities: &mut vk::SurfaceCapabilities2EXT,
+    ) -> Result<()> {
+        let err = (self.fp_get_physical_device_surface_capabilities2_ext.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            p_surface_capabilities,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn enumerate_physical_device_groups_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_enumerate_physical_device_groups.unwrap())(Some(self.handle), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_enumerate_physical_device_groups.unwrap())(Some(self.handle), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn enumerate_physical_device_groups_khr_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
+        let mut len = mem::uninitialized();
+        let len_err =
+            (self.fp_enumerate_physical_device_groups_khr.unwrap())(Some(self.handle), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err =
+            (self.fp_enumerate_physical_device_groups_khr.unwrap())(Some(self.handle), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn create_ios_surface_mvk(
+        &self,
+        p_create_info: &vk::IOSSurfaceCreateInfoMVK,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_ios_surface_mvk.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_mac_os_surface_mvk(
+        &self,
+        p_create_info: &vk::MacOSSurfaceCreateInfoMVK,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_mac_os_surface_mvk.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_metal_surface_ext(
+        &self,
+        p_create_info: &vk::MetalSurfaceCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_metal_surface_ext.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_surface_capabilities2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
+        p_surface_capabilities: &mut vk::SurfaceCapabilities2KHR,
+    ) -> Result<()> {
+        let err = (self.fp_get_physical_device_surface_capabilities2_khr.unwrap())(
+            Some(physical_device),
+            p_surface_info,
+            p_surface_capabilities,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_surface_formats2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
+    ) -> Result<Vec<vk::SurfaceFormat2KHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_surface_formats2_khr.unwrap())(
+            Some(physical_device),
+            p_surface_info,
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_surface_formats2_khr.unwrap())(
+            Some(physical_device),
+            p_surface_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_display_properties2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::DisplayProperties2KHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_display_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_display_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_physical_device_display_plane_properties2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::DisplayPlaneProperties2KHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_display_plane_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_display_plane_properties2_khr.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_display_mode_properties2_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        display: vk::DisplayKHR,
+    ) -> Result<Vec<vk::DisplayModeProperties2KHR>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_display_mode_properties2_khr.unwrap())(
+            Some(physical_device),
+            Some(display),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_display_mode_properties2_khr.unwrap())(
+            Some(physical_device),
+            Some(display),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_display_plane_capabilities2_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_display_plane_info: &vk::DisplayPlaneInfo2KHR,
+        p_capabilities: &mut vk::DisplayPlaneCapabilities2KHR,
+    ) -> Result<()> {
+        let err = (self.fp_get_display_plane_capabilities2_khr.unwrap())(
+            Some(physical_device),
+            p_display_plane_info,
+            p_capabilities,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn set_debug_utils_object_name_ext(
+        &self,
+        device: vk::Device,
+        p_name_info: &vk::DebugUtilsObjectNameInfoEXT,
+    ) -> Result<()> {
+        let err = (self.fp_set_debug_utils_object_name_ext.unwrap())(Some(device), p_name_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn set_debug_utils_object_tag_ext(
+        &self,
+        device: vk::Device,
+        p_tag_info: &vk::DebugUtilsObjectTagInfoEXT,
+    ) -> Result<()> {
+        let err = (self.fp_set_debug_utils_object_tag_ext.unwrap())(Some(device), p_tag_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn queue_begin_debug_utils_label_ext(&self, queue: vk::Queue, p_label_info: &vk::DebugUtilsLabelEXT) {
+        (self.fp_queue_begin_debug_utils_label_ext.unwrap())(Some(queue), p_label_info);
+    }
+    pub unsafe fn queue_end_debug_utils_label_ext(&self, queue: vk::Queue) {
+        (self.fp_queue_end_debug_utils_label_ext.unwrap())(Some(queue));
+    }
+    pub unsafe fn queue_insert_debug_utils_label_ext(&self, queue: vk::Queue, p_label_info: &vk::DebugUtilsLabelEXT) {
+        (self.fp_queue_insert_debug_utils_label_ext.unwrap())(Some(queue), p_label_info);
+    }
+    pub unsafe fn cmd_begin_debug_utils_label_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_label_info: &vk::DebugUtilsLabelEXT,
+    ) {
+        (self.fp_cmd_begin_debug_utils_label_ext.unwrap())(Some(command_buffer), p_label_info);
+    }
+    pub unsafe fn cmd_end_debug_utils_label_ext(&self, command_buffer: vk::CommandBuffer) {
+        (self.fp_cmd_end_debug_utils_label_ext.unwrap())(Some(command_buffer));
+    }
+    pub unsafe fn cmd_insert_debug_utils_label_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_label_info: &vk::DebugUtilsLabelEXT,
+    ) {
+        (self.fp_cmd_insert_debug_utils_label_ext.unwrap())(Some(command_buffer), p_label_info);
+    }
+    pub unsafe fn create_debug_utils_messenger_ext(
+        &self,
+        p_create_info: &vk::DebugUtilsMessengerCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DebugUtilsMessengerEXT> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_debug_utils_messenger_ext.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_debug_utils_messenger_ext(
+        &self,
+        messenger: vk::DebugUtilsMessengerEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_debug_utils_messenger_ext.unwrap())(
+            Some(self.handle),
+            Some(messenger),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn submit_debug_utils_message_ext(
+        &self,
+        message_severity: vk::DebugUtilsMessageSeverityFlagsEXT,
+        message_types: vk::DebugUtilsMessageTypeFlagsEXT,
+        p_callback_data: &vk::DebugUtilsMessengerCallbackDataEXT,
+    ) {
+        (self.fp_submit_debug_utils_message_ext.unwrap())(
+            Some(self.handle),
+            message_severity,
+            message_types,
+            p_callback_data,
+        );
+    }
+    pub unsafe fn create_headless_surface_ext(
+        &self,
+        p_create_info: &vk::HeadlessSurfaceCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_headless_surface_ext.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+}
+pub struct Device {
     pub handle: vk::Device,
     pub fp_destroy_device: Option<vk::FnDestroyDevice>,
     pub fp_get_device_queue: Option<vk::FnGetDeviceQueue>,
@@ -476,483 +2250,648 @@ pub struct Device2 {
     pub fp_acquire_full_screen_exclusive_mode_ext: Option<vk::FnAcquireFullScreenExclusiveModeEXT>,
     pub fp_release_full_screen_exclusive_mode_ext: Option<vk::FnReleaseFullScreenExclusiveModeEXT>,
 }
-/// Core library loader
-pub struct Loader {
-    pub version: vk::Version,
-    pub fp1_0: vk::LoaderFn1_0,
-    pub fp1_1: vk::LoaderFn1_1,
-}
-impl Loader {
-    pub fn new() -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| unsafe { lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::LoaderFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::LoaderFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
-        Ok(Self { version, fp1_0, fp1_1 })
-    }
-    pub unsafe fn create_instance(
-        &self,
-        p_create_info: &vk::InstanceCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> result::Result<Instance, LoaderError> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_instance)(p_create_info, p_allocator.map_or(ptr::null(), |r| r), &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))
-    }
-    pub unsafe fn enumerate_instance_extension_properties_to_vec(
-        &self,
-        p_layer_name: &CStr,
-    ) -> Result<Vec<vk::ExtensionProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err =
-            (self.fp1_0.enumerate_instance_extension_properties)(p_layer_name.as_ptr(), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err =
-            (self.fp1_0.enumerate_instance_extension_properties)(p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn enumerate_instance_layer_properties_to_vec(&self) -> Result<Vec<vk::LayerProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_instance_layer_properties)(&mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_instance_layer_properties)(&mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn enumerate_instance_version(&self) -> Result<vk::Version> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_1.enumerate_instance_version)(&mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Core instance loader
-pub struct Instance {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::InstanceFn1_0,
-    pub fp1_1: vk::InstanceFn1_1,
-}
-impl Instance {
-    unsafe fn load(instance: vk::Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::InstanceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::InstanceFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance,
-            fp1_0,
-            fp1_1,
-        })
-    }
-    pub unsafe fn destroy_instance(&self, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_instance)(Some(self.handle), p_allocator.map_or(ptr::null(), |r| r));
-    }
-    pub unsafe fn enumerate_physical_devices_to_vec(&self) -> Result<Vec<vk::PhysicalDevice>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_physical_devices)(Some(self.handle), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_physical_devices)(Some(self.handle), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_features(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> vk::PhysicalDeviceFeatures {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_physical_device_features)(Some(physical_device), &mut res);
-        res
-    }
-    pub unsafe fn get_physical_device_format_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-    ) -> vk::FormatProperties {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_physical_device_format_properties)(Some(physical_device), format, &mut res);
-        res
-    }
-    pub unsafe fn get_physical_device_image_format_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-        ty: vk::ImageType,
-        tiling: vk::ImageTiling,
-        usage: vk::ImageUsageFlags,
-        flags: vk::ImageCreateFlags,
-    ) -> Result<vk::ImageFormatProperties> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_physical_device_image_format_properties)(
-            Some(physical_device),
-            format,
-            ty,
-            tiling,
-            usage,
-            flags,
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> vk::PhysicalDeviceProperties {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_physical_device_properties)(Some(physical_device), &mut res);
-        res
-    }
-    pub unsafe fn get_physical_device_queue_family_properties_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Vec<vk::QueueFamilyProperties> {
-        let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_queue_family_properties)(Some(physical_device), &mut len, ptr::null_mut());
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_queue_family_properties)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn get_physical_device_memory_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> vk::PhysicalDeviceMemoryProperties {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_physical_device_memory_properties)(Some(physical_device), &mut res);
-        res
-    }
-    pub unsafe fn get_device_proc_addr(&self, device: vk::Device, p_name: &CStr) -> Option<vk::FnVoidFunction> {
-        let res = (self.fp1_0.get_device_proc_addr)(Some(device), p_name.as_ptr());
-        res
-    }
-    pub unsafe fn create_device(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_create_info: &vk::DeviceCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> result::Result<Device, LoaderError> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_device)(
-            Some(physical_device),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res.map_err(|e| LoaderError::Vulkan(e))
-            .and_then(|r| Device::load(&self, r))
-    }
-    pub unsafe fn enumerate_device_extension_properties_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_layer_name: &CStr,
-    ) -> Result<Vec<vk::ExtensionProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_device_extension_properties)(
-            Some(physical_device),
-            p_layer_name.as_ptr(),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_device_extension_properties)(
-            Some(physical_device),
-            p_layer_name.as_ptr(),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn enumerate_device_layer_properties_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::LayerProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_device_layer_properties)(Some(physical_device), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_device_layer_properties)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_sparse_image_format_properties_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-        ty: vk::ImageType,
-        samples: vk::SampleCountFlags,
-        usage: vk::ImageUsageFlags,
-        tiling: vk::ImageTiling,
-    ) -> Vec<vk::SparseImageFormatProperties> {
-        let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_sparse_image_format_properties)(
-            Some(physical_device),
-            format,
-            ty,
-            samples,
-            usage,
-            tiling,
-            &mut len,
-            ptr::null_mut(),
-        );
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_sparse_image_format_properties)(
-            Some(physical_device),
-            format,
-            ty,
-            samples,
-            usage,
-            tiling,
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn enumerate_physical_device_groups_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_1.enumerate_physical_device_groups)(Some(self.handle), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_1.enumerate_physical_device_groups)(Some(self.handle), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_features2(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_features: &mut vk::PhysicalDeviceFeatures2,
-    ) {
-        (self.fp1_1.get_physical_device_features2)(Some(physical_device), p_features);
-    }
-    pub unsafe fn get_physical_device_properties2(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_properties: &mut vk::PhysicalDeviceProperties2,
-    ) {
-        (self.fp1_1.get_physical_device_properties2)(Some(physical_device), p_properties);
-    }
-    pub unsafe fn get_physical_device_format_properties2(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-        p_format_properties: &mut vk::FormatProperties2,
-    ) {
-        (self.fp1_1.get_physical_device_format_properties2)(Some(physical_device), format, p_format_properties);
-    }
-    pub unsafe fn get_physical_device_image_format_properties2(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_image_format_info: &vk::PhysicalDeviceImageFormatInfo2,
-        p_image_format_properties: &mut vk::ImageFormatProperties2,
-    ) -> Result<()> {
-        let err = (self.fp1_1.get_physical_device_image_format_properties2)(
-            Some(physical_device),
-            p_image_format_info,
-            p_image_format_properties,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_queue_family_properties2_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Vec<vk::QueueFamilyProperties2> {
-        let mut len = mem::uninitialized();
-        (self.fp1_1.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, ptr::null_mut());
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_1.get_physical_device_queue_family_properties2)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn get_physical_device_memory_properties2(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_memory_properties: &mut vk::PhysicalDeviceMemoryProperties2,
-    ) {
-        (self.fp1_1.get_physical_device_memory_properties2)(Some(physical_device), p_memory_properties);
-    }
-    pub unsafe fn get_physical_device_sparse_image_format_properties2_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_format_info: &vk::PhysicalDeviceSparseImageFormatInfo2,
-    ) -> Vec<vk::SparseImageFormatProperties2> {
-        let mut len = mem::uninitialized();
-        (self.fp1_1.get_physical_device_sparse_image_format_properties2)(
-            Some(physical_device),
-            p_format_info,
-            &mut len,
-            ptr::null_mut(),
-        );
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_1.get_physical_device_sparse_image_format_properties2)(
-            Some(physical_device),
-            p_format_info,
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn get_physical_device_external_buffer_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_buffer_info: &vk::PhysicalDeviceExternalBufferInfo,
-        p_external_buffer_properties: &mut vk::ExternalBufferProperties,
-    ) {
-        (self.fp1_1.get_physical_device_external_buffer_properties)(
-            Some(physical_device),
-            p_external_buffer_info,
-            p_external_buffer_properties,
-        );
-    }
-    pub unsafe fn get_physical_device_external_fence_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_fence_info: &vk::PhysicalDeviceExternalFenceInfo,
-        p_external_fence_properties: &mut vk::ExternalFenceProperties,
-    ) {
-        (self.fp1_1.get_physical_device_external_fence_properties)(
-            Some(physical_device),
-            p_external_fence_info,
-            p_external_fence_properties,
-        );
-    }
-    pub unsafe fn get_physical_device_external_semaphore_properties(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_semaphore_info: &vk::PhysicalDeviceExternalSemaphoreInfo,
-        p_external_semaphore_properties: &mut vk::ExternalSemaphoreProperties,
-    ) {
-        (self.fp1_1.get_physical_device_external_semaphore_properties)(
-            Some(physical_device),
-            p_external_semaphore_info,
-            p_external_semaphore_properties,
-        );
-    }
-}
-/// Core device loader
-pub struct Device {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::DeviceFn1_0,
-    pub fp1_1: vk::DeviceFn1_1,
-}
 impl Device {
-    unsafe fn load(instance: &Instance, device: vk::Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| instance.get_device_proc_addr(device, name).map(|p| mem::transmute(p));
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::DeviceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::DeviceFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
+    unsafe fn load(instance: &Instance, device: vk::Device) -> LoaderResult<Self> {
+        let f = |name: &CStr| instance.get_device_proc_addr(device, name);
         Ok(Self {
-            version,
             handle: device,
-            fp1_0,
-            fp1_1,
+            fp_destroy_device: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyDevice\0")).map(|f| mem::transmute(f)),
+            fp_get_device_queue: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceQueue\0"))
+                .map(|f| mem::transmute(f)),
+            fp_queue_submit: f(CStr::from_bytes_with_nul_unchecked(b"vkQueueSubmit\0")).map(|f| mem::transmute(f)),
+            fp_queue_wait_idle: f(CStr::from_bytes_with_nul_unchecked(b"vkQueueWaitIdle\0")).map(|f| mem::transmute(f)),
+            fp_device_wait_idle: f(CStr::from_bytes_with_nul_unchecked(b"vkDeviceWaitIdle\0"))
+                .map(|f| mem::transmute(f)),
+            fp_allocate_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkAllocateMemory\0"))
+                .map(|f| mem::transmute(f)),
+            fp_free_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkFreeMemory\0")).map(|f| mem::transmute(f)),
+            fp_map_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkMapMemory\0")).map(|f| mem::transmute(f)),
+            fp_unmap_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory\0")).map(|f| mem::transmute(f)),
+            fp_flush_mapped_memory_ranges: f(CStr::from_bytes_with_nul_unchecked(b"vkFlushMappedMemoryRanges\0"))
+                .map(|f| mem::transmute(f)),
+            fp_invalidate_mapped_memory_ranges: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkInvalidateMappedMemoryRanges\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_device_memory_commitment: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceMemoryCommitment\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_buffer_memory_requirements: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetBufferMemoryRequirements\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_bind_buffer_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_image_memory_requirements: f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageMemoryRequirements\0"))
+                .map(|f| mem::transmute(f)),
+            fp_bind_image_memory: f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_image_sparse_memory_requirements: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageSparseMemoryRequirements\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_queue_bind_sparse: f(CStr::from_bytes_with_nul_unchecked(b"vkQueueBindSparse\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_fence: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateFence\0")).map(|f| mem::transmute(f)),
+            fp_destroy_fence: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyFence\0")).map(|f| mem::transmute(f)),
+            fp_reset_fences: f(CStr::from_bytes_with_nul_unchecked(b"vkResetFences\0")).map(|f| mem::transmute(f)),
+            fp_get_fence_status: f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceStatus\0"))
+                .map(|f| mem::transmute(f)),
+            fp_wait_for_fences: f(CStr::from_bytes_with_nul_unchecked(b"vkWaitForFences\0")).map(|f| mem::transmute(f)),
+            fp_create_semaphore: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSemaphore\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_semaphore: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySemaphore\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_event: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateEvent\0")).map(|f| mem::transmute(f)),
+            fp_destroy_event: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyEvent\0")).map(|f| mem::transmute(f)),
+            fp_get_event_status: f(CStr::from_bytes_with_nul_unchecked(b"vkGetEventStatus\0"))
+                .map(|f| mem::transmute(f)),
+            fp_set_event: f(CStr::from_bytes_with_nul_unchecked(b"vkSetEvent\0")).map(|f| mem::transmute(f)),
+            fp_reset_event: f(CStr::from_bytes_with_nul_unchecked(b"vkResetEvent\0")).map(|f| mem::transmute(f)),
+            fp_create_query_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateQueryPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_query_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyQueryPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_query_pool_results: f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueryPoolResults\0"))
+                .map(|f| mem::transmute(f)),
+            fp_reset_query_pool_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPoolEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateBuffer\0")).map(|f| mem::transmute(f)),
+            fp_destroy_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyBuffer\0")).map(|f| mem::transmute(f)),
+            fp_create_buffer_view: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateBufferView\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_buffer_view: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyBufferView\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateImage\0")).map(|f| mem::transmute(f)),
+            fp_destroy_image: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyImage\0")).map(|f| mem::transmute(f)),
+            fp_get_image_subresource_layout: f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageSubresourceLayout\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_image_view: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateImageView\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_image_view: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyImageView\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_shader_module: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateShaderModule\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_shader_module: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyShaderModule\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_pipeline_cache: f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePipelineCache\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_pipeline_cache: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPipelineCache\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_pipeline_cache_data: f(CStr::from_bytes_with_nul_unchecked(b"vkGetPipelineCacheData\0"))
+                .map(|f| mem::transmute(f)),
+            fp_merge_pipeline_caches: f(CStr::from_bytes_with_nul_unchecked(b"vkMergePipelineCaches\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_graphics_pipelines: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateGraphicsPipelines\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_compute_pipelines: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateComputePipelines\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_pipeline: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPipeline\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_pipeline_layout: f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePipelineLayout\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_pipeline_layout: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPipelineLayout\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_sampler: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSampler\0")).map(|f| mem::transmute(f)),
+            fp_destroy_sampler: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySampler\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_descriptor_set_layout: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorSetLayout\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_descriptor_set_layout: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorSetLayout\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_descriptor_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDescriptorPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_descriptor_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyDescriptorPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_reset_descriptor_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkResetDescriptorPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_allocate_descriptor_sets: f(CStr::from_bytes_with_nul_unchecked(b"vkAllocateDescriptorSets\0"))
+                .map(|f| mem::transmute(f)),
+            fp_free_descriptor_sets: f(CStr::from_bytes_with_nul_unchecked(b"vkFreeDescriptorSets\0"))
+                .map(|f| mem::transmute(f)),
+            fp_update_descriptor_sets: f(CStr::from_bytes_with_nul_unchecked(b"vkUpdateDescriptorSets\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_framebuffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateFramebuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_framebuffer: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyFramebuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_render_pass: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_render_pass: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyRenderPass\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_render_area_granularity: f(CStr::from_bytes_with_nul_unchecked(b"vkGetRenderAreaGranularity\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_command_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCommandPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_command_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyCommandPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_reset_command_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkResetCommandPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_allocate_command_buffers: f(CStr::from_bytes_with_nul_unchecked(b"vkAllocateCommandBuffers\0"))
+                .map(|f| mem::transmute(f)),
+            fp_free_command_buffers: f(CStr::from_bytes_with_nul_unchecked(b"vkFreeCommandBuffers\0"))
+                .map(|f| mem::transmute(f)),
+            fp_begin_command_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkBeginCommandBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_end_command_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkEndCommandBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_reset_command_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkResetCommandBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_pipeline: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindPipeline\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_viewport: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewport\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_scissor: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetScissor\0")).map(|f| mem::transmute(f)),
+            fp_cmd_set_line_width: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineWidth\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_depth_bias: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBias\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_blend_constants: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetBlendConstants\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_depth_bounds: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBounds\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_stencil_compare_mask: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilCompareMask\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_stencil_write_mask: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilWriteMask\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_stencil_reference: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilReference\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_descriptor_sets: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindDescriptorSets\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_index_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindIndexBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_vertex_buffers: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindVertexBuffers\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDraw\0")).map(|f| mem::transmute(f)),
+            fp_cmd_draw_indexed: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexed\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indirect: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirect\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indexed_indirect: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirect\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_dispatch: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatch\0")).map(|f| mem::transmute(f)),
+            fp_cmd_dispatch_indirect: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchIndirect\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_copy_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyBuffer\0")).map(|f| mem::transmute(f)),
+            fp_cmd_copy_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyImage\0")).map(|f| mem::transmute(f)),
+            fp_cmd_blit_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBlitImage\0")).map(|f| mem::transmute(f)),
+            fp_cmd_copy_buffer_to_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyBufferToImage\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_copy_image_to_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyImageToBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_update_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdUpdateBuffer\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_fill_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdFillBuffer\0")).map(|f| mem::transmute(f)),
+            fp_cmd_clear_color_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdClearColorImage\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_clear_depth_stencil_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdClearDepthStencilImage\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_clear_attachments: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdClearAttachments\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_resolve_image: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResolveImage\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_event: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetEvent\0")).map(|f| mem::transmute(f)),
+            fp_cmd_reset_event: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResetEvent\0")).map(|f| mem::transmute(f)),
+            fp_cmd_wait_events: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWaitEvents\0")).map(|f| mem::transmute(f)),
+            fp_cmd_pipeline_barrier: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPipelineBarrier\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_begin_query: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQuery\0")).map(|f| mem::transmute(f)),
+            fp_cmd_end_query: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQuery\0")).map(|f| mem::transmute(f)),
+            fp_cmd_begin_conditional_rendering_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdBeginConditionalRenderingEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_end_conditional_rendering_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdEndConditionalRenderingEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_reset_query_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResetQueryPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_write_timestamp: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteTimestamp\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_copy_query_pool_results: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyQueryPoolResults\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_push_constants: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushConstants\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_begin_render_pass: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderPass\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_next_subpass: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_end_render_pass: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_execute_commands: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdExecuteCommands\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_shared_swapchains_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSharedSwapchainsKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_swapchain_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSwapchainKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_swapchain_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySwapchainKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_swapchain_images_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainImagesKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_acquire_next_image_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImageKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_queue_present_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkQueuePresentKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_debug_marker_set_object_name_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDebugMarkerSetObjectNameEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_debug_marker_set_object_tag_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDebugMarkerSetObjectTagEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_debug_marker_begin_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerBeginEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_debug_marker_end_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerEndEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_debug_marker_insert_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerInsertEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_memory_win32_handle_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_process_commands_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdProcessCommandsNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_reserve_space_for_commands_nvx: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdReserveSpaceForCommandsNVX\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_indirect_commands_layout_nvx: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateIndirectCommandsLayoutNVX\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_indirect_commands_layout_nvx: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyIndirectCommandsLayoutNVX\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_object_table_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateObjectTableNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_object_table_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyObjectTableNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_register_objects_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterObjectsNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_unregister_objects_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkUnregisterObjectsNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_generated_commands_properties_nvx: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_push_descriptor_set_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_trim_command_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPool\0"))
+                .map(|f| mem::transmute(f)),
+            fp_trim_command_pool_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPoolKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_memory_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_memory_win32_handle_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetMemoryWin32HandlePropertiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_memory_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_memory_fd_properties_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdPropertiesKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_semaphore_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetSemaphoreWin32HandleKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_import_semaphore_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkImportSemaphoreWin32HandleKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_semaphore_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreFdKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_import_semaphore_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreFdKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_fence_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceWin32HandleKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_import_fence_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceWin32HandleKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_fence_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceFdKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_import_fence_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceFdKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_display_power_control_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDisplayPowerControlEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_register_device_event_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDeviceEventEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_register_display_event_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDisplayEventEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_swapchain_counter_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainCounterEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_device_group_peer_memory_features: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDeviceGroupPeerMemoryFeatures\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_device_group_peer_memory_features_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDeviceGroupPeerMemoryFeaturesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_bind_buffer_memory2: f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2\0"))
+                .map(|f| mem::transmute(f)),
+            fp_bind_buffer_memory2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_bind_image_memory2: f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2\0"))
+                .map(|f| mem::transmute(f)),
+            fp_bind_image_memory2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_device_mask: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_device_mask_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMaskKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_device_group_present_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_device_group_surface_present_modes_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDeviceGroupSurfacePresentModesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_acquire_next_image2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImage2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_dispatch_base: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBase\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_dispatch_base_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBaseKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_present_rectangles_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDevicePresentRectanglesKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_descriptor_update_template: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateDescriptorUpdateTemplate\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_descriptor_update_template_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateDescriptorUpdateTemplateKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_descriptor_update_template: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyDescriptorUpdateTemplate\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_descriptor_update_template_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyDescriptorUpdateTemplateKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_update_descriptor_set_with_template: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkUpdateDescriptorSetWithTemplate\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_update_descriptor_set_with_template_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkUpdateDescriptorSetWithTemplateKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_push_descriptor_set_with_template_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdPushDescriptorSetWithTemplateKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_set_hdr_metadata_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkSetHdrMetadataEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_swapchain_status_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainStatusKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_refresh_cycle_duration_google: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetRefreshCycleDurationGOOGLE\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_past_presentation_timing_google: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPastPresentationTimingGOOGLE\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_set_viewport_w_scaling_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportWScalingNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_discard_rectangle_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDiscardRectangleEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_sample_locations_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetSampleLocationsEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_multisample_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_buffer_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetBufferMemoryRequirements2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_buffer_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetBufferMemoryRequirements2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageMemoryRequirements2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageMemoryRequirements2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_sparse_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageSparseMemoryRequirements2\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_sparse_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageSparseMemoryRequirements2KHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_sampler_ycbcr_conversion: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateSamplerYcbcrConversion\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_sampler_ycbcr_conversion_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateSamplerYcbcrConversionKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_sampler_ycbcr_conversion: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroySamplerYcbcrConversion\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_sampler_ycbcr_conversion_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroySamplerYcbcrConversionKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_device_queue2: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceQueue2\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_validation_cache_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateValidationCacheEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_destroy_validation_cache_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyValidationCacheEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_validation_cache_data_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetValidationCacheDataEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_merge_validation_caches_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkMergeValidationCachesEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_descriptor_set_layout_support: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDescriptorSetLayoutSupport\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_descriptor_set_layout_support_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDescriptorSetLayoutSupportKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_shader_info_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderInfoAMD\0"))
+                .map(|f| mem::transmute(f)),
+            fp_set_local_dimming_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkSetLocalDimmingAMD\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_calibrateable_time_domains_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_calibrated_timestamps_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_memory_host_pointer_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetMemoryHostPointerPropertiesEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_write_buffer_marker_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteBufferMarkerAMD\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_begin_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderPass2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_next_subpass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_end_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass2KHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_android_hardware_buffer_properties_android: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetAndroidHardwareBufferPropertiesANDROID\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_memory_android_hardware_buffer_android: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetMemoryAndroidHardwareBufferANDROID\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indirect_count_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountKHR\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indirect_count_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountAMD\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indexed_indirect_count_khr: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdDrawIndexedIndirectCountKHR\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indexed_indirect_count_amd: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdDrawIndexedIndirectCountAMD\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_set_checkpoint_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCheckpointNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_queue_checkpoint_data_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointDataNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_transform_feedback_buffers_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdBindTransformFeedbackBuffersEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_begin_transform_feedback_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdBeginTransformFeedbackEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_end_transform_feedback_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdEndTransformFeedbackEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_begin_query_indexed_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQueryIndexedEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_end_query_indexed_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQueryIndexedEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_indirect_byte_count_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdDrawIndirectByteCountEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_set_exclusive_scissor_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetExclusiveScissorNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_bind_shading_rate_image_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindShadingRateImageNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_set_viewport_shading_rate_palette_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdSetViewportShadingRatePaletteNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_set_coarse_sample_order_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCoarseSampleOrderNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_mesh_tasks_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_cmd_draw_mesh_tasks_indirect_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdDrawMeshTasksIndirectNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_draw_mesh_tasks_indirect_count_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdDrawMeshTasksIndirectCountNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_compile_deferred_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCompileDeferredNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_create_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateAccelerationStructureNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_destroy_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkDestroyAccelerationStructureNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_acceleration_structure_memory_requirements_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetAccelerationStructureMemoryRequirementsNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_bind_acceleration_structure_memory_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkBindAccelerationStructureMemoryNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_copy_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdCopyAccelerationStructureNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_write_acceleration_structures_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdWriteAccelerationStructuresPropertiesNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_build_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCmdBuildAccelerationStructureNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_cmd_trace_rays_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysNV\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_ray_tracing_shader_group_handles_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetRayTracingShaderGroupHandlesNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_acceleration_structure_handle_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetAccelerationStructureHandleNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_create_ray_tracing_pipelines_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkCreateRayTracingPipelinesNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_drm_format_modifier_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetImageDrmFormatModifierPropertiesEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_buffer_device_address_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_cooperative_matrix_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_image_view_handle_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0"))
+                .map(|f| mem::transmute(f)),
+            fp_get_physical_device_surface_present_modes2_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetPhysicalDeviceSurfacePresentModes2EXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_get_device_group_surface_present_modes2_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkGetDeviceGroupSurfacePresentModes2EXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_acquire_full_screen_exclusive_mode_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkAcquireFullScreenExclusiveModeEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
+            fp_release_full_screen_exclusive_mode_ext: f(CStr::from_bytes_with_nul_unchecked(
+                b"vkReleaseFullScreenExclusiveModeEXT\0",
+            ))
+            .map(|f| mem::transmute(f)),
         })
     }
     pub unsafe fn destroy_device(&self, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_device)(Some(self.handle), p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_device.unwrap())(Some(self.handle), p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_device_queue(&self, queue_family_index: u32, queue_index: u32) -> vk::Queue {
         let mut res = mem::uninitialized();
-        (self.fp1_0.get_device_queue)(Some(self.handle), queue_family_index, queue_index, &mut res);
+        (self.fp_get_device_queue.unwrap())(Some(self.handle), queue_family_index, queue_index, &mut res);
         res
     }
     pub unsafe fn queue_submit(
@@ -962,7 +2901,7 @@ impl Device {
         fence: Option<vk::Fence>,
     ) -> Result<()> {
         let submit_count = p_submits.len() as u32;
-        let err = (self.fp1_0.queue_submit)(Some(queue), submit_count, p_submits.as_ptr(), fence);
+        let err = (self.fp_queue_submit.unwrap())(Some(queue), submit_count, p_submits.as_ptr(), fence);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -970,7 +2909,7 @@ impl Device {
         res
     }
     pub unsafe fn queue_wait_idle(&self, queue: vk::Queue) -> Result<()> {
-        let err = (self.fp1_0.queue_wait_idle)(Some(queue));
+        let err = (self.fp_queue_wait_idle.unwrap())(Some(queue));
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -978,7 +2917,7 @@ impl Device {
         res
     }
     pub unsafe fn device_wait_idle(&self) -> Result<()> {
-        let err = (self.fp1_0.device_wait_idle)(Some(self.handle));
+        let err = (self.fp_device_wait_idle.unwrap())(Some(self.handle));
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -991,7 +2930,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DeviceMemory> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.allocate_memory)(
+        let err = (self.fp_allocate_memory.unwrap())(
             Some(self.handle),
             p_allocate_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1004,7 +2943,7 @@ impl Device {
         res
     }
     pub unsafe fn free_memory(&self, memory: Option<vk::DeviceMemory>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.free_memory)(Some(self.handle), memory, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_free_memory.unwrap())(Some(self.handle), memory, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn map_memory(
         &self,
@@ -1014,7 +2953,7 @@ impl Device {
         flags: vk::MemoryMapFlags,
     ) -> Result<*mut c_void> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.map_memory)(Some(self.handle), Some(memory), offset, size, flags, &mut res);
+        let err = (self.fp_map_memory.unwrap())(Some(self.handle), Some(memory), offset, size, flags, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
@@ -1022,12 +2961,15 @@ impl Device {
         res
     }
     pub unsafe fn unmap_memory(&self, memory: vk::DeviceMemory) {
-        (self.fp1_0.unmap_memory)(Some(self.handle), Some(memory));
+        (self.fp_unmap_memory.unwrap())(Some(self.handle), Some(memory));
     }
     pub unsafe fn flush_mapped_memory_ranges(&self, p_memory_ranges: &[vk::MappedMemoryRange]) -> Result<()> {
         let memory_range_count = p_memory_ranges.len() as u32;
-        let err =
-            (self.fp1_0.flush_mapped_memory_ranges)(Some(self.handle), memory_range_count, p_memory_ranges.as_ptr());
+        let err = (self.fp_flush_mapped_memory_ranges.unwrap())(
+            Some(self.handle),
+            memory_range_count,
+            p_memory_ranges.as_ptr(),
+        );
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1036,7 +2978,7 @@ impl Device {
     }
     pub unsafe fn invalidate_mapped_memory_ranges(&self, p_memory_ranges: &[vk::MappedMemoryRange]) -> Result<()> {
         let memory_range_count = p_memory_ranges.len() as u32;
-        let err = (self.fp1_0.invalidate_mapped_memory_ranges)(
+        let err = (self.fp_invalidate_mapped_memory_ranges.unwrap())(
             Some(self.handle),
             memory_range_count,
             p_memory_ranges.as_ptr(),
@@ -1049,7 +2991,12 @@ impl Device {
     }
     pub unsafe fn get_device_memory_commitment(&self, memory: vk::DeviceMemory) -> vk::DeviceSize {
         let mut res = mem::uninitialized();
-        (self.fp1_0.get_device_memory_commitment)(Some(self.handle), Some(memory), &mut res);
+        (self.fp_get_device_memory_commitment.unwrap())(Some(self.handle), Some(memory), &mut res);
+        res
+    }
+    pub unsafe fn get_buffer_memory_requirements(&self, buffer: vk::Buffer) -> vk::MemoryRequirements {
+        let mut res = mem::uninitialized();
+        (self.fp_get_buffer_memory_requirements.unwrap())(Some(self.handle), Some(buffer), &mut res);
         res
     }
     pub unsafe fn bind_buffer_memory(
@@ -1058,11 +3005,16 @@ impl Device {
         memory: vk::DeviceMemory,
         memory_offset: vk::DeviceSize,
     ) -> Result<()> {
-        let err = (self.fp1_0.bind_buffer_memory)(Some(self.handle), Some(buffer), Some(memory), memory_offset);
+        let err = (self.fp_bind_buffer_memory.unwrap())(Some(self.handle), Some(buffer), Some(memory), memory_offset);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
+        res
+    }
+    pub unsafe fn get_image_memory_requirements(&self, image: vk::Image) -> vk::MemoryRequirements {
+        let mut res = mem::uninitialized();
+        (self.fp_get_image_memory_requirements.unwrap())(Some(self.handle), Some(image), &mut res);
         res
     }
     pub unsafe fn bind_image_memory(
@@ -1071,21 +3023,11 @@ impl Device {
         memory: vk::DeviceMemory,
         memory_offset: vk::DeviceSize,
     ) -> Result<()> {
-        let err = (self.fp1_0.bind_image_memory)(Some(self.handle), Some(image), Some(memory), memory_offset);
+        let err = (self.fp_bind_image_memory.unwrap())(Some(self.handle), Some(image), Some(memory), memory_offset);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
-        res
-    }
-    pub unsafe fn get_buffer_memory_requirements(&self, buffer: vk::Buffer) -> vk::MemoryRequirements {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_buffer_memory_requirements)(Some(self.handle), Some(buffer), &mut res);
-        res
-    }
-    pub unsafe fn get_image_memory_requirements(&self, image: vk::Image) -> vk::MemoryRequirements {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_image_memory_requirements)(Some(self.handle), Some(image), &mut res);
         res
     }
     pub unsafe fn get_image_sparse_memory_requirements_to_vec(
@@ -1093,9 +3035,19 @@ impl Device {
         image: vk::Image,
     ) -> Vec<vk::SparseImageMemoryRequirements> {
         let mut len = mem::uninitialized();
-        (self.fp1_0.get_image_sparse_memory_requirements)(Some(self.handle), Some(image), &mut len, ptr::null_mut());
+        (self.fp_get_image_sparse_memory_requirements.unwrap())(
+            Some(self.handle),
+            Some(image),
+            &mut len,
+            ptr::null_mut(),
+        );
         let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_image_sparse_memory_requirements)(Some(self.handle), Some(image), &mut len, v.as_mut_ptr());
+        (self.fp_get_image_sparse_memory_requirements.unwrap())(
+            Some(self.handle),
+            Some(image),
+            &mut len,
+            v.as_mut_ptr(),
+        );
         v.set_len(len as usize);
         let res = v;
         res
@@ -1107,7 +3059,7 @@ impl Device {
         fence: Option<vk::Fence>,
     ) -> Result<()> {
         let bind_info_count = p_bind_info.len() as u32;
-        let err = (self.fp1_0.queue_bind_sparse)(Some(queue), bind_info_count, p_bind_info.as_ptr(), fence);
+        let err = (self.fp_queue_bind_sparse.unwrap())(Some(queue), bind_info_count, p_bind_info.as_ptr(), fence);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1120,7 +3072,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Fence> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_fence)(
+        let err = (self.fp_create_fence.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1133,11 +3085,11 @@ impl Device {
         res
     }
     pub unsafe fn destroy_fence(&self, fence: Option<vk::Fence>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_fence)(Some(self.handle), fence, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_fence.unwrap())(Some(self.handle), fence, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn reset_fences(&self, p_fences: &[vk::Fence]) -> Result<()> {
         let fence_count = p_fences.len() as u32;
-        let err = (self.fp1_0.reset_fences)(Some(self.handle), fence_count, p_fences.as_ptr());
+        let err = (self.fp_reset_fences.unwrap())(Some(self.handle), fence_count, p_fences.as_ptr());
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1145,7 +3097,7 @@ impl Device {
         res
     }
     pub unsafe fn get_fence_status(&self, fence: vk::Fence) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_fence_status)(Some(self.handle), Some(fence));
+        let err = (self.fp_get_fence_status.unwrap())(Some(self.handle), Some(fence));
         let res = match err {
             vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
             _ => Err(err),
@@ -1154,7 +3106,7 @@ impl Device {
     }
     pub unsafe fn wait_for_fences(&self, p_fences: &[vk::Fence], wait_all: bool, timeout: u64) -> Result<vk::Result> {
         let fence_count = p_fences.len() as u32;
-        let err = (self.fp1_0.wait_for_fences)(
+        let err = (self.fp_wait_for_fences.unwrap())(
             Some(self.handle),
             fence_count,
             p_fences.as_ptr(),
@@ -1173,7 +3125,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Semaphore> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_semaphore)(
+        let err = (self.fp_create_semaphore.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1190,7 +3142,7 @@ impl Device {
         semaphore: Option<vk::Semaphore>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_semaphore)(Some(self.handle), semaphore, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_semaphore.unwrap())(Some(self.handle), semaphore, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_event(
         &self,
@@ -1198,7 +3150,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Event> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_event)(
+        let err = (self.fp_create_event.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1211,10 +3163,10 @@ impl Device {
         res
     }
     pub unsafe fn destroy_event(&self, event: Option<vk::Event>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_event)(Some(self.handle), event, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_event.unwrap())(Some(self.handle), event, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_event_status(&self, event: vk::Event) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_event_status)(Some(self.handle), Some(event));
+        let err = (self.fp_get_event_status.unwrap())(Some(self.handle), Some(event));
         let res = match err {
             vk::Result::EVENT_SET | vk::Result::EVENT_RESET => Ok(err),
             _ => Err(err),
@@ -1222,7 +3174,7 @@ impl Device {
         res
     }
     pub unsafe fn set_event(&self, event: vk::Event) -> Result<()> {
-        let err = (self.fp1_0.set_event)(Some(self.handle), Some(event));
+        let err = (self.fp_set_event.unwrap())(Some(self.handle), Some(event));
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1230,7 +3182,7 @@ impl Device {
         res
     }
     pub unsafe fn reset_event(&self, event: vk::Event) -> Result<()> {
-        let err = (self.fp1_0.reset_event)(Some(self.handle), Some(event));
+        let err = (self.fp_reset_event.unwrap())(Some(self.handle), Some(event));
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1243,7 +3195,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::QueryPool> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_query_pool)(
+        let err = (self.fp_create_query_pool.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1260,7 +3212,7 @@ impl Device {
         query_pool: Option<vk::QueryPool>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_query_pool)(Some(self.handle), query_pool, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_query_pool.unwrap())(Some(self.handle), query_pool, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_query_pool_results(
         &self,
@@ -1272,7 +3224,7 @@ impl Device {
         stride: vk::DeviceSize,
         flags: vk::QueryResultFlags,
     ) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_query_pool_results)(
+        let err = (self.fp_get_query_pool_results.unwrap())(
             Some(self.handle),
             Some(query_pool),
             first_query,
@@ -1288,13 +3240,16 @@ impl Device {
         };
         res
     }
+    pub unsafe fn reset_query_pool_ext(&self, query_pool: vk::QueryPool, first_query: u32, query_count: u32) {
+        (self.fp_reset_query_pool_ext.unwrap())(Some(self.handle), Some(query_pool), first_query, query_count);
+    }
     pub unsafe fn create_buffer(
         &self,
         p_create_info: &vk::BufferCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Buffer> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_buffer)(
+        let err = (self.fp_create_buffer.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1307,7 +3262,7 @@ impl Device {
         res
     }
     pub unsafe fn destroy_buffer(&self, buffer: Option<vk::Buffer>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_buffer)(Some(self.handle), buffer, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_buffer.unwrap())(Some(self.handle), buffer, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_buffer_view(
         &self,
@@ -1315,7 +3270,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::BufferView> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_buffer_view)(
+        let err = (self.fp_create_buffer_view.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1332,7 +3287,7 @@ impl Device {
         buffer_view: Option<vk::BufferView>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_buffer_view)(Some(self.handle), buffer_view, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_buffer_view.unwrap())(Some(self.handle), buffer_view, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_image(
         &self,
@@ -1340,7 +3295,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Image> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_image)(
+        let err = (self.fp_create_image.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1353,7 +3308,7 @@ impl Device {
         res
     }
     pub unsafe fn destroy_image(&self, image: Option<vk::Image>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_image)(Some(self.handle), image, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_image.unwrap())(Some(self.handle), image, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_image_subresource_layout(
         &self,
@@ -1361,7 +3316,7 @@ impl Device {
         p_subresource: &vk::ImageSubresource,
     ) -> vk::SubresourceLayout {
         let mut res = mem::uninitialized();
-        (self.fp1_0.get_image_subresource_layout)(Some(self.handle), Some(image), p_subresource, &mut res);
+        (self.fp_get_image_subresource_layout.unwrap())(Some(self.handle), Some(image), p_subresource, &mut res);
         res
     }
     pub unsafe fn create_image_view(
@@ -1370,7 +3325,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::ImageView> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_image_view)(
+        let err = (self.fp_create_image_view.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1387,7 +3342,7 @@ impl Device {
         image_view: Option<vk::ImageView>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_image_view)(Some(self.handle), image_view, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_image_view.unwrap())(Some(self.handle), image_view, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_shader_module(
         &self,
@@ -1395,7 +3350,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::ShaderModule> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_shader_module)(
+        let err = (self.fp_create_shader_module.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1412,7 +3367,11 @@ impl Device {
         shader_module: Option<vk::ShaderModule>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_shader_module)(Some(self.handle), shader_module, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_shader_module.unwrap())(
+            Some(self.handle),
+            shader_module,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
     }
     pub unsafe fn create_pipeline_cache(
         &self,
@@ -1420,7 +3379,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::PipelineCache> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_pipeline_cache)(
+        let err = (self.fp_create_pipeline_cache.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1437,7 +3396,7 @@ impl Device {
         pipeline_cache: Option<vk::PipelineCache>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_pipeline_cache)(
+        (self.fp_destroy_pipeline_cache.unwrap())(
             Some(self.handle),
             pipeline_cache,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1449,7 +3408,8 @@ impl Device {
         p_data_size: *mut usize,
         p_data: *mut c_void,
     ) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_pipeline_cache_data)(Some(self.handle), Some(pipeline_cache), p_data_size, p_data);
+        let err =
+            (self.fp_get_pipeline_cache_data.unwrap())(Some(self.handle), Some(pipeline_cache), p_data_size, p_data);
         let res = match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
@@ -1462,7 +3422,7 @@ impl Device {
         p_src_caches: &[vk::PipelineCache],
     ) -> Result<()> {
         let src_cache_count = p_src_caches.len() as u32;
-        let err = (self.fp1_0.merge_pipeline_caches)(
+        let err = (self.fp_merge_pipeline_caches.unwrap())(
             Some(self.handle),
             Some(dst_cache),
             src_cache_count,
@@ -1482,7 +3442,7 @@ impl Device {
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
         let create_info_count = p_create_infos.len() as u32;
-        let v_err = (self.fp1_0.create_graphics_pipelines)(
+        let v_err = (self.fp_create_graphics_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1505,7 +3465,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         let mut v = Vec::with_capacity(create_info_count as usize);
         v.set_len(create_info_count as usize);
-        let v_err = (self.fp1_0.create_graphics_pipelines)(
+        let v_err = (self.fp_create_graphics_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1528,7 +3488,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.create_graphics_pipelines)(
+        let v_err = (self.fp_create_graphics_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1551,7 +3511,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.create_graphics_pipelines)(
+        let v_err = (self.fp_create_graphics_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1573,7 +3533,7 @@ impl Device {
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
         let create_info_count = p_create_infos.len() as u32;
-        let v_err = (self.fp1_0.create_compute_pipelines)(
+        let v_err = (self.fp_create_compute_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1596,7 +3556,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         let mut v = Vec::with_capacity(create_info_count as usize);
         v.set_len(create_info_count as usize);
-        let v_err = (self.fp1_0.create_compute_pipelines)(
+        let v_err = (self.fp_create_compute_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1619,7 +3579,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.create_compute_pipelines)(
+        let v_err = (self.fp_create_compute_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1642,7 +3602,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.create_compute_pipelines)(
+        let v_err = (self.fp_create_compute_pipelines.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -1661,7 +3621,7 @@ impl Device {
         pipeline: Option<vk::Pipeline>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_pipeline)(Some(self.handle), pipeline, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_pipeline.unwrap())(Some(self.handle), pipeline, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_pipeline_layout(
         &self,
@@ -1669,7 +3629,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::PipelineLayout> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_pipeline_layout)(
+        let err = (self.fp_create_pipeline_layout.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1686,7 +3646,7 @@ impl Device {
         pipeline_layout: Option<vk::PipelineLayout>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_pipeline_layout)(
+        (self.fp_destroy_pipeline_layout.unwrap())(
             Some(self.handle),
             pipeline_layout,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1698,7 +3658,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Sampler> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_sampler)(
+        let err = (self.fp_create_sampler.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1711,7 +3671,7 @@ impl Device {
         res
     }
     pub unsafe fn destroy_sampler(&self, sampler: Option<vk::Sampler>, p_allocator: Option<&vk::AllocationCallbacks>) {
-        (self.fp1_0.destroy_sampler)(Some(self.handle), sampler, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_sampler.unwrap())(Some(self.handle), sampler, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_descriptor_set_layout(
         &self,
@@ -1719,7 +3679,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DescriptorSetLayout> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_descriptor_set_layout)(
+        let err = (self.fp_create_descriptor_set_layout.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1736,7 +3696,7 @@ impl Device {
         descriptor_set_layout: Option<vk::DescriptorSetLayout>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_descriptor_set_layout)(
+        (self.fp_destroy_descriptor_set_layout.unwrap())(
             Some(self.handle),
             descriptor_set_layout,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1748,7 +3708,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DescriptorPool> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_descriptor_pool)(
+        let err = (self.fp_create_descriptor_pool.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1765,7 +3725,7 @@ impl Device {
         descriptor_pool: Option<vk::DescriptorPool>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_descriptor_pool)(
+        (self.fp_destroy_descriptor_pool.unwrap())(
             Some(self.handle),
             descriptor_pool,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1776,7 +3736,7 @@ impl Device {
         descriptor_pool: vk::DescriptorPool,
         flags: vk::DescriptorPoolResetFlags,
     ) -> Result<()> {
-        let err = (self.fp1_0.reset_descriptor_pool)(Some(self.handle), Some(descriptor_pool), flags);
+        let err = (self.fp_reset_descriptor_pool.unwrap())(Some(self.handle), Some(descriptor_pool), flags);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1788,7 +3748,7 @@ impl Device {
         p_allocate_info: &vk::DescriptorSetAllocateInfo,
         p_descriptor_sets: *mut vk::DescriptorSet,
     ) -> Result<()> {
-        let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, p_descriptor_sets);
+        let v_err = (self.fp_allocate_descriptor_sets.unwrap())(Some(self.handle), p_allocate_info, p_descriptor_sets);
         let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
@@ -1801,7 +3761,7 @@ impl Device {
     ) -> Result<Vec<vk::DescriptorSet>> {
         let mut v = Vec::with_capacity(p_allocate_info.descriptor_set_count as usize);
         v.set_len(p_allocate_info.descriptor_set_count as usize);
-        let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let v_err = (self.fp_allocate_descriptor_sets.unwrap())(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -1814,7 +3774,7 @@ impl Device {
     ) -> Result<A> {
         assert_eq!(p_allocate_info.descriptor_set_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let v_err = (self.fp_allocate_descriptor_sets.unwrap())(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -1827,7 +3787,7 @@ impl Device {
     ) -> Result<vk::DescriptorSet> {
         assert_eq!(p_allocate_info.descriptor_set_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.allocate_descriptor_sets)(Some(self.handle), p_allocate_info, &mut v);
+        let v_err = (self.fp_allocate_descriptor_sets.unwrap())(Some(self.handle), p_allocate_info, &mut v);
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -1840,7 +3800,7 @@ impl Device {
         p_descriptor_sets: &[vk::DescriptorSet],
     ) -> Result<()> {
         let descriptor_set_count = p_descriptor_sets.len() as u32;
-        let err = (self.fp1_0.free_descriptor_sets)(
+        let err = (self.fp_free_descriptor_sets.unwrap())(
             Some(self.handle),
             Some(descriptor_pool),
             descriptor_set_count,
@@ -1859,7 +3819,7 @@ impl Device {
     ) {
         let descriptor_write_count = p_descriptor_writes.len() as u32;
         let descriptor_copy_count = p_descriptor_copies.len() as u32;
-        (self.fp1_0.update_descriptor_sets)(
+        (self.fp_update_descriptor_sets.unwrap())(
             Some(self.handle),
             descriptor_write_count,
             p_descriptor_writes.as_ptr(),
@@ -1873,7 +3833,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Framebuffer> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_framebuffer)(
+        let err = (self.fp_create_framebuffer.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1890,7 +3850,7 @@ impl Device {
         framebuffer: Option<vk::Framebuffer>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_framebuffer)(Some(self.handle), framebuffer, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_framebuffer.unwrap())(Some(self.handle), framebuffer, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn create_render_pass(
         &self,
@@ -1898,7 +3858,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::RenderPass> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_render_pass)(
+        let err = (self.fp_create_render_pass.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1915,11 +3875,11 @@ impl Device {
         render_pass: Option<vk::RenderPass>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_render_pass)(Some(self.handle), render_pass, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_render_pass.unwrap())(Some(self.handle), render_pass, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_render_area_granularity(&self, render_pass: vk::RenderPass) -> vk::Extent2D {
         let mut res = mem::uninitialized();
-        (self.fp1_0.get_render_area_granularity)(Some(self.handle), Some(render_pass), &mut res);
+        (self.fp_get_render_area_granularity.unwrap())(Some(self.handle), Some(render_pass), &mut res);
         res
     }
     pub unsafe fn create_command_pool(
@@ -1928,7 +3888,7 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::CommandPool> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_command_pool)(
+        let err = (self.fp_create_command_pool.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -1945,14 +3905,18 @@ impl Device {
         command_pool: Option<vk::CommandPool>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_command_pool)(Some(self.handle), command_pool, p_allocator.map_or(ptr::null(), |r| r));
+        (self.fp_destroy_command_pool.unwrap())(
+            Some(self.handle),
+            command_pool,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
     }
     pub unsafe fn reset_command_pool(
         &self,
         command_pool: vk::CommandPool,
         flags: vk::CommandPoolResetFlags,
     ) -> Result<()> {
-        let err = (self.fp1_0.reset_command_pool)(Some(self.handle), Some(command_pool), flags);
+        let err = (self.fp_reset_command_pool.unwrap())(Some(self.handle), Some(command_pool), flags);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -1964,7 +3928,7 @@ impl Device {
         p_allocate_info: &vk::CommandBufferAllocateInfo,
         p_command_buffers: *mut vk::CommandBuffer,
     ) -> Result<()> {
-        let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, p_command_buffers);
+        let v_err = (self.fp_allocate_command_buffers.unwrap())(Some(self.handle), p_allocate_info, p_command_buffers);
         let res = match v_err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(v_err),
@@ -1977,7 +3941,7 @@ impl Device {
     ) -> Result<Vec<vk::CommandBuffer>> {
         let mut v = Vec::with_capacity(p_allocate_info.command_buffer_count as usize);
         v.set_len(p_allocate_info.command_buffer_count as usize);
-        let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let v_err = (self.fp_allocate_command_buffers.unwrap())(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -1990,7 +3954,7 @@ impl Device {
     ) -> Result<A> {
         assert_eq!(p_allocate_info.command_buffer_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let v_err = (self.fp_allocate_command_buffers.unwrap())(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -2003,7 +3967,7 @@ impl Device {
     ) -> Result<vk::CommandBuffer> {
         assert_eq!(p_allocate_info.command_buffer_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.allocate_command_buffers)(Some(self.handle), p_allocate_info, &mut v);
+        let v_err = (self.fp_allocate_command_buffers.unwrap())(Some(self.handle), p_allocate_info, &mut v);
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
@@ -2012,7 +3976,7 @@ impl Device {
     }
     pub unsafe fn free_command_buffers(&self, command_pool: vk::CommandPool, p_command_buffers: &[vk::CommandBuffer]) {
         let command_buffer_count = p_command_buffers.len() as u32;
-        (self.fp1_0.free_command_buffers)(
+        (self.fp_free_command_buffers.unwrap())(
             Some(self.handle),
             Some(command_pool),
             command_buffer_count,
@@ -2024,7 +3988,7 @@ impl Device {
         command_buffer: vk::CommandBuffer,
         p_begin_info: &vk::CommandBufferBeginInfo,
     ) -> Result<()> {
-        let err = (self.fp1_0.begin_command_buffer)(Some(command_buffer), p_begin_info);
+        let err = (self.fp_begin_command_buffer.unwrap())(Some(command_buffer), p_begin_info);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -2032,7 +3996,7 @@ impl Device {
         res
     }
     pub unsafe fn end_command_buffer(&self, command_buffer: vk::CommandBuffer) -> Result<()> {
-        let err = (self.fp1_0.end_command_buffer)(Some(command_buffer));
+        let err = (self.fp_end_command_buffer.unwrap())(Some(command_buffer));
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -2044,7 +4008,7 @@ impl Device {
         command_buffer: vk::CommandBuffer,
         flags: vk::CommandBufferResetFlags,
     ) -> Result<()> {
-        let err = (self.fp1_0.reset_command_buffer)(Some(command_buffer), flags);
+        let err = (self.fp_reset_command_buffer.unwrap())(Some(command_buffer), flags);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -2057,7 +4021,7 @@ impl Device {
         pipeline_bind_point: vk::PipelineBindPoint,
         pipeline: vk::Pipeline,
     ) {
-        (self.fp1_0.cmd_bind_pipeline)(Some(command_buffer), pipeline_bind_point, Some(pipeline));
+        (self.fp_cmd_bind_pipeline.unwrap())(Some(command_buffer), pipeline_bind_point, Some(pipeline));
     }
     pub unsafe fn cmd_set_viewport(
         &self,
@@ -2066,7 +4030,7 @@ impl Device {
         p_viewports: &[vk::Viewport],
     ) {
         let viewport_count = p_viewports.len() as u32;
-        (self.fp1_0.cmd_set_viewport)(
+        (self.fp_cmd_set_viewport.unwrap())(
             Some(command_buffer),
             first_viewport,
             viewport_count,
@@ -2080,10 +4044,10 @@ impl Device {
         p_scissors: &[vk::Rect2D],
     ) {
         let scissor_count = p_scissors.len() as u32;
-        (self.fp1_0.cmd_set_scissor)(Some(command_buffer), first_scissor, scissor_count, p_scissors.as_ptr());
+        (self.fp_cmd_set_scissor.unwrap())(Some(command_buffer), first_scissor, scissor_count, p_scissors.as_ptr());
     }
     pub unsafe fn cmd_set_line_width(&self, command_buffer: vk::CommandBuffer, line_width: f32) {
-        (self.fp1_0.cmd_set_line_width)(Some(command_buffer), line_width);
+        (self.fp_cmd_set_line_width.unwrap())(Some(command_buffer), line_width);
     }
     pub unsafe fn cmd_set_depth_bias(
         &self,
@@ -2092,7 +4056,7 @@ impl Device {
         depth_bias_clamp: f32,
         depth_bias_slope_factor: f32,
     ) {
-        (self.fp1_0.cmd_set_depth_bias)(
+        (self.fp_cmd_set_depth_bias.unwrap())(
             Some(command_buffer),
             depth_bias_constant_factor,
             depth_bias_clamp,
@@ -2100,7 +4064,7 @@ impl Device {
         );
     }
     pub unsafe fn cmd_set_blend_constants(&self, command_buffer: vk::CommandBuffer, blend_constants: [f32; 4]) {
-        (self.fp1_0.cmd_set_blend_constants)(Some(command_buffer), blend_constants);
+        (self.fp_cmd_set_blend_constants.unwrap())(Some(command_buffer), blend_constants);
     }
     pub unsafe fn cmd_set_depth_bounds(
         &self,
@@ -2108,7 +4072,7 @@ impl Device {
         min_depth_bounds: f32,
         max_depth_bounds: f32,
     ) {
-        (self.fp1_0.cmd_set_depth_bounds)(Some(command_buffer), min_depth_bounds, max_depth_bounds);
+        (self.fp_cmd_set_depth_bounds.unwrap())(Some(command_buffer), min_depth_bounds, max_depth_bounds);
     }
     pub unsafe fn cmd_set_stencil_compare_mask(
         &self,
@@ -2116,7 +4080,7 @@ impl Device {
         face_mask: vk::StencilFaceFlags,
         compare_mask: u32,
     ) {
-        (self.fp1_0.cmd_set_stencil_compare_mask)(Some(command_buffer), face_mask, compare_mask);
+        (self.fp_cmd_set_stencil_compare_mask.unwrap())(Some(command_buffer), face_mask, compare_mask);
     }
     pub unsafe fn cmd_set_stencil_write_mask(
         &self,
@@ -2124,7 +4088,7 @@ impl Device {
         face_mask: vk::StencilFaceFlags,
         write_mask: u32,
     ) {
-        (self.fp1_0.cmd_set_stencil_write_mask)(Some(command_buffer), face_mask, write_mask);
+        (self.fp_cmd_set_stencil_write_mask.unwrap())(Some(command_buffer), face_mask, write_mask);
     }
     pub unsafe fn cmd_set_stencil_reference(
         &self,
@@ -2132,7 +4096,7 @@ impl Device {
         face_mask: vk::StencilFaceFlags,
         reference: u32,
     ) {
-        (self.fp1_0.cmd_set_stencil_reference)(Some(command_buffer), face_mask, reference);
+        (self.fp_cmd_set_stencil_reference.unwrap())(Some(command_buffer), face_mask, reference);
     }
     pub unsafe fn cmd_bind_descriptor_sets(
         &self,
@@ -2145,7 +4109,7 @@ impl Device {
     ) {
         let descriptor_set_count = p_descriptor_sets.len() as u32;
         let dynamic_offset_count = p_dynamic_offsets.len() as u32;
-        (self.fp1_0.cmd_bind_descriptor_sets)(
+        (self.fp_cmd_bind_descriptor_sets.unwrap())(
             Some(command_buffer),
             pipeline_bind_point,
             Some(layout),
@@ -2163,7 +4127,7 @@ impl Device {
         offset: vk::DeviceSize,
         index_type: vk::IndexType,
     ) {
-        (self.fp1_0.cmd_bind_index_buffer)(Some(command_buffer), Some(buffer), offset, index_type);
+        (self.fp_cmd_bind_index_buffer.unwrap())(Some(command_buffer), Some(buffer), offset, index_type);
     }
     pub unsafe fn cmd_bind_vertex_buffers(
         &self,
@@ -2174,7 +4138,7 @@ impl Device {
     ) {
         let binding_count = p_buffers.len() as u32;
         assert_eq!(binding_count, p_offsets.len() as u32);
-        (self.fp1_0.cmd_bind_vertex_buffers)(
+        (self.fp_cmd_bind_vertex_buffers.unwrap())(
             Some(command_buffer),
             first_binding,
             binding_count,
@@ -2190,7 +4154,7 @@ impl Device {
         first_vertex: u32,
         first_instance: u32,
     ) {
-        (self.fp1_0.cmd_draw)(
+        (self.fp_cmd_draw.unwrap())(
             Some(command_buffer),
             vertex_count,
             instance_count,
@@ -2207,7 +4171,7 @@ impl Device {
         vertex_offset: i32,
         first_instance: u32,
     ) {
-        (self.fp1_0.cmd_draw_indexed)(
+        (self.fp_cmd_draw_indexed.unwrap())(
             Some(command_buffer),
             index_count,
             instance_count,
@@ -2224,7 +4188,7 @@ impl Device {
         draw_count: u32,
         stride: u32,
     ) {
-        (self.fp1_0.cmd_draw_indirect)(Some(command_buffer), Some(buffer), offset, draw_count, stride);
+        (self.fp_cmd_draw_indirect.unwrap())(Some(command_buffer), Some(buffer), offset, draw_count, stride);
     }
     pub unsafe fn cmd_draw_indexed_indirect(
         &self,
@@ -2234,7 +4198,7 @@ impl Device {
         draw_count: u32,
         stride: u32,
     ) {
-        (self.fp1_0.cmd_draw_indexed_indirect)(Some(command_buffer), Some(buffer), offset, draw_count, stride);
+        (self.fp_cmd_draw_indexed_indirect.unwrap())(Some(command_buffer), Some(buffer), offset, draw_count, stride);
     }
     pub unsafe fn cmd_dispatch(
         &self,
@@ -2243,7 +4207,7 @@ impl Device {
         group_count_y: u32,
         group_count_z: u32,
     ) {
-        (self.fp1_0.cmd_dispatch)(Some(command_buffer), group_count_x, group_count_y, group_count_z);
+        (self.fp_cmd_dispatch.unwrap())(Some(command_buffer), group_count_x, group_count_y, group_count_z);
     }
     pub unsafe fn cmd_dispatch_indirect(
         &self,
@@ -2251,7 +4215,7 @@ impl Device {
         buffer: vk::Buffer,
         offset: vk::DeviceSize,
     ) {
-        (self.fp1_0.cmd_dispatch_indirect)(Some(command_buffer), Some(buffer), offset);
+        (self.fp_cmd_dispatch_indirect.unwrap())(Some(command_buffer), Some(buffer), offset);
     }
     pub unsafe fn cmd_copy_buffer(
         &self,
@@ -2261,7 +4225,7 @@ impl Device {
         p_regions: &[vk::BufferCopy],
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_copy_buffer)(
+        (self.fp_cmd_copy_buffer.unwrap())(
             Some(command_buffer),
             Some(src_buffer),
             Some(dst_buffer),
@@ -2279,7 +4243,7 @@ impl Device {
         p_regions: &[vk::ImageCopy],
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_copy_image)(
+        (self.fp_cmd_copy_image.unwrap())(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
@@ -2300,7 +4264,7 @@ impl Device {
         filter: vk::Filter,
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_blit_image)(
+        (self.fp_cmd_blit_image.unwrap())(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
@@ -2320,7 +4284,7 @@ impl Device {
         p_regions: &[vk::BufferImageCopy],
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_copy_buffer_to_image)(
+        (self.fp_cmd_copy_buffer_to_image.unwrap())(
             Some(command_buffer),
             Some(src_buffer),
             Some(dst_image),
@@ -2338,7 +4302,7 @@ impl Device {
         p_regions: &[vk::BufferImageCopy],
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_copy_image_to_buffer)(
+        (self.fp_cmd_copy_image_to_buffer.unwrap())(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
@@ -2355,7 +4319,7 @@ impl Device {
         data_size: vk::DeviceSize,
         p_data: *const c_void,
     ) {
-        (self.fp1_0.cmd_update_buffer)(Some(command_buffer), Some(dst_buffer), dst_offset, data_size, p_data);
+        (self.fp_cmd_update_buffer.unwrap())(Some(command_buffer), Some(dst_buffer), dst_offset, data_size, p_data);
     }
     pub unsafe fn cmd_fill_buffer(
         &self,
@@ -2365,7 +4329,7 @@ impl Device {
         size: vk::DeviceSize,
         data: u32,
     ) {
-        (self.fp1_0.cmd_fill_buffer)(Some(command_buffer), Some(dst_buffer), dst_offset, size, data);
+        (self.fp_cmd_fill_buffer.unwrap())(Some(command_buffer), Some(dst_buffer), dst_offset, size, data);
     }
     pub unsafe fn cmd_clear_color_image(
         &self,
@@ -2376,7 +4340,7 @@ impl Device {
         p_ranges: &[vk::ImageSubresourceRange],
     ) {
         let range_count = p_ranges.len() as u32;
-        (self.fp1_0.cmd_clear_color_image)(
+        (self.fp_cmd_clear_color_image.unwrap())(
             Some(command_buffer),
             Some(image),
             image_layout,
@@ -2394,7 +4358,7 @@ impl Device {
         p_ranges: &[vk::ImageSubresourceRange],
     ) {
         let range_count = p_ranges.len() as u32;
-        (self.fp1_0.cmd_clear_depth_stencil_image)(
+        (self.fp_cmd_clear_depth_stencil_image.unwrap())(
             Some(command_buffer),
             Some(image),
             image_layout,
@@ -2411,7 +4375,7 @@ impl Device {
     ) {
         let attachment_count = p_attachments.len() as u32;
         let rect_count = p_rects.len() as u32;
-        (self.fp1_0.cmd_clear_attachments)(
+        (self.fp_cmd_clear_attachments.unwrap())(
             Some(command_buffer),
             attachment_count,
             p_attachments.as_ptr(),
@@ -2429,7 +4393,7 @@ impl Device {
         p_regions: &[vk::ImageResolve],
     ) {
         let region_count = p_regions.len() as u32;
-        (self.fp1_0.cmd_resolve_image)(
+        (self.fp_cmd_resolve_image.unwrap())(
             Some(command_buffer),
             Some(src_image),
             src_image_layout,
@@ -2445,7 +4409,7 @@ impl Device {
         event: vk::Event,
         stage_mask: vk::PipelineStageFlags,
     ) {
-        (self.fp1_0.cmd_set_event)(Some(command_buffer), Some(event), stage_mask);
+        (self.fp_cmd_set_event.unwrap())(Some(command_buffer), Some(event), stage_mask);
     }
     pub unsafe fn cmd_reset_event(
         &self,
@@ -2453,7 +4417,7 @@ impl Device {
         event: vk::Event,
         stage_mask: vk::PipelineStageFlags,
     ) {
-        (self.fp1_0.cmd_reset_event)(Some(command_buffer), Some(event), stage_mask);
+        (self.fp_cmd_reset_event.unwrap())(Some(command_buffer), Some(event), stage_mask);
     }
     pub unsafe fn cmd_wait_events(
         &self,
@@ -2469,7 +4433,7 @@ impl Device {
         let memory_barrier_count = p_memory_barriers.len() as u32;
         let buffer_memory_barrier_count = p_buffer_memory_barriers.len() as u32;
         let image_memory_barrier_count = p_image_memory_barriers.len() as u32;
-        (self.fp1_0.cmd_wait_events)(
+        (self.fp_cmd_wait_events.unwrap())(
             Some(command_buffer),
             event_count,
             p_events.as_ptr(),
@@ -2496,7 +4460,7 @@ impl Device {
         let memory_barrier_count = p_memory_barriers.len() as u32;
         let buffer_memory_barrier_count = p_buffer_memory_barriers.len() as u32;
         let image_memory_barrier_count = p_image_memory_barriers.len() as u32;
-        (self.fp1_0.cmd_pipeline_barrier)(
+        (self.fp_cmd_pipeline_barrier.unwrap())(
             Some(command_buffer),
             src_stage_mask,
             dst_stage_mask,
@@ -2516,10 +4480,20 @@ impl Device {
         query: u32,
         flags: vk::QueryControlFlags,
     ) {
-        (self.fp1_0.cmd_begin_query)(Some(command_buffer), Some(query_pool), query, flags);
+        (self.fp_cmd_begin_query.unwrap())(Some(command_buffer), Some(query_pool), query, flags);
     }
     pub unsafe fn cmd_end_query(&self, command_buffer: vk::CommandBuffer, query_pool: vk::QueryPool, query: u32) {
-        (self.fp1_0.cmd_end_query)(Some(command_buffer), Some(query_pool), query);
+        (self.fp_cmd_end_query.unwrap())(Some(command_buffer), Some(query_pool), query);
+    }
+    pub unsafe fn cmd_begin_conditional_rendering_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_conditional_rendering_begin: &vk::ConditionalRenderingBeginInfoEXT,
+    ) {
+        (self.fp_cmd_begin_conditional_rendering_ext.unwrap())(Some(command_buffer), p_conditional_rendering_begin);
+    }
+    pub unsafe fn cmd_end_conditional_rendering_ext(&self, command_buffer: vk::CommandBuffer) {
+        (self.fp_cmd_end_conditional_rendering_ext.unwrap())(Some(command_buffer));
     }
     pub unsafe fn cmd_reset_query_pool(
         &self,
@@ -2528,7 +4502,7 @@ impl Device {
         first_query: u32,
         query_count: u32,
     ) {
-        (self.fp1_0.cmd_reset_query_pool)(Some(command_buffer), Some(query_pool), first_query, query_count);
+        (self.fp_cmd_reset_query_pool.unwrap())(Some(command_buffer), Some(query_pool), first_query, query_count);
     }
     pub unsafe fn cmd_write_timestamp(
         &self,
@@ -2537,7 +4511,7 @@ impl Device {
         query_pool: vk::QueryPool,
         query: u32,
     ) {
-        (self.fp1_0.cmd_write_timestamp)(Some(command_buffer), pipeline_stage, Some(query_pool), query);
+        (self.fp_cmd_write_timestamp.unwrap())(Some(command_buffer), pipeline_stage, Some(query_pool), query);
     }
     pub unsafe fn cmd_copy_query_pool_results(
         &self,
@@ -2550,7 +4524,7 @@ impl Device {
         stride: vk::DeviceSize,
         flags: vk::QueryResultFlags,
     ) {
-        (self.fp1_0.cmd_copy_query_pool_results)(
+        (self.fp_cmd_copy_query_pool_results.unwrap())(
             Some(command_buffer),
             Some(query_pool),
             first_query,
@@ -2570,7 +4544,7 @@ impl Device {
         size: u32,
         p_values: *const c_void,
     ) {
-        (self.fp1_0.cmd_push_constants)(Some(command_buffer), Some(layout), stage_flags, offset, size, p_values);
+        (self.fp_cmd_push_constants.unwrap())(Some(command_buffer), Some(layout), stage_flags, offset, size, p_values);
     }
     pub unsafe fn cmd_begin_render_pass(
         &self,
@@ -2578,13 +4552,13 @@ impl Device {
         p_render_pass_begin: &vk::RenderPassBeginInfo,
         contents: vk::SubpassContents,
     ) {
-        (self.fp1_0.cmd_begin_render_pass)(Some(command_buffer), p_render_pass_begin, contents);
+        (self.fp_cmd_begin_render_pass.unwrap())(Some(command_buffer), p_render_pass_begin, contents);
     }
     pub unsafe fn cmd_next_subpass(&self, command_buffer: vk::CommandBuffer, contents: vk::SubpassContents) {
-        (self.fp1_0.cmd_next_subpass)(Some(command_buffer), contents);
+        (self.fp_cmd_next_subpass.unwrap())(Some(command_buffer), contents);
     }
     pub unsafe fn cmd_end_render_pass(&self, command_buffer: vk::CommandBuffer) {
-        (self.fp1_0.cmd_end_render_pass)(Some(command_buffer));
+        (self.fp_cmd_end_render_pass.unwrap())(Some(command_buffer));
     }
     pub unsafe fn cmd_execute_commands(
         &self,
@@ -2592,705 +4566,7 @@ impl Device {
         p_command_buffers: &[vk::CommandBuffer],
     ) {
         let command_buffer_count = p_command_buffers.len() as u32;
-        (self.fp1_0.cmd_execute_commands)(Some(command_buffer), command_buffer_count, p_command_buffers.as_ptr());
-    }
-    pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_1.bind_buffer_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_1.bind_image_memory2)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_device_group_peer_memory_features(
-        &self,
-        heap_index: u32,
-        local_device_index: u32,
-        remote_device_index: u32,
-    ) -> vk::PeerMemoryFeatureFlags {
-        let mut res = mem::uninitialized();
-        (self.fp1_1.get_device_group_peer_memory_features)(
-            Some(self.handle),
-            heap_index,
-            local_device_index,
-            remote_device_index,
-            &mut res,
-        );
-        res
-    }
-    pub unsafe fn cmd_set_device_mask(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
-        (self.fp1_1.cmd_set_device_mask)(Some(command_buffer), device_mask);
-    }
-    pub unsafe fn cmd_dispatch_base(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        base_group_x: u32,
-        base_group_y: u32,
-        base_group_z: u32,
-        group_count_x: u32,
-        group_count_y: u32,
-        group_count_z: u32,
-    ) {
-        (self.fp1_1.cmd_dispatch_base)(
-            Some(command_buffer),
-            base_group_x,
-            base_group_y,
-            base_group_z,
-            group_count_x,
-            group_count_y,
-            group_count_z,
-        );
-    }
-    pub unsafe fn get_image_memory_requirements2(
-        &self,
-        p_info: &vk::ImageMemoryRequirementsInfo2,
-        p_memory_requirements: &mut vk::MemoryRequirements2,
-    ) {
-        (self.fp1_1.get_image_memory_requirements2)(Some(self.handle), p_info, p_memory_requirements);
-    }
-    pub unsafe fn get_buffer_memory_requirements2(
-        &self,
-        p_info: &vk::BufferMemoryRequirementsInfo2,
-        p_memory_requirements: &mut vk::MemoryRequirements2,
-    ) {
-        (self.fp1_1.get_buffer_memory_requirements2)(Some(self.handle), p_info, p_memory_requirements);
-    }
-    pub unsafe fn get_image_sparse_memory_requirements2_to_vec(
-        &self,
-        p_info: &vk::ImageSparseMemoryRequirementsInfo2,
-    ) -> Vec<vk::SparseImageMemoryRequirements2> {
-        let mut len = mem::uninitialized();
-        (self.fp1_1.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, ptr::null_mut());
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_1.get_image_sparse_memory_requirements2)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn trim_command_pool(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
-        (self.fp1_1.trim_command_pool)(Some(self.handle), Some(command_pool), flags);
-    }
-    pub unsafe fn get_device_queue2(&self, p_queue_info: &vk::DeviceQueueInfo2) -> vk::Queue {
-        let mut res = mem::uninitialized();
-        (self.fp1_1.get_device_queue2)(Some(self.handle), p_queue_info, &mut res);
-        res
-    }
-    pub unsafe fn create_sampler_ycbcr_conversion(
-        &self,
-        p_create_info: &vk::SamplerYcbcrConversionCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SamplerYcbcrConversion> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_1.create_sampler_ycbcr_conversion)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_sampler_ycbcr_conversion(
-        &self,
-        ycbcr_conversion: Option<vk::SamplerYcbcrConversion>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_1.destroy_sampler_ycbcr_conversion)(
-            Some(self.handle),
-            ycbcr_conversion,
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn create_descriptor_update_template(
-        &self,
-        p_create_info: &vk::DescriptorUpdateTemplateCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DescriptorUpdateTemplate> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_1.create_descriptor_update_template)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_descriptor_update_template(
-        &self,
-        descriptor_update_template: Option<vk::DescriptorUpdateTemplate>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_1.destroy_descriptor_update_template)(
-            Some(self.handle),
-            descriptor_update_template,
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn update_descriptor_set_with_template(
-        &self,
-        descriptor_set: vk::DescriptorSet,
-        descriptor_update_template: vk::DescriptorUpdateTemplate,
-        p_data: *const c_void,
-    ) {
-        (self.fp1_1.update_descriptor_set_with_template)(
-            Some(self.handle),
-            Some(descriptor_set),
-            Some(descriptor_update_template),
-            p_data,
-        );
-    }
-    pub unsafe fn get_descriptor_set_layout_support(
-        &self,
-        p_create_info: &vk::DescriptorSetLayoutCreateInfo,
-        p_support: &mut vk::DescriptorSetLayoutSupport,
-    ) {
-        (self.fp1_1.get_descriptor_set_layout_support)(Some(self.handle), p_create_info, p_support);
-    }
-}
-/// Loader for the `VK_KHR_surface` instance extension
-pub struct KhrSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrSurfaceFn1_0,
-}
-impl KhrSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_surface\0").unwrap()
-    }
-    pub unsafe fn destroy_surface_khr(
-        &self,
-        surface: Option<vk::SurfaceKHR>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_0.destroy_surface_khr)(Some(self.handle), surface, p_allocator.map_or(ptr::null(), |r| r));
-    }
-    pub unsafe fn get_physical_device_surface_support_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-        surface: vk::SurfaceKHR,
-    ) -> Result<bool> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_physical_device_surface_support_khr)(
-            Some(physical_device),
-            queue_family_index,
-            Some(surface),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res.map(|r| r != vk::FALSE)
-    }
-    pub unsafe fn get_physical_device_surface_capabilities_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-    ) -> Result<vk::SurfaceCapabilitiesKHR> {
-        let mut res = mem::uninitialized();
-        let err =
-            (self.fp1_0.get_physical_device_surface_capabilities_khr)(Some(physical_device), Some(surface), &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_surface_formats_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-    ) -> Result<Vec<vk::SurfaceFormatKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_surface_formats_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_surface_formats_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_surface_present_modes_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-    ) -> Result<Vec<vk::PresentModeKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_surface_present_modes_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_surface_present_modes_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_swapchain` device extension
-pub struct KhrSwapchain {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrSwapchainFn1_0,
-    pub fp1_1: vk::KhrSwapchainFn1_1,
-}
-impl KhrSwapchain {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrSwapchainFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::KhrSwapchainFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-            fp1_1,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_swapchain\0").unwrap()
-    }
-    pub unsafe fn create_swapchain_khr(
-        &self,
-        p_create_info: &vk::SwapchainCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SwapchainKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_swapchain_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_swapchain_khr(
-        &self,
-        swapchain: Option<vk::SwapchainKHR>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_0.destroy_swapchain_khr)(Some(self.handle), swapchain, p_allocator.map_or(ptr::null(), |r| r));
-    }
-    pub unsafe fn get_swapchain_images_khr_to_vec(&self, swapchain: vk::SwapchainKHR) -> Result<Vec<vk::Image>> {
-        let mut len = mem::uninitialized();
-        let len_err =
-            (self.fp1_0.get_swapchain_images_khr)(Some(self.handle), Some(swapchain), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_swapchain_images_khr)(Some(self.handle), Some(swapchain), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn acquire_next_image_khr(
-        &self,
-        swapchain: vk::SwapchainKHR,
-        timeout: u64,
-        semaphore: Option<vk::Semaphore>,
-        fence: Option<vk::Fence>,
-    ) -> Result<(vk::Result, u32)> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.acquire_next_image_khr)(
-            Some(self.handle),
-            Some(swapchain),
-            timeout,
-            semaphore,
-            fence,
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
-                Ok((err, res))
-            }
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn queue_present_khr(
-        &self,
-        queue: vk::Queue,
-        p_present_info: &vk::PresentInfoKHR,
-    ) -> Result<vk::Result> {
-        let err = (self.fp1_0.queue_present_khr)(Some(queue), p_present_info);
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_device_group_present_capabilities_khr(
-        &self,
-        p_device_group_present_capabilities: &mut vk::DeviceGroupPresentCapabilitiesKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_1.get_device_group_present_capabilities_khr)(
-            Some(self.handle),
-            p_device_group_present_capabilities,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_device_group_surface_present_modes_khr(
-        &self,
-        surface: vk::SurfaceKHR,
-    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_1.get_device_group_surface_present_modes_khr)(Some(self.handle), Some(surface), &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_present_rectangles_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-    ) -> Result<Vec<vk::Rect2D>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_1.get_physical_device_present_rectangles_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_1.get_physical_device_present_rectangles_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn acquire_next_image2_khr(
-        &self,
-        p_acquire_info: &vk::AcquireNextImageInfoKHR,
-    ) -> Result<(vk::Result, u32)> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_1.acquire_next_image2_khr)(Some(self.handle), p_acquire_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
-                Ok((err, res))
-            }
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_display` instance extension
-pub struct KhrDisplay {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrDisplayFn1_0,
-}
-impl KhrDisplay {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDisplayFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_display\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_display_properties_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::DisplayPropertiesKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err =
-            (self.fp1_0.get_physical_device_display_properties_khr)(Some(physical_device), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err =
-            (self.fp1_0.get_physical_device_display_properties_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_display_plane_properties_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::DisplayPlanePropertiesKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_display_plane_properties_khr)(
-            Some(physical_device),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_display_plane_properties_khr)(
-            Some(physical_device),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_display_plane_supported_displays_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        plane_index: u32,
-    ) -> Result<Vec<vk::DisplayKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_display_plane_supported_displays_khr)(
-            Some(physical_device),
-            plane_index,
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_display_plane_supported_displays_khr)(
-            Some(physical_device),
-            plane_index,
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_display_mode_properties_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        display: vk::DisplayKHR,
-    ) -> Result<Vec<vk::DisplayModePropertiesKHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_display_mode_properties_khr)(
-            Some(physical_device),
-            Some(display),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_display_mode_properties_khr)(
-            Some(physical_device),
-            Some(display),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn create_display_mode_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        display: vk::DisplayKHR,
-        p_create_info: &vk::DisplayModeCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DisplayModeKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_display_mode_khr)(
-            Some(physical_device),
-            Some(display),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_display_plane_capabilities_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        mode: vk::DisplayModeKHR,
-        plane_index: u32,
-    ) -> Result<vk::DisplayPlaneCapabilitiesKHR> {
-        let mut res = mem::uninitialized();
-        let err =
-            (self.fp1_0.get_display_plane_capabilities_khr)(Some(physical_device), Some(mode), plane_index, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn create_display_plane_surface_khr(
-        &self,
-        p_create_info: &vk::DisplaySurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_display_plane_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_display_swapchain` device extension
-pub struct KhrDisplaySwapchain {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrDisplaySwapchainFn1_0,
-}
-impl KhrDisplaySwapchain {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDisplaySwapchainFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_display_swapchain\0").unwrap()
+        (self.fp_cmd_execute_commands.unwrap())(Some(command_buffer), command_buffer_count, p_command_buffers.as_ptr());
     }
     pub unsafe fn create_shared_swapchains_khr(
         &self,
@@ -3299,7 +4575,7 @@ impl KhrDisplaySwapchain {
         p_swapchains: *mut vk::SwapchainKHR,
     ) -> Result<()> {
         let swapchain_count = p_create_infos.len() as u32;
-        let v_err = (self.fp1_0.create_shared_swapchains_khr)(
+        let v_err = (self.fp_create_shared_swapchains_khr.unwrap())(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
@@ -3320,7 +4596,7 @@ impl KhrDisplaySwapchain {
         let swapchain_count = p_create_infos.len() as u32;
         let mut v = Vec::with_capacity(swapchain_count as usize);
         v.set_len(swapchain_count as usize);
-        let v_err = (self.fp1_0.create_shared_swapchains_khr)(
+        let v_err = (self.fp_create_shared_swapchains_khr.unwrap())(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
@@ -3341,7 +4617,7 @@ impl KhrDisplaySwapchain {
         let swapchain_count = p_create_infos.len() as u32;
         assert_eq!(swapchain_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.create_shared_swapchains_khr)(
+        let v_err = (self.fp_create_shared_swapchains_khr.unwrap())(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
@@ -3362,7 +4638,7 @@ impl KhrDisplaySwapchain {
         let swapchain_count = p_create_infos.len() as u32;
         assert_eq!(swapchain_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.create_shared_swapchains_khr)(
+        let v_err = (self.fp_create_shared_swapchains_khr.unwrap())(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
@@ -3375,43 +4651,13 @@ impl KhrDisplaySwapchain {
         };
         res
     }
-}
-/// Loader for the `VK_KHR_xlib_surface` instance extension
-pub struct KhrXlibSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrXlibSurfaceFn1_0,
-}
-impl KhrXlibSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrXlibSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_xlib_surface\0").unwrap()
-    }
-    pub unsafe fn create_xlib_surface_khr(
+    pub unsafe fn create_swapchain_khr(
         &self,
-        p_create_info: &vk::XlibSurfaceCreateInfoKHR,
+        p_create_info: &vk::SwapchainCreateInfoKHR,
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
+    ) -> Result<vk::SwapchainKHR> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_xlib_surface_khr)(
+        let err = (self.fp_create_swapchain_khr.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -3423,364 +4669,62 @@ impl KhrXlibSurface {
         };
         res
     }
-    pub unsafe fn get_physical_device_xlib_presentation_support_khr(
+    pub unsafe fn destroy_swapchain_khr(
         &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-        dpy: &mut vk::Display,
-        visual_id: vk::VisualID,
-    ) -> vk::Bool32 {
-        let res = (self.fp1_0.get_physical_device_xlib_presentation_support_khr)(
-            Some(physical_device),
-            queue_family_index,
-            dpy,
-            visual_id,
-        );
-        res
-    }
-}
-/// Loader for the `VK_KHR_xcb_surface` instance extension
-pub struct KhrXcbSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrXcbSurfaceFn1_0,
-}
-impl KhrXcbSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrXcbSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_xcb_surface\0").unwrap()
-    }
-    pub unsafe fn create_xcb_surface_khr(
-        &self,
-        p_create_info: &vk::XcbSurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_xcb_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_xcb_presentation_support_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-        connection: &mut vk::xcb_connection_t,
-        visual_id: vk::xcb_visualid_t,
-    ) -> vk::Bool32 {
-        let res = (self.fp1_0.get_physical_device_xcb_presentation_support_khr)(
-            Some(physical_device),
-            queue_family_index,
-            connection,
-            visual_id,
-        );
-        res
-    }
-}
-/// Loader for the `VK_KHR_wayland_surface` instance extension
-pub struct KhrWaylandSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrWaylandSurfaceFn1_0,
-}
-impl KhrWaylandSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrWaylandSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_wayland_surface\0").unwrap()
-    }
-    pub unsafe fn create_wayland_surface_khr(
-        &self,
-        p_create_info: &vk::WaylandSurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_wayland_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_wayland_presentation_support_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-        display: &mut vk::wl_display,
-    ) -> vk::Bool32 {
-        let res = (self.fp1_0.get_physical_device_wayland_presentation_support_khr)(
-            Some(physical_device),
-            queue_family_index,
-            display,
-        );
-        res
-    }
-}
-/// Loader for the `VK_KHR_android_surface` instance extension
-pub struct KhrAndroidSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrAndroidSurfaceFn1_0,
-}
-impl KhrAndroidSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrAndroidSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_android_surface\0").unwrap()
-    }
-    pub unsafe fn create_android_surface_khr(
-        &self,
-        p_create_info: &vk::AndroidSurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_android_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_win32_surface` instance extension
-pub struct KhrWin32Surface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrWin32SurfaceFn1_0,
-}
-impl KhrWin32Surface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrWin32SurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_win32_surface\0").unwrap()
-    }
-    pub unsafe fn create_win32_surface_khr(
-        &self,
-        p_create_info: &vk::Win32SurfaceCreateInfoKHR,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_win32_surface_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_win32_presentation_support_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        queue_family_index: u32,
-    ) -> vk::Bool32 {
-        let res =
-            (self.fp1_0.get_physical_device_win32_presentation_support_khr)(Some(physical_device), queue_family_index);
-        res
-    }
-}
-/// Loader for the `VK_EXT_debug_report` instance extension
-pub struct ExtDebugReport {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtDebugReportFn1_0,
-}
-impl ExtDebugReport {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDebugReportFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_debug_report\0").unwrap()
-    }
-    pub unsafe fn create_debug_report_callback_ext(
-        &self,
-        p_create_info: &vk::DebugReportCallbackCreateInfoEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DebugReportCallbackEXT> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_debug_report_callback_ext)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_debug_report_callback_ext(
-        &self,
-        callback: vk::DebugReportCallbackEXT,
+        swapchain: Option<vk::SwapchainKHR>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_debug_report_callback_ext)(
-            Some(self.handle),
-            Some(callback),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
+        (self.fp_destroy_swapchain_khr.unwrap())(Some(self.handle), swapchain, p_allocator.map_or(ptr::null(), |r| r));
     }
-    pub unsafe fn debug_report_message_ext(
-        &self,
-        flags: vk::DebugReportFlagsEXT,
-        object_type: vk::DebugReportObjectTypeEXT,
-        object: u64,
-        location: usize,
-        message_code: i32,
-        p_layer_prefix: &CStr,
-        p_message: &CStr,
-    ) {
-        (self.fp1_0.debug_report_message_ext)(
-            Some(self.handle),
-            flags,
-            object_type,
-            object,
-            location,
-            message_code,
-            p_layer_prefix.as_ptr(),
-            p_message.as_ptr(),
-        );
-    }
-}
-/// Loader for the `VK_EXT_debug_marker` device extension
-pub struct ExtDebugMarker {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtDebugMarkerFn1_0,
-}
-impl ExtDebugMarker {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDebugMarkerFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
+    pub unsafe fn get_swapchain_images_khr_to_vec(&self, swapchain: vk::SwapchainKHR) -> Result<Vec<vk::Image>> {
+        let mut len = mem::uninitialized();
+        let len_err =
+            (self.fp_get_swapchain_images_khr.unwrap())(Some(self.handle), Some(swapchain), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
         }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err =
+            (self.fp_get_swapchain_images_khr.unwrap())(Some(self.handle), Some(swapchain), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_debug_marker\0").unwrap()
-    }
-    pub unsafe fn debug_marker_set_object_tag_ext(&self, p_tag_info: &vk::DebugMarkerObjectTagInfoEXT) -> Result<()> {
-        let err = (self.fp1_0.debug_marker_set_object_tag_ext)(Some(self.handle), p_tag_info);
+    pub unsafe fn acquire_next_image_khr(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        timeout: u64,
+        semaphore: Option<vk::Semaphore>,
+        fence: Option<vk::Fence>,
+    ) -> Result<(vk::Result, u32)> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_acquire_next_image_khr.unwrap())(
+            Some(self.handle),
+            Some(swapchain),
+            timeout,
+            semaphore,
+            fence,
+            &mut res,
+        );
         let res = match err {
-            vk::Result::SUCCESS => Ok(()),
+            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
+                Ok((err, res))
+            }
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn queue_present_khr(
+        &self,
+        queue: vk::Queue,
+        p_present_info: &vk::PresentInfoKHR,
+    ) -> Result<vk::Result> {
+        let err = (self.fp_queue_present_khr.unwrap())(Some(queue), p_present_info);
+        let res = match err {
+            vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
             _ => Err(err),
         };
         res
@@ -3789,7 +4733,15 @@ impl ExtDebugMarker {
         &self,
         p_name_info: &vk::DebugMarkerObjectNameInfoEXT,
     ) -> Result<()> {
-        let err = (self.fp1_0.debug_marker_set_object_name_ext)(Some(self.handle), p_name_info);
+        let err = (self.fp_debug_marker_set_object_name_ext.unwrap())(Some(self.handle), p_name_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn debug_marker_set_object_tag_ext(&self, p_tag_info: &vk::DebugMarkerObjectTagInfoEXT) -> Result<()> {
+        let err = (self.fp_debug_marker_set_object_tag_ext.unwrap())(Some(self.handle), p_tag_info);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -3801,389 +4753,17 @@ impl ExtDebugMarker {
         command_buffer: vk::CommandBuffer,
         p_marker_info: &vk::DebugMarkerMarkerInfoEXT,
     ) {
-        (self.fp1_0.cmd_debug_marker_begin_ext)(Some(command_buffer), p_marker_info);
+        (self.fp_cmd_debug_marker_begin_ext.unwrap())(Some(command_buffer), p_marker_info);
     }
     pub unsafe fn cmd_debug_marker_end_ext(&self, command_buffer: vk::CommandBuffer) {
-        (self.fp1_0.cmd_debug_marker_end_ext)(Some(command_buffer));
+        (self.fp_cmd_debug_marker_end_ext.unwrap())(Some(command_buffer));
     }
     pub unsafe fn cmd_debug_marker_insert_ext(
         &self,
         command_buffer: vk::CommandBuffer,
         p_marker_info: &vk::DebugMarkerMarkerInfoEXT,
     ) {
-        (self.fp1_0.cmd_debug_marker_insert_ext)(Some(command_buffer), p_marker_info);
-    }
-}
-/// Loader for the `VK_EXT_transform_feedback` device extension
-pub struct ExtTransformFeedback {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtTransformFeedbackFn1_0,
-}
-impl ExtTransformFeedback {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtTransformFeedbackFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_transform_feedback\0").unwrap()
-    }
-    pub unsafe fn cmd_bind_transform_feedback_buffers_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        first_binding: u32,
-        p_buffers: &[vk::Buffer],
-        p_offsets: &[vk::DeviceSize],
-        p_sizes: Option<&[vk::DeviceSize]>,
-    ) {
-        let binding_count = p_buffers.len() as u32;
-        assert_eq!(binding_count, p_offsets.len() as u32);
-        if let Some(s) = p_sizes {
-            assert_eq!(binding_count, s.len() as u32);
-        }
-        (self.fp1_0.cmd_bind_transform_feedback_buffers_ext)(
-            Some(command_buffer),
-            first_binding,
-            binding_count,
-            p_buffers.as_ptr(),
-            p_offsets.as_ptr(),
-            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
-        );
-    }
-    pub unsafe fn cmd_begin_transform_feedback_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        first_counter_buffer: u32,
-        p_counter_buffers: &[vk::Buffer],
-        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
-    ) {
-        let counter_buffer_count = p_counter_buffers.len() as u32;
-        if let Some(s) = p_counter_buffer_offsets {
-            assert_eq!(counter_buffer_count, s.len() as u32);
-        }
-        (self.fp1_0.cmd_begin_transform_feedback_ext)(
-            Some(command_buffer),
-            first_counter_buffer,
-            counter_buffer_count,
-            p_counter_buffers.as_ptr(),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
-        );
-    }
-    pub unsafe fn cmd_end_transform_feedback_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        first_counter_buffer: u32,
-        p_counter_buffers: &[vk::Buffer],
-        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
-    ) {
-        let counter_buffer_count = p_counter_buffers.len() as u32;
-        if let Some(s) = p_counter_buffer_offsets {
-            assert_eq!(counter_buffer_count, s.len() as u32);
-        }
-        (self.fp1_0.cmd_end_transform_feedback_ext)(
-            Some(command_buffer),
-            first_counter_buffer,
-            counter_buffer_count,
-            p_counter_buffers.as_ptr(),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
-        );
-    }
-    pub unsafe fn cmd_begin_query_indexed_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        query_pool: vk::QueryPool,
-        query: u32,
-        flags: vk::QueryControlFlags,
-        index: u32,
-    ) {
-        (self.fp1_0.cmd_begin_query_indexed_ext)(Some(command_buffer), Some(query_pool), query, flags, index);
-    }
-    pub unsafe fn cmd_end_query_indexed_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        query_pool: vk::QueryPool,
-        query: u32,
-        index: u32,
-    ) {
-        (self.fp1_0.cmd_end_query_indexed_ext)(Some(command_buffer), Some(query_pool), query, index);
-    }
-    pub unsafe fn cmd_draw_indirect_byte_count_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        instance_count: u32,
-        first_instance: u32,
-        counter_buffer: vk::Buffer,
-        counter_buffer_offset: vk::DeviceSize,
-        counter_offset: u32,
-        vertex_stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_indirect_byte_count_ext)(
-            Some(command_buffer),
-            instance_count,
-            first_instance,
-            Some(counter_buffer),
-            counter_buffer_offset,
-            counter_offset,
-            vertex_stride,
-        );
-    }
-}
-/// Loader for the `VK_NVX_image_view_handle` device extension
-pub struct NvxImageViewHandle {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvxImageViewHandleFn1_0,
-}
-impl NvxImageViewHandle {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvxImageViewHandleFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NVX_image_view_handle\0").unwrap()
-    }
-    pub unsafe fn get_image_view_handle_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u32 {
-        let res = (self.fp1_0.get_image_view_handle_nvx)(Some(self.handle), p_info);
-        res
-    }
-}
-/// Loader for the `VK_AMD_draw_indirect_count` device extension
-pub struct AmdDrawIndirectCount {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::AmdDrawIndirectCountFn1_0,
-}
-impl AmdDrawIndirectCount {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::AmdDrawIndirectCountFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_AMD_draw_indirect_count\0").unwrap()
-    }
-    pub unsafe fn cmd_draw_indirect_count_amd(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        count_buffer: vk::Buffer,
-        count_buffer_offset: vk::DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_indirect_count_amd)(
-            Some(command_buffer),
-            Some(buffer),
-            offset,
-            Some(count_buffer),
-            count_buffer_offset,
-            max_draw_count,
-            stride,
-        );
-    }
-    pub unsafe fn cmd_draw_indexed_indirect_count_amd(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        count_buffer: vk::Buffer,
-        count_buffer_offset: vk::DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_indexed_indirect_count_amd)(
-            Some(command_buffer),
-            Some(buffer),
-            offset,
-            Some(count_buffer),
-            count_buffer_offset,
-            max_draw_count,
-            stride,
-        );
-    }
-}
-/// Loader for the `VK_AMD_shader_info` device extension
-pub struct AmdShaderInfo {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::AmdShaderInfoFn1_0,
-}
-impl AmdShaderInfo {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::AmdShaderInfoFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_AMD_shader_info\0").unwrap()
-    }
-    pub unsafe fn get_shader_info_amd(
-        &self,
-        pipeline: vk::Pipeline,
-        shader_stage: vk::ShaderStageFlags,
-        info_type: vk::ShaderInfoTypeAMD,
-        p_info_size: *mut usize,
-        p_info: *mut c_void,
-    ) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_shader_info_amd)(
-            Some(self.handle),
-            Some(pipeline),
-            shader_stage,
-            info_type,
-            p_info_size,
-            p_info,
-        );
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_NV_external_memory_capabilities` instance extension
-pub struct NvExternalMemoryCapabilities {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::NvExternalMemoryCapabilitiesFn1_0,
-}
-impl NvExternalMemoryCapabilities {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvExternalMemoryCapabilitiesFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_external_memory_capabilities\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_external_image_format_properties_nv(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-        ty: vk::ImageType,
-        tiling: vk::ImageTiling,
-        usage: vk::ImageUsageFlags,
-        flags: vk::ImageCreateFlags,
-        external_handle_type: vk::ExternalMemoryHandleTypeFlagsNV,
-    ) -> Result<vk::ExternalImageFormatPropertiesNV> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_physical_device_external_image_format_properties_nv)(
-            Some(physical_device),
-            format,
-            ty,
-            tiling,
-            usage,
-            flags,
-            external_handle_type,
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_NV_external_memory_win32` device extension
-pub struct NvExternalMemoryWin32 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvExternalMemoryWin32Fn1_0,
-}
-impl NvExternalMemoryWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvExternalMemoryWin32Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_external_memory_win32\0").unwrap()
+        (self.fp_cmd_debug_marker_insert_ext.unwrap())(Some(command_buffer), p_marker_info);
     }
     pub unsafe fn get_memory_win32_handle_nv(
         &self,
@@ -4191,942 +4771,26 @@ impl NvExternalMemoryWin32 {
         handle_type: vk::ExternalMemoryHandleTypeFlagsNV,
     ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_memory_win32_handle_nv)(Some(self.handle), Some(memory), handle_type, &mut res);
+        let err = (self.fp_get_memory_win32_handle_nv.unwrap())(Some(self.handle), Some(memory), handle_type, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
         res
-    }
-}
-/// Loader for the `VK_KHR_get_physical_device_properties2` instance extension
-pub struct KhrGetPhysicalDeviceProperties2 {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrGetPhysicalDeviceProperties2Fn1_0,
-}
-impl KhrGetPhysicalDeviceProperties2 {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrGetPhysicalDeviceProperties2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_get_physical_device_properties2\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_features2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_features: &mut vk::PhysicalDeviceFeatures2,
-    ) {
-        (self.fp1_0.get_physical_device_features2_khr)(Some(physical_device), p_features);
-    }
-    pub unsafe fn get_physical_device_properties2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_properties: &mut vk::PhysicalDeviceProperties2,
-    ) {
-        (self.fp1_0.get_physical_device_properties2_khr)(Some(physical_device), p_properties);
-    }
-    pub unsafe fn get_physical_device_format_properties2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        format: vk::Format,
-        p_format_properties: &mut vk::FormatProperties2,
-    ) {
-        (self.fp1_0.get_physical_device_format_properties2_khr)(Some(physical_device), format, p_format_properties);
-    }
-    pub unsafe fn get_physical_device_image_format_properties2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_image_format_info: &vk::PhysicalDeviceImageFormatInfo2,
-        p_image_format_properties: &mut vk::ImageFormatProperties2,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_physical_device_image_format_properties2_khr)(
-            Some(physical_device),
-            p_image_format_info,
-            p_image_format_properties,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_queue_family_properties2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Vec<vk::QueueFamilyProperties2> {
-        let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_queue_family_properties2_khr)(Some(physical_device), &mut len, ptr::null_mut());
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_queue_family_properties2_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-    pub unsafe fn get_physical_device_memory_properties2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_memory_properties: &mut vk::PhysicalDeviceMemoryProperties2,
-    ) {
-        (self.fp1_0.get_physical_device_memory_properties2_khr)(Some(physical_device), p_memory_properties);
-    }
-    pub unsafe fn get_physical_device_sparse_image_format_properties2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_format_info: &vk::PhysicalDeviceSparseImageFormatInfo2,
-    ) -> Vec<vk::SparseImageFormatProperties2> {
-        let mut len = mem::uninitialized();
-        (self.fp1_0.get_physical_device_sparse_image_format_properties2_khr)(
-            Some(physical_device),
-            p_format_info,
-            &mut len,
-            ptr::null_mut(),
-        );
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_physical_device_sparse_image_format_properties2_khr)(
-            Some(physical_device),
-            p_format_info,
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-}
-/// Loader for the `VK_KHR_device_group` device extension
-pub struct KhrDeviceGroup {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrDeviceGroupFn1_0,
-}
-impl KhrDeviceGroup {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDeviceGroupFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_device_group\0").unwrap()
-    }
-    pub unsafe fn get_device_group_peer_memory_features_khr(
-        &self,
-        heap_index: u32,
-        local_device_index: u32,
-        remote_device_index: u32,
-    ) -> vk::PeerMemoryFeatureFlags {
-        let mut res = mem::uninitialized();
-        (self.fp1_0.get_device_group_peer_memory_features_khr)(
-            Some(self.handle),
-            heap_index,
-            local_device_index,
-            remote_device_index,
-            &mut res,
-        );
-        res
-    }
-    pub unsafe fn cmd_set_device_mask_khr(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
-        (self.fp1_0.cmd_set_device_mask_khr)(Some(command_buffer), device_mask);
-    }
-    pub unsafe fn cmd_dispatch_base_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        base_group_x: u32,
-        base_group_y: u32,
-        base_group_z: u32,
-        group_count_x: u32,
-        group_count_y: u32,
-        group_count_z: u32,
-    ) {
-        (self.fp1_0.cmd_dispatch_base_khr)(
-            Some(command_buffer),
-            base_group_x,
-            base_group_y,
-            base_group_z,
-            group_count_x,
-            group_count_y,
-            group_count_z,
-        );
-    }
-    pub unsafe fn get_device_group_present_capabilities_khr(
-        &self,
-        p_device_group_present_capabilities: &mut vk::DeviceGroupPresentCapabilitiesKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_device_group_present_capabilities_khr)(
-            Some(self.handle),
-            p_device_group_present_capabilities,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_device_group_surface_present_modes_khr(
-        &self,
-        surface: vk::SurfaceKHR,
-    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_device_group_surface_present_modes_khr)(Some(self.handle), Some(surface), &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_present_rectangles_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-    ) -> Result<Vec<vk::Rect2D>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_present_rectangles_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_present_rectangles_khr)(
-            Some(physical_device),
-            Some(surface),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn acquire_next_image2_khr(
-        &self,
-        p_acquire_info: &vk::AcquireNextImageInfoKHR,
-    ) -> Result<(vk::Result, u32)> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.acquire_next_image2_khr)(Some(self.handle), p_acquire_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
-                Ok((err, res))
-            }
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_device_group_surface_present_modes2_ext(
-        &self,
-        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
-    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_device_group_surface_present_modes2_ext)(Some(self.handle), p_surface_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_NN_vi_surface` instance extension
-pub struct NnViSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::NnViSurfaceFn1_0,
-}
-impl NnViSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NnViSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NN_vi_surface\0").unwrap()
-    }
-    pub unsafe fn create_vi_surface_nn(
-        &self,
-        p_create_info: &vk::ViSurfaceCreateInfoNN,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_vi_surface_nn)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_maintenance1` device extension
-pub struct KhrMaintenance1 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrMaintenance1Fn1_0,
-}
-impl KhrMaintenance1 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrMaintenance1Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_maintenance1\0").unwrap()
-    }
-    pub unsafe fn trim_command_pool_khr(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
-        (self.fp1_0.trim_command_pool_khr)(Some(self.handle), Some(command_pool), flags);
-    }
-}
-/// Loader for the `VK_KHR_device_group_creation` instance extension
-pub struct KhrDeviceGroupCreation {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrDeviceGroupCreationFn1_0,
-}
-impl KhrDeviceGroupCreation {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDeviceGroupCreationFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_device_group_creation\0").unwrap()
-    }
-    pub unsafe fn enumerate_physical_device_groups_khr_to_vec(&self) -> Result<Vec<vk::PhysicalDeviceGroupProperties>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.enumerate_physical_device_groups_khr)(Some(self.handle), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.enumerate_physical_device_groups_khr)(Some(self.handle), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_memory_capabilities` instance extension
-pub struct KhrExternalMemoryCapabilities {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrExternalMemoryCapabilitiesFn1_0,
-}
-impl KhrExternalMemoryCapabilities {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalMemoryCapabilitiesFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_memory_capabilities\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_external_buffer_properties_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_buffer_info: &vk::PhysicalDeviceExternalBufferInfo,
-        p_external_buffer_properties: &mut vk::ExternalBufferProperties,
-    ) {
-        (self.fp1_0.get_physical_device_external_buffer_properties_khr)(
-            Some(physical_device),
-            p_external_buffer_info,
-            p_external_buffer_properties,
-        );
-    }
-}
-/// Loader for the `VK_KHR_external_memory_win32` device extension
-pub struct KhrExternalMemoryWin32 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalMemoryWin32Fn1_0,
-}
-impl KhrExternalMemoryWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalMemoryWin32Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_memory_win32\0").unwrap()
-    }
-    pub unsafe fn get_memory_win32_handle_khr(
-        &self,
-        p_get_win32_handle_info: &vk::MemoryGetWin32HandleInfoKHR,
-    ) -> Result<vk::HANDLE> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_memory_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_memory_win32_handle_properties_khr(
-        &self,
-        handle_type: vk::ExternalMemoryHandleTypeFlags,
-        handle: vk::HANDLE,
-        p_memory_win32_handle_properties: &mut vk::MemoryWin32HandlePropertiesKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_memory_win32_handle_properties_khr)(
-            Some(self.handle),
-            handle_type,
-            handle,
-            p_memory_win32_handle_properties,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_memory_fd` device extension
-pub struct KhrExternalMemoryFd {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalMemoryFdFn1_0,
-}
-impl KhrExternalMemoryFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalMemoryFdFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_memory_fd\0").unwrap()
-    }
-    pub unsafe fn get_memory_fd_khr(&self, p_get_fd_info: &vk::MemoryGetFdInfoKHR) -> Result<c_int> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_memory_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_memory_fd_properties_khr(
-        &self,
-        handle_type: vk::ExternalMemoryHandleTypeFlags,
-        fd: c_int,
-        p_memory_fd_properties: &mut vk::MemoryFdPropertiesKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_memory_fd_properties_khr)(Some(self.handle), handle_type, fd, p_memory_fd_properties);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_semaphore_capabilities` instance extension
-pub struct KhrExternalSemaphoreCapabilities {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrExternalSemaphoreCapabilitiesFn1_0,
-}
-impl KhrExternalSemaphoreCapabilities {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalSemaphoreCapabilitiesFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_semaphore_capabilities\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_external_semaphore_properties_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_semaphore_info: &vk::PhysicalDeviceExternalSemaphoreInfo,
-        p_external_semaphore_properties: &mut vk::ExternalSemaphoreProperties,
-    ) {
-        (self.fp1_0.get_physical_device_external_semaphore_properties_khr)(
-            Some(physical_device),
-            p_external_semaphore_info,
-            p_external_semaphore_properties,
-        );
-    }
-}
-/// Loader for the `VK_KHR_external_semaphore_win32` device extension
-pub struct KhrExternalSemaphoreWin32 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalSemaphoreWin32Fn1_0,
-}
-impl KhrExternalSemaphoreWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalSemaphoreWin32Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_semaphore_win32\0").unwrap()
-    }
-    pub unsafe fn import_semaphore_win32_handle_khr(
-        &self,
-        p_import_semaphore_win32_handle_info: &vk::ImportSemaphoreWin32HandleInfoKHR,
-    ) -> Result<()> {
-        let err =
-            (self.fp1_0.import_semaphore_win32_handle_khr)(Some(self.handle), p_import_semaphore_win32_handle_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_semaphore_win32_handle_khr(
-        &self,
-        p_get_win32_handle_info: &vk::SemaphoreGetWin32HandleInfoKHR,
-    ) -> Result<vk::HANDLE> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_semaphore_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_semaphore_fd` device extension
-pub struct KhrExternalSemaphoreFd {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalSemaphoreFdFn1_0,
-}
-impl KhrExternalSemaphoreFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalSemaphoreFdFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_semaphore_fd\0").unwrap()
-    }
-    pub unsafe fn import_semaphore_fd_khr(
-        &self,
-        p_import_semaphore_fd_info: &vk::ImportSemaphoreFdInfoKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.import_semaphore_fd_khr)(Some(self.handle), p_import_semaphore_fd_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_semaphore_fd_khr(&self, p_get_fd_info: &vk::SemaphoreGetFdInfoKHR) -> Result<c_int> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_semaphore_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_push_descriptor` device extension
-pub struct KhrPushDescriptor {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrPushDescriptorFn1_0,
-    pub fp1_1: vk::KhrPushDescriptorFn1_1,
-}
-impl KhrPushDescriptor {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrPushDescriptorFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::KhrPushDescriptorFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-            fp1_1,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_push_descriptor\0").unwrap()
-    }
-    pub unsafe fn cmd_push_descriptor_set_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        pipeline_bind_point: vk::PipelineBindPoint,
-        layout: vk::PipelineLayout,
-        set: u32,
-        p_descriptor_writes: &[vk::WriteDescriptorSet],
-    ) {
-        let descriptor_write_count = p_descriptor_writes.len() as u32;
-        (self.fp1_0.cmd_push_descriptor_set_khr)(
-            Some(command_buffer),
-            pipeline_bind_point,
-            Some(layout),
-            set,
-            descriptor_write_count,
-            p_descriptor_writes.as_ptr(),
-        );
-    }
-    pub unsafe fn cmd_push_descriptor_set_with_template_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        descriptor_update_template: vk::DescriptorUpdateTemplate,
-        layout: vk::PipelineLayout,
-        set: u32,
-        p_data: *const c_void,
-    ) {
-        (self.fp1_1.cmd_push_descriptor_set_with_template_khr)(
-            Some(command_buffer),
-            Some(descriptor_update_template),
-            Some(layout),
-            set,
-            p_data,
-        );
-    }
-}
-/// Loader for the `VK_EXT_conditional_rendering` device extension
-pub struct ExtConditionalRendering {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtConditionalRenderingFn1_0,
-}
-impl ExtConditionalRendering {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtConditionalRenderingFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_conditional_rendering\0").unwrap()
-    }
-    pub unsafe fn cmd_begin_conditional_rendering_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        p_conditional_rendering_begin: &vk::ConditionalRenderingBeginInfoEXT,
-    ) {
-        (self.fp1_0.cmd_begin_conditional_rendering_ext)(Some(command_buffer), p_conditional_rendering_begin);
-    }
-    pub unsafe fn cmd_end_conditional_rendering_ext(&self, command_buffer: vk::CommandBuffer) {
-        (self.fp1_0.cmd_end_conditional_rendering_ext)(Some(command_buffer));
-    }
-}
-/// Loader for the `VK_KHR_descriptor_update_template` device extension
-pub struct KhrDescriptorUpdateTemplate {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrDescriptorUpdateTemplateFn1_0,
-}
-impl KhrDescriptorUpdateTemplate {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDescriptorUpdateTemplateFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_descriptor_update_template\0").unwrap()
-    }
-    pub unsafe fn create_descriptor_update_template_khr(
-        &self,
-        p_create_info: &vk::DescriptorUpdateTemplateCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DescriptorUpdateTemplate> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_descriptor_update_template_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_descriptor_update_template_khr(
-        &self,
-        descriptor_update_template: Option<vk::DescriptorUpdateTemplate>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_0.destroy_descriptor_update_template_khr)(
-            Some(self.handle),
-            descriptor_update_template,
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn update_descriptor_set_with_template_khr(
-        &self,
-        descriptor_set: vk::DescriptorSet,
-        descriptor_update_template: vk::DescriptorUpdateTemplate,
-        p_data: *const c_void,
-    ) {
-        (self.fp1_0.update_descriptor_set_with_template_khr)(
-            Some(self.handle),
-            Some(descriptor_set),
-            Some(descriptor_update_template),
-            p_data,
-        );
-    }
-    pub unsafe fn cmd_push_descriptor_set_with_template_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        descriptor_update_template: vk::DescriptorUpdateTemplate,
-        layout: vk::PipelineLayout,
-        set: u32,
-        p_data: *const c_void,
-    ) {
-        (self.fp1_0.cmd_push_descriptor_set_with_template_khr)(
-            Some(command_buffer),
-            Some(descriptor_update_template),
-            Some(layout),
-            set,
-            p_data,
-        );
-    }
-}
-/// Loader for the `VK_NVX_device_generated_commands` device extension
-pub struct NvxDeviceGeneratedCommands {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvxDeviceGeneratedCommandsFn1_0,
-}
-impl NvxDeviceGeneratedCommands {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvxDeviceGeneratedCommandsFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NVX_device_generated_commands\0").unwrap()
     }
     pub unsafe fn cmd_process_commands_nvx(
         &self,
         command_buffer: vk::CommandBuffer,
         p_process_commands_info: &vk::CmdProcessCommandsInfoNVX,
     ) {
-        (self.fp1_0.cmd_process_commands_nvx)(Some(command_buffer), p_process_commands_info);
+        (self.fp_cmd_process_commands_nvx.unwrap())(Some(command_buffer), p_process_commands_info);
     }
     pub unsafe fn cmd_reserve_space_for_commands_nvx(
         &self,
         command_buffer: vk::CommandBuffer,
         p_reserve_space_info: &vk::CmdReserveSpaceForCommandsInfoNVX,
     ) {
-        (self.fp1_0.cmd_reserve_space_for_commands_nvx)(Some(command_buffer), p_reserve_space_info);
+        (self.fp_cmd_reserve_space_for_commands_nvx.unwrap())(Some(command_buffer), p_reserve_space_info);
     }
     pub unsafe fn create_indirect_commands_layout_nvx(
         &self,
@@ -5134,7 +4798,7 @@ impl NvxDeviceGeneratedCommands {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::IndirectCommandsLayoutNVX> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_indirect_commands_layout_nvx)(
+        let err = (self.fp_create_indirect_commands_layout_nvx.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5151,7 +4815,7 @@ impl NvxDeviceGeneratedCommands {
         indirect_commands_layout: vk::IndirectCommandsLayoutNVX,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_indirect_commands_layout_nvx)(
+        (self.fp_destroy_indirect_commands_layout_nvx.unwrap())(
             Some(self.handle),
             Some(indirect_commands_layout),
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5163,7 +4827,7 @@ impl NvxDeviceGeneratedCommands {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::ObjectTableNVX> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_object_table_nvx)(
+        let err = (self.fp_create_object_table_nvx.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5180,7 +4844,7 @@ impl NvxDeviceGeneratedCommands {
         object_table: vk::ObjectTableNVX,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_object_table_nvx)(
+        (self.fp_destroy_object_table_nvx.unwrap())(
             Some(self.handle),
             Some(object_table),
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5193,7 +4857,7 @@ impl NvxDeviceGeneratedCommands {
         p_object_indices: &[u32],
     ) -> Result<()> {
         let object_count = p_object_indices.len() as u32;
-        let err = (self.fp1_0.register_objects_nvx)(
+        let err = (self.fp_register_objects_nvx.unwrap())(
             Some(self.handle),
             Some(object_table),
             object_count,
@@ -5214,7 +4878,7 @@ impl NvxDeviceGeneratedCommands {
     ) -> Result<()> {
         let object_count = p_object_entry_types.len() as u32;
         assert_eq!(object_count, p_object_indices.len() as u32);
-        let err = (self.fp1_0.unregister_objects_nvx)(
+        let err = (self.fp_unregister_objects_nvx.unwrap())(
             Some(self.handle),
             Some(object_table),
             object_count,
@@ -5233,191 +4897,59 @@ impl NvxDeviceGeneratedCommands {
         p_features: &mut vk::DeviceGeneratedCommandsFeaturesNVX,
         p_limits: &mut vk::DeviceGeneratedCommandsLimitsNVX,
     ) {
-        (self.fp1_0.get_physical_device_generated_commands_properties_nvx)(Some(physical_device), p_features, p_limits);
-    }
-}
-/// Loader for the `VK_NV_clip_space_w_scaling` device extension
-pub struct NvClipSpaceWScaling {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvClipSpaceWScalingFn1_0,
-}
-impl NvClipSpaceWScaling {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvClipSpaceWScalingFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_clip_space_w_scaling\0").unwrap()
-    }
-    pub unsafe fn cmd_set_viewport_w_scaling_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        first_viewport: u32,
-        p_viewport_w_scalings: &[vk::ViewportWScalingNV],
-    ) {
-        let viewport_count = p_viewport_w_scalings.len() as u32;
-        (self.fp1_0.cmd_set_viewport_w_scaling_nv)(
-            Some(command_buffer),
-            first_viewport,
-            viewport_count,
-            p_viewport_w_scalings.as_ptr(),
+        (self.fp_get_physical_device_generated_commands_properties_nvx.unwrap())(
+            Some(physical_device),
+            p_features,
+            p_limits,
         );
     }
-}
-/// Loader for the `VK_EXT_direct_mode_display` instance extension
-pub struct ExtDirectModeDisplay {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtDirectModeDisplayFn1_0,
-}
-impl ExtDirectModeDisplay {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDirectModeDisplayFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_direct_mode_display\0").unwrap()
-    }
-    pub unsafe fn release_display_ext(
+    pub unsafe fn cmd_push_descriptor_set_khr(
         &self,
-        physical_device: vk::PhysicalDevice,
-        display: vk::DisplayKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.release_display_ext)(Some(physical_device), Some(display));
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        layout: vk::PipelineLayout,
+        set: u32,
+        p_descriptor_writes: &[vk::WriteDescriptorSet],
+    ) {
+        let descriptor_write_count = p_descriptor_writes.len() as u32;
+        (self.fp_cmd_push_descriptor_set_khr.unwrap())(
+            Some(command_buffer),
+            pipeline_bind_point,
+            Some(layout),
+            set,
+            descriptor_write_count,
+            p_descriptor_writes.as_ptr(),
+        );
     }
-}
-/// Loader for the `VK_EXT_acquire_xlib_display` instance extension
-pub struct ExtAcquireXlibDisplay {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtAcquireXlibDisplayFn1_0,
-}
-impl ExtAcquireXlibDisplay {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtAcquireXlibDisplayFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
+    pub unsafe fn trim_command_pool(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
+        (self.fp_trim_command_pool.unwrap())(Some(self.handle), Some(command_pool), flags);
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_acquire_xlib_display\0").unwrap()
+    pub unsafe fn trim_command_pool_khr(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
+        (self.fp_trim_command_pool_khr.unwrap())(Some(self.handle), Some(command_pool), flags);
     }
-    pub unsafe fn acquire_xlib_display_ext(
+    pub unsafe fn get_memory_win32_handle_khr(
         &self,
-        physical_device: vk::PhysicalDevice,
-        dpy: &mut vk::Display,
-        display: vk::DisplayKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.acquire_xlib_display_ext)(Some(physical_device), dpy, Some(display));
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_rand_r_output_display_ext(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        dpy: &mut vk::Display,
-        rr_output: vk::RROutput,
-    ) -> Result<vk::DisplayKHR> {
+        p_get_win32_handle_info: &vk::MemoryGetWin32HandleInfoKHR,
+    ) -> Result<vk::HANDLE> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_rand_r_output_display_ext)(Some(physical_device), dpy, rr_output, &mut res);
+        let err = (self.fp_get_memory_win32_handle_khr.unwrap())(Some(self.handle), p_get_win32_handle_info, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
         res
     }
-}
-/// Loader for the `VK_EXT_display_surface_counter` instance extension
-pub struct ExtDisplaySurfaceCounter {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtDisplaySurfaceCounterFn1_0,
-}
-impl ExtDisplaySurfaceCounter {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDisplaySurfaceCounterFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_display_surface_counter\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_surface_capabilities2_ext(
+    pub unsafe fn get_memory_win32_handle_properties_khr(
         &self,
-        physical_device: vk::PhysicalDevice,
-        surface: vk::SurfaceKHR,
-        p_surface_capabilities: &mut vk::SurfaceCapabilities2EXT,
+        handle_type: vk::ExternalMemoryHandleTypeFlags,
+        handle: vk::HANDLE,
+        p_memory_win32_handle_properties: &mut vk::MemoryWin32HandlePropertiesKHR,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_physical_device_surface_capabilities2_ext)(
-            Some(physical_device),
-            Some(surface),
-            p_surface_capabilities,
+        let err = (self.fp_get_memory_win32_handle_properties_khr.unwrap())(
+            Some(self.handle),
+            handle_type,
+            handle,
+            p_memory_win32_handle_properties,
         );
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
@@ -5425,42 +4957,122 @@ impl ExtDisplaySurfaceCounter {
         };
         res
     }
-}
-/// Loader for the `VK_EXT_display_control` device extension
-pub struct ExtDisplayControl {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtDisplayControlFn1_0,
-}
-impl ExtDisplayControl {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
+    pub unsafe fn get_memory_fd_khr(&self, p_get_fd_info: &vk::MemoryGetFdInfoKHR) -> Result<c_int> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_memory_fd_khr.unwrap())(Some(self.handle), p_get_fd_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
         };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDisplayControlFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+        res
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_display_control\0").unwrap()
+    pub unsafe fn get_memory_fd_properties_khr(
+        &self,
+        handle_type: vk::ExternalMemoryHandleTypeFlags,
+        fd: c_int,
+        p_memory_fd_properties: &mut vk::MemoryFdPropertiesKHR,
+    ) -> Result<()> {
+        let err =
+            (self.fp_get_memory_fd_properties_khr.unwrap())(Some(self.handle), handle_type, fd, p_memory_fd_properties);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_semaphore_win32_handle_khr(
+        &self,
+        p_get_win32_handle_info: &vk::SemaphoreGetWin32HandleInfoKHR,
+    ) -> Result<vk::HANDLE> {
+        let mut res = mem::uninitialized();
+        let err =
+            (self.fp_get_semaphore_win32_handle_khr.unwrap())(Some(self.handle), p_get_win32_handle_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn import_semaphore_win32_handle_khr(
+        &self,
+        p_import_semaphore_win32_handle_info: &vk::ImportSemaphoreWin32HandleInfoKHR,
+    ) -> Result<()> {
+        let err = (self.fp_import_semaphore_win32_handle_khr.unwrap())(
+            Some(self.handle),
+            p_import_semaphore_win32_handle_info,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_semaphore_fd_khr(&self, p_get_fd_info: &vk::SemaphoreGetFdInfoKHR) -> Result<c_int> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_semaphore_fd_khr.unwrap())(Some(self.handle), p_get_fd_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn import_semaphore_fd_khr(
+        &self,
+        p_import_semaphore_fd_info: &vk::ImportSemaphoreFdInfoKHR,
+    ) -> Result<()> {
+        let err = (self.fp_import_semaphore_fd_khr.unwrap())(Some(self.handle), p_import_semaphore_fd_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_fence_win32_handle_khr(
+        &self,
+        p_get_win32_handle_info: &vk::FenceGetWin32HandleInfoKHR,
+    ) -> Result<vk::HANDLE> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_fence_win32_handle_khr.unwrap())(Some(self.handle), p_get_win32_handle_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn import_fence_win32_handle_khr(
+        &self,
+        p_import_fence_win32_handle_info: &vk::ImportFenceWin32HandleInfoKHR,
+    ) -> Result<()> {
+        let err = (self.fp_import_fence_win32_handle_khr.unwrap())(Some(self.handle), p_import_fence_win32_handle_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_fence_fd_khr(&self, p_get_fd_info: &vk::FenceGetFdInfoKHR) -> Result<c_int> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_get_fence_fd_khr.unwrap())(Some(self.handle), p_get_fd_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn import_fence_fd_khr(&self, p_import_fence_fd_info: &vk::ImportFenceFdInfoKHR) -> Result<()> {
+        let err = (self.fp_import_fence_fd_khr.unwrap())(Some(self.handle), p_import_fence_fd_info);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
     }
     pub unsafe fn display_power_control_ext(
         &self,
         display: vk::DisplayKHR,
         p_display_power_info: &vk::DisplayPowerInfoEXT,
     ) -> Result<()> {
-        let err = (self.fp1_0.display_power_control_ext)(Some(self.handle), Some(display), p_display_power_info);
+        let err = (self.fp_display_power_control_ext.unwrap())(Some(self.handle), Some(display), p_display_power_info);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -5473,7 +5085,7 @@ impl ExtDisplayControl {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Fence> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.register_device_event_ext)(
+        let err = (self.fp_register_device_event_ext.unwrap())(
             Some(self.handle),
             p_device_event_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5492,7 +5104,7 @@ impl ExtDisplayControl {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Fence> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.register_display_event_ext)(
+        let err = (self.fp_register_display_event_ext.unwrap())(
             Some(self.handle),
             Some(display),
             p_display_event_info,
@@ -5511,49 +5123,321 @@ impl ExtDisplayControl {
         counter: vk::SurfaceCounterFlagsEXT,
     ) -> Result<u64> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_swapchain_counter_ext)(Some(self.handle), Some(swapchain), counter, &mut res);
+        let err = (self.fp_get_swapchain_counter_ext.unwrap())(Some(self.handle), Some(swapchain), counter, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
         res
     }
-}
-/// Loader for the `VK_GOOGLE_display_timing` device extension
-pub struct GoogleDisplayTiming {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::GoogleDisplayTimingFn1_0,
-}
-impl GoogleDisplayTiming {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::GoogleDisplayTimingFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+    pub unsafe fn get_device_group_peer_memory_features(
+        &self,
+        heap_index: u32,
+        local_device_index: u32,
+        remote_device_index: u32,
+    ) -> vk::PeerMemoryFeatureFlags {
+        let mut res = mem::uninitialized();
+        (self.fp_get_device_group_peer_memory_features.unwrap())(
+            Some(self.handle),
+            heap_index,
+            local_device_index,
+            remote_device_index,
+            &mut res,
+        );
+        res
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_GOOGLE_display_timing\0").unwrap()
+    pub unsafe fn get_device_group_peer_memory_features_khr(
+        &self,
+        heap_index: u32,
+        local_device_index: u32,
+        remote_device_index: u32,
+    ) -> vk::PeerMemoryFeatureFlags {
+        let mut res = mem::uninitialized();
+        (self.fp_get_device_group_peer_memory_features_khr.unwrap())(
+            Some(self.handle),
+            heap_index,
+            local_device_index,
+            remote_device_index,
+            &mut res,
+        );
+        res
+    }
+    pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp_bind_buffer_memory2.unwrap())(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn bind_buffer_memory2_khr(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp_bind_buffer_memory2_khr.unwrap())(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp_bind_image_memory2.unwrap())(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn bind_image_memory2_khr(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (self.fp_bind_image_memory2_khr.unwrap())(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn cmd_set_device_mask(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
+        (self.fp_cmd_set_device_mask.unwrap())(Some(command_buffer), device_mask);
+    }
+    pub unsafe fn cmd_set_device_mask_khr(&self, command_buffer: vk::CommandBuffer, device_mask: u32) {
+        (self.fp_cmd_set_device_mask_khr.unwrap())(Some(command_buffer), device_mask);
+    }
+    pub unsafe fn get_device_group_present_capabilities_khr(
+        &self,
+        p_device_group_present_capabilities: &mut vk::DeviceGroupPresentCapabilitiesKHR,
+    ) -> Result<()> {
+        let err = (self.fp_get_device_group_present_capabilities_khr.unwrap())(
+            Some(self.handle),
+            p_device_group_present_capabilities,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_device_group_surface_present_modes_khr(
+        &self,
+        surface: vk::SurfaceKHR,
+    ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
+        let mut res = mem::uninitialized();
+        let err =
+            (self.fp_get_device_group_surface_present_modes_khr.unwrap())(Some(self.handle), Some(surface), &mut res);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn acquire_next_image2_khr(
+        &self,
+        p_acquire_info: &vk::AcquireNextImageInfoKHR,
+    ) -> Result<(vk::Result, u32)> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_acquire_next_image2_khr.unwrap())(Some(self.handle), p_acquire_info, &mut res);
+        let res = match err {
+            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
+                Ok((err, res))
+            }
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn cmd_dispatch_base(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        base_group_x: u32,
+        base_group_y: u32,
+        base_group_z: u32,
+        group_count_x: u32,
+        group_count_y: u32,
+        group_count_z: u32,
+    ) {
+        (self.fp_cmd_dispatch_base.unwrap())(
+            Some(command_buffer),
+            base_group_x,
+            base_group_y,
+            base_group_z,
+            group_count_x,
+            group_count_y,
+            group_count_z,
+        );
+    }
+    pub unsafe fn cmd_dispatch_base_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        base_group_x: u32,
+        base_group_y: u32,
+        base_group_z: u32,
+        group_count_x: u32,
+        group_count_y: u32,
+        group_count_z: u32,
+    ) {
+        (self.fp_cmd_dispatch_base_khr.unwrap())(
+            Some(command_buffer),
+            base_group_x,
+            base_group_y,
+            base_group_z,
+            group_count_x,
+            group_count_y,
+            group_count_z,
+        );
+    }
+    pub unsafe fn get_physical_device_present_rectangles_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        surface: vk::SurfaceKHR,
+    ) -> Result<Vec<vk::Rect2D>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_present_rectangles_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_present_rectangles_khr.unwrap())(
+            Some(physical_device),
+            Some(surface),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn create_descriptor_update_template(
+        &self,
+        p_create_info: &vk::DescriptorUpdateTemplateCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DescriptorUpdateTemplate> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_descriptor_update_template.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_descriptor_update_template_khr(
+        &self,
+        p_create_info: &vk::DescriptorUpdateTemplateCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DescriptorUpdateTemplate> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_descriptor_update_template_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_descriptor_update_template(
+        &self,
+        descriptor_update_template: Option<vk::DescriptorUpdateTemplate>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_descriptor_update_template.unwrap())(
+            Some(self.handle),
+            descriptor_update_template,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn destroy_descriptor_update_template_khr(
+        &self,
+        descriptor_update_template: Option<vk::DescriptorUpdateTemplate>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_descriptor_update_template_khr.unwrap())(
+            Some(self.handle),
+            descriptor_update_template,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn update_descriptor_set_with_template(
+        &self,
+        descriptor_set: vk::DescriptorSet,
+        descriptor_update_template: vk::DescriptorUpdateTemplate,
+        p_data: *const c_void,
+    ) {
+        (self.fp_update_descriptor_set_with_template.unwrap())(
+            Some(self.handle),
+            Some(descriptor_set),
+            Some(descriptor_update_template),
+            p_data,
+        );
+    }
+    pub unsafe fn update_descriptor_set_with_template_khr(
+        &self,
+        descriptor_set: vk::DescriptorSet,
+        descriptor_update_template: vk::DescriptorUpdateTemplate,
+        p_data: *const c_void,
+    ) {
+        (self.fp_update_descriptor_set_with_template_khr.unwrap())(
+            Some(self.handle),
+            Some(descriptor_set),
+            Some(descriptor_update_template),
+            p_data,
+        );
+    }
+    pub unsafe fn cmd_push_descriptor_set_with_template_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        descriptor_update_template: vk::DescriptorUpdateTemplate,
+        layout: vk::PipelineLayout,
+        set: u32,
+        p_data: *const c_void,
+    ) {
+        (self.fp_cmd_push_descriptor_set_with_template_khr.unwrap())(
+            Some(command_buffer),
+            Some(descriptor_update_template),
+            Some(layout),
+            set,
+            p_data,
+        );
+    }
+    pub unsafe fn set_hdr_metadata_ext(&self, p_swapchains: &[vk::SwapchainKHR], p_metadata: &[vk::HdrMetadataEXT]) {
+        let swapchain_count = p_swapchains.len() as u32;
+        assert_eq!(swapchain_count, p_metadata.len() as u32);
+        (self.fp_set_hdr_metadata_ext.unwrap())(
+            Some(self.handle),
+            swapchain_count,
+            p_swapchains.as_ptr(),
+            p_metadata.as_ptr(),
+        );
+    }
+    pub unsafe fn get_swapchain_status_khr(&self, swapchain: vk::SwapchainKHR) -> Result<vk::Result> {
+        let err = (self.fp_get_swapchain_status_khr.unwrap())(Some(self.handle), Some(swapchain));
+        let res = match err {
+            vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
+            _ => Err(err),
+        };
+        res
     }
     pub unsafe fn get_refresh_cycle_duration_google(
         &self,
         swapchain: vk::SwapchainKHR,
     ) -> Result<vk::RefreshCycleDurationGOOGLE> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_refresh_cycle_duration_google)(Some(self.handle), Some(swapchain), &mut res);
+        let err = (self.fp_get_refresh_cycle_duration_google.unwrap())(Some(self.handle), Some(swapchain), &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
@@ -5565,7 +5449,7 @@ impl GoogleDisplayTiming {
         swapchain: vk::SwapchainKHR,
     ) -> Result<Vec<vk::PastPresentationTimingGOOGLE>> {
         let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_past_presentation_timing_google)(
+        let len_err = (self.fp_get_past_presentation_timing_google.unwrap())(
             Some(self.handle),
             Some(swapchain),
             &mut len,
@@ -5575,7 +5459,7 @@ impl GoogleDisplayTiming {
             return Err(len_err);
         }
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_past_presentation_timing_google)(
+        let v_err = (self.fp_get_past_presentation_timing_google.unwrap())(
             Some(self.handle),
             Some(swapchain),
             &mut len,
@@ -5588,35 +5472,19 @@ impl GoogleDisplayTiming {
         };
         res
     }
-}
-/// Loader for the `VK_EXT_discard_rectangles` device extension
-pub struct ExtDiscardRectangles {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtDiscardRectanglesFn1_0,
-}
-impl ExtDiscardRectangles {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDiscardRectanglesFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_discard_rectangles\0").unwrap()
+    pub unsafe fn cmd_set_viewport_w_scaling_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_viewport: u32,
+        p_viewport_w_scalings: &[vk::ViewportWScalingNV],
+    ) {
+        let viewport_count = p_viewport_w_scalings.len() as u32;
+        (self.fp_cmd_set_viewport_w_scaling_nv.unwrap())(
+            Some(command_buffer),
+            first_viewport,
+            viewport_count,
+            p_viewport_w_scalings.as_ptr(),
+        );
     }
     pub unsafe fn cmd_set_discard_rectangle_ext(
         &self,
@@ -5625,82 +5493,407 @@ impl ExtDiscardRectangles {
         p_discard_rectangles: &[vk::Rect2D],
     ) {
         let discard_rectangle_count = p_discard_rectangles.len() as u32;
-        (self.fp1_0.cmd_set_discard_rectangle_ext)(
+        (self.fp_cmd_set_discard_rectangle_ext.unwrap())(
             Some(command_buffer),
             first_discard_rectangle,
             discard_rectangle_count,
             p_discard_rectangles.as_ptr(),
         );
     }
-}
-/// Loader for the `VK_EXT_hdr_metadata` device extension
-pub struct ExtHdrMetadata {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtHdrMetadataFn1_0,
-}
-impl ExtHdrMetadata {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtHdrMetadataFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+    pub unsafe fn cmd_set_sample_locations_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_sample_locations_info: &vk::SampleLocationsInfoEXT,
+    ) {
+        (self.fp_cmd_set_sample_locations_ext.unwrap())(Some(command_buffer), p_sample_locations_info);
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_hdr_metadata\0").unwrap()
-    }
-    pub unsafe fn set_hdr_metadata_ext(&self, p_swapchains: &[vk::SwapchainKHR], p_metadata: &[vk::HdrMetadataEXT]) {
-        let swapchain_count = p_swapchains.len() as u32;
-        assert_eq!(swapchain_count, p_metadata.len() as u32);
-        (self.fp1_0.set_hdr_metadata_ext)(
-            Some(self.handle),
-            swapchain_count,
-            p_swapchains.as_ptr(),
-            p_metadata.as_ptr(),
+    pub unsafe fn get_physical_device_multisample_properties_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        samples: vk::SampleCountFlags,
+        p_multisample_properties: &mut vk::MultisamplePropertiesEXT,
+    ) {
+        (self.fp_get_physical_device_multisample_properties_ext.unwrap())(
+            Some(physical_device),
+            samples,
+            p_multisample_properties,
         );
     }
-}
-/// Loader for the `VK_KHR_create_renderpass2` device extension
-pub struct KhrCreateRenderpass2 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrCreateRenderpass2Fn1_0,
-}
-impl KhrCreateRenderpass2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrCreateRenderpass2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+    pub unsafe fn get_buffer_memory_requirements2(
+        &self,
+        p_info: &vk::BufferMemoryRequirementsInfo2,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        (self.fp_get_buffer_memory_requirements2.unwrap())(Some(self.handle), p_info, p_memory_requirements);
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_create_renderpass2\0").unwrap()
+    pub unsafe fn get_buffer_memory_requirements2_khr(
+        &self,
+        p_info: &vk::BufferMemoryRequirementsInfo2,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        (self.fp_get_buffer_memory_requirements2_khr.unwrap())(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn get_image_memory_requirements2(
+        &self,
+        p_info: &vk::ImageMemoryRequirementsInfo2,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        (self.fp_get_image_memory_requirements2.unwrap())(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn get_image_memory_requirements2_khr(
+        &self,
+        p_info: &vk::ImageMemoryRequirementsInfo2,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        (self.fp_get_image_memory_requirements2_khr.unwrap())(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn get_image_sparse_memory_requirements2_to_vec(
+        &self,
+        p_info: &vk::ImageSparseMemoryRequirementsInfo2,
+    ) -> Vec<vk::SparseImageMemoryRequirements2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_image_sparse_memory_requirements2.unwrap())(Some(self.handle), p_info, &mut len, ptr::null_mut());
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_image_sparse_memory_requirements2.unwrap())(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn get_image_sparse_memory_requirements2_khr_to_vec(
+        &self,
+        p_info: &vk::ImageSparseMemoryRequirementsInfo2,
+    ) -> Vec<vk::SparseImageMemoryRequirements2> {
+        let mut len = mem::uninitialized();
+        (self.fp_get_image_sparse_memory_requirements2_khr.unwrap())(
+            Some(self.handle),
+            p_info,
+            &mut len,
+            ptr::null_mut(),
+        );
+        let mut v = Vec::with_capacity(len as usize);
+        (self.fp_get_image_sparse_memory_requirements2_khr.unwrap())(
+            Some(self.handle),
+            p_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = v;
+        res
+    }
+    pub unsafe fn create_sampler_ycbcr_conversion(
+        &self,
+        p_create_info: &vk::SamplerYcbcrConversionCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SamplerYcbcrConversion> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_sampler_ycbcr_conversion.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn create_sampler_ycbcr_conversion_khr(
+        &self,
+        p_create_info: &vk::SamplerYcbcrConversionCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SamplerYcbcrConversion> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_sampler_ycbcr_conversion_khr.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_sampler_ycbcr_conversion(
+        &self,
+        ycbcr_conversion: Option<vk::SamplerYcbcrConversion>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_sampler_ycbcr_conversion.unwrap())(
+            Some(self.handle),
+            ycbcr_conversion,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn destroy_sampler_ycbcr_conversion_khr(
+        &self,
+        ycbcr_conversion: Option<vk::SamplerYcbcrConversion>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_sampler_ycbcr_conversion_khr.unwrap())(
+            Some(self.handle),
+            ycbcr_conversion,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_device_queue2(&self, p_queue_info: &vk::DeviceQueueInfo2) -> vk::Queue {
+        let mut res = mem::uninitialized();
+        (self.fp_get_device_queue2.unwrap())(Some(self.handle), p_queue_info, &mut res);
+        res
+    }
+    pub unsafe fn create_validation_cache_ext(
+        &self,
+        p_create_info: &vk::ValidationCacheCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::ValidationCacheEXT> {
+        let mut res = mem::uninitialized();
+        let err = (self.fp_create_validation_cache_ext.unwrap())(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            &mut res,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn destroy_validation_cache_ext(
+        &self,
+        validation_cache: Option<vk::ValidationCacheEXT>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        (self.fp_destroy_validation_cache_ext.unwrap())(
+            Some(self.handle),
+            validation_cache,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_validation_cache_data_ext(
+        &self,
+        validation_cache: vk::ValidationCacheEXT,
+        p_data_size: *mut usize,
+        p_data: *mut c_void,
+    ) -> Result<vk::Result> {
+        let err = (self.fp_get_validation_cache_data_ext.unwrap())(
+            Some(self.handle),
+            Some(validation_cache),
+            p_data_size,
+            p_data,
+        );
+        let res = match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn merge_validation_caches_ext(
+        &self,
+        dst_cache: vk::ValidationCacheEXT,
+        p_src_caches: &[vk::ValidationCacheEXT],
+    ) -> Result<()> {
+        let src_cache_count = p_src_caches.len() as u32;
+        let err = (self.fp_merge_validation_caches_ext.unwrap())(
+            Some(self.handle),
+            Some(dst_cache),
+            src_cache_count,
+            p_src_caches.as_ptr(),
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_descriptor_set_layout_support(
+        &self,
+        p_create_info: &vk::DescriptorSetLayoutCreateInfo,
+        p_support: &mut vk::DescriptorSetLayoutSupport,
+    ) {
+        (self.fp_get_descriptor_set_layout_support.unwrap())(Some(self.handle), p_create_info, p_support);
+    }
+    pub unsafe fn get_descriptor_set_layout_support_khr(
+        &self,
+        p_create_info: &vk::DescriptorSetLayoutCreateInfo,
+        p_support: &mut vk::DescriptorSetLayoutSupport,
+    ) {
+        (self.fp_get_descriptor_set_layout_support_khr.unwrap())(Some(self.handle), p_create_info, p_support);
+    }
+    pub unsafe fn get_shader_info_amd(
+        &self,
+        pipeline: vk::Pipeline,
+        shader_stage: vk::ShaderStageFlags,
+        info_type: vk::ShaderInfoTypeAMD,
+        p_info_size: *mut usize,
+        p_info: *mut c_void,
+    ) -> Result<vk::Result> {
+        let err = (self.fp_get_shader_info_amd.unwrap())(
+            Some(self.handle),
+            Some(pipeline),
+            shader_stage,
+            info_type,
+            p_info_size,
+            p_info,
+        );
+        let res = match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn set_local_dimming_amd(&self, swap_chain: vk::SwapchainKHR, local_dimming_enable: bool) {
+        (self.fp_set_local_dimming_amd.unwrap())(
+            Some(self.handle),
+            Some(swap_chain),
+            if local_dimming_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn get_physical_device_calibrateable_time_domains_ext_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::TimeDomainEXT>> {
+        let mut len = mem::uninitialized();
+        let len_err = (self.fp_get_physical_device_calibrateable_time_domains_ext.unwrap())(
+            Some(physical_device),
+            &mut len,
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (self.fp_get_physical_device_calibrateable_time_domains_ext.unwrap())(
+            Some(physical_device),
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamps: *mut u64,
+        p_max_deviation: &mut u64,
+    ) -> Result<()> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let v_err = (self.fp_get_calibrated_timestamps_ext.unwrap())(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            p_timestamps,
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_to_vec(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<Vec<u64>> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        let mut v = Vec::with_capacity(timestamp_count as usize);
+        v.set_len(timestamp_count as usize);
+        let v_err = (self.fp_get_calibrated_timestamps_ext.unwrap())(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_array<A: Array<Item = u64>>(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<A> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        assert_eq!(timestamp_count, A::len() as u32);
+        let mut v: A = mem::uninitialized();
+        let v_err = (self.fp_get_calibrated_timestamps_ext.unwrap())(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            v.as_mut_ptr(),
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_calibrated_timestamps_ext_single(
+        &self,
+        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_max_deviation: &mut u64,
+    ) -> Result<u64> {
+        let timestamp_count = p_timestamp_infos.len() as u32;
+        assert_eq!(timestamp_count, 1);
+        let mut v = mem::uninitialized();
+        let v_err = (self.fp_get_calibrated_timestamps_ext.unwrap())(
+            Some(self.handle),
+            timestamp_count,
+            p_timestamp_infos.as_ptr(),
+            &mut v,
+            p_max_deviation,
+        );
+        let res = match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        };
+        res
+    }
+    pub unsafe fn get_memory_host_pointer_properties_ext(
+        &self,
+        handle_type: vk::ExternalMemoryHandleTypeFlags,
+        p_host_pointer: *const c_void,
+        p_memory_host_pointer_properties: &mut vk::MemoryHostPointerPropertiesEXT,
+    ) -> Result<()> {
+        let err = (self.fp_get_memory_host_pointer_properties_ext.unwrap())(
+            Some(self.handle),
+            handle_type,
+            p_host_pointer,
+            p_memory_host_pointer_properties,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn cmd_write_buffer_marker_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_stage: vk::PipelineStageFlags,
+        dst_buffer: vk::Buffer,
+        dst_offset: vk::DeviceSize,
+        marker: u32,
+    ) {
+        (self.fp_cmd_write_buffer_marker_amd.unwrap())(
+            Some(command_buffer),
+            pipeline_stage,
+            Some(dst_buffer),
+            dst_offset,
+            marker,
+        );
     }
     pub unsafe fn create_render_pass2_khr(
         &self,
@@ -5708,7 +5901,7 @@ impl KhrCreateRenderpass2 {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::RenderPass> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_render_pass2_khr)(
+        let err = (self.fp_create_render_pass2_khr.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -5726,7 +5919,7 @@ impl KhrCreateRenderpass2 {
         p_render_pass_begin: &vk::RenderPassBeginInfo,
         p_subpass_begin_info: &vk::SubpassBeginInfoKHR,
     ) {
-        (self.fp1_0.cmd_begin_render_pass2_khr)(Some(command_buffer), p_render_pass_begin, p_subpass_begin_info);
+        (self.fp_cmd_begin_render_pass2_khr.unwrap())(Some(command_buffer), p_render_pass_begin, p_subpass_begin_info);
     }
     pub unsafe fn cmd_next_subpass2_khr(
         &self,
@@ -5734,647 +5927,22 @@ impl KhrCreateRenderpass2 {
         p_subpass_begin_info: &vk::SubpassBeginInfoKHR,
         p_subpass_end_info: &vk::SubpassEndInfoKHR,
     ) {
-        (self.fp1_0.cmd_next_subpass2_khr)(Some(command_buffer), p_subpass_begin_info, p_subpass_end_info);
+        (self.fp_cmd_next_subpass2_khr.unwrap())(Some(command_buffer), p_subpass_begin_info, p_subpass_end_info);
     }
     pub unsafe fn cmd_end_render_pass2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
         p_subpass_end_info: &vk::SubpassEndInfoKHR,
     ) {
-        (self.fp1_0.cmd_end_render_pass2_khr)(Some(command_buffer), p_subpass_end_info);
-    }
-}
-/// Loader for the `VK_KHR_shared_presentable_image` device extension
-pub struct KhrSharedPresentableImage {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrSharedPresentableImageFn1_0,
-}
-impl KhrSharedPresentableImage {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrSharedPresentableImageFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_shared_presentable_image\0").unwrap()
-    }
-    pub unsafe fn get_swapchain_status_khr(&self, swapchain: vk::SwapchainKHR) -> Result<vk::Result> {
-        let err = (self.fp1_0.get_swapchain_status_khr)(Some(self.handle), Some(swapchain));
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::SUBOPTIMAL_KHR => Ok(err),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_fence_capabilities` instance extension
-pub struct KhrExternalFenceCapabilities {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrExternalFenceCapabilitiesFn1_0,
-}
-impl KhrExternalFenceCapabilities {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalFenceCapabilitiesFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_fence_capabilities\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_external_fence_properties_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_external_fence_info: &vk::PhysicalDeviceExternalFenceInfo,
-        p_external_fence_properties: &mut vk::ExternalFenceProperties,
-    ) {
-        (self.fp1_0.get_physical_device_external_fence_properties_khr)(
-            Some(physical_device),
-            p_external_fence_info,
-            p_external_fence_properties,
-        );
-    }
-}
-/// Loader for the `VK_KHR_external_fence_win32` device extension
-pub struct KhrExternalFenceWin32 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalFenceWin32Fn1_0,
-}
-impl KhrExternalFenceWin32 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalFenceWin32Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_fence_win32\0").unwrap()
-    }
-    pub unsafe fn import_fence_win32_handle_khr(
-        &self,
-        p_import_fence_win32_handle_info: &vk::ImportFenceWin32HandleInfoKHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.import_fence_win32_handle_khr)(Some(self.handle), p_import_fence_win32_handle_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_fence_win32_handle_khr(
-        &self,
-        p_get_win32_handle_info: &vk::FenceGetWin32HandleInfoKHR,
-    ) -> Result<vk::HANDLE> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_fence_win32_handle_khr)(Some(self.handle), p_get_win32_handle_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_external_fence_fd` device extension
-pub struct KhrExternalFenceFd {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrExternalFenceFdFn1_0,
-}
-impl KhrExternalFenceFd {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrExternalFenceFdFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_external_fence_fd\0").unwrap()
-    }
-    pub unsafe fn import_fence_fd_khr(&self, p_import_fence_fd_info: &vk::ImportFenceFdInfoKHR) -> Result<()> {
-        let err = (self.fp1_0.import_fence_fd_khr)(Some(self.handle), p_import_fence_fd_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_fence_fd_khr(&self, p_get_fd_info: &vk::FenceGetFdInfoKHR) -> Result<c_int> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_fence_fd_khr)(Some(self.handle), p_get_fd_info, &mut res);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_get_surface_capabilities2` instance extension
-pub struct KhrGetSurfaceCapabilities2 {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrGetSurfaceCapabilities2Fn1_0,
-}
-impl KhrGetSurfaceCapabilities2 {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrGetSurfaceCapabilities2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_get_surface_capabilities2\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_surface_capabilities2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
-        p_surface_capabilities: &mut vk::SurfaceCapabilities2KHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_physical_device_surface_capabilities2_khr)(
-            Some(physical_device),
-            p_surface_info,
-            p_surface_capabilities,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_surface_formats2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
-    ) -> Result<Vec<vk::SurfaceFormat2KHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_surface_formats2_khr)(
-            Some(physical_device),
-            p_surface_info,
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_surface_formats2_khr)(
-            Some(physical_device),
-            p_surface_info,
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_get_display_properties2` instance extension
-pub struct KhrGetDisplayProperties2 {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::KhrGetDisplayProperties2Fn1_0,
-}
-impl KhrGetDisplayProperties2 {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrGetDisplayProperties2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_get_display_properties2\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_display_properties2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::DisplayProperties2KHR>> {
-        let mut len = mem::uninitialized();
-        let len_err =
-            (self.fp1_0.get_physical_device_display_properties2_khr)(Some(physical_device), &mut len, ptr::null_mut());
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err =
-            (self.fp1_0.get_physical_device_display_properties2_khr)(Some(physical_device), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_physical_device_display_plane_properties2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::DisplayPlaneProperties2KHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_display_plane_properties2_khr)(
-            Some(physical_device),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_display_plane_properties2_khr)(
-            Some(physical_device),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_display_mode_properties2_khr_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        display: vk::DisplayKHR,
-    ) -> Result<Vec<vk::DisplayModeProperties2KHR>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_display_mode_properties2_khr)(
-            Some(physical_device),
-            Some(display),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_display_mode_properties2_khr)(
-            Some(physical_device),
-            Some(display),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_display_plane_capabilities2_khr(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_display_plane_info: &vk::DisplayPlaneInfo2KHR,
-        p_capabilities: &mut vk::DisplayPlaneCapabilities2KHR,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_display_plane_capabilities2_khr)(
-            Some(physical_device),
-            p_display_plane_info,
-            p_capabilities,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_MVK_ios_surface` instance extension
-pub struct MvkIosSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::MvkIosSurfaceFn1_0,
-}
-impl MvkIosSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::MvkIosSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_MVK_ios_surface\0").unwrap()
-    }
-    pub unsafe fn create_ios_surface_mvk(
-        &self,
-        p_create_info: &vk::IOSSurfaceCreateInfoMVK,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_ios_surface_mvk)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_MVK_macos_surface` instance extension
-pub struct MvkMacosSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::MvkMacosSurfaceFn1_0,
-}
-impl MvkMacosSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::MvkMacosSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_MVK_macos_surface\0").unwrap()
-    }
-    pub unsafe fn create_mac_os_surface_mvk(
-        &self,
-        p_create_info: &vk::MacOSSurfaceCreateInfoMVK,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_mac_os_surface_mvk)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_EXT_debug_utils` instance extension
-pub struct ExtDebugUtils {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtDebugUtilsFn1_0,
-}
-impl ExtDebugUtils {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtDebugUtilsFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_debug_utils\0").unwrap()
-    }
-    pub unsafe fn set_debug_utils_object_name_ext(
-        &self,
-        device: vk::Device,
-        p_name_info: &vk::DebugUtilsObjectNameInfoEXT,
-    ) -> Result<()> {
-        let err = (self.fp1_0.set_debug_utils_object_name_ext)(Some(device), p_name_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn set_debug_utils_object_tag_ext(
-        &self,
-        device: vk::Device,
-        p_tag_info: &vk::DebugUtilsObjectTagInfoEXT,
-    ) -> Result<()> {
-        let err = (self.fp1_0.set_debug_utils_object_tag_ext)(Some(device), p_tag_info);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn queue_begin_debug_utils_label_ext(&self, queue: vk::Queue, p_label_info: &vk::DebugUtilsLabelEXT) {
-        (self.fp1_0.queue_begin_debug_utils_label_ext)(Some(queue), p_label_info);
-    }
-    pub unsafe fn queue_end_debug_utils_label_ext(&self, queue: vk::Queue) {
-        (self.fp1_0.queue_end_debug_utils_label_ext)(Some(queue));
-    }
-    pub unsafe fn queue_insert_debug_utils_label_ext(&self, queue: vk::Queue, p_label_info: &vk::DebugUtilsLabelEXT) {
-        (self.fp1_0.queue_insert_debug_utils_label_ext)(Some(queue), p_label_info);
-    }
-    pub unsafe fn cmd_begin_debug_utils_label_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        p_label_info: &vk::DebugUtilsLabelEXT,
-    ) {
-        (self.fp1_0.cmd_begin_debug_utils_label_ext)(Some(command_buffer), p_label_info);
-    }
-    pub unsafe fn cmd_end_debug_utils_label_ext(&self, command_buffer: vk::CommandBuffer) {
-        (self.fp1_0.cmd_end_debug_utils_label_ext)(Some(command_buffer));
-    }
-    pub unsafe fn cmd_insert_debug_utils_label_ext(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        p_label_info: &vk::DebugUtilsLabelEXT,
-    ) {
-        (self.fp1_0.cmd_insert_debug_utils_label_ext)(Some(command_buffer), p_label_info);
-    }
-    pub unsafe fn create_debug_utils_messenger_ext(
-        &self,
-        p_create_info: &vk::DebugUtilsMessengerCreateInfoEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DebugUtilsMessengerEXT> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_debug_utils_messenger_ext)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_debug_utils_messenger_ext(
-        &self,
-        messenger: vk::DebugUtilsMessengerEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        (self.fp1_0.destroy_debug_utils_messenger_ext)(
-            Some(self.handle),
-            Some(messenger),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn submit_debug_utils_message_ext(
-        &self,
-        message_severity: vk::DebugUtilsMessageSeverityFlagsEXT,
-        message_types: vk::DebugUtilsMessageTypeFlagsEXT,
-        p_callback_data: &vk::DebugUtilsMessengerCallbackDataEXT,
-    ) {
-        (self.fp1_0.submit_debug_utils_message_ext)(
-            Some(self.handle),
-            message_severity,
-            message_types,
-            p_callback_data,
-        );
-    }
-}
-/// Loader for the `VK_ANDROID_external_memory_android_hardware_buffer` device extension
-pub struct AndroidExternalMemoryAndroidHardwareBuffer {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::AndroidExternalMemoryAndroidHardwareBufferFn1_0,
-}
-impl AndroidExternalMemoryAndroidHardwareBuffer {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::AndroidExternalMemoryAndroidHardwareBufferFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_ANDROID_external_memory_android_hardware_buffer\0").unwrap()
+        (self.fp_cmd_end_render_pass2_khr.unwrap())(Some(command_buffer), p_subpass_end_info);
     }
     pub unsafe fn get_android_hardware_buffer_properties_android(
         &self,
         buffer: &vk::AHardwareBuffer,
         p_properties: &mut vk::AndroidHardwareBufferPropertiesANDROID,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_android_hardware_buffer_properties_android)(Some(self.handle), buffer, p_properties);
+        let err =
+            (self.fp_get_android_hardware_buffer_properties_android.unwrap())(Some(self.handle), buffer, p_properties);
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -6386,388 +5954,217 @@ impl AndroidExternalMemoryAndroidHardwareBuffer {
         p_info: &vk::MemoryGetAndroidHardwareBufferInfoANDROID,
     ) -> Result<*mut vk::AHardwareBuffer> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.get_memory_android_hardware_buffer_android)(Some(self.handle), p_info, &mut res);
+        let err = (self.fp_get_memory_android_hardware_buffer_android.unwrap())(Some(self.handle), p_info, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
         res
     }
-}
-/// Loader for the `VK_EXT_sample_locations` device extension
-pub struct ExtSampleLocations {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtSampleLocationsFn1_0,
-}
-impl ExtSampleLocations {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtSampleLocationsFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_sample_locations\0").unwrap()
-    }
-    pub unsafe fn cmd_set_sample_locations_ext(
+    pub unsafe fn cmd_draw_indirect_count_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_sample_locations_info: &vk::SampleLocationsInfoEXT,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
     ) {
-        (self.fp1_0.cmd_set_sample_locations_ext)(Some(command_buffer), p_sample_locations_info);
-    }
-    pub unsafe fn get_physical_device_multisample_properties_ext(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        samples: vk::SampleCountFlags,
-        p_multisample_properties: &mut vk::MultisamplePropertiesEXT,
-    ) {
-        (self.fp1_0.get_physical_device_multisample_properties_ext)(
-            Some(physical_device),
-            samples,
-            p_multisample_properties,
+        (self.fp_cmd_draw_indirect_count_khr.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
         );
     }
-}
-/// Loader for the `VK_KHR_get_memory_requirements2` device extension
-pub struct KhrGetMemoryRequirements2 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrGetMemoryRequirements2Fn1_0,
-}
-impl KhrGetMemoryRequirements2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrGetMemoryRequirements2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_get_memory_requirements2\0").unwrap()
-    }
-    pub unsafe fn get_image_memory_requirements2_khr(
+    pub unsafe fn cmd_draw_indirect_count_amd(
         &self,
-        p_info: &vk::ImageMemoryRequirementsInfo2,
-        p_memory_requirements: &mut vk::MemoryRequirements2,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
     ) {
-        (self.fp1_0.get_image_memory_requirements2_khr)(Some(self.handle), p_info, p_memory_requirements);
+        (self.fp_cmd_draw_indirect_count_amd.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
     }
-    pub unsafe fn get_buffer_memory_requirements2_khr(
+    pub unsafe fn cmd_draw_indexed_indirect_count_khr(
         &self,
-        p_info: &vk::BufferMemoryRequirementsInfo2,
-        p_memory_requirements: &mut vk::MemoryRequirements2,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
     ) {
-        (self.fp1_0.get_buffer_memory_requirements2_khr)(Some(self.handle), p_info, p_memory_requirements);
+        (self.fp_cmd_draw_indexed_indirect_count_khr.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
     }
-    pub unsafe fn get_image_sparse_memory_requirements2_khr_to_vec(
+    pub unsafe fn cmd_draw_indexed_indirect_count_amd(
         &self,
-        p_info: &vk::ImageSparseMemoryRequirementsInfo2,
-    ) -> Vec<vk::SparseImageMemoryRequirements2> {
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
+    ) {
+        (self.fp_cmd_draw_indexed_indirect_count_amd.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
+    }
+    pub unsafe fn cmd_set_checkpoint_nv(&self, command_buffer: vk::CommandBuffer, p_checkpoint_marker: *const c_void) {
+        (self.fp_cmd_set_checkpoint_nv.unwrap())(Some(command_buffer), p_checkpoint_marker);
+    }
+    pub unsafe fn get_queue_checkpoint_data_nv_to_vec(&self, queue: vk::Queue) -> Vec<vk::CheckpointDataNV> {
         let mut len = mem::uninitialized();
-        (self.fp1_0.get_image_sparse_memory_requirements2_khr)(Some(self.handle), p_info, &mut len, ptr::null_mut());
+        (self.fp_get_queue_checkpoint_data_nv.unwrap())(Some(queue), &mut len, ptr::null_mut());
         let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_image_sparse_memory_requirements2_khr)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
+        (self.fp_get_queue_checkpoint_data_nv.unwrap())(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         let res = v;
         res
     }
-}
-/// Loader for the `VK_KHR_sampler_ycbcr_conversion` device extension
-pub struct KhrSamplerYcbcrConversion {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrSamplerYcbcrConversionFn1_0,
-}
-impl KhrSamplerYcbcrConversion {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrSamplerYcbcrConversionFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_sampler_ycbcr_conversion\0").unwrap()
-    }
-    pub unsafe fn create_sampler_ycbcr_conversion_khr(
+    pub unsafe fn cmd_bind_transform_feedback_buffers_ext(
         &self,
-        p_create_info: &vk::SamplerYcbcrConversionCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SamplerYcbcrConversion> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_sampler_ycbcr_conversion_khr)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_sampler_ycbcr_conversion_khr(
-        &self,
-        ycbcr_conversion: Option<vk::SamplerYcbcrConversion>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
+        command_buffer: vk::CommandBuffer,
+        first_binding: u32,
+        p_buffers: &[vk::Buffer],
+        p_offsets: &[vk::DeviceSize],
+        p_sizes: Option<&[vk::DeviceSize]>,
     ) {
-        (self.fp1_0.destroy_sampler_ycbcr_conversion_khr)(
-            Some(self.handle),
-            ycbcr_conversion,
-            p_allocator.map_or(ptr::null(), |r| r),
+        let binding_count = p_buffers.len() as u32;
+        assert_eq!(binding_count, p_offsets.len() as u32);
+        if let Some(s) = p_sizes {
+            assert_eq!(binding_count, s.len() as u32);
+        }
+        (self.fp_cmd_bind_transform_feedback_buffers_ext.unwrap())(
+            Some(command_buffer),
+            first_binding,
+            binding_count,
+            p_buffers.as_ptr(),
+            p_offsets.as_ptr(),
+            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
         );
     }
-}
-/// Loader for the `VK_KHR_bind_memory2` device extension
-pub struct KhrBindMemory2 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrBindMemory2Fn1_0,
-}
-impl KhrBindMemory2 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrBindMemory2Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_bind_memory2\0").unwrap()
-    }
-    pub unsafe fn bind_buffer_memory2_khr(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_buffer_memory2_khr)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn bind_image_memory2_khr(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
-        let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_image_memory2_khr)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_EXT_image_drm_format_modifier` device extension
-pub struct ExtImageDrmFormatModifier {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtImageDrmFormatModifierFn1_0,
-}
-impl ExtImageDrmFormatModifier {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtImageDrmFormatModifierFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_image_drm_format_modifier\0").unwrap()
-    }
-    pub unsafe fn get_image_drm_format_modifier_properties_ext(
+    pub unsafe fn cmd_begin_transform_feedback_ext(
         &self,
-        image: vk::Image,
-        p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
-    ) -> Result<()> {
-        let err =
-            (self.fp1_0.get_image_drm_format_modifier_properties_ext)(Some(self.handle), Some(image), p_properties);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_EXT_validation_cache` device extension
-pub struct ExtValidationCache {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtValidationCacheFn1_0,
-}
-impl ExtValidationCache {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtValidationCacheFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_validation_cache\0").unwrap()
-    }
-    pub unsafe fn create_validation_cache_ext(
-        &self,
-        p_create_info: &vk::ValidationCacheCreateInfoEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::ValidationCacheEXT> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_validation_cache_ext)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn destroy_validation_cache_ext(
-        &self,
-        validation_cache: Option<vk::ValidationCacheEXT>,
-        p_allocator: Option<&vk::AllocationCallbacks>,
+        command_buffer: vk::CommandBuffer,
+        first_counter_buffer: u32,
+        p_counter_buffers: &[vk::Buffer],
+        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
     ) {
-        (self.fp1_0.destroy_validation_cache_ext)(
-            Some(self.handle),
-            validation_cache,
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn merge_validation_caches_ext(
-        &self,
-        dst_cache: vk::ValidationCacheEXT,
-        p_src_caches: &[vk::ValidationCacheEXT],
-    ) -> Result<()> {
-        let src_cache_count = p_src_caches.len() as u32;
-        let err = (self.fp1_0.merge_validation_caches_ext)(
-            Some(self.handle),
-            Some(dst_cache),
-            src_cache_count,
-            p_src_caches.as_ptr(),
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn get_validation_cache_data_ext(
-        &self,
-        validation_cache: vk::ValidationCacheEXT,
-        p_data_size: *mut usize,
-        p_data: *mut c_void,
-    ) -> Result<vk::Result> {
-        let err =
-            (self.fp1_0.get_validation_cache_data_ext)(Some(self.handle), Some(validation_cache), p_data_size, p_data);
-        let res = match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_NV_shading_rate_image` device extension
-pub struct NvShadingRateImage {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvShadingRateImageFn1_0,
-}
-impl NvShadingRateImage {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvShadingRateImageFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
+        let counter_buffer_count = p_counter_buffers.len() as u32;
+        if let Some(s) = p_counter_buffer_offsets {
+            assert_eq!(counter_buffer_count, s.len() as u32);
         }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+        (self.fp_cmd_begin_transform_feedback_ext.unwrap())(
+            Some(command_buffer),
+            first_counter_buffer,
+            counter_buffer_count,
+            p_counter_buffers.as_ptr(),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+        );
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_shading_rate_image\0").unwrap()
+    pub unsafe fn cmd_end_transform_feedback_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_counter_buffer: u32,
+        p_counter_buffers: &[vk::Buffer],
+        p_counter_buffer_offsets: Option<&[vk::DeviceSize]>,
+    ) {
+        let counter_buffer_count = p_counter_buffers.len() as u32;
+        if let Some(s) = p_counter_buffer_offsets {
+            assert_eq!(counter_buffer_count, s.len() as u32);
+        }
+        (self.fp_cmd_end_transform_feedback_ext.unwrap())(
+            Some(command_buffer),
+            first_counter_buffer,
+            counter_buffer_count,
+            p_counter_buffers.as_ptr(),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+        );
+    }
+    pub unsafe fn cmd_begin_query_indexed_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        query_pool: vk::QueryPool,
+        query: u32,
+        flags: vk::QueryControlFlags,
+        index: u32,
+    ) {
+        (self.fp_cmd_begin_query_indexed_ext.unwrap())(Some(command_buffer), Some(query_pool), query, flags, index);
+    }
+    pub unsafe fn cmd_end_query_indexed_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        query_pool: vk::QueryPool,
+        query: u32,
+        index: u32,
+    ) {
+        (self.fp_cmd_end_query_indexed_ext.unwrap())(Some(command_buffer), Some(query_pool), query, index);
+    }
+    pub unsafe fn cmd_draw_indirect_byte_count_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        instance_count: u32,
+        first_instance: u32,
+        counter_buffer: vk::Buffer,
+        counter_buffer_offset: vk::DeviceSize,
+        counter_offset: u32,
+        vertex_stride: u32,
+    ) {
+        (self.fp_cmd_draw_indirect_byte_count_ext.unwrap())(
+            Some(command_buffer),
+            instance_count,
+            first_instance,
+            Some(counter_buffer),
+            counter_buffer_offset,
+            counter_offset,
+            vertex_stride,
+        );
+    }
+    pub unsafe fn cmd_set_exclusive_scissor_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_exclusive_scissor: u32,
+        p_exclusive_scissors: &[vk::Rect2D],
+    ) {
+        let exclusive_scissor_count = p_exclusive_scissors.len() as u32;
+        (self.fp_cmd_set_exclusive_scissor_nv.unwrap())(
+            Some(command_buffer),
+            first_exclusive_scissor,
+            exclusive_scissor_count,
+            p_exclusive_scissors.as_ptr(),
+        );
     }
     pub unsafe fn cmd_bind_shading_rate_image_nv(
         &self,
@@ -6775,7 +6172,7 @@ impl NvShadingRateImage {
         image_view: vk::ImageView,
         image_layout: vk::ImageLayout,
     ) {
-        (self.fp1_0.cmd_bind_shading_rate_image_nv)(Some(command_buffer), Some(image_view), image_layout);
+        (self.fp_cmd_bind_shading_rate_image_nv.unwrap())(Some(command_buffer), Some(image_view), image_layout);
     }
     pub unsafe fn cmd_set_viewport_shading_rate_palette_nv(
         &self,
@@ -6784,7 +6181,7 @@ impl NvShadingRateImage {
         p_shading_rate_palettes: &[vk::ShadingRatePaletteNV],
     ) {
         let viewport_count = p_shading_rate_palettes.len() as u32;
-        (self.fp1_0.cmd_set_viewport_shading_rate_palette_nv)(
+        (self.fp_cmd_set_viewport_shading_rate_palette_nv.unwrap())(
             Some(command_buffer),
             first_viewport,
             viewport_count,
@@ -6798,42 +6195,59 @@ impl NvShadingRateImage {
         p_custom_sample_orders: &[vk::CoarseSampleOrderCustomNV],
     ) {
         let custom_sample_order_count = p_custom_sample_orders.len() as u32;
-        (self.fp1_0.cmd_set_coarse_sample_order_nv)(
+        (self.fp_cmd_set_coarse_sample_order_nv.unwrap())(
             Some(command_buffer),
             sample_order_type,
             custom_sample_order_count,
             p_custom_sample_orders.as_ptr(),
         );
     }
-}
-/// Loader for the `VK_NV_ray_tracing` device extension
-pub struct NvRayTracing {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvRayTracingFn1_0,
-}
-impl NvRayTracing {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvRayTracingFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
+    pub unsafe fn cmd_draw_mesh_tasks_nv(&self, command_buffer: vk::CommandBuffer, task_count: u32, first_task: u32) {
+        (self.fp_cmd_draw_mesh_tasks_nv.unwrap())(Some(command_buffer), task_count, first_task);
     }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_ray_tracing\0").unwrap()
+    pub unsafe fn cmd_draw_mesh_tasks_indirect_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        draw_count: u32,
+        stride: u32,
+    ) {
+        (self.fp_cmd_draw_mesh_tasks_indirect_nv.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            draw_count,
+            stride,
+        );
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_indirect_count_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
+    ) {
+        (self.fp_cmd_draw_mesh_tasks_indirect_count_nv.unwrap())(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
+    }
+    pub unsafe fn compile_deferred_nv(&self, pipeline: vk::Pipeline, shader: u32) -> Result<()> {
+        let err = (self.fp_compile_deferred_nv.unwrap())(Some(self.handle), Some(pipeline), shader);
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
     }
     pub unsafe fn create_acceleration_structure_nv(
         &self,
@@ -6841,7 +6255,7 @@ impl NvRayTracing {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::AccelerationStructureNV> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_acceleration_structure_nv)(
+        let err = (self.fp_create_acceleration_structure_nv.unwrap())(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
@@ -6858,7 +6272,7 @@ impl NvRayTracing {
         acceleration_structure: vk::AccelerationStructureNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
-        (self.fp1_0.destroy_acceleration_structure_nv)(
+        (self.fp_destroy_acceleration_structure_nv.unwrap())(
             Some(self.handle),
             Some(acceleration_structure),
             p_allocator.map_or(ptr::null(), |r| r),
@@ -6869,7 +6283,7 @@ impl NvRayTracing {
         p_info: &vk::AccelerationStructureMemoryRequirementsInfoNV,
         p_memory_requirements: &mut vk::MemoryRequirements2KHR,
     ) {
-        (self.fp1_0.get_acceleration_structure_memory_requirements_nv)(
+        (self.fp_get_acceleration_structure_memory_requirements_nv.unwrap())(
             Some(self.handle),
             p_info,
             p_memory_requirements,
@@ -6880,7 +6294,7 @@ impl NvRayTracing {
         p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNV],
     ) -> Result<()> {
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (self.fp1_0.bind_acceleration_structure_memory_nv)(
+        let err = (self.fp_bind_acceleration_structure_memory_nv.unwrap())(
             Some(self.handle),
             bind_info_count,
             p_bind_infos.as_ptr(),
@@ -6890,6 +6304,33 @@ impl NvRayTracing {
             _ => Err(err),
         };
         res
+    }
+    pub unsafe fn cmd_copy_acceleration_structure_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        dst: vk::AccelerationStructureNV,
+        src: vk::AccelerationStructureNV,
+        mode: vk::CopyAccelerationStructureModeNV,
+    ) {
+        (self.fp_cmd_copy_acceleration_structure_nv.unwrap())(Some(command_buffer), Some(dst), Some(src), mode);
+    }
+    pub unsafe fn cmd_write_acceleration_structures_properties_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_acceleration_structures: &[vk::AccelerationStructureNV],
+        query_type: vk::QueryType,
+        query_pool: vk::QueryPool,
+        first_query: u32,
+    ) {
+        let acceleration_structure_count = p_acceleration_structures.len() as u32;
+        (self.fp_cmd_write_acceleration_structures_properties_nv.unwrap())(
+            Some(command_buffer),
+            acceleration_structure_count,
+            p_acceleration_structures.as_ptr(),
+            query_type,
+            Some(query_pool),
+            first_query,
+        );
     }
     pub unsafe fn cmd_build_acceleration_structure_nv(
         &self,
@@ -6903,7 +6344,7 @@ impl NvRayTracing {
         scratch: vk::Buffer,
         scratch_offset: vk::DeviceSize,
     ) {
-        (self.fp1_0.cmd_build_acceleration_structure_nv)(
+        (self.fp_cmd_build_acceleration_structure_nv.unwrap())(
             Some(command_buffer),
             p_info,
             instance_data,
@@ -6914,15 +6355,6 @@ impl NvRayTracing {
             Some(scratch),
             scratch_offset,
         );
-    }
-    pub unsafe fn cmd_copy_acceleration_structure_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        dst: vk::AccelerationStructureNV,
-        src: vk::AccelerationStructureNV,
-        mode: vk::CopyAccelerationStructureModeNV,
-    ) {
-        (self.fp1_0.cmd_copy_acceleration_structure_nv)(Some(command_buffer), Some(dst), Some(src), mode);
     }
     pub unsafe fn cmd_trace_rays_nv(
         &self,
@@ -6942,7 +6374,7 @@ impl NvRayTracing {
         height: u32,
         depth: u32,
     ) {
-        (self.fp1_0.cmd_trace_rays_nv)(
+        (self.fp_cmd_trace_rays_nv.unwrap())(
             Some(command_buffer),
             Some(raygen_shader_binding_table_buffer),
             raygen_shader_binding_offset,
@@ -6960,6 +6392,46 @@ impl NvRayTracing {
             depth,
         );
     }
+    pub unsafe fn get_ray_tracing_shader_group_handles_nv(
+        &self,
+        pipeline: vk::Pipeline,
+        first_group: u32,
+        group_count: u32,
+        data_size: usize,
+        p_data: *mut c_void,
+    ) -> Result<()> {
+        let err = (self.fp_get_ray_tracing_shader_group_handles_nv.unwrap())(
+            Some(self.handle),
+            Some(pipeline),
+            first_group,
+            group_count,
+            data_size,
+            p_data,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
+    pub unsafe fn get_acceleration_structure_handle_nv(
+        &self,
+        acceleration_structure: vk::AccelerationStructureNV,
+        data_size: usize,
+        p_data: *mut c_void,
+    ) -> Result<()> {
+        let err = (self.fp_get_acceleration_structure_handle_nv.unwrap())(
+            Some(self.handle),
+            Some(acceleration_structure),
+            data_size,
+            p_data,
+        );
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        };
+        res
+    }
     pub unsafe fn create_ray_tracing_pipelines_nv(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
@@ -6968,7 +6440,7 @@ impl NvRayTracing {
         p_pipelines: *mut vk::Pipeline,
     ) -> Result<()> {
         let create_info_count = p_create_infos.len() as u32;
-        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
+        let v_err = (self.fp_create_ray_tracing_pipelines_nv.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -6991,7 +6463,7 @@ impl NvRayTracing {
         let create_info_count = p_create_infos.len() as u32;
         let mut v = Vec::with_capacity(create_info_count as usize);
         v.set_len(create_info_count as usize);
-        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
+        let v_err = (self.fp_create_ray_tracing_pipelines_nv.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -7014,7 +6486,7 @@ impl NvRayTracing {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
         let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
+        let v_err = (self.fp_create_ray_tracing_pipelines_nv.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -7037,7 +6509,7 @@ impl NvRayTracing {
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
         let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.create_ray_tracing_pipelines_nv)(
+        let v_err = (self.fp_create_ray_tracing_pipelines_nv.unwrap())(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
@@ -7051,764 +6523,32 @@ impl NvRayTracing {
         };
         res
     }
-    pub unsafe fn get_ray_tracing_shader_group_handles_nv(
+    pub unsafe fn get_image_drm_format_modifier_properties_ext(
         &self,
-        pipeline: vk::Pipeline,
-        first_group: u32,
-        group_count: u32,
-        data_size: usize,
-        p_data: *mut c_void,
+        image: vk::Image,
+        p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
     ) -> Result<()> {
-        let err = (self.fp1_0.get_ray_tracing_shader_group_handles_nv)(
+        let err = (self.fp_get_image_drm_format_modifier_properties_ext.unwrap())(
             Some(self.handle),
-            Some(pipeline),
-            first_group,
-            group_count,
-            data_size,
-            p_data,
+            Some(image),
+            p_properties,
         );
         let res = match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
         res
-    }
-    pub unsafe fn get_acceleration_structure_handle_nv(
-        &self,
-        acceleration_structure: vk::AccelerationStructureNV,
-        data_size: usize,
-        p_data: *mut c_void,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_acceleration_structure_handle_nv)(
-            Some(self.handle),
-            Some(acceleration_structure),
-            data_size,
-            p_data,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn cmd_write_acceleration_structures_properties_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        p_acceleration_structures: &[vk::AccelerationStructureNV],
-        query_type: vk::QueryType,
-        query_pool: vk::QueryPool,
-        first_query: u32,
-    ) {
-        let acceleration_structure_count = p_acceleration_structures.len() as u32;
-        (self.fp1_0.cmd_write_acceleration_structures_properties_nv)(
-            Some(command_buffer),
-            acceleration_structure_count,
-            p_acceleration_structures.as_ptr(),
-            query_type,
-            Some(query_pool),
-            first_query,
-        );
-    }
-    pub unsafe fn compile_deferred_nv(&self, pipeline: vk::Pipeline, shader: u32) -> Result<()> {
-        let err = (self.fp1_0.compile_deferred_nv)(Some(self.handle), Some(pipeline), shader);
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_KHR_maintenance3` device extension
-pub struct KhrMaintenance3 {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrMaintenance3Fn1_0,
-}
-impl KhrMaintenance3 {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrMaintenance3Fn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_maintenance3\0").unwrap()
-    }
-    pub unsafe fn get_descriptor_set_layout_support_khr(
-        &self,
-        p_create_info: &vk::DescriptorSetLayoutCreateInfo,
-        p_support: &mut vk::DescriptorSetLayoutSupport,
-    ) {
-        (self.fp1_0.get_descriptor_set_layout_support_khr)(Some(self.handle), p_create_info, p_support);
-    }
-}
-/// Loader for the `VK_KHR_draw_indirect_count` device extension
-pub struct KhrDrawIndirectCount {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::KhrDrawIndirectCountFn1_0,
-}
-impl KhrDrawIndirectCount {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::KhrDrawIndirectCountFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_KHR_draw_indirect_count\0").unwrap()
-    }
-    pub unsafe fn cmd_draw_indirect_count_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        count_buffer: vk::Buffer,
-        count_buffer_offset: vk::DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_indirect_count_khr)(
-            Some(command_buffer),
-            Some(buffer),
-            offset,
-            Some(count_buffer),
-            count_buffer_offset,
-            max_draw_count,
-            stride,
-        );
-    }
-    pub unsafe fn cmd_draw_indexed_indirect_count_khr(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        count_buffer: vk::Buffer,
-        count_buffer_offset: vk::DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_indexed_indirect_count_khr)(
-            Some(command_buffer),
-            Some(buffer),
-            offset,
-            Some(count_buffer),
-            count_buffer_offset,
-            max_draw_count,
-            stride,
-        );
-    }
-}
-/// Loader for the `VK_EXT_external_memory_host` device extension
-pub struct ExtExternalMemoryHost {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtExternalMemoryHostFn1_0,
-}
-impl ExtExternalMemoryHost {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtExternalMemoryHostFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_external_memory_host\0").unwrap()
-    }
-    pub unsafe fn get_memory_host_pointer_properties_ext(
-        &self,
-        handle_type: vk::ExternalMemoryHandleTypeFlags,
-        p_host_pointer: *const c_void,
-        p_memory_host_pointer_properties: &mut vk::MemoryHostPointerPropertiesEXT,
-    ) -> Result<()> {
-        let err = (self.fp1_0.get_memory_host_pointer_properties_ext)(
-            Some(self.handle),
-            handle_type,
-            p_host_pointer,
-            p_memory_host_pointer_properties,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_AMD_buffer_marker` device extension
-pub struct AmdBufferMarker {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::AmdBufferMarkerFn1_0,
-}
-impl AmdBufferMarker {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::AmdBufferMarkerFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_AMD_buffer_marker\0").unwrap()
-    }
-    pub unsafe fn cmd_write_buffer_marker_amd(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        pipeline_stage: vk::PipelineStageFlags,
-        dst_buffer: vk::Buffer,
-        dst_offset: vk::DeviceSize,
-        marker: u32,
-    ) {
-        (self.fp1_0.cmd_write_buffer_marker_amd)(
-            Some(command_buffer),
-            pipeline_stage,
-            Some(dst_buffer),
-            dst_offset,
-            marker,
-        );
-    }
-}
-/// Loader for the `VK_EXT_calibrated_timestamps` device extension
-pub struct ExtCalibratedTimestamps {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtCalibratedTimestampsFn1_0,
-}
-impl ExtCalibratedTimestamps {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtCalibratedTimestampsFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_calibrated_timestamps\0").unwrap()
-    }
-    pub unsafe fn get_physical_device_calibrateable_time_domains_ext_to_vec(
-        &self,
-        physical_device: vk::PhysicalDevice,
-    ) -> Result<Vec<vk::TimeDomainEXT>> {
-        let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_calibrateable_time_domains_ext)(
-            Some(physical_device),
-            &mut len,
-            ptr::null_mut(),
-        );
-        if len_err != vk::Result::SUCCESS {
-            return Err(len_err);
-        }
-        let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_calibrateable_time_domains_ext)(
-            Some(physical_device),
-            &mut len,
-            v.as_mut_ptr(),
-        );
-        v.set_len(len as usize);
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_calibrated_timestamps_ext(
-        &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
-        p_timestamps: *mut u64,
-        p_max_deviation: &mut u64,
-    ) -> Result<()> {
-        let timestamp_count = p_timestamp_infos.len() as u32;
-        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
-            Some(self.handle),
-            timestamp_count,
-            p_timestamp_infos.as_ptr(),
-            p_timestamps,
-            p_max_deviation,
-        );
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_calibrated_timestamps_ext_to_vec(
-        &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
-        p_max_deviation: &mut u64,
-    ) -> Result<Vec<u64>> {
-        let timestamp_count = p_timestamp_infos.len() as u32;
-        let mut v = Vec::with_capacity(timestamp_count as usize);
-        v.set_len(timestamp_count as usize);
-        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
-            Some(self.handle),
-            timestamp_count,
-            p_timestamp_infos.as_ptr(),
-            v.as_mut_ptr(),
-            p_max_deviation,
-        );
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_calibrated_timestamps_ext_array<A: Array<Item = u64>>(
-        &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
-        p_max_deviation: &mut u64,
-    ) -> Result<A> {
-        let timestamp_count = p_timestamp_infos.len() as u32;
-        assert_eq!(timestamp_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
-        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
-            Some(self.handle),
-            timestamp_count,
-            p_timestamp_infos.as_ptr(),
-            v.as_mut_ptr(),
-            p_max_deviation,
-        );
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn get_calibrated_timestamps_ext_single(
-        &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
-        p_max_deviation: &mut u64,
-    ) -> Result<u64> {
-        let timestamp_count = p_timestamp_infos.len() as u32;
-        assert_eq!(timestamp_count, 1);
-        let mut v = mem::uninitialized();
-        let v_err = (self.fp1_0.get_calibrated_timestamps_ext)(
-            Some(self.handle),
-            timestamp_count,
-            p_timestamp_infos.as_ptr(),
-            &mut v,
-            p_max_deviation,
-        );
-        let res = match v_err {
-            vk::Result::SUCCESS => Ok(v),
-            _ => Err(v_err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_NV_mesh_shader` device extension
-pub struct NvMeshShader {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvMeshShaderFn1_0,
-}
-impl NvMeshShader {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvMeshShaderFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_mesh_shader\0").unwrap()
-    }
-    pub unsafe fn cmd_draw_mesh_tasks_nv(&self, command_buffer: vk::CommandBuffer, task_count: u32, first_task: u32) {
-        (self.fp1_0.cmd_draw_mesh_tasks_nv)(Some(command_buffer), task_count, first_task);
-    }
-    pub unsafe fn cmd_draw_mesh_tasks_indirect_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_mesh_tasks_indirect_nv)(Some(command_buffer), Some(buffer), offset, draw_count, stride);
-    }
-    pub unsafe fn cmd_draw_mesh_tasks_indirect_count_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
-        count_buffer: vk::Buffer,
-        count_buffer_offset: vk::DeviceSize,
-        max_draw_count: u32,
-        stride: u32,
-    ) {
-        (self.fp1_0.cmd_draw_mesh_tasks_indirect_count_nv)(
-            Some(command_buffer),
-            Some(buffer),
-            offset,
-            Some(count_buffer),
-            count_buffer_offset,
-            max_draw_count,
-            stride,
-        );
-    }
-}
-/// Loader for the `VK_NV_scissor_exclusive` device extension
-pub struct NvScissorExclusive {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvScissorExclusiveFn1_0,
-}
-impl NvScissorExclusive {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvScissorExclusiveFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_scissor_exclusive\0").unwrap()
-    }
-    pub unsafe fn cmd_set_exclusive_scissor_nv(
-        &self,
-        command_buffer: vk::CommandBuffer,
-        first_exclusive_scissor: u32,
-        p_exclusive_scissors: &[vk::Rect2D],
-    ) {
-        let exclusive_scissor_count = p_exclusive_scissors.len() as u32;
-        (self.fp1_0.cmd_set_exclusive_scissor_nv)(
-            Some(command_buffer),
-            first_exclusive_scissor,
-            exclusive_scissor_count,
-            p_exclusive_scissors.as_ptr(),
-        );
-    }
-}
-/// Loader for the `VK_NV_device_diagnostic_checkpoints` device extension
-pub struct NvDeviceDiagnosticCheckpoints {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvDeviceDiagnosticCheckpointsFn1_0,
-}
-impl NvDeviceDiagnosticCheckpoints {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvDeviceDiagnosticCheckpointsFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_device_diagnostic_checkpoints\0").unwrap()
-    }
-    pub unsafe fn cmd_set_checkpoint_nv(&self, command_buffer: vk::CommandBuffer, p_checkpoint_marker: *const c_void) {
-        (self.fp1_0.cmd_set_checkpoint_nv)(Some(command_buffer), p_checkpoint_marker);
-    }
-    pub unsafe fn get_queue_checkpoint_data_nv_to_vec(&self, queue: vk::Queue) -> Vec<vk::CheckpointDataNV> {
-        let mut len = mem::uninitialized();
-        (self.fp1_0.get_queue_checkpoint_data_nv)(Some(queue), &mut len, ptr::null_mut());
-        let mut v = Vec::with_capacity(len as usize);
-        (self.fp1_0.get_queue_checkpoint_data_nv)(Some(queue), &mut len, v.as_mut_ptr());
-        v.set_len(len as usize);
-        let res = v;
-        res
-    }
-}
-/// Loader for the `VK_AMD_display_native_hdr` device extension
-pub struct AmdDisplayNativeHdr {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::AmdDisplayNativeHdrFn1_0,
-}
-impl AmdDisplayNativeHdr {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::AmdDisplayNativeHdrFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_AMD_display_native_hdr\0").unwrap()
-    }
-    pub unsafe fn set_local_dimming_amd(&self, swap_chain: vk::SwapchainKHR, local_dimming_enable: bool) {
-        (self.fp1_0.set_local_dimming_amd)(
-            Some(self.handle),
-            Some(swap_chain),
-            if local_dimming_enable { vk::TRUE } else { vk::FALSE },
-        );
-    }
-}
-/// Loader for the `VK_FUCHSIA_imagepipe_surface` instance extension
-pub struct FuchsiaImagepipeSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::FuchsiaImagepipeSurfaceFn1_0,
-}
-impl FuchsiaImagepipeSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::FuchsiaImagepipeSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_FUCHSIA_imagepipe_surface\0").unwrap()
-    }
-    pub unsafe fn create_image_pipe_surface_fuchsia(
-        &self,
-        p_create_info: &vk::ImagePipeSurfaceCreateInfoFUCHSIA,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_image_pipe_surface_fuchsia)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_EXT_metal_surface` instance extension
-pub struct ExtMetalSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtMetalSurfaceFn1_0,
-}
-impl ExtMetalSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtMetalSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_metal_surface\0").unwrap()
-    }
-    pub unsafe fn create_metal_surface_ext(
-        &self,
-        p_create_info: &vk::MetalSurfaceCreateInfoEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_metal_surface_ext)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
-        let res = match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
-        };
-        res
-    }
-}
-/// Loader for the `VK_EXT_buffer_device_address` device extension
-pub struct ExtBufferDeviceAddress {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtBufferDeviceAddressFn1_0,
-}
-impl ExtBufferDeviceAddress {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtBufferDeviceAddressFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_buffer_device_address\0").unwrap()
     }
     pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
-        let res = (self.fp1_0.get_buffer_device_address_ext)(Some(self.handle), p_info);
+        let res = (self.fp_get_buffer_device_address_ext.unwrap())(Some(self.handle), p_info);
         res
-    }
-}
-/// Loader for the `VK_NV_cooperative_matrix` device extension
-pub struct NvCooperativeMatrix {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::NvCooperativeMatrixFn1_0,
-}
-impl NvCooperativeMatrix {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::NvCooperativeMatrixFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_NV_cooperative_matrix\0").unwrap()
     }
     pub unsafe fn get_physical_device_cooperative_matrix_properties_nv_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
     ) -> Result<Vec<vk::CooperativeMatrixPropertiesNV>> {
         let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_cooperative_matrix_properties_nv)(
+        let len_err = (self.fp_get_physical_device_cooperative_matrix_properties_nv.unwrap())(
             Some(physical_device),
             &mut len,
             ptr::null_mut(),
@@ -7817,7 +6557,7 @@ impl NvCooperativeMatrix {
             return Err(len_err);
         }
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_cooperative_matrix_properties_nv)(
+        let v_err = (self.fp_get_physical_device_cooperative_matrix_properties_nv.unwrap())(
             Some(physical_device),
             &mut len,
             v.as_mut_ptr(),
@@ -7829,42 +6569,9 @@ impl NvCooperativeMatrix {
         };
         res
     }
-}
-/// Loader for the `VK_EXT_full_screen_exclusive` device extension
-pub struct ExtFullScreenExclusive {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtFullScreenExclusiveFn1_0,
-    pub fp1_1: vk::ExtFullScreenExclusiveFn1_1,
-}
-impl ExtFullScreenExclusive {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtFullScreenExclusiveFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        let (fp1_1, ok1_1) = vk::ExtFullScreenExclusiveFn1_1::load(f);
-        ok = ok && ok1_1;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 1, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-            fp1_1,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_full_screen_exclusive\0").unwrap()
+    pub unsafe fn get_image_view_handle_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u32 {
+        let res = (self.fp_get_image_view_handle_nvx.unwrap())(Some(self.handle), p_info);
+        res
     }
     pub unsafe fn get_physical_device_surface_present_modes2_ext_to_vec(
         &self,
@@ -7872,7 +6579,7 @@ impl ExtFullScreenExclusive {
         p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
     ) -> Result<Vec<vk::PresentModeKHR>> {
         let mut len = mem::uninitialized();
-        let len_err = (self.fp1_0.get_physical_device_surface_present_modes2_ext)(
+        let len_err = (self.fp_get_physical_device_surface_present_modes2_ext.unwrap())(
             Some(physical_device),
             p_surface_info,
             &mut len,
@@ -7882,7 +6589,7 @@ impl ExtFullScreenExclusive {
             return Err(len_err);
         }
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (self.fp1_0.get_physical_device_surface_present_modes2_ext)(
+        let v_err = (self.fp_get_physical_device_surface_present_modes2_ext.unwrap())(
             Some(physical_device),
             p_surface_info,
             &mut len,
@@ -7892,22 +6599,6 @@ impl ExtFullScreenExclusive {
         let res = match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
-        };
-        res
-    }
-    pub unsafe fn acquire_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
-        let err = (self.fp1_0.acquire_full_screen_exclusive_mode_ext)(Some(self.handle), Some(swapchain));
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        };
-        res
-    }
-    pub unsafe fn release_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
-        let err = (self.fp1_0.release_full_screen_exclusive_mode_ext)(Some(self.handle), Some(swapchain));
-        let res = match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
         };
         res
     }
@@ -7916,93 +6607,29 @@ impl ExtFullScreenExclusive {
         p_surface_info: &vk::PhysicalDeviceSurfaceInfo2KHR,
     ) -> Result<vk::DeviceGroupPresentModeFlagsKHR> {
         let mut res = mem::uninitialized();
-        let err = (self.fp1_1.get_device_group_surface_present_modes2_ext)(Some(self.handle), p_surface_info, &mut res);
+        let err =
+            (self.fp_get_device_group_surface_present_modes2_ext.unwrap())(Some(self.handle), p_surface_info, &mut res);
         let res = match err {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         };
         res
     }
-}
-/// Loader for the `VK_EXT_headless_surface` instance extension
-pub struct ExtHeadlessSurface {
-    pub version: vk::Version,
-    pub handle: vk::Instance,
-    pub fp1_0: vk::ExtHeadlessSurfaceFn1_0,
-}
-impl ExtHeadlessSurface {
-    pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {
-        let lib = LIB.as_ref().map_err(|e| (*e).clone())?;
-        let f = |name: &CStr| {
-            lib.get_instance_proc_addr(Some(instance.handle), name)
-                .map(|p| mem::transmute(p))
-        };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtHeadlessSurfaceFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: instance.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_headless_surface\0").unwrap()
-    }
-    pub unsafe fn create_headless_surface_ext(
-        &self,
-        p_create_info: &vk::HeadlessSurfaceCreateInfoEXT,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::SurfaceKHR> {
-        let mut res = mem::uninitialized();
-        let err = (self.fp1_0.create_headless_surface_ext)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
-        );
+    pub unsafe fn acquire_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
+        let err = (self.fp_acquire_full_screen_exclusive_mode_ext.unwrap())(Some(self.handle), Some(swapchain));
         let res = match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         };
         res
     }
-}
-/// Loader for the `VK_EXT_host_query_reset` device extension
-pub struct ExtHostQueryReset {
-    pub version: vk::Version,
-    pub handle: vk::Device,
-    pub fp1_0: vk::ExtHostQueryResetFn1_0,
-}
-impl ExtHostQueryReset {
-    pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {
-        let f = |name: &CStr| {
-            instance
-                .get_device_proc_addr(device.handle, name)
-                .map(|p| mem::transmute(p))
+    pub unsafe fn release_full_screen_exclusive_mode_ext(&self, swapchain: vk::SwapchainKHR) -> Result<()> {
+        let err = (self.fp_release_full_screen_exclusive_mode_ext.unwrap())(Some(self.handle), Some(swapchain));
+        let res = match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
         };
-        let mut version = vk::Version::from_raw(0);
-        let mut ok = true;
-        let (fp1_0, ok1_0) = vk::ExtHostQueryResetFn1_0::load(f);
-        ok = ok && ok1_0;
-        if ok {
-            version = vk::Version::from_raw_parts(1, 0, 0);
-        }
-        Ok(Self {
-            version,
-            handle: device.handle,
-            fp1_0,
-        })
-    }
-    pub fn name() -> &'static CStr {
-        CStr::from_bytes_with_nul(b"VK_EXT_host_query_reset\0").unwrap()
-    }
-    pub unsafe fn reset_query_pool_ext(&self, query_pool: vk::QueryPool, first_query: u32, query_count: u32) {
-        (self.fp1_0.reset_query_pool_ext)(Some(self.handle), Some(query_pool), first_query, query_count);
+        res
     }
 }
 

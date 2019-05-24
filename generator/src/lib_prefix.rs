@@ -3,7 +3,7 @@ pub mod builder;
 
 use lazy_static::lazy_static;
 use std::ffi::CStr;
-use std::os::raw::{c_void, c_char, c_int};
+use std::os::raw::{c_void, c_int};
 use std::mem;
 use std::path::Path;
 use std::ptr;
@@ -41,13 +41,9 @@ array_impl!(8);
 
 pub type Result<T> = result::Result<T, vk::Result>;
 
-struct LibFn {
-    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
-}
-
 struct Lib {
     pub lib: DynamicLibrary,
-    pub fp: LibFn,
+    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 #[derive(Debug, Clone)]
@@ -63,6 +59,8 @@ impl From<vk::Result> for LoaderError {
     }
 }
 
+pub type LoaderResult<T> = result::Result<T, LoaderError>;
+
 #[cfg(unix)]
 const DL_PATH: &'static str = "libvulkan.so.1";
 
@@ -70,7 +68,7 @@ const DL_PATH: &'static str = "libvulkan.so.1";
 const DL_PATH: &'static str = "vulkan-1.dll";
 
 impl Lib {
-    pub fn new() -> result::Result<Self, LoaderError> {
+    pub fn new() -> LoaderResult<Self> {
         match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
             Ok(lib) => match unsafe {
                 lib.symbol("vkGetInstanceProcAddr")
@@ -78,7 +76,7 @@ impl Lib {
             } {
                 Ok(get_instance_proc_addr) => Ok(Self {
                     lib,
-                    fp: LibFn { get_instance_proc_addr },
+                    get_instance_proc_addr,
                 }),
                 Err(s) => Err(LoaderError::MissingSymbol(s)),
             },
@@ -87,10 +85,10 @@ impl Lib {
     }
 
     pub unsafe fn get_instance_proc_addr(&self, instance: Option<vk::Instance>, name: &CStr) -> Option<vk::FnVoidFunction> {
-        (self.fp.get_instance_proc_addr)(instance, name.as_ptr())
+        (self.get_instance_proc_addr)(instance, name.as_ptr())
     }
 }
 
 lazy_static! {
-    static ref LIB: result::Result<Lib, LoaderError> = Lib::new();
+    static ref LIB: LoaderResult<Lib> = Lib::new();
 }

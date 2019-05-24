@@ -1,7 +1,7 @@
 mod c_parse;
 
 use crate::c_parse::*;
-use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
+use heck::{ShoutySnakeCase, SnakeCase};
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fmt;
@@ -58,7 +58,6 @@ const TYPE_PREFIX: &str = "Vk";
 const FN_PREFIX: &str = "vk";
 const PFN_PREFIX: &str = "PFN_vk";
 const CONST_PREFIX: &str = "VK_";
-const VERSION_PREFIX: &str = "VK_VERSION_";
 const FN_GET_INSTANCE_PROC_ADDR: &str = "vkGetInstanceProcAddr";
 
 trait SkipPrefix {
@@ -159,37 +158,6 @@ fn get_rust_variable_name(camel_case: &str) -> String {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-enum Group<'a> {
-    Loader,
-    Instance,
-    Device,
-    InstanceExtension(&'a str),
-    DeviceExtension(&'a str),
-}
-
-impl<'a> fmt::Display for Group<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Group::Loader => write!(f, "Loader"),
-            Group::Instance => write!(f, "Instance"),
-            Group::Device => write!(f, "Device"),
-            Group::InstanceExtension(s) => write!(f, "{}", s.skip_prefix(CONST_PREFIX).to_camel_case()),
-            Group::DeviceExtension(s) => write!(f, "{}", s.skip_prefix(CONST_PREFIX).to_camel_case()),
-        }
-    }
-}
-
-struct VersionNames<'a> {
-    version: &'a str,
-    names: Vec<&'a str>,
-}
-
-struct GroupNames<'a> {
-    group: Group<'a>,
-    versions: Vec<VersionNames<'a>>,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Category {
     Loader,
     Instance,
@@ -199,17 +167,15 @@ enum Category {
 impl fmt::Display for Category {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Category::Loader => write!(f, "Loader2"),
-            Category::Instance => write!(f, "Instance2"),
-            Category::Device => write!(f, "Device2"),
+            Category::Loader => write!(f, "Loader"),
+            Category::Instance => write!(f, "Instance"),
+            Category::Device => write!(f, "Device"),
         }
     }
 }
 
 trait GetCommandCategory {
     fn get_command_category(&self) -> Category;
-
-    fn get_command_group<'a>(&self) -> Option<Group<'a>>;
 }
 
 impl GetCommandCategory for vk::CommandDefinition {
@@ -237,20 +203,6 @@ impl GetCommandCategory for vk::CommandDefinition {
                     Category::Instance
                 }
             }
-        }
-    }
-
-    fn get_command_group<'a>(&self) -> Option<Group<'a>> {
-        match self.get_command_category() {
-            Category::Loader => {
-                if self.proto.name.as_str() == FN_GET_INSTANCE_PROC_ADDR {
-                    None
-                } else {
-                    Some(Group::Loader)
-                }
-            }
-            Category::Instance => Some(Group::Instance),
-            Category::Device => Some(Group::Device),
         }
     }
 }
@@ -348,7 +300,6 @@ struct Generator<'a> {
     extension_by_enum_name: HashMap<&'a str, &'a vk::Extension>,
     cmd_names: Vec<&'a str>,
     cmd_info_by_name: HashMap<&'a str, CommandInfo<'a>>,
-    group_names: Vec<GroupNames<'a>>,
 }
 
 impl<'a> Generator<'a> {
@@ -651,104 +602,6 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn collect_group(&self, group: Group<'a>) -> GroupNames<'a> {
-        let mut group_names = GroupNames {
-            group,
-            versions: Vec::new(),
-        };
-        for feature in self
-            .registry
-            .0
-            .iter()
-            .filter_map(|registry_child| match registry_child {
-                vk::RegistryChild::Feature(feature) => Some(feature),
-                _ => None,
-            })
-        {
-            let mut names = Vec::new();
-            for name in feature
-                .children
-                .iter()
-                .filter_map(|ext_child| match ext_child {
-                    vk::ExtensionChild::Require { items, .. } => Some(items),
-                    _ => None,
-                })
-                .flat_map(|items| items.iter())
-                .filter_map(|item| match item {
-                    vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
-                    _ => None,
-                })
-            {
-                let cmd_def = self.cmd_info_by_name.get(name).expect("command not found").cmd_def;
-                if Some(group) == cmd_def.get_command_group() {
-                    names.push(name);
-                }
-            }
-            if !names.is_empty() {
-                let version = feature.name.as_str();
-                group_names.versions.push(VersionNames { version, names });
-            }
-        }
-        group_names
-    }
-
-    fn collect_groups(&mut self) {
-        let entry_group = self.collect_group(Group::Loader);
-        let instance_group = self.collect_group(Group::Instance);
-        let device_group = self.collect_group(Group::Device);
-        self.group_names.push(entry_group);
-        self.group_names.push(instance_group);
-        self.group_names.push(device_group);
-
-        let mut feature_names = Vec::new();
-        for registry_child in &self.registry.0 {
-            match registry_child {
-                vk::RegistryChild::Feature(feature) => {
-                    feature_names.push(feature.name.as_str());
-                }
-                vk::RegistryChild::Extensions(extensions) => {
-                    for extension in extensions.children.iter().filter(|ext| !ext.is_blacklisted()) {
-                        if extension.supported.as_ref_str() == Some("vulkan") {
-                            let mut feature_commands: Vec<Vec<_>> = vec![Vec::new(); feature_names.len()];
-                            for ext_child in &extension.children {
-                                if let vk::ExtensionChild::Require { feature, items, .. } = ext_child {
-                                    let feature_index: usize = feature
-                                        .as_ref()
-                                        .and_then(|s| feature_names.iter().position(|&n| s == n))
-                                        .unwrap_or(0);
-                                    for item in items {
-                                        if let vk::InterfaceItem::Command { name, .. } = item {
-                                            feature_commands[feature_index].push(name.as_str());
-                                        }
-                                    }
-                                }
-                            }
-
-                            let ext_type = extension.ext_type.as_ref_str().expect("missing ext_type");
-                            let group = match ext_type {
-                                "instance" => Group::InstanceExtension(extension.name.as_str()),
-                                "device" => Group::DeviceExtension(extension.name.as_str()),
-                                _ => panic!("unknown extension type {:?}", extension),
-                            };
-
-                            let mut group_names = GroupNames {
-                                group,
-                                versions: Vec::new(),
-                            };
-                            for (version, names) in feature_names.iter().zip(feature_commands.drain(..)) {
-                                if !names.is_empty() {
-                                    group_names.versions.push(VersionNames { version, names });
-                                }
-                            }
-                            self.group_names.push(group_names);
-                        }
-                    }
-                }
-                _ => {}
-            }
-        }
-    }
-
     fn new(registry: &'a vk::Registry) -> Self {
         let mut gen = Self {
             registry,
@@ -762,14 +615,12 @@ impl<'a> Generator<'a> {
             extension_by_enum_name: HashMap::new(),
             cmd_names: Vec::new(),
             cmd_info_by_name: HashMap::new(),
-            group_names: Vec::new(),
         };
         gen.collect_extensions();
         gen.collect_types();
         gen.collect_tags();
         gen.collect_enums();
         gen.collect_commands();
-        gen.collect_groups();
         gen
     }
 
@@ -1485,65 +1336,6 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn write_blocks(&self, w: &mut impl IoWrite) -> WriteResult {
-        for group_names in &self.group_names {
-            for version_names in &group_names.versions {
-                let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                let struct_name = format!("{}Fn{}", group_names.group, version);
-                let decls: Vec<(&str, CFunctionDecl)> = version_names
-                    .names
-                    .iter()
-                    .map(|name| {
-                        let cmd_def = self.cmd_info_by_name.get(name).expect("missing command info").cmd_def;
-                        let mut decl = c_parse_function_decl(cmd_def.code.as_str());
-                        let context = decl.proto.name;
-                        for param in decl.parameters.iter_mut() {
-                            take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
-                        }
-                        (*name, decl)
-                    })
-                    .collect();
-                writeln!(w, "pub struct {} {{", struct_name)?;
-                for (function_name, _) in &decls {
-                    let name_part = function_name.skip_prefix(FN_PREFIX);
-                    writeln!(w, "pub {}: Fn{},", name_part.to_snake_case(), name_part)?;
-                }
-                writeln!(w, "}}")?;
-                writeln!(w, "impl {} {{", struct_name)?;
-                writeln!(
-                    w,
-                    "pub fn load<F>(mut f: F) -> (Self, bool) where F: FnMut(&CStr) -> Option<FnVoidFunction> {{\
-                     let mut all_loaded = true;\
-                     let block = {} {{",
-                    struct_name
-                )?;
-                for (function_name, function_decl) in &decls {
-                    let fn_name = function_name.skip_prefix(FN_PREFIX).to_snake_case();
-                    write!(w, "{}: unsafe {{", fn_name)?;
-                    write!(w, r#"extern "system" fn {}_fallback("#, fn_name)?;
-                    for param in &function_decl.parameters {
-                        write!(w, "_: {},", self.get_rust_parameter_type(&param.ty, None),)?;
-                    }
-                    writeln!(
-                        w,
-                        r#") -> {} {{ panic!("fn {} not loaded"); }}"#,
-                        self.get_rust_parameter_type(&function_decl.proto.ty, None),
-                        fn_name,
-                    )?;
-                    writeln!(
-                        w,
-                        r#"let name = CStr::from_bytes_with_nul_unchecked(b"{}\0");"#,
-                        function_name,
-                    )?;
-                    writeln!(w, "f(name).map_or_else(|| {{ all_loaded = false; mem::transmute({}_fallback as *const c_void) }}, |f| mem::transmute(f)) }},", fn_name)?;
-                }
-                writeln!(w, "}}; (block, all_loaded) }}")?;
-                writeln!(w, "}}")?;
-            }
-        }
-        Ok(())
-    }
-
     fn write_vk(&self, path: &Path) -> WriteResult {
         let file = File::create(path)?;
         let mut w = io::BufWriter::new(file);
@@ -1552,7 +1344,6 @@ impl<'a> Generator<'a> {
         self.write_constants(&mut w)?;
         self.write_types(&mut w)?;
         self.write_command_types(&mut w)?;
-        self.write_blocks(&mut w)?;
         Ok(())
     }
 
@@ -1878,9 +1669,9 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn wrap_group_command_arguments(
+    fn wrap_command_arguments(
         &self,
-        group: Group,
+        category: Category,
         cmd_def: &vk::CommandDefinition,
         cmd_return_value: CommandReturnValue,
         decl: &CFunctionDecl,
@@ -1896,9 +1687,9 @@ impl<'a> Generator<'a> {
 
             // match member handle (first parameter only)
             if i == 0 {
-                if let Some(type_name) = match group {
-                    Group::Instance | Group::InstanceExtension(_) => Some("VkInstance"),
-                    Group::Device | Group::DeviceExtension(_) => Some("VkDevice"),
+                if let Some(type_name) = match category {
+                    Category::Instance => Some("VkInstance"),
+                    Category::Device => Some("VkDevice"),
                     _ => None,
                 } {
                     if cparam.ty.name == type_name && cparam.ty.decoration == CDecoration::None {
@@ -2167,7 +1958,7 @@ impl<'a> Generator<'a> {
         (return_type, return_transform, return_type_name)
     }
 
-    fn write_group_command(&self, w: &mut impl IoWrite, group: Group, version: &str, cmd_name: &str) -> WriteResult {
+    fn write_command(&self, w: &mut impl IoWrite, category: Category, cmd_name: &str) -> WriteResult {
         let cmd_def = self
             .cmd_info_by_name
             .get(cmd_name)
@@ -2196,7 +1987,7 @@ impl<'a> Generator<'a> {
         };
 
         let (return_type, return_transform, return_type_name) =
-            self.wrap_group_command_arguments(group, &cmd_def, cmd_return_value, &decl, &mut params);
+            self.wrap_command_arguments(category, &cmd_def, cmd_return_value, &decl, &mut params);
 
         let fn_name = cmd_name.skip_prefix(FN_PREFIX).to_snake_case();
 
@@ -2422,7 +2213,7 @@ impl<'a> Generator<'a> {
                     },
                 }
 
-                write!(w, r#"(self.fp{}.{})("#, version, fn_name)?;
+                write!(w, r#"(self.fp_{}.unwrap())("#, fn_name)?;
                 for rparam in &params {
                     match rparam.ty {
                         LibParamType::CDecl | LibParamType::MutRef { .. } => {
@@ -2586,134 +2377,6 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn write_group_structs(&self, w: &mut impl IoWrite) -> WriteResult {
-        for group_names in self.group_names.iter().filter(|g| !g.versions.is_empty()) {
-            match group_names.group {
-                Group::Loader => {
-                    writeln!(w, "/// Core library loader")?;
-                }
-                Group::Instance => {
-                    writeln!(w, "/// Core instance loader")?;
-                }
-                Group::InstanceExtension(ref name) => {
-                    writeln!(w, "/// Loader for the `{}` instance extension", name)?;
-                }
-                Group::Device => {
-                    writeln!(w, "/// Core device loader")?;
-                }
-                Group::DeviceExtension(ref name) => {
-                    writeln!(w, "/// Loader for the `{}` device extension", name)?;
-                }
-            }
-            write!(w, "pub struct {} {{", group_names.group)?;
-            write!(w, "pub version: vk::Version,")?;
-            match group_names.group {
-                Group::Loader => {}
-                Group::Instance | Group::InstanceExtension(_) => {
-                    write!(w, "pub handle: vk::Instance,")?;
-                }
-                Group::Device | Group::DeviceExtension(_) => {
-                    write!(w, "pub handle: vk::Device,")?;
-                }
-            }
-            for version_names in &group_names.versions {
-                let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                write!(w, "pub fp{0}: vk::{1}Fn{0},", version, group_names.group)?;
-            }
-            writeln!(w, "}}")?;
-            writeln!(w, "impl {} {{", group_names.group)?;
-            match group_names.group {
-                Group::Loader => {
-                    write!(
-                        w,
-                        "pub fn new() -> result::Result<Self, LoaderError> {{\
-                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
-                         let f = |name: &CStr| unsafe {{\
-                         lib.get_instance_proc_addr(None, name).map(|p| mem::transmute(p)) }};"
-                    )?;
-                }
-                Group::Instance => {
-                    writeln!(
-                        w,
-                        "unsafe fn load(instance: vk::Instance) -> result::Result<Self, LoaderError> {{\
-                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
-                         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name).map(|p| mem::transmute(p));"
-                    )?;
-                }
-                Group::Device => {
-                    writeln!(
-                        w,
-                        "unsafe fn load(instance: &Instance, device: vk::Device) -> result::Result<Self, LoaderError> {{\
-                         let f = |name: &CStr| instance.get_device_proc_addr(device, name).map(|p| mem::transmute(p));"
-                    )?;
-                }
-                Group::InstanceExtension(_) => {
-                    writeln!(
-                        w,
-                        "pub unsafe fn new(instance: &Instance) -> result::Result<Self, LoaderError> {{\
-                         let lib = LIB.as_ref().map_err(|e| (*e).clone())?;\
-                         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance.handle), name).map(|p| mem::transmute(p));"
-                    )?;
-                }
-                Group::DeviceExtension(_) => {
-                    writeln!(
-                        w,
-                        "pub unsafe fn new(instance: &Instance, device: &Device) -> result::Result<Self, LoaderError> {{\
-                         let f = |name: &CStr| instance.get_device_proc_addr(device.handle, name).map(|p| mem::transmute(p));"
-                    )?;
-                }
-            }
-            writeln!(w, "let mut version = vk::Version::from_raw(0); let mut ok = true;")?;
-            for version_names in &group_names.versions {
-                let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                let version_parts: Vec<&str> = version.split('_').collect();
-                writeln!(
-                    w,
-                    "let (fp{0}, ok{0}) = vk::{1}Fn{0}::load(f);\
-                     ok = ok && ok{0};\
-                     if ok {{ version = vk::Version::from_raw_parts({2}, {3}, 0); }}",
-                    version, group_names.group, version_parts[0], version_parts[1]
-                )?;
-            }
-            writeln!(w, "Ok(Self {{ version,")?;
-            match group_names.group {
-                Group::Loader => {}
-                Group::Instance => {
-                    write!(w, "handle: instance,")?;
-                }
-                Group::Device => {
-                    write!(w, "handle: device,")?;
-                }
-                Group::InstanceExtension(_) => {
-                    write!(w, "handle: instance.handle,")?;
-                }
-                Group::DeviceExtension(_) => {
-                    write!(w, "handle: device.handle,")?;
-                }
-            }
-            for version_names in &group_names.versions {
-                let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                write!(w, "fp{},", version)?;
-            }
-            writeln!(w, "}}) }}")?;
-            if let Group::InstanceExtension(ref name) | Group::DeviceExtension(ref name) = group_names.group {
-                write!(
-                    w,
-                    r#"pub fn name() -> &'static CStr {{ CStr::from_bytes_with_nul(b"{}\0").unwrap() }}"#,
-                    name
-                )?;
-            }
-            for version_names in &group_names.versions {
-                let version = version_names.version.skip_prefix(VERSION_PREFIX);
-                for name in &version_names.names {
-                    self.write_group_command(w, group_names.group, version, name)?;
-                }
-            }
-            writeln!(w, "}}")?;
-        }
-        Ok(())
-    }
-
     fn write_struct(&self, category: Category, w: &mut impl IoWrite) -> WriteResult {
         writeln!(w, "pub struct {} {{", category)?;
         match category {
@@ -2726,9 +2389,70 @@ impl<'a> Generator<'a> {
             info.category == Some(category)
         }) {
             let name_part = name.skip_prefix(FN_PREFIX);
-            writeln!(w, "pub fp_{}: Option<vk::Fn{}>,", name_part.to_snake_case(), name_part)?;
+            let fn_name = name_part.to_snake_case();
+            writeln!(w, "pub fp_{}: Option<vk::Fn{}>,", fn_name, name_part)?;
         }
         writeln!(w, "}}")?;
+
+        writeln!(w, "impl {} {{", category)?;
+        match category {
+            Category::Loader => {
+                writeln!(
+                    w,
+                    "pub fn new() -> LoaderResult<Self> {{\
+                     let lib = LIB.as_ref().map_err(|e| e.clone())?;\
+                     unsafe {{\
+                     let f = |name: &CStr| lib.get_instance_proc_addr(None, name);\
+                     Ok(Self {{"
+                )?;
+            }
+            Category::Instance => {
+                writeln!(
+                    w,
+                    "unsafe fn load(instance: vk::Instance) -> LoaderResult<Self> {{\
+                     let lib = LIB.as_ref().map_err(|e| e.clone())?;\
+                     let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name);\
+                     Ok(Self {{ handle: instance,"
+                )?;
+            }
+            Category::Device => {
+                writeln!(
+                    w,
+                    "unsafe fn load(instance: &Instance, device: vk::Device) -> LoaderResult<Self> {{\
+                     let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
+                     Ok(Self {{ handle: device,"
+                )?;
+            }
+        }
+        for name in self.cmd_names.iter().filter(|&name| {
+            let info = self.cmd_info_by_name.get(name).expect("missing command info");
+            info.category == Some(category)
+        }) {
+            let name_part = name.skip_prefix(FN_PREFIX);
+            let fn_name = name_part.to_snake_case();
+            writeln!(
+                w,
+                r#"fp_{}: f(CStr::from_bytes_with_nul_unchecked(b"{}\0")).map(|f| mem::transmute(f)),"#,
+                fn_name, name
+            )?;
+        }
+        match category {
+            Category::Loader => {
+                writeln!(w, "}}) }} }}")?;
+            }
+            Category::Instance | Category::Device => {
+                writeln!(w, "}}) }}")?;
+            }
+        }
+        for name in self.cmd_names.iter().filter(|&name| {
+            let info = self.cmd_info_by_name.get(name).expect("missing command info");
+            info.category == Some(category)
+        }) {
+            self.write_command(w, category, name)?;
+        }
+
+        writeln!(w, "}}")?;
+
         Ok(())
     }
 
@@ -2757,7 +2481,6 @@ impl<'a> Generator<'a> {
         self.write_struct(Category::Loader, &mut w)?;
         self.write_struct(Category::Instance, &mut w)?;
         self.write_struct(Category::Device, &mut w)?;
-        self.write_group_structs(&mut w)?;
         write!(&mut w, "{}", include_str!("lib_postfix.rs"))?;
 
         Ok(())
