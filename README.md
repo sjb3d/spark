@@ -17,7 +17,7 @@ Almost all of the library is generated from the Vulkan API specifications using 
 
 ## Loaders
 
-The structs `Loader`, `Instance` and `Device` load function pointers for the core API.
+The structs `Loader`, `Instance` and `Device` load function pointers for the core API and all extensions.
 
 ```rust
 // load the Vulkan shared library
@@ -28,25 +28,9 @@ let instance_create_info = vk::InstanceCreateInfo {
     .. Default::default()
 };
 let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
-
-// check what version loaded successfully
-println!("instance version: {}", instance.version);
 ```
 
-Each struct will attempt to load function pointers for all versions of Vulkan.
-The `version` field can be read to determine what versions loaded successfully.
-Function pointers for versions beyond this will be present but their implementation will `panic!`.
-
-Each Vulkan extension has its own loader that must be created manually for an `Instance` or `Device`.  For example:
-
-```rust
-// load functions for the VK_NV_ray_tracing extension for this device
-// (expects instance to have been created with this extension listed)
-let nv_ray_tracing = NvRayTracing::new(&instance, &device)?;
-
-// can now call functions from this extension
-let accel = nv_ray_tracing.create_acceleration_structure_nv(&create_info, None)?;
-```
+_TODO: describe how to specify which functions are loaded using a Vulkan version and list of extensions, once this implemented.  For now, we attempt to load functions for all versions and all extensions!  This will change soon..._
 
 ## Vulkan Handles
 
@@ -65,7 +49,8 @@ pub struct DescriptorImageInfo {
 When used as function parameters, the parameter will only be wrapped in `Option<T>` if that parameter is optional.  For example:
 
 ```rust
-impl KhrSwapchain {
+impl Device {
+    /* ... */
     pub unsafe fn acquire_next_image_khr(
         &self,
         swapchain: vk::SwapchainKHR,        // not optional
@@ -73,8 +58,9 @@ impl KhrSwapchain {
         semaphore: Option<vk::Semaphore>,   // optional
         fence: Option<vk::Fence>,           // optional
     ) -> Result<(vk::Result, u32)> {
-        ...
+        /* ... */
     }
+    /* ... */
 }
 ```
 
@@ -107,13 +93,15 @@ The rust wrapper on `Device` is:
 
 ```rust
 impl Device {
+    /* ... */
     pub unsafe fn allocate_memory(
         &self,
         p_allocate_info: &vk::MemoryAllocateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DeviceMemory> {
-        ...
+        /* ... */
     }
+    /* ... */
 }
 ```
 
@@ -158,6 +146,7 @@ There are many other rust crates for Vulkan.  Here are some links to a few:
 * [`vulkano`](http://vulkano.rs/): safe wrapper, necessarily higher level
 * [`ash`](https://github.com/MaikKlein/ash): similar level of wrapper, with some differences at this time:
   * `vkr` uses non-zero types for handles
-  * `ash` uses traits to handle versions, `vkr` uses runtime checks
+  * `ash` uses traits to handle versions, `vkr` combines everything into a single instance/device
+  * `ash` uses a separate loader struct for each extension, `vkr` combines everything into a single instance/device
   * `vkr` generates code for all Vulkan extensions
 * [`hephaestus`](https://github.com/sheredom/hephaestus): very thin wrapper making use of [`bindgen`](https://github.com/rust-lang-nursery/rust-bindgen)
