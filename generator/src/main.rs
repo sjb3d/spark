@@ -2125,6 +2125,11 @@ impl<'a> Generator<'a> {
                 }
             }
             writeln!(w, "{{")?;
+            writeln!(
+                w,
+                r#"let fp = self.fp_{}.expect("{} is not loaded");"#,
+                fn_name, cmd_name
+            )?;
 
             for rparam in &params {
                 if let LibParamType::SharedSliceLen {
@@ -2162,10 +2167,7 @@ impl<'a> Generator<'a> {
 
             for pass_index in pass_start..2 {
                 match return_type {
-                    LibReturnType::CDecl => {
-                        write!(w, "let res = ")?;
-                    }
-                    LibReturnType::None => {}
+                    LibReturnType::None | LibReturnType::CDecl => {}
                     LibReturnType::ResultEmpty | LibReturnType::ResultEnum => {
                         write!(w, "let err = ")?;
                     }
@@ -2217,7 +2219,7 @@ impl<'a> Generator<'a> {
                     },
                 }
 
-                write!(w, r#"(self.fp_{}.unwrap())("#, fn_name)?;
+                write!(w, "(fp)(")?;
                 for rparam in &params {
                     match rparam.ty {
                         LibParamType::CDecl | LibParamType::MutRef { .. } => {
@@ -2282,16 +2284,16 @@ impl<'a> Generator<'a> {
                     }
                     write!(w, ",")?;
                 }
-                writeln!(w, ");")?;
+                match return_type {
+                    LibReturnType::CDecl => writeln!(w, ")")?,
+                    _ => writeln!(w, ");")?,
+                }
 
                 match return_type {
                     LibReturnType::CDecl => {}
                     LibReturnType::None => {}
                     LibReturnType::ResultEmpty => {
-                        write!(
-                            w,
-                            "let res = match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }};"
-                        )?;
+                        write!(w, "match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }}")?;
                     }
                     LibReturnType::ResultEnum => {
                         let ok_matches = if let Some(successcodes) = cmd_def.successcodes.as_ref_str() {
@@ -2303,13 +2305,10 @@ impl<'a> Generator<'a> {
                         } else {
                             "vk::Result::SUCCESS".to_owned()
                         };
-                        write!(w, "let res = match err {{ {} => Ok(err), _ => Err(err) }};", ok_matches)?;
+                        write!(w, "match err {{ {} => Ok(err), _ => Err(err) }}", ok_matches)?;
                     }
                     LibReturnType::ResultObject => {
-                        write!(
-                            w,
-                            "let res = match err {{ vk::Result::SUCCESS => Ok(res), _ => Err(err) }};",
-                        )?;
+                        write!(w, "match err {{ vk::Result::SUCCESS => Ok(res), _ => Err(err) }}",)?;
                     }
                     LibReturnType::ResultEnumAndObject => {
                         let matches: Vec<String> = cmd_def
@@ -2321,57 +2320,51 @@ impl<'a> Generator<'a> {
                             .collect();
                         write!(
                             w,
-                            "let res = match err {{ {} => Ok((err, res)), _ => Err(err) }};",
+                            "match err {{ {} => Ok((err, res)), _ => Err(err) }}",
                             matches.join("|"),
                         )?;
                     }
-                    LibReturnType::Object => {}
+                    LibReturnType::Object => {
+                        write!(w, "res")?;
+                    }
                     LibReturnType::ResultVecUnknownLen => {
                         if pass_index == 0 {
                             write!(w, "if len_err != vk::Result::SUCCESS {{ return Err(len_err) }}")?;
                         } else {
-                            write!(w, "v.set_len(len as usize); let res = match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }};")?;
+                            write!(w, "v.set_len(len as usize); match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
                         }
                     }
                     LibReturnType::VecUnknownLen => {
                         if pass_index != 0 {
-                            write!(w, "v.set_len(len as usize); let res = v;")?;
+                            write!(w, "v.set_len(len as usize); v")?;
                         }
                     }
                     LibReturnType::ResultVecKnownLen { .. } => match style {
                         LibCommandStyle::Default => {
-                            write!(
-                                w,
-                                "let res = match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }};"
-                            )?;
+                            write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }}")?;
                         }
                         LibCommandStyle::ToVecUnknownLen
                         | LibCommandStyle::ToVecKnownLen
                         | LibCommandStyle::Array
                         | LibCommandStyle::Single => {
-                            write!(
-                                w,
-                                "let res = match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }};"
-                            )?;
+                            write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
                         }
                     },
                 }
 
                 if return_type != LibReturnType::None && pass_index != 0 {
-                    writeln!(
-                        w,
-                        "{}",
-                        match return_transform {
-                            LibReturnTransform::None => "res",
-                            LibReturnTransform::ToBool => "res.map(|r| r != vk::FALSE)",
-                            LibReturnTransform::ToInstance => {
-                                "res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))"
-                            }
-                            LibReturnTransform::ToDevice => {
-                                "res.map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r))"
-                            }
-                        }
-                    )?;
+                    match return_transform {
+                        LibReturnTransform::None => {}
+                        LibReturnTransform::ToBool => writeln!(w, ".map(|r| r != vk::FALSE)")?,
+                        LibReturnTransform::ToInstance => writeln!(
+                            w,
+                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))"
+                        )?,
+                        LibReturnTransform::ToDevice => writeln!(
+                            w,
+                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r))"
+                        )?,
+                    }
                 }
             }
 
