@@ -115,11 +115,36 @@ impl GetTypeName for vk::Type {
     }
 }
 
-trait IsBlacklisted {
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum Category {
+    Loader,
+    Instance,
+    Device,
+}
+
+impl fmt::Display for Category {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Category::Loader => write!(f, "Loader"),
+            Category::Instance => write!(f, "Instance"),
+            Category::Device => write!(f, "Device"),
+        }
+    }
+}
+
+trait ExtensionExtra {
+    fn get_category(&self) -> Category;
     fn is_blacklisted(&self) -> bool;
 }
 
-impl IsBlacklisted for vk::Extension {
+impl ExtensionExtra for vk::Extension {
+    fn get_category(&self) -> Category {
+        match self.ext_type.as_ref_str() {
+            Some("instance") => Category::Instance,
+            Some("device") => Category::Device,
+            _ => panic!("unknown extension type {:?}", self),
+        }
+    }
     fn is_blacklisted(&self) -> bool {
         self.author.as_ref_str() == Some("GGP")
     }
@@ -154,23 +179,6 @@ fn get_rust_variable_name(camel_case: &str) -> String {
     match var_name.as_str() {
         "type" => "ty".to_owned(),
         _ => var_name,
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-enum Category {
-    Loader,
-    Instance,
-    Device,
-}
-
-impl fmt::Display for Category {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Category::Loader => write!(f, "Loader"),
-            Category::Instance => write!(f, "Instance"),
-            Category::Device => write!(f, "Device"),
-        }
     }
 }
 
@@ -559,11 +567,7 @@ impl<'a> Generator<'a> {
                         .iter()
                         .filter(|ext| ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted())
                     {
-                        let ext_category = match ext.ext_type.as_ref_str() {
-                            Some("instance") => Some(Category::Instance),
-                            Some("device") => Some(Category::Device),
-                            _ => panic!("unknown extension type {:?}", ext),
-                        };
+                        let ext_category = Some(ext.get_category());
 
                         for (cmd_ref, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
                             vk::ExtensionChild::Require {
@@ -2395,6 +2399,27 @@ impl<'a> Generator<'a> {
         writeln!(w, "}}")?;
 
         writeln!(w, "impl {} {{", category)?;
+        for ext in self
+            .registry
+            .0
+            .iter()
+            .filter_map(|ext_child| match ext_child {
+                vk::RegistryChild::Extensions(extensions) => Some(extensions),
+                _ => None,
+            })
+            .flat_map(|extensions| extensions.children.iter())
+            .filter(|ext| {
+                ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted() && ext.get_category() == category
+            })
+        {
+            // TODO: replace with const when stable to call CStr::from_bytes_with_nul_unchecked
+            let fn_prefix = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+            writeln!(
+                w,
+                r#"pub fn {}_name() -> &'static CStr {{ unsafe {{ CStr::from_bytes_with_nul_unchecked(b"{}\0") }} }}"#,
+                fn_prefix, ext.name
+            )?;
+        }
         match category {
             Category::Loader => {
                 writeln!(

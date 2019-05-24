@@ -300,6 +300,96 @@ pub struct Instance {
     pub fp_create_headless_surface_ext: Option<vk::FnCreateHeadlessSurfaceEXT>,
 }
 impl Instance {
+    pub fn khr_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface\0") }
+    }
+    pub fn khr_display_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display\0") }
+    }
+    pub fn khr_xlib_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xlib_surface\0") }
+    }
+    pub fn khr_xcb_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xcb_surface\0") }
+    }
+    pub fn khr_wayland_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_wayland_surface\0") }
+    }
+    pub fn khr_android_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_android_surface\0") }
+    }
+    pub fn khr_win32_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_surface\0") }
+    }
+    pub fn ext_debug_report_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_report\0") }
+    }
+    pub fn nv_external_memory_capabilities_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_capabilities\0") }
+    }
+    pub fn khr_get_physical_device_properties2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_physical_device_properties2\0") }
+    }
+    pub fn ext_validation_flags_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_flags\0") }
+    }
+    pub fn nn_vi_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NN_vi_surface\0") }
+    }
+    pub fn khr_device_group_creation_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group_creation\0") }
+    }
+    pub fn khr_external_memory_capabilities_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_capabilities\0") }
+    }
+    pub fn khr_external_semaphore_capabilities_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_capabilities\0") }
+    }
+    pub fn ext_direct_mode_display_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_direct_mode_display\0") }
+    }
+    pub fn ext_acquire_xlib_display_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_acquire_xlib_display\0") }
+    }
+    pub fn ext_display_surface_counter_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_surface_counter\0") }
+    }
+    pub fn ext_swapchain_colorspace_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_swapchain_colorspace\0") }
+    }
+    pub fn khr_external_fence_capabilities_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_capabilities\0") }
+    }
+    pub fn khr_get_surface_capabilities2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_surface_capabilities2\0") }
+    }
+    pub fn khr_get_display_properties2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_display_properties2\0") }
+    }
+    pub fn mvk_ios_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_ios_surface\0") }
+    }
+    pub fn mvk_macos_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_macos_surface\0") }
+    }
+    pub fn ext_debug_utils_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_utils\0") }
+    }
+    pub fn fuchsia_imagepipe_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_imagepipe_surface\0") }
+    }
+    pub fn ext_metal_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_metal_surface\0") }
+    }
+    pub fn khr_surface_protected_capabilities_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface_protected_capabilities\0") }
+    }
+    pub fn ext_validation_features_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_features\0") }
+    }
+    pub fn ext_headless_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
+    }
     unsafe fn load(instance: vk::Instance) -> LoaderResult<Self> {
         let lib = LIB.as_ref().map_err(|e| e.clone())?;
         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name);
@@ -2251,6 +2341,411 @@ pub struct Device {
     pub fp_release_full_screen_exclusive_mode_ext: Option<vk::FnReleaseFullScreenExclusiveModeEXT>,
 }
 impl Device {
+    pub fn khr_swapchain_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain\0") }
+    }
+    pub fn khr_display_swapchain_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display_swapchain\0") }
+    }
+    pub fn nv_glsl_shader_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_glsl_shader\0") }
+    }
+    pub fn ext_depth_range_unrestricted_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_range_unrestricted\0") }
+    }
+    pub fn khr_sampler_mirror_clamp_to_edge_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_mirror_clamp_to_edge\0") }
+    }
+    pub fn img_filter_cubic_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_filter_cubic\0") }
+    }
+    pub fn amd_rasterization_order_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_rasterization_order\0") }
+    }
+    pub fn amd_shader_trinary_minmax_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_trinary_minmax\0") }
+    }
+    pub fn amd_shader_explicit_vertex_parameter_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_explicit_vertex_parameter\0") }
+    }
+    pub fn ext_debug_marker_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_marker\0") }
+    }
+    pub fn amd_gcn_shader_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gcn_shader\0") }
+    }
+    pub fn nv_dedicated_allocation_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation\0") }
+    }
+    pub fn ext_transform_feedback_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_transform_feedback\0") }
+    }
+    pub fn nvx_image_view_handle_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_image_view_handle\0") }
+    }
+    pub fn amd_draw_indirect_count_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_draw_indirect_count\0") }
+    }
+    pub fn amd_negative_viewport_height_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_negative_viewport_height\0") }
+    }
+    pub fn amd_gpu_shader_half_float_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_half_float\0") }
+    }
+    pub fn amd_shader_ballot_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_ballot\0") }
+    }
+    pub fn amd_texture_gather_bias_lod_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_texture_gather_bias_lod\0") }
+    }
+    pub fn amd_shader_info_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_info\0") }
+    }
+    pub fn amd_shader_image_load_store_lod_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_image_load_store_lod\0") }
+    }
+    pub fn nv_corner_sampled_image_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_corner_sampled_image\0") }
+    }
+    pub fn khr_multiview_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_multiview\0") }
+    }
+    pub fn img_format_pvrtc_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_format_pvrtc\0") }
+    }
+    pub fn nv_external_memory_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory\0") }
+    }
+    pub fn nv_external_memory_win32_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_win32\0") }
+    }
+    pub fn nv_win32_keyed_mutex_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_win32_keyed_mutex\0") }
+    }
+    pub fn khr_device_group_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group\0") }
+    }
+    pub fn khr_shader_draw_parameters_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_draw_parameters\0") }
+    }
+    pub fn ext_shader_subgroup_ballot_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_ballot\0") }
+    }
+    pub fn ext_shader_subgroup_vote_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_vote\0") }
+    }
+    pub fn ext_astc_decode_mode_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_astc_decode_mode\0") }
+    }
+    pub fn khr_maintenance1_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance1\0") }
+    }
+    pub fn khr_external_memory_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory\0") }
+    }
+    pub fn khr_external_memory_win32_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_win32\0") }
+    }
+    pub fn khr_external_memory_fd_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_fd\0") }
+    }
+    pub fn khr_win32_keyed_mutex_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_keyed_mutex\0") }
+    }
+    pub fn khr_external_semaphore_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore\0") }
+    }
+    pub fn khr_external_semaphore_win32_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_win32\0") }
+    }
+    pub fn khr_external_semaphore_fd_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_fd\0") }
+    }
+    pub fn khr_push_descriptor_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_push_descriptor\0") }
+    }
+    pub fn ext_conditional_rendering_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conditional_rendering\0") }
+    }
+    pub fn khr_shader_float16_int8_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float16_int8\0") }
+    }
+    pub fn khr_16bit_storage_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_16bit_storage\0") }
+    }
+    pub fn khr_incremental_present_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_incremental_present\0") }
+    }
+    pub fn khr_descriptor_update_template_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_descriptor_update_template\0") }
+    }
+    pub fn nvx_device_generated_commands_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_device_generated_commands\0") }
+    }
+    pub fn nv_clip_space_w_scaling_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_clip_space_w_scaling\0") }
+    }
+    pub fn ext_display_control_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_control\0") }
+    }
+    pub fn google_display_timing_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_display_timing\0") }
+    }
+    pub fn nv_sample_mask_override_coverage_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_sample_mask_override_coverage\0") }
+    }
+    pub fn nv_geometry_shader_passthrough_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_geometry_shader_passthrough\0") }
+    }
+    pub fn nv_viewport_array2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_array2\0") }
+    }
+    pub fn nvx_multiview_per_view_attributes_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_multiview_per_view_attributes\0") }
+    }
+    pub fn nv_viewport_swizzle_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_swizzle\0") }
+    }
+    pub fn ext_discard_rectangles_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_discard_rectangles\0") }
+    }
+    pub fn ext_conservative_rasterization_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conservative_rasterization\0") }
+    }
+    pub fn ext_depth_clip_enable_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clip_enable\0") }
+    }
+    pub fn ext_hdr_metadata_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_hdr_metadata\0") }
+    }
+    pub fn khr_create_renderpass2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_create_renderpass2\0") }
+    }
+    pub fn khr_shared_presentable_image_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shared_presentable_image\0") }
+    }
+    pub fn khr_external_fence_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence\0") }
+    }
+    pub fn khr_external_fence_win32_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_win32\0") }
+    }
+    pub fn khr_external_fence_fd_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_fd\0") }
+    }
+    pub fn khr_maintenance2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance2\0") }
+    }
+    pub fn khr_variable_pointers_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_variable_pointers\0") }
+    }
+    pub fn ext_external_memory_dma_buf_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_dma_buf\0") }
+    }
+    pub fn ext_queue_family_foreign_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_queue_family_foreign\0") }
+    }
+    pub fn khr_dedicated_allocation_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_dedicated_allocation\0") }
+    }
+    pub fn android_external_memory_android_hardware_buffer_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ANDROID_external_memory_android_hardware_buffer\0") }
+    }
+    pub fn ext_sampler_filter_minmax_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sampler_filter_minmax\0") }
+    }
+    pub fn khr_storage_buffer_storage_class_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_storage_buffer_storage_class\0") }
+    }
+    pub fn amd_gpu_shader_int16_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_int16\0") }
+    }
+    pub fn amd_mixed_attachment_samples_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_mixed_attachment_samples\0") }
+    }
+    pub fn amd_shader_fragment_mask_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_fragment_mask\0") }
+    }
+    pub fn ext_inline_uniform_block_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_inline_uniform_block\0") }
+    }
+    pub fn ext_shader_stencil_export_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_stencil_export\0") }
+    }
+    pub fn ext_sample_locations_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sample_locations\0") }
+    }
+    pub fn khr_relaxed_block_layout_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_relaxed_block_layout\0") }
+    }
+    pub fn khr_get_memory_requirements2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_memory_requirements2\0") }
+    }
+    pub fn khr_image_format_list_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_image_format_list\0") }
+    }
+    pub fn ext_blend_operation_advanced_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_blend_operation_advanced\0") }
+    }
+    pub fn nv_fragment_coverage_to_color_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_coverage_to_color\0") }
+    }
+    pub fn nv_framebuffer_mixed_samples_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_framebuffer_mixed_samples\0") }
+    }
+    pub fn nv_fill_rectangle_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fill_rectangle\0") }
+    }
+    pub fn ext_post_depth_coverage_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_post_depth_coverage\0") }
+    }
+    pub fn khr_sampler_ycbcr_conversion_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_ycbcr_conversion\0") }
+    }
+    pub fn khr_bind_memory2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_bind_memory2\0") }
+    }
+    pub fn ext_image_drm_format_modifier_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_drm_format_modifier\0") }
+    }
+    pub fn ext_validation_cache_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_cache\0") }
+    }
+    pub fn ext_descriptor_indexing_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_descriptor_indexing\0") }
+    }
+    pub fn ext_shader_viewport_index_layer_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_viewport_index_layer\0") }
+    }
+    pub fn nv_shading_rate_image_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shading_rate_image\0") }
+    }
+    pub fn nv_ray_tracing_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing\0") }
+    }
+    pub fn nv_representative_fragment_test_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_representative_fragment_test\0") }
+    }
+    pub fn khr_maintenance3_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance3\0") }
+    }
+    pub fn khr_draw_indirect_count_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_draw_indirect_count\0") }
+    }
+    pub fn ext_filter_cubic_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_filter_cubic\0") }
+    }
+    pub fn ext_global_priority_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority\0") }
+    }
+    pub fn khr_8bit_storage_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_8bit_storage\0") }
+    }
+    pub fn ext_external_memory_host_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_host\0") }
+    }
+    pub fn amd_buffer_marker_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_buffer_marker\0") }
+    }
+    pub fn khr_shader_atomic_int64_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_atomic_int64\0") }
+    }
+    pub fn ext_calibrated_timestamps_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_calibrated_timestamps\0") }
+    }
+    pub fn amd_shader_core_properties_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties\0") }
+    }
+    pub fn amd_memory_overallocation_behavior_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_memory_overallocation_behavior\0") }
+    }
+    pub fn ext_vertex_attribute_divisor_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_divisor\0") }
+    }
+    pub fn ext_pipeline_creation_feedback_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_feedback\0") }
+    }
+    pub fn khr_driver_properties_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_driver_properties\0") }
+    }
+    pub fn khr_shader_float_controls_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float_controls\0") }
+    }
+    pub fn nv_shader_subgroup_partitioned_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_subgroup_partitioned\0") }
+    }
+    pub fn khr_depth_stencil_resolve_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_depth_stencil_resolve\0") }
+    }
+    pub fn khr_swapchain_mutable_format_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain_mutable_format\0") }
+    }
+    pub fn nv_compute_shader_derivatives_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_compute_shader_derivatives\0") }
+    }
+    pub fn nv_mesh_shader_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_mesh_shader\0") }
+    }
+    pub fn nv_fragment_shader_barycentric_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shader_barycentric\0") }
+    }
+    pub fn nv_shader_image_footprint_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_image_footprint\0") }
+    }
+    pub fn nv_scissor_exclusive_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_scissor_exclusive\0") }
+    }
+    pub fn nv_device_diagnostic_checkpoints_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostic_checkpoints\0") }
+    }
+    pub fn khr_vulkan_memory_model_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vulkan_memory_model\0") }
+    }
+    pub fn ext_pci_bus_info_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pci_bus_info\0") }
+    }
+    pub fn amd_display_native_hdr_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_display_native_hdr\0") }
+    }
+    pub fn ext_fragment_density_map_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map\0") }
+    }
+    pub fn ext_scalar_block_layout_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_scalar_block_layout\0") }
+    }
+    pub fn google_hlsl_functionality1_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_hlsl_functionality1\0") }
+    }
+    pub fn google_decorate_string_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_decorate_string\0") }
+    }
+    pub fn ext_memory_budget_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") }
+    }
+    pub fn ext_memory_priority_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_priority\0") }
+    }
+    pub fn nv_dedicated_allocation_image_aliasing_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation_image_aliasing\0") }
+    }
+    pub fn ext_buffer_device_address_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_buffer_device_address\0") }
+    }
+    pub fn ext_separate_stencil_usage_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_separate_stencil_usage\0") }
+    }
+    pub fn nv_cooperative_matrix_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix\0") }
+    }
+    pub fn ext_ycbcr_image_arrays_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_image_arrays\0") }
+    }
+    pub fn ext_full_screen_exclusive_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") }
+    }
+    pub fn ext_host_query_reset_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
+    }
     unsafe fn load(instance: &Instance, device: vk::Device) -> LoaderResult<Self> {
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);
         Ok(Self {
