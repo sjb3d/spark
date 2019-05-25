@@ -10,6 +10,7 @@ use std::os::raw::{c_int, c_void};
 use std::path::Path;
 use std::ptr;
 use std::result;
+use std::slice;
 
 #[doc(no_inline)]
 pub use self::builder::*;
@@ -101,6 +102,7 @@ impl Lib {
 lazy_static! {
     static ref LIB: LoaderResult<Lib> = Lib::new();
 }
+#[derive(Copy, Clone)]
 pub struct Loader {
     pub fp_create_instance: Option<vk::FnCreateInstance>,
     pub fp_get_instance_proc_addr: Option<vk::FnGetInstanceProcAddr>,
@@ -135,6 +137,7 @@ impl Loader {
         &self,
         p_create_info: &vk::InstanceCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
+        version: vk::Version,
     ) -> result::Result<Instance, LoaderError> {
         let fp = self.fp_create_instance.expect("vkCreateInstance is not loaded");
         let mut res = mem::uninitialized();
@@ -144,7 +147,7 @@ impl Loader {
             _ => Err(err),
         }
         .map_err(|e| LoaderError::Vulkan(e))
-        .and_then(|r| Instance::load(r))
+        .and_then(|r| Instance::load(r, p_create_info, version))
     }
     pub unsafe fn get_instance_proc_addr(
         &self,
@@ -205,8 +208,43 @@ impl Loader {
         }
     }
 }
+#[derive(Debug, Copy, Clone, Default)]
+pub struct InstanceExtensions {
+    khr_surface: bool,
+    khr_display: bool,
+    khr_xlib_surface: bool,
+    khr_xcb_surface: bool,
+    khr_wayland_surface: bool,
+    khr_android_surface: bool,
+    khr_win32_surface: bool,
+    ext_debug_report: bool,
+    nv_external_memory_capabilities: bool,
+    khr_get_physical_device_properties2: bool,
+    ext_validation_flags: bool,
+    nn_vi_surface: bool,
+    khr_device_group_creation: bool,
+    khr_external_memory_capabilities: bool,
+    khr_external_semaphore_capabilities: bool,
+    ext_direct_mode_display: bool,
+    ext_acquire_xlib_display: bool,
+    ext_display_surface_counter: bool,
+    ext_swapchain_colorspace: bool,
+    khr_external_fence_capabilities: bool,
+    khr_get_surface_capabilities2: bool,
+    khr_get_display_properties2: bool,
+    mvk_ios_surface: bool,
+    mvk_macos_surface: bool,
+    ext_debug_utils: bool,
+    fuchsia_imagepipe_surface: bool,
+    ext_metal_surface: bool,
+    khr_surface_protected_capabilities: bool,
+    ext_validation_features: bool,
+    ext_headless_surface: bool,
+}
+#[derive(Copy, Clone)]
 pub struct Instance {
     pub handle: vk::Instance,
+    pub extensions: InstanceExtensions,
     pub fp_destroy_instance: Option<vk::FnDestroyInstance>,
     pub fp_enumerate_physical_devices: Option<vk::FnEnumeratePhysicalDevices>,
     pub fp_get_device_proc_addr: Option<vk::FnGetDeviceProcAddr>,
@@ -395,11 +433,57 @@ impl Instance {
     pub fn ext_headless_surface_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
     }
-    unsafe fn load(instance: vk::Instance) -> LoaderResult<Self> {
+    unsafe fn load(
+        instance: vk::Instance,
+        create_info: &vk::InstanceCreateInfo,
+        version: vk::Version,
+    ) -> LoaderResult<Self> {
         let lib = LIB.as_ref().map_err(|e| e.clone())?;
         let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name);
+        let mut extensions = InstanceExtensions::default();
+        if create_info.enabled_extension_count != 0 {
+            for &name_ptr in slice::from_raw_parts(
+                create_info.pp_enabled_extension_names,
+                create_info.enabled_extension_count as usize,
+            ) {
+                match CStr::from_ptr(name_ptr).to_bytes() {
+                    b"VK_KHR_surface" => extensions.khr_surface = true,
+                    b"VK_KHR_display" => extensions.khr_display = true,
+                    b"VK_KHR_xlib_surface" => extensions.khr_xlib_surface = true,
+                    b"VK_KHR_xcb_surface" => extensions.khr_xcb_surface = true,
+                    b"VK_KHR_wayland_surface" => extensions.khr_wayland_surface = true,
+                    b"VK_KHR_android_surface" => extensions.khr_android_surface = true,
+                    b"VK_KHR_win32_surface" => extensions.khr_win32_surface = true,
+                    b"VK_EXT_debug_report" => extensions.ext_debug_report = true,
+                    b"VK_NV_external_memory_capabilities" => extensions.nv_external_memory_capabilities = true,
+                    b"VK_KHR_get_physical_device_properties2" => extensions.khr_get_physical_device_properties2 = true,
+                    b"VK_EXT_validation_flags" => extensions.ext_validation_flags = true,
+                    b"VK_NN_vi_surface" => extensions.nn_vi_surface = true,
+                    b"VK_KHR_device_group_creation" => extensions.khr_device_group_creation = true,
+                    b"VK_KHR_external_memory_capabilities" => extensions.khr_external_memory_capabilities = true,
+                    b"VK_KHR_external_semaphore_capabilities" => extensions.khr_external_semaphore_capabilities = true,
+                    b"VK_EXT_direct_mode_display" => extensions.ext_direct_mode_display = true,
+                    b"VK_EXT_acquire_xlib_display" => extensions.ext_acquire_xlib_display = true,
+                    b"VK_EXT_display_surface_counter" => extensions.ext_display_surface_counter = true,
+                    b"VK_EXT_swapchain_colorspace" => extensions.ext_swapchain_colorspace = true,
+                    b"VK_KHR_external_fence_capabilities" => extensions.khr_external_fence_capabilities = true,
+                    b"VK_KHR_get_surface_capabilities2" => extensions.khr_get_surface_capabilities2 = true,
+                    b"VK_KHR_get_display_properties2" => extensions.khr_get_display_properties2 = true,
+                    b"VK_MVK_ios_surface" => extensions.mvk_ios_surface = true,
+                    b"VK_MVK_macos_surface" => extensions.mvk_macos_surface = true,
+                    b"VK_EXT_debug_utils" => extensions.ext_debug_utils = true,
+                    b"VK_FUCHSIA_imagepipe_surface" => extensions.fuchsia_imagepipe_surface = true,
+                    b"VK_EXT_metal_surface" => extensions.ext_metal_surface = true,
+                    b"VK_KHR_surface_protected_capabilities" => extensions.khr_surface_protected_capabilities = true,
+                    b"VK_EXT_validation_features" => extensions.ext_validation_features = true,
+                    b"VK_EXT_headless_surface" => extensions.ext_headless_surface = true,
+                    _ => {}
+                }
+            }
+        }
         Ok(Self {
             handle: instance,
+            extensions,
             fp_destroy_instance: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyInstance\0"))
                 .map(|f| mem::transmute(f)),
             fp_enumerate_physical_devices: f(CStr::from_bytes_with_nul_unchecked(b"vkEnumeratePhysicalDevices\0"))
@@ -441,264 +525,508 @@ impl Instance {
                 b"vkGetPhysicalDeviceSparseImageFormatProperties\0",
             ))
             .map(|f| mem::transmute(f)),
-            fp_create_android_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateAndroidSurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_display_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceDisplayPropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_display_plane_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_display_plane_supported_displays_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDisplayPlaneSupportedDisplaysKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_display_mode_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDisplayModePropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_display_mode_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDisplayModeKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_display_plane_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDisplayPlaneCapabilitiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_display_plane_surface_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateDisplayPlaneSurfaceKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_formats_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceFormatsKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_present_modes_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfacePresentModesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_vi_surface_nn: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateViSurfaceNN\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_wayland_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWaylandSurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_wayland_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_win32_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWin32SurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_win32_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceWin32PresentationSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_xlib_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXlibSurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_xlib_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceXlibPresentationSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_xcb_surface_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXcbSurfaceKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_xcb_presentation_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_image_pipe_surface_fuchsia: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateImagePipeSurfaceFUCHSIA\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_debug_report_callback_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateDebugReportCallbackEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_debug_report_callback_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyDebugReportCallbackEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_debug_report_message_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDebugReportMessageEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_image_format_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_features2: f(CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures2\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_features2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceFeatures2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceFormatProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceFormatProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_image_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceImageFormatProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_image_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceImageFormatProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_queue_family_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceQueueFamilyProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_queue_family_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceQueueFamilyProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_memory_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceMemoryProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_memory_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceMemoryProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_sparse_image_format_properties2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSparseImageFormatProperties2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_sparse_image_format_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_buffer_properties: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalBufferProperties\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_buffer_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalBufferPropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_semaphore_properties: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalSemaphoreProperties\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_semaphore_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_fence_properties: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalFenceProperties\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_external_fence_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceExternalFencePropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_release_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseDisplayEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_acquire_xlib_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireXlibDisplayEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_rand_r_output_display_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetRandROutputDisplayEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_capabilities2_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_enumerate_physical_device_groups: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkEnumeratePhysicalDeviceGroups\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_enumerate_physical_device_groups_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkEnumeratePhysicalDeviceGroupsKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_ios_surface_mvk: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateIOSSurfaceMVK\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_mac_os_surface_mvk: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMacOSSurfaceMVK\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_metal_surface_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMetalSurfaceEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_capabilities2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_formats2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfaceFormats2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_display_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceDisplayProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_physical_device_display_plane_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_display_mode_properties2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDisplayModeProperties2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_display_plane_capabilities2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDisplayPlaneCapabilities2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_set_debug_utils_object_name_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkSetDebugUtilsObjectNameEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_set_debug_utils_object_tag_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkSetDebugUtilsObjectTagEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_queue_begin_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkQueueBeginDebugUtilsLabelEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_queue_end_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkQueueEndDebugUtilsLabelEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_queue_insert_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkQueueInsertDebugUtilsLabelEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_begin_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdBeginDebugUtilsLabelEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_end_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndDebugUtilsLabelEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_insert_debug_utils_label_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdInsertDebugUtilsLabelEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_debug_utils_messenger_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateDebugUtilsMessengerEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_debug_utils_messenger_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyDebugUtilsMessengerEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_submit_debug_utils_message_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkSubmitDebugUtilsMessageEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_headless_surface_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateHeadlessSurfaceEXT\0"))
-                .map(|f| mem::transmute(f)),
+            fp_create_android_surface_khr: if extensions.khr_android_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateAndroidSurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_display_properties_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceDisplayPropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_display_plane_properties_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_display_plane_supported_displays_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDisplayPlaneSupportedDisplaysKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_display_mode_properties_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayModePropertiesKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_display_mode_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDisplayModeKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_display_plane_capabilities_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDisplayPlaneCapabilitiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_display_plane_surface_khr: if extensions.khr_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDisplayPlaneSurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_surface_khr: if extensions.khr_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_support_khr: if extensions.khr_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_capabilities_khr: if extensions.khr_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_formats_khr: if extensions.khr_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceFormatsKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_present_modes_khr: if extensions.khr_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfacePresentModesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_vi_surface_nn: if extensions.nn_vi_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateViSurfaceNN\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_wayland_surface_khr: if extensions.khr_wayland_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWaylandSurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_wayland_presentation_support_khr: if extensions.khr_wayland_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_win32_surface_khr: if extensions.khr_win32_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateWin32SurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_win32_presentation_support_khr: if extensions.khr_win32_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceWin32PresentationSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_xlib_surface_khr: if extensions.khr_xlib_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXlibSurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_xlib_presentation_support_khr: if extensions.khr_xlib_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceXlibPresentationSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_xcb_surface_khr: if extensions.khr_xcb_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateXcbSurfaceKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_xcb_presentation_support_khr: if extensions.khr_xcb_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_image_pipe_surface_fuchsia: if extensions.fuchsia_imagepipe_surface {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateImagePipeSurfaceFUCHSIA\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_debug_report_callback_ext: if extensions.ext_debug_report {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDebugReportCallbackEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_debug_report_callback_ext: if extensions.ext_debug_report {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyDebugReportCallbackEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_debug_report_message_ext: if extensions.ext_debug_report {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDebugReportMessageEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_image_format_properties_nv: if extensions.nv_external_memory_capabilities {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_features2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceFeatures2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_features2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceFeatures2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetPhysicalDeviceProperties2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_properties2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_format_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceFormatProperties2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_format_properties2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceFormatProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_image_format_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceImageFormatProperties2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_image_format_properties2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceImageFormatProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceQueueFamilyProperties2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_properties2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceQueueFamilyProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_memory_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceMemoryProperties2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_memory_properties2_khr: if extensions.khr_get_physical_device_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceMemoryProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_sparse_image_format_properties2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSparseImageFormatProperties2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_sparse_image_format_properties2_khr: if extensions
+                .khr_get_physical_device_properties2
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_buffer_properties: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalBufferProperties\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_buffer_properties_khr: if extensions.khr_external_memory_capabilities {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalBufferPropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_semaphore_properties: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalSemaphoreProperties\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_semaphore_properties_khr: if extensions.khr_external_semaphore_capabilities
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_fence_properties: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalFenceProperties\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_external_fence_properties_khr: if extensions.khr_external_fence_capabilities {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceExternalFencePropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_display_ext: if extensions.ext_direct_mode_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseDisplayEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_xlib_display_ext: if extensions.ext_acquire_xlib_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireXlibDisplayEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_rand_r_output_display_ext: if extensions.ext_acquire_xlib_display {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetRandROutputDisplayEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_capabilities2_ext: if extensions.ext_display_surface_counter {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_enumerate_physical_device_groups: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkEnumeratePhysicalDeviceGroups\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_enumerate_physical_device_groups_khr: if extensions.khr_device_group_creation {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkEnumeratePhysicalDeviceGroupsKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_ios_surface_mvk: if extensions.mvk_ios_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateIOSSurfaceMVK\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_mac_os_surface_mvk: if extensions.mvk_macos_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMacOSSurfaceMVK\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_metal_surface_ext: if extensions.ext_metal_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMetalSurfaceEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_capabilities2_khr: if extensions.khr_get_surface_capabilities2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_formats2_khr: if extensions.khr_get_surface_capabilities2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfaceFormats2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_display_properties2_khr: if extensions.khr_get_display_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceDisplayProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_display_plane_properties2_khr: if extensions.khr_get_display_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_display_mode_properties2_khr: if extensions.khr_get_display_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetDisplayModeProperties2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_display_plane_capabilities2_khr: if extensions.khr_get_display_properties2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDisplayPlaneCapabilities2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_debug_utils_object_name_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkSetDebugUtilsObjectNameEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_debug_utils_object_tag_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkSetDebugUtilsObjectTagEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_begin_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkQueueBeginDebugUtilsLabelEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_end_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkQueueEndDebugUtilsLabelEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_insert_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkQueueInsertDebugUtilsLabelEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginDebugUtilsLabelEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndDebugUtilsLabelEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_insert_debug_utils_label_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdInsertDebugUtilsLabelEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_debug_utils_messenger_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDebugUtilsMessengerEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_debug_utils_messenger_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyDebugUtilsMessengerEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_submit_debug_utils_message_ext: if extensions.ext_debug_utils {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkSubmitDebugUtilsMessageEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_headless_surface_ext: if extensions.ext_headless_surface {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateHeadlessSurfaceEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
         })
     }
     pub unsafe fn destroy_instance(&self, p_allocator: Option<&vk::AllocationCallbacks>) {
@@ -809,6 +1137,7 @@ impl Instance {
         physical_device: vk::PhysicalDevice,
         p_create_info: &vk::DeviceCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
+        version: vk::Version,
     ) -> result::Result<Device, LoaderError> {
         let fp = self.fp_create_device.expect("vkCreateDevice is not loaded");
         let mut res = mem::uninitialized();
@@ -823,7 +1152,7 @@ impl Instance {
             _ => Err(err),
         }
         .map_err(|e| LoaderError::Vulkan(e))
-        .and_then(|r| Device::load(&self, r))
+        .and_then(|r| Device::load(&self, r, p_create_info, version))
     }
     pub unsafe fn enumerate_device_layer_properties_to_vec(
         &self,
@@ -2058,8 +2387,148 @@ impl Instance {
         }
     }
 }
+#[derive(Debug, Copy, Clone, Default)]
+pub struct DeviceExtensions {
+    khr_swapchain: bool,
+    khr_display_swapchain: bool,
+    nv_glsl_shader: bool,
+    ext_depth_range_unrestricted: bool,
+    khr_sampler_mirror_clamp_to_edge: bool,
+    img_filter_cubic: bool,
+    amd_rasterization_order: bool,
+    amd_shader_trinary_minmax: bool,
+    amd_shader_explicit_vertex_parameter: bool,
+    ext_debug_marker: bool,
+    amd_gcn_shader: bool,
+    nv_dedicated_allocation: bool,
+    ext_transform_feedback: bool,
+    nvx_image_view_handle: bool,
+    amd_draw_indirect_count: bool,
+    amd_negative_viewport_height: bool,
+    amd_gpu_shader_half_float: bool,
+    amd_shader_ballot: bool,
+    amd_texture_gather_bias_lod: bool,
+    amd_shader_info: bool,
+    amd_shader_image_load_store_lod: bool,
+    nv_corner_sampled_image: bool,
+    khr_multiview: bool,
+    img_format_pvrtc: bool,
+    nv_external_memory: bool,
+    nv_external_memory_win32: bool,
+    nv_win32_keyed_mutex: bool,
+    khr_device_group: bool,
+    khr_shader_draw_parameters: bool,
+    ext_shader_subgroup_ballot: bool,
+    ext_shader_subgroup_vote: bool,
+    ext_astc_decode_mode: bool,
+    khr_maintenance1: bool,
+    khr_external_memory: bool,
+    khr_external_memory_win32: bool,
+    khr_external_memory_fd: bool,
+    khr_win32_keyed_mutex: bool,
+    khr_external_semaphore: bool,
+    khr_external_semaphore_win32: bool,
+    khr_external_semaphore_fd: bool,
+    khr_push_descriptor: bool,
+    ext_conditional_rendering: bool,
+    khr_shader_float16_int8: bool,
+    khr_16bit_storage: bool,
+    khr_incremental_present: bool,
+    khr_descriptor_update_template: bool,
+    nvx_device_generated_commands: bool,
+    nv_clip_space_w_scaling: bool,
+    ext_display_control: bool,
+    google_display_timing: bool,
+    nv_sample_mask_override_coverage: bool,
+    nv_geometry_shader_passthrough: bool,
+    nv_viewport_array2: bool,
+    nvx_multiview_per_view_attributes: bool,
+    nv_viewport_swizzle: bool,
+    ext_discard_rectangles: bool,
+    ext_conservative_rasterization: bool,
+    ext_depth_clip_enable: bool,
+    ext_hdr_metadata: bool,
+    khr_create_renderpass2: bool,
+    khr_shared_presentable_image: bool,
+    khr_external_fence: bool,
+    khr_external_fence_win32: bool,
+    khr_external_fence_fd: bool,
+    khr_maintenance2: bool,
+    khr_variable_pointers: bool,
+    ext_external_memory_dma_buf: bool,
+    ext_queue_family_foreign: bool,
+    khr_dedicated_allocation: bool,
+    android_external_memory_android_hardware_buffer: bool,
+    ext_sampler_filter_minmax: bool,
+    khr_storage_buffer_storage_class: bool,
+    amd_gpu_shader_int16: bool,
+    amd_mixed_attachment_samples: bool,
+    amd_shader_fragment_mask: bool,
+    ext_inline_uniform_block: bool,
+    ext_shader_stencil_export: bool,
+    ext_sample_locations: bool,
+    khr_relaxed_block_layout: bool,
+    khr_get_memory_requirements2: bool,
+    khr_image_format_list: bool,
+    ext_blend_operation_advanced: bool,
+    nv_fragment_coverage_to_color: bool,
+    nv_framebuffer_mixed_samples: bool,
+    nv_fill_rectangle: bool,
+    ext_post_depth_coverage: bool,
+    khr_sampler_ycbcr_conversion: bool,
+    khr_bind_memory2: bool,
+    ext_image_drm_format_modifier: bool,
+    ext_validation_cache: bool,
+    ext_descriptor_indexing: bool,
+    ext_shader_viewport_index_layer: bool,
+    nv_shading_rate_image: bool,
+    nv_ray_tracing: bool,
+    nv_representative_fragment_test: bool,
+    khr_maintenance3: bool,
+    khr_draw_indirect_count: bool,
+    ext_filter_cubic: bool,
+    ext_global_priority: bool,
+    khr_8bit_storage: bool,
+    ext_external_memory_host: bool,
+    amd_buffer_marker: bool,
+    khr_shader_atomic_int64: bool,
+    ext_calibrated_timestamps: bool,
+    amd_shader_core_properties: bool,
+    amd_memory_overallocation_behavior: bool,
+    ext_vertex_attribute_divisor: bool,
+    ext_pipeline_creation_feedback: bool,
+    khr_driver_properties: bool,
+    khr_shader_float_controls: bool,
+    nv_shader_subgroup_partitioned: bool,
+    khr_depth_stencil_resolve: bool,
+    khr_swapchain_mutable_format: bool,
+    nv_compute_shader_derivatives: bool,
+    nv_mesh_shader: bool,
+    nv_fragment_shader_barycentric: bool,
+    nv_shader_image_footprint: bool,
+    nv_scissor_exclusive: bool,
+    nv_device_diagnostic_checkpoints: bool,
+    khr_vulkan_memory_model: bool,
+    ext_pci_bus_info: bool,
+    amd_display_native_hdr: bool,
+    ext_fragment_density_map: bool,
+    ext_scalar_block_layout: bool,
+    google_hlsl_functionality1: bool,
+    google_decorate_string: bool,
+    ext_memory_budget: bool,
+    ext_memory_priority: bool,
+    nv_dedicated_allocation_image_aliasing: bool,
+    ext_buffer_device_address: bool,
+    ext_separate_stencil_usage: bool,
+    nv_cooperative_matrix: bool,
+    ext_ycbcr_image_arrays: bool,
+    ext_full_screen_exclusive: bool,
+    ext_host_query_reset: bool,
+}
+#[derive(Copy, Clone)]
 pub struct Device {
     pub handle: vk::Device,
+    pub extensions: DeviceExtensions,
     pub fp_destroy_device: Option<vk::FnDestroyDevice>,
     pub fp_get_device_queue: Option<vk::FnGetDeviceQueue>,
     pub fp_queue_submit: Option<vk::FnQueueSubmit>,
@@ -2731,10 +3200,168 @@ impl Device {
     pub fn ext_host_query_reset_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
     }
-    unsafe fn load(instance: &Instance, device: vk::Device) -> LoaderResult<Self> {
+    unsafe fn load(
+        instance: &Instance,
+        device: vk::Device,
+        create_info: &vk::DeviceCreateInfo,
+        version: vk::Version,
+    ) -> LoaderResult<Self> {
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);
+        let mut extensions = DeviceExtensions::default();
+        if create_info.enabled_extension_count != 0 {
+            for &name_ptr in slice::from_raw_parts(
+                create_info.pp_enabled_extension_names,
+                create_info.enabled_extension_count as usize,
+            ) {
+                match CStr::from_ptr(name_ptr).to_bytes() {
+                    b"VK_KHR_swapchain" => extensions.khr_swapchain = true,
+                    b"VK_KHR_display_swapchain" => extensions.khr_display_swapchain = true,
+                    b"VK_NV_glsl_shader" => extensions.nv_glsl_shader = true,
+                    b"VK_EXT_depth_range_unrestricted" => extensions.ext_depth_range_unrestricted = true,
+                    b"VK_KHR_sampler_mirror_clamp_to_edge" => extensions.khr_sampler_mirror_clamp_to_edge = true,
+                    b"VK_IMG_filter_cubic" => extensions.img_filter_cubic = true,
+                    b"VK_AMD_rasterization_order" => extensions.amd_rasterization_order = true,
+                    b"VK_AMD_shader_trinary_minmax" => extensions.amd_shader_trinary_minmax = true,
+                    b"VK_AMD_shader_explicit_vertex_parameter" => {
+                        extensions.amd_shader_explicit_vertex_parameter = true
+                    }
+                    b"VK_EXT_debug_marker" => extensions.ext_debug_marker = true,
+                    b"VK_AMD_gcn_shader" => extensions.amd_gcn_shader = true,
+                    b"VK_NV_dedicated_allocation" => extensions.nv_dedicated_allocation = true,
+                    b"VK_EXT_transform_feedback" => extensions.ext_transform_feedback = true,
+                    b"VK_NVX_image_view_handle" => extensions.nvx_image_view_handle = true,
+                    b"VK_AMD_draw_indirect_count" => extensions.amd_draw_indirect_count = true,
+                    b"VK_AMD_negative_viewport_height" => extensions.amd_negative_viewport_height = true,
+                    b"VK_AMD_gpu_shader_half_float" => extensions.amd_gpu_shader_half_float = true,
+                    b"VK_AMD_shader_ballot" => extensions.amd_shader_ballot = true,
+                    b"VK_AMD_texture_gather_bias_lod" => extensions.amd_texture_gather_bias_lod = true,
+                    b"VK_AMD_shader_info" => extensions.amd_shader_info = true,
+                    b"VK_AMD_shader_image_load_store_lod" => extensions.amd_shader_image_load_store_lod = true,
+                    b"VK_NV_corner_sampled_image" => extensions.nv_corner_sampled_image = true,
+                    b"VK_KHR_multiview" => extensions.khr_multiview = true,
+                    b"VK_IMG_format_pvrtc" => extensions.img_format_pvrtc = true,
+                    b"VK_NV_external_memory" => extensions.nv_external_memory = true,
+                    b"VK_NV_external_memory_win32" => extensions.nv_external_memory_win32 = true,
+                    b"VK_NV_win32_keyed_mutex" => extensions.nv_win32_keyed_mutex = true,
+                    b"VK_KHR_device_group" => extensions.khr_device_group = true,
+                    b"VK_KHR_shader_draw_parameters" => extensions.khr_shader_draw_parameters = true,
+                    b"VK_EXT_shader_subgroup_ballot" => extensions.ext_shader_subgroup_ballot = true,
+                    b"VK_EXT_shader_subgroup_vote" => extensions.ext_shader_subgroup_vote = true,
+                    b"VK_EXT_astc_decode_mode" => extensions.ext_astc_decode_mode = true,
+                    b"VK_KHR_maintenance1" => extensions.khr_maintenance1 = true,
+                    b"VK_KHR_external_memory" => extensions.khr_external_memory = true,
+                    b"VK_KHR_external_memory_win32" => extensions.khr_external_memory_win32 = true,
+                    b"VK_KHR_external_memory_fd" => extensions.khr_external_memory_fd = true,
+                    b"VK_KHR_win32_keyed_mutex" => extensions.khr_win32_keyed_mutex = true,
+                    b"VK_KHR_external_semaphore" => extensions.khr_external_semaphore = true,
+                    b"VK_KHR_external_semaphore_win32" => extensions.khr_external_semaphore_win32 = true,
+                    b"VK_KHR_external_semaphore_fd" => extensions.khr_external_semaphore_fd = true,
+                    b"VK_KHR_push_descriptor" => extensions.khr_push_descriptor = true,
+                    b"VK_EXT_conditional_rendering" => extensions.ext_conditional_rendering = true,
+                    b"VK_KHR_shader_float16_int8" => extensions.khr_shader_float16_int8 = true,
+                    b"VK_KHR_16bit_storage" => extensions.khr_16bit_storage = true,
+                    b"VK_KHR_incremental_present" => extensions.khr_incremental_present = true,
+                    b"VK_KHR_descriptor_update_template" => extensions.khr_descriptor_update_template = true,
+                    b"VK_NVX_device_generated_commands" => extensions.nvx_device_generated_commands = true,
+                    b"VK_NV_clip_space_w_scaling" => extensions.nv_clip_space_w_scaling = true,
+                    b"VK_EXT_display_control" => extensions.ext_display_control = true,
+                    b"VK_GOOGLE_display_timing" => extensions.google_display_timing = true,
+                    b"VK_NV_sample_mask_override_coverage" => extensions.nv_sample_mask_override_coverage = true,
+                    b"VK_NV_geometry_shader_passthrough" => extensions.nv_geometry_shader_passthrough = true,
+                    b"VK_NV_viewport_array2" => extensions.nv_viewport_array2 = true,
+                    b"VK_NVX_multiview_per_view_attributes" => extensions.nvx_multiview_per_view_attributes = true,
+                    b"VK_NV_viewport_swizzle" => extensions.nv_viewport_swizzle = true,
+                    b"VK_EXT_discard_rectangles" => extensions.ext_discard_rectangles = true,
+                    b"VK_EXT_conservative_rasterization" => extensions.ext_conservative_rasterization = true,
+                    b"VK_EXT_depth_clip_enable" => extensions.ext_depth_clip_enable = true,
+                    b"VK_EXT_hdr_metadata" => extensions.ext_hdr_metadata = true,
+                    b"VK_KHR_create_renderpass2" => extensions.khr_create_renderpass2 = true,
+                    b"VK_KHR_shared_presentable_image" => extensions.khr_shared_presentable_image = true,
+                    b"VK_KHR_external_fence" => extensions.khr_external_fence = true,
+                    b"VK_KHR_external_fence_win32" => extensions.khr_external_fence_win32 = true,
+                    b"VK_KHR_external_fence_fd" => extensions.khr_external_fence_fd = true,
+                    b"VK_KHR_maintenance2" => extensions.khr_maintenance2 = true,
+                    b"VK_KHR_variable_pointers" => extensions.khr_variable_pointers = true,
+                    b"VK_EXT_external_memory_dma_buf" => extensions.ext_external_memory_dma_buf = true,
+                    b"VK_EXT_queue_family_foreign" => extensions.ext_queue_family_foreign = true,
+                    b"VK_KHR_dedicated_allocation" => extensions.khr_dedicated_allocation = true,
+                    b"VK_ANDROID_external_memory_android_hardware_buffer" => {
+                        extensions.android_external_memory_android_hardware_buffer = true
+                    }
+                    b"VK_EXT_sampler_filter_minmax" => extensions.ext_sampler_filter_minmax = true,
+                    b"VK_KHR_storage_buffer_storage_class" => extensions.khr_storage_buffer_storage_class = true,
+                    b"VK_AMD_gpu_shader_int16" => extensions.amd_gpu_shader_int16 = true,
+                    b"VK_AMD_mixed_attachment_samples" => extensions.amd_mixed_attachment_samples = true,
+                    b"VK_AMD_shader_fragment_mask" => extensions.amd_shader_fragment_mask = true,
+                    b"VK_EXT_inline_uniform_block" => extensions.ext_inline_uniform_block = true,
+                    b"VK_EXT_shader_stencil_export" => extensions.ext_shader_stencil_export = true,
+                    b"VK_EXT_sample_locations" => extensions.ext_sample_locations = true,
+                    b"VK_KHR_relaxed_block_layout" => extensions.khr_relaxed_block_layout = true,
+                    b"VK_KHR_get_memory_requirements2" => extensions.khr_get_memory_requirements2 = true,
+                    b"VK_KHR_image_format_list" => extensions.khr_image_format_list = true,
+                    b"VK_EXT_blend_operation_advanced" => extensions.ext_blend_operation_advanced = true,
+                    b"VK_NV_fragment_coverage_to_color" => extensions.nv_fragment_coverage_to_color = true,
+                    b"VK_NV_framebuffer_mixed_samples" => extensions.nv_framebuffer_mixed_samples = true,
+                    b"VK_NV_fill_rectangle" => extensions.nv_fill_rectangle = true,
+                    b"VK_EXT_post_depth_coverage" => extensions.ext_post_depth_coverage = true,
+                    b"VK_KHR_sampler_ycbcr_conversion" => extensions.khr_sampler_ycbcr_conversion = true,
+                    b"VK_KHR_bind_memory2" => extensions.khr_bind_memory2 = true,
+                    b"VK_EXT_image_drm_format_modifier" => extensions.ext_image_drm_format_modifier = true,
+                    b"VK_EXT_validation_cache" => extensions.ext_validation_cache = true,
+                    b"VK_EXT_descriptor_indexing" => extensions.ext_descriptor_indexing = true,
+                    b"VK_EXT_shader_viewport_index_layer" => extensions.ext_shader_viewport_index_layer = true,
+                    b"VK_NV_shading_rate_image" => extensions.nv_shading_rate_image = true,
+                    b"VK_NV_ray_tracing" => extensions.nv_ray_tracing = true,
+                    b"VK_NV_representative_fragment_test" => extensions.nv_representative_fragment_test = true,
+                    b"VK_KHR_maintenance3" => extensions.khr_maintenance3 = true,
+                    b"VK_KHR_draw_indirect_count" => extensions.khr_draw_indirect_count = true,
+                    b"VK_EXT_filter_cubic" => extensions.ext_filter_cubic = true,
+                    b"VK_EXT_global_priority" => extensions.ext_global_priority = true,
+                    b"VK_KHR_8bit_storage" => extensions.khr_8bit_storage = true,
+                    b"VK_EXT_external_memory_host" => extensions.ext_external_memory_host = true,
+                    b"VK_AMD_buffer_marker" => extensions.amd_buffer_marker = true,
+                    b"VK_KHR_shader_atomic_int64" => extensions.khr_shader_atomic_int64 = true,
+                    b"VK_EXT_calibrated_timestamps" => extensions.ext_calibrated_timestamps = true,
+                    b"VK_AMD_shader_core_properties" => extensions.amd_shader_core_properties = true,
+                    b"VK_AMD_memory_overallocation_behavior" => extensions.amd_memory_overallocation_behavior = true,
+                    b"VK_EXT_vertex_attribute_divisor" => extensions.ext_vertex_attribute_divisor = true,
+                    b"VK_EXT_pipeline_creation_feedback" => extensions.ext_pipeline_creation_feedback = true,
+                    b"VK_KHR_driver_properties" => extensions.khr_driver_properties = true,
+                    b"VK_KHR_shader_float_controls" => extensions.khr_shader_float_controls = true,
+                    b"VK_NV_shader_subgroup_partitioned" => extensions.nv_shader_subgroup_partitioned = true,
+                    b"VK_KHR_depth_stencil_resolve" => extensions.khr_depth_stencil_resolve = true,
+                    b"VK_KHR_swapchain_mutable_format" => extensions.khr_swapchain_mutable_format = true,
+                    b"VK_NV_compute_shader_derivatives" => extensions.nv_compute_shader_derivatives = true,
+                    b"VK_NV_mesh_shader" => extensions.nv_mesh_shader = true,
+                    b"VK_NV_fragment_shader_barycentric" => extensions.nv_fragment_shader_barycentric = true,
+                    b"VK_NV_shader_image_footprint" => extensions.nv_shader_image_footprint = true,
+                    b"VK_NV_scissor_exclusive" => extensions.nv_scissor_exclusive = true,
+                    b"VK_NV_device_diagnostic_checkpoints" => extensions.nv_device_diagnostic_checkpoints = true,
+                    b"VK_KHR_vulkan_memory_model" => extensions.khr_vulkan_memory_model = true,
+                    b"VK_EXT_pci_bus_info" => extensions.ext_pci_bus_info = true,
+                    b"VK_AMD_display_native_hdr" => extensions.amd_display_native_hdr = true,
+                    b"VK_EXT_fragment_density_map" => extensions.ext_fragment_density_map = true,
+                    b"VK_EXT_scalar_block_layout" => extensions.ext_scalar_block_layout = true,
+                    b"VK_GOOGLE_hlsl_functionality1" => extensions.google_hlsl_functionality1 = true,
+                    b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
+                    b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
+                    b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
+                    b"VK_NV_dedicated_allocation_image_aliasing" => {
+                        extensions.nv_dedicated_allocation_image_aliasing = true
+                    }
+                    b"VK_EXT_buffer_device_address" => extensions.ext_buffer_device_address = true,
+                    b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
+                    b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,
+                    b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
+                    b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
+                    b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
+                    _ => {}
+                }
+            }
+        }
         Ok(Self {
             handle: device,
+            extensions,
             fp_destroy_device: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyDevice\0")).map(|f| mem::transmute(f)),
             fp_get_device_queue: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceQueue\0"))
                 .map(|f| mem::transmute(f)),
@@ -2793,8 +3420,11 @@ impl Device {
                 .map(|f| mem::transmute(f)),
             fp_get_query_pool_results: f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueryPoolResults\0"))
                 .map(|f| mem::transmute(f)),
-            fp_reset_query_pool_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPoolEXT\0"))
-                .map(|f| mem::transmute(f)),
+            fp_reset_query_pool_ext: if extensions.ext_host_query_reset {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPoolEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_create_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateBuffer\0")).map(|f| mem::transmute(f)),
             fp_destroy_buffer: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyBuffer\0")).map(|f| mem::transmute(f)),
             fp_create_buffer_view: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateBufferView\0"))
@@ -2936,14 +3566,22 @@ impl Device {
                 .map(|f| mem::transmute(f)),
             fp_cmd_begin_query: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQuery\0")).map(|f| mem::transmute(f)),
             fp_cmd_end_query: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQuery\0")).map(|f| mem::transmute(f)),
-            fp_cmd_begin_conditional_rendering_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdBeginConditionalRenderingEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_end_conditional_rendering_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdEndConditionalRenderingEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
+            fp_cmd_begin_conditional_rendering_ext: if extensions.ext_conditional_rendering {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBeginConditionalRenderingEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_conditional_rendering_ext: if extensions.ext_conditional_rendering {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdEndConditionalRenderingEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_reset_query_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResetQueryPool\0"))
                 .map(|f| mem::transmute(f)),
             fp_cmd_write_timestamp: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteTimestamp\0"))
@@ -2960,410 +3598,873 @@ impl Device {
                 .map(|f| mem::transmute(f)),
             fp_cmd_execute_commands: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdExecuteCommands\0"))
                 .map(|f| mem::transmute(f)),
-            fp_create_shared_swapchains_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSharedSwapchainsKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_swapchain_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSwapchainKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_destroy_swapchain_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySwapchainKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_swapchain_images_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainImagesKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_acquire_next_image_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImageKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_queue_present_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkQueuePresentKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_debug_marker_set_object_name_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDebugMarkerSetObjectNameEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_debug_marker_set_object_tag_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDebugMarkerSetObjectTagEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_debug_marker_begin_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerBeginEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_debug_marker_end_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerEndEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_debug_marker_insert_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerInsertEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_memory_win32_handle_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_process_commands_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdProcessCommandsNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_reserve_space_for_commands_nvx: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdReserveSpaceForCommandsNVX\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_indirect_commands_layout_nvx: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateIndirectCommandsLayoutNVX\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_indirect_commands_layout_nvx: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyIndirectCommandsLayoutNVX\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_object_table_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateObjectTableNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_destroy_object_table_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyObjectTableNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_register_objects_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterObjectsNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_unregister_objects_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkUnregisterObjectsNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_generated_commands_properties_nvx: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_push_descriptor_set_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_trim_command_pool: f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPool\0"))
-                .map(|f| mem::transmute(f)),
-            fp_trim_command_pool_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPoolKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_memory_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_memory_win32_handle_properties_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetMemoryWin32HandlePropertiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_memory_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_memory_fd_properties_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdPropertiesKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_semaphore_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetSemaphoreWin32HandleKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_import_semaphore_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkImportSemaphoreWin32HandleKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_semaphore_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreFdKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_import_semaphore_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreFdKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_fence_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceWin32HandleKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_import_fence_win32_handle_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceWin32HandleKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_fence_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceFdKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_import_fence_fd_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceFdKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_display_power_control_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDisplayPowerControlEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_register_device_event_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDeviceEventEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_register_display_event_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDisplayEventEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_swapchain_counter_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainCounterEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_device_group_peer_memory_features: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDeviceGroupPeerMemoryFeatures\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_device_group_peer_memory_features_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDeviceGroupPeerMemoryFeaturesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_bind_buffer_memory2: f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2\0"))
-                .map(|f| mem::transmute(f)),
-            fp_bind_buffer_memory2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_bind_image_memory2: f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2\0"))
-                .map(|f| mem::transmute(f)),
-            fp_bind_image_memory2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_set_device_mask: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_set_device_mask_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMaskKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_device_group_present_capabilities_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_device_group_surface_present_modes_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDeviceGroupSurfacePresentModesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_acquire_next_image2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImage2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_dispatch_base: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBase\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_dispatch_base_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBaseKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_present_rectangles_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDevicePresentRectanglesKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_descriptor_update_template: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateDescriptorUpdateTemplate\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_descriptor_update_template_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateDescriptorUpdateTemplateKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_descriptor_update_template: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyDescriptorUpdateTemplate\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_descriptor_update_template_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyDescriptorUpdateTemplateKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_update_descriptor_set_with_template: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkUpdateDescriptorSetWithTemplate\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_update_descriptor_set_with_template_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkUpdateDescriptorSetWithTemplateKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_push_descriptor_set_with_template_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdPushDescriptorSetWithTemplateKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_set_hdr_metadata_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkSetHdrMetadataEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_swapchain_status_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainStatusKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_refresh_cycle_duration_google: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetRefreshCycleDurationGOOGLE\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_past_presentation_timing_google: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPastPresentationTimingGOOGLE\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_set_viewport_w_scaling_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportWScalingNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_set_discard_rectangle_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDiscardRectangleEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_set_sample_locations_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetSampleLocationsEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_multisample_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_buffer_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetBufferMemoryRequirements2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_buffer_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetBufferMemoryRequirements2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetImageMemoryRequirements2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetImageMemoryRequirements2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_sparse_memory_requirements2: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetImageSparseMemoryRequirements2\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_sparse_memory_requirements2_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetImageSparseMemoryRequirements2KHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_sampler_ycbcr_conversion: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateSamplerYcbcrConversion\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_sampler_ycbcr_conversion_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateSamplerYcbcrConversionKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_sampler_ycbcr_conversion: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroySamplerYcbcrConversion\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_sampler_ycbcr_conversion_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroySamplerYcbcrConversionKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_device_queue2: f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceQueue2\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_validation_cache_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateValidationCacheEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_destroy_validation_cache_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyValidationCacheEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_validation_cache_data_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetValidationCacheDataEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_merge_validation_caches_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkMergeValidationCachesEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_descriptor_set_layout_support: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDescriptorSetLayoutSupport\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_descriptor_set_layout_support_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDescriptorSetLayoutSupportKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_shader_info_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderInfoAMD\0"))
-                .map(|f| mem::transmute(f)),
-            fp_set_local_dimming_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkSetLocalDimmingAMD\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_calibrateable_time_domains_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_calibrated_timestamps_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_memory_host_pointer_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetMemoryHostPointerPropertiesEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_write_buffer_marker_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteBufferMarkerAMD\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_begin_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderPass2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_next_subpass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_end_render_pass2_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass2KHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_android_hardware_buffer_properties_android: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetAndroidHardwareBufferPropertiesANDROID\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_memory_android_hardware_buffer_android: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetMemoryAndroidHardwareBufferANDROID\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_draw_indirect_count_khr: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountKHR\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_draw_indirect_count_amd: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountAMD\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_draw_indexed_indirect_count_khr: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdDrawIndexedIndirectCountKHR\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_draw_indexed_indirect_count_amd: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdDrawIndexedIndirectCountAMD\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_set_checkpoint_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCheckpointNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_queue_checkpoint_data_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointDataNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_bind_transform_feedback_buffers_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdBindTransformFeedbackBuffersEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_begin_transform_feedback_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdBeginTransformFeedbackEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_end_transform_feedback_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdEndTransformFeedbackEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_begin_query_indexed_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQueryIndexedEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_end_query_indexed_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQueryIndexedEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_draw_indirect_byte_count_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdDrawIndirectByteCountEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_set_exclusive_scissor_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetExclusiveScissorNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_bind_shading_rate_image_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindShadingRateImageNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_set_viewport_shading_rate_palette_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdSetViewportShadingRatePaletteNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_set_coarse_sample_order_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCoarseSampleOrderNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_draw_mesh_tasks_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_cmd_draw_mesh_tasks_indirect_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdDrawMeshTasksIndirectNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_draw_mesh_tasks_indirect_count_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdDrawMeshTasksIndirectCountNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_compile_deferred_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCompileDeferredNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_create_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateAccelerationStructureNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_destroy_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkDestroyAccelerationStructureNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_acceleration_structure_memory_requirements_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetAccelerationStructureMemoryRequirementsNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_bind_acceleration_structure_memory_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkBindAccelerationStructureMemoryNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_copy_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdCopyAccelerationStructureNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_write_acceleration_structures_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdWriteAccelerationStructuresPropertiesNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_build_acceleration_structure_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCmdBuildAccelerationStructureNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_cmd_trace_rays_nv: f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysNV\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_ray_tracing_shader_group_handles_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetRayTracingShaderGroupHandlesNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_acceleration_structure_handle_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetAccelerationStructureHandleNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_create_ray_tracing_pipelines_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkCreateRayTracingPipelinesNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_drm_format_modifier_properties_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetImageDrmFormatModifierPropertiesEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_buffer_device_address_ext: f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_cooperative_matrix_properties_nv: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_image_view_handle_nvx: f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0"))
-                .map(|f| mem::transmute(f)),
-            fp_get_physical_device_surface_present_modes2_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetPhysicalDeviceSurfacePresentModes2EXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_get_device_group_surface_present_modes2_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkGetDeviceGroupSurfacePresentModes2EXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_acquire_full_screen_exclusive_mode_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkAcquireFullScreenExclusiveModeEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
-            fp_release_full_screen_exclusive_mode_ext: f(CStr::from_bytes_with_nul_unchecked(
-                b"vkReleaseFullScreenExclusiveModeEXT\0",
-            ))
-            .map(|f| mem::transmute(f)),
+            fp_create_shared_swapchains_khr: if extensions.khr_display_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSharedSwapchainsKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_swapchain_khr: if extensions.khr_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSwapchainKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_swapchain_khr: if extensions.khr_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDestroySwapchainKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_images_khr: if extensions.khr_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainImagesKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_next_image_khr: if extensions.khr_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImageKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_present_khr: if extensions.khr_swapchain {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkQueuePresentKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_debug_marker_set_object_name_ext: if extensions.ext_debug_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDebugMarkerSetObjectNameEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_debug_marker_set_object_tag_ext: if extensions.ext_debug_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDebugMarkerSetObjectTagEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_debug_marker_begin_ext: if extensions.ext_debug_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerBeginEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_debug_marker_end_ext: if extensions.ext_debug_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerEndEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_debug_marker_insert_ext: if extensions.ext_debug_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDebugMarkerInsertEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_win32_handle_nv: if extensions.nv_external_memory_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_process_commands_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdProcessCommandsNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_reserve_space_for_commands_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdReserveSpaceForCommandsNVX\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_indirect_commands_layout_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateIndirectCommandsLayoutNVX\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_indirect_commands_layout_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyIndirectCommandsLayoutNVX\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_object_table_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateObjectTableNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_object_table_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyObjectTableNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_register_objects_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterObjectsNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_unregister_objects_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkUnregisterObjectsNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_generated_commands_properties_nvx: if extensions.nvx_device_generated_commands {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_descriptor_set_khr: if extensions.khr_push_descriptor {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPushDescriptorSetKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_trim_command_pool: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPool\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_trim_command_pool_khr: if extensions.khr_maintenance1 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkTrimCommandPoolKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_win32_handle_khr: if extensions.khr_external_memory_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryWin32HandleKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_win32_handle_properties_khr: if extensions.khr_external_memory_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetMemoryWin32HandlePropertiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_fd_khr: if extensions.khr_external_memory_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_fd_properties_khr: if extensions.khr_external_memory_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryFdPropertiesKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_semaphore_win32_handle_khr: if extensions.khr_external_semaphore_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreWin32HandleKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_import_semaphore_win32_handle_khr: if extensions.khr_external_semaphore_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkImportSemaphoreWin32HandleKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_semaphore_fd_khr: if extensions.khr_external_semaphore_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreFdKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_import_semaphore_fd_khr: if extensions.khr_external_semaphore_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreFdKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_fence_win32_handle_khr: if extensions.khr_external_fence_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceWin32HandleKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_import_fence_win32_handle_khr: if extensions.khr_external_fence_win32 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceWin32HandleKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_fence_fd_khr: if extensions.khr_external_fence_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetFenceFdKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_import_fence_fd_khr: if extensions.khr_external_fence_fd {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceFdKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_display_power_control_ext: if extensions.ext_display_control {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDisplayPowerControlEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_register_device_event_ext: if extensions.ext_display_control {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDeviceEventEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_register_display_event_ext: if extensions.ext_display_control {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterDisplayEventEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_counter_ext: if extensions.ext_display_control {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainCounterEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_group_peer_memory_features: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceGroupPeerMemoryFeatures\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_group_peer_memory_features_khr: if extensions.khr_device_group {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceGroupPeerMemoryFeaturesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_buffer_memory2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_buffer_memory2_khr: if extensions.khr_bind_memory2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkBindBufferMemory2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_image_memory2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_image_memory2_khr: if extensions.khr_bind_memory2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkBindImageMemory2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_device_mask: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMask\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_device_mask_khr: if extensions.khr_device_group {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDeviceMaskKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_group_present_capabilities_khr: if extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_device_group && instance.extensions.khr_surface
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_group_surface_present_modes_khr: if extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_device_group && instance.extensions.khr_surface
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceGroupSurfacePresentModesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_next_image2_khr: if extensions.khr_swapchain && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_device_group && extensions.khr_swapchain
+            {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImage2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_base: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBase\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_base_khr: if extensions.khr_device_group {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchBaseKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_present_rectangles_khr: if extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_device_group && instance.extensions.khr_surface
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDevicePresentRectanglesKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_descriptor_update_template: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateDescriptorUpdateTemplate\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_descriptor_update_template_khr: if extensions.khr_descriptor_update_template {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateDescriptorUpdateTemplateKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_descriptor_update_template: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyDescriptorUpdateTemplate\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_descriptor_update_template_khr: if extensions.khr_descriptor_update_template {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyDescriptorUpdateTemplateKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_update_descriptor_set_with_template: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkUpdateDescriptorSetWithTemplate\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_update_descriptor_set_with_template_khr: if extensions.khr_descriptor_update_template {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkUpdateDescriptorSetWithTemplateKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_push_descriptor_set_with_template_khr: if extensions.khr_push_descriptor
+                && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_descriptor_update_template && extensions.khr_push_descriptor
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdPushDescriptorSetWithTemplateKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_hdr_metadata_ext: if extensions.ext_hdr_metadata {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkSetHdrMetadataEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_swapchain_status_khr: if extensions.khr_shared_presentable_image {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetSwapchainStatusKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_refresh_cycle_duration_google: if extensions.google_display_timing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRefreshCycleDurationGOOGLE\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_past_presentation_timing_google: if extensions.google_display_timing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPastPresentationTimingGOOGLE\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_viewport_w_scaling_nv: if extensions.nv_clip_space_w_scaling {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportWScalingNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_discard_rectangle_ext: if extensions.ext_discard_rectangles {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDiscardRectangleEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_sample_locations_ext: if extensions.ext_sample_locations {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetSampleLocationsEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_multisample_properties_ext: if extensions.ext_sample_locations {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_memory_requirements2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferMemoryRequirements2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_memory_requirements2_khr: if extensions.khr_get_memory_requirements2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetBufferMemoryRequirements2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_memory_requirements2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageMemoryRequirements2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_memory_requirements2_khr: if extensions.khr_get_memory_requirements2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageMemoryRequirements2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_sparse_memory_requirements2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageSparseMemoryRequirements2\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_sparse_memory_requirements2_khr: if extensions.khr_get_memory_requirements2 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageSparseMemoryRequirements2KHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_sampler_ycbcr_conversion: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateSamplerYcbcrConversion\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_sampler_ycbcr_conversion_khr: if extensions.khr_sampler_ycbcr_conversion {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateSamplerYcbcrConversionKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_sampler_ycbcr_conversion: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroySamplerYcbcrConversion\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_sampler_ycbcr_conversion_khr: if extensions.khr_sampler_ycbcr_conversion {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroySamplerYcbcrConversionKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_queue2: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceQueue2\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_validation_cache_ext: if extensions.ext_validation_cache {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateValidationCacheEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_validation_cache_ext: if extensions.ext_validation_cache {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyValidationCacheEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_validation_cache_data_ext: if extensions.ext_validation_cache {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetValidationCacheDataEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_merge_validation_caches_ext: if extensions.ext_validation_cache {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkMergeValidationCachesEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_layout_support: if version >= vk::Version::from_raw_parts(1, 1, 0) {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetLayoutSupport\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_layout_support_khr: if extensions.khr_maintenance3 {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetLayoutSupportKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_shader_info_amd: if extensions.amd_shader_info {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderInfoAMD\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_local_dimming_amd: if extensions.amd_display_native_hdr {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkSetLocalDimmingAMD\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_calibrateable_time_domains_ext: if extensions.ext_calibrated_timestamps {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_calibrated_timestamps_ext: if extensions.ext_calibrated_timestamps {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetCalibratedTimestampsEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_host_pointer_properties_ext: if extensions.ext_external_memory_host {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetMemoryHostPointerPropertiesEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_buffer_marker_amd: if extensions.amd_buffer_marker {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteBufferMarkerAMD\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_render_pass2_khr: if extensions.khr_create_renderpass2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_render_pass2_khr: if extensions.khr_create_renderpass2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderPass2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_next_subpass2_khr: if extensions.khr_create_renderpass2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_render_pass2_khr: if extensions.khr_create_renderpass2 {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass2KHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_android_hardware_buffer_properties_android: if extensions
+                .android_external_memory_android_hardware_buffer
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAndroidHardwareBufferPropertiesANDROID\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_android_hardware_buffer_android: if extensions.android_external_memory_android_hardware_buffer
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetMemoryAndroidHardwareBufferANDROID\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect_count_khr: if extensions.khr_draw_indirect_count {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountKHR\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect_count_amd: if extensions.amd_draw_indirect_count {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountAMD\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indexed_indirect_count_khr: if extensions.khr_draw_indirect_count {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDrawIndexedIndirectCountKHR\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indexed_indirect_count_amd: if extensions.amd_draw_indirect_count {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDrawIndexedIndirectCountAMD\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_checkpoint_nv: if extensions.nv_device_diagnostic_checkpoints {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCheckpointNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_queue_checkpoint_data_nv: if extensions.nv_device_diagnostic_checkpoints {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointDataNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_transform_feedback_buffers_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBindTransformFeedbackBuffersEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_transform_feedback_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginTransformFeedbackEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_transform_feedback_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndTransformFeedbackEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_query_indexed_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginQueryIndexedEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_query_indexed_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndQueryIndexedEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indirect_byte_count_ext: if extensions.ext_transform_feedback {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectByteCountEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_exclusive_scissor_nv: if extensions.nv_scissor_exclusive {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetExclusiveScissorNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_shading_rate_image_nv: if extensions.nv_shading_rate_image {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindShadingRateImageNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_viewport_shading_rate_palette_nv: if extensions.nv_shading_rate_image {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetViewportShadingRatePaletteNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coarse_sample_order_nv: if extensions.nv_shading_rate_image {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCoarseSampleOrderNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_nv: if extensions.nv_mesh_shader {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect_nv: if extensions.nv_mesh_shader {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksIndirectNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect_count_nv: if extensions.nv_mesh_shader {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDrawMeshTasksIndirectCountNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_compile_deferred_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCompileDeferredNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_acceleration_structure_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateAccelerationStructureNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_acceleration_structure_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyAccelerationStructureNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_acceleration_structure_memory_requirements_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureMemoryRequirementsNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_acceleration_structure_memory_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkBindAccelerationStructureMemoryNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_acceleration_structure_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdCopyAccelerationStructureNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_acceleration_structures_properties_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdWriteAccelerationStructuresPropertiesNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_acceleration_structure_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBuildAccelerationStructureNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_trace_rays_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_ray_tracing_shader_group_handles_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRayTracingShaderGroupHandlesNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_acceleration_structure_handle_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureHandleNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_ray_tracing_pipelines_nv: if extensions.nv_ray_tracing {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRayTracingPipelinesNV\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_drm_format_modifier_properties_ext: if extensions.ext_image_drm_format_modifier {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageDrmFormatModifierPropertiesEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_device_address_ext: if extensions.ext_buffer_device_address {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_cooperative_matrix_properties_nv: if extensions.nv_cooperative_matrix {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_view_handle_nvx: if extensions.nvx_image_view_handle {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_surface_present_modes2_ext: if extensions.ext_full_screen_exclusive {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSurfacePresentModes2EXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_group_surface_present_modes2_ext: if extensions.khr_device_group
+                && extensions.ext_full_screen_exclusive
+                || extensions.ext_full_screen_exclusive && version >= vk::Version::from_raw_parts(1, 1, 0)
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceGroupSurfacePresentModes2EXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_full_screen_exclusive_mode_ext: if extensions.ext_full_screen_exclusive {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkAcquireFullScreenExclusiveModeEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_full_screen_exclusive_mode_ext: if extensions.ext_full_screen_exclusive {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkReleaseFullScreenExclusiveModeEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
         })
     }
     pub unsafe fn destroy_device(&self, p_allocator: Option<&vk::AllocationCallbacks>) {

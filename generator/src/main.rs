@@ -215,13 +215,33 @@ impl GetCommandCategory for vk::CommandDefinition {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct Version {
+    major: u16,
+    minor: u16,
+}
+
+impl Version {
+    const fn from_raw_parts(major: u16, minor: u16) -> Self {
+        Self { major, minor }
+    }
+
+    fn try_from_feature(s: &str) -> Option<Self> {
+        match s {
+            "VK_VERSION_1_0" => Some(Version::from_raw_parts(1, 0)),
+            "VK_VERSION_1_1" => Some(Version::from_raw_parts(1, 1)),
+            _ => None,
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum CommandRef<'a> {
-    Feature(&'a str),
+    Feature(Version),
     Extension(&'a str),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 struct CommandRefPair<'a> {
     primary: CommandRef<'a>,
     secondary: Option<CommandRef<'a>>,
@@ -279,7 +299,7 @@ enum LibReturnType {
     ResultVecKnownLen { len_expr: String },
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum LibReturnTransform {
     None,
     ToInstance,
@@ -287,7 +307,7 @@ enum LibReturnTransform {
     ToBool,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum LibCommandStyle {
     Default,
     ToVecUnknownLen,
@@ -556,7 +576,7 @@ impl<'a> Generator<'a> {
                         assert_eq!(info.category, cmd_category);
 
                         info.refs.push(CommandRefPair {
-                            primary: CommandRef::Feature(feature.name.as_str()),
+                            primary: CommandRef::Feature(Version::try_from_feature(&feature.name).unwrap()),
                             secondary: None,
                         });
                     }
@@ -578,7 +598,8 @@ impl<'a> Generator<'a> {
                             } => {
                                 let cmd_ref = feature
                                     .as_ref_str()
-                                    .map(|s| CommandRef::Feature(s))
+                                    .and_then(|s| Version::try_from_feature(s))
+                                    .map(|v| CommandRef::Feature(v))
                                     .or(extension.as_ref_str().map(|s| CommandRef::Extension(s)));
                                 Some((cmd_ref, items))
                             }
@@ -595,7 +616,7 @@ impl<'a> Generator<'a> {
 
                                 info.refs.push(CommandRefPair {
                                     primary: CommandRef::Extension(ext.name.as_str()),
-                                    secondary: cmd_ref.clone(),
+                                    secondary: cmd_ref,
                                 });
                             }
                         }
@@ -2086,7 +2107,12 @@ impl<'a> Generator<'a> {
                     }
                 }
             }
-
+            match return_transform {
+                LibReturnTransform::ToDevice | LibReturnTransform::ToInstance => {
+                    writeln!(w, "version: vk::Version,")?;
+                }
+                _ => {}
+            }
             write!(w, ")")?;
             match return_type {
                 LibReturnType::None => {}
@@ -2358,11 +2384,11 @@ impl<'a> Generator<'a> {
                         LibReturnTransform::ToBool => writeln!(w, ".map(|r| r != vk::FALSE)")?,
                         LibReturnTransform::ToInstance => writeln!(
                             w,
-                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r))"
+                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(r, p_create_info, version))"
                         )?,
                         LibReturnTransform::ToDevice => writeln!(
                             w,
-                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r))"
+                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r, p_create_info, version))"
                         )?,
                     }
                 }
@@ -2374,12 +2400,55 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
+    fn write_command_ref_condition(&self, category: Category, cmd_ref: CommandRef, w: &mut impl IoWrite) -> WriteResult {
+        match cmd_ref {
+            CommandRef::Feature(version) => write!(w, "version >= vk::Version::from_raw_parts({}, {}, 0)", version.major, version.minor)?,
+            CommandRef::Extension(name) => {
+                let ext = self.extension_by_name.get(name).expect("missing extension");
+                if category == Category::Device && ext.get_category() == Category::Instance {
+                    write!(w, "instance.extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
+                } else {
+                    write!(w, "extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
+                }
+            }
+        }
+        Ok(())
+    }
+
     fn write_struct(&self, category: Category, w: &mut impl IoWrite) -> WriteResult {
+        let extensions: Vec<&vk::Extension> = self
+            .registry
+            .0
+            .iter()
+            .filter_map(|ext_child| match ext_child {
+                vk::RegistryChild::Extensions(extensions) => Some(extensions),
+                _ => None,
+            })
+            .flat_map(|extensions| extensions.children.iter())
+            .filter(|ext| {
+                ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted() && ext.get_category() == category
+            })
+            .collect();
+
+        if !extensions.is_empty() {
+            writeln!(w, "#[derive(Debug, Copy, Clone, Default)]")?;
+            writeln!(w, "pub struct {}Extensions {{", category)?;
+            for ext in extensions.iter() {
+                let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                writeln!(w, "{}: bool,", var_name)?;
+            }
+            writeln!(w, "}}")?;
+        }
+
+        writeln!(w, "#[derive(Copy, Clone)]")?;
         writeln!(w, "pub struct {} {{", category)?;
         match category {
             Category::Loader => {}
             Category::Instance => writeln!(w, "pub handle: vk::Instance,")?,
             Category::Device => writeln!(w, "pub handle: vk::Device,")?,
+        }
+        if !extensions.is_empty() {
+            writeln!(w, "pub extensions: {}Extensions,", category)?;
         }
         for name in self.cmd_names.iter().filter(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
@@ -2392,20 +2461,8 @@ impl<'a> Generator<'a> {
         writeln!(w, "}}")?;
 
         writeln!(w, "impl {} {{", category)?;
-        for ext in self
-            .registry
-            .0
-            .iter()
-            .filter_map(|ext_child| match ext_child {
-                vk::RegistryChild::Extensions(extensions) => Some(extensions),
-                _ => None,
-            })
-            .flat_map(|extensions| extensions.children.iter())
-            .filter(|ext| {
-                ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted() && ext.get_category() == category
-            })
-        {
-            // TODO: replace with const when stable to call CStr::from_bytes_with_nul_unchecked
+        for ext in extensions.iter() {
+            // TODO: replace with const when stable
             let fn_prefix = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
             writeln!(
                 w,
@@ -2413,6 +2470,7 @@ impl<'a> Generator<'a> {
                 fn_prefix, ext.name
             )?;
         }
+
         match category {
             Category::Loader => {
                 writeln!(
@@ -2427,32 +2485,75 @@ impl<'a> Generator<'a> {
             Category::Instance => {
                 writeln!(
                     w,
-                    "unsafe fn load(instance: vk::Instance) -> LoaderResult<Self> {{\
+                    "unsafe fn load(instance: vk::Instance, create_info: &vk::InstanceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
                      let lib = LIB.as_ref().map_err(|e| e.clone())?;\
                      let f = |name: &CStr| lib.get_instance_proc_addr(Some(instance), name);\
-                     Ok(Self {{ handle: instance,"
-                )?;
+                     let mut extensions = {}Extensions::default();", category)?;
+                writeln!(w,
+                    "if create_info.enabled_extension_count != 0 {{\
+                     for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
+                     match CStr::from_ptr(name_ptr).to_bytes() {{")?;
+                for ext in extensions.iter() {
+                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                    writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
+                }
+                writeln!(w,
+                    "_ => {{}}, }} }} }}\
+                     Ok(Self {{ handle: instance, extensions,")?;
             }
             Category::Device => {
                 writeln!(
                     w,
-                    "unsafe fn load(instance: &Instance, device: vk::Device) -> LoaderResult<Self> {{\
+                    "unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
                      let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
-                     Ok(Self {{ handle: device,"
-                )?;
+                     let mut extensions = {}Extensions::default();", category)?;
+                writeln!(w,
+                    "if create_info.enabled_extension_count != 0 {{\
+                     for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
+                     match CStr::from_ptr(name_ptr).to_bytes() {{")?;
+                for ext in extensions.iter() {
+                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                    writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
+                }
+                writeln!(w,
+                    "_ => {{}}, }} }} }}\
+                     Ok(Self {{ handle: device, extensions,")?;
             }
         }
-        for name in self.cmd_names.iter().filter(|&name| {
+
+        for (name, info) in self.cmd_names.iter().filter_map(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
-            info.category == Some(category)
+            if info.category == Some(category) {
+                Some((name, info))
+            } else {
+                None
+            }
         }) {
-            let name_part = name.skip_prefix(FN_PREFIX);
-            let fn_name = name_part.to_snake_case();
-            writeln!(
-                w,
-                r#"fp_{}: f(CStr::from_bytes_with_nul_unchecked(b"{}\0")).map(|f| mem::transmute(f)),"#,
-                fn_name, name
-            )?;
+            let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
+            writeln!(w, "fp_{}:", fn_name)?;
+            let always_load = info.refs[0].primary == CommandRef::Feature(Version::from_raw_parts(1, 0)) || category == Category::Loader;
+            if !always_load {
+                writeln!(w, "if ")?;
+                let mut is_first = true;
+                for cmd_ref_pair in info.refs.iter() {
+                    if is_first {
+                        is_first = false;
+                    } else {
+                        write!(w, " || ")?;
+                    }
+                    self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
+                    if let Some(secondary) = cmd_ref_pair.secondary {
+                        write!(w, " && ")?;
+                        self.write_command_ref_condition(category, secondary, w)?;
+                    }
+                }
+                writeln!(w, " {{ ")?;
+            }
+            writeln!(w, r#"f(CStr::from_bytes_with_nul_unchecked(b"{}\0")).map(|f| mem::transmute(f))"#, name)?;
+            if !always_load {
+                writeln!(w, r#" }} else {{ None }}"#)?;
+            }
+            writeln!(w, ",")?;
         }
         match category {
             Category::Loader => {

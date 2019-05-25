@@ -8,6 +8,7 @@ use std::mem;
 use std::path::Path;
 use std::ptr;
 use std::result;
+use std::slice;
 use shared_library::dynamic_library::DynamicLibrary;
 
 #[doc(no_inline)]

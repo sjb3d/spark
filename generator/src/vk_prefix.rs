@@ -19,11 +19,11 @@ impl Version {
     /// let v = vk::Version::from_raw_parts(1, 2, 0);
     /// assert_eq!(v.to_raw(), (1 << 22) | (2 << 12));
     /// ```
-    pub fn from_raw_parts(major: u32, minor: u32, patch: u32) -> Self {
+    pub const fn from_raw_parts(major: u32, minor: u32, patch: u32) -> Self {
         Version((major << 22) | ((minor & 0x3ff) << 12) | (patch & 0xfff))
     }
 
-    pub fn from_raw(version: u32) -> Self {
+    pub const fn from_raw(version: u32) -> Self {
         Version(version)
     }
     pub fn to_raw(&self) -> u32 {
@@ -42,7 +42,7 @@ impl Version {
 }
 impl default::Default for Version {
     fn default() -> Self {
-        Version(0)
+        Version::from_raw_parts(1, 0, 0)
     }
 }
 impl fmt::Display for Version {
