@@ -2400,13 +2400,26 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn write_command_ref_condition(&self, category: Category, cmd_ref: CommandRef, w: &mut impl IoWrite) -> WriteResult {
+    fn write_command_ref_condition(
+        &self,
+        category: Category,
+        cmd_ref: CommandRef,
+        w: &mut impl IoWrite,
+    ) -> WriteResult {
         match cmd_ref {
-            CommandRef::Feature(version) => write!(w, "version >= vk::Version::from_raw_parts({}, {}, 0)", version.major, version.minor)?,
+            CommandRef::Feature(version) => write!(
+                w,
+                "version >= vk::Version::from_raw_parts({}, {}, 0)",
+                version.major, version.minor
+            )?,
             CommandRef::Extension(name) => {
                 let ext = self.extension_by_name.get(name).expect("missing extension");
                 if category == Category::Device && ext.get_category() == Category::Instance {
-                    write!(w, "instance.extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
+                    write!(
+                        w,
+                        "instance.extensions.{}",
+                        name.skip_prefix(CONST_PREFIX).to_snake_case()
+                    )?;
                 } else {
                     write!(w, "extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
                 }
@@ -2435,7 +2448,7 @@ impl<'a> Generator<'a> {
             writeln!(w, "pub struct {}Extensions {{", category)?;
             for ext in extensions.iter() {
                 let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                writeln!(w, "{}: bool,", var_name)?;
+                writeln!(w, "pub {}: bool,", var_name)?;
             }
             writeln!(w, "}}")?;
         }
@@ -2497,9 +2510,11 @@ impl<'a> Generator<'a> {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                     writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
                 }
-                writeln!(w,
+                writeln!(
+                    w,
                     "_ => {{}}, }} }} }}\
-                     Ok(Self {{ handle: instance, extensions,")?;
+                     Ok(Self {{ handle: instance, extensions,"
+                )?;
             }
             Category::Device => {
                 writeln!(
@@ -2515,9 +2530,11 @@ impl<'a> Generator<'a> {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                     writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
                 }
-                writeln!(w,
+                writeln!(
+                    w,
                     "_ => {{}}, }} }} }}\
-                     Ok(Self {{ handle: device, extensions,")?;
+                     Ok(Self {{ handle: device, extensions,"
+                )?;
             }
         }
 
@@ -2531,7 +2548,8 @@ impl<'a> Generator<'a> {
         }) {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
-            let always_load = info.refs[0].primary == CommandRef::Feature(Version::from_raw_parts(1, 0)) || category == Category::Loader;
+            let always_load = info.refs[0].primary == CommandRef::Feature(Version::from_raw_parts(1, 0))
+                || category == Category::Loader;
             if !always_load {
                 writeln!(w, "if ")?;
                 let mut is_first = true;
@@ -2549,7 +2567,11 @@ impl<'a> Generator<'a> {
                 }
                 writeln!(w, " {{ ")?;
             }
-            writeln!(w, r#"f(CStr::from_bytes_with_nul_unchecked(b"{}\0")).map(|f| mem::transmute(f))"#, name)?;
+            writeln!(
+                w,
+                r#"f(CStr::from_bytes_with_nul_unchecked(b"{}\0")).map(|f| mem::transmute(f))"#,
+                name
+            )?;
             if !always_load {
                 writeln!(w, r#" }} else {{ None }}"#)?;
             }

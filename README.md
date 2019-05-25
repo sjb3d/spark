@@ -26,12 +26,23 @@ let loader = Loader::new()?;
 // create a Vulkan 1.0 instance (skip listing layers and extensions for this example)
 let version = vk::Version::from_raw_parts(1, 0, 0);
 let instance_create_info = vk::InstanceCreateInfo {
-    .. Default::default()
+    ..Default::default()
 };
 let instance = unsafe { loader.create_instance(&instance_create_info, None, version) }?;
 ```
 
-Function pointers are loaded only for commands that are referenced by the specified Vulkan version or extensions are loaded.
+Function pointers are loaded only for commands that are referenced by the combination of Vulkan version and list of extensions used during creation.  The `Instance` or `Device` have an `extensions` member variable that can be inspected to check which extensions were loaded.
+
+```rust
+// emit marker if we have EXT_debug_utils loaded
+if instance.extensions.ext_debug_utils {
+    let label = vk::DebugUtilsLabelEXT {
+        p_label_name: name.as_ptr(),
+        ..Default::default()
+    };
+    instance.cmd_begin_debug_utils_label_ext(cmd, &label);
+}
+```
 
 ## Vulkan Handles
 
