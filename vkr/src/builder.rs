@@ -12488,3 +12488,266 @@ impl<'a> Deref for PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderIntegerFunctions2INTEL {
+    type Type = PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceShaderIntegerFunctions2INTELBuilder::new()
+    }
+}
+pub struct PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderIntegerFunctions2INTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_integer_functions2(mut self, shader_integer_functions2: bool) -> Self {
+        self.inner.shader_integer_functions2 = if shader_integer_functions2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderIntegerFunctions2INTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::InitializePerformanceApiInfoINTEL {
+    type Type = InitializePerformanceApiInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        InitializePerformanceApiInfoINTELBuilder::new()
+    }
+}
+pub struct InitializePerformanceApiInfoINTELBuilder<'a> {
+    inner: vk::InitializePerformanceApiInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> InitializePerformanceApiInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
+        self.inner.p_user_data = p_user_data;
+        self
+    }
+}
+impl<'a> Deref for InitializePerformanceApiInfoINTELBuilder<'a> {
+    type Target = vk::InitializePerformanceApiInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::QueryPoolCreateInfoINTEL {
+    type Type = QueryPoolCreateInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        QueryPoolCreateInfoINTELBuilder::new()
+    }
+}
+pub struct QueryPoolCreateInfoINTELBuilder<'a> {
+    inner: vk::QueryPoolCreateInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> QueryPoolCreateInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn performance_counters_sampling(
+        mut self,
+        performance_counters_sampling: vk::QueryPoolSamplingModeINTEL,
+    ) -> Self {
+        self.inner.performance_counters_sampling = performance_counters_sampling;
+        self
+    }
+}
+impl<'a> Deref for QueryPoolCreateInfoINTELBuilder<'a> {
+    type Target = vk::QueryPoolCreateInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PerformanceMarkerInfoINTEL {
+    type Type = PerformanceMarkerInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        PerformanceMarkerInfoINTELBuilder::new()
+    }
+}
+pub struct PerformanceMarkerInfoINTELBuilder<'a> {
+    inner: vk::PerformanceMarkerInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PerformanceMarkerInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn marker(mut self, marker: u64) -> Self {
+        self.inner.marker = marker;
+        self
+    }
+}
+impl<'a> Deref for PerformanceMarkerInfoINTELBuilder<'a> {
+    type Target = vk::PerformanceMarkerInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PerformanceStreamMarkerInfoINTEL {
+    type Type = PerformanceStreamMarkerInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        PerformanceStreamMarkerInfoINTELBuilder::new()
+    }
+}
+pub struct PerformanceStreamMarkerInfoINTELBuilder<'a> {
+    inner: vk::PerformanceStreamMarkerInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PerformanceStreamMarkerInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn marker(mut self, marker: u32) -> Self {
+        self.inner.marker = marker;
+        self
+    }
+}
+impl<'a> Deref for PerformanceStreamMarkerInfoINTELBuilder<'a> {
+    type Target = vk::PerformanceStreamMarkerInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PerformanceOverrideInfoINTEL {
+    type Type = PerformanceOverrideInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        PerformanceOverrideInfoINTELBuilder::new()
+    }
+}
+pub struct PerformanceOverrideInfoINTELBuilder<'a> {
+    inner: vk::PerformanceOverrideInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PerformanceOverrideInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::PerformanceOverrideTypeINTEL) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn enable(mut self, enable: bool) -> Self {
+        self.inner.enable = if enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn parameter(mut self, parameter: u64) -> Self {
+        self.inner.parameter = parameter;
+        self
+    }
+}
+impl<'a> Deref for PerformanceOverrideInfoINTELBuilder<'a> {
+    type Target = vk::PerformanceOverrideInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PerformanceConfigurationAcquireInfoINTEL {
+    type Type = PerformanceConfigurationAcquireInfoINTELBuilder<'a>;
+    fn builder() -> Self::Type {
+        PerformanceConfigurationAcquireInfoINTELBuilder::new()
+    }
+}
+pub struct PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
+    inner: vk::PerformanceConfigurationAcquireInfoINTEL,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::PerformanceConfigurationTypeINTEL) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+}
+impl<'a> Deref for PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
+    type Target = vk::PerformanceConfigurationAcquireInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

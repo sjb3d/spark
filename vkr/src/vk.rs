@@ -9251,6 +9251,9 @@ pub struct ValidationCacheEXT(num::NonZeroU64);
 pub struct AccelerationStructureNV(num::NonZeroU64);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayKHR(num::NonZeroU64);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -11045,6 +11048,8 @@ impl QueryType {
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = QueryType(1000028004);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = QueryType(1000165000);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_QUERY_INTEL: Self = QueryType(1000210000);
 }
 impl default::Default for QueryType {
     fn default() -> Self {
@@ -11061,6 +11066,7 @@ impl fmt::Display for QueryType {
             1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
+            1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11823,6 +11829,20 @@ impl StructureType {
     pub const CHECKPOINT_DATA_NV: Self = StructureType(1000206000);
     /// Added by extension VK_NV_device_diagnostic_checkpoints.
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
+    /// Added by extension VK_INTEL_shader_integer_functions2.
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL: Self = StructureType(1000209000);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const QUERY_POOL_CREATE_INFO_INTEL: Self = StructureType(1000210000);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const INITIALIZE_PERFORMANCE_API_INFO_INTEL: Self = StructureType(1000210001);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_MARKER_INFO_INTEL: Self = StructureType(1000210002);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_STREAM_MARKER_INFO_INTEL: Self = StructureType(1000210003);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_OVERRIDE_INFO_INTEL: Self = StructureType(1000210004);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL: Self = StructureType(1000210005);
     /// Added by extension VK_KHR_vulkan_memory_model.
     pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
     /// Added by extension VK_EXT_pci_bus_info.
@@ -12205,6 +12225,13 @@ impl fmt::Display for StructureType {
             1000205002 => Some(&"PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
             1000206000 => Some(&"CHECKPOINT_DATA_NV"),
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
+            1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL"),
+            1000210000 => Some(&"QUERY_POOL_CREATE_INFO_INTEL"),
+            1000210001 => Some(&"INITIALIZE_PERFORMANCE_API_INFO_INTEL"),
+            1000210002 => Some(&"PERFORMANCE_MARKER_INFO_INTEL"),
+            1000210003 => Some(&"PERFORMANCE_STREAM_MARKER_INFO_INTEL"),
+            1000210004 => Some(&"PERFORMANCE_OVERRIDE_INFO_INTEL"),
+            1000210005 => Some(&"PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL"),
             1000211000 => Some(&"PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR"),
             1000212000 => Some(&"PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT"),
             1000213000 => Some(&"DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD"),
@@ -12509,6 +12536,8 @@ impl ObjectType {
     pub const VALIDATION_CACHE_EXT: Self = ObjectType(1000160000);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_NV: Self = ObjectType(1000165000);
+    /// Added by extension VK_INTEL_performance_query.
+    pub const PERFORMANCE_CONFIGURATION_INTEL: Self = ObjectType(1000210000);
 }
 impl default::Default for ObjectType {
     fn default() -> Self {
@@ -12556,6 +12585,7 @@ impl fmt::Display for ObjectType {
             1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
             1000160000 => Some(&"VALIDATION_CACHE_EXT"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000210000 => Some(&"PERFORMANCE_CONFIGURATION_INTEL"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13182,6 +13212,138 @@ impl fmt::Display for ComponentTypeNV {
             8 => Some(&"UINT16"),
             9 => Some(&"UINT32"),
             10 => Some(&"UINT64"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceConfigurationTypeINTEL(i32);
+impl PerformanceConfigurationTypeINTEL {
+    pub const COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED: Self = PerformanceConfigurationTypeINTEL(0);
+}
+impl default::Default for PerformanceConfigurationTypeINTEL {
+    fn default() -> Self {
+        PerformanceConfigurationTypeINTEL(0)
+    }
+}
+impl fmt::Display for PerformanceConfigurationTypeINTEL {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct QueryPoolSamplingModeINTEL(i32);
+impl QueryPoolSamplingModeINTEL {
+    pub const MANUAL: Self = QueryPoolSamplingModeINTEL(0);
+}
+impl default::Default for QueryPoolSamplingModeINTEL {
+    fn default() -> Self {
+        QueryPoolSamplingModeINTEL(0)
+    }
+}
+impl fmt::Display for QueryPoolSamplingModeINTEL {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MANUAL"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceOverrideTypeINTEL(i32);
+impl PerformanceOverrideTypeINTEL {
+    pub const NULL_HARDWARE: Self = PerformanceOverrideTypeINTEL(0);
+    pub const FLUSH_GPU_CACHES: Self = PerformanceOverrideTypeINTEL(1);
+}
+impl default::Default for PerformanceOverrideTypeINTEL {
+    fn default() -> Self {
+        PerformanceOverrideTypeINTEL(0)
+    }
+}
+impl fmt::Display for PerformanceOverrideTypeINTEL {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NULL_HARDWARE"),
+            1 => Some(&"FLUSH_GPU_CACHES"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceParameterTypeINTEL(i32);
+impl PerformanceParameterTypeINTEL {
+    pub const HW_COUNTERS_SUPPORTED: Self = PerformanceParameterTypeINTEL(0);
+    pub const STREAM_MARKER_VALID_BITS: Self = PerformanceParameterTypeINTEL(1);
+}
+impl default::Default for PerformanceParameterTypeINTEL {
+    fn default() -> Self {
+        PerformanceParameterTypeINTEL(0)
+    }
+}
+impl fmt::Display for PerformanceParameterTypeINTEL {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"HW_COUNTERS_SUPPORTED"),
+            1 => Some(&"STREAM_MARKER_VALID_BITS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceValueTypeINTEL(i32);
+impl PerformanceValueTypeINTEL {
+    pub const UINT32: Self = PerformanceValueTypeINTEL(0);
+    pub const UINT64: Self = PerformanceValueTypeINTEL(1);
+    pub const FLOAT: Self = PerformanceValueTypeINTEL(2);
+    pub const BOOL: Self = PerformanceValueTypeINTEL(3);
+    pub const STRING: Self = PerformanceValueTypeINTEL(4);
+}
+impl default::Default for PerformanceValueTypeINTEL {
+    fn default() -> Self {
+        PerformanceValueTypeINTEL(0)
+    }
+}
+impl fmt::Display for PerformanceValueTypeINTEL {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"UINT32"),
+            1 => Some(&"UINT64"),
+            2 => Some(&"FLOAT"),
+            3 => Some(&"BOOL"),
+            4 => Some(&"STRING"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29168,6 +29330,234 @@ impl fmt::Debug for FramebufferMixedSamplesCombinationNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderIntegerFunctions2INTEL {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_integer_functions2: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderIntegerFunctions2INTEL {
+    fn default() -> Self {
+        PhysicalDeviceShaderIntegerFunctions2INTEL {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL,
+            p_next: ptr::null_mut(),
+            shader_integer_functions2: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderIntegerFunctions2INTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderIntegerFunctions2INTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_integer_functions2", &self.shader_integer_functions2)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union PerformanceValueDataINTEL {
+    pub value32: u32,
+    pub value64: u64,
+    pub value_float: f32,
+    pub value_bool: Bool32,
+    pub value_string: *const c_char,
+}
+impl default::Default for PerformanceValueDataINTEL {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for PerformanceValueDataINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceValueDataINTEL")
+            .field("value32", unsafe { &self.value32 })
+            .field("value64", unsafe { &self.value64 })
+            .field("value_float", unsafe { &self.value_float })
+            .field("value_bool", unsafe { &self.value_bool })
+            .field("value_string", unsafe { &self.value_string })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceValueINTEL {
+    pub ty: PerformanceValueTypeINTEL,
+    pub data: PerformanceValueDataINTEL,
+}
+impl default::Default for PerformanceValueINTEL {
+    fn default() -> Self {
+        PerformanceValueINTEL {
+            ty: PerformanceValueTypeINTEL::default(),
+            data: PerformanceValueDataINTEL::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceValueINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceValueINTEL")
+            .field("ty", &self.ty)
+            .field("data", &self.data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct InitializePerformanceApiInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_user_data: *mut c_void,
+}
+impl default::Default for InitializePerformanceApiInfoINTEL {
+    fn default() -> Self {
+        InitializePerformanceApiInfoINTEL {
+            s_type: StructureType::INITIALIZE_PERFORMANCE_API_INFO_INTEL,
+            p_next: ptr::null(),
+            p_user_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for InitializePerformanceApiInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("InitializePerformanceApiInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_user_data", &self.p_user_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueryPoolCreateInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub performance_counters_sampling: QueryPoolSamplingModeINTEL,
+}
+impl default::Default for QueryPoolCreateInfoINTEL {
+    fn default() -> Self {
+        QueryPoolCreateInfoINTEL {
+            s_type: StructureType::QUERY_POOL_CREATE_INFO_INTEL,
+            p_next: ptr::null(),
+            performance_counters_sampling: QueryPoolSamplingModeINTEL::default(),
+        }
+    }
+}
+impl fmt::Debug for QueryPoolCreateInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueryPoolCreateInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("performance_counters_sampling", &self.performance_counters_sampling)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceMarkerInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub marker: u64,
+}
+impl default::Default for PerformanceMarkerInfoINTEL {
+    fn default() -> Self {
+        PerformanceMarkerInfoINTEL {
+            s_type: StructureType::PERFORMANCE_MARKER_INFO_INTEL,
+            p_next: ptr::null(),
+            marker: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceMarkerInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceMarkerInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("marker", &self.marker)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceStreamMarkerInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub marker: u32,
+}
+impl default::Default for PerformanceStreamMarkerInfoINTEL {
+    fn default() -> Self {
+        PerformanceStreamMarkerInfoINTEL {
+            s_type: StructureType::PERFORMANCE_STREAM_MARKER_INFO_INTEL,
+            p_next: ptr::null(),
+            marker: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceStreamMarkerInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceStreamMarkerInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("marker", &self.marker)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceOverrideInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: PerformanceOverrideTypeINTEL,
+    pub enable: Bool32,
+    pub parameter: u64,
+}
+impl default::Default for PerformanceOverrideInfoINTEL {
+    fn default() -> Self {
+        PerformanceOverrideInfoINTEL {
+            s_type: StructureType::PERFORMANCE_OVERRIDE_INFO_INTEL,
+            p_next: ptr::null(),
+            ty: PerformanceOverrideTypeINTEL::default(),
+            enable: Bool32::default(),
+            parameter: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceOverrideInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceOverrideInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("enable", &self.enable)
+            .field("parameter", &self.parameter)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceConfigurationAcquireInfoINTEL {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: PerformanceConfigurationTypeINTEL,
+}
+impl default::Default for PerformanceConfigurationAcquireInfoINTEL {
+    fn default() -> Self {
+        PerformanceConfigurationAcquireInfoINTEL {
+            s_type: StructureType::PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL,
+            p_next: ptr::null(),
+            ty: PerformanceConfigurationTypeINTEL::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceConfigurationAcquireInfoINTEL {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceConfigurationAcquireInfoINTEL")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -30945,4 +31335,35 @@ pub type FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = uns
     physical_device: Option<PhysicalDevice>,
     p_combination_count: *mut u32,
     p_combinations: *mut FramebufferMixedSamplesCombinationNV,
+) -> Result;
+pub type FnInitializePerformanceApiINTEL = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_initialize_info: *const InitializePerformanceApiInfoINTEL,
+) -> Result;
+pub type FnUninitializePerformanceApiINTEL = unsafe extern "system" fn(device: Option<Device>) -> c_void;
+pub type FnCmdSetPerformanceMarkerINTEL = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const PerformanceMarkerInfoINTEL,
+) -> Result;
+pub type FnCmdSetPerformanceStreamMarkerINTEL = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_marker_info: *const PerformanceStreamMarkerInfoINTEL,
+) -> Result;
+pub type FnCmdSetPerformanceOverrideINTEL = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_override_info: *const PerformanceOverrideInfoINTEL,
+) -> Result;
+pub type FnAcquirePerformanceConfigurationINTEL = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_acquire_info: *const PerformanceConfigurationAcquireInfoINTEL,
+    p_configuration: *mut PerformanceConfigurationINTEL,
+) -> Result;
+pub type FnReleasePerformanceConfigurationINTEL =
+    unsafe extern "system" fn(device: Option<Device>, configuration: Option<PerformanceConfigurationINTEL>) -> Result;
+pub type FnQueueSetPerformanceConfigurationINTEL =
+    unsafe extern "system" fn(queue: Option<Queue>, configuration: Option<PerformanceConfigurationINTEL>) -> Result;
+pub type FnGetPerformanceParameterINTEL = unsafe extern "system" fn(
+    device: Option<Device>,
+    parameter: PerformanceParameterTypeINTEL,
+    p_value: *mut PerformanceValueINTEL,
 ) -> Result;

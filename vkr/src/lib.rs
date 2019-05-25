@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 108
+//! Generated from vk.xml with `VK_HEADER_VERSION` 109
 pub mod builder;
 pub mod vk;
 
@@ -2508,6 +2508,8 @@ pub struct DeviceExtensions {
     nv_shader_image_footprint: bool,
     nv_scissor_exclusive: bool,
     nv_device_diagnostic_checkpoints: bool,
+    intel_shader_integer_functions2: bool,
+    intel_performance_query: bool,
     khr_vulkan_memory_model: bool,
     ext_pci_bus_info: bool,
     amd_display_native_hdr: bool,
@@ -2797,6 +2799,15 @@ pub struct Device {
     pub fp_release_full_screen_exclusive_mode_ext: Option<vk::FnReleaseFullScreenExclusiveModeEXT>,
     pub fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv:
         Option<vk::FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>,
+    pub fp_initialize_performance_api_intel: Option<vk::FnInitializePerformanceApiINTEL>,
+    pub fp_uninitialize_performance_api_intel: Option<vk::FnUninitializePerformanceApiINTEL>,
+    pub fp_cmd_set_performance_marker_intel: Option<vk::FnCmdSetPerformanceMarkerINTEL>,
+    pub fp_cmd_set_performance_stream_marker_intel: Option<vk::FnCmdSetPerformanceStreamMarkerINTEL>,
+    pub fp_cmd_set_performance_override_intel: Option<vk::FnCmdSetPerformanceOverrideINTEL>,
+    pub fp_acquire_performance_configuration_intel: Option<vk::FnAcquirePerformanceConfigurationINTEL>,
+    pub fp_release_performance_configuration_intel: Option<vk::FnReleasePerformanceConfigurationINTEL>,
+    pub fp_queue_set_performance_configuration_intel: Option<vk::FnQueueSetPerformanceConfigurationINTEL>,
+    pub fp_get_performance_parameter_intel: Option<vk::FnGetPerformanceParameterINTEL>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3156,6 +3167,12 @@ impl Device {
     pub fn nv_device_diagnostic_checkpoints_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostic_checkpoints\0") }
     }
+    pub fn intel_shader_integer_functions2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_shader_integer_functions2\0") }
+    }
+    pub fn intel_performance_query_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_performance_query\0") }
+    }
     pub fn khr_vulkan_memory_model_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vulkan_memory_model\0") }
     }
@@ -3347,6 +3364,8 @@ impl Device {
                     b"VK_NV_shader_image_footprint" => extensions.nv_shader_image_footprint = true,
                     b"VK_NV_scissor_exclusive" => extensions.nv_scissor_exclusive = true,
                     b"VK_NV_device_diagnostic_checkpoints" => extensions.nv_device_diagnostic_checkpoints = true,
+                    b"VK_INTEL_shader_integer_functions2" => extensions.intel_shader_integer_functions2 = true,
+                    b"VK_INTEL_performance_query" => extensions.intel_performance_query = true,
                     b"VK_KHR_vulkan_memory_model" => extensions.khr_vulkan_memory_model = true,
                     b"VK_EXT_pci_bus_info" => extensions.ext_pci_bus_info = true,
                     b"VK_AMD_display_native_hdr" => extensions.amd_display_native_hdr = true,
@@ -4484,6 +4503,72 @@ impl Device {
                     b"vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV\0",
                 ))
                 .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_initialize_performance_api_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkInitializePerformanceApiINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_uninitialize_performance_api_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkUninitializePerformanceApiINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_performance_marker_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPerformanceMarkerINTEL\0")).map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_performance_stream_marker_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetPerformanceStreamMarkerINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_performance_override_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetPerformanceOverrideINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_performance_configuration_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkAcquirePerformanceConfigurationINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_performance_configuration_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkReleasePerformanceConfigurationINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_set_performance_configuration_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkQueueSetPerformanceConfigurationINTEL\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_performance_parameter_intel: if extensions.intel_performance_query {
+                f(CStr::from_bytes_with_nul_unchecked(b"vkGetPerformanceParameterINTEL\0")).map(|f| mem::transmute(f))
             } else {
                 None
             },
@@ -8137,13 +8222,13 @@ impl Device {
     pub unsafe fn cmd_bind_shading_rate_image_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        image_view: vk::ImageView,
+        image_view: Option<vk::ImageView>,
         image_layout: vk::ImageLayout,
     ) {
         let fp = self
             .fp_cmd_bind_shading_rate_image_nv
             .expect("vkCmdBindShadingRateImageNV is not loaded");
-        (fp)(Some(command_buffer), Some(image_view), image_layout);
+        (fp)(Some(command_buffer), image_view, image_layout);
     }
     pub unsafe fn cmd_set_viewport_shading_rate_palette_nv(
         &self,
@@ -8641,6 +8726,122 @@ impl Device {
         match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
+        }
+    }
+    pub unsafe fn initialize_performance_api_intel(
+        &self,
+        p_initialize_info: &vk::InitializePerformanceApiInfoINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_initialize_performance_api_intel
+            .expect("vkInitializePerformanceApiINTEL is not loaded");
+        let err = (fp)(Some(self.handle), p_initialize_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn uninitialize_performance_api_intel(&self) {
+        let fp = self
+            .fp_uninitialize_performance_api_intel
+            .expect("vkUninitializePerformanceApiINTEL is not loaded");
+        (fp)(Some(self.handle));
+    }
+    pub unsafe fn cmd_set_performance_marker_intel(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_marker_info: &vk::PerformanceMarkerInfoINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_cmd_set_performance_marker_intel
+            .expect("vkCmdSetPerformanceMarkerINTEL is not loaded");
+        let err = (fp)(Some(command_buffer), p_marker_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_set_performance_stream_marker_intel(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_marker_info: &vk::PerformanceStreamMarkerInfoINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_cmd_set_performance_stream_marker_intel
+            .expect("vkCmdSetPerformanceStreamMarkerINTEL is not loaded");
+        let err = (fp)(Some(command_buffer), p_marker_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_set_performance_override_intel(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_override_info: &vk::PerformanceOverrideInfoINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_cmd_set_performance_override_intel
+            .expect("vkCmdSetPerformanceOverrideINTEL is not loaded");
+        let err = (fp)(Some(command_buffer), p_override_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn acquire_performance_configuration_intel(
+        &self,
+        p_acquire_info: &vk::PerformanceConfigurationAcquireInfoINTEL,
+    ) -> Result<vk::PerformanceConfigurationINTEL> {
+        let fp = self
+            .fp_acquire_performance_configuration_intel
+            .expect("vkAcquirePerformanceConfigurationINTEL is not loaded");
+        let mut res = mem::uninitialized();
+        let err = (fp)(Some(self.handle), p_acquire_info, &mut res);
+        match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn release_performance_configuration_intel(
+        &self,
+        configuration: vk::PerformanceConfigurationINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_release_performance_configuration_intel
+            .expect("vkReleasePerformanceConfigurationINTEL is not loaded");
+        let err = (fp)(Some(self.handle), Some(configuration));
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn queue_set_performance_configuration_intel(
+        &self,
+        queue: vk::Queue,
+        configuration: vk::PerformanceConfigurationINTEL,
+    ) -> Result<()> {
+        let fp = self
+            .fp_queue_set_performance_configuration_intel
+            .expect("vkQueueSetPerformanceConfigurationINTEL is not loaded");
+        let err = (fp)(Some(queue), Some(configuration));
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_performance_parameter_intel(
+        &self,
+        parameter: vk::PerformanceParameterTypeINTEL,
+    ) -> Result<vk::PerformanceValueINTEL> {
+        let fp = self
+            .fp_get_performance_parameter_intel
+            .expect("vkGetPerformanceParameterINTEL is not loaded");
+        let mut res = mem::uninitialized();
+        let err = (fp)(Some(self.handle), parameter, &mut res);
+        match err {
+            vk::Result::SUCCESS => Ok(res),
+            _ => Err(err),
         }
     }
 }
