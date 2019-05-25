@@ -23,14 +23,15 @@ The structs `Loader`, `Instance` and `Device` load function pointers for the cor
 // load the Vulkan shared library
 let loader = Loader::new()?;
 
-// create an instance (skip listing layers and extensions for this example)
+// create a Vulkan 1.0 instance (skip listing layers and extensions for this example)
+let version = vk::Version::from_raw_parts(1, 0, 0);
 let instance_create_info = vk::InstanceCreateInfo {
     .. Default::default()
 };
-let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
+let instance = unsafe { loader.create_instance(&instance_create_info, None, version) }?;
 ```
 
-_TODO: describe how to specify which functions are loaded using a Vulkan version and list of extensions, once this implemented.  For now, we attempt to load functions for all versions and all extensions!  This will change soon..._
+Function pointers are loaded only for commands that are referenced by the specified Vulkan version or extensions are loaded.
 
 ## Vulkan Handles
 
