@@ -11678,6 +11678,46 @@ impl<'a> Deref for SurfaceProtectedCapabilitiesKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+    type Type = PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn uniform_buffer_standard_layout(mut self, uniform_buffer_standard_layout: bool) -> Self {
+        self.inner.uniform_buffer_standard_layout = if uniform_buffer_standard_layout {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {
     type Type = PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -12368,6 +12408,82 @@ impl<'a> HeadlessSurfaceCreateInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for HeadlessSurfaceCreateInfoEXTBuilder<'a> {
     type Target = vk::HeadlessSurfaceCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceCoverageReductionModeFeaturesNV {
+    type Type = PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceCoverageReductionModeFeaturesNVBuilder::new()
+    }
+}
+pub struct PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceCoverageReductionModeFeaturesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn coverage_reduction_mode(mut self, coverage_reduction_mode: bool) -> Self {
+        self.inner.coverage_reduction_mode = if coverage_reduction_mode { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceCoverageReductionModeFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineCoverageReductionStateCreateInfoNV {
+    type Type = PipelineCoverageReductionStateCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        PipelineCoverageReductionStateCreateInfoNVBuilder::new()
+    }
+}
+pub struct PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
+    inner: vk::PipelineCoverageReductionStateCreateInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PipelineCoverageReductionStateCreateFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn coverage_reduction_mode(mut self, coverage_reduction_mode: vk::CoverageReductionModeNV) -> Self {
+        self.inner.coverage_reduction_mode = coverage_reduction_mode;
+        self
+    }
+}
+impl<'a> Deref for PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
+    type Target = vk::PipelineCoverageReductionStateCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

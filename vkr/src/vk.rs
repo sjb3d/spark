@@ -8303,6 +8303,73 @@ impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineCoverageReductionStateCreateFlagsNV(u32);
+impl PipelineCoverageReductionStateCreateFlagsNV {}
+impl default::Default for PipelineCoverageReductionStateCreateFlagsNV {
+    fn default() -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(0)
+    }
+}
+impl PipelineCoverageReductionStateCreateFlagsNV {
+    pub fn empty() -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(0)
+    }
+    pub fn all() -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(0x0)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineCoverageReductionStateCreateFlagsNV {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineCoverageReductionStateCreateFlagsNV {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineCoverageReductionStateCreateFlagsNV {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineCoverageReductionStateCreateFlagsNV {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineCoverageReductionStateCreateFlagsNV {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        PipelineCoverageReductionStateCreateFlagsNV(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineCoverageReductionStateCreateFlagsNV {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ValidationCacheCreateFlagsEXT(u32);
 impl ValidationCacheCreateFlagsEXT {}
 impl default::Default for ValidationCacheCreateFlagsEXT {
@@ -11804,8 +11871,16 @@ impl StructureType {
     pub const COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249001);
     /// Added by extension VK_NV_cooperative_matrix.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249002);
+    /// Added by extension VK_NV_coverage_reduction_mode.
+    pub const PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV: Self = StructureType(1000250000);
+    /// Added by extension VK_NV_coverage_reduction_mode.
+    pub const PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV: Self = StructureType(1000250001);
+    /// Added by extension VK_NV_coverage_reduction_mode.
+    pub const FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV: Self = StructureType(1000250002);
     /// Added by extension VK_EXT_ycbcr_image_arrays.
     pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = StructureType(1000252000);
+    /// Added by extension VK_KHR_uniform_buffer_standard_layout.
+    pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR: Self = StructureType(1000253000);
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT: Self = StructureType(1000255000);
     /// Added by extension VK_EXT_full_screen_exclusive.
@@ -12153,7 +12228,11 @@ impl fmt::Display for StructureType {
             1000249000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV"),
             1000249001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_NV"),
             1000249002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV"),
+            1000250000 => Some(&"PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV"),
+            1000250001 => Some(&"PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV"),
+            1000250002 => Some(&"FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV"),
             1000252000 => Some(&"PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT"),
+            1000253000 => Some(&"PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR"),
             1000255000 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT"),
             1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
@@ -12712,6 +12791,32 @@ impl fmt::Display for CoverageModulationModeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct CoverageReductionModeNV(i32);
+impl CoverageReductionModeNV {
+    pub const MERGE: Self = CoverageReductionModeNV(0);
+    pub const TRUNCATE: Self = CoverageReductionModeNV(1);
+}
+impl default::Default for CoverageReductionModeNV {
+    fn default() -> Self {
+        CoverageReductionModeNV(0)
+    }
+}
+impl fmt::Display for CoverageReductionModeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MERGE"),
+            1 => Some(&"TRUNCATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationCacheHeaderVersionEXT(i32);
 impl ValidationCacheHeaderVersionEXT {
     pub const ONE: Self = ValidationCacheHeaderVersionEXT(1);
@@ -13097,7 +13202,7 @@ impl ColorSpaceKHR {
     /// Added by extension VK_EXT_swapchain_colorspace.
     pub const EXTENDED_SRGB_LINEAR_EXT: Self = ColorSpaceKHR(1000104002);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const DCI_P3_LINEAR_EXT: Self = ColorSpaceKHR(1000104003);
+    pub const DISPLAY_P3_LINEAR_EXT: Self = ColorSpaceKHR(1000104003);
     /// Added by extension VK_EXT_swapchain_colorspace.
     pub const DCI_P3_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104004);
     /// Added by extension VK_EXT_swapchain_colorspace.
@@ -13120,6 +13225,7 @@ impl ColorSpaceKHR {
     pub const PASS_THROUGH_EXT: Self = ColorSpaceKHR(1000104013);
     /// Added by extension VK_EXT_swapchain_colorspace.
     pub const EXTENDED_SRGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104014);
+    pub const DCI_P3_LINEAR_EXT: Self = Self::DISPLAY_P3_LINEAR_EXT;
     /// Added by extension VK_AMD_display_native_hdr.
     pub const DISPLAY_NATIVE_AMD: Self = ColorSpaceKHR(1000213000);
 }
@@ -13134,7 +13240,7 @@ impl fmt::Display for ColorSpaceKHR {
             0 => Some(&"SRGB_NONLINEAR"),
             1000104001 => Some(&"DISPLAY_P3_NONLINEAR_EXT"),
             1000104002 => Some(&"EXTENDED_SRGB_LINEAR_EXT"),
-            1000104003 => Some(&"DCI_P3_LINEAR_EXT"),
+            1000104003 => Some(&"DISPLAY_P3_LINEAR_EXT"),
             1000104004 => Some(&"DCI_P3_NONLINEAR_EXT"),
             1000104005 => Some(&"BT709_LINEAR_EXT"),
             1000104006 => Some(&"BT709_NONLINEAR_EXT"),
@@ -28357,6 +28463,31 @@ impl fmt::Debug for SurfaceProtectedCapabilitiesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub uniform_buffer_standard_layout: Bool32,
+}
+impl default::Default for PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+    fn default() -> Self {
+        PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            uniform_buffer_standard_layout: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("uniform_buffer_standard_layout", &self.uniform_buffer_standard_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -28947,6 +29078,93 @@ impl fmt::Debug for HeadlessSurfaceCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCoverageReductionModeFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub coverage_reduction_mode: Bool32,
+}
+impl default::Default for PhysicalDeviceCoverageReductionModeFeaturesNV {
+    fn default() -> Self {
+        PhysicalDeviceCoverageReductionModeFeaturesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            coverage_reduction_mode: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCoverageReductionModeFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCoverageReductionModeFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("coverage_reduction_mode", &self.coverage_reduction_mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCoverageReductionStateCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineCoverageReductionStateCreateFlagsNV,
+    pub coverage_reduction_mode: CoverageReductionModeNV,
+}
+impl default::Default for PipelineCoverageReductionStateCreateInfoNV {
+    fn default() -> Self {
+        PipelineCoverageReductionStateCreateInfoNV {
+            s_type: StructureType::PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            flags: PipelineCoverageReductionStateCreateFlagsNV::default(),
+            coverage_reduction_mode: CoverageReductionModeNV::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCoverageReductionStateCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCoverageReductionStateCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("coverage_reduction_mode", &self.coverage_reduction_mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FramebufferMixedSamplesCombinationNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub coverage_reduction_mode: CoverageReductionModeNV,
+    pub rasterization_samples: SampleCountFlags,
+    pub depth_stencil_samples: SampleCountFlags,
+    pub color_samples: SampleCountFlags,
+}
+impl default::Default for FramebufferMixedSamplesCombinationNV {
+    fn default() -> Self {
+        FramebufferMixedSamplesCombinationNV {
+            s_type: StructureType::FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV,
+            p_next: ptr::null_mut(),
+            coverage_reduction_mode: CoverageReductionModeNV::default(),
+            rasterization_samples: SampleCountFlags::default(),
+            depth_stencil_samples: SampleCountFlags::default(),
+            color_samples: SampleCountFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for FramebufferMixedSamplesCombinationNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FramebufferMixedSamplesCombinationNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("coverage_reduction_mode", &self.coverage_reduction_mode)
+            .field("rasterization_samples", &self.rasterization_samples)
+            .field("depth_stencil_samples", &self.depth_stencil_samples)
+            .field("color_samples", &self.color_samples)
             .finish()
     }
 }
@@ -30722,4 +30940,9 @@ pub type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
     p_create_info: *const HeadlessSurfaceCreateInfoEXT,
     p_allocator: *const AllocationCallbacks,
     p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_combination_count: *mut u32,
+    p_combinations: *mut FramebufferMixedSamplesCombinationNV,
 ) -> Result;

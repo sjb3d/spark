@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 107
+//! Generated from vk.xml with `VK_HEADER_VERSION` 108
 pub mod builder;
 pub mod vk;
 
@@ -2521,7 +2521,9 @@ pub struct DeviceExtensions {
     ext_buffer_device_address: bool,
     ext_separate_stencil_usage: bool,
     nv_cooperative_matrix: bool,
+    nv_coverage_reduction_mode: bool,
     ext_ycbcr_image_arrays: bool,
+    khr_uniform_buffer_standard_layout: bool,
     ext_full_screen_exclusive: bool,
     ext_host_query_reset: bool,
 }
@@ -2793,6 +2795,8 @@ pub struct Device {
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
     pub fp_acquire_full_screen_exclusive_mode_ext: Option<vk::FnAcquireFullScreenExclusiveModeEXT>,
     pub fp_release_full_screen_exclusive_mode_ext: Option<vk::FnReleaseFullScreenExclusiveModeEXT>,
+    pub fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv:
+        Option<vk::FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3191,8 +3195,14 @@ impl Device {
     pub fn nv_cooperative_matrix_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix\0") }
     }
+    pub fn nv_coverage_reduction_mode_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_coverage_reduction_mode\0") }
+    }
     pub fn ext_ycbcr_image_arrays_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_image_arrays\0") }
+    }
+    pub fn khr_uniform_buffer_standard_layout_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_uniform_buffer_standard_layout\0") }
     }
     pub fn ext_full_screen_exclusive_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") }
@@ -3352,7 +3362,9 @@ impl Device {
                     b"VK_EXT_buffer_device_address" => extensions.ext_buffer_device_address = true,
                     b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
                     b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,
+                    b"VK_NV_coverage_reduction_mode" => extensions.nv_coverage_reduction_mode = true,
                     b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
+                    b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     _ => {}
@@ -4438,8 +4450,8 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_group_surface_present_modes2_ext: if extensions.khr_device_group
-                && extensions.ext_full_screen_exclusive
+            fp_get_device_group_surface_present_modes2_ext: if extensions.ext_full_screen_exclusive
+                && extensions.khr_device_group
                 || extensions.ext_full_screen_exclusive && version >= vk::Version::from_raw_parts(1, 1, 0)
             {
                 f(CStr::from_bytes_with_nul_unchecked(
@@ -4460,6 +4472,16 @@ impl Device {
             fp_release_full_screen_exclusive_mode_ext: if extensions.ext_full_screen_exclusive {
                 f(CStr::from_bytes_with_nul_unchecked(
                     b"vkReleaseFullScreenExclusiveModeEXT\0",
+                ))
+                .map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv: if extensions
+                .nv_coverage_reduction_mode
+            {
+                f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV\0",
                 ))
                 .map(|f| mem::transmute(f))
             } else {
@@ -8599,6 +8621,26 @@ impl Device {
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_supported_framebuffer_mixed_samples_combinations_nv_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::FramebufferMixedSamplesCombinationNV>> {
+        let fp = self
+            .fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv
+            .expect("vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV is not loaded");
+        let mut len = mem::uninitialized();
+        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
 }
