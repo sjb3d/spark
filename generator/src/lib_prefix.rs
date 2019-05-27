@@ -3,7 +3,7 @@ pub mod builder;
 
 use lazy_static::lazy_static;
 use std::ffi::CStr;
-use std::os::raw::{c_void, c_int};
+use std::os::raw::{c_void, c_char, c_int};
 use std::mem;
 use std::path::Path;
 use std::ptr;
@@ -44,7 +44,7 @@ pub type Result<T> = result::Result<T, vk::Result>;
 
 struct Lib {
     pub lib: DynamicLibrary,
-    pub get_instance_proc_addr: vk::FnGetInstanceProcAddr,
+    pub fp_get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 #[derive(Debug, Clone)]
@@ -75,9 +75,9 @@ impl Lib {
                 lib.symbol("vkGetInstanceProcAddr")
                     .map(|f: *mut c_void| mem::transmute(f))
             } {
-                Ok(get_instance_proc_addr) => Ok(Self {
+                Ok(fp_get_instance_proc_addr) => Ok(Self {
                     lib,
-                    get_instance_proc_addr,
+                    fp_get_instance_proc_addr,
                 }),
                 Err(s) => Err(LoaderError::MissingSymbol(s)),
             },
@@ -85,8 +85,8 @@ impl Lib {
         }
     }
 
-    pub unsafe fn get_instance_proc_addr(&self, instance: Option<vk::Instance>, name: &CStr) -> Option<vk::FnVoidFunction> {
-        (self.get_instance_proc_addr)(instance, name.as_ptr())
+    pub unsafe fn get_instance_proc_addr(&self, name: &CStr) -> Option<vk::FnVoidFunction> {
+        (self.fp_get_instance_proc_addr)(None, name.as_ptr())
     }
 }
 
