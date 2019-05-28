@@ -2163,11 +2163,20 @@ impl<'a> Generator<'a> {
                 }
             }
             writeln!(w, "{{")?;
-            writeln!(
-                w,
-                r#"let fp = self.fp_{}.expect("{} is not loaded");"#,
-                fn_name, cmd_name
-            )?;
+
+            if cmd_name == "vkEnumerateInstanceVersion" {
+                writeln!(
+                    w,
+                    r#"if let Some(fp) = self.fp_{} {{"#,
+                    fn_name
+                )?;
+            } else {
+                writeln!(
+                    w,
+                    r#"let fp = self.fp_{}.expect("{} is not loaded");"#,
+                    fn_name, cmd_name
+                )?;
+            }
 
             for rparam in &params {
                 if let LibParamType::SharedSliceLen {
@@ -2406,6 +2415,10 @@ impl<'a> Generator<'a> {
                 }
             }
 
+            if cmd_name == "vkEnumerateInstanceVersion" {
+                writeln!(w, "}} else {{ Ok(vk::Version::default()) }}")?;
+            }
+
             writeln!(w, " }}")?;
         }
 
@@ -2616,7 +2629,6 @@ impl<'a> Generator<'a> {
         }) {
             self.write_command(w, category, name)?;
         }
-
         writeln!(w, "}}")?;
 
         Ok(())

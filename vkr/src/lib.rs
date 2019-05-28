@@ -163,14 +163,15 @@ impl Loader {
         (fp)(instance, p_name.as_ptr())
     }
     pub unsafe fn enumerate_instance_version(&self) -> Result<vk::Version> {
-        let fp = self
-            .fp_enumerate_instance_version
-            .expect("vkEnumerateInstanceVersion is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(&mut res);
-        match err {
-            vk::Result::SUCCESS => Ok(res),
-            _ => Err(err),
+        if let Some(fp) = self.fp_enumerate_instance_version {
+            let mut res = mem::uninitialized();
+            let err = (fp)(&mut res);
+            match err {
+                vk::Result::SUCCESS => Ok(res),
+                _ => Err(err),
+            }
+        } else {
+            Ok(vk::Version::default())
         }
     }
     pub unsafe fn enumerate_instance_layer_properties_to_vec(&self) -> Result<Vec<vk::LayerProperties>> {
