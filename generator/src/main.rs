@@ -2162,11 +2162,7 @@ impl<'a> Generator<'a> {
             writeln!(w, "{{")?;
 
             if cmd_name == "vkEnumerateInstanceVersion" {
-                writeln!(
-                    w,
-                    r#"if let Some(fp) = self.fp_{} {{"#,
-                    fn_name
-                )?;
+                writeln!(w, r#"if let Some(fp) = self.fp_{} {{"#, fn_name)?;
             } else {
                 writeln!(
                     w,
@@ -2585,7 +2581,7 @@ impl<'a> Generator<'a> {
                             write!(w, " || ")?;
                         }
                         self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
-                        if let CommandRef::Extension(_) =cmd_ref_pair.primary {
+                        if let CommandRef::Extension(_) = cmd_ref_pair.primary {
                             is_core = false;
                         }
                         if let Some(secondary) = cmd_ref_pair.secondary {
