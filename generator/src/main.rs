@@ -248,7 +248,7 @@ struct CommandRefPair<'a> {
 }
 
 impl<'a> CommandRefPair<'a> {
-    fn is_always_loaded(&self) -> bool {
+    fn is_core_vulkan_1_0(&self) -> bool {
         self.primary == CommandRef::Feature(Version::from_raw_parts(1, 0)) && self.secondary.is_none()
     }
 }
@@ -258,13 +258,12 @@ struct CommandInfo<'a> {
     cmd_def: &'a vk::CommandDefinition,
     alias: Option<&'a str>,
     category: Option<Category>,
-    is_extension: bool,
     refs: Vec<CommandRefPair<'a>>,
 }
 
 impl<'a> CommandInfo<'a> {
-    fn is_always_loaded(&self) -> bool {
-        self.refs[0].is_always_loaded()
+    fn is_core_vulkan_1_0(&self) -> bool {
+        self.refs[0].is_core_vulkan_1_0()
     }
 }
 
@@ -542,7 +541,6 @@ impl<'a> Generator<'a> {
                                     cmd_def,
                                     alias: None,
                                     category: None,
-                                    is_extension: false,
                                     refs: Vec::new(),
                                 },
                             );
@@ -563,7 +561,6 @@ impl<'a> Generator<'a> {
                     cmd_def,
                     alias: Some(alias),
                     category: None,
-                    is_extension: false,
                     refs: Vec::new(),
                 },
             );
@@ -628,8 +625,6 @@ impl<'a> Generator<'a> {
 
                                 info.category = info.category.or(ext_category);
                                 assert_eq!(info.category, ext_category);
-
-                                info.is_extension = true;
 
                                 info.refs.push(CommandRefPair {
                                     primary: CommandRef::Extension(ext.name.as_str()),
@@ -2168,7 +2163,11 @@ impl<'a> Generator<'a> {
                 }
             }
             writeln!(w, "{{")?;
-            writeln!(w, "let fp = self.fp_{};", fn_name)?;
+            writeln!(
+                w,
+                r#"let fp = self.fp_{}.expect("{} is not loaded");"#,
+                fn_name, cmd_name
+            )?;
 
             for rparam in &params {
                 if let LibParamType::SharedSliceLen {
@@ -2413,38 +2412,6 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn write_command_panics(&self, w: &mut impl IoWrite) -> WriteResult {
-        for (name, info) in self.cmd_names.iter().filter_map(|name| {
-            let info = self.cmd_info_by_name.get(name).expect("missing command info");
-            if info.category.is_some() && !info.is_always_loaded() {
-                Some((name, info))
-            } else {
-                None
-            }
-        }) {
-            let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
-            let decl = {
-                let mut decl = c_parse_function_decl(info.cmd_def.code.as_str());
-                let context = decl.proto.name;
-                for param in decl.parameters.iter_mut() {
-                    take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
-                }
-                decl
-            };
-            writeln!(w, r#"extern "system" fn {}_panic("#, fn_name)?;
-            for param in &decl.parameters {
-                writeln!(w, "_: {},", self.get_rust_parameter_type(&param.ty, Some("vk::")))?;
-            }
-            writeln!(
-                w,
-                r#") -> {} {{ panic!("{} is not loaded!") }}"#,
-                self.get_rust_parameter_type(&decl.proto.ty, Some("vk::")),
-                name
-            )?;
-        }
-        Ok(())
-    }
-
     fn write_command_ref_condition(
         &self,
         category: Category,
@@ -2501,15 +2468,7 @@ impl<'a> Generator<'a> {
         writeln!(w, "#[derive(Copy, Clone)]")?;
         writeln!(w, "pub struct {} {{", category)?;
         match category {
-            Category::Loader => {
-                for name in self.cmd_names.iter().filter(|&name| {
-                    let info = self.cmd_info_by_name.get(name).expect("missing command info");
-                    info.category == Some(category) && !info.is_always_loaded()
-                }) {
-                    let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
-                    writeln!(w, "pub has_{}: bool,", fn_name)?;
-                }
-            }
+            Category::Loader => {}
             Category::Instance => writeln!(w, "pub handle: vk::Instance,")?,
             Category::Device => writeln!(w, "pub handle: vk::Device,")?,
         }
@@ -2522,7 +2481,7 @@ impl<'a> Generator<'a> {
         }) {
             let name_part = name.skip_prefix(FN_PREFIX);
             let fn_name = name_part.to_snake_case();
-            writeln!(w, "pub fp_{}: vk::Fn{},", fn_name, name_part)?;
+            writeln!(w, "pub fp_{}: Option<vk::Fn{}>,", fn_name, name_part)?;
         }
         writeln!(w, "}}")?;
 
@@ -2544,33 +2503,14 @@ impl<'a> Generator<'a> {
                     "pub fn new() -> LoaderResult<Self> {{\
                      let lib = LIB.as_ref().map_err(|e| e.clone())?;\
                      unsafe {{\
-                     let f = |name: &CStr| lib.get_instance_proc_addr(name);"
+                     let f = |name: &CStr| lib.get_instance_proc_addr(name);\
+                     Ok(Self {{"
                 )?;
-                for name in self.cmd_names.iter().filter(|&name| {
-                    let info = self.cmd_info_by_name.get(name).expect("missing command info");
-                    info.category == Some(category) && !info.is_always_loaded()
-                }) {
-                    let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
-                    writeln!(
-                        w,
-                        r#"let fp_{} = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
-                        fn_name, name
-                    )?;
-                }
-                writeln!(w, "Ok(Self {{")?;
-                for name in self.cmd_names.iter().filter(|&name| {
-                    let info = self.cmd_info_by_name.get(name).expect("missing command info");
-                    info.category == Some(category) && !info.is_always_loaded()
-                }) {
-                    let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
-                    writeln!(w, "has_{0}: fp_{0}.is_some(),", fn_name)?;
-                }
             }
             Category::Instance => {
                 writeln!(
                     w,
                     "unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
-                     let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
                      let mut extensions = {}Extensions::default();", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
@@ -2583,6 +2523,7 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "_ => {{}}, }} }} }}\
+                     let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
                      Ok(Self {{ handle: instance, extensions,"
                 )?;
             }
@@ -2590,7 +2531,6 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
-                     let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
                      let mut extensions = {}Extensions::default();", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
@@ -2603,6 +2543,7 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "_ => {{}}, }} }} }}\
+                     let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
                      Ok(Self {{ handle: device, extensions,"
                 )?;
             }
@@ -2618,13 +2559,12 @@ impl<'a> Generator<'a> {
         }) {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
-            let always_loaded = info.is_always_loaded();
+            let always_load = info.is_core_vulkan_1_0() || category == Category::Loader;
             if name == "vkGetInstanceProcAddr" {
-                writeln!(w, "lib.fp_{}", fn_name)?;
-            } else if !always_loaded && category == Category::Loader {
-                writeln!(w, "fp_{0}.map(|f| mem::transmute(f)).unwrap_or({0}_panic)", fn_name)?;
+                writeln!(w, "Some(lib.fp_{})", fn_name)?;
             } else {
-                if !always_loaded {
+                let mut is_core = true;
+                if !always_load {
                     writeln!(w, "if ")?;
                     let mut is_first = true;
                     for cmd_ref_pair in info.refs.iter() {
@@ -2634,32 +2574,30 @@ impl<'a> Generator<'a> {
                             write!(w, " || ")?;
                         }
                         self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
+                        if let CommandRef::Extension(_) =cmd_ref_pair.primary {
+                            is_core = false;
+                        }
                         if let Some(secondary) = cmd_ref_pair.secondary {
                             write!(w, " && ")?;
                             self.write_command_ref_condition(category, secondary, w)?;
                         }
                     }
-                    writeln!(w, "{{")?;
                 }
                 writeln!(
                     w,
-                    r#"f(CStr::from_bytes_with_nul_unchecked(b"{}\0"))
-                     .map(|f| mem::transmute(f))"#,
-                    name,
+                    r#"{{ let fp = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
+                    name
                 )?;
-                if info.is_extension {
-                    // defer failure to first use for extension functions, client should check revision numbers
-                    writeln!(w, ".unwrap_or({}_panic)", fn_name)?;
-                } else {
-                    // return error if core function is not found
+                if is_core && category != Category::Loader {
                     writeln!(
                         w,
-                        r#".ok_or_else(|| LoaderError::MissingSymbol("{}".to_string()))?"#,
+                        r#"if fp.is_none() {{ return Err(LoaderError::MissingSymbol("{}".to_string())); }}"#,
                         name
                     )?;
                 }
-                if !always_loaded {
-                    writeln!(w, "}} else {{ {}_panic }}", fn_name)?;
+                writeln!(w, "fp.map(|f| mem::transmute(f)) }}")?;
+                if !always_load {
+                    writeln!(w, "else {{ None }}")?;
                 }
             }
             writeln!(w, ",")?;
@@ -2706,7 +2644,6 @@ impl<'a> Generator<'a> {
         }
 
         write!(&mut w, "{}", include_str!("lib_prefix.rs"))?;
-        self.write_command_panics(&mut w)?;
         self.write_struct(Category::Loader, &mut w)?;
         self.write_struct(Category::Instance, &mut w)?;
         self.write_struct(Category::Device, &mut w)?;
