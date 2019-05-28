@@ -140,7 +140,6 @@ impl Loader {
         &self,
         p_create_info: &vk::InstanceCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
-        version: vk::Version,
     ) -> result::Result<Instance, LoaderError> {
         let fp = self.fp_create_instance.expect("vkCreateInstance is not loaded");
         let mut res = mem::uninitialized();
@@ -150,7 +149,7 @@ impl Loader {
             _ => Err(err),
         }
         .map_err(|e| LoaderError::Vulkan(e))
-        .and_then(|r| Instance::load(&self, r, p_create_info, version))
+        .and_then(|r| Instance::load(&self, r, p_create_info))
     }
     pub unsafe fn get_instance_proc_addr(
         &self,
@@ -441,8 +440,12 @@ impl Instance {
         loader: &Loader,
         instance: vk::Instance,
         create_info: &vk::InstanceCreateInfo,
-        version: vk::Version,
     ) -> LoaderResult<Self> {
+        let version = create_info
+            .p_application_info
+            .as_ref()
+            .map(|app_info| app_info.api_version)
+            .unwrap_or_default();
         let mut extensions = InstanceExtensions::default();
         if create_info.enabled_extension_count != 0 {
             for &name_ptr in slice::from_raw_parts(

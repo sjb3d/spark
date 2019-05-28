@@ -2119,11 +2119,8 @@ impl<'a> Generator<'a> {
                     }
                 }
             }
-            match return_transform {
-                LibReturnTransform::ToDevice | LibReturnTransform::ToInstance => {
-                    writeln!(w, "version: vk::Version,")?;
-                }
-                _ => {}
+            if return_transform == LibReturnTransform::ToDevice {
+                writeln!(w, "version: vk::Version,")?;
             }
             write!(w, ")")?;
             match return_type {
@@ -2405,7 +2402,7 @@ impl<'a> Generator<'a> {
                         LibReturnTransform::ToBool => writeln!(w, ".map(|r| r != vk::FALSE)")?,
                         LibReturnTransform::ToInstance => writeln!(
                             w,
-                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(&self, r, p_create_info, version))"
+                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(&self, r, p_create_info))"
                         )?,
                         LibReturnTransform::ToDevice => writeln!(
                             w,
@@ -2523,7 +2520,8 @@ impl<'a> Generator<'a> {
             Category::Instance => {
                 writeln!(
                     w,
-                    "unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
+                    "unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo) -> LoaderResult<Self> {{\
+                     let version = create_info.p_application_info.as_ref().map(|app_info| app_info.api_version).unwrap_or_default();\
                      let mut extensions = {}Extensions::default();", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
