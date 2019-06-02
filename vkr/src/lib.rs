@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 109
+//! Generated from vk.xml with `VK_HEADER_VERSION` 110
 pub mod builder;
 pub mod vk;
 
@@ -2641,6 +2641,7 @@ pub struct DeviceExtensions {
     pub nv_fragment_coverage_to_color: bool,
     pub nv_framebuffer_mixed_samples: bool,
     pub nv_fill_rectangle: bool,
+    pub nv_shader_sm_builtins: bool,
     pub ext_post_depth_coverage: bool,
     pub khr_sampler_ycbcr_conversion: bool,
     pub khr_bind_memory2: bool,
@@ -2691,6 +2692,7 @@ pub struct DeviceExtensions {
     pub ext_separate_stencil_usage: bool,
     pub nv_cooperative_matrix: bool,
     pub nv_coverage_reduction_mode: bool,
+    pub ext_fragment_shader_interlock: bool,
     pub ext_ycbcr_image_arrays: bool,
     pub khr_uniform_buffer_standard_layout: bool,
     pub ext_full_screen_exclusive: bool,
@@ -3232,6 +3234,9 @@ impl Device {
     pub fn nv_fill_rectangle_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fill_rectangle\0") }
     }
+    pub fn nv_shader_sm_builtins_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_sm_builtins\0") }
+    }
     pub fn ext_post_depth_coverage_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_post_depth_coverage\0") }
     }
@@ -3382,6 +3387,9 @@ impl Device {
     pub fn nv_coverage_reduction_mode_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_coverage_reduction_mode\0") }
     }
+    pub fn ext_fragment_shader_interlock_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_shader_interlock\0") }
+    }
     pub fn ext_ycbcr_image_arrays_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_image_arrays\0") }
     }
@@ -3496,6 +3504,7 @@ impl Device {
                     b"VK_NV_fragment_coverage_to_color" => extensions.nv_fragment_coverage_to_color = true,
                     b"VK_NV_framebuffer_mixed_samples" => extensions.nv_framebuffer_mixed_samples = true,
                     b"VK_NV_fill_rectangle" => extensions.nv_fill_rectangle = true,
+                    b"VK_NV_shader_sm_builtins" => extensions.nv_shader_sm_builtins = true,
                     b"VK_EXT_post_depth_coverage" => extensions.ext_post_depth_coverage = true,
                     b"VK_KHR_sampler_ycbcr_conversion" => extensions.khr_sampler_ycbcr_conversion = true,
                     b"VK_KHR_bind_memory2" => extensions.khr_bind_memory2 = true,
@@ -3548,6 +3557,7 @@ impl Device {
                     b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
                     b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,
                     b"VK_NV_coverage_reduction_mode" => extensions.nv_coverage_reduction_mode = true,
+                    b"VK_EXT_fragment_shader_interlock" => extensions.ext_fragment_shader_interlock = true,
                     b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
                     b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,

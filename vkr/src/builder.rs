@@ -12751,3 +12751,95 @@ impl<'a> Deref for PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+    type Type = PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder::new()
+    }
+}
+pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_sm_builtins(mut self, shader_sm_builtins: bool) -> Self {
+        self.inner.shader_sm_builtins = if shader_sm_builtins { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+    type Type = PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_shader_sample_interlock(mut self, fragment_shader_sample_interlock: bool) -> Self {
+        self.inner.fragment_shader_sample_interlock = if fragment_shader_sample_interlock {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn fragment_shader_pixel_interlock(mut self, fragment_shader_pixel_interlock: bool) -> Self {
+        self.inner.fragment_shader_pixel_interlock = if fragment_shader_pixel_interlock {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn fragment_shader_shading_rate_interlock(mut self, fragment_shader_shading_rate_interlock: bool) -> Self {
+        self.inner.fragment_shader_shading_rate_interlock = if fragment_shader_shading_rate_interlock {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

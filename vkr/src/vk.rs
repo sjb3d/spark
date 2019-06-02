@@ -11701,6 +11701,10 @@ impl StructureType {
     pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = StructureType(1000149000);
     /// Added by extension VK_NV_framebuffer_mixed_samples.
     pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = StructureType(1000152000);
+    /// Added by extension VK_NV_shader_sm_builtins.
+    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV: Self = StructureType(1000154000);
+    /// Added by extension VK_NV_shader_sm_builtins.
+    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV: Self = StructureType(1000154001);
     pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
     pub const SAMPLER_YCBCR_CONVERSION_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_INFO;
     pub const BIND_IMAGE_PLANE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_PLANE_MEMORY_INFO;
@@ -11897,6 +11901,8 @@ impl StructureType {
     pub const PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV: Self = StructureType(1000250001);
     /// Added by extension VK_NV_coverage_reduction_mode.
     pub const FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV: Self = StructureType(1000250002);
+    /// Added by extension VK_EXT_fragment_shader_interlock.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT: Self = StructureType(1000251000);
     /// Added by extension VK_EXT_ycbcr_image_arrays.
     pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = StructureType(1000252000);
     /// Added by extension VK_KHR_uniform_buffer_standard_layout.
@@ -12167,6 +12173,8 @@ impl fmt::Display for StructureType {
             1000148002 => Some(&"PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
             1000149000 => Some(&"PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
             1000152000 => Some(&"PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
+            1000154000 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV"),
+            1000154001 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV"),
             1000158000 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT"),
             1000158001 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000158002 => Some(&"PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
@@ -12258,6 +12266,7 @@ impl fmt::Display for StructureType {
             1000250000 => Some(&"PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV"),
             1000250001 => Some(&"PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV"),
             1000250002 => Some(&"FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV"),
+            1000251000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT"),
             1000252000 => Some(&"PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT"),
             1000253000 => Some(&"PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR"),
             1000255000 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT"),
@@ -14024,7 +14033,7 @@ impl DriverIdKHR {
     /// Arm Limited
     pub const ARM_PROPRIETARY: Self = DriverIdKHR(9);
     /// Google LLC
-    pub const GOOGLE_PASTEL: Self = DriverIdKHR(10);
+    pub const GOOGLE_SWIFTSHADER: Self = DriverIdKHR(10);
     /// Google LLC
     pub const GGP_PROPRIETARY: Self = DriverIdKHR(11);
 }
@@ -14045,7 +14054,7 @@ impl fmt::Display for DriverIdKHR {
             7 => Some(&"IMAGINATION_PROPRIETARY"),
             8 => Some(&"QUALCOMM_PROPRIETARY"),
             9 => Some(&"ARM_PROPRIETARY"),
-            10 => Some(&"GOOGLE_PASTEL"),
+            10 => Some(&"GOOGLE_SWIFTSHADER"),
             11 => Some(&"GGP_PROPRIETARY"),
             _ => None,
         };
@@ -29555,6 +29564,97 @@ impl fmt::Debug for PerformanceConfigurationAcquireInfoINTEL {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("ty", &self.ty)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_sm_count: u32,
+    pub shader_warps_per_sm: u32,
+}
+impl default::Default for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+    fn default() -> Self {
+        PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            shader_sm_count: u32::default(),
+            shader_warps_per_sm: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSMBuiltinsPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_sm_count", &self.shader_sm_count)
+            .field("shader_warps_per_sm", &self.shader_warps_per_sm)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_sm_builtins: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+    fn default() -> Self {
+        PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            shader_sm_builtins: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSMBuiltinsFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_sm_builtins", &self.shader_sm_builtins)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+    pub s_type: StructureType,
+    /// Pointer to next structure
+    pub p_next: *mut c_void,
+    pub fragment_shader_sample_interlock: Bool32,
+    pub fragment_shader_pixel_interlock: Bool32,
+    pub fragment_shader_shading_rate_interlock: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            fragment_shader_sample_interlock: Bool32::default(),
+            fragment_shader_pixel_interlock: Bool32::default(),
+            fragment_shader_shading_rate_interlock: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShaderInterlockFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "fragment_shader_sample_interlock",
+                &self.fragment_shader_sample_interlock,
+            )
+            .field("fragment_shader_pixel_interlock", &self.fragment_shader_pixel_interlock)
+            .field(
+                "fragment_shader_shading_rate_interlock",
+                &self.fragment_shader_shading_rate_interlock,
+            )
             .finish()
     }
 }
