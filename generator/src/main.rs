@@ -93,7 +93,7 @@ impl GetTypeName for vk::Type {
             self.name.as_ref().expect("missing bitmask or enum alias type name")
         } else {
             match self.category.as_ref_str() {
-                Some("bitmask") | Some("handle") | Some("funcpointer") => {
+                Some("basetype") | Some("bitmask") | Some("handle") | Some("funcpointer") => {
                     if let vk::TypeSpec::Code(ref code) = self.spec {
                         code.markup
                             .iter()
@@ -371,11 +371,46 @@ impl<'a> Generator<'a> {
         }
     }
 
+    fn check_type_derives(&self, type_name: &str) -> bool {
+        match type_name {
+            "char" | "int" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "int32_t" | "size_t" => true,
+            "float" => false,
+            _ => {
+                if let Some(ty) = self.type_by_name.get(type_name) {
+                    match ty.category.as_ref_str() {
+                        Some("basetype") | Some("bitmask") | Some("enum)") => true,
+                        Some("struct") => {
+                            if let vk::TypeSpec::Members(ref members) = ty.spec {
+                                members
+                                    .iter()
+                                    .filter_map(|member| match member {
+                                        vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                                        _ => None,
+                                    })
+                                    .map(|member_def| c_parse_variable_decl(member_def.code.as_str()))
+                                    .all(|decl| {
+                                        decl.ty.array_size.is_none()
+                                            && decl.ty.decoration == CDecoration::None
+                                            && self.check_type_derives(decl.ty.name)
+                                    })
+                            } else {
+                                false
+                            }
+                        }
+                        _ => false,
+                    }
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
     fn collect_types(&mut self) {
         for ty in self.get_type_iterator() {
             let category = ty.category.as_ref_str();
-            if let Some("bitmask") | Some("enum") | Some("handle") | Some("funcpointer") | Some("struct")
-            | Some("union") = category
+            if let Some("basetype") | Some("bitmask") | Some("enum") | Some("handle") | Some("funcpointer")
+            | Some("struct") | Some("union") = category
             {
                 let name = ty.get_type_name();
                 if self.type_by_name.insert(name, ty).is_some() {
@@ -1190,14 +1225,10 @@ impl<'a> Generator<'a> {
             writeln!(
                 w,
                 "#[repr(C)] #[derive({})] pub {} {} {{",
-                match agg_type {
-                    AggregateType::Struct => match type_name {
-                        "VkOffset2D" | "VkOffset3D" | "VkExtent2D" | "VkExtent3D" | "VkRect2D" => {
-                            "Copy, Clone, PartialEq, Eq, Hash"
-                        }
-                        _ => "Copy, Clone",
-                    },
-                    AggregateType::Union => "Copy, Clone",
+                if self.check_type_derives(type_name) {
+                    "Copy, Clone, PartialEq, Eq, Hash"
+                } else {
+                    "Copy, Clone"
                 },
                 match agg_type {
                     AggregateType::Struct => "struct",

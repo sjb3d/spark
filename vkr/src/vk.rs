@@ -14379,7 +14379,7 @@ impl fmt::Debug for Rect2D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ClearRect {
     pub rect: Rect2D,
     pub base_array_layer: u32,
@@ -14755,7 +14755,7 @@ impl fmt::Debug for InstanceCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct QueueFamilyProperties {
     /// Queue flags
     pub queue_flags: QueueFlags,
@@ -14843,7 +14843,7 @@ impl fmt::Debug for MemoryAllocateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct MemoryRequirements {
     /// Specified in bytes
     pub size: DeviceSize,
@@ -14871,7 +14871,7 @@ impl fmt::Debug for MemoryRequirements {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SparseImageFormatProperties {
     pub aspect_mask: ImageAspectFlags,
     pub image_granularity: Extent3D,
@@ -14896,7 +14896,7 @@ impl fmt::Debug for SparseImageFormatProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SparseImageMemoryRequirements {
     pub format_properties: SparseImageFormatProperties,
     pub image_mip_tail_first_lod: u32,
@@ -14930,7 +14930,7 @@ impl fmt::Debug for SparseImageMemoryRequirements {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct MemoryType {
     /// Memory properties of this memory type
     pub property_flags: MemoryPropertyFlags,
@@ -14954,7 +14954,7 @@ impl fmt::Debug for MemoryType {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct MemoryHeap {
     /// Available memory in the heap
     pub size: DeviceSize,
@@ -15012,7 +15012,7 @@ impl fmt::Debug for MappedMemoryRange {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct FormatProperties {
     /// Format features in case of linear tiling
     pub linear_tiling_features: FormatFeatureFlags,
@@ -15040,7 +15040,7 @@ impl fmt::Debug for FormatProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageFormatProperties {
     /// max image dimensions for this resource type
     pub max_extent: Extent3D,
@@ -15319,7 +15319,7 @@ impl fmt::Debug for BufferViewCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageSubresource {
     pub aspect_mask: ImageAspectFlags,
     pub mip_level: u32,
@@ -15344,7 +15344,7 @@ impl fmt::Debug for ImageSubresource {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageSubresourceLayers {
     pub aspect_mask: ImageAspectFlags,
     pub mip_level: u32,
@@ -15372,7 +15372,7 @@ impl fmt::Debug for ImageSubresourceLayers {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageSubresourceRange {
     pub aspect_mask: ImageAspectFlags,
     pub base_mip_level: u32,
@@ -15604,7 +15604,7 @@ impl fmt::Debug for ImageCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SubresourceLayout {
     /// Specified in bytes
     pub offset: DeviceSize,
@@ -15680,7 +15680,7 @@ impl fmt::Debug for ImageViewCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct BufferCopy {
     /// Specified in bytes
     pub src_offset: DeviceSize,
@@ -15904,7 +15904,7 @@ impl fmt::Debug for BindSparseInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageCopy {
     pub src_subresource: ImageSubresourceLayers,
     /// Specified in pixels for both compressed and uncompressed images
@@ -15968,7 +15968,7 @@ impl fmt::Debug for ImageBlit {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct BufferImageCopy {
     /// Specified in bytes
     pub buffer_offset: DeviceSize,
@@ -16006,7 +16006,7 @@ impl fmt::Debug for BufferImageCopy {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageResolve {
     pub src_subresource: ImageSubresourceLayers,
     pub src_offset: Offset3D,
@@ -16226,7 +16226,7 @@ impl fmt::Debug for DescriptorSetAllocateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SpecializationMapEntry {
     /// The SpecConstant ID specified in the BIL
     pub constant_id: u32,
@@ -16984,7 +16984,7 @@ impl fmt::Debug for PipelineCacheCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PushConstantRange {
     /// Which stages use the range
     pub stage_flags: ShaderStageFlags,
@@ -17503,7 +17503,7 @@ impl fmt::Debug for SubpassDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SubpassDependency {
     pub src_subpass: u32,
     pub dst_subpass: u32,
@@ -17637,7 +17637,7 @@ impl fmt::Debug for FenceCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceFeatures {
     /// out of bounds buffer accesses are well defined
     pub robust_buffer_access: Bool32,
@@ -17903,7 +17903,7 @@ impl fmt::Debug for PhysicalDeviceFeatures {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceSparseProperties {
     /// Sparse resources support: GPU will access all 2D (single sample) sparse resources using the standard sparse image block shapes (based on pixel format)
     pub residency_standard2_d_block_shape: Bool32,
@@ -18606,7 +18606,7 @@ impl fmt::Debug for FramebufferCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DrawIndirectCommand {
     pub vertex_count: u32,
     pub instance_count: u32,
@@ -18634,7 +18634,7 @@ impl fmt::Debug for DrawIndirectCommand {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DrawIndexedIndirectCommand {
     pub index_count: u32,
     pub instance_count: u32,
@@ -18665,7 +18665,7 @@ impl fmt::Debug for DrawIndexedIndirectCommand {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DispatchIndirectCommand {
     pub x: u32,
     pub y: u32,
@@ -18801,7 +18801,7 @@ impl fmt::Debug for DisplayPlanePropertiesKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayModeParametersKHR {
     /// Visible scanout region.
     pub visible_region: Extent2D,
@@ -18878,7 +18878,7 @@ impl fmt::Debug for DisplayModeCreateInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayPlaneCapabilitiesKHR {
     /// Types of alpha blending supported, if any.
     pub supported_alpha: DisplayPlaneAlphaFlagsKHR,
@@ -19756,7 +19756,7 @@ impl fmt::Debug for DedicatedAllocationMemoryAllocateInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalImageFormatPropertiesNV {
     pub image_format_properties: ImageFormatProperties,
     pub external_memory_features: ExternalMemoryFeatureFlagsNV,
@@ -20685,7 +20685,7 @@ impl fmt::Debug for PhysicalDevicePushDescriptorPropertiesKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ConformanceVersionKHR {
     pub major: u8,
     pub minor: u8,
@@ -20801,7 +20801,7 @@ impl fmt::Debug for PresentRegionKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct RectLayerKHR {
     /// upper-left corner of a rectangle that has not changed, in pixels of a presentation images
     pub offset: Offset2D,
@@ -20863,7 +20863,7 @@ pub type PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePoint
 pub type PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
 pub type PhysicalDeviceVariablePointerFeatures = PhysicalDeviceVariablePointersFeatures;
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryProperties {
     pub external_memory_features: ExternalMemoryFeatureFlags,
     pub export_from_imported_handle_types: ExternalMemoryHandleTypeFlags,
@@ -22896,7 +22896,7 @@ impl fmt::Debug for SwapchainDisplayNativeHdrCreateInfoAMD {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct RefreshCycleDurationGOOGLE {
     /// Number of nanoseconds from the start of one refresh cycle to the next
     pub refresh_duration: u64,
@@ -22916,7 +22916,7 @@ impl fmt::Debug for RefreshCycleDurationGOOGLE {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PastPresentationTimingGOOGLE {
     /// Application-provided identifier, previously given to vkQueuePresentKHR
     pub present_id: u32,
@@ -22982,7 +22982,7 @@ impl fmt::Debug for PresentTimesInfoGOOGLE {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PresentTimeGOOGLE {
     /// Application-provided identifier
     pub present_id: u32,
@@ -23290,7 +23290,7 @@ impl fmt::Debug for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct InputAttachmentAspectReference {
     pub subpass: u32,
     pub input_attachment_index: u32,
@@ -25249,7 +25249,7 @@ impl fmt::Debug for NativeBufferANDROID {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderResourceUsageAMD {
     pub num_used_vgprs: u32,
     pub num_used_sgprs: u32,
@@ -26485,7 +26485,7 @@ impl fmt::Debug for SubpassEndInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDivisorDescriptionEXT {
     pub binding: u32,
     pub divisor: u32,
@@ -27621,7 +27621,7 @@ impl fmt::Debug for PhysicalDeviceShadingRateImagePropertiesNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CoarseSampleLocationNV {
     pub pixel_x: u32,
     pub pixel_y: u32,
@@ -27800,7 +27800,7 @@ impl fmt::Debug for PhysicalDeviceMeshShaderPropertiesNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DrawMeshTasksIndirectCommandNV {
     pub task_count: u32,
     pub first_task: u32,
@@ -28296,7 +28296,7 @@ impl fmt::Debug for DrmFormatModifierPropertiesListEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DrmFormatModifierPropertiesEXT {
     pub drm_format_modifier: u64,
     pub drm_format_modifier_plane_count: u32,
@@ -29092,7 +29092,7 @@ impl fmt::Debug for ImageViewHandleInfoNVX {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCreationFeedbackEXT {
     pub flags: PipelineCreationFeedbackFlagsEXT,
     pub duration: u64,
