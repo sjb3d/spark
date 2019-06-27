@@ -14036,6 +14036,8 @@ impl DriverIdKHR {
     pub const GOOGLE_SWIFTSHADER: Self = DriverIdKHR(10);
     /// Google LLC
     pub const GGP_PROPRIETARY: Self = DriverIdKHR(11);
+    /// Broadcom Inc.
+    pub const BROADCOM_PROPRIETARY: Self = DriverIdKHR(12);
 }
 impl default::Default for DriverIdKHR {
     fn default() -> Self {
@@ -14056,6 +14058,7 @@ impl fmt::Display for DriverIdKHR {
             9 => Some(&"ARM_PROPRIETARY"),
             10 => Some(&"GOOGLE_SWIFTSHADER"),
             11 => Some(&"GGP_PROPRIETARY"),
+            12 => Some(&"BROADCOM_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {
