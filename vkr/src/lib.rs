@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 112
+//! Generated from vk.xml with `VK_HEADER_VERSION` 113
 pub mod builder;
 pub mod vk;
 
@@ -2697,6 +2697,8 @@ pub struct DeviceExtensions {
     pub khr_uniform_buffer_standard_layout: bool,
     pub ext_full_screen_exclusive: bool,
     pub ext_host_query_reset: bool,
+    pub ext_shader_demote_to_helper_invocation: bool,
+    pub ext_texel_buffer_alignment: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3402,6 +3404,12 @@ impl Device {
     pub fn ext_host_query_reset_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
     }
+    pub fn ext_shader_demote_to_helper_invocation_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") }
+    }
+    pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
+    }
     unsafe fn load(
         instance: &Instance,
         device: vk::Device,
@@ -3562,6 +3570,10 @@ impl Device {
                     b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
+                    b"VK_EXT_shader_demote_to_helper_invocation" => {
+                        extensions.ext_shader_demote_to_helper_invocation = true
+                    }
+                    b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     _ => {}
                 }
             }

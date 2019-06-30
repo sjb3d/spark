@@ -12843,3 +12843,79 @@ impl<'a> Deref for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+    type Type = PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_demote_to_helper_invocation(mut self, shader_demote_to_helper_invocation: bool) -> Self {
+        self.inner.shader_demote_to_helper_invocation = if shader_demote_to_helper_invocation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+    type Type = PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn texel_buffer_alignment(mut self, texel_buffer_alignment: bool) -> Self {
+        self.inner.texel_buffer_alignment = if texel_buffer_alignment { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

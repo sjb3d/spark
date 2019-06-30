@@ -11917,6 +11917,12 @@ impl StructureType {
     pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000256000);
     /// Added by extension VK_EXT_host_query_reset.
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
+    /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
+    pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = StructureType(1000276000);
+    /// Added by extension VK_EXT_texel_buffer_alignment.
+    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = StructureType(1000281000);
+    /// Added by extension VK_EXT_texel_buffer_alignment.
+    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT: Self = StructureType(1000281001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -12274,6 +12280,9 @@ impl fmt::Display for StructureType {
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
             1000256000 => Some(&"HEADLESS_SURFACE_CREATE_INFO_EXT"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT"),
+            1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
+            1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
+            1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -25726,13 +25735,13 @@ pub struct PhysicalDeviceShaderCorePropertiesAMD {
     pub shader_engine_count: u32,
     /// number of shader arrays
     pub shader_arrays_per_engine_count: u32,
-    /// number of CUs per shader array
+    /// number of physical CUs per shader array
     pub compute_units_per_shader_array: u32,
     /// number of SIMDs per compute unit
     pub simd_per_compute_unit: u32,
     /// number of wavefront slots in each SIMD
     pub wavefronts_per_simd: u32,
-    /// number of threads per wavefront
+    /// maximum number of threads per wavefront
     pub wavefront_size: u32,
     /// number of physical SGPRs per SIMD
     pub sgprs_per_simd: u32,
@@ -29657,6 +29666,105 @@ impl fmt::Debug for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
             .field(
                 "fragment_shader_shading_rate_interlock",
                 &self.fragment_shader_shading_rate_interlock,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_demote_to_helper_invocation: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_demote_to_helper_invocation: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_demote_to_helper_invocation",
+                &self.shader_demote_to_helper_invocation,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub texel_buffer_alignment: Bool32,
+}
+impl default::Default for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            texel_buffer_alignment: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTexelBufferAlignmentFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("texel_buffer_alignment", &self.texel_buffer_alignment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub storage_texel_buffer_offset_alignment_bytes: DeviceSize,
+    pub storage_texel_buffer_offset_single_texel_alignment: Bool32,
+    pub uniform_texel_buffer_offset_alignment_bytes: DeviceSize,
+    pub uniform_texel_buffer_offset_single_texel_alignment: Bool32,
+}
+impl default::Default for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            storage_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
+            storage_texel_buffer_offset_single_texel_alignment: Bool32::default(),
+            uniform_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
+            uniform_texel_buffer_offset_single_texel_alignment: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTexelBufferAlignmentPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "storage_texel_buffer_offset_alignment_bytes",
+                &self.storage_texel_buffer_offset_alignment_bytes,
+            )
+            .field(
+                "storage_texel_buffer_offset_single_texel_alignment",
+                &self.storage_texel_buffer_offset_single_texel_alignment,
+            )
+            .field(
+                "uniform_texel_buffer_offset_alignment_bytes",
+                &self.uniform_texel_buffer_offset_alignment_bytes,
+            )
+            .field(
+                "uniform_texel_buffer_offset_single_texel_alignment",
+                &self.uniform_texel_buffer_offset_single_texel_alignment,
             )
             .finish()
     }
