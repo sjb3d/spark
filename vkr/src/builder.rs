@@ -12026,6 +12026,176 @@ impl<'a> Deref for PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceImagelessFramebufferFeaturesKHR {
+    type Type = PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder::new()
+    }
+}
+pub struct PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceImagelessFramebufferFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn imageless_framebuffer(mut self, imageless_framebuffer: bool) -> Self {
+        self.inner.imageless_framebuffer = if imageless_framebuffer { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceImagelessFramebufferFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::FramebufferAttachmentsCreateInfoKHR {
+    type Type = FramebufferAttachmentsCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        FramebufferAttachmentsCreateInfoKHRBuilder::new()
+    }
+}
+pub struct FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
+    inner: vk::FramebufferAttachmentsCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_attachment_image_infos(
+        mut self,
+        p_attachment_image_infos: &'a [vk::FramebufferAttachmentImageInfoKHR],
+    ) -> Self {
+        self.inner.attachment_image_info_count = p_attachment_image_infos.len() as u32;
+        self.inner.p_attachment_image_infos = p_attachment_image_infos.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
+    type Target = vk::FramebufferAttachmentsCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::FramebufferAttachmentImageInfoKHR {
+    type Type = FramebufferAttachmentImageInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        FramebufferAttachmentImageInfoKHRBuilder::new()
+    }
+}
+pub struct FramebufferAttachmentImageInfoKHRBuilder<'a> {
+    inner: vk::FramebufferAttachmentImageInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> FramebufferAttachmentImageInfoKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ImageCreateFlags) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn usage(mut self, usage: vk::ImageUsageFlags) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+    pub fn width(mut self, width: u32) -> Self {
+        self.inner.width = width;
+        self
+    }
+    pub fn height(mut self, height: u32) -> Self {
+        self.inner.height = height;
+        self
+    }
+    pub fn layer_count(mut self, layer_count: u32) -> Self {
+        self.inner.layer_count = layer_count;
+        self
+    }
+    pub fn p_view_formats(mut self, p_view_formats: &'a [vk::Format]) -> Self {
+        self.inner.view_format_count = p_view_formats.len() as u32;
+        self.inner.p_view_formats = p_view_formats.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for FramebufferAttachmentImageInfoKHRBuilder<'a> {
+    type Target = vk::FramebufferAttachmentImageInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RenderPassAttachmentBeginInfoKHR {
+    type Type = RenderPassAttachmentBeginInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        RenderPassAttachmentBeginInfoKHRBuilder::new()
+    }
+}
+pub struct RenderPassAttachmentBeginInfoKHRBuilder<'a> {
+    inner: vk::RenderPassAttachmentBeginInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RenderPassAttachmentBeginInfoKHRBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_attachments(mut self, p_attachments: &'a [vk::ImageView]) -> Self {
+        self.inner.attachment_count = p_attachments.len() as u32;
+        self.inner.p_attachments = p_attachments.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for RenderPassAttachmentBeginInfoKHRBuilder<'a> {
+    type Target = vk::RenderPassAttachmentBeginInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {
     type Type = PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {

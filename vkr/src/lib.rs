@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 113
+//! Generated from vk.xml with `VK_HEADER_VERSION` 114
 pub mod builder;
 pub mod vk;
 
@@ -2615,6 +2615,7 @@ pub struct DeviceExtensions {
     pub ext_conservative_rasterization: bool,
     pub ext_depth_clip_enable: bool,
     pub ext_hdr_metadata: bool,
+    pub khr_imageless_framebuffer: bool,
     pub khr_create_renderpass2: bool,
     pub khr_shared_presentable_image: bool,
     pub khr_external_fence: bool,
@@ -3158,6 +3159,9 @@ impl Device {
     pub fn ext_hdr_metadata_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_hdr_metadata\0") }
     }
+    pub fn khr_imageless_framebuffer_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_imageless_framebuffer\0") }
+    }
     pub fn khr_create_renderpass2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_create_renderpass2\0") }
     }
@@ -3484,6 +3488,7 @@ impl Device {
                     b"VK_EXT_conservative_rasterization" => extensions.ext_conservative_rasterization = true,
                     b"VK_EXT_depth_clip_enable" => extensions.ext_depth_clip_enable = true,
                     b"VK_EXT_hdr_metadata" => extensions.ext_hdr_metadata = true,
+                    b"VK_KHR_imageless_framebuffer" => extensions.khr_imageless_framebuffer = true,
                     b"VK_KHR_create_renderpass2" => extensions.khr_create_renderpass2 = true,
                     b"VK_KHR_shared_presentable_image" => extensions.khr_shared_presentable_image = true,
                     b"VK_KHR_external_fence" => extensions.khr_external_fence = true,

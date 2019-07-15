@@ -157,7 +157,10 @@ pub type DeviceAddress = u64;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct FramebufferCreateFlags(u32);
-impl FramebufferCreateFlags {}
+impl FramebufferCreateFlags {
+    /// Added by extension VK_KHR_imageless_framebuffer.
+    pub const IMAGELESS_KHR: Self = FramebufferCreateFlags(0x1);
+}
 impl default::Default for FramebufferCreateFlags {
     fn default() -> Self {
         FramebufferCreateFlags(0)
@@ -168,13 +171,13 @@ impl FramebufferCreateFlags {
         FramebufferCreateFlags(0)
     }
     pub fn all() -> Self {
-        FramebufferCreateFlags(0x0)
+        FramebufferCreateFlags(0x1)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -218,7 +221,7 @@ impl ops::BitXorAssign for FramebufferCreateFlags {
 }
 impl fmt::Display for FramebufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0, &[(0x1, "IMAGELESS_KHR")], f)
     }
 }
 #[repr(transparent)]
@@ -9590,20 +9593,6 @@ impl fmt::Display for BorderColor {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FramebufferCreateFlagBits(i32);
-impl FramebufferCreateFlagBits {}
-impl default::Default for FramebufferCreateFlagBits {
-    fn default() -> Self {
-        FramebufferCreateFlagBits(0)
-    }
-}
-impl fmt::Display for FramebufferCreateFlagBits {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueryPoolCreateFlagBits(i32);
 impl QueryPoolCreateFlagBits {}
 impl default::Default for QueryPoolCreateFlagBits {
@@ -11581,6 +11570,14 @@ impl StructureType {
     pub const PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT: Self = StructureType(1000102001);
     /// Added by extension VK_EXT_hdr_metadata.
     pub const HDR_METADATA_EXT: Self = StructureType(1000105000);
+    /// Added by extension VK_KHR_imageless_framebuffer.
+    pub const PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR: Self = StructureType(1000108000);
+    /// Added by extension VK_KHR_imageless_framebuffer.
+    pub const FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR: Self = StructureType(1000108001);
+    /// Added by extension VK_KHR_imageless_framebuffer.
+    pub const FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR: Self = StructureType(1000108002);
+    /// Added by extension VK_KHR_imageless_framebuffer.
+    pub const RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR: Self = StructureType(1000108003);
     /// Added by extension VK_KHR_create_renderpass2.
     pub const ATTACHMENT_DESCRIPTION_2_KHR: Self = StructureType(1000109000);
     /// Added by extension VK_KHR_create_renderpass2.
@@ -12128,6 +12125,10 @@ impl fmt::Display for StructureType {
             1000102000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT"),
             1000102001 => Some(&"PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT"),
             1000105000 => Some(&"HDR_METADATA_EXT"),
+            1000108000 => Some(&"PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR"),
+            1000108001 => Some(&"FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR"),
+            1000108002 => Some(&"FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR"),
+            1000108003 => Some(&"RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR"),
             1000109000 => Some(&"ATTACHMENT_DESCRIPTION_2_KHR"),
             1000109001 => Some(&"ATTACHMENT_REFERENCE_2_KHR"),
             1000109002 => Some(&"SUBPASS_DESCRIPTION_2_KHR"),
@@ -28939,6 +28940,132 @@ impl fmt::Debug for FilterCubicImageViewImageFormatPropertiesEXT {
             .field("p_next", &self.p_next)
             .field("filter_cubic", &self.filter_cubic)
             .field("filter_cubic_minmax", &self.filter_cubic_minmax)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImagelessFramebufferFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub imageless_framebuffer: Bool32,
+}
+impl default::Default for PhysicalDeviceImagelessFramebufferFeaturesKHR {
+    fn default() -> Self {
+        PhysicalDeviceImagelessFramebufferFeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            imageless_framebuffer: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImagelessFramebufferFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImagelessFramebufferFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("imageless_framebuffer", &self.imageless_framebuffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FramebufferAttachmentsCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub attachment_image_info_count: u32,
+    pub p_attachment_image_infos: *const FramebufferAttachmentImageInfoKHR,
+}
+impl default::Default for FramebufferAttachmentsCreateInfoKHR {
+    fn default() -> Self {
+        FramebufferAttachmentsCreateInfoKHR {
+            s_type: StructureType::FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            attachment_image_info_count: u32::default(),
+            p_attachment_image_infos: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for FramebufferAttachmentsCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FramebufferAttachmentsCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("attachment_image_info_count", &self.attachment_image_info_count)
+            .field("p_attachment_image_infos", &self.p_attachment_image_infos)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FramebufferAttachmentImageInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Image creation flags
+    pub flags: ImageCreateFlags,
+    /// Image usage flags
+    pub usage: ImageUsageFlags,
+    pub width: u32,
+    pub height: u32,
+    pub layer_count: u32,
+    pub view_format_count: u32,
+    pub p_view_formats: *const Format,
+}
+impl default::Default for FramebufferAttachmentImageInfoKHR {
+    fn default() -> Self {
+        FramebufferAttachmentImageInfoKHR {
+            s_type: StructureType::FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR,
+            p_next: ptr::null(),
+            flags: ImageCreateFlags::default(),
+            usage: ImageUsageFlags::default(),
+            width: u32::default(),
+            height: u32::default(),
+            layer_count: u32::default(),
+            view_format_count: u32::default(),
+            p_view_formats: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for FramebufferAttachmentImageInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FramebufferAttachmentImageInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("usage", &self.usage)
+            .field("width", &self.width)
+            .field("height", &self.height)
+            .field("layer_count", &self.layer_count)
+            .field("view_format_count", &self.view_format_count)
+            .field("p_view_formats", &self.p_view_formats)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassAttachmentBeginInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub attachment_count: u32,
+    pub p_attachments: *const ImageView,
+}
+impl default::Default for RenderPassAttachmentBeginInfoKHR {
+    fn default() -> Self {
+        RenderPassAttachmentBeginInfoKHR {
+            s_type: StructureType::RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR,
+            p_next: ptr::null(),
+            attachment_count: u32::default(),
+            p_attachments: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassAttachmentBeginInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassAttachmentBeginInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("attachment_count", &self.attachment_count)
+            .field("p_attachments", &self.p_attachments)
             .finish()
     }
 }
