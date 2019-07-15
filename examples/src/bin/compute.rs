@@ -18,12 +18,20 @@ fn get_memory_type_index(
 }
 
 fn main() -> Result<(), vkr::LoaderError> {
+    // TODO: drop back to Default when validation layer is fixed
+    let version = vk::Version::from_raw_parts(1, 1, 0);
+
     // load the Vulkan lib
     let instance = {
         let loader = Loader::new()?;
         let layer_names_raw =
             [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
-        let instance_create_info = vk::InstanceCreateInfo::builder().pp_enabled_layer_names(&layer_names_raw);
+        let app_info = vk::ApplicationInfo::builder()
+            .p_application_name(CStr::from_bytes_with_nul(b"compute\0").unwrap())
+            .api_version(version);
+        let instance_create_info = vk::InstanceCreateInfo::builder()
+            .p_application_info(Some(&app_info))
+            .pp_enabled_layer_names(&layer_names_raw);
         unsafe { loader.create_instance(&instance_create_info, None) }?
     };
 
@@ -63,7 +71,7 @@ fn main() -> Result<(), vkr::LoaderError> {
             .p_queue_priorities(slice::from_ref(&queue_priority));
         let device_create_info =
             vk::DeviceCreateInfo::builder().p_queue_create_infos(slice::from_ref(&device_queue_create_info));
-        unsafe { instance.create_device(physical_device, &device_create_info, None, vk::Version::default()) }?
+        unsafe { instance.create_device(physical_device, &device_create_info, None, version) }?
     };
 
     // load the compute shader
