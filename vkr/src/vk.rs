@@ -11520,7 +11520,8 @@ impl StructureType {
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = StructureType(1000081002);
     /// Added by extension VK_KHR_shader_float16_int8.
-    pub const PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR: Self = StructureType(1000082000);
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR: Self = StructureType(1000082000);
+    pub const PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR;
     pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
     /// Added by extension VK_KHR_incremental_present.
     pub const PRESENT_REGIONS_KHR: Self = StructureType(1000084000);
@@ -11831,7 +11832,7 @@ impl StructureType {
     /// Added by extension VK_NV_device_diagnostic_checkpoints.
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
     /// Added by extension VK_INTEL_shader_integer_functions2.
-    pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL: Self = StructureType(1000209000);
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = StructureType(1000209000);
     /// Added by extension VK_INTEL_performance_query.
     pub const QUERY_POOL_CREATE_INFO_INTEL: Self = StructureType(1000210000);
     /// Added by extension VK_INTEL_performance_query.
@@ -12101,7 +12102,7 @@ impl fmt::Display for StructureType {
             1000081000 => Some(&"COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT"),
             1000081001 => Some(&"PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
             1000081002 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
-            1000082000 => Some(&"PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR"),
+            1000082000 => Some(&"PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR"),
             1000084000 => Some(&"PRESENT_REGIONS_KHR"),
             1000086000 => Some(&"OBJECT_TABLE_CREATE_INFO_NVX"),
             1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX"),
@@ -12240,7 +12241,7 @@ impl fmt::Display for StructureType {
             1000205002 => Some(&"PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
             1000206000 => Some(&"CHECKPOINT_DATA_NV"),
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
-            1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL"),
+            1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL"),
             1000210000 => Some(&"QUERY_POOL_CREATE_INFO_INTEL"),
             1000210001 => Some(&"INITIALIZE_PERFORMANCE_API_INFO_INTEL"),
             1000210002 => Some(&"PERFORMANCE_MARKER_INFO_INTEL"),
@@ -25067,25 +25068,25 @@ impl fmt::Debug for PhysicalDeviceShaderDrawParametersFeatures {
 pub type PhysicalDeviceShaderDrawParameterFeatures = PhysicalDeviceShaderDrawParametersFeatures;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceFloat16Int8FeaturesKHR {
+pub struct PhysicalDeviceShaderFloat16Int8FeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_float16: Bool32,
     pub shader_int8: Bool32,
 }
-impl default::Default for PhysicalDeviceFloat16Int8FeaturesKHR {
+impl default::Default for PhysicalDeviceShaderFloat16Int8FeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceFloat16Int8FeaturesKHR {
-            s_type: StructureType::PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR,
+        PhysicalDeviceShaderFloat16Int8FeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR,
             p_next: ptr::null_mut(),
             shader_float16: Bool32::default(),
             shader_int8: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceFloat16Int8FeaturesKHR {
+impl fmt::Debug for PhysicalDeviceShaderFloat16Int8FeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceFloat16Int8FeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceShaderFloat16Int8FeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_float16", &self.shader_float16)
@@ -25093,6 +25094,7 @@ impl fmt::Debug for PhysicalDeviceFloat16Int8FeaturesKHR {
             .finish()
     }
 }
+pub type PhysicalDeviceFloat16Int8FeaturesKHR = PhysicalDeviceShaderFloat16Int8FeaturesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceFloatControlsPropertiesKHR {
@@ -29480,23 +29482,23 @@ impl fmt::Debug for FramebufferMixedSamplesCombinationNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderIntegerFunctions2INTEL {
+pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_integer_functions2: Bool32,
 }
-impl default::Default for PhysicalDeviceShaderIntegerFunctions2INTEL {
+impl default::Default for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     fn default() -> Self {
-        PhysicalDeviceShaderIntegerFunctions2INTEL {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS2_FEATURES_INTEL,
+        PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
             p_next: ptr::null_mut(),
             shader_integer_functions2: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderIntegerFunctions2INTEL {
+impl fmt::Debug for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderIntegerFunctions2INTEL")
+        fmt.debug_struct("PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_integer_functions2", &self.shader_integer_functions2)

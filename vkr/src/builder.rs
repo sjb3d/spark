@@ -8413,17 +8413,17 @@ impl<'a> Deref for PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceFloat16Int8FeaturesKHR {
-    type Type = PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR {
+    type Type = PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceFloat16Int8FeaturesKHRBuilder::new()
+        PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder::new()
     }
 }
-pub struct PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
-    inner: vk::PhysicalDeviceFloat16Int8FeaturesKHR,
+pub struct PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
+impl<'a> PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -8447,8 +8447,8 @@ impl<'a> PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for PhysicalDeviceFloat16Int8FeaturesKHRBuilder<'a> {
-    type Target = vk::PhysicalDeviceFloat16Int8FeaturesKHR;
+impl<'a> Deref for PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -12658,17 +12658,17 @@ impl<'a> Deref for PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceShaderIntegerFunctions2INTEL {
-    type Type = PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
+    type Type = PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderIntegerFunctions2INTELBuilder::new()
+        PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder::new()
     }
 }
-pub struct PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
-    inner: vk::PhysicalDeviceShaderIntegerFunctions2INTEL,
+pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
+impl<'a> PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a> {
     pub fn new() -> Self {
         Self {
             inner: Default::default(),
@@ -12688,8 +12688,8 @@ impl<'a> PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for PhysicalDeviceShaderIntegerFunctions2INTELBuilder<'a> {
-    type Target = vk::PhysicalDeviceShaderIntegerFunctions2INTEL;
+impl<'a> Deref for PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
