@@ -18,8 +18,8 @@ fn get_memory_type_index(
 }
 
 fn main() -> Result<(), vkr::LoaderError> {
-    // TODO: drop back to Default when validation layer is fixed
-    let version = vk::Version::from_raw_parts(1, 1, 0);
+    // this example only requires Vulkan 1.0.0
+    let version = Default::default();
 
     // load the Vulkan lib
     let instance = {
