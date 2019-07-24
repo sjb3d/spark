@@ -1174,7 +1174,12 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineShaderStageCreateFlags(u32);
-impl PipelineShaderStageCreateFlags {}
+impl PipelineShaderStageCreateFlags {
+    /// Added by extension VK_EXT_subgroup_size_control.
+    pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = PipelineShaderStageCreateFlags(0x1);
+    /// Added by extension VK_EXT_subgroup_size_control.
+    pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = PipelineShaderStageCreateFlags(0x2);
+}
 impl default::Default for PipelineShaderStageCreateFlags {
     fn default() -> Self {
         PipelineShaderStageCreateFlags(0)
@@ -1185,13 +1190,13 @@ impl PipelineShaderStageCreateFlags {
         PipelineShaderStageCreateFlags(0)
     }
     pub fn all() -> Self {
-        PipelineShaderStageCreateFlags(0x0)
+        PipelineShaderStageCreateFlags(0x3)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x3
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1235,7 +1240,14 @@ impl ops::BitXorAssign for PipelineShaderStageCreateFlags {
 }
 impl fmt::Display for PipelineShaderStageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "ALLOW_VARYING_SUBGROUP_SIZE_EXT"),
+                (0x2, "REQUIRE_FULL_SUBGROUPS_EXT"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9810,20 +9822,6 @@ impl fmt::Display for PipelineVertexInputStateCreateFlagBits {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineShaderStageCreateFlagBits(i32);
-impl PipelineShaderStageCreateFlagBits {}
-impl default::Default for PipelineShaderStageCreateFlagBits {
-    fn default() -> Self {
-        PipelineShaderStageCreateFlagBits(0)
-    }
-}
-impl fmt::Display for PipelineShaderStageCreateFlagBits {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BufferViewCreateFlagBits(i32);
 impl BufferViewCreateFlagBits {}
 impl default::Default for BufferViewCreateFlagBits {
@@ -11865,6 +11863,10 @@ impl StructureType {
     pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT: Self = StructureType(1000218002);
     /// Added by extension VK_EXT_scalar_block_layout.
     pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT: Self = StructureType(1000221000);
+    /// Added by extension VK_EXT_subgroup_size_control.
+    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT: Self = StructureType(1000225000);
+    /// Added by extension VK_EXT_subgroup_size_control.
+    pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self = StructureType(1000225001);
     /// Added by extension VK_EXT_memory_budget.
     pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = StructureType(1000237000);
     /// Added by extension VK_EXT_memory_priority.
@@ -12258,6 +12260,8 @@ impl fmt::Display for StructureType {
             1000218001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT"),
             1000218002 => Some(&"RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT"),
             1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT"),
+            1000225000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT"),
+            1000225001 => Some(&"PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
@@ -13981,6 +13985,34 @@ impl fmt::Display for FullScreenExclusiveEXT {
             1 => Some(&"ALLOWED"),
             2 => Some(&"DISALLOWED"),
             3 => Some(&"APPLICATION_CONTROLLED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ShaderFloatControlsIndependenceKHR(i32);
+impl ShaderFloatControlsIndependenceKHR {
+    pub const N32_BIT_ONLY: Self = ShaderFloatControlsIndependenceKHR(0);
+    pub const ALL: Self = ShaderFloatControlsIndependenceKHR(1);
+    pub const NONE: Self = ShaderFloatControlsIndependenceKHR(2);
+}
+impl default::Default for ShaderFloatControlsIndependenceKHR {
+    fn default() -> Self {
+        ShaderFloatControlsIndependenceKHR(0)
+    }
+}
+impl fmt::Display for ShaderFloatControlsIndependenceKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"N32_BIT_ONLY"),
+            1 => Some(&"ALL"),
+            2 => Some(&"NONE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -25100,8 +25132,8 @@ pub type PhysicalDeviceFloat16Int8FeaturesKHR = PhysicalDeviceShaderFloat16Int8F
 pub struct PhysicalDeviceFloatControlsPropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub separate_denorm_settings: Bool32,
-    pub separate_rounding_mode_settings: Bool32,
+    pub denorm_behavior_independence: ShaderFloatControlsIndependenceKHR,
+    pub rounding_mode_independence: ShaderFloatControlsIndependenceKHR,
     pub shader_signed_zero_inf_nan_preserve_float16: Bool32,
     pub shader_signed_zero_inf_nan_preserve_float32: Bool32,
     pub shader_signed_zero_inf_nan_preserve_float64: Bool32,
@@ -25123,8 +25155,8 @@ impl default::Default for PhysicalDeviceFloatControlsPropertiesKHR {
         PhysicalDeviceFloatControlsPropertiesKHR {
             s_type: StructureType::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            separate_denorm_settings: Bool32::default(),
-            separate_rounding_mode_settings: Bool32::default(),
+            denorm_behavior_independence: ShaderFloatControlsIndependenceKHR::default(),
+            rounding_mode_independence: ShaderFloatControlsIndependenceKHR::default(),
             shader_signed_zero_inf_nan_preserve_float16: Bool32::default(),
             shader_signed_zero_inf_nan_preserve_float32: Bool32::default(),
             shader_signed_zero_inf_nan_preserve_float64: Bool32::default(),
@@ -25148,8 +25180,8 @@ impl fmt::Debug for PhysicalDeviceFloatControlsPropertiesKHR {
         fmt.debug_struct("PhysicalDeviceFloatControlsPropertiesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("separate_denorm_settings", &self.separate_denorm_settings)
-            .field("separate_rounding_mode_settings", &self.separate_rounding_mode_settings)
+            .field("denorm_behavior_independence", &self.denorm_behavior_independence)
+            .field("rounding_mode_independence", &self.rounding_mode_independence)
             .field(
                 "shader_signed_zero_inf_nan_preserve_float16",
                 &self.shader_signed_zero_inf_nan_preserve_float16,
@@ -29895,6 +29927,69 @@ impl fmt::Debug for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
                 "uniform_texel_buffer_offset_single_texel_alignment",
                 &self.uniform_texel_buffer_offset_single_texel_alignment,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSubgroupSizeControlPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// The minimum subgroup size supported by this device
+    pub min_subgroup_size: u32,
+    /// The maximum subgroup size supported by this device
+    pub max_subgroup_size: u32,
+    /// The maximum number of subgroups supported in a workgroup
+    pub max_compute_workgroup_subgroups: u32,
+    /// The shader stages that support specifying a subgroup size
+    pub required_subgroup_size_stages: ShaderStageFlags,
+}
+impl default::Default for PhysicalDeviceSubgroupSizeControlPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceSubgroupSizeControlPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            min_subgroup_size: u32::default(),
+            max_subgroup_size: u32::default(),
+            max_compute_workgroup_subgroups: u32::default(),
+            required_subgroup_size_stages: ShaderStageFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSubgroupSizeControlPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSubgroupSizeControlPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_subgroup_size", &self.min_subgroup_size)
+            .field("max_subgroup_size", &self.max_subgroup_size)
+            .field("max_compute_workgroup_subgroups", &self.max_compute_workgroup_subgroups)
+            .field("required_subgroup_size_stages", &self.required_subgroup_size_stages)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub required_subgroup_size: u32,
+}
+impl default::Default for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
+    fn default() -> Self {
+        PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
+            s_type: StructureType::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            required_subgroup_size: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("required_subgroup_size", &self.required_subgroup_size)
             .finish()
     }
 }

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 115
+//! Generated from vk.xml with `VK_HEADER_VERSION` 116
 pub mod builder;
 pub mod vk;
 
@@ -2686,6 +2686,7 @@ pub struct DeviceExtensions {
     pub ext_scalar_block_layout: bool,
     pub google_hlsl_functionality1: bool,
     pub google_decorate_string: bool,
+    pub ext_subgroup_size_control: bool,
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
     pub nv_dedicated_allocation_image_aliasing: bool,
@@ -3372,6 +3373,9 @@ impl Device {
     pub fn google_decorate_string_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_decorate_string\0") }
     }
+    pub fn ext_subgroup_size_control_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subgroup_size_control\0") }
+    }
     pub fn ext_memory_budget_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") }
     }
@@ -3561,6 +3565,7 @@ impl Device {
                     b"VK_EXT_scalar_block_layout" => extensions.ext_scalar_block_layout = true,
                     b"VK_GOOGLE_hlsl_functionality1" => extensions.google_hlsl_functionality1 = true,
                     b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
+                    b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
                     b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
                     b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
                     b"VK_NV_dedicated_allocation_image_aliasing" => {
