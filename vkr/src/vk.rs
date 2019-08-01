@@ -294,7 +294,12 @@ impl fmt::Display for QueryPoolCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct RenderPassCreateFlags(u32);
-impl RenderPassCreateFlags {}
+impl RenderPassCreateFlags {
+    /// Added by extension VK_KHR_extension_221.
+    pub const RESERVED_0_KHR: Self = RenderPassCreateFlags(0x1);
+    /// Added by extension VK_QCOM_extension_283.
+    pub const RESERVED_BIT_1_QCOM: Self = RenderPassCreateFlags(0x2);
+}
 impl default::Default for RenderPassCreateFlags {
     fn default() -> Self {
         RenderPassCreateFlags(0)
@@ -305,13 +310,13 @@ impl RenderPassCreateFlags {
         RenderPassCreateFlags(0)
     }
     pub fn all() -> Self {
-        RenderPassCreateFlags(0x0)
+        RenderPassCreateFlags(0x3)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x3
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -355,7 +360,7 @@ impl ops::BitXorAssign for RenderPassCreateFlags {
 }
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0, &[(0x1, "RESERVED_0_KHR"), (0x2, "RESERVED_BIT_1_QCOM")], f)
     }
 }
 #[repr(transparent)]
@@ -1175,6 +1180,8 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineShaderStageCreateFlags(u32);
 impl PipelineShaderStageCreateFlags {
+    /// Added by extension VK_NV_extension_52.
+    pub const RESERVED_2_NV: Self = PipelineShaderStageCreateFlags(0x4);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = PipelineShaderStageCreateFlags(0x1);
     /// Added by extension VK_EXT_subgroup_size_control.
@@ -1190,13 +1197,13 @@ impl PipelineShaderStageCreateFlags {
         PipelineShaderStageCreateFlags(0)
     }
     pub fn all() -> Self {
-        PipelineShaderStageCreateFlags(0x3)
+        PipelineShaderStageCreateFlags(0x7)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x7
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1243,6 +1250,7 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
         display_bitmask(
             self.0,
             &[
+                (0x4, "RESERVED_2_NV"),
                 (0x1, "ALLOW_VARYING_SUBGROUP_SIZE_EXT"),
                 (0x2, "REQUIRE_FULL_SUBGROUPS_EXT"),
             ],
@@ -3301,7 +3309,10 @@ impl fmt::Display for QueryResultFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderModuleCreateFlags(u32);
-impl ShaderModuleCreateFlags {}
+impl ShaderModuleCreateFlags {
+    /// Added by extension VK_NV_extension_52.
+    pub const RESERVED_0_NV: Self = ShaderModuleCreateFlags(0x1);
+}
 impl default::Default for ShaderModuleCreateFlags {
     fn default() -> Self {
         ShaderModuleCreateFlags(0)
@@ -3312,13 +3323,13 @@ impl ShaderModuleCreateFlags {
         ShaderModuleCreateFlags(0)
     }
     pub fn all() -> Self {
-        ShaderModuleCreateFlags(0x0)
+        ShaderModuleCreateFlags(0x1)
     }
     pub fn is_empty(&self) -> bool {
         self.0 == 0
     }
     pub fn is_all(&self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(&self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3362,7 +3373,7 @@ impl ops::BitXorAssign for ShaderModuleCreateFlags {
 }
 impl fmt::Display for ShaderModuleCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0, &[(0x1, "RESERVED_0_NV")], f)
     }
 }
 #[repr(transparent)]
@@ -9171,6 +9182,75 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct SwapchainImageUsageFlagsANDROID(u32);
+impl SwapchainImageUsageFlagsANDROID {
+    pub const SHARED: Self = SwapchainImageUsageFlagsANDROID(0x1);
+}
+impl default::Default for SwapchainImageUsageFlagsANDROID {
+    fn default() -> Self {
+        SwapchainImageUsageFlagsANDROID(0)
+    }
+}
+impl SwapchainImageUsageFlagsANDROID {
+    pub fn empty() -> Self {
+        SwapchainImageUsageFlagsANDROID(0)
+    }
+    pub fn all() -> Self {
+        SwapchainImageUsageFlagsANDROID(0x1)
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(&self) -> bool {
+        self.0 == 0x1
+    }
+    pub fn intersects(&self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(&self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for SwapchainImageUsageFlagsANDROID {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        SwapchainImageUsageFlagsANDROID(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for SwapchainImageUsageFlagsANDROID {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for SwapchainImageUsageFlagsANDROID {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        SwapchainImageUsageFlagsANDROID(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for SwapchainImageUsageFlagsANDROID {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for SwapchainImageUsageFlagsANDROID {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        SwapchainImageUsageFlagsANDROID(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for SwapchainImageUsageFlagsANDROID {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for SwapchainImageUsageFlagsANDROID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0, &[(0x1, "SHARED")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -9619,31 +9699,6 @@ impl fmt::Display for QueryPoolCreateFlagBits {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RenderPassCreateFlagBits(i32);
-impl RenderPassCreateFlagBits {
-    /// Added by extension VK_KHR_extension_221.
-    pub const RESERVED_0_BIT_KHR: Self = RenderPassCreateFlagBits(1);
-}
-impl default::Default for RenderPassCreateFlagBits {
-    fn default() -> Self {
-        RenderPassCreateFlagBits(0)
-    }
-}
-impl fmt::Display for RenderPassCreateFlagBits {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.0 {
-            1 => Some(&"RESERVED_0_BIT_KHR"),
-            _ => None,
-        };
-        if let Some(name) = name {
-            write!(f, "{}", name)
-        } else {
-            write!(f, "{}", self.0)
-        }
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineCacheHeaderVersion(i32);
 impl PipelineCacheHeaderVersion {
     pub const ONE: Self = PipelineCacheHeaderVersion(1);
@@ -10037,6 +10092,8 @@ impl DynamicState {
     pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = DynamicState(1000164006);
     /// Added by extension VK_NV_scissor_exclusive.
     pub const EXCLUSIVE_SCISSOR_NV: Self = DynamicState(1000205001);
+    /// Added by extension VK_EXT_line_rasterization.
+    pub const LINE_STIPPLE_EXT: Self = DynamicState(1000259000);
 }
 impl default::Default for DynamicState {
     fn default() -> Self {
@@ -10061,6 +10118,7 @@ impl fmt::Display for DynamicState {
             1000164004 => Some(&"VIEWPORT_SHADING_RATE_PALETTE_NV"),
             1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
             1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
+            1000259000 => Some(&"LINE_STIPPLE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10340,6 +10398,34 @@ impl Format {
     pub const PVRTC2_2BPP_SRGB_BLOCK_IMG: Self = Format(1000054006);
     /// Added by extension VK_IMG_format_pvrtc.
     pub const PVRTC2_4BPP_SRGB_BLOCK_IMG: Self = Format(1000054007);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_4X4_SFLOAT_BLOCK_EXT: Self = Format(1000066000);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_5X4_SFLOAT_BLOCK_EXT: Self = Format(1000066001);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_5X5_SFLOAT_BLOCK_EXT: Self = Format(1000066002);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_6X5_SFLOAT_BLOCK_EXT: Self = Format(1000066003);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_6X6_SFLOAT_BLOCK_EXT: Self = Format(1000066004);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_8X5_SFLOAT_BLOCK_EXT: Self = Format(1000066005);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_8X6_SFLOAT_BLOCK_EXT: Self = Format(1000066006);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_8X8_SFLOAT_BLOCK_EXT: Self = Format(1000066007);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_10X5_SFLOAT_BLOCK_EXT: Self = Format(1000066008);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_10X6_SFLOAT_BLOCK_EXT: Self = Format(1000066009);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_10X8_SFLOAT_BLOCK_EXT: Self = Format(1000066010);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_10X10_SFLOAT_BLOCK_EXT: Self = Format(1000066011);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_12X10_SFLOAT_BLOCK_EXT: Self = Format(1000066012);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const ASTC_12X12_SFLOAT_BLOCK_EXT: Self = Format(1000066013);
     pub const G8B8G8R8_422_UNORM_KHR: Self = Self::G8B8G8R8_422_UNORM;
     pub const B8G8R8G8_422_UNORM_KHR: Self = Self::B8G8R8G8_422_UNORM;
     pub const G8_B8_R8_3PLANE_420_UNORM_KHR: Self = Self::G8_B8_R8_3PLANE_420_UNORM;
@@ -10610,6 +10696,20 @@ impl fmt::Display for Format {
             1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
+            1000066000 => Some(&"ASTC_4X4_SFLOAT_BLOCK_EXT"),
+            1000066001 => Some(&"ASTC_5X4_SFLOAT_BLOCK_EXT"),
+            1000066002 => Some(&"ASTC_5X5_SFLOAT_BLOCK_EXT"),
+            1000066003 => Some(&"ASTC_6X5_SFLOAT_BLOCK_EXT"),
+            1000066004 => Some(&"ASTC_6X6_SFLOAT_BLOCK_EXT"),
+            1000066005 => Some(&"ASTC_8X5_SFLOAT_BLOCK_EXT"),
+            1000066006 => Some(&"ASTC_8X6_SFLOAT_BLOCK_EXT"),
+            1000066007 => Some(&"ASTC_8X8_SFLOAT_BLOCK_EXT"),
+            1000066008 => Some(&"ASTC_10X5_SFLOAT_BLOCK_EXT"),
+            1000066009 => Some(&"ASTC_10X6_SFLOAT_BLOCK_EXT"),
+            1000066010 => Some(&"ASTC_10X8_SFLOAT_BLOCK_EXT"),
+            1000066011 => Some(&"ASTC_10X10_SFLOAT_BLOCK_EXT"),
+            1000066012 => Some(&"ASTC_12X10_SFLOAT_BLOCK_EXT"),
+            1000066013 => Some(&"ASTC_12X12_SFLOAT_BLOCK_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10839,6 +10939,8 @@ impl IndexType {
     pub const UINT32: Self = IndexType(1);
     /// Added by extension VK_NV_ray_tracing.
     pub const NONE_NV: Self = IndexType(1000165000);
+    /// Added by extension VK_EXT_index_type_uint8.
+    pub const UINT8_EXT: Self = IndexType(1000265000);
 }
 impl default::Default for IndexType {
     fn default() -> Self {
@@ -10851,6 +10953,7 @@ impl fmt::Display for IndexType {
             0 => Some(&"UINT16"),
             1 => Some(&"UINT32"),
             1000165000 => Some(&"NONE_NV"),
+            1000265000 => Some(&"UINT8_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11402,6 +11505,10 @@ impl StructureType {
     pub const WIN32_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000009000);
     /// Added by extension VK_ANDROID_native_buffer.
     pub const NATIVE_BUFFER_ANDROID: Self = StructureType(1000010000);
+    /// Added by extension VK_ANDROID_native_buffer.
+    pub const SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID: Self = StructureType(1000010001);
+    /// Added by extension VK_ANDROID_native_buffer.
+    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID: Self = StructureType(1000010002);
     /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = StructureType(1000011000);
     pub const DEBUG_REPORT_CREATE_INFO_EXT: Self = Self::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -11464,6 +11571,8 @@ impl StructureType {
     pub const VALIDATION_FLAGS_EXT: Self = StructureType(1000061000);
     /// Added by extension VK_NN_vi_surface.
     pub const VI_SURFACE_CREATE_INFO_NN: Self = StructureType(1000062000);
+    /// Added by extension VK_EXT_texture_compression_astc_hdr.
+    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT: Self = StructureType(1000066000);
     /// Added by extension VK_EXT_astc_decode_mode.
     pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = StructureType(1000067000);
     /// Added by extension VK_EXT_astc_decode_mode.
@@ -11915,8 +12024,16 @@ impl StructureType {
     pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = StructureType(1000255001);
     /// Added by extension VK_EXT_headless_surface.
     pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000256000);
+    /// Added by extension VK_EXT_line_rasterization.
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self = StructureType(1000259000);
+    /// Added by extension VK_EXT_line_rasterization.
+    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT: Self = StructureType(1000259001);
+    /// Added by extension VK_EXT_line_rasterization.
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000259002);
     /// Added by extension VK_EXT_host_query_reset.
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
+    /// Added by extension VK_EXT_index_type_uint8.
+    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = StructureType(1000265000);
     /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = StructureType(1000276000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
@@ -12063,6 +12180,8 @@ impl fmt::Display for StructureType {
             1000008000 => Some(&"ANDROID_SURFACE_CREATE_INFO_KHR"),
             1000009000 => Some(&"WIN32_SURFACE_CREATE_INFO_KHR"),
             1000010000 => Some(&"NATIVE_BUFFER_ANDROID"),
+            1000010001 => Some(&"SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID"),
+            1000010002 => Some(&"PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID"),
             1000011000 => Some(&"DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"),
             1000018000 => Some(&"PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD"),
             1000022000 => Some(&"DEBUG_MARKER_OBJECT_NAME_INFO_EXT"),
@@ -12084,6 +12203,7 @@ impl fmt::Display for StructureType {
             1000058000 => Some(&"WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV"),
             1000061000 => Some(&"VALIDATION_FLAGS_EXT"),
             1000062000 => Some(&"VI_SURFACE_CREATE_INFO_NN"),
+            1000066000 => Some(&"PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT"),
             1000067000 => Some(&"IMAGE_VIEW_ASTC_DECODE_MODE_EXT"),
             1000067001 => Some(&"PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT"),
             1000073000 => Some(&"IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
@@ -12285,7 +12405,11 @@ impl fmt::Display for StructureType {
             1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
             1000256000 => Some(&"HEADLESS_SURFACE_CREATE_INFO_EXT"),
+            1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT"),
+            1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT"),
+            1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT"),
+            1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
@@ -13368,6 +13492,36 @@ impl fmt::Display for PerformanceValueTypeINTEL {
             2 => Some(&"FLOAT"),
             3 => Some(&"BOOL"),
             4 => Some(&"STRING"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct LineRasterizationModeEXT(i32);
+impl LineRasterizationModeEXT {
+    pub const DEFAULT: Self = LineRasterizationModeEXT(0);
+    pub const RECTANGULAR: Self = LineRasterizationModeEXT(1);
+    pub const BRESENHAM: Self = LineRasterizationModeEXT(2);
+    pub const RECTANGULAR_SMOOTH: Self = LineRasterizationModeEXT(3);
+}
+impl default::Default for LineRasterizationModeEXT {
+    fn default() -> Self {
+        LineRasterizationModeEXT(0)
+    }
+}
+impl fmt::Display for LineRasterizationModeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEFAULT"),
+            1 => Some(&"RECTANGULAR"),
+            2 => Some(&"BRESENHAM"),
+            3 => Some(&"RECTANGULAR_SMOOTH"),
             _ => None,
         };
         if let Some(name) = name {
@@ -25262,6 +25416,28 @@ impl fmt::Debug for PhysicalDeviceHostQueryResetFeaturesEXT {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct NativeBufferUsage2ANDROID {
+    pub consumer: u64,
+    pub producer: u64,
+}
+impl default::Default for NativeBufferUsage2ANDROID {
+    fn default() -> Self {
+        NativeBufferUsage2ANDROID {
+            consumer: u64::default(),
+            producer: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for NativeBufferUsage2ANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("NativeBufferUsage2ANDROID")
+            .field("consumer", &self.consumer)
+            .field("producer", &self.producer)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct NativeBufferANDROID {
     pub s_type: StructureType,
@@ -25270,6 +25446,7 @@ pub struct NativeBufferANDROID {
     pub stride: c_int,
     pub format: c_int,
     pub usage: c_int,
+    pub usage2: NativeBufferUsage2ANDROID,
 }
 impl default::Default for NativeBufferANDROID {
     fn default() -> Self {
@@ -25280,6 +25457,7 @@ impl default::Default for NativeBufferANDROID {
             stride: c_int::default(),
             format: c_int::default(),
             usage: c_int::default(),
+            usage2: NativeBufferUsage2ANDROID::default(),
         }
     }
 }
@@ -25292,6 +25470,57 @@ impl fmt::Debug for NativeBufferANDROID {
             .field("stride", &self.stride)
             .field("format", &self.format)
             .field("usage", &self.usage)
+            .field("usage2", &self.usage2)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainImageCreateInfoANDROID {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage: SwapchainImageUsageFlagsANDROID,
+}
+impl default::Default for SwapchainImageCreateInfoANDROID {
+    fn default() -> Self {
+        SwapchainImageCreateInfoANDROID {
+            s_type: StructureType::SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID,
+            p_next: ptr::null(),
+            usage: SwapchainImageUsageFlagsANDROID::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainImageCreateInfoANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainImageCreateInfoANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentationPropertiesANDROID {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub shared_image: Bool32,
+}
+impl default::Default for PhysicalDevicePresentationPropertiesANDROID {
+    fn default() -> Self {
+        PhysicalDevicePresentationPropertiesANDROID {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID,
+            p_next: ptr::null(),
+            shared_image: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentationPropertiesANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentationPropertiesANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shared_image", &self.shared_image)
             .finish()
     }
 }
@@ -29105,6 +29334,31 @@ impl fmt::Debug for RenderPassAttachmentBeginInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub texture_compression_astc_hdr: Bool32,
+}
+impl default::Default for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT,
+            p_next: ptr::null(),
+            texture_compression_astc_hdr: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("texture_compression_astc_hdr", &self.texture_compression_astc_hdr)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceCooperativeMatrixFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -29742,6 +29996,31 @@ impl fmt::Debug for PerformanceConfigurationAcquireInfoINTEL {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceIndexTypeUint8FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub index_type_uint8: Bool32,
+}
+impl default::Default for PhysicalDeviceIndexTypeUint8FeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceIndexTypeUint8FeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            index_type_uint8: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceIndexTypeUint8FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceIndexTypeUint8FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index_type_uint8", &self.index_type_uint8)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -29990,6 +30269,105 @@ impl fmt::Debug for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("required_subgroup_size", &self.required_subgroup_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLineRasterizationFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub rectangular_lines: Bool32,
+    pub bresenham_lines: Bool32,
+    pub smooth_lines: Bool32,
+    pub stippled_rectangular_lines: Bool32,
+    pub stippled_bresenham_lines: Bool32,
+    pub stippled_smooth_lines: Bool32,
+}
+impl default::Default for PhysicalDeviceLineRasterizationFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceLineRasterizationFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            rectangular_lines: Bool32::default(),
+            bresenham_lines: Bool32::default(),
+            smooth_lines: Bool32::default(),
+            stippled_rectangular_lines: Bool32::default(),
+            stippled_bresenham_lines: Bool32::default(),
+            stippled_smooth_lines: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLineRasterizationFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLineRasterizationFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("rectangular_lines", &self.rectangular_lines)
+            .field("bresenham_lines", &self.bresenham_lines)
+            .field("smooth_lines", &self.smooth_lines)
+            .field("stippled_rectangular_lines", &self.stippled_rectangular_lines)
+            .field("stippled_bresenham_lines", &self.stippled_bresenham_lines)
+            .field("stippled_smooth_lines", &self.stippled_smooth_lines)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLineRasterizationPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub line_sub_pixel_precision_bits: u32,
+}
+impl default::Default for PhysicalDeviceLineRasterizationPropertiesEXT {
+    fn default() -> Self {
+        PhysicalDeviceLineRasterizationPropertiesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            line_sub_pixel_precision_bits: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLineRasterizationPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLineRasterizationPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("line_sub_pixel_precision_bits", &self.line_sub_pixel_precision_bits)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRasterizationLineStateCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub line_rasterization_mode: LineRasterizationModeEXT,
+    pub stippled_line_enable: Bool32,
+    pub line_stipple_factor: u32,
+    pub line_stipple_pattern: u16,
+}
+impl default::Default for PipelineRasterizationLineStateCreateInfoEXT {
+    fn default() -> Self {
+        PipelineRasterizationLineStateCreateInfoEXT {
+            s_type: StructureType::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            line_rasterization_mode: LineRasterizationModeEXT::default(),
+            stippled_line_enable: Bool32::default(),
+            line_stipple_factor: u32::default(),
+            line_stipple_pattern: u16::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRasterizationLineStateCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRasterizationLineStateCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("line_rasterization_mode", &self.line_rasterization_mode)
+            .field("stippled_line_enable", &self.stippled_line_enable)
+            .field("line_stipple_factor", &self.line_stipple_factor)
+            .field("line_stipple_pattern", &self.line_stipple_pattern)
             .finish()
     }
 }
@@ -31802,3 +32180,8 @@ pub type FnGetPerformanceParameterINTEL = unsafe extern "system" fn(
     parameter: PerformanceParameterTypeINTEL,
     p_value: *mut PerformanceValueINTEL,
 ) -> Result;
+pub type FnCmdSetLineStippleEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    line_stipple_factor: u32,
+    line_stipple_pattern: u16,
+) -> c_void;

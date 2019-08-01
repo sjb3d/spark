@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 116
+//! Generated from vk.xml with `VK_HEADER_VERSION` 117
 pub mod builder;
 pub mod vk;
 
@@ -2587,6 +2587,7 @@ pub struct DeviceExtensions {
     pub khr_shader_draw_parameters: bool,
     pub ext_shader_subgroup_ballot: bool,
     pub ext_shader_subgroup_vote: bool,
+    pub ext_texture_compression_astc_hdr: bool,
     pub ext_astc_decode_mode: bool,
     pub khr_maintenance1: bool,
     pub khr_external_memory: bool,
@@ -2698,7 +2699,9 @@ pub struct DeviceExtensions {
     pub ext_ycbcr_image_arrays: bool,
     pub khr_uniform_buffer_standard_layout: bool,
     pub ext_full_screen_exclusive: bool,
+    pub ext_line_rasterization: bool,
     pub ext_host_query_reset: bool,
+    pub ext_index_type_uint8: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub ext_texel_buffer_alignment: bool,
 }
@@ -2981,6 +2984,7 @@ pub struct Device {
     pub fp_release_performance_configuration_intel: Option<vk::FnReleasePerformanceConfigurationINTEL>,
     pub fp_queue_set_performance_configuration_intel: Option<vk::FnQueueSetPerformanceConfigurationINTEL>,
     pub fp_get_performance_parameter_intel: Option<vk::FnGetPerformanceParameterINTEL>,
+    pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3075,6 +3079,9 @@ impl Device {
     }
     pub fn ext_shader_subgroup_vote_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_vote\0") }
+    }
+    pub fn ext_texture_compression_astc_hdr_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texture_compression_astc_hdr\0") }
     }
     pub fn ext_astc_decode_mode_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_astc_decode_mode\0") }
@@ -3409,8 +3416,14 @@ impl Device {
     pub fn ext_full_screen_exclusive_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") }
     }
+    pub fn ext_line_rasterization_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_line_rasterization\0") }
+    }
     pub fn ext_host_query_reset_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
+    }
+    pub fn ext_index_type_uint8_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") }
     }
     pub fn ext_shader_demote_to_helper_invocation_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") }
@@ -3464,6 +3477,7 @@ impl Device {
                     b"VK_KHR_shader_draw_parameters" => extensions.khr_shader_draw_parameters = true,
                     b"VK_EXT_shader_subgroup_ballot" => extensions.ext_shader_subgroup_ballot = true,
                     b"VK_EXT_shader_subgroup_vote" => extensions.ext_shader_subgroup_vote = true,
+                    b"VK_EXT_texture_compression_astc_hdr" => extensions.ext_texture_compression_astc_hdr = true,
                     b"VK_EXT_astc_decode_mode" => extensions.ext_astc_decode_mode = true,
                     b"VK_KHR_maintenance1" => extensions.khr_maintenance1 = true,
                     b"VK_KHR_external_memory" => extensions.khr_external_memory = true,
@@ -3579,7 +3593,9 @@ impl Device {
                     b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
                     b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
+                    b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
+                    b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
                     b"VK_EXT_shader_demote_to_helper_invocation" => {
                         extensions.ext_shader_demote_to_helper_invocation = true
                     }
@@ -5544,6 +5560,12 @@ impl Device {
             },
             fp_get_performance_parameter_intel: if extensions.intel_performance_query {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPerformanceParameterINTEL\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_line_stipple_ext: if extensions.ext_line_rasterization {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9819,6 +9841,17 @@ impl Device {
             vk::Result::SUCCESS => Ok(res),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_set_line_stipple_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        line_stipple_factor: u32,
+        line_stipple_pattern: u16,
+    ) {
+        let fp = self
+            .fp_cmd_set_line_stipple_ext
+            .expect("vkCmdSetLineStippleEXT is not loaded");
+        (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
     }
 }
 

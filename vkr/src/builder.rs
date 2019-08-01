@@ -8530,9 +8530,85 @@ impl<'a> NativeBufferANDROIDBuilder<'a> {
         self.inner.usage = usage;
         self
     }
+    pub fn usage2(mut self, usage2: vk::NativeBufferUsage2ANDROID) -> Self {
+        self.inner.usage2 = usage2;
+        self
+    }
 }
 impl<'a> Deref for NativeBufferANDROIDBuilder<'a> {
     type Target = vk::NativeBufferANDROID;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SwapchainImageCreateInfoANDROID {
+    type Type = SwapchainImageCreateInfoANDROIDBuilder<'a>;
+    fn builder() -> Self::Type {
+        SwapchainImageCreateInfoANDROIDBuilder::new()
+    }
+}
+pub struct SwapchainImageCreateInfoANDROIDBuilder<'a> {
+    inner: vk::SwapchainImageCreateInfoANDROID,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SwapchainImageCreateInfoANDROIDBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn usage(mut self, usage: vk::SwapchainImageUsageFlagsANDROID) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl<'a> Deref for SwapchainImageCreateInfoANDROIDBuilder<'a> {
+    type Target = vk::SwapchainImageCreateInfoANDROID;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDevicePresentationPropertiesANDROID {
+    type Type = PhysicalDevicePresentationPropertiesANDROIDBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDevicePresentationPropertiesANDROIDBuilder::new()
+    }
+}
+pub struct PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
+    inner: vk::PhysicalDevicePresentationPropertiesANDROID,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shared_image(mut self, shared_image: bool) -> Self {
+        self.inner.shared_image = if shared_image { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
+    type Target = vk::PhysicalDevicePresentationPropertiesANDROID;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -12196,6 +12272,46 @@ impl<'a> Deref for RenderPassAttachmentBeginInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+    type Type = PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn texture_compression_astc_hdr(mut self, texture_compression_astc_hdr: bool) -> Self {
+        self.inner.texture_compression_astc_hdr = if texture_compression_astc_hdr {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {
     type Type = PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -12921,6 +13037,42 @@ impl<'a> Deref for PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceIndexTypeUint8FeaturesEXT {
+    type Type = PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceIndexTypeUint8FeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index_type_uint8(mut self, index_type_uint8: bool) -> Self {
+        self.inner.index_type_uint8 = if index_type_uint8 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceIndexTypeUint8FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     type Type = PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -13085,6 +13237,114 @@ impl<'a> PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
     type Target = vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceLineRasterizationFeaturesEXT {
+    type Type = PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PhysicalDeviceLineRasterizationFeaturesEXTBuilder::new()
+    }
+}
+pub struct PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceLineRasterizationFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn rectangular_lines(mut self, rectangular_lines: bool) -> Self {
+        self.inner.rectangular_lines = if rectangular_lines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn bresenham_lines(mut self, bresenham_lines: bool) -> Self {
+        self.inner.bresenham_lines = if bresenham_lines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn smooth_lines(mut self, smooth_lines: bool) -> Self {
+        self.inner.smooth_lines = if smooth_lines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn stippled_rectangular_lines(mut self, stippled_rectangular_lines: bool) -> Self {
+        self.inner.stippled_rectangular_lines = if stippled_rectangular_lines {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn stippled_bresenham_lines(mut self, stippled_bresenham_lines: bool) -> Self {
+        self.inner.stippled_bresenham_lines = if stippled_bresenham_lines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn stippled_smooth_lines(mut self, stippled_smooth_lines: bool) -> Self {
+        self.inner.stippled_smooth_lines = if stippled_smooth_lines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceLineRasterizationFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineRasterizationLineStateCreateInfoEXT {
+    type Type = PipelineRasterizationLineStateCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        PipelineRasterizationLineStateCreateInfoEXTBuilder::new()
+    }
+}
+pub struct PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineRasterizationLineStateCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
+    pub fn new() -> Self {
+        Self {
+            inner: Default::default(),
+            phantom: PhantomData,
+        }
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn line_rasterization_mode(mut self, line_rasterization_mode: vk::LineRasterizationModeEXT) -> Self {
+        self.inner.line_rasterization_mode = line_rasterization_mode;
+        self
+    }
+    pub fn stippled_line_enable(mut self, stippled_line_enable: bool) -> Self {
+        self.inner.stippled_line_enable = if stippled_line_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn line_stipple_factor(mut self, line_stipple_factor: u32) -> Self {
+        self.inner.line_stipple_factor = line_stipple_factor;
+        self
+    }
+    pub fn line_stipple_pattern(mut self, line_stipple_pattern: u16) -> Self {
+        self.inner.line_stipple_pattern = line_stipple_pattern;
+        self
+    }
+}
+impl<'a> Deref for PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineRasterizationLineStateCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
