@@ -26,17 +26,17 @@ impl Version {
     pub const fn from_raw(version: u32) -> Self {
         Version(version)
     }
-    pub fn to_raw(&self) -> u32 {
+    pub fn to_raw(self) -> u32 {
         self.0
     }
 
-    pub fn get_major(&self) -> u32 {
+    pub fn get_major(self) -> u32 {
         self.0 >> 22
     }
-    pub fn get_minor(&self) -> u32 {
+    pub fn get_minor(self) -> u32 {
         (self.0 >> 12) & 0x3ff
     }
-    pub fn get_patch(&self) -> u32 {
+    pub fn get_patch(self) -> u32 {
         self.0 & 0xfff
     }
 }
@@ -173,16 +173,16 @@ impl FramebufferCreateFlags {
     pub fn all() -> Self {
         FramebufferCreateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -240,16 +240,16 @@ impl QueryPoolCreateFlags {
     pub fn all() -> Self {
         QueryPoolCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -312,16 +312,16 @@ impl RenderPassCreateFlags {
     pub fn all() -> Self {
         RenderPassCreateFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -384,16 +384,16 @@ impl SamplerCreateFlags {
     pub fn all() -> Self {
         SamplerCreateFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -455,16 +455,16 @@ impl PipelineLayoutCreateFlags {
     pub fn all() -> Self {
         PipelineLayoutCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -522,16 +522,16 @@ impl PipelineCacheCreateFlags {
     pub fn all() -> Self {
         PipelineCacheCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -589,16 +589,16 @@ impl PipelineDepthStencilStateCreateFlags {
     pub fn all() -> Self {
         PipelineDepthStencilStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -656,16 +656,16 @@ impl PipelineDynamicStateCreateFlags {
     pub fn all() -> Self {
         PipelineDynamicStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -723,16 +723,16 @@ impl PipelineColorBlendStateCreateFlags {
     pub fn all() -> Self {
         PipelineColorBlendStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -790,16 +790,16 @@ impl PipelineMultisampleStateCreateFlags {
     pub fn all() -> Self {
         PipelineMultisampleStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -857,16 +857,16 @@ impl PipelineRasterizationStateCreateFlags {
     pub fn all() -> Self {
         PipelineRasterizationStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -924,16 +924,16 @@ impl PipelineViewportStateCreateFlags {
     pub fn all() -> Self {
         PipelineViewportStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -991,16 +991,16 @@ impl PipelineTessellationStateCreateFlags {
     pub fn all() -> Self {
         PipelineTessellationStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1058,16 +1058,16 @@ impl PipelineInputAssemblyStateCreateFlags {
     pub fn all() -> Self {
         PipelineInputAssemblyStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1125,16 +1125,16 @@ impl PipelineVertexInputStateCreateFlags {
     pub fn all() -> Self {
         PipelineVertexInputStateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1199,16 +1199,16 @@ impl PipelineShaderStageCreateFlags {
     pub fn all() -> Self {
         PipelineShaderStageCreateFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1280,16 +1280,16 @@ impl DescriptorSetLayoutCreateFlags {
     pub fn all() -> Self {
         DescriptorSetLayoutCreateFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1351,16 +1351,16 @@ impl BufferViewCreateFlags {
     pub fn all() -> Self {
         BufferViewCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1418,16 +1418,16 @@ impl InstanceCreateFlags {
     pub fn all() -> Self {
         InstanceCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1485,16 +1485,16 @@ impl DeviceCreateFlags {
     pub fn all() -> Self {
         DeviceCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1555,16 +1555,16 @@ impl DeviceQueueCreateFlags {
     pub fn all() -> Self {
         DeviceQueueCreateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1637,16 +1637,16 @@ impl QueueFlags {
     pub fn all() -> Self {
         QueueFlags(0x7f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1729,16 +1729,16 @@ impl MemoryPropertyFlags {
     pub fn all() -> Self {
         MemoryPropertyFlags(0x3f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1813,16 +1813,16 @@ impl MemoryHeapFlags {
     pub fn all() -> Self {
         MemoryHeapFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -1946,16 +1946,16 @@ impl AccessFlags {
     pub fn all() -> Self {
         AccessFlags(0xffffffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xffffffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2088,16 +2088,16 @@ impl BufferUsageFlags {
     pub fn all() -> Self {
         BufferUsageFlags(0x3ffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3ffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2189,16 +2189,16 @@ impl BufferCreateFlags {
     pub fn all() -> Self {
         BufferCreateFlags(0x1f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2291,16 +2291,16 @@ impl ShaderStageFlags {
     pub fn all() -> Self {
         ShaderStageFlags(0x7fffffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7fffffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2412,16 +2412,16 @@ impl ImageUsageFlags {
     pub fn all() -> Self {
         ImageUsageFlags(0xffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2533,16 +2533,16 @@ impl ImageCreateFlags {
     pub fn all() -> Self {
         ImageCreateFlags(0x7fff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7fff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2623,16 +2623,16 @@ impl ImageViewCreateFlags {
     pub fn all() -> Self {
         ImageViewCreateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2700,16 +2700,16 @@ impl PipelineCreateFlags {
     pub fn all() -> Self {
         PipelineCreateFlags(0x3f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2783,16 +2783,16 @@ impl ColorComponentFlags {
     pub fn all() -> Self {
         ColorComponentFlags(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2852,16 +2852,16 @@ impl FenceCreateFlags {
     pub fn all() -> Self {
         FenceCreateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -2919,16 +2919,16 @@ impl SemaphoreCreateFlags {
     pub fn all() -> Self {
         SemaphoreCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3060,16 +3060,16 @@ impl FormatFeatureFlags {
     pub fn all() -> Self {
         FormatFeatureFlags(0x1fffffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1fffffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3170,16 +3170,16 @@ impl QueryControlFlags {
     pub fn all() -> Self {
         QueryControlFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3246,16 +3246,16 @@ impl QueryResultFlags {
     pub fn all() -> Self {
         QueryResultFlags(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3325,16 +3325,16 @@ impl ShaderModuleCreateFlags {
     pub fn all() -> Self {
         ShaderModuleCreateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3392,16 +3392,16 @@ impl EventCreateFlags {
     pub fn all() -> Self {
         EventCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3466,16 +3466,16 @@ impl CommandPoolCreateFlags {
     pub fn all() -> Self {
         CommandPoolCreateFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3540,16 +3540,16 @@ impl CommandPoolResetFlags {
     pub fn all() -> Self {
         CommandPoolResetFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3610,16 +3610,16 @@ impl CommandBufferResetFlags {
     pub fn all() -> Self {
         CommandBufferResetFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3682,16 +3682,16 @@ impl CommandBufferUsageFlags {
     pub fn all() -> Self {
         CommandBufferUsageFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3780,16 +3780,16 @@ impl QueryPipelineStatisticFlags {
     pub fn all() -> Self {
         QueryPipelineStatisticFlags(0x7ff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7ff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3863,16 +3863,16 @@ impl MemoryMapFlags {
     pub fn all() -> Self {
         MemoryMapFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -3949,16 +3949,16 @@ impl ImageAspectFlags {
     pub fn all() -> Self {
         ImageAspectFlags(0x7ff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7ff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4035,16 +4035,16 @@ impl SparseMemoryBindFlags {
     pub fn all() -> Self {
         SparseMemoryBindFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4109,16 +4109,16 @@ impl SparseImageFormatFlags {
     pub fn all() -> Self {
         SparseImageFormatFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4193,16 +4193,16 @@ impl SubpassDescriptionFlags {
     pub fn all() -> Self {
         SubpassDescriptionFlags(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4327,16 +4327,16 @@ impl PipelineStageFlags {
     pub fn all() -> Self {
         PipelineStageFlags(0xfffffff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xfffffff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4442,16 +4442,16 @@ impl SampleCountFlags {
     pub fn all() -> Self {
         SampleCountFlags(0x7f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4524,16 +4524,16 @@ impl AttachmentDescriptionFlags {
     pub fn all() -> Self {
         AttachmentDescriptionFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4598,16 +4598,16 @@ impl StencilFaceFlags {
     pub fn all() -> Self {
         StencilFaceFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4670,16 +4670,16 @@ impl CullModeFlags {
     pub fn all() -> Self {
         CullModeFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4746,16 +4746,16 @@ impl DescriptorPoolCreateFlags {
     pub fn all() -> Self {
         DescriptorPoolCreateFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4817,16 +4817,16 @@ impl DescriptorPoolResetFlags {
     pub fn all() -> Self {
         DescriptorPoolResetFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4892,16 +4892,16 @@ impl DependencyFlags {
     pub fn all() -> Self {
         DependencyFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -4982,16 +4982,16 @@ impl SubgroupFeatureFlags {
     pub fn all() -> Self {
         SubgroupFeatureFlags(0x1ff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1ff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5068,16 +5068,16 @@ impl IndirectCommandsLayoutUsageFlagsNVX {
     pub fn all() -> Self {
         IndirectCommandsLayoutUsageFlagsNVX(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5147,16 +5147,16 @@ impl ObjectEntryUsageFlagsNVX {
     pub fn all() -> Self {
         ObjectEntryUsageFlagsNVX(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5217,16 +5217,16 @@ impl GeometryFlagsNV {
     pub fn all() -> Self {
         GeometryFlagsNV(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5289,16 +5289,16 @@ impl GeometryInstanceFlagsNV {
     pub fn all() -> Self {
         GeometryInstanceFlagsNV(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5371,16 +5371,16 @@ impl BuildAccelerationStructureFlagsNV {
     pub fn all() -> Self {
         BuildAccelerationStructureFlagsNV(0x1f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5448,16 +5448,16 @@ impl DescriptorUpdateTemplateCreateFlags {
     pub fn all() -> Self {
         DescriptorUpdateTemplateCreateFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5520,16 +5520,16 @@ impl PipelineCreationFeedbackFlagsEXT {
     pub fn all() -> Self {
         PipelineCreationFeedbackFlagsEXT(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5600,16 +5600,16 @@ impl CompositeAlphaFlagsKHR {
     pub fn all() -> Self {
         CompositeAlphaFlagsKHR(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5681,16 +5681,16 @@ impl DisplayPlaneAlphaFlagsKHR {
     pub fn all() -> Self {
         DisplayPlaneAlphaFlagsKHR(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5767,16 +5767,16 @@ impl SurfaceTransformFlagsKHR {
     pub fn all() -> Self {
         SurfaceTransformFlagsKHR(0x1ff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1ff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5857,16 +5857,16 @@ impl SwapchainCreateFlagsKHR {
     pub fn all() -> Self {
         SwapchainCreateFlagsKHR(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5932,16 +5932,16 @@ impl DisplayModeCreateFlagsKHR {
     pub fn all() -> Self {
         DisplayModeCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -5999,16 +5999,16 @@ impl DisplaySurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         DisplaySurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6066,16 +6066,16 @@ impl AndroidSurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         AndroidSurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6133,16 +6133,16 @@ impl ViSurfaceCreateFlagsNN {
     pub fn all() -> Self {
         ViSurfaceCreateFlagsNN(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6200,16 +6200,16 @@ impl WaylandSurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         WaylandSurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6267,16 +6267,16 @@ impl Win32SurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         Win32SurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6334,16 +6334,16 @@ impl XlibSurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         XlibSurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6401,16 +6401,16 @@ impl XcbSurfaceCreateFlagsKHR {
     pub fn all() -> Self {
         XcbSurfaceCreateFlagsKHR(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6468,16 +6468,16 @@ impl IOSSurfaceCreateFlagsMVK {
     pub fn all() -> Self {
         IOSSurfaceCreateFlagsMVK(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6535,16 +6535,16 @@ impl MacOSSurfaceCreateFlagsMVK {
     pub fn all() -> Self {
         MacOSSurfaceCreateFlagsMVK(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6602,16 +6602,16 @@ impl MetalSurfaceCreateFlagsEXT {
     pub fn all() -> Self {
         MetalSurfaceCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6669,16 +6669,16 @@ impl ImagePipeSurfaceCreateFlagsFUCHSIA {
     pub fn all() -> Self {
         ImagePipeSurfaceCreateFlagsFUCHSIA(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6736,16 +6736,16 @@ impl HeadlessSurfaceCreateFlagsEXT {
     pub fn all() -> Self {
         HeadlessSurfaceCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6816,16 +6816,16 @@ impl PeerMemoryFeatureFlags {
     pub fn all() -> Self {
         PeerMemoryFeatureFlags(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6897,16 +6897,16 @@ impl MemoryAllocateFlags {
     pub fn all() -> Self {
         MemoryAllocateFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -6974,16 +6974,16 @@ impl DeviceGroupPresentModeFlagsKHR {
     pub fn all() -> Self {
         DeviceGroupPresentModeFlagsKHR(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7056,16 +7056,16 @@ impl DebugReportFlagsEXT {
     pub fn all() -> Self {
         DebugReportFlagsEXT(0x1f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7133,16 +7133,16 @@ impl CommandPoolTrimFlags {
     pub fn all() -> Self {
         CommandPoolTrimFlags(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7206,16 +7206,16 @@ impl ExternalMemoryHandleTypeFlagsNV {
     pub fn all() -> Self {
         ExternalMemoryHandleTypeFlagsNV(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7286,16 +7286,16 @@ impl ExternalMemoryFeatureFlagsNV {
     pub fn all() -> Self {
         ExternalMemoryFeatureFlagsNV(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7380,16 +7380,16 @@ impl ExternalMemoryHandleTypeFlags {
     pub fn all() -> Self {
         ExternalMemoryHandleTypeFlags(0x7ff)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7ff
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7471,16 +7471,16 @@ impl ExternalMemoryFeatureFlags {
     pub fn all() -> Self {
         ExternalMemoryFeatureFlags(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7554,16 +7554,16 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub fn all() -> Self {
         ExternalSemaphoreHandleTypeFlags(0x1f)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1f
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7637,16 +7637,16 @@ impl ExternalSemaphoreFeatureFlags {
     pub fn all() -> Self {
         ExternalSemaphoreFeatureFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7708,16 +7708,16 @@ impl SemaphoreImportFlags {
     pub fn all() -> Self {
         SemaphoreImportFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7785,16 +7785,16 @@ impl ExternalFenceHandleTypeFlags {
     pub fn all() -> Self {
         ExternalFenceHandleTypeFlags(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7867,16 +7867,16 @@ impl ExternalFenceFeatureFlags {
     pub fn all() -> Self {
         ExternalFenceFeatureFlags(0x3)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x3
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -7938,16 +7938,16 @@ impl FenceImportFlags {
     pub fn all() -> Self {
         FenceImportFlags(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8008,16 +8008,16 @@ impl SurfaceCounterFlagsEXT {
     pub fn all() -> Self {
         SurfaceCounterFlagsEXT(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8075,16 +8075,16 @@ impl PipelineViewportSwizzleStateCreateFlagsNV {
     pub fn all() -> Self {
         PipelineViewportSwizzleStateCreateFlagsNV(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8142,16 +8142,16 @@ impl PipelineDiscardRectangleStateCreateFlagsEXT {
     pub fn all() -> Self {
         PipelineDiscardRectangleStateCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8209,16 +8209,16 @@ impl PipelineCoverageToColorStateCreateFlagsNV {
     pub fn all() -> Self {
         PipelineCoverageToColorStateCreateFlagsNV(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8276,16 +8276,16 @@ impl PipelineCoverageModulationStateCreateFlagsNV {
     pub fn all() -> Self {
         PipelineCoverageModulationStateCreateFlagsNV(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8343,16 +8343,16 @@ impl PipelineCoverageReductionStateCreateFlagsNV {
     pub fn all() -> Self {
         PipelineCoverageReductionStateCreateFlagsNV(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8410,16 +8410,16 @@ impl ValidationCacheCreateFlagsEXT {
     pub fn all() -> Self {
         ValidationCacheCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8482,16 +8482,16 @@ impl DebugUtilsMessageSeverityFlagsEXT {
     pub fn all() -> Self {
         DebugUtilsMessageSeverityFlagsEXT(0x1111)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1111
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8557,16 +8557,16 @@ impl DebugUtilsMessageTypeFlagsEXT {
     pub fn all() -> Self {
         DebugUtilsMessageTypeFlagsEXT(0x7)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x7
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8628,16 +8628,16 @@ impl DebugUtilsMessengerCreateFlagsEXT {
     pub fn all() -> Self {
         DebugUtilsMessengerCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8695,16 +8695,16 @@ impl DebugUtilsMessengerCallbackDataFlagsEXT {
     pub fn all() -> Self {
         DebugUtilsMessengerCallbackDataFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8762,16 +8762,16 @@ impl PipelineRasterizationConservativeStateCreateFlagsEXT {
     pub fn all() -> Self {
         PipelineRasterizationConservativeStateCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8834,16 +8834,16 @@ impl DescriptorBindingFlagsEXT {
     pub fn all() -> Self {
         DescriptorBindingFlagsEXT(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8912,16 +8912,16 @@ impl ConditionalRenderingFlagsEXT {
     pub fn all() -> Self {
         ConditionalRenderingFlagsEXT(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -8985,16 +8985,16 @@ impl ResolveModeFlagsKHR {
     pub fn all() -> Self {
         ResolveModeFlagsKHR(0xf)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0xf
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -9062,16 +9062,16 @@ impl PipelineRasterizationStateStreamCreateFlagsEXT {
     pub fn all() -> Self {
         PipelineRasterizationStateStreamCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -9129,16 +9129,16 @@ impl PipelineRasterizationDepthClipStateCreateFlagsEXT {
     pub fn all() -> Self {
         PipelineRasterizationDepthClipStateCreateFlagsEXT(0x0)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x0
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }
@@ -9198,16 +9198,16 @@ impl SwapchainImageUsageFlagsANDROID {
     pub fn all() -> Self {
         SwapchainImageUsageFlagsANDROID(0x1)
     }
-    pub fn is_empty(&self) -> bool {
+    pub fn is_empty(self) -> bool {
         self.0 == 0
     }
-    pub fn is_all(&self) -> bool {
+    pub fn is_all(self) -> bool {
         self.0 == 0x1
     }
-    pub fn intersects(&self, other: Self) -> bool {
+    pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
     }
-    pub fn contains(&self, other: Self) -> bool {
+    pub fn contains(self, other: Self) -> bool {
         (self.0 & other.0) == other.0
     }
 }

@@ -1003,10 +1003,10 @@ impl<'a> Generator<'a> {
                         "impl {0} {{\
                          pub fn empty() -> Self {{ {0}(0) }}\
                          pub fn all() -> Self {{ {0}({1:#x}) }}\
-                         pub fn is_empty(&self) -> bool {{ self.0 == 0 }}\
-                         pub fn is_all(&self) -> bool {{ self.0 == {1:#x} }}\
-                         pub fn intersects(&self, other: Self) -> bool {{ (self.0 & other.0) != 0 }}\
-                         pub fn contains(&self, other: Self) -> bool {{ (self.0 & other.0) == other.0 }}\
+                         pub fn is_empty(self) -> bool {{ self.0 == 0 }}\
+                         pub fn is_all(self) -> bool {{ self.0 == {1:#x} }}\
+                         pub fn intersects(self, other: Self) -> bool {{ (self.0 & other.0) != 0 }}\
+                         pub fn contains(self, other: Self) -> bool {{ (self.0 & other.0) == other.0 }}\
                          }}",
                         enum_name, all
                     )?;
@@ -1562,7 +1562,7 @@ impl<'a> Generator<'a> {
                         w,
                         "impl<'a> Builder<'a> for vk::{0} {{\
                          type Type = {0}Builder<'a>;\
-                         fn builder() -> Self::Type {{ {0}Builder::new() }} }}",
+                         fn builder() -> Self::Type {{ Default::default() }} }}",
                         agg_name
                     )?;
 
@@ -1572,6 +1572,7 @@ impl<'a> Generator<'a> {
                         phantom_decl.ty.decoration != CDecoration::None,
                         Some("vk::"),
                     );
+                    writeln!(w, "#[derive(Default)]")?;
                     writeln!(
                         w,
                         "pub struct {0}Builder<'a> {{\
@@ -1581,11 +1582,6 @@ impl<'a> Generator<'a> {
 
                     // setters
                     writeln!(w, "impl<'a> {}Builder<'a> {{", agg_name)?;
-                    writeln!(
-                        w,
-                        "pub fn new() -> Self {{\
-                         Self {{ inner: Default::default(), phantom: PhantomData, }} }}"
-                    )?;
                     for (cparam, rparam) in decls.iter().zip(params.iter()) {
                         match rparam.ty {
                             LibParamType::CDecl => {
@@ -2439,11 +2435,11 @@ impl<'a> Generator<'a> {
                         LibReturnTransform::ToBool => writeln!(w, ".map(|r| r != vk::FALSE)")?,
                         LibReturnTransform::ToInstance => writeln!(
                             w,
-                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Instance::load(&self, r, p_create_info))"
+                            ".map_err(LoaderError::Vulkan).and_then(|r| Instance::load(&self, r, p_create_info))"
                         )?,
                         LibReturnTransform::ToDevice => writeln!(
                             w,
-                            ".map_err(|e| LoaderError::Vulkan(e)).and_then(|r| Device::load(&self, r, p_create_info, version))"
+                            ".map_err(LoaderError::Vulkan).and_then(|r| Device::load(&self, r, p_create_info, version))"
                         )?,
                     }
                 }

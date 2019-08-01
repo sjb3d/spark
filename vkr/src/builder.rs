@@ -13,20 +13,15 @@ pub trait Builder<'a> {
 impl<'a> Builder<'a> for vk::BaseOutStructure {
     type Type = BaseOutStructureBuilder<'a>;
     fn builder() -> Self::Type {
-        BaseOutStructureBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BaseOutStructureBuilder<'a> {
     inner: vk::BaseOutStructure,
     phantom: PhantomData<&'a vk::BaseOutStructure>,
 }
 impl<'a> BaseOutStructureBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -45,20 +40,15 @@ impl<'a> Deref for BaseOutStructureBuilder<'a> {
 impl<'a> Builder<'a> for vk::BaseInStructure {
     type Type = BaseInStructureBuilder<'a>;
     fn builder() -> Self::Type {
-        BaseInStructureBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BaseInStructureBuilder<'a> {
     inner: vk::BaseInStructure,
     phantom: PhantomData<&'a vk::BaseInStructure>,
 }
 impl<'a> BaseInStructureBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -77,20 +67,15 @@ impl<'a> Deref for BaseInStructureBuilder<'a> {
 impl<'a> Builder<'a> for vk::ApplicationInfo {
     type Type = ApplicationInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ApplicationInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ApplicationInfoBuilder<'a> {
     inner: vk::ApplicationInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ApplicationInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -129,20 +114,15 @@ impl<'a> Deref for ApplicationInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::AllocationCallbacks {
     type Type = AllocationCallbacksBuilder<'a>;
     fn builder() -> Self::Type {
-        AllocationCallbacksBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AllocationCallbacksBuilder<'a> {
     inner: vk::AllocationCallbacks,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AllocationCallbacksBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
         self.inner.p_user_data = p_user_data;
         self
@@ -180,20 +160,15 @@ impl<'a> Deref for AllocationCallbacksBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceQueueCreateInfo {
     type Type = DeviceQueueCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceQueueCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceQueueCreateInfoBuilder<'a> {
     inner: vk::DeviceQueueCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceQueueCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -225,20 +200,15 @@ impl<'a> Deref for DeviceQueueCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceCreateInfo {
     type Type = DeviceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceCreateInfoBuilder<'a> {
     inner: vk::DeviceCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -280,20 +250,15 @@ impl<'a> Deref for DeviceCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::InstanceCreateInfo {
     type Type = InstanceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        InstanceCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct InstanceCreateInfoBuilder<'a> {
     inner: vk::InstanceCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> InstanceCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -330,20 +295,15 @@ impl<'a> Deref for InstanceCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryAllocateInfo {
     type Type = MemoryAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryAllocateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryAllocateInfoBuilder<'a> {
     inner: vk::MemoryAllocateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryAllocateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -370,20 +330,15 @@ impl<'a> Deref for MemoryAllocateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::MappedMemoryRange {
     type Type = MappedMemoryRangeBuilder<'a>;
     fn builder() -> Self::Type {
-        MappedMemoryRangeBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MappedMemoryRangeBuilder<'a> {
     inner: vk::MappedMemoryRange,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MappedMemoryRangeBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -414,20 +369,15 @@ impl<'a> Deref for MappedMemoryRangeBuilder<'a> {
 impl<'a> Builder<'a> for vk::WriteDescriptorSet {
     type Type = WriteDescriptorSetBuilder<'a>;
     fn builder() -> Self::Type {
-        WriteDescriptorSetBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct WriteDescriptorSetBuilder<'a> {
     inner: vk::WriteDescriptorSet,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> WriteDescriptorSetBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -477,20 +427,15 @@ impl<'a> Deref for WriteDescriptorSetBuilder<'a> {
 impl<'a> Builder<'a> for vk::CopyDescriptorSet {
     type Type = CopyDescriptorSetBuilder<'a>;
     fn builder() -> Self::Type {
-        CopyDescriptorSetBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CopyDescriptorSetBuilder<'a> {
     inner: vk::CopyDescriptorSet,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CopyDescriptorSetBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -537,20 +482,15 @@ impl<'a> Deref for CopyDescriptorSetBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferCreateInfo {
     type Type = BufferCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BufferCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferCreateInfoBuilder<'a> {
     inner: vk::BufferCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -590,20 +530,15 @@ impl<'a> Deref for BufferCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferViewCreateInfo {
     type Type = BufferViewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BufferViewCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferViewCreateInfoBuilder<'a> {
     inner: vk::BufferViewCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferViewCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -642,20 +577,15 @@ impl<'a> Deref for BufferViewCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryBarrier {
     type Type = MemoryBarrierBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryBarrierBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryBarrierBuilder<'a> {
     inner: vk::MemoryBarrier,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryBarrierBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -682,20 +612,15 @@ impl<'a> Deref for MemoryBarrierBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferMemoryBarrier {
     type Type = BufferMemoryBarrierBuilder<'a>;
     fn builder() -> Self::Type {
-        BufferMemoryBarrierBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferMemoryBarrierBuilder<'a> {
     inner: vk::BufferMemoryBarrier,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferMemoryBarrierBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -742,20 +667,15 @@ impl<'a> Deref for BufferMemoryBarrierBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageMemoryBarrier {
     type Type = ImageMemoryBarrierBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageMemoryBarrierBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageMemoryBarrierBuilder<'a> {
     inner: vk::ImageMemoryBarrier,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageMemoryBarrierBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -806,20 +726,15 @@ impl<'a> Deref for ImageMemoryBarrierBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageCreateInfo {
     type Type = ImageCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageCreateInfoBuilder<'a> {
     inner: vk::ImageCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -887,20 +802,15 @@ impl<'a> Deref for ImageCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageViewCreateInfo {
     type Type = ImageViewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageViewCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageViewCreateInfoBuilder<'a> {
     inner: vk::ImageViewCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageViewCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -943,20 +853,15 @@ impl<'a> Deref for ImageViewCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SparseBufferMemoryBindInfo {
     type Type = SparseBufferMemoryBindInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SparseBufferMemoryBindInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SparseBufferMemoryBindInfoBuilder<'a> {
     inner: vk::SparseBufferMemoryBindInfo,
     phantom: PhantomData<&'a vk::SparseMemoryBind>,
 }
 impl<'a> SparseBufferMemoryBindInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
         self.inner.buffer = Some(buffer);
         self
@@ -976,20 +881,15 @@ impl<'a> Deref for SparseBufferMemoryBindInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SparseImageOpaqueMemoryBindInfo {
     type Type = SparseImageOpaqueMemoryBindInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SparseImageOpaqueMemoryBindInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SparseImageOpaqueMemoryBindInfoBuilder<'a> {
     inner: vk::SparseImageOpaqueMemoryBindInfo,
     phantom: PhantomData<&'a vk::SparseMemoryBind>,
 }
 impl<'a> SparseImageOpaqueMemoryBindInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
@@ -1009,20 +909,15 @@ impl<'a> Deref for SparseImageOpaqueMemoryBindInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SparseImageMemoryBindInfo {
     type Type = SparseImageMemoryBindInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SparseImageMemoryBindInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SparseImageMemoryBindInfoBuilder<'a> {
     inner: vk::SparseImageMemoryBindInfo,
     phantom: PhantomData<&'a vk::SparseImageMemoryBind>,
 }
 impl<'a> SparseImageMemoryBindInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn image(mut self, image: vk::Image) -> Self {
         self.inner.image = Some(image);
         self
@@ -1042,20 +937,15 @@ impl<'a> Deref for SparseImageMemoryBindInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindSparseInfo {
     type Type = BindSparseInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindSparseInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindSparseInfoBuilder<'a> {
     inner: vk::BindSparseInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindSparseInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1099,20 +989,15 @@ impl<'a> Deref for BindSparseInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ShaderModuleCreateInfo {
     type Type = ShaderModuleCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ShaderModuleCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ShaderModuleCreateInfoBuilder<'a> {
     inner: vk::ShaderModuleCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ShaderModuleCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1143,20 +1028,15 @@ impl<'a> Deref for ShaderModuleCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutBinding {
     type Type = DescriptorSetLayoutBindingBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorSetLayoutBindingBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorSetLayoutBindingBuilder<'a> {
     inner: vk::DescriptorSetLayoutBinding,
     phantom: PhantomData<&'a Option<vk::Sampler>>,
 }
 impl<'a> DescriptorSetLayoutBindingBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn binding(mut self, binding: u32) -> Self {
         self.inner.binding = binding;
         self
@@ -1188,20 +1068,15 @@ impl<'a> Deref for DescriptorSetLayoutBindingBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutCreateInfo {
     type Type = DescriptorSetLayoutCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorSetLayoutCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorSetLayoutCreateInfoBuilder<'a> {
     inner: vk::DescriptorSetLayoutCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorSetLayoutCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1229,20 +1104,15 @@ impl<'a> Deref for DescriptorSetLayoutCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorPoolCreateInfo {
     type Type = DescriptorPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorPoolCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorPoolCreateInfoBuilder<'a> {
     inner: vk::DescriptorPoolCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorPoolCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1274,20 +1144,15 @@ impl<'a> Deref for DescriptorPoolCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorSetAllocateInfo {
     type Type = DescriptorSetAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorSetAllocateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorSetAllocateInfoBuilder<'a> {
     inner: vk::DescriptorSetAllocateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorSetAllocateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1315,20 +1180,15 @@ impl<'a> Deref for DescriptorSetAllocateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SpecializationInfo {
     type Type = SpecializationInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SpecializationInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SpecializationInfoBuilder<'a> {
     inner: vk::SpecializationInfo,
     phantom: PhantomData<&'a vk::SpecializationMapEntry>,
 }
 impl<'a> SpecializationInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn p_map_entries(mut self, p_map_entries: &'a [vk::SpecializationMapEntry]) -> Self {
         self.inner.map_entry_count = p_map_entries.len() as u32;
         self.inner.p_map_entries = p_map_entries.as_ptr();
@@ -1352,20 +1212,15 @@ impl<'a> Deref for SpecializationInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineShaderStageCreateInfo {
     type Type = PipelineShaderStageCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineShaderStageCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineShaderStageCreateInfoBuilder<'a> {
     inner: vk::PipelineShaderStageCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1404,20 +1259,15 @@ impl<'a> Deref for PipelineShaderStageCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ComputePipelineCreateInfo {
     type Type = ComputePipelineCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ComputePipelineCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ComputePipelineCreateInfoBuilder<'a> {
     inner: vk::ComputePipelineCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ComputePipelineCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1456,20 +1306,15 @@ impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineVertexInputStateCreateInfo {
     type Type = PipelineVertexInputStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineVertexInputStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineVertexInputStateCreateInfoBuilder<'a> {
     inner: vk::PipelineVertexInputStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1508,20 +1353,15 @@ impl<'a> Deref for PipelineVertexInputStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineInputAssemblyStateCreateInfo {
     type Type = PipelineInputAssemblyStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineInputAssemblyStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineInputAssemblyStateCreateInfoBuilder<'a> {
     inner: vk::PipelineInputAssemblyStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineInputAssemblyStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1552,20 +1392,15 @@ impl<'a> Deref for PipelineInputAssemblyStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineTessellationStateCreateInfo {
     type Type = PipelineTessellationStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineTessellationStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineTessellationStateCreateInfoBuilder<'a> {
     inner: vk::PipelineTessellationStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineTessellationStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1592,20 +1427,15 @@ impl<'a> Deref for PipelineTessellationStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportStateCreateInfo {
     type Type = PipelineViewportStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportStateCreateInfoBuilder<'a> {
     inner: vk::PipelineViewportStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1646,20 +1476,15 @@ impl<'a> Deref for PipelineViewportStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationStateCreateInfo {
     type Type = PipelineRasterizationStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationStateCreateInfoBuilder<'a> {
     inner: vk::PipelineRasterizationStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1722,20 +1547,15 @@ impl<'a> Deref for PipelineRasterizationStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineMultisampleStateCreateInfo {
     type Type = PipelineMultisampleStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineMultisampleStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineMultisampleStateCreateInfoBuilder<'a> {
     inner: vk::PipelineMultisampleStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1782,20 +1602,15 @@ impl<'a> Deref for PipelineMultisampleStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineColorBlendStateCreateInfo {
     type Type = PipelineColorBlendStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineColorBlendStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineColorBlendStateCreateInfoBuilder<'a> {
     inner: vk::PipelineColorBlendStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1831,20 +1646,15 @@ impl<'a> Deref for PipelineColorBlendStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineDynamicStateCreateInfo {
     type Type = PipelineDynamicStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineDynamicStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineDynamicStateCreateInfoBuilder<'a> {
     inner: vk::PipelineDynamicStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineDynamicStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1872,20 +1682,15 @@ impl<'a> Deref for PipelineDynamicStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineDepthStencilStateCreateInfo {
     type Type = PipelineDepthStencilStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineDepthStencilStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineDepthStencilStateCreateInfoBuilder<'a> {
     inner: vk::PipelineDepthStencilStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineDepthStencilStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1944,20 +1749,15 @@ impl<'a> Deref for PipelineDepthStencilStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::GraphicsPipelineCreateInfo {
     type Type = GraphicsPipelineCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        GraphicsPipelineCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct GraphicsPipelineCreateInfoBuilder<'a> {
     inner: vk::GraphicsPipelineCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2062,20 +1862,15 @@ impl<'a> Deref for GraphicsPipelineCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineCacheCreateInfo {
     type Type = PipelineCacheCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineCacheCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineCacheCreateInfoBuilder<'a> {
     inner: vk::PipelineCacheCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineCacheCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2106,20 +1901,15 @@ impl<'a> Deref for PipelineCacheCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineLayoutCreateInfo {
     type Type = PipelineLayoutCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineLayoutCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineLayoutCreateInfoBuilder<'a> {
     inner: vk::PipelineLayoutCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineLayoutCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2152,20 +1942,15 @@ impl<'a> Deref for PipelineLayoutCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SamplerCreateInfo {
     type Type = SamplerCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SamplerCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SamplerCreateInfoBuilder<'a> {
     inner: vk::SamplerCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SamplerCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2248,20 +2033,15 @@ impl<'a> Deref for SamplerCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::CommandPoolCreateInfo {
     type Type = CommandPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        CommandPoolCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CommandPoolCreateInfoBuilder<'a> {
     inner: vk::CommandPoolCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CommandPoolCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2288,20 +2068,15 @@ impl<'a> Deref for CommandPoolCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::CommandBufferAllocateInfo {
     type Type = CommandBufferAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        CommandBufferAllocateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CommandBufferAllocateInfoBuilder<'a> {
     inner: vk::CommandBufferAllocateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CommandBufferAllocateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2332,20 +2107,15 @@ impl<'a> Deref for CommandBufferAllocateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::CommandBufferInheritanceInfo {
     type Type = CommandBufferInheritanceInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        CommandBufferInheritanceInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CommandBufferInheritanceInfoBuilder<'a> {
     inner: vk::CommandBufferInheritanceInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CommandBufferInheritanceInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2388,20 +2158,15 @@ impl<'a> Deref for CommandBufferInheritanceInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::CommandBufferBeginInfo {
     type Type = CommandBufferBeginInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        CommandBufferBeginInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CommandBufferBeginInfoBuilder<'a> {
     inner: vk::CommandBufferBeginInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CommandBufferBeginInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2428,20 +2193,15 @@ impl<'a> Deref for CommandBufferBeginInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassBeginInfo {
     type Type = RenderPassBeginInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassBeginInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassBeginInfoBuilder<'a> {
     inner: vk::RenderPassBeginInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassBeginInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2477,20 +2237,15 @@ impl<'a> Deref for RenderPassBeginInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassDescription {
     type Type = SubpassDescriptionBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassDescriptionBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassDescriptionBuilder<'a> {
     inner: vk::SubpassDescription,
     phantom: PhantomData<&'a vk::AttachmentReference>,
 }
 impl<'a> SubpassDescriptionBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn flags(mut self, flags: vk::SubpassDescriptionFlags) -> Self {
         self.inner.flags = flags;
         self
@@ -2539,20 +2294,15 @@ impl<'a> Deref for SubpassDescriptionBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassCreateInfo {
     type Type = RenderPassCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassCreateInfoBuilder<'a> {
     inner: vk::RenderPassCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2590,20 +2340,15 @@ impl<'a> Deref for RenderPassCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::EventCreateInfo {
     type Type = EventCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        EventCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct EventCreateInfoBuilder<'a> {
     inner: vk::EventCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> EventCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2626,20 +2371,15 @@ impl<'a> Deref for EventCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::FenceCreateInfo {
     type Type = FenceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        FenceCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FenceCreateInfoBuilder<'a> {
     inner: vk::FenceCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FenceCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2662,20 +2402,15 @@ impl<'a> Deref for FenceCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SemaphoreCreateInfo {
     type Type = SemaphoreCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SemaphoreCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SemaphoreCreateInfoBuilder<'a> {
     inner: vk::SemaphoreCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SemaphoreCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2698,20 +2433,15 @@ impl<'a> Deref for SemaphoreCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::QueryPoolCreateInfo {
     type Type = QueryPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        QueryPoolCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct QueryPoolCreateInfoBuilder<'a> {
     inner: vk::QueryPoolCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> QueryPoolCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2746,20 +2476,15 @@ impl<'a> Deref for QueryPoolCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::FramebufferCreateInfo {
     type Type = FramebufferCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        FramebufferCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FramebufferCreateInfoBuilder<'a> {
     inner: vk::FramebufferCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FramebufferCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2803,20 +2528,15 @@ impl<'a> Deref for FramebufferCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubmitInfo {
     type Type = SubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SubmitInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubmitInfoBuilder<'a> {
     inner: vk::SubmitInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubmitInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2856,20 +2576,15 @@ impl<'a> Deref for SubmitInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplayModeCreateInfoKHR {
     type Type = DisplayModeCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplayModeCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplayModeCreateInfoKHRBuilder<'a> {
     inner: vk::DisplayModeCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplayModeCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2896,20 +2611,15 @@ impl<'a> Deref for DisplayModeCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplaySurfaceCreateInfoKHR {
     type Type = DisplaySurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplaySurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplaySurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::DisplaySurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplaySurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2960,20 +2670,15 @@ impl<'a> Deref for DisplaySurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplayPresentInfoKHR {
     type Type = DisplayPresentInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplayPresentInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplayPresentInfoKHRBuilder<'a> {
     inner: vk::DisplayPresentInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplayPresentInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3004,20 +2709,15 @@ impl<'a> Deref for DisplayPresentInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::AndroidSurfaceCreateInfoKHR {
     type Type = AndroidSurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        AndroidSurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AndroidSurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::AndroidSurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AndroidSurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3044,20 +2744,15 @@ impl<'a> Deref for AndroidSurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ViSurfaceCreateInfoNN {
     type Type = ViSurfaceCreateInfoNNBuilder<'a>;
     fn builder() -> Self::Type {
-        ViSurfaceCreateInfoNNBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ViSurfaceCreateInfoNNBuilder<'a> {
     inner: vk::ViSurfaceCreateInfoNN,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ViSurfaceCreateInfoNNBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3084,20 +2779,15 @@ impl<'a> Deref for ViSurfaceCreateInfoNNBuilder<'a> {
 impl<'a> Builder<'a> for vk::WaylandSurfaceCreateInfoKHR {
     type Type = WaylandSurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        WaylandSurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct WaylandSurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::WaylandSurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> WaylandSurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3128,20 +2818,15 @@ impl<'a> Deref for WaylandSurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::Win32SurfaceCreateInfoKHR {
     type Type = Win32SurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        Win32SurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct Win32SurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::Win32SurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> Win32SurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3172,20 +2857,15 @@ impl<'a> Deref for Win32SurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::XlibSurfaceCreateInfoKHR {
     type Type = XlibSurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        XlibSurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct XlibSurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::XlibSurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> XlibSurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3216,20 +2896,15 @@ impl<'a> Deref for XlibSurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::XcbSurfaceCreateInfoKHR {
     type Type = XcbSurfaceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        XcbSurfaceCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct XcbSurfaceCreateInfoKHRBuilder<'a> {
     inner: vk::XcbSurfaceCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> XcbSurfaceCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3260,20 +2935,15 @@ impl<'a> Deref for XcbSurfaceCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImagePipeSurfaceCreateInfoFUCHSIA {
     type Type = ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a>;
     fn builder() -> Self::Type {
-        ImagePipeSurfaceCreateInfoFUCHSIABuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
     inner: vk::ImagePipeSurfaceCreateInfoFUCHSIA,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3300,20 +2970,15 @@ impl<'a> Deref for ImagePipeSurfaceCreateInfoFUCHSIABuilder<'a> {
 impl<'a> Builder<'a> for vk::SwapchainCreateInfoKHR {
     type Type = SwapchainCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SwapchainCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SwapchainCreateInfoKHRBuilder<'a> {
     inner: vk::SwapchainCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SwapchainCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3393,20 +3058,15 @@ impl<'a> Deref for SwapchainCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PresentInfoKHR {
     type Type = PresentInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PresentInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PresentInfoKHRBuilder<'a> {
     inner: vk::PresentInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PresentInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3441,20 +3101,15 @@ impl<'a> Deref for PresentInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugReportCallbackCreateInfoEXT {
     type Type = DebugReportCallbackCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugReportCallbackCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugReportCallbackCreateInfoEXTBuilder<'a> {
     inner: vk::DebugReportCallbackCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugReportCallbackCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3485,20 +3140,15 @@ impl<'a> Deref for DebugReportCallbackCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ValidationFlagsEXT {
     type Type = ValidationFlagsEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ValidationFlagsEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ValidationFlagsEXTBuilder<'a> {
     inner: vk::ValidationFlagsEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ValidationFlagsEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3522,20 +3172,15 @@ impl<'a> Deref for ValidationFlagsEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ValidationFeaturesEXT {
     type Type = ValidationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ValidationFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ValidationFeaturesEXTBuilder<'a> {
     inner: vk::ValidationFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ValidationFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3570,20 +3215,15 @@ impl<'a> Deref for ValidationFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationStateRasterizationOrderAMD {
     type Type = PipelineRasterizationStateRasterizationOrderAMDBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationStateRasterizationOrderAMDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationStateRasterizationOrderAMDBuilder<'a> {
     inner: vk::PipelineRasterizationStateRasterizationOrderAMD,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationStateRasterizationOrderAMDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3606,20 +3246,15 @@ impl<'a> Deref for PipelineRasterizationStateRasterizationOrderAMDBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugMarkerObjectNameInfoEXT {
     type Type = DebugMarkerObjectNameInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugMarkerObjectNameInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugMarkerObjectNameInfoEXTBuilder<'a> {
     inner: vk::DebugMarkerObjectNameInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugMarkerObjectNameInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3650,20 +3285,15 @@ impl<'a> Deref for DebugMarkerObjectNameInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugMarkerObjectTagInfoEXT {
     type Type = DebugMarkerObjectTagInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugMarkerObjectTagInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugMarkerObjectTagInfoEXTBuilder<'a> {
     inner: vk::DebugMarkerObjectTagInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3702,20 +3332,15 @@ impl<'a> Deref for DebugMarkerObjectTagInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugMarkerMarkerInfoEXT {
     type Type = DebugMarkerMarkerInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugMarkerMarkerInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugMarkerMarkerInfoEXTBuilder<'a> {
     inner: vk::DebugMarkerMarkerInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugMarkerMarkerInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3738,20 +3363,15 @@ impl<'a> Deref for DebugMarkerMarkerInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DedicatedAllocationImageCreateInfoNV {
     type Type = DedicatedAllocationImageCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        DedicatedAllocationImageCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DedicatedAllocationImageCreateInfoNVBuilder<'a> {
     inner: vk::DedicatedAllocationImageCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DedicatedAllocationImageCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3774,20 +3394,15 @@ impl<'a> Deref for DedicatedAllocationImageCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::DedicatedAllocationBufferCreateInfoNV {
     type Type = DedicatedAllocationBufferCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        DedicatedAllocationBufferCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DedicatedAllocationBufferCreateInfoNVBuilder<'a> {
     inner: vk::DedicatedAllocationBufferCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DedicatedAllocationBufferCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3810,20 +3425,15 @@ impl<'a> Deref for DedicatedAllocationBufferCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::DedicatedAllocationMemoryAllocateInfoNV {
     type Type = DedicatedAllocationMemoryAllocateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        DedicatedAllocationMemoryAllocateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DedicatedAllocationMemoryAllocateInfoNVBuilder<'a> {
     inner: vk::DedicatedAllocationMemoryAllocateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DedicatedAllocationMemoryAllocateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3850,20 +3460,15 @@ impl<'a> Deref for DedicatedAllocationMemoryAllocateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExternalMemoryImageCreateInfoNV {
     type Type = ExternalMemoryImageCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        ExternalMemoryImageCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExternalMemoryImageCreateInfoNVBuilder<'a> {
     inner: vk::ExternalMemoryImageCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExternalMemoryImageCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3886,20 +3491,15 @@ impl<'a> Deref for ExternalMemoryImageCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportMemoryAllocateInfoNV {
     type Type = ExportMemoryAllocateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportMemoryAllocateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportMemoryAllocateInfoNVBuilder<'a> {
     inner: vk::ExportMemoryAllocateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportMemoryAllocateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3922,20 +3522,15 @@ impl<'a> Deref for ExportMemoryAllocateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportMemoryWin32HandleInfoNV {
     type Type = ImportMemoryWin32HandleInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportMemoryWin32HandleInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportMemoryWin32HandleInfoNVBuilder<'a> {
     inner: vk::ImportMemoryWin32HandleInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportMemoryWin32HandleInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3962,20 +3557,15 @@ impl<'a> Deref for ImportMemoryWin32HandleInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportMemoryWin32HandleInfoNV {
     type Type = ExportMemoryWin32HandleInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportMemoryWin32HandleInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportMemoryWin32HandleInfoNVBuilder<'a> {
     inner: vk::ExportMemoryWin32HandleInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportMemoryWin32HandleInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4002,20 +3592,15 @@ impl<'a> Deref for ExportMemoryWin32HandleInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::Win32KeyedMutexAcquireReleaseInfoNV {
     type Type = Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        Win32KeyedMutexAcquireReleaseInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
     inner: vk::Win32KeyedMutexAcquireReleaseInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4055,20 +3640,15 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGeneratedCommandsFeaturesNVX {
     type Type = DeviceGeneratedCommandsFeaturesNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGeneratedCommandsFeaturesNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
     inner: vk::DeviceGeneratedCommandsFeaturesNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4095,20 +3675,15 @@ impl<'a> Deref for DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGeneratedCommandsLimitsNVX {
     type Type = DeviceGeneratedCommandsLimitsNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGeneratedCommandsLimitsNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
     inner: vk::DeviceGeneratedCommandsLimitsNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4156,20 +3731,15 @@ impl<'a> Deref for DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::IndirectCommandsLayoutCreateInfoNVX {
     type Type = IndirectCommandsLayoutCreateInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        IndirectCommandsLayoutCreateInfoNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
     inner: vk::IndirectCommandsLayoutCreateInfoNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4201,20 +3771,15 @@ impl<'a> Deref for IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::CmdProcessCommandsInfoNVX {
     type Type = CmdProcessCommandsInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        CmdProcessCommandsInfoNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CmdProcessCommandsInfoNVXBuilder<'a> {
     inner: vk::CmdProcessCommandsInfoNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4273,20 +3838,15 @@ impl<'a> Deref for CmdProcessCommandsInfoNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::CmdReserveSpaceForCommandsInfoNVX {
     type Type = CmdReserveSpaceForCommandsInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        CmdReserveSpaceForCommandsInfoNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
     inner: vk::CmdReserveSpaceForCommandsInfoNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4317,20 +3877,15 @@ impl<'a> Deref for CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::ObjectTableCreateInfoNVX {
     type Type = ObjectTableCreateInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        ObjectTableCreateInfoNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ObjectTableCreateInfoNVXBuilder<'a> {
     inner: vk::ObjectTableCreateInfoNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ObjectTableCreateInfoNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4383,20 +3938,15 @@ impl<'a> Deref for ObjectTableCreateInfoNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceFeatures2 {
     type Type = PhysicalDeviceFeatures2Builder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceFeatures2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceFeatures2Builder<'a> {
     inner: vk::PhysicalDeviceFeatures2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceFeatures2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4419,20 +3969,15 @@ impl<'a> Deref for PhysicalDeviceFeatures2Builder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceImageFormatInfo2 {
     type Type = PhysicalDeviceImageFormatInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceImageFormatInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceImageFormatInfo2Builder<'a> {
     inner: vk::PhysicalDeviceImageFormatInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceImageFormatInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4471,20 +4016,15 @@ impl<'a> Deref for PhysicalDeviceImageFormatInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceSparseImageFormatInfo2 {
     type Type = PhysicalDeviceSparseImageFormatInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceSparseImageFormatInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
     inner: vk::PhysicalDeviceSparseImageFormatInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4523,20 +4063,15 @@ impl<'a> Deref for PhysicalDeviceSparseImageFormatInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::PresentRegionsKHR {
     type Type = PresentRegionsKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PresentRegionsKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PresentRegionsKHRBuilder<'a> {
     inner: vk::PresentRegionsKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PresentRegionsKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4560,20 +4095,15 @@ impl<'a> Deref for PresentRegionsKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PresentRegionKHR {
     type Type = PresentRegionKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PresentRegionKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PresentRegionKHRBuilder<'a> {
     inner: vk::PresentRegionKHR,
     phantom: PhantomData<&'a vk::RectLayerKHR>,
 }
 impl<'a> PresentRegionKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn p_rectangles(mut self, p_rectangles: &'a [vk::RectLayerKHR]) -> Self {
         self.inner.rectangle_count = p_rectangles.len() as u32;
         self.inner.p_rectangles = p_rectangles.as_ptr();
@@ -4589,20 +4119,15 @@ impl<'a> Deref for PresentRegionKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceVariablePointersFeatures {
     type Type = PhysicalDeviceVariablePointersFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceVariablePointersFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
     inner: vk::PhysicalDeviceVariablePointersFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4633,20 +4158,15 @@ impl<'a> Deref for PhysicalDeviceVariablePointersFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalImageFormatInfo {
     type Type = PhysicalDeviceExternalImageFormatInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceExternalImageFormatInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceExternalImageFormatInfoBuilder<'a> {
     inner: vk::PhysicalDeviceExternalImageFormatInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceExternalImageFormatInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4669,20 +4189,15 @@ impl<'a> Deref for PhysicalDeviceExternalImageFormatInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalBufferInfo {
     type Type = PhysicalDeviceExternalBufferInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceExternalBufferInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceExternalBufferInfoBuilder<'a> {
     inner: vk::PhysicalDeviceExternalBufferInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceExternalBufferInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4713,20 +4228,15 @@ impl<'a> Deref for PhysicalDeviceExternalBufferInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExternalMemoryImageCreateInfo {
     type Type = ExternalMemoryImageCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ExternalMemoryImageCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExternalMemoryImageCreateInfoBuilder<'a> {
     inner: vk::ExternalMemoryImageCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExternalMemoryImageCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4749,20 +4259,15 @@ impl<'a> Deref for ExternalMemoryImageCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExternalMemoryBufferCreateInfo {
     type Type = ExternalMemoryBufferCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ExternalMemoryBufferCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExternalMemoryBufferCreateInfoBuilder<'a> {
     inner: vk::ExternalMemoryBufferCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExternalMemoryBufferCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4785,20 +4290,15 @@ impl<'a> Deref for ExternalMemoryBufferCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportMemoryAllocateInfo {
     type Type = ExportMemoryAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportMemoryAllocateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportMemoryAllocateInfoBuilder<'a> {
     inner: vk::ExportMemoryAllocateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportMemoryAllocateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4821,20 +4321,15 @@ impl<'a> Deref for ExportMemoryAllocateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportMemoryWin32HandleInfoKHR {
     type Type = ImportMemoryWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportMemoryWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportMemoryWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ImportMemoryWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportMemoryWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4865,20 +4360,15 @@ impl<'a> Deref for ImportMemoryWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportMemoryWin32HandleInfoKHR {
     type Type = ExportMemoryWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportMemoryWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportMemoryWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ExportMemoryWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportMemoryWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4909,20 +4399,15 @@ impl<'a> Deref for ExportMemoryWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryGetWin32HandleInfoKHR {
     type Type = MemoryGetWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryGetWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryGetWin32HandleInfoKHRBuilder<'a> {
     inner: vk::MemoryGetWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryGetWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4949,20 +4434,15 @@ impl<'a> Deref for MemoryGetWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportMemoryFdInfoKHR {
     type Type = ImportMemoryFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportMemoryFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportMemoryFdInfoKHRBuilder<'a> {
     inner: vk::ImportMemoryFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportMemoryFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4989,20 +4469,15 @@ impl<'a> Deref for ImportMemoryFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryGetFdInfoKHR {
     type Type = MemoryGetFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryGetFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryGetFdInfoKHRBuilder<'a> {
     inner: vk::MemoryGetFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryGetFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5029,20 +4504,15 @@ impl<'a> Deref for MemoryGetFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::Win32KeyedMutexAcquireReleaseInfoKHR {
     type Type = Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        Win32KeyedMutexAcquireReleaseInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
     inner: vk::Win32KeyedMutexAcquireReleaseInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5082,20 +4552,15 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalSemaphoreInfo {
     type Type = PhysicalDeviceExternalSemaphoreInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceExternalSemaphoreInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
     inner: vk::PhysicalDeviceExternalSemaphoreInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5118,20 +4583,15 @@ impl<'a> Deref for PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportSemaphoreCreateInfo {
     type Type = ExportSemaphoreCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportSemaphoreCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportSemaphoreCreateInfoBuilder<'a> {
     inner: vk::ExportSemaphoreCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportSemaphoreCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5154,20 +4614,15 @@ impl<'a> Deref for ExportSemaphoreCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportSemaphoreWin32HandleInfoKHR {
     type Type = ImportSemaphoreWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportSemaphoreWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportSemaphoreWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ImportSemaphoreWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportSemaphoreWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5206,20 +4661,15 @@ impl<'a> Deref for ImportSemaphoreWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportSemaphoreWin32HandleInfoKHR {
     type Type = ExportSemaphoreWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportSemaphoreWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ExportSemaphoreWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5250,20 +4700,15 @@ impl<'a> Deref for ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::D3D12FenceSubmitInfoKHR {
     type Type = D3D12FenceSubmitInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        D3D12FenceSubmitInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct D3D12FenceSubmitInfoKHRBuilder<'a> {
     inner: vk::D3D12FenceSubmitInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> D3D12FenceSubmitInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5292,20 +4737,15 @@ impl<'a> Deref for D3D12FenceSubmitInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SemaphoreGetWin32HandleInfoKHR {
     type Type = SemaphoreGetWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SemaphoreGetWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SemaphoreGetWin32HandleInfoKHRBuilder<'a> {
     inner: vk::SemaphoreGetWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SemaphoreGetWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5332,20 +4772,15 @@ impl<'a> Deref for SemaphoreGetWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportSemaphoreFdInfoKHR {
     type Type = ImportSemaphoreFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportSemaphoreFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportSemaphoreFdInfoKHRBuilder<'a> {
     inner: vk::ImportSemaphoreFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportSemaphoreFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5380,20 +4815,15 @@ impl<'a> Deref for ImportSemaphoreFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SemaphoreGetFdInfoKHR {
     type Type = SemaphoreGetFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SemaphoreGetFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SemaphoreGetFdInfoKHRBuilder<'a> {
     inner: vk::SemaphoreGetFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SemaphoreGetFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5420,20 +4850,15 @@ impl<'a> Deref for SemaphoreGetFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalFenceInfo {
     type Type = PhysicalDeviceExternalFenceInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceExternalFenceInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceExternalFenceInfoBuilder<'a> {
     inner: vk::PhysicalDeviceExternalFenceInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceExternalFenceInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5456,20 +4881,15 @@ impl<'a> Deref for PhysicalDeviceExternalFenceInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportFenceCreateInfo {
     type Type = ExportFenceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportFenceCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportFenceCreateInfoBuilder<'a> {
     inner: vk::ExportFenceCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportFenceCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5492,20 +4912,15 @@ impl<'a> Deref for ExportFenceCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportFenceWin32HandleInfoKHR {
     type Type = ImportFenceWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportFenceWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportFenceWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ImportFenceWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportFenceWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5544,20 +4959,15 @@ impl<'a> Deref for ImportFenceWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ExportFenceWin32HandleInfoKHR {
     type Type = ExportFenceWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ExportFenceWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExportFenceWin32HandleInfoKHRBuilder<'a> {
     inner: vk::ExportFenceWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExportFenceWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5588,20 +4998,15 @@ impl<'a> Deref for ExportFenceWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::FenceGetWin32HandleInfoKHR {
     type Type = FenceGetWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        FenceGetWin32HandleInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FenceGetWin32HandleInfoKHRBuilder<'a> {
     inner: vk::FenceGetWin32HandleInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FenceGetWin32HandleInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5628,20 +5033,15 @@ impl<'a> Deref for FenceGetWin32HandleInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportFenceFdInfoKHR {
     type Type = ImportFenceFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportFenceFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportFenceFdInfoKHRBuilder<'a> {
     inner: vk::ImportFenceFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportFenceFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5676,20 +5076,15 @@ impl<'a> Deref for ImportFenceFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::FenceGetFdInfoKHR {
     type Type = FenceGetFdInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        FenceGetFdInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FenceGetFdInfoKHRBuilder<'a> {
     inner: vk::FenceGetFdInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FenceGetFdInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5716,20 +5111,15 @@ impl<'a> Deref for FenceGetFdInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceMultiviewFeatures {
     type Type = PhysicalDeviceMultiviewFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceMultiviewFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceMultiviewFeaturesBuilder<'a> {
     inner: vk::PhysicalDeviceMultiviewFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceMultiviewFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5764,20 +5154,15 @@ impl<'a> Deref for PhysicalDeviceMultiviewFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassMultiviewCreateInfo {
     type Type = RenderPassMultiviewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassMultiviewCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassMultiviewCreateInfoBuilder<'a> {
     inner: vk::RenderPassMultiviewCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassMultiviewCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5811,20 +5196,15 @@ impl<'a> Deref for RenderPassMultiviewCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplayPowerInfoEXT {
     type Type = DisplayPowerInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplayPowerInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplayPowerInfoEXTBuilder<'a> {
     inner: vk::DisplayPowerInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplayPowerInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5847,20 +5227,15 @@ impl<'a> Deref for DisplayPowerInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceEventInfoEXT {
     type Type = DeviceEventInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceEventInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceEventInfoEXTBuilder<'a> {
     inner: vk::DeviceEventInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceEventInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5883,20 +5258,15 @@ impl<'a> Deref for DeviceEventInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplayEventInfoEXT {
     type Type = DisplayEventInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplayEventInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplayEventInfoEXTBuilder<'a> {
     inner: vk::DisplayEventInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplayEventInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5919,20 +5289,15 @@ impl<'a> Deref for DisplayEventInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SwapchainCounterCreateInfoEXT {
     type Type = SwapchainCounterCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SwapchainCounterCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SwapchainCounterCreateInfoEXTBuilder<'a> {
     inner: vk::SwapchainCounterCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SwapchainCounterCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5955,20 +5320,15 @@ impl<'a> Deref for SwapchainCounterCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryAllocateFlagsInfo {
     type Type = MemoryAllocateFlagsInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryAllocateFlagsInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryAllocateFlagsInfoBuilder<'a> {
     inner: vk::MemoryAllocateFlagsInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryAllocateFlagsInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5995,20 +5355,15 @@ impl<'a> Deref for MemoryAllocateFlagsInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindBufferMemoryInfo {
     type Type = BindBufferMemoryInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindBufferMemoryInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindBufferMemoryInfoBuilder<'a> {
     inner: vk::BindBufferMemoryInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindBufferMemoryInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6039,20 +5394,15 @@ impl<'a> Deref for BindBufferMemoryInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindBufferMemoryDeviceGroupInfo {
     type Type = BindBufferMemoryDeviceGroupInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindBufferMemoryDeviceGroupInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindBufferMemoryDeviceGroupInfoBuilder<'a> {
     inner: vk::BindBufferMemoryDeviceGroupInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindBufferMemoryDeviceGroupInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6076,20 +5426,15 @@ impl<'a> Deref for BindBufferMemoryDeviceGroupInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindImageMemoryInfo {
     type Type = BindImageMemoryInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindImageMemoryInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindImageMemoryInfoBuilder<'a> {
     inner: vk::BindImageMemoryInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindImageMemoryInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6120,20 +5465,15 @@ impl<'a> Deref for BindImageMemoryInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindImageMemoryDeviceGroupInfo {
     type Type = BindImageMemoryDeviceGroupInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindImageMemoryDeviceGroupInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindImageMemoryDeviceGroupInfoBuilder<'a> {
     inner: vk::BindImageMemoryDeviceGroupInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindImageMemoryDeviceGroupInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6162,20 +5502,15 @@ impl<'a> Deref for BindImageMemoryDeviceGroupInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupRenderPassBeginInfo {
     type Type = DeviceGroupRenderPassBeginInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupRenderPassBeginInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupRenderPassBeginInfoBuilder<'a> {
     inner: vk::DeviceGroupRenderPassBeginInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupRenderPassBeginInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6203,20 +5538,15 @@ impl<'a> Deref for DeviceGroupRenderPassBeginInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupCommandBufferBeginInfo {
     type Type = DeviceGroupCommandBufferBeginInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupCommandBufferBeginInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupCommandBufferBeginInfoBuilder<'a> {
     inner: vk::DeviceGroupCommandBufferBeginInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupCommandBufferBeginInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6239,20 +5569,15 @@ impl<'a> Deref for DeviceGroupCommandBufferBeginInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupSubmitInfo {
     type Type = DeviceGroupSubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupSubmitInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupSubmitInfoBuilder<'a> {
     inner: vk::DeviceGroupSubmitInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupSubmitInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6286,20 +5611,15 @@ impl<'a> Deref for DeviceGroupSubmitInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupBindSparseInfo {
     type Type = DeviceGroupBindSparseInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupBindSparseInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupBindSparseInfoBuilder<'a> {
     inner: vk::DeviceGroupBindSparseInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupBindSparseInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6326,20 +5646,15 @@ impl<'a> Deref for DeviceGroupBindSparseInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageSwapchainCreateInfoKHR {
     type Type = ImageSwapchainCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageSwapchainCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageSwapchainCreateInfoKHRBuilder<'a> {
     inner: vk::ImageSwapchainCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageSwapchainCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6362,20 +5677,15 @@ impl<'a> Deref for ImageSwapchainCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindImageMemorySwapchainInfoKHR {
     type Type = BindImageMemorySwapchainInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        BindImageMemorySwapchainInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindImageMemorySwapchainInfoKHRBuilder<'a> {
     inner: vk::BindImageMemorySwapchainInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindImageMemorySwapchainInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6402,20 +5712,15 @@ impl<'a> Deref for BindImageMemorySwapchainInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::AcquireNextImageInfoKHR {
     type Type = AcquireNextImageInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        AcquireNextImageInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AcquireNextImageInfoKHRBuilder<'a> {
     inner: vk::AcquireNextImageInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AcquireNextImageInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6454,20 +5759,15 @@ impl<'a> Deref for AcquireNextImageInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupPresentInfoKHR {
     type Type = DeviceGroupPresentInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupPresentInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupPresentInfoKHRBuilder<'a> {
     inner: vk::DeviceGroupPresentInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupPresentInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6495,20 +5795,15 @@ impl<'a> Deref for DeviceGroupPresentInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupDeviceCreateInfo {
     type Type = DeviceGroupDeviceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupDeviceCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupDeviceCreateInfoBuilder<'a> {
     inner: vk::DeviceGroupDeviceCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupDeviceCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6532,20 +5827,15 @@ impl<'a> Deref for DeviceGroupDeviceCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceGroupSwapchainCreateInfoKHR {
     type Type = DeviceGroupSwapchainCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceGroupSwapchainCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceGroupSwapchainCreateInfoKHRBuilder<'a> {
     inner: vk::DeviceGroupSwapchainCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceGroupSwapchainCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6568,20 +5858,15 @@ impl<'a> Deref for DeviceGroupSwapchainCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorUpdateTemplateCreateInfo {
     type Type = DescriptorUpdateTemplateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorUpdateTemplateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorUpdateTemplateCreateInfoBuilder<'a> {
     inner: vk::DescriptorUpdateTemplateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6632,20 +5917,15 @@ impl<'a> Deref for DescriptorUpdateTemplateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::HdrMetadataEXT {
     type Type = HdrMetadataEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        HdrMetadataEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct HdrMetadataEXTBuilder<'a> {
     inner: vk::HdrMetadataEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> HdrMetadataEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6696,20 +5976,15 @@ impl<'a> Deref for HdrMetadataEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SwapchainDisplayNativeHdrCreateInfoAMD {
     type Type = SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a>;
     fn builder() -> Self::Type {
-        SwapchainDisplayNativeHdrCreateInfoAMDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
     inner: vk::SwapchainDisplayNativeHdrCreateInfoAMD,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6732,20 +6007,15 @@ impl<'a> Deref for SwapchainDisplayNativeHdrCreateInfoAMDBuilder<'a> {
 impl<'a> Builder<'a> for vk::PresentTimesInfoGOOGLE {
     type Type = PresentTimesInfoGOOGLEBuilder<'a>;
     fn builder() -> Self::Type {
-        PresentTimesInfoGOOGLEBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PresentTimesInfoGOOGLEBuilder<'a> {
     inner: vk::PresentTimesInfoGOOGLE,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PresentTimesInfoGOOGLEBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6769,20 +6039,15 @@ impl<'a> Deref for PresentTimesInfoGOOGLEBuilder<'a> {
 impl<'a> Builder<'a> for vk::IOSSurfaceCreateInfoMVK {
     type Type = IOSSurfaceCreateInfoMVKBuilder<'a>;
     fn builder() -> Self::Type {
-        IOSSurfaceCreateInfoMVKBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct IOSSurfaceCreateInfoMVKBuilder<'a> {
     inner: vk::IOSSurfaceCreateInfoMVK,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> IOSSurfaceCreateInfoMVKBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6809,20 +6074,15 @@ impl<'a> Deref for IOSSurfaceCreateInfoMVKBuilder<'a> {
 impl<'a> Builder<'a> for vk::MacOSSurfaceCreateInfoMVK {
     type Type = MacOSSurfaceCreateInfoMVKBuilder<'a>;
     fn builder() -> Self::Type {
-        MacOSSurfaceCreateInfoMVKBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MacOSSurfaceCreateInfoMVKBuilder<'a> {
     inner: vk::MacOSSurfaceCreateInfoMVK,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MacOSSurfaceCreateInfoMVKBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6849,20 +6109,15 @@ impl<'a> Deref for MacOSSurfaceCreateInfoMVKBuilder<'a> {
 impl<'a> Builder<'a> for vk::MetalSurfaceCreateInfoEXT {
     type Type = MetalSurfaceCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        MetalSurfaceCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MetalSurfaceCreateInfoEXTBuilder<'a> {
     inner: vk::MetalSurfaceCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MetalSurfaceCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6889,20 +6144,15 @@ impl<'a> Deref for MetalSurfaceCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportWScalingStateCreateInfoNV {
     type Type = PipelineViewportWScalingStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportWScalingStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineViewportWScalingStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6934,20 +6184,15 @@ impl<'a> Deref for PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportSwizzleStateCreateInfoNV {
     type Type = PipelineViewportSwizzleStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportSwizzleStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineViewportSwizzleStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6975,20 +6220,15 @@ impl<'a> Deref for PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineDiscardRectangleStateCreateInfoEXT {
     type Type = PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineDiscardRectangleStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineDiscardRectangleStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7024,20 +6264,15 @@ impl<'a> Deref for PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassInputAttachmentAspectCreateInfo {
     type Type = RenderPassInputAttachmentAspectCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassInputAttachmentAspectCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
     inner: vk::RenderPassInputAttachmentAspectCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7061,20 +6296,15 @@ impl<'a> Deref for RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceSurfaceInfo2KHR {
     type Type = PhysicalDeviceSurfaceInfo2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceSurfaceInfo2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
     inner: vk::PhysicalDeviceSurfaceInfo2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7097,20 +6327,15 @@ impl<'a> Deref for PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::DisplayPlaneInfo2KHR {
     type Type = DisplayPlaneInfo2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        DisplayPlaneInfo2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DisplayPlaneInfo2KHRBuilder<'a> {
     inner: vk::DisplayPlaneInfo2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DisplayPlaneInfo2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7137,20 +6362,15 @@ impl<'a> Deref for DisplayPlaneInfo2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDevice16BitStorageFeatures {
     type Type = PhysicalDevice16BitStorageFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDevice16BitStorageFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDevice16BitStorageFeaturesBuilder<'a> {
     inner: vk::PhysicalDevice16BitStorageFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7193,20 +6413,15 @@ impl<'a> Deref for PhysicalDevice16BitStorageFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferMemoryRequirementsInfo2 {
     type Type = BufferMemoryRequirementsInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        BufferMemoryRequirementsInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferMemoryRequirementsInfo2Builder<'a> {
     inner: vk::BufferMemoryRequirementsInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferMemoryRequirementsInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7229,20 +6444,15 @@ impl<'a> Deref for BufferMemoryRequirementsInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::ImageMemoryRequirementsInfo2 {
     type Type = ImageMemoryRequirementsInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        ImageMemoryRequirementsInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageMemoryRequirementsInfo2Builder<'a> {
     inner: vk::ImageMemoryRequirementsInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageMemoryRequirementsInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7265,20 +6475,15 @@ impl<'a> Deref for ImageMemoryRequirementsInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::ImageSparseMemoryRequirementsInfo2 {
     type Type = ImageSparseMemoryRequirementsInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        ImageSparseMemoryRequirementsInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageSparseMemoryRequirementsInfo2Builder<'a> {
     inner: vk::ImageSparseMemoryRequirementsInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageSparseMemoryRequirementsInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7301,20 +6506,15 @@ impl<'a> Deref for ImageSparseMemoryRequirementsInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::MemoryDedicatedAllocateInfo {
     type Type = MemoryDedicatedAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryDedicatedAllocateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryDedicatedAllocateInfoBuilder<'a> {
     inner: vk::MemoryDedicatedAllocateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryDedicatedAllocateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7341,20 +6541,15 @@ impl<'a> Deref for MemoryDedicatedAllocateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageViewUsageCreateInfo {
     type Type = ImageViewUsageCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageViewUsageCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageViewUsageCreateInfoBuilder<'a> {
     inner: vk::ImageViewUsageCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageViewUsageCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7377,20 +6572,15 @@ impl<'a> Deref for ImageViewUsageCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineTessellationDomainOriginStateCreateInfo {
     type Type = PipelineTessellationDomainOriginStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineTessellationDomainOriginStateCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineTessellationDomainOriginStateCreateInfoBuilder<'a> {
     inner: vk::PipelineTessellationDomainOriginStateCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineTessellationDomainOriginStateCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7413,20 +6603,15 @@ impl<'a> Deref for PipelineTessellationDomainOriginStateCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SamplerYcbcrConversionInfo {
     type Type = SamplerYcbcrConversionInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SamplerYcbcrConversionInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SamplerYcbcrConversionInfoBuilder<'a> {
     inner: vk::SamplerYcbcrConversionInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SamplerYcbcrConversionInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7449,20 +6634,15 @@ impl<'a> Deref for SamplerYcbcrConversionInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::SamplerYcbcrConversionCreateInfo {
     type Type = SamplerYcbcrConversionCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        SamplerYcbcrConversionCreateInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SamplerYcbcrConversionCreateInfoBuilder<'a> {
     inner: vk::SamplerYcbcrConversionCreateInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SamplerYcbcrConversionCreateInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7517,20 +6697,15 @@ impl<'a> Deref for SamplerYcbcrConversionCreateInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindImagePlaneMemoryInfo {
     type Type = BindImagePlaneMemoryInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        BindImagePlaneMemoryInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindImagePlaneMemoryInfoBuilder<'a> {
     inner: vk::BindImagePlaneMemoryInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindImagePlaneMemoryInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7553,20 +6728,15 @@ impl<'a> Deref for BindImagePlaneMemoryInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImagePlaneMemoryRequirementsInfo {
     type Type = ImagePlaneMemoryRequirementsInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ImagePlaneMemoryRequirementsInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImagePlaneMemoryRequirementsInfoBuilder<'a> {
     inner: vk::ImagePlaneMemoryRequirementsInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImagePlaneMemoryRequirementsInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7589,20 +6759,15 @@ impl<'a> Deref for ImagePlaneMemoryRequirementsInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceSamplerYcbcrConversionFeatures {
     type Type = PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a> {
     inner: vk::PhysicalDeviceSamplerYcbcrConversionFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7625,20 +6790,15 @@ impl<'a> Deref for PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::ConditionalRenderingBeginInfoEXT {
     type Type = ConditionalRenderingBeginInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ConditionalRenderingBeginInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ConditionalRenderingBeginInfoEXTBuilder<'a> {
     inner: vk::ConditionalRenderingBeginInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ConditionalRenderingBeginInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7669,20 +6829,15 @@ impl<'a> Deref for ConditionalRenderingBeginInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ProtectedSubmitInfo {
     type Type = ProtectedSubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
-        ProtectedSubmitInfoBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ProtectedSubmitInfoBuilder<'a> {
     inner: vk::ProtectedSubmitInfo,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ProtectedSubmitInfoBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7705,20 +6860,15 @@ impl<'a> Deref for ProtectedSubmitInfoBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceProtectedMemoryFeatures {
     type Type = PhysicalDeviceProtectedMemoryFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceProtectedMemoryFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceProtectedMemoryFeaturesBuilder<'a> {
     inner: vk::PhysicalDeviceProtectedMemoryFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceProtectedMemoryFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7741,20 +6891,15 @@ impl<'a> Deref for PhysicalDeviceProtectedMemoryFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceQueueInfo2 {
     type Type = DeviceQueueInfo2Builder<'a>;
     fn builder() -> Self::Type {
-        DeviceQueueInfo2Builder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceQueueInfo2Builder<'a> {
     inner: vk::DeviceQueueInfo2,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceQueueInfo2Builder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7785,20 +6930,15 @@ impl<'a> Deref for DeviceQueueInfo2Builder<'a> {
 impl<'a> Builder<'a> for vk::PipelineCoverageToColorStateCreateInfoNV {
     type Type = PipelineCoverageToColorStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineCoverageToColorStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineCoverageToColorStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineCoverageToColorStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineCoverageToColorStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7829,20 +6969,15 @@ impl<'a> Deref for PipelineCoverageToColorStateCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::SampleLocationsInfoEXT {
     type Type = SampleLocationsInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SampleLocationsInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SampleLocationsInfoEXTBuilder<'a> {
     inner: vk::SampleLocationsInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SampleLocationsInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7874,20 +7009,15 @@ impl<'a> Deref for SampleLocationsInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassSampleLocationsBeginInfoEXT {
     type Type = RenderPassSampleLocationsBeginInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassSampleLocationsBeginInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
     inner: vk::RenderPassSampleLocationsBeginInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7922,20 +7052,15 @@ impl<'a> Deref for RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineSampleLocationsStateCreateInfoEXT {
     type Type = PipelineSampleLocationsStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineSampleLocationsStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineSampleLocationsStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineSampleLocationsStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineSampleLocationsStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7962,20 +7087,15 @@ impl<'a> Deref for PipelineSampleLocationsStateCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SamplerReductionModeCreateInfoEXT {
     type Type = SamplerReductionModeCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SamplerReductionModeCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SamplerReductionModeCreateInfoEXTBuilder<'a> {
     inner: vk::SamplerReductionModeCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SamplerReductionModeCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -7998,20 +7118,15 @@ impl<'a> Deref for SamplerReductionModeCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     type Type = PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8038,20 +7153,15 @@ impl<'a> Deref for PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineColorBlendAdvancedStateCreateInfoEXT {
     type Type = PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineColorBlendAdvancedStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineColorBlendAdvancedStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8082,20 +7192,15 @@ impl<'a> Deref for PipelineColorBlendAdvancedStateCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceInlineUniformBlockFeaturesEXT {
     type Type = PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceInlineUniformBlockFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8130,20 +7235,15 @@ impl<'a> Deref for PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::WriteDescriptorSetInlineUniformBlockEXT {
     type Type = WriteDescriptorSetInlineUniformBlockEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        WriteDescriptorSetInlineUniformBlockEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
     inner: vk::WriteDescriptorSetInlineUniformBlockEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8170,20 +7270,15 @@ impl<'a> Deref for WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorPoolInlineUniformBlockCreateInfoEXT {
     type Type = DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a> {
     inner: vk::DescriptorPoolInlineUniformBlockCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8206,20 +7301,15 @@ impl<'a> Deref for DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineCoverageModulationStateCreateInfoNV {
     type Type = PipelineCoverageModulationStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineCoverageModulationStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineCoverageModulationStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8263,20 +7353,15 @@ impl<'a> Deref for PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageFormatListCreateInfoKHR {
     type Type = ImageFormatListCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageFormatListCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageFormatListCreateInfoKHRBuilder<'a> {
     inner: vk::ImageFormatListCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageFormatListCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8300,20 +7385,15 @@ impl<'a> Deref for ImageFormatListCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ValidationCacheCreateInfoEXT {
     type Type = ValidationCacheCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ValidationCacheCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ValidationCacheCreateInfoEXTBuilder<'a> {
     inner: vk::ValidationCacheCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8344,20 +7424,15 @@ impl<'a> Deref for ValidationCacheCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ShaderModuleValidationCacheCreateInfoEXT {
     type Type = ShaderModuleValidationCacheCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ShaderModuleValidationCacheCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ShaderModuleValidationCacheCreateInfoEXTBuilder<'a> {
     inner: vk::ShaderModuleValidationCacheCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ShaderModuleValidationCacheCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8380,20 +7455,15 @@ impl<'a> Deref for ShaderModuleValidationCacheCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDrawParametersFeatures {
     type Type = PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderDrawParametersFeaturesBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
     inner: vk::PhysicalDeviceShaderDrawParametersFeatures,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8416,20 +7486,15 @@ impl<'a> Deref for PhysicalDeviceShaderDrawParametersFeaturesBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR {
     type Type = PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDeviceShaderFloat16Int8FeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8456,20 +7521,15 @@ impl<'a> Deref for PhysicalDeviceShaderFloat16Int8FeaturesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceHostQueryResetFeaturesEXT {
     type Type = PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceHostQueryResetFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceHostQueryResetFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8492,20 +7552,15 @@ impl<'a> Deref for PhysicalDeviceHostQueryResetFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::NativeBufferANDROID {
     type Type = NativeBufferANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        NativeBufferANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct NativeBufferANDROIDBuilder<'a> {
     inner: vk::NativeBufferANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> NativeBufferANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8544,20 +7599,15 @@ impl<'a> Deref for NativeBufferANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::SwapchainImageCreateInfoANDROID {
     type Type = SwapchainImageCreateInfoANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        SwapchainImageCreateInfoANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SwapchainImageCreateInfoANDROIDBuilder<'a> {
     inner: vk::SwapchainImageCreateInfoANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SwapchainImageCreateInfoANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8580,20 +7630,15 @@ impl<'a> Deref for SwapchainImageCreateInfoANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDevicePresentationPropertiesANDROID {
     type Type = PhysicalDevicePresentationPropertiesANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDevicePresentationPropertiesANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
     inner: vk::PhysicalDevicePresentationPropertiesANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8616,20 +7661,15 @@ impl<'a> Deref for PhysicalDevicePresentationPropertiesANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceQueueGlobalPriorityCreateInfoEXT {
     type Type = DeviceQueueGlobalPriorityCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceQueueGlobalPriorityCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceQueueGlobalPriorityCreateInfoEXTBuilder<'a> {
     inner: vk::DeviceQueueGlobalPriorityCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceQueueGlobalPriorityCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8652,20 +7692,15 @@ impl<'a> Deref for DeviceQueueGlobalPriorityCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugUtilsObjectNameInfoEXT {
     type Type = DebugUtilsObjectNameInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugUtilsObjectNameInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugUtilsObjectNameInfoEXTBuilder<'a> {
     inner: vk::DebugUtilsObjectNameInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugUtilsObjectNameInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8696,20 +7731,15 @@ impl<'a> Deref for DebugUtilsObjectNameInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugUtilsObjectTagInfoEXT {
     type Type = DebugUtilsObjectTagInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugUtilsObjectTagInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugUtilsObjectTagInfoEXTBuilder<'a> {
     inner: vk::DebugUtilsObjectTagInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8748,20 +7778,15 @@ impl<'a> Deref for DebugUtilsObjectTagInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugUtilsLabelEXT {
     type Type = DebugUtilsLabelEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugUtilsLabelEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugUtilsLabelEXTBuilder<'a> {
     inner: vk::DebugUtilsLabelEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugUtilsLabelEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8784,20 +7809,15 @@ impl<'a> Deref for DebugUtilsLabelEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugUtilsMessengerCreateInfoEXT {
     type Type = DebugUtilsMessengerCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugUtilsMessengerCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
     inner: vk::DebugUtilsMessengerCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8836,20 +7856,15 @@ impl<'a> Deref for DebugUtilsMessengerCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DebugUtilsMessengerCallbackDataEXT {
     type Type = DebugUtilsMessengerCallbackDataEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DebugUtilsMessengerCallbackDataEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
     inner: vk::DebugUtilsMessengerCallbackDataEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8899,20 +7914,15 @@ impl<'a> Deref for DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportMemoryHostPointerInfoEXT {
     type Type = ImportMemoryHostPointerInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportMemoryHostPointerInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportMemoryHostPointerInfoEXTBuilder<'a> {
     inner: vk::ImportMemoryHostPointerInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportMemoryHostPointerInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8939,20 +7949,15 @@ impl<'a> Deref for ImportMemoryHostPointerInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::CalibratedTimestampInfoEXT {
     type Type = CalibratedTimestampInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        CalibratedTimestampInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CalibratedTimestampInfoEXTBuilder<'a> {
     inner: vk::CalibratedTimestampInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CalibratedTimestampInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8975,20 +7980,15 @@ impl<'a> Deref for CalibratedTimestampInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationConservativeStateCreateInfoEXT {
     type Type = PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationConservativeStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineRasterizationConservativeStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9022,20 +8022,15 @@ impl<'a> Deref for PipelineRasterizationConservativeStateCreateInfoEXTBuilder<'a
 impl<'a> Builder<'a> for vk::PhysicalDeviceDescriptorIndexingFeaturesEXT {
     type Type = PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceDescriptorIndexingFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9279,20 +8274,15 @@ impl<'a> Deref for PhysicalDeviceDescriptorIndexingFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT {
     type Type = DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a> {
     inner: vk::DescriptorSetLayoutBindingFlagsCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9316,20 +8306,15 @@ impl<'a> Deref for DescriptorSetLayoutBindingFlagsCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT {
     type Type = DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder<'a> {
     inner: vk::DescriptorSetVariableDescriptorCountAllocateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9353,20 +8338,15 @@ impl<'a> Deref for DescriptorSetVariableDescriptorCountAllocateInfoEXTBuilder<'a
 impl<'a> Builder<'a> for vk::AttachmentDescription2KHR {
     type Type = AttachmentDescription2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        AttachmentDescription2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AttachmentDescription2KHRBuilder<'a> {
     inner: vk::AttachmentDescription2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AttachmentDescription2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9421,20 +8401,15 @@ impl<'a> Deref for AttachmentDescription2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::AttachmentReference2KHR {
     type Type = AttachmentReference2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        AttachmentReference2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AttachmentReference2KHRBuilder<'a> {
     inner: vk::AttachmentReference2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AttachmentReference2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9465,20 +8440,15 @@ impl<'a> Deref for AttachmentReference2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassDescription2KHR {
     type Type = SubpassDescription2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassDescription2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassDescription2KHRBuilder<'a> {
     inner: vk::SubpassDescription2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubpassDescription2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9539,20 +8509,15 @@ impl<'a> Deref for SubpassDescription2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassDependency2KHR {
     type Type = SubpassDependency2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassDependency2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassDependency2KHRBuilder<'a> {
     inner: vk::SubpassDependency2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubpassDependency2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9603,20 +8568,15 @@ impl<'a> Deref for SubpassDependency2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassCreateInfo2KHR {
     type Type = RenderPassCreateInfo2KHRBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassCreateInfo2KHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassCreateInfo2KHRBuilder<'a> {
     inner: vk::RenderPassCreateInfo2KHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassCreateInfo2KHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9659,20 +8619,15 @@ impl<'a> Deref for RenderPassCreateInfo2KHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassBeginInfoKHR {
     type Type = SubpassBeginInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassBeginInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassBeginInfoKHRBuilder<'a> {
     inner: vk::SubpassBeginInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubpassBeginInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9695,20 +8650,15 @@ impl<'a> Deref for SubpassBeginInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassEndInfoKHR {
     type Type = SubpassEndInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassEndInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassEndInfoKHRBuilder<'a> {
     inner: vk::SubpassEndInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubpassEndInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9727,20 +8677,15 @@ impl<'a> Deref for SubpassEndInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineVertexInputDivisorStateCreateInfoEXT {
     type Type = PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineVertexInputDivisorStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineVertexInputDivisorStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9767,20 +8712,15 @@ impl<'a> Deref for PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImportAndroidHardwareBufferInfoANDROID {
     type Type = ImportAndroidHardwareBufferInfoANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        ImportAndroidHardwareBufferInfoANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImportAndroidHardwareBufferInfoANDROIDBuilder<'a> {
     inner: vk::ImportAndroidHardwareBufferInfoANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImportAndroidHardwareBufferInfoANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9803,20 +8743,15 @@ impl<'a> Deref for ImportAndroidHardwareBufferInfoANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryGetAndroidHardwareBufferInfoANDROID {
     type Type = MemoryGetAndroidHardwareBufferInfoANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryGetAndroidHardwareBufferInfoANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryGetAndroidHardwareBufferInfoANDROIDBuilder<'a> {
     inner: vk::MemoryGetAndroidHardwareBufferInfoANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryGetAndroidHardwareBufferInfoANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9839,20 +8774,15 @@ impl<'a> Deref for MemoryGetAndroidHardwareBufferInfoANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::CommandBufferInheritanceConditionalRenderingInfoEXT {
     type Type = CommandBufferInheritanceConditionalRenderingInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        CommandBufferInheritanceConditionalRenderingInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CommandBufferInheritanceConditionalRenderingInfoEXTBuilder<'a> {
     inner: vk::CommandBufferInheritanceConditionalRenderingInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CommandBufferInheritanceConditionalRenderingInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9879,20 +8809,15 @@ impl<'a> Deref for CommandBufferInheritanceConditionalRenderingInfoEXTBuilder<'a
 impl<'a> Builder<'a> for vk::ExternalFormatANDROID {
     type Type = ExternalFormatANDROIDBuilder<'a>;
     fn builder() -> Self::Type {
-        ExternalFormatANDROIDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ExternalFormatANDROIDBuilder<'a> {
     inner: vk::ExternalFormatANDROID,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ExternalFormatANDROIDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9915,20 +8840,15 @@ impl<'a> Deref for ExternalFormatANDROIDBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDevice8BitStorageFeaturesKHR {
     type Type = PhysicalDevice8BitStorageFeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDevice8BitStorageFeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDevice8BitStorageFeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9967,20 +8887,15 @@ impl<'a> Deref for PhysicalDevice8BitStorageFeaturesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceConditionalRenderingFeaturesEXT {
     type Type = PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceConditionalRenderingFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceConditionalRenderingFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10011,20 +8926,15 @@ impl<'a> Deref for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR {
     type Type = PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDeviceVulkanMemoryModelFeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10067,20 +8977,15 @@ impl<'a> Deref for PhysicalDeviceVulkanMemoryModelFeaturesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR {
     type Type = PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDeviceShaderAtomicInt64FeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10115,20 +9020,15 @@ impl<'a> Deref for PhysicalDeviceShaderAtomicInt64FeaturesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10166,20 +9066,15 @@ impl<'a> Deref for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SubpassDescriptionDepthStencilResolveKHR {
     type Type = SubpassDescriptionDepthStencilResolveKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SubpassDescriptionDepthStencilResolveKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
     inner: vk::SubpassDescriptionDepthStencilResolveKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10213,20 +9108,15 @@ impl<'a> Deref for SubpassDescriptionDepthStencilResolveKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageViewASTCDecodeModeEXT {
     type Type = ImageViewASTCDecodeModeEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageViewASTCDecodeModeEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageViewASTCDecodeModeEXTBuilder<'a> {
     inner: vk::ImageViewASTCDecodeModeEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageViewASTCDecodeModeEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10249,20 +9139,15 @@ impl<'a> Deref for ImageViewASTCDecodeModeEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceASTCDecodeFeaturesEXT {
     type Type = PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceASTCDecodeFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceASTCDecodeFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10289,20 +9174,15 @@ impl<'a> Deref for PhysicalDeviceASTCDecodeFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceTransformFeedbackFeaturesEXT {
     type Type = PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceTransformFeedbackFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceTransformFeedbackFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10329,20 +9209,15 @@ impl<'a> Deref for PhysicalDeviceTransformFeedbackFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationStateStreamCreateInfoEXT {
     type Type = PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationStateStreamCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineRasterizationStateStreamCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10369,20 +9244,15 @@ impl<'a> Deref for PipelineRasterizationStateStreamCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     type Type = PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10409,20 +9279,15 @@ impl<'a> Deref for PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder<'a>
 impl<'a> Builder<'a> for vk::PipelineRepresentativeFragmentTestStateCreateInfoNV {
     type Type = PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineRepresentativeFragmentTestStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10449,20 +9314,15 @@ impl<'a> Deref for PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder<'a
 impl<'a> Builder<'a> for vk::PhysicalDeviceExclusiveScissorFeaturesNV {
     type Type = PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceExclusiveScissorFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceExclusiveScissorFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10485,20 +9345,15 @@ impl<'a> Deref for PhysicalDeviceExclusiveScissorFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportExclusiveScissorStateCreateInfoNV {
     type Type = PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportExclusiveScissorStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineViewportExclusiveScissorStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10522,20 +9377,15 @@ impl<'a> Deref for PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> 
 impl<'a> Builder<'a> for vk::PhysicalDeviceCornerSampledImageFeaturesNV {
     type Type = PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceCornerSampledImageFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceCornerSampledImageFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10558,20 +9408,15 @@ impl<'a> Deref for PhysicalDeviceCornerSampledImageFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     type Type = PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10606,20 +9451,15 @@ impl<'a> Deref for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     type Type = PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10646,20 +9486,15 @@ impl<'a> Deref for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder<'a> 
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {
     type Type = PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderImageFootprintFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceShaderImageFootprintFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10682,20 +9517,15 @@ impl<'a> Deref for PhysicalDeviceShaderImageFootprintFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     type Type = PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10722,20 +9552,15 @@ impl<'a> Deref for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuild
 impl<'a> Builder<'a> for vk::ShadingRatePaletteNV {
     type Type = ShadingRatePaletteNVBuilder<'a>;
     fn builder() -> Self::Type {
-        ShadingRatePaletteNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ShadingRatePaletteNVBuilder<'a> {
     inner: vk::ShadingRatePaletteNV,
     phantom: PhantomData<&'a vk::ShadingRatePaletteEntryNV>,
 }
 impl<'a> ShadingRatePaletteNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn p_shading_rate_palette_entries(
         mut self,
         p_shading_rate_palette_entries: &'a [vk::ShadingRatePaletteEntryNV],
@@ -10754,20 +9579,15 @@ impl<'a> Deref for ShadingRatePaletteNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportShadingRateImageStateCreateInfoNV {
     type Type = PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportShadingRateImageStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineViewportShadingRateImageStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10795,20 +9615,15 @@ impl<'a> Deref for PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> 
 impl<'a> Builder<'a> for vk::PhysicalDeviceShadingRateImageFeaturesNV {
     type Type = PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShadingRateImageFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceShadingRateImageFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10839,20 +9654,15 @@ impl<'a> Deref for PhysicalDeviceShadingRateImageFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::CoarseSampleOrderCustomNV {
     type Type = CoarseSampleOrderCustomNVBuilder<'a>;
     fn builder() -> Self::Type {
-        CoarseSampleOrderCustomNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CoarseSampleOrderCustomNVBuilder<'a> {
     inner: vk::CoarseSampleOrderCustomNV,
     phantom: PhantomData<&'a vk::CoarseSampleLocationNV>,
 }
 impl<'a> CoarseSampleOrderCustomNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn shading_rate(mut self, shading_rate: vk::ShadingRatePaletteEntryNV) -> Self {
         self.inner.shading_rate = shading_rate;
         self
@@ -10876,20 +9686,15 @@ impl<'a> Deref for CoarseSampleOrderCustomNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV {
     type Type = PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10917,20 +9722,15 @@ impl<'a> Deref for PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a>
 impl<'a> Builder<'a> for vk::PhysicalDeviceMeshShaderFeaturesNV {
     type Type = PhysicalDeviceMeshShaderFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceMeshShaderFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceMeshShaderFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceMeshShaderFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceMeshShaderFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10957,20 +9757,15 @@ impl<'a> Deref for PhysicalDeviceMeshShaderFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::RayTracingShaderGroupCreateInfoNV {
     type Type = RayTracingShaderGroupCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        RayTracingShaderGroupCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RayTracingShaderGroupCreateInfoNVBuilder<'a> {
     inner: vk::RayTracingShaderGroupCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RayTracingShaderGroupCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11009,20 +9804,15 @@ impl<'a> Deref for RayTracingShaderGroupCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoNV {
     type Type = RayTracingPipelineCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        RayTracingPipelineCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RayTracingPipelineCreateInfoNVBuilder<'a> {
     inner: vk::RayTracingPipelineCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11071,20 +9861,15 @@ impl<'a> Deref for RayTracingPipelineCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::GeometryTrianglesNV {
     type Type = GeometryTrianglesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryTrianglesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct GeometryTrianglesNVBuilder<'a> {
     inner: vk::GeometryTrianglesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> GeometryTrianglesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11147,20 +9932,15 @@ impl<'a> Deref for GeometryTrianglesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::GeometryAABBNV {
     type Type = GeometryAABBNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryAABBNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct GeometryAABBNVBuilder<'a> {
     inner: vk::GeometryAABBNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> GeometryAABBNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11195,20 +9975,15 @@ impl<'a> Deref for GeometryAABBNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::GeometryNV {
     type Type = GeometryNVBuilder<'a>;
     fn builder() -> Self::Type {
-        GeometryNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct GeometryNVBuilder<'a> {
     inner: vk::GeometryNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> GeometryNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11239,20 +10014,15 @@ impl<'a> Deref for GeometryNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::AccelerationStructureInfoNV {
     type Type = AccelerationStructureInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        AccelerationStructureInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AccelerationStructureInfoNVBuilder<'a> {
     inner: vk::AccelerationStructureInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AccelerationStructureInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11288,20 +10058,15 @@ impl<'a> Deref for AccelerationStructureInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoNV {
     type Type = AccelerationStructureCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        AccelerationStructureCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AccelerationStructureCreateInfoNVBuilder<'a> {
     inner: vk::AccelerationStructureCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AccelerationStructureCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11328,20 +10093,15 @@ impl<'a> Deref for AccelerationStructureCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::BindAccelerationStructureMemoryInfoNV {
     type Type = BindAccelerationStructureMemoryInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        BindAccelerationStructureMemoryInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BindAccelerationStructureMemoryInfoNVBuilder<'a> {
     inner: vk::BindAccelerationStructureMemoryInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11377,20 +10137,15 @@ impl<'a> Deref for BindAccelerationStructureMemoryInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::WriteDescriptorSetAccelerationStructureNV {
     type Type = WriteDescriptorSetAccelerationStructureNVBuilder<'a>;
     fn builder() -> Self::Type {
-        WriteDescriptorSetAccelerationStructureNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
     inner: vk::WriteDescriptorSetAccelerationStructureNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11414,20 +10169,15 @@ impl<'a> Deref for WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::AccelerationStructureMemoryRequirementsInfoNV {
     type Type = AccelerationStructureMemoryRequirementsInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        AccelerationStructureMemoryRequirementsInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
     inner: vk::AccelerationStructureMemoryRequirementsInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11454,20 +10204,15 @@ impl<'a> Deref for AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceImageDrmFormatModifierInfoEXT {
     type Type = PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
     inner: vk::PhysicalDeviceImageDrmFormatModifierInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11499,20 +10244,15 @@ impl<'a> Deref for PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageDrmFormatModifierListCreateInfoEXT {
     type Type = ImageDrmFormatModifierListCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageDrmFormatModifierListCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
     inner: vk::ImageDrmFormatModifierListCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11536,20 +10276,15 @@ impl<'a> Deref for ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageDrmFormatModifierExplicitCreateInfoEXT {
     type Type = ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageDrmFormatModifierExplicitCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
     inner: vk::ImageDrmFormatModifierExplicitCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11577,20 +10312,15 @@ impl<'a> Deref for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageStencilUsageCreateInfoEXT {
     type Type = ImageStencilUsageCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageStencilUsageCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageStencilUsageCreateInfoEXTBuilder<'a> {
     inner: vk::ImageStencilUsageCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageStencilUsageCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11613,20 +10343,15 @@ impl<'a> Deref for ImageStencilUsageCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::DeviceMemoryOverallocationCreateInfoAMD {
     type Type = DeviceMemoryOverallocationCreateInfoAMDBuilder<'a>;
     fn builder() -> Self::Type {
-        DeviceMemoryOverallocationCreateInfoAMDBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
     inner: vk::DeviceMemoryOverallocationCreateInfoAMD,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11649,20 +10374,15 @@ impl<'a> Deref for DeviceMemoryOverallocationCreateInfoAMDBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassFragmentDensityMapCreateInfoEXT {
     type Type = RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassFragmentDensityMapCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
     inner: vk::RenderPassFragmentDensityMapCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11685,20 +10405,15 @@ impl<'a> Deref for RenderPassFragmentDensityMapCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT {
     type Type = PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceScalarBlockLayoutFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11721,20 +10436,15 @@ impl<'a> Deref for PhysicalDeviceScalarBlockLayoutFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SurfaceProtectedCapabilitiesKHR {
     type Type = SurfaceProtectedCapabilitiesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        SurfaceProtectedCapabilitiesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SurfaceProtectedCapabilitiesKHRBuilder<'a> {
     inner: vk::SurfaceProtectedCapabilitiesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SurfaceProtectedCapabilitiesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11757,20 +10467,15 @@ impl<'a> Deref for SurfaceProtectedCapabilitiesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
     type Type = PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11797,20 +10502,15 @@ impl<'a> Deref for PhysicalDeviceUniformBufferStandardLayoutFeaturesKHRBuilder<'
 impl<'a> Builder<'a> for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {
     type Type = PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceDepthClipEnableFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceDepthClipEnableFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11833,20 +10533,15 @@ impl<'a> Deref for PhysicalDeviceDepthClipEnableFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationDepthClipStateCreateInfoEXT {
     type Type = PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationDepthClipStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineRasterizationDepthClipStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11873,20 +10568,15 @@ impl<'a> Deref for PipelineRasterizationDepthClipStateCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {
     type Type = PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceMemoryPriorityFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceMemoryPriorityFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11909,20 +10599,15 @@ impl<'a> Deref for PhysicalDeviceMemoryPriorityFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::MemoryPriorityAllocateInfoEXT {
     type Type = MemoryPriorityAllocateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        MemoryPriorityAllocateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct MemoryPriorityAllocateInfoEXTBuilder<'a> {
     inner: vk::MemoryPriorityAllocateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> MemoryPriorityAllocateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11945,20 +10630,15 @@ impl<'a> Deref for MemoryPriorityAllocateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     type Type = PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11997,20 +10677,15 @@ impl<'a> Deref for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferDeviceAddressInfoEXT {
     type Type = BufferDeviceAddressInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        BufferDeviceAddressInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferDeviceAddressInfoEXTBuilder<'a> {
     inner: vk::BufferDeviceAddressInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferDeviceAddressInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12033,20 +10708,15 @@ impl<'a> Deref for BufferDeviceAddressInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::BufferDeviceAddressCreateInfoEXT {
     type Type = BufferDeviceAddressCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        BufferDeviceAddressCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct BufferDeviceAddressCreateInfoEXTBuilder<'a> {
     inner: vk::BufferDeviceAddressCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> BufferDeviceAddressCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12069,20 +10739,15 @@ impl<'a> Deref for BufferDeviceAddressCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceImageViewImageFormatInfoEXT {
     type Type = PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceImageViewImageFormatInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
     inner: vk::PhysicalDeviceImageViewImageFormatInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12105,20 +10770,15 @@ impl<'a> Deref for PhysicalDeviceImageViewImageFormatInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceImagelessFramebufferFeaturesKHR {
     type Type = PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
     inner: vk::PhysicalDeviceImagelessFramebufferFeaturesKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12141,20 +10801,15 @@ impl<'a> Deref for PhysicalDeviceImagelessFramebufferFeaturesKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::FramebufferAttachmentsCreateInfoKHR {
     type Type = FramebufferAttachmentsCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        FramebufferAttachmentsCreateInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
     inner: vk::FramebufferAttachmentsCreateInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12181,20 +10836,15 @@ impl<'a> Deref for FramebufferAttachmentsCreateInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::FramebufferAttachmentImageInfoKHR {
     type Type = FramebufferAttachmentImageInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        FramebufferAttachmentImageInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct FramebufferAttachmentImageInfoKHRBuilder<'a> {
     inner: vk::FramebufferAttachmentImageInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> FramebufferAttachmentImageInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12238,20 +10888,15 @@ impl<'a> Deref for FramebufferAttachmentImageInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::RenderPassAttachmentBeginInfoKHR {
     type Type = RenderPassAttachmentBeginInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
-        RenderPassAttachmentBeginInfoKHRBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct RenderPassAttachmentBeginInfoKHRBuilder<'a> {
     inner: vk::RenderPassAttachmentBeginInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> RenderPassAttachmentBeginInfoKHRBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12275,20 +10920,15 @@ impl<'a> Deref for RenderPassAttachmentBeginInfoKHRBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     type Type = PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12315,20 +10955,15 @@ impl<'a> Deref for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a>
 impl<'a> Builder<'a> for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {
     type Type = PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceCooperativeMatrixFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceCooperativeMatrixFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12359,20 +10994,15 @@ impl<'a> Deref for PhysicalDeviceCooperativeMatrixFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::CooperativeMatrixPropertiesNV {
     type Type = CooperativeMatrixPropertiesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        CooperativeMatrixPropertiesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct CooperativeMatrixPropertiesNVBuilder<'a> {
     inner: vk::CooperativeMatrixPropertiesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> CooperativeMatrixPropertiesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12423,20 +11053,15 @@ impl<'a> Deref for CooperativeMatrixPropertiesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT {
     type Type = PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12459,20 +11084,15 @@ impl<'a> Deref for PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::ImageViewHandleInfoNVX {
     type Type = ImageViewHandleInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
-        ImageViewHandleInfoNVXBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct ImageViewHandleInfoNVXBuilder<'a> {
     inner: vk::ImageViewHandleInfoNVX,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> ImageViewHandleInfoNVXBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12503,20 +11123,15 @@ impl<'a> Deref for ImageViewHandleInfoNVXBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineCreationFeedbackCreateInfoEXT {
     type Type = PipelineCreationFeedbackCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineCreationFeedbackCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineCreationFeedbackCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12553,20 +11168,15 @@ impl<'a> Deref for PipelineCreationFeedbackCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SurfaceFullScreenExclusiveInfoEXT {
     type Type = SurfaceFullScreenExclusiveInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SurfaceFullScreenExclusiveInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
     inner: vk::SurfaceFullScreenExclusiveInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12589,20 +11199,15 @@ impl<'a> Deref for SurfaceFullScreenExclusiveInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SurfaceFullScreenExclusiveWin32InfoEXT {
     type Type = SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SurfaceFullScreenExclusiveWin32InfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
     inner: vk::SurfaceFullScreenExclusiveWin32InfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12625,20 +11230,15 @@ impl<'a> Deref for SurfaceFullScreenExclusiveWin32InfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {
     type Type = SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        SurfaceCapabilitiesFullScreenExclusiveEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
     inner: vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12665,20 +11265,15 @@ impl<'a> Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::HeadlessSurfaceCreateInfoEXT {
     type Type = HeadlessSurfaceCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        HeadlessSurfaceCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct HeadlessSurfaceCreateInfoEXTBuilder<'a> {
     inner: vk::HeadlessSurfaceCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> HeadlessSurfaceCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12701,20 +11296,15 @@ impl<'a> Deref for HeadlessSurfaceCreateInfoEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceCoverageReductionModeFeaturesNV {
     type Type = PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceCoverageReductionModeFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceCoverageReductionModeFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12737,20 +11327,15 @@ impl<'a> Deref for PhysicalDeviceCoverageReductionModeFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineCoverageReductionStateCreateInfoNV {
     type Type = PipelineCoverageReductionStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineCoverageReductionStateCreateInfoNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
     inner: vk::PipelineCoverageReductionStateCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12777,20 +11362,15 @@ impl<'a> Deref for PipelineCoverageReductionStateCreateInfoNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     type Type = PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a> {
     inner: vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12813,20 +11393,15 @@ impl<'a> Deref for PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder<'a>
 impl<'a> Builder<'a> for vk::InitializePerformanceApiInfoINTEL {
     type Type = InitializePerformanceApiInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        InitializePerformanceApiInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct InitializePerformanceApiInfoINTELBuilder<'a> {
     inner: vk::InitializePerformanceApiInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> InitializePerformanceApiInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12849,20 +11424,15 @@ impl<'a> Deref for InitializePerformanceApiInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::QueryPoolCreateInfoINTEL {
     type Type = QueryPoolCreateInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        QueryPoolCreateInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct QueryPoolCreateInfoINTELBuilder<'a> {
     inner: vk::QueryPoolCreateInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> QueryPoolCreateInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12888,20 +11458,15 @@ impl<'a> Deref for QueryPoolCreateInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::PerformanceMarkerInfoINTEL {
     type Type = PerformanceMarkerInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PerformanceMarkerInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PerformanceMarkerInfoINTELBuilder<'a> {
     inner: vk::PerformanceMarkerInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PerformanceMarkerInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12924,20 +11489,15 @@ impl<'a> Deref for PerformanceMarkerInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::PerformanceStreamMarkerInfoINTEL {
     type Type = PerformanceStreamMarkerInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PerformanceStreamMarkerInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PerformanceStreamMarkerInfoINTELBuilder<'a> {
     inner: vk::PerformanceStreamMarkerInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PerformanceStreamMarkerInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -12960,20 +11520,15 @@ impl<'a> Deref for PerformanceStreamMarkerInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::PerformanceOverrideInfoINTEL {
     type Type = PerformanceOverrideInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PerformanceOverrideInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PerformanceOverrideInfoINTELBuilder<'a> {
     inner: vk::PerformanceOverrideInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PerformanceOverrideInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13004,20 +11559,15 @@ impl<'a> Deref for PerformanceOverrideInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::PerformanceConfigurationAcquireInfoINTEL {
     type Type = PerformanceConfigurationAcquireInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
-        PerformanceConfigurationAcquireInfoINTELBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
     inner: vk::PerformanceConfigurationAcquireInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13040,20 +11590,15 @@ impl<'a> Deref for PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceIndexTypeUint8FeaturesEXT {
     type Type = PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceIndexTypeUint8FeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13076,20 +11621,15 @@ impl<'a> Deref for PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     type Type = PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
     inner: vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13112,20 +11652,15 @@ impl<'a> Deref for PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     type Type = PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13168,20 +11703,15 @@ impl<'a> Deref for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     type Type = PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13208,20 +11738,15 @@ impl<'a> Deref for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilde
 impl<'a> Builder<'a> for vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     type Type = PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13244,20 +11769,15 @@ impl<'a> Deref for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PhysicalDeviceLineRasterizationFeaturesEXT {
     type Type = PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PhysicalDeviceLineRasterizationFeaturesEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
     inner: vk::PhysicalDeviceLineRasterizationFeaturesEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -13304,20 +11824,15 @@ impl<'a> Deref for PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a> {
 impl<'a> Builder<'a> for vk::PipelineRasterizationLineStateCreateInfoEXT {
     type Type = PipelineRasterizationLineStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
-        PipelineRasterizationLineStateCreateInfoEXTBuilder::new()
+        Default::default()
     }
 }
+#[derive(Default)]
 pub struct PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
     inner: vk::PipelineRasterizationLineStateCreateInfoEXT,
     phantom: PhantomData<&'a c_void>,
 }
 impl<'a> PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
-    pub fn new() -> Self {
-        Self {
-            inner: Default::default(),
-            phantom: PhantomData,
-        }
-    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self

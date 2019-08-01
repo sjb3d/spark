@@ -64,10 +64,10 @@ impl From<vk::Result> for LoaderError {
 pub type LoaderResult<T> = result::Result<T, LoaderError>;
 
 #[cfg(unix)]
-const DL_PATH: &'static str = "libvulkan.so.1";
+const DL_PATH: &str = "libvulkan.so.1";
 
 #[cfg(windows)]
-const DL_PATH: &'static str = "vulkan-1.dll";
+const DL_PATH: &str = "vulkan-1.dll";
 
 impl Lib {
     pub fn new() -> LoaderResult<Self> {

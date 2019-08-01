@@ -26,17 +26,17 @@ impl Version {
     pub const fn from_raw(version: u32) -> Self {
         Version(version)
     }
-    pub fn to_raw(&self) -> u32 {
+    pub fn to_raw(self) -> u32 {
         self.0
     }
 
-    pub fn get_major(&self) -> u32 {
+    pub fn get_major(self) -> u32 {
         self.0 >> 22
     }
-    pub fn get_minor(&self) -> u32 {
+    pub fn get_minor(self) -> u32 {
         (self.0 >> 12) & 0x3ff
     }
-    pub fn get_patch(&self) -> u32 {
+    pub fn get_patch(self) -> u32 {
         self.0 & 0xfff
     }
 }

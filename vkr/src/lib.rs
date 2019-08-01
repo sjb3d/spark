@@ -69,10 +69,10 @@ impl From<vk::Result> for LoaderError {
 pub type LoaderResult<T> = result::Result<T, LoaderError>;
 
 #[cfg(unix)]
-const DL_PATH: &'static str = "libvulkan.so.1";
+const DL_PATH: &str = "libvulkan.so.1";
 
 #[cfg(windows)]
-const DL_PATH: &'static str = "vulkan-1.dll";
+const DL_PATH: &str = "vulkan-1.dll";
 
 impl Lib {
     pub fn new() -> LoaderResult<Self> {
@@ -149,7 +149,7 @@ impl Loader {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
-        .map_err(|e| LoaderError::Vulkan(e))
+        .map_err(LoaderError::Vulkan)
         .and_then(|r| Instance::load(&self, r, p_create_info))
     }
     pub unsafe fn get_instance_proc_addr(
@@ -1331,7 +1331,7 @@ impl Instance {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
-        .map_err(|e| LoaderError::Vulkan(e))
+        .map_err(LoaderError::Vulkan)
         .and_then(|r| Device::load(&self, r, p_create_info, version))
     }
     pub unsafe fn enumerate_device_layer_properties_to_vec(
