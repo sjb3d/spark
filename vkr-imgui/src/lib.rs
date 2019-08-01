@@ -170,11 +170,11 @@ impl Renderer {
         };
 
         let mut fonts = imgui.fonts();
-        let texture = fonts.build_rgba32_texture();
+        let texture = fonts.build_alpha8_texture();
 
         let (image_buffer, image_mem_offset) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (texture.width * texture.height * 4) as vk::DeviceSize,
+                size: (texture.width * texture.height) as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::TRANSFER_SRC,
                 ..Default::default()
             };
@@ -222,7 +222,7 @@ impl Renderer {
         let image = {
             let image_create_info = vk::ImageCreateInfo {
                 image_type: vk::ImageType::N2D,
-                format: vk::Format::R8G8B8A8_UNORM,
+                format: vk::Format::R8_UNORM,
                 extent: vk::Extent3D {
                     width: texture.width,
                     height: texture.height,
@@ -283,12 +283,18 @@ impl Renderer {
             let image_view_create_info = vk::ImageViewCreateInfo {
                 image: Some(image),
                 view_type: vk::ImageViewType::N2D,
-                format: vk::Format::R8G8B8A8_UNORM,
+                format: vk::Format::R8_UNORM,
                 subresource_range: vk::ImageSubresourceRange {
                     aspect_mask: vk::ImageAspectFlags::COLOR,
                     level_count: 1,
                     layer_count: 1,
                     ..Default::default()
+                },
+                components: vk::ComponentMapping {
+                    r: vk::ComponentSwizzle::ONE,
+                    g: vk::ComponentSwizzle::ONE,
+                    b: vk::ComponentSwizzle::ONE,
+                    a: vk::ComponentSwizzle::R,
                 },
                 ..Default::default()
             };
@@ -314,6 +320,7 @@ impl Renderer {
             let image_base =
                 unsafe { (host_mapping as *mut u8).add(image_mem_offset) } as *mut c_uchar;
 
+            assert_eq!(texture.data.len() as u32, texture.width * texture.height);
             unsafe {
                 image_base.copy_from_nonoverlapping(texture.data.as_ptr(), texture.data.len())
             };
