@@ -1,5 +1,6 @@
 use arrayvec::ArrayVec;
-use imgui::{FrameSize, ImDrawIdx, ImDrawVert, ImGui, Ui};
+use imgui::internal::RawWrapper;
+use imgui::{Context, DrawCmd, DrawCmdParams, DrawData, DrawIdx, DrawVert};
 use memoffset::offset_of;
 use std::ffi::CStr;
 use std::mem;
@@ -77,7 +78,7 @@ impl Renderer {
         device: &Device,
         physical_device_properties: &vk::PhysicalDeviceProperties,
         physical_device_memory_properties: &vk::PhysicalDeviceMemoryProperties,
-        imgui: &mut ImGui,
+        imgui: &mut Context,
     ) -> Self {
         let vertex_shader = load_shader_module(device, include_bytes!("imgui.vert.spv"));
         let fragment_shader = load_shader_module(device, include_bytes!("imgui.frag.spv"));
@@ -120,7 +121,7 @@ impl Renderer {
 
         let (vertex_buffers, vertex_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Renderer::VERTEX_COUNT_PER_FRAME * mem::size_of::<ImDrawVert>())
+                size: (Renderer::VERTEX_COUNT_PER_FRAME * mem::size_of::<DrawVert>())
                     as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::VERTEX_BUFFER,
                 ..Default::default()
@@ -145,7 +146,7 @@ impl Renderer {
 
         let (index_buffers, index_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Renderer::INDEX_COUNT_PER_FRAME * mem::size_of::<ImDrawIdx>())
+                size: (Renderer::INDEX_COUNT_PER_FRAME * mem::size_of::<DrawIdx>())
                     as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::INDEX_BUFFER,
                 ..Default::default()
@@ -168,12 +169,12 @@ impl Renderer {
             )
         };
 
-        let (image_width, image_height) =
-            imgui.prepare_texture(|handle| (handle.width, handle.height));
+        let mut fonts = imgui.fonts();
+        let texture = fonts.build_rgba32_texture();
 
         let (image_buffer, image_mem_offset) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (image_width * image_height * 4) as vk::DeviceSize,
+                size: (texture.width * texture.height * 4) as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::TRANSFER_SRC,
                 ..Default::default()
             };
@@ -223,8 +224,8 @@ impl Renderer {
                 image_type: vk::ImageType::N2D,
                 format: vk::Format::R8G8B8A8_UNORM,
                 extent: vk::Extent3D {
-                    width: image_width,
-                    height: image_height,
+                    width: texture.width,
+                    height: texture.height,
                     depth: 1,
                 },
                 mip_levels: 1,
@@ -309,29 +310,23 @@ impl Renderer {
 
         let atom_size = physical_device_properties.limits.non_coherent_atom_size as u32;
 
-        imgui.prepare_texture(|handle| {
+        {
             let image_base =
                 unsafe { (host_mapping as *mut u8).add(image_mem_offset) } as *mut c_uchar;
-            assert_eq!(
-                (image_width * image_height * 4) as usize,
-                handle.pixels.len()
-            );
+
             unsafe {
-                image_base.copy_from_nonoverlapping(handle.pixels.as_ptr(), handle.pixels.len())
+                image_base.copy_from_nonoverlapping(texture.data.as_ptr(), texture.data.len())
             };
 
             let mapped_memory_range = vk::MappedMemoryRange {
                 memory: Some(host_mem),
                 offset: image_mem_offset as vk::DeviceSize,
-                size: align_up((image_width * image_height * 4) as u32, atom_size)
-                    as vk::DeviceSize,
+                size: align_up(texture.data.len() as u32, atom_size) as vk::DeviceSize,
                 ..Default::default()
             };
             unsafe { device.flush_mapped_memory_ranges(slice::from_ref(&mapped_memory_range)) }
                 .unwrap();
-        });
-
-        imgui.prepare_texture(|_handle| false);
+        }
 
         Self {
             pipeline_layout,
@@ -347,8 +342,8 @@ impl Renderer {
             image_buffer,
             host_mem,
             host_mapping,
-            image_width,
-            image_height,
+            image_width: texture.width,
+            image_height: texture.height,
             image,
             _local_mem: local_mem,
             descriptor_set,
@@ -447,7 +442,7 @@ impl Renderer {
 
     pub fn render(
         &mut self,
-        ui: Ui,
+        draw_data: &DrawData,
         device: &Device,
         render_pass: vk::RenderPass,
         command_buffer: vk::CommandBuffer,
@@ -476,7 +471,7 @@ impl Renderer {
 
                 let vertex_input_binding = vk::VertexInputBindingDescription {
                     binding: 0,
-                    stride: mem::size_of::<ImDrawVert>() as u32,
+                    stride: mem::size_of::<DrawVert>() as u32,
                     input_rate: vk::VertexInputRate::VERTEX,
                 };
                 let vertex_input_attributes = [
@@ -484,19 +479,19 @@ impl Renderer {
                         location: 0,
                         binding: 0,
                         format: vk::Format::R32G32_SFLOAT,
-                        offset: offset_of!(ImDrawVert, pos) as u32,
+                        offset: offset_of!(DrawVert, pos) as u32,
                     },
                     vk::VertexInputAttributeDescription {
                         location: 1,
                         binding: 0,
                         format: vk::Format::R32G32_SFLOAT,
-                        offset: offset_of!(ImDrawVert, uv) as u32,
+                        offset: offset_of!(DrawVert, uv) as u32,
                     },
                     vk::VertexInputAttributeDescription {
                         location: 2,
                         binding: 0,
                         format: vk::Format::R8G8B8A8_UNORM,
-                        offset: offset_of!(ImDrawVert, col) as u32,
+                        offset: offset_of!(DrawVert, col) as u32,
                     },
                 ];
 
@@ -569,16 +564,10 @@ impl Renderer {
             });
         }
 
-        let FrameSize {
-            logical_size: (width, height),
-            ..
-        } = ui.frame_size();
-        let width = width as f32;
-        let height = height as f32;
+        let width = draw_data.display_size[0] * draw_data.framebuffer_scale[0];
+        let height = draw_data.display_size[1] * draw_data.framebuffer_scale[1];
 
-        ui.render(|ui, mut draw_data| -> Result<_, u32> {
-            draw_data.scale_clip_rects(ui.imgui().display_framebuffer_scale());
-
+        {
             let vertex_buffer = self.vertex_buffers[self.frame_index];
             let vertex_mem_offset = self.vertex_mem_offsets[self.frame_index];
             let index_buffer = self.index_buffers[self.frame_index];
@@ -635,15 +624,19 @@ impl Renderer {
                 );
             }
 
+            let clip_off = draw_data.display_pos;
+            let clip_scale = draw_data.framebuffer_scale;
             let vertex_base =
-                unsafe { (self.host_mapping as *mut u8).add(vertex_mem_offset) } as *mut ImDrawVert;
+                unsafe { (self.host_mapping as *mut u8).add(vertex_mem_offset) } as *mut DrawVert;
             let index_base =
-                unsafe { (self.host_mapping as *mut u8).add(index_mem_offset) } as *mut ImDrawIdx;
+                unsafe { (self.host_mapping as *mut u8).add(index_mem_offset) } as *mut DrawIdx;
             let mut vertex_offset = 0;
             let mut index_offset = 0;
-            for draw_list in &draw_data {
-                let next_vertex_offset = vertex_offset + draw_list.vtx_buffer.len();
-                let next_index_offset = index_offset + draw_list.idx_buffer.len();
+            for draw_list in draw_data.draw_lists() {
+                let vtx_buffer = draw_list.vtx_buffer();
+                let idx_buffer = draw_list.idx_buffer();
+                let next_vertex_offset = vertex_offset + vtx_buffer.len();
+                let next_index_offset = index_offset + idx_buffer.len();
                 if next_vertex_offset > Renderer::VERTEX_COUNT_PER_FRAME
                     || next_index_offset > Renderer::INDEX_COUNT_PER_FRAME
                 {
@@ -651,40 +644,59 @@ impl Renderer {
                 }
 
                 unsafe {
-                    vertex_base.add(vertex_offset).copy_from_nonoverlapping(
-                        draw_list.vtx_buffer.as_ptr(),
-                        draw_list.vtx_buffer.len(),
-                    );
-                    index_base.add(index_offset).copy_from_nonoverlapping(
-                        draw_list.idx_buffer.as_ptr(),
-                        draw_list.idx_buffer.len(),
-                    );
+                    vertex_base
+                        .add(vertex_offset)
+                        .copy_from_nonoverlapping(vtx_buffer.as_ptr(), vtx_buffer.len());
+                    index_base
+                        .add(index_offset)
+                        .copy_from_nonoverlapping(idx_buffer.as_ptr(), idx_buffer.len());
                 }
 
-                for cmd in draw_list.cmd_buffer {
-                    let scissor = vk::Rect2D {
-                        offset: vk::Offset2D {
-                            x: cmd.clip_rect.x as i32,
-                            y: cmd.clip_rect.y as i32,
+                for cmd in draw_list.commands() {
+                    match cmd {
+                        DrawCmd::Elements {
+                            count,
+                            cmd_params: DrawCmdParams { clip_rect, .. },
+                        } => {
+                            let clip_rect = [
+                                (clip_rect[0] - clip_off[0]) * clip_scale[0],
+                                (clip_rect[1] - clip_off[1]) * clip_scale[1],
+                                (clip_rect[2] - clip_off[0]) * clip_scale[0],
+                                (clip_rect[3] - clip_off[1]) * clip_scale[1],
+                            ];
+                            let scissor = vk::Rect2D {
+                                offset: vk::Offset2D {
+                                    x: clip_rect[0].floor() as i32,
+                                    y: clip_rect[1].floor() as i32,
+                                },
+                                extent: vk::Extent2D {
+                                    width: (clip_rect[2] - clip_rect[0]).ceil() as u32,
+                                    height: (clip_rect[3] - clip_rect[1]).ceil() as u32,
+                                },
+                            };
+                            let count = count as u32;
+                            unsafe {
+                                device.cmd_set_scissor(
+                                    command_buffer,
+                                    0,
+                                    slice::from_ref(&scissor),
+                                );
+                                device.cmd_draw_indexed(
+                                    command_buffer,
+                                    count,
+                                    1,
+                                    index_offset as u32,
+                                    vertex_offset as i32,
+                                    0,
+                                );
+                            }
+                            index_offset += count as usize;
+                        }
+                        DrawCmd::ResetRenderState => {}
+                        DrawCmd::RawCallback { callback, raw_cmd } => unsafe {
+                            callback(draw_list.raw(), raw_cmd)
                         },
-                        extent: vk::Extent2D {
-                            width: (cmd.clip_rect.z - cmd.clip_rect.x) as u32,
-                            height: (cmd.clip_rect.w - cmd.clip_rect.y) as u32,
-                        },
-                    };
-                    unsafe {
-                        device.cmd_set_scissor(command_buffer, 0, slice::from_ref(&scissor));
-                        device.cmd_draw_indexed(
-                            command_buffer,
-                            cmd.elem_count,
-                            1,
-                            index_offset as u32,
-                            vertex_offset as i32,
-                            0,
-                        );
                     }
-
-                    index_offset += cmd.elem_count as usize;
                 }
 
                 vertex_offset = next_vertex_offset;
@@ -696,7 +708,7 @@ impl Renderer {
                     memory: Some(self.host_mem),
                     offset: vertex_mem_offset as vk::DeviceSize,
                     size: align_up(
-                        (vertex_offset * mem::size_of::<ImDrawVert>()) as u32,
+                        (vertex_offset * mem::size_of::<DrawVert>()) as u32,
                         self.atom_size,
                     ) as vk::DeviceSize,
                     ..Default::default()
@@ -705,17 +717,14 @@ impl Renderer {
                     memory: Some(self.host_mem),
                     offset: index_mem_offset as vk::DeviceSize,
                     size: align_up(
-                        (index_offset * mem::size_of::<ImDrawIdx>()) as u32,
+                        (index_offset * mem::size_of::<DrawIdx>()) as u32,
                         self.atom_size,
                     ) as vk::DeviceSize,
                     ..Default::default()
                 },
             ];
             unsafe { device.flush_mapped_memory_ranges(&mapped_ranges) }.unwrap();
-
-            Ok(())
-        })
-        .unwrap();
+        }
 
         self.frame_index = (1 + self.frame_index) % Renderer::FRAME_COUNT;
     }
