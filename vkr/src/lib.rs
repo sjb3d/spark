@@ -6,6 +6,7 @@ use lazy_static::lazy_static;
 use shared_library::dynamic_library::DynamicLibrary;
 use std::ffi::CStr;
 use std::mem;
+use std::mem::MaybeUninit;
 use std::os::raw::{c_int, c_void};
 use std::path::Path;
 use std::ptr;
@@ -142,10 +143,10 @@ impl Loader {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> result::Result<Instance, LoaderError> {
         let fp = self.fp_create_instance.expect("vkCreateInstance is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(p_create_info, p_allocator.map_or(ptr::null(), |r| r), &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(p_create_info, p_allocator.map_or(ptr::null(), |r| r), res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
         .map_err(|e| LoaderError::Vulkan(e))
@@ -163,10 +164,10 @@ impl Loader {
     }
     pub unsafe fn enumerate_instance_version(&self) -> Result<vk::Version> {
         if let Some(fp) = self.fp_enumerate_instance_version {
-            let mut res = mem::uninitialized();
-            let err = (fp)(&mut res);
+            let mut res = MaybeUninit::<_>::uninit();
+            let err = (fp)(res.as_mut_ptr());
             match err {
-                vk::Result::SUCCESS => Ok(res),
+                vk::Result::SUCCESS => Ok(res.assume_init()),
                 _ => Err(err),
             }
         } else {
@@ -177,11 +178,12 @@ impl Loader {
         let fp = self
             .fp_enumerate_instance_layer_properties
             .expect("vkEnumerateInstanceLayerProperties is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(&mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(&mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -197,11 +199,12 @@ impl Loader {
         let fp = self
             .fp_enumerate_instance_extension_properties
             .expect("vkEnumerateInstanceExtensionProperties is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(p_layer_name.as_ptr(), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(p_layer_name.as_ptr(), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1204,11 +1207,12 @@ impl Instance {
         let fp = self
             .fp_enumerate_physical_devices
             .expect("vkEnumeratePhysicalDevices is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(self.handle), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1228,9 +1232,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_properties
             .expect("vkGetPhysicalDeviceProperties is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(physical_device), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn get_physical_device_queue_family_properties_to_vec(
         &self,
@@ -1239,8 +1243,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_queue_family_properties
             .expect("vkGetPhysicalDeviceQueueFamilyProperties is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1253,9 +1258,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_memory_properties
             .expect("vkGetPhysicalDeviceMemoryProperties is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(physical_device), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn get_physical_device_features(
         &self,
@@ -1264,9 +1269,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_features
             .expect("vkGetPhysicalDeviceFeatures is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(physical_device), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn get_physical_device_format_properties(
         &self,
@@ -1276,9 +1281,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_format_properties
             .expect("vkGetPhysicalDeviceFormatProperties is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(physical_device), format, &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), format, res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn get_physical_device_image_format_properties(
         &self,
@@ -1292,10 +1297,18 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_image_format_properties
             .expect("vkGetPhysicalDeviceImageFormatProperties is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(physical_device), format, ty, tiling, usage, flags, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(physical_device),
+            format,
+            ty,
+            tiling,
+            usage,
+            flags,
+            res.as_mut_ptr(),
+        );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1307,15 +1320,15 @@ impl Instance {
         version: vk::Version,
     ) -> result::Result<Device, LoaderError> {
         let fp = self.fp_create_device.expect("vkCreateDevice is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(physical_device),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
         .map_err(|e| LoaderError::Vulkan(e))
@@ -1328,11 +1341,12 @@ impl Instance {
         let fp = self
             .fp_enumerate_device_layer_properties
             .expect("vkEnumerateDeviceLayerProperties is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1349,11 +1363,17 @@ impl Instance {
         let fp = self
             .fp_enumerate_device_extension_properties
             .expect("vkEnumerateDeviceExtensionProperties is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), p_layer_name.as_ptr(), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(
+            Some(physical_device),
+            p_layer_name.as_ptr(),
+            len.as_mut_ptr(),
+            ptr::null_mut(),
+        );
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1374,7 +1394,7 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_sparse_image_format_properties
             .expect("vkGetPhysicalDeviceSparseImageFormatProperties is not loaded");
-        let mut len = mem::uninitialized();
+        let mut len = MaybeUninit::<_>::uninit();
         (fp)(
             Some(physical_device),
             format,
@@ -1382,9 +1402,10 @@ impl Instance {
             samples,
             usage,
             tiling,
-            &mut len,
+            len.as_mut_ptr(),
             ptr::null_mut(),
         );
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(
             Some(physical_device),
@@ -1407,15 +1428,15 @@ impl Instance {
         let fp = self
             .fp_create_android_surface_khr
             .expect("vkCreateAndroidSurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1426,11 +1447,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_display_properties_khr
             .expect("vkGetPhysicalDeviceDisplayPropertiesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1446,11 +1468,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_display_plane_properties_khr
             .expect("vkGetPhysicalDeviceDisplayPlanePropertiesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1467,11 +1490,12 @@ impl Instance {
         let fp = self
             .fp_get_display_plane_supported_displays_khr
             .expect("vkGetDisplayPlaneSupportedDisplaysKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), plane_index, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), plane_index, len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), plane_index, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1488,11 +1512,12 @@ impl Instance {
         let fp = self
             .fp_get_display_mode_properties_khr
             .expect("vkGetDisplayModePropertiesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), Some(display), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), Some(display), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), Some(display), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1511,16 +1536,16 @@ impl Instance {
         let fp = self
             .fp_create_display_mode_khr
             .expect("vkCreateDisplayModeKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(physical_device),
             Some(display),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1533,10 +1558,10 @@ impl Instance {
         let fp = self
             .fp_get_display_plane_capabilities_khr
             .expect("vkGetDisplayPlaneCapabilitiesKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(physical_device), Some(mode), plane_index, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(physical_device), Some(mode), plane_index, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1548,15 +1573,15 @@ impl Instance {
         let fp = self
             .fp_create_display_plane_surface_khr
             .expect("vkCreateDisplayPlaneSurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1577,10 +1602,15 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_surface_support_khr
             .expect("vkGetPhysicalDeviceSurfaceSupportKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(physical_device), queue_family_index, Some(surface), &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(physical_device),
+            queue_family_index,
+            Some(surface),
+            res.as_mut_ptr(),
+        );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
         .map(|r| r != vk::FALSE)
@@ -1593,10 +1623,10 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_surface_capabilities_khr
             .expect("vkGetPhysicalDeviceSurfaceCapabilitiesKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(physical_device), Some(surface), &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(physical_device), Some(surface), res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1608,11 +1638,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_surface_formats_khr
             .expect("vkGetPhysicalDeviceSurfaceFormatsKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), Some(surface), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), Some(surface), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), Some(surface), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1629,11 +1660,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_surface_present_modes_khr
             .expect("vkGetPhysicalDeviceSurfacePresentModesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), Some(surface), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), Some(surface), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), Some(surface), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -1648,15 +1680,15 @@ impl Instance {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::SurfaceKHR> {
         let fp = self.fp_create_vi_surface_nn.expect("vkCreateViSurfaceNN is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1668,15 +1700,15 @@ impl Instance {
         let fp = self
             .fp_create_wayland_surface_khr
             .expect("vkCreateWaylandSurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1699,15 +1731,15 @@ impl Instance {
         let fp = self
             .fp_create_win32_surface_khr
             .expect("vkCreateWin32SurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1729,15 +1761,15 @@ impl Instance {
         let fp = self
             .fp_create_xlib_surface_khr
             .expect("vkCreateXlibSurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1761,15 +1793,15 @@ impl Instance {
         let fp = self
             .fp_create_xcb_surface_khr
             .expect("vkCreateXcbSurfaceKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1793,15 +1825,15 @@ impl Instance {
         let fp = self
             .fp_create_image_pipe_surface_fuchsia
             .expect("vkCreateImagePipeSurfaceFUCHSIA is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1813,15 +1845,15 @@ impl Instance {
         let fp = self
             .fp_create_debug_report_callback_ext
             .expect("vkCreateDebugReportCallbackEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1876,7 +1908,7 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_external_image_format_properties_nv
             .expect("vkGetPhysicalDeviceExternalImageFormatPropertiesNV is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(physical_device),
             format,
@@ -1885,10 +1917,10 @@ impl Instance {
             usage,
             flags,
             external_handle_type,
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -1991,8 +2023,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_queue_family_properties2
             .expect("vkGetPhysicalDeviceQueueFamilyProperties2 is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2005,8 +2038,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_queue_family_properties2_khr
             .expect("vkGetPhysicalDeviceQueueFamilyProperties2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2040,8 +2074,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_sparse_image_format_properties2
             .expect("vkGetPhysicalDeviceSparseImageFormatProperties2 is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(physical_device), p_format_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), p_format_info, len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(physical_device), p_format_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2055,8 +2090,9 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_sparse_image_format_properties2_khr
             .expect("vkGetPhysicalDeviceSparseImageFormatProperties2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(physical_device), p_format_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), p_format_info, len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(physical_device), p_format_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2188,10 +2224,10 @@ impl Instance {
         let fp = self
             .fp_get_rand_r_output_display_ext
             .expect("vkGetRandROutputDisplayEXT is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(physical_device), dpy, rr_output, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(physical_device), dpy, rr_output, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -2214,11 +2250,12 @@ impl Instance {
         let fp = self
             .fp_enumerate_physical_device_groups
             .expect("vkEnumeratePhysicalDeviceGroups is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(self.handle), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2231,11 +2268,12 @@ impl Instance {
         let fp = self
             .fp_enumerate_physical_device_groups_khr
             .expect("vkEnumeratePhysicalDeviceGroupsKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(self.handle), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(self.handle), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2252,15 +2290,15 @@ impl Instance {
         let fp = self
             .fp_create_ios_surface_mvk
             .expect("vkCreateIOSSurfaceMVK is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -2272,15 +2310,15 @@ impl Instance {
         let fp = self
             .fp_create_mac_os_surface_mvk
             .expect("vkCreateMacOSSurfaceMVK is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -2292,15 +2330,15 @@ impl Instance {
         let fp = self
             .fp_create_metal_surface_ext
             .expect("vkCreateMetalSurfaceEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -2327,11 +2365,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_surface_formats2_khr
             .expect("vkGetPhysicalDeviceSurfaceFormats2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), p_surface_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), p_surface_info, len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), p_surface_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2347,11 +2386,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_display_properties2_khr
             .expect("vkGetPhysicalDeviceDisplayProperties2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2367,11 +2407,12 @@ impl Instance {
         let fp = self
             .fp_get_physical_device_display_plane_properties2_khr
             .expect("vkGetPhysicalDeviceDisplayPlaneProperties2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2388,11 +2429,12 @@ impl Instance {
         let fp = self
             .fp_get_display_mode_properties2_khr
             .expect("vkGetDisplayModeProperties2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), Some(display), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), Some(display), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), Some(display), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -2496,15 +2538,15 @@ impl Instance {
         let fp = self
             .fp_create_debug_utils_messenger_ext
             .expect("vkCreateDebugUtilsMessengerEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -2541,15 +2583,15 @@ impl Instance {
         let fp = self
             .fp_create_headless_surface_ext
             .expect("vkCreateHeadlessSurfaceEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5578,9 +5620,9 @@ impl Device {
     }
     pub unsafe fn get_device_queue(&self, queue_family_index: u32, queue_index: u32) -> vk::Queue {
         let fp = self.fp_get_device_queue.expect("vkGetDeviceQueue is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), queue_family_index, queue_index, &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), queue_family_index, queue_index, res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn queue_submit(
         &self,
@@ -5618,15 +5660,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::DeviceMemory> {
         let fp = self.fp_allocate_memory.expect("vkAllocateMemory is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_allocate_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5642,10 +5684,10 @@ impl Device {
         flags: vk::MemoryMapFlags,
     ) -> Result<*mut c_void> {
         let fp = self.fp_map_memory.expect("vkMapMemory is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(memory), offset, size, flags, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(memory), offset, size, flags, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5679,17 +5721,17 @@ impl Device {
         let fp = self
             .fp_get_device_memory_commitment
             .expect("vkGetDeviceMemoryCommitment is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), Some(memory), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(memory), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn get_buffer_memory_requirements(&self, buffer: vk::Buffer) -> vk::MemoryRequirements {
         let fp = self
             .fp_get_buffer_memory_requirements
             .expect("vkGetBufferMemoryRequirements is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), Some(buffer), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(buffer), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn bind_buffer_memory(
         &self,
@@ -5708,9 +5750,9 @@ impl Device {
         let fp = self
             .fp_get_image_memory_requirements
             .expect("vkGetImageMemoryRequirements is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), Some(image), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(image), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn bind_image_memory(
         &self,
@@ -5732,8 +5774,9 @@ impl Device {
         let fp = self
             .fp_get_image_sparse_memory_requirements
             .expect("vkGetImageSparseMemoryRequirements is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(self.handle), Some(image), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(image), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(self.handle), Some(image), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -5759,15 +5802,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Fence> {
         let fp = self.fp_create_fence.expect("vkCreateFence is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5813,15 +5856,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Semaphore> {
         let fp = self.fp_create_semaphore.expect("vkCreateSemaphore is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5839,15 +5882,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Event> {
         let fp = self.fp_create_event.expect("vkCreateEvent is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5885,15 +5928,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::QueryPool> {
         let fp = self.fp_create_query_pool.expect("vkCreateQueryPool is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5943,15 +5986,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Buffer> {
         let fp = self.fp_create_buffer.expect("vkCreateBuffer is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5965,15 +6008,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::BufferView> {
         let fp = self.fp_create_buffer_view.expect("vkCreateBufferView is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -5991,15 +6034,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Image> {
         let fp = self.fp_create_image.expect("vkCreateImage is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6015,9 +6058,9 @@ impl Device {
         let fp = self
             .fp_get_image_subresource_layout
             .expect("vkGetImageSubresourceLayout is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), Some(image), p_subresource, &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(image), p_subresource, res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn create_image_view(
         &self,
@@ -6025,15 +6068,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::ImageView> {
         let fp = self.fp_create_image_view.expect("vkCreateImageView is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6053,15 +6096,15 @@ impl Device {
         let fp = self
             .fp_create_shader_module
             .expect("vkCreateShaderModule is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6083,15 +6126,15 @@ impl Device {
         let fp = self
             .fp_create_pipeline_cache
             .expect("vkCreatePipelineCache is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6204,17 +6247,17 @@ impl Device {
             .expect("vkCreateGraphicsPipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
+        let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            v.as_mut_ptr(),
+            v.as_mut_ptr() as *mut _,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6229,17 +6272,17 @@ impl Device {
             .expect("vkCreateGraphicsPipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
-        let mut v = mem::uninitialized();
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut v,
+            v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6303,17 +6346,17 @@ impl Device {
             .expect("vkCreateComputePipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
+        let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            v.as_mut_ptr(),
+            v.as_mut_ptr() as *mut _,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6328,17 +6371,17 @@ impl Device {
             .expect("vkCreateComputePipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
-        let mut v = mem::uninitialized();
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut v,
+            v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6358,15 +6401,15 @@ impl Device {
         let fp = self
             .fp_create_pipeline_layout
             .expect("vkCreatePipelineLayout is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6390,15 +6433,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Sampler> {
         let fp = self.fp_create_sampler.expect("vkCreateSampler is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6414,15 +6457,15 @@ impl Device {
         let fp = self
             .fp_create_descriptor_set_layout
             .expect("vkCreateDescriptorSetLayout is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6448,15 +6491,15 @@ impl Device {
         let fp = self
             .fp_create_descriptor_pool
             .expect("vkCreateDescriptorPool is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6525,10 +6568,10 @@ impl Device {
             .fp_allocate_descriptor_sets
             .expect("vkAllocateDescriptorSets is not loaded");
         assert_eq!(p_allocate_info.descriptor_set_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
-        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let mut v = MaybeUninit::<A>::uninit();
+        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr() as *mut _);
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6540,10 +6583,10 @@ impl Device {
             .fp_allocate_descriptor_sets
             .expect("vkAllocateDescriptorSets is not loaded");
         assert_eq!(p_allocate_info.descriptor_set_count, 1);
-        let mut v = mem::uninitialized();
-        let v_err = (fp)(Some(self.handle), p_allocate_info, &mut v);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6591,15 +6634,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Framebuffer> {
         let fp = self.fp_create_framebuffer.expect("vkCreateFramebuffer is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6617,15 +6660,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::RenderPass> {
         let fp = self.fp_create_render_pass.expect("vkCreateRenderPass is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6641,9 +6684,9 @@ impl Device {
         let fp = self
             .fp_get_render_area_granularity
             .expect("vkGetRenderAreaGranularity is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), Some(render_pass), &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(render_pass), res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn create_command_pool(
         &self,
@@ -6651,15 +6694,15 @@ impl Device {
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::CommandPool> {
         let fp = self.fp_create_command_pool.expect("vkCreateCommandPool is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -6722,10 +6765,10 @@ impl Device {
             .fp_allocate_command_buffers
             .expect("vkAllocateCommandBuffers is not loaded");
         assert_eq!(p_allocate_info.command_buffer_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
-        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
+        let mut v = MaybeUninit::<A>::uninit();
+        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr() as *mut _);
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -6737,10 +6780,10 @@ impl Device {
             .fp_allocate_command_buffers
             .expect("vkAllocateCommandBuffers is not loaded");
         assert_eq!(p_allocate_info.command_buffer_count, 1);
-        let mut v = mem::uninitialized();
-        let v_err = (fp)(Some(self.handle), p_allocate_info, &mut v);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -7486,16 +7529,16 @@ impl Device {
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
         let swapchain_count = p_create_infos.len() as u32;
         assert_eq!(swapchain_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
+        let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            v.as_mut_ptr(),
+            v.as_mut_ptr() as *mut _,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -7509,16 +7552,16 @@ impl Device {
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
         let swapchain_count = p_create_infos.len() as u32;
         assert_eq!(swapchain_count, 1);
-        let mut v = mem::uninitialized();
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut v,
+            v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -7530,15 +7573,15 @@ impl Device {
         let fp = self
             .fp_create_swapchain_khr
             .expect("vkCreateSwapchainKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7556,11 +7599,12 @@ impl Device {
         let fp = self
             .fp_get_swapchain_images_khr
             .expect("vkGetSwapchainImagesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(self.handle), Some(swapchain), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), Some(swapchain), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(self.handle), Some(swapchain), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -7579,11 +7623,18 @@ impl Device {
         let fp = self
             .fp_acquire_next_image_khr
             .expect("vkAcquireNextImageKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(swapchain), timeout, semaphore, fence, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            Some(swapchain),
+            timeout,
+            semaphore,
+            fence,
+            res.as_mut_ptr(),
+        );
         match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
-                Ok((err, res))
+                Ok((err, res.assume_init()))
             }
             _ => Err(err),
         }
@@ -7657,10 +7708,10 @@ impl Device {
         let fp = self
             .fp_get_memory_win32_handle_nv
             .expect("vkGetMemoryWin32HandleNV is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(memory), handle_type, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(memory), handle_type, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7692,15 +7743,15 @@ impl Device {
         let fp = self
             .fp_create_indirect_commands_layout_nvx
             .expect("vkCreateIndirectCommandsLayoutNVX is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7726,15 +7777,15 @@ impl Device {
         let fp = self
             .fp_create_object_table_nvx
             .expect("vkCreateObjectTableNVX is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7846,10 +7897,10 @@ impl Device {
         let fp = self
             .fp_get_memory_win32_handle_khr
             .expect("vkGetMemoryWin32HandleKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_win32_handle_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_win32_handle_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7870,10 +7921,10 @@ impl Device {
     }
     pub unsafe fn get_memory_fd_khr(&self, p_get_fd_info: &vk::MemoryGetFdInfoKHR) -> Result<c_int> {
         let fp = self.fp_get_memory_fd_khr.expect("vkGetMemoryFdKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_fd_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_fd_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7899,10 +7950,10 @@ impl Device {
         let fp = self
             .fp_get_semaphore_win32_handle_khr
             .expect("vkGetSemaphoreWin32HandleKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_win32_handle_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_win32_handle_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7921,10 +7972,10 @@ impl Device {
     }
     pub unsafe fn get_semaphore_fd_khr(&self, p_get_fd_info: &vk::SemaphoreGetFdInfoKHR) -> Result<c_int> {
         let fp = self.fp_get_semaphore_fd_khr.expect("vkGetSemaphoreFdKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_fd_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_fd_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7948,10 +7999,10 @@ impl Device {
         let fp = self
             .fp_get_fence_win32_handle_khr
             .expect("vkGetFenceWin32HandleKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_win32_handle_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_win32_handle_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -7970,10 +8021,10 @@ impl Device {
     }
     pub unsafe fn get_fence_fd_khr(&self, p_get_fd_info: &vk::FenceGetFdInfoKHR) -> Result<c_int> {
         let fp = self.fp_get_fence_fd_khr.expect("vkGetFenceFdKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_get_fd_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_fd_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8007,15 +8058,15 @@ impl Device {
         let fp = self
             .fp_register_device_event_ext
             .expect("vkRegisterDeviceEventEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_device_event_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8028,16 +8079,16 @@ impl Device {
         let fp = self
             .fp_register_display_event_ext
             .expect("vkRegisterDisplayEventEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             Some(display),
             p_display_event_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8049,10 +8100,10 @@ impl Device {
         let fp = self
             .fp_get_swapchain_counter_ext
             .expect("vkGetSwapchainCounterEXT is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(swapchain), counter, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(swapchain), counter, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8065,15 +8116,15 @@ impl Device {
         let fp = self
             .fp_get_device_group_peer_memory_features
             .expect("vkGetDeviceGroupPeerMemoryFeatures is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         (fp)(
             Some(self.handle),
             heap_index,
             local_device_index,
             remote_device_index,
-            &mut res,
+            res.as_mut_ptr(),
         );
-        res
+        res.assume_init()
     }
     pub unsafe fn get_device_group_peer_memory_features_khr(
         &self,
@@ -8084,15 +8135,15 @@ impl Device {
         let fp = self
             .fp_get_device_group_peer_memory_features_khr
             .expect("vkGetDeviceGroupPeerMemoryFeaturesKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         (fp)(
             Some(self.handle),
             heap_index,
             local_device_index,
             remote_device_index,
-            &mut res,
+            res.as_mut_ptr(),
         );
-        res
+        res.assume_init()
     }
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
         let fp = self.fp_bind_buffer_memory2.expect("vkBindBufferMemory2 is not loaded");
@@ -8164,10 +8215,10 @@ impl Device {
         let fp = self
             .fp_get_device_group_surface_present_modes_khr
             .expect("vkGetDeviceGroupSurfacePresentModesKHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(surface), &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(surface), res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8178,11 +8229,11 @@ impl Device {
         let fp = self
             .fp_acquire_next_image2_khr
             .expect("vkAcquireNextImage2KHR is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_acquire_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_acquire_info, res.as_mut_ptr());
         match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::NOT_READY | vk::Result::SUBOPTIMAL_KHR => {
-                Ok((err, res))
+                Ok((err, res.assume_init()))
             }
             _ => Err(err),
         }
@@ -8239,11 +8290,12 @@ impl Device {
         let fp = self
             .fp_get_physical_device_present_rectangles_khr
             .expect("vkGetPhysicalDevicePresentRectanglesKHR is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), Some(surface), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), Some(surface), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), Some(surface), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -8260,15 +8312,15 @@ impl Device {
         let fp = self
             .fp_create_descriptor_update_template
             .expect("vkCreateDescriptorUpdateTemplate is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8280,15 +8332,15 @@ impl Device {
         let fp = self
             .fp_create_descriptor_update_template_khr
             .expect("vkCreateDescriptorUpdateTemplateKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8399,10 +8451,10 @@ impl Device {
         let fp = self
             .fp_get_refresh_cycle_duration_google
             .expect("vkGetRefreshCycleDurationGOOGLE is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), Some(swapchain), &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(swapchain), res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8413,11 +8465,12 @@ impl Device {
         let fp = self
             .fp_get_past_presentation_timing_google
             .expect("vkGetPastPresentationTimingGOOGLE is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(self.handle), Some(swapchain), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), Some(swapchain), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(self.handle), Some(swapchain), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -8528,8 +8581,9 @@ impl Device {
         let fp = self
             .fp_get_image_sparse_memory_requirements2
             .expect("vkGetImageSparseMemoryRequirements2 is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(self.handle), p_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_info, len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -8542,8 +8596,9 @@ impl Device {
         let fp = self
             .fp_get_image_sparse_memory_requirements2_khr
             .expect("vkGetImageSparseMemoryRequirements2KHR is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(self.handle), p_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_info, len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -8557,15 +8612,15 @@ impl Device {
         let fp = self
             .fp_create_sampler_ycbcr_conversion
             .expect("vkCreateSamplerYcbcrConversion is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8577,15 +8632,15 @@ impl Device {
         let fp = self
             .fp_create_sampler_ycbcr_conversion_khr
             .expect("vkCreateSamplerYcbcrConversionKHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8619,9 +8674,9 @@ impl Device {
     }
     pub unsafe fn get_device_queue2(&self, p_queue_info: &vk::DeviceQueueInfo2) -> vk::Queue {
         let fp = self.fp_get_device_queue2.expect("vkGetDeviceQueue2 is not loaded");
-        let mut res = mem::uninitialized();
-        (fp)(Some(self.handle), p_queue_info, &mut res);
-        res
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_queue_info, res.as_mut_ptr());
+        res.assume_init()
     }
     pub unsafe fn create_validation_cache_ext(
         &self,
@@ -8631,15 +8686,15 @@ impl Device {
         let fp = self
             .fp_create_validation_cache_ext
             .expect("vkCreateValidationCacheEXT is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8751,11 +8806,12 @@ impl Device {
         let fp = self
             .fp_get_physical_device_calibrateable_time_domains_ext
             .expect("vkGetPhysicalDeviceCalibrateableTimeDomainsEXT is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -8819,16 +8875,16 @@ impl Device {
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
         assert_eq!(timestamp_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
+        let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
             p_timestamp_infos.as_ptr(),
-            v.as_mut_ptr(),
+            v.as_mut_ptr() as *mut _,
             p_max_deviation,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -8842,16 +8898,16 @@ impl Device {
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
         assert_eq!(timestamp_count, 1);
-        let mut v = mem::uninitialized();
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
             p_timestamp_infos.as_ptr(),
-            &mut v,
+            v.as_mut_ptr(),
             p_max_deviation,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -8902,15 +8958,15 @@ impl Device {
         let fp = self
             .fp_create_render_pass2_khr
             .expect("vkCreateRenderPass2KHR is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -8967,10 +9023,10 @@ impl Device {
         let fp = self
             .fp_get_memory_android_hardware_buffer_android
             .expect("vkGetMemoryAndroidHardwareBufferANDROID is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -9076,8 +9132,9 @@ impl Device {
         let fp = self
             .fp_get_queue_checkpoint_data_nv
             .expect("vkGetQueueCheckpointDataNV is not loaded");
-        let mut len = mem::uninitialized();
-        (fp)(Some(queue), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(queue), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         (fp)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -9320,15 +9377,15 @@ impl Device {
         let fp = self
             .fp_create_acceleration_structure_nv
             .expect("vkCreateAccelerationStructureNV is not loaded");
-        let mut res = mem::uninitialized();
+        let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
             p_create_info,
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut res,
+            res.as_mut_ptr(),
         );
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -9566,17 +9623,17 @@ impl Device {
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, A::len() as u32);
-        let mut v: A = mem::uninitialized();
+        let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            v.as_mut_ptr(),
+            v.as_mut_ptr() as *mut _,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -9591,17 +9648,17 @@ impl Device {
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
         let create_info_count = p_create_infos.len() as u32;
         assert_eq!(create_info_count, 1);
-        let mut v = mem::uninitialized();
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
             p_allocator.map_or(ptr::null(), |r| r),
-            &mut v,
+            v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -9632,11 +9689,12 @@ impl Device {
         let fp = self
             .fp_get_physical_device_cooperative_matrix_properties_nv
             .expect("vkGetPhysicalDeviceCooperativeMatrixPropertiesNV is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -9659,11 +9717,12 @@ impl Device {
         let fp = self
             .fp_get_physical_device_surface_present_modes2_ext
             .expect("vkGetPhysicalDeviceSurfacePresentModes2EXT is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), p_surface_info, &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), p_surface_info, len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), p_surface_info, &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -9679,10 +9738,10 @@ impl Device {
         let fp = self
             .fp_get_device_group_surface_present_modes2_ext
             .expect("vkGetDeviceGroupSurfacePresentModes2EXT is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_surface_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_surface_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -9713,11 +9772,12 @@ impl Device {
         let fp = self
             .fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv
             .expect("vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV is not loaded");
-        let mut len = mem::uninitialized();
-        let len_err = (fp)(Some(physical_device), &mut len, ptr::null_mut());
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
+        let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
         let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
@@ -9794,10 +9854,10 @@ impl Device {
         let fp = self
             .fp_acquire_performance_configuration_intel
             .expect("vkAcquirePerformanceConfigurationINTEL is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), p_acquire_info, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_acquire_info, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }
@@ -9835,10 +9895,10 @@ impl Device {
         let fp = self
             .fp_get_performance_parameter_intel
             .expect("vkGetPerformanceParameterINTEL is not loaded");
-        let mut res = mem::uninitialized();
-        let err = (fp)(Some(self.handle), parameter, &mut res);
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), parameter, res.as_mut_ptr());
         match err {
-            vk::Result::SUCCESS => Ok(res),
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }

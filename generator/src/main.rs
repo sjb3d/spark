@@ -2245,21 +2245,21 @@ impl<'a> Generator<'a> {
                         write!(w, "let err = ")?;
                     }
                     LibReturnType::ResultObject | LibReturnType::ResultEnumAndObject => {
-                        write!(w, "let mut res = mem::uninitialized(); let err = ")?;
+                        write!(w, "let mut res = MaybeUninit::<_>::uninit(); let err = ")?;
                     }
                     LibReturnType::Object => {
-                        write!(w, "let mut res = mem::uninitialized();")?;
+                        write!(w, "let mut res = MaybeUninit::<_>::uninit();")?;
                     }
                     LibReturnType::ResultVecUnknownLen => {
                         if pass_index == 0 {
-                            write!(w, "let mut len = mem::uninitialized(); let len_err = ")?;
+                            write!(w, "let mut len = MaybeUninit::<_>::uninit(); let len_err = ")?;
                         } else {
                             write!(w, "let mut v = Vec::with_capacity(len as usize); let v_err = ")?;
                         }
                     }
                     LibReturnType::VecUnknownLen => {
                         if pass_index == 0 {
-                            write!(w, "let mut len = mem::uninitialized();")?;
+                            write!(w, "let mut len = MaybeUninit::<_>::uninit();")?;
                         } else {
                             write!(w, "let mut v = Vec::with_capacity(len as usize);")?;
                         }
@@ -2278,14 +2278,14 @@ impl<'a> Generator<'a> {
                         LibCommandStyle::Array => {
                             write!(
                                 w,
-                                "assert_eq!({}, A::len() as u32); let mut v: A = mem::uninitialized(); let v_err = ",
+                                "assert_eq!({}, A::len() as u32); let mut v = MaybeUninit::<A>::uninit(); let v_err = ",
                                 len_expr
                             )?;
                         }
                         LibCommandStyle::Single => {
                             write!(
                                 w,
-                                "assert_eq!({}, 1); let mut v = mem::uninitialized(); let v_err = ",
+                                "assert_eq!({}, 1); let mut v = MaybeUninit::<_>::uninit(); let v_err = ",
                                 len_expr
                             )?;
                         }
@@ -2331,10 +2331,14 @@ impl<'a> Generator<'a> {
                             }
                         }
                         LibParamType::ReturnObject { .. } => {
-                            write!(w, "&mut res")?;
+                            write!(w, "res.as_mut_ptr()")?;
                         }
                         LibParamType::ReturnVecLen { .. } => {
-                            write!(w, "&mut len")?;
+                            if pass_index == 0 {
+                                write!(w, "len.as_mut_ptr()")?;
+                            } else {
+                                write!(w, "&mut len")?;
+                            }
                         }
                         LibParamType::ReturnVec { .. } => match style {
                             LibCommandStyle::Default => {
@@ -2348,10 +2352,10 @@ impl<'a> Generator<'a> {
                                 }
                             }
                             LibCommandStyle::Array => {
-                                write!(w, "v.as_mut_ptr()")?;
+                                write!(w, "v.as_mut_ptr() as *mut _")?;
                             }
                             LibCommandStyle::Single => {
-                                write!(w, "&mut v")?;
+                                write!(w, "v.as_mut_ptr()")?;
                             }
                         },
                     }
@@ -2381,7 +2385,7 @@ impl<'a> Generator<'a> {
                         write!(w, "match err {{ {} => Ok(err), _ => Err(err) }}", ok_matches)?;
                     }
                     LibReturnType::ResultObject => {
-                        write!(w, "match err {{ vk::Result::SUCCESS => Ok(res), _ => Err(err) }}",)?;
+                        write!(w, "match err {{ vk::Result::SUCCESS => Ok(res.assume_init()), _ => Err(err) }}",)?;
                     }
                     LibReturnType::ResultEnumAndObject => {
                         let matches: Vec<String> = cmd_def
@@ -2393,22 +2397,24 @@ impl<'a> Generator<'a> {
                             .collect();
                         write!(
                             w,
-                            "match err {{ {} => Ok((err, res)), _ => Err(err) }}",
+                            "match err {{ {} => Ok((err, res.assume_init())), _ => Err(err) }}",
                             matches.join("|"),
                         )?;
                     }
                     LibReturnType::Object => {
-                        write!(w, "res")?;
+                        write!(w, "res.assume_init()")?;
                     }
                     LibReturnType::ResultVecUnknownLen => {
                         if pass_index == 0 {
-                            write!(w, "if len_err != vk::Result::SUCCESS {{ return Err(len_err) }}")?;
+                            write!(w, "if len_err != vk::Result::SUCCESS {{ return Err(len_err) }} let mut len = len.assume_init();")?;
                         } else {
                             write!(w, "v.set_len(len as usize); match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
                         }
                     }
                     LibReturnType::VecUnknownLen => {
-                        if pass_index != 0 {
+                        if pass_index == 0 {
+                            write!(w, "let mut len = len.assume_init();")?;
+                        } else {
                             write!(w, "v.set_len(len as usize); v")?;
                         }
                     }
@@ -2417,10 +2423,12 @@ impl<'a> Generator<'a> {
                             write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }}")?;
                         }
                         LibCommandStyle::ToVecUnknownLen
-                        | LibCommandStyle::ToVecKnownLen
-                        | LibCommandStyle::Array
-                        | LibCommandStyle::Single => {
+                        | LibCommandStyle::ToVecKnownLen => {
                             write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
+                        }
+                        LibCommandStyle::Array
+                        | LibCommandStyle::Single => {
+                            write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v.assume_init()), _ => Err(v_err) }}")?;
                         }
                     },
                 }

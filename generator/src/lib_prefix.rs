@@ -5,6 +5,7 @@ use lazy_static::lazy_static;
 use std::ffi::CStr;
 use std::os::raw::{c_void, c_int};
 use std::mem;
+use std::mem::MaybeUninit;
 use std::path::Path;
 use std::ptr;
 use std::result;
