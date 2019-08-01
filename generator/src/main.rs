@@ -984,7 +984,9 @@ impl<'a> Generator<'a> {
                         all |= value;
                     }
                     EnumEntryValue::Alias(ref alias) => {
-                        writeln!(w, "pub const {}: Self = Self::{};", name, alias)?;
+                        if name != alias {
+                            writeln!(w, "pub const {}: Self = Self::{};", name, alias)?;
+                        }
                     }
                 }
             }
