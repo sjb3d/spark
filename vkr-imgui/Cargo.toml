@@ -9,4 +9,4 @@ publish = false
 vkr = { path = "../vkr" }
 imgui = "0.0.22"
 arrayvec = "0.4.7"
-memoffset = "0.2"
+memoffset = "0.5"
