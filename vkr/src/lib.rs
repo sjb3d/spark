@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 118
+//! Generated from vk.xml with `VK_HEADER_VERSION` 119
 pub mod builder;
 pub mod vk;
 
@@ -2746,6 +2746,7 @@ pub struct DeviceExtensions {
     pub ext_line_rasterization: bool,
     pub ext_host_query_reset: bool,
     pub ext_index_type_uint8: bool,
+    pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub ext_texel_buffer_alignment: bool,
 }
@@ -3028,6 +3029,10 @@ pub struct Device {
     pub fp_release_performance_configuration_intel: Option<vk::FnReleasePerformanceConfigurationINTEL>,
     pub fp_queue_set_performance_configuration_intel: Option<vk::FnQueueSetPerformanceConfigurationINTEL>,
     pub fp_get_performance_parameter_intel: Option<vk::FnGetPerformanceParameterINTEL>,
+    pub fp_get_pipeline_executable_properties_khr: Option<vk::FnGetPipelineExecutablePropertiesKHR>,
+    pub fp_get_pipeline_executable_statistics_khr: Option<vk::FnGetPipelineExecutableStatisticsKHR>,
+    pub fp_get_pipeline_executable_internal_representations_khr:
+        Option<vk::FnGetPipelineExecutableInternalRepresentationsKHR>,
     pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
 }
 impl Device {
@@ -3475,6 +3480,9 @@ impl Device {
     pub fn ext_index_type_uint8_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") }
     }
+    pub fn khr_pipeline_executable_properties_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") }
+    }
     pub fn ext_shader_demote_to_helper_invocation_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") }
     }
@@ -3648,6 +3656,7 @@ impl Device {
                     b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
+                    b"VK_KHR_pipeline_executable_properties" => extensions.khr_pipeline_executable_properties = true,
                     b"VK_EXT_shader_demote_to_helper_invocation" => {
                         extensions.ext_shader_demote_to_helper_invocation = true
                     }
@@ -5612,6 +5621,30 @@ impl Device {
             },
             fp_get_performance_parameter_intel: if extensions.intel_performance_query {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPerformanceParameterINTEL\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_executable_properties_khr: if extensions.khr_pipeline_executable_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPipelineExecutablePropertiesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_executable_statistics_khr: if extensions.khr_pipeline_executable_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPipelineExecutableStatisticsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_executable_internal_representations_khr: if extensions.khr_pipeline_executable_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPipelineExecutableInternalRepresentationsKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9910,6 +9943,69 @@ impl Device {
         match err {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
+        }
+    }
+    pub unsafe fn get_pipeline_executable_properties_khr_to_vec(
+        &self,
+        p_pipeline_info: &vk::PipelineInfoKHR,
+    ) -> Result<Vec<vk::PipelineExecutablePropertiesKHR>> {
+        let fp = self
+            .fp_get_pipeline_executable_properties_khr
+            .expect("vkGetPipelineExecutablePropertiesKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), p_pipeline_info, len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), p_pipeline_info, &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_pipeline_executable_statistics_khr_to_vec(
+        &self,
+        p_executable_info: &vk::PipelineExecutableInfoKHR,
+    ) -> Result<Vec<vk::PipelineExecutableStatisticKHR>> {
+        let fp = self
+            .fp_get_pipeline_executable_statistics_khr
+            .expect("vkGetPipelineExecutableStatisticsKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), p_executable_info, len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), p_executable_info, &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_pipeline_executable_internal_representations_khr_to_vec(
+        &self,
+        p_executable_info: &vk::PipelineExecutableInfoKHR,
+    ) -> Result<Vec<vk::PipelineExecutableInternalRepresentationKHR>> {
+        let fp = self
+            .fp_get_pipeline_executable_internal_representations_khr
+            .expect("vkGetPipelineExecutableInternalRepresentationsKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), p_executable_info, len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), p_executable_info, &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
     pub unsafe fn cmd_set_line_stipple_ext(

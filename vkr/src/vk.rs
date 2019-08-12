@@ -2687,6 +2687,10 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = PipelineCreateFlags(0x20);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const CAPTURE_STATISTICS_KHR: Self = PipelineCreateFlags(0x40);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = PipelineCreateFlags(0x80);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2698,13 +2702,13 @@ impl PipelineCreateFlags {
         PipelineCreateFlags(0)
     }
     pub fn all() -> Self {
-        PipelineCreateFlags(0x3f)
+        PipelineCreateFlags(0xff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3f
+        self.0 == 0xff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2757,6 +2761,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
                 (0x20, "DEFER_COMPILE_NV"),
+                (0x40, "CAPTURE_STATISTICS_KHR"),
+                (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
             ],
             f,
         )
@@ -12174,6 +12180,18 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
     /// Added by extension VK_EXT_index_type_uint8.
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = StructureType(1000265000);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR: Self = StructureType(1000269000);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PIPELINE_INFO_KHR: Self = StructureType(1000269001);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PIPELINE_EXECUTABLE_PROPERTIES_KHR: Self = StructureType(1000269002);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PIPELINE_EXECUTABLE_INFO_KHR: Self = StructureType(1000269003);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = StructureType(1000269004);
+    /// Added by extension VK_KHR_pipeline_executable_properties.
+    pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = StructureType(1000269005);
     /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = StructureType(1000276000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
@@ -12553,6 +12571,12 @@ impl fmt::Display for StructureType {
             1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
             1000261000 => Some(&"PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
+            1000269000 => Some(&"PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR"),
+            1000269001 => Some(&"PIPELINE_INFO_KHR"),
+            1000269002 => Some(&"PIPELINE_EXECUTABLE_PROPERTIES_KHR"),
+            1000269003 => Some(&"PIPELINE_EXECUTABLE_INFO_KHR"),
+            1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
+            1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
@@ -14475,6 +14499,36 @@ impl fmt::Display for CoarseSampleOrderTypeNV {
             1 => Some(&"CUSTOM"),
             2 => Some(&"PIXEL_MAJOR"),
             3 => Some(&"SAMPLE_MAJOR"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PipelineExecutableStatisticFormatKHR(i32);
+impl PipelineExecutableStatisticFormatKHR {
+    pub const BOOL32: Self = PipelineExecutableStatisticFormatKHR(0);
+    pub const INT64: Self = PipelineExecutableStatisticFormatKHR(1);
+    pub const UINT64: Self = PipelineExecutableStatisticFormatKHR(2);
+    pub const FLOAT64: Self = PipelineExecutableStatisticFormatKHR(3);
+}
+impl default::Default for PipelineExecutableStatisticFormatKHR {
+    fn default() -> Self {
+        PipelineExecutableStatisticFormatKHR(0)
+    }
+}
+impl fmt::Display for PipelineExecutableStatisticFormatKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BOOL32"),
+            1 => Some(&"INT64"),
+            2 => Some(&"UINT64"),
+            3 => Some(&"FLOAT64"),
             _ => None,
         };
         if let Some(name) = name {
@@ -30286,6 +30340,212 @@ impl fmt::Debug for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_executable_info: Bool32,
+}
+impl default::Default for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+    fn default() -> Self {
+        PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            pipeline_executable_info: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineExecutablePropertiesFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_executable_info", &self.pipeline_executable_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub pipeline: Option<Pipeline>,
+}
+impl default::Default for PipelineInfoKHR {
+    fn default() -> Self {
+        PipelineInfoKHR {
+            s_type: StructureType::PIPELINE_INFO_KHR,
+            p_next: ptr::null(),
+            pipeline: None,
+        }
+    }
+}
+impl fmt::Debug for PipelineInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline", &self.pipeline)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineExecutablePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stages: ShaderStageFlags,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub subgroup_size: u32,
+}
+impl default::Default for PipelineExecutablePropertiesKHR {
+    fn default() -> Self {
+        PipelineExecutablePropertiesKHR {
+            s_type: StructureType::PIPELINE_EXECUTABLE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            stages: ShaderStageFlags::default(),
+            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            subgroup_size: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineExecutablePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineExecutablePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stages", &self.stages)
+            .field("name", &unsafe { CStr::from_ptr(self.name.as_ptr()) })
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("subgroup_size", &self.subgroup_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineExecutableInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub pipeline: Option<Pipeline>,
+    pub executable_index: u32,
+}
+impl default::Default for PipelineExecutableInfoKHR {
+    fn default() -> Self {
+        PipelineExecutableInfoKHR {
+            s_type: StructureType::PIPELINE_EXECUTABLE_INFO_KHR,
+            p_next: ptr::null(),
+            pipeline: None,
+            executable_index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineExecutableInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineExecutableInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline", &self.pipeline)
+            .field("executable_index", &self.executable_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union PipelineExecutableStatisticValueKHR {
+    pub b32: Bool32,
+    pub i64: i64,
+    pub u64: u64,
+    pub f64: f64,
+}
+impl default::Default for PipelineExecutableStatisticValueKHR {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for PipelineExecutableStatisticValueKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineExecutableStatisticValueKHR")
+            .field("b32", unsafe { &self.b32 })
+            .field("i64", unsafe { &self.i64 })
+            .field("u64", unsafe { &self.u64 })
+            .field("f64", unsafe { &self.f64 })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineExecutableStatisticKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub format: PipelineExecutableStatisticFormatKHR,
+    pub value: PipelineExecutableStatisticValueKHR,
+}
+impl default::Default for PipelineExecutableStatisticKHR {
+    fn default() -> Self {
+        PipelineExecutableStatisticKHR {
+            s_type: StructureType::PIPELINE_EXECUTABLE_STATISTIC_KHR,
+            p_next: ptr::null_mut(),
+            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            format: PipelineExecutableStatisticFormatKHR::default(),
+            value: PipelineExecutableStatisticValueKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineExecutableStatisticKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineExecutableStatisticKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("name", &unsafe { CStr::from_ptr(self.name.as_ptr()) })
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("format", &self.format)
+            .field("value", &self.value)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineExecutableInternalRepresentationKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub is_text: Bool32,
+    pub data_size: usize,
+    pub p_data: *mut c_void,
+}
+impl default::Default for PipelineExecutableInternalRepresentationKHR {
+    fn default() -> Self {
+        PipelineExecutableInternalRepresentationKHR {
+            s_type: StructureType::PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR,
+            p_next: ptr::null_mut(),
+            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            is_text: Bool32::default(),
+            data_size: usize::default(),
+            p_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for PipelineExecutableInternalRepresentationKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineExecutableInternalRepresentationKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("name", &unsafe { CStr::from_ptr(self.name.as_ptr()) })
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("is_text", &self.is_text)
+            .field("data_size", &self.data_size)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -32406,6 +32666,24 @@ pub type FnGetPerformanceParameterINTEL = unsafe extern "system" fn(
     device: Option<Device>,
     parameter: PerformanceParameterTypeINTEL,
     p_value: *mut PerformanceValueINTEL,
+) -> Result;
+pub type FnGetPipelineExecutablePropertiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_pipeline_info: *const PipelineInfoKHR,
+    p_executable_count: *mut u32,
+    p_properties: *mut PipelineExecutablePropertiesKHR,
+) -> Result;
+pub type FnGetPipelineExecutableStatisticsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_executable_info: *const PipelineExecutableInfoKHR,
+    p_statistic_count: *mut u32,
+    p_statistics: *mut PipelineExecutableStatisticKHR,
+) -> Result;
+pub type FnGetPipelineExecutableInternalRepresentationsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_executable_info: *const PipelineExecutableInfoKHR,
+    p_internal_representation_count: *mut u32,
+    p_internal_representations: *mut PipelineExecutableInternalRepresentationKHR,
 ) -> Result;
 pub type FnCmdSetLineStippleEXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
