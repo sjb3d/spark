@@ -373,8 +373,9 @@ impl<'a> Generator<'a> {
 
     fn check_type_derives(&self, type_name: &str) -> bool {
         match type_name {
-            "char" | "int" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "int32_t" | "size_t" => true,
-            "float" => false,
+            "char" | "int" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "int8_t" | "int16_t" | "int32_t"
+            | "int64_t" | "size_t" => true,
+            "float" | "double" => false,
             _ => {
                 if let Some(ty) = self.type_by_name.get(type_name) {
                     match ty.category.as_ref_str() {
@@ -710,11 +711,15 @@ impl<'a> Generator<'a> {
             "char" => "c_char".to_owned(),
             "int" => "c_int".to_owned(),
             "float" => "f32".to_owned(),
+            "double" => "f64".to_owned(),
             "uint8_t" => "u8".to_owned(),
             "uint16_t" => "u16".to_owned(),
             "uint32_t" => "u32".to_owned(),
             "uint64_t" => "u64".to_owned(),
+            "int8_t" => "i8".to_owned(),
+            "int16_t" => "i16".to_owned(),
             "int32_t" => "i32".to_owned(),
+            "int64_t" => "i64".to_owned(),
             "size_t" => "usize".to_owned(),
             _ => {
                 let type_name = self.bitmask_from_value.get(type_name).cloned().unwrap_or(type_name);
