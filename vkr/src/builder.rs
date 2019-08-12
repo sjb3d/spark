@@ -11766,6 +11766,41 @@ impl<'a> Deref for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+    type Type = PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subgroup_size_control(mut self, subgroup_size_control: bool) -> Self {
+        self.inner.subgroup_size_control = if subgroup_size_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn compute_full_subgroups(mut self, compute_full_subgroups: bool) -> Self {
+        self.inner.compute_full_subgroups = if compute_full_subgroups { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceLineRasterizationFeaturesEXT {
     type Type = PhysicalDeviceLineRasterizationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11860,6 +11895,37 @@ impl<'a> PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
     type Target = vk::PipelineRasterizationLineStateCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineCompilerControlCreateInfoAMD {
+    type Type = PipelineCompilerControlCreateInfoAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineCompilerControlCreateInfoAMDBuilder<'a> {
+    inner: vk::PipelineCompilerControlCreateInfoAMD,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineCompilerControlCreateInfoAMDBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn compiler_control_flags(mut self, compiler_control_flags: vk::PipelineCompilerControlFlagsAMD) -> Self {
+        self.inner.compiler_control_flags = compiler_control_flags;
+        self
+    }
+}
+impl<'a> Deref for PipelineCompilerControlCreateInfoAMDBuilder<'a> {
+    type Target = vk::PipelineCompilerControlCreateInfoAMD;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

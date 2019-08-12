@@ -5581,6 +5581,140 @@ impl fmt::Display for PipelineCreationFeedbackFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineCompilerControlFlagsAMD(u32);
+impl PipelineCompilerControlFlagsAMD {}
+impl default::Default for PipelineCompilerControlFlagsAMD {
+    fn default() -> Self {
+        PipelineCompilerControlFlagsAMD(0)
+    }
+}
+impl PipelineCompilerControlFlagsAMD {
+    pub fn empty() -> Self {
+        PipelineCompilerControlFlagsAMD(0)
+    }
+    pub fn all() -> Self {
+        PipelineCompilerControlFlagsAMD(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineCompilerControlFlagsAMD {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        PipelineCompilerControlFlagsAMD(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineCompilerControlFlagsAMD {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineCompilerControlFlagsAMD {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        PipelineCompilerControlFlagsAMD(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineCompilerControlFlagsAMD {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineCompilerControlFlagsAMD {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        PipelineCompilerControlFlagsAMD(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineCompilerControlFlagsAMD {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineCompilerControlFlagsAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ShaderCorePropertiesFlagsAMD(u32);
+impl ShaderCorePropertiesFlagsAMD {}
+impl default::Default for ShaderCorePropertiesFlagsAMD {
+    fn default() -> Self {
+        ShaderCorePropertiesFlagsAMD(0)
+    }
+}
+impl ShaderCorePropertiesFlagsAMD {
+    pub fn empty() -> Self {
+        ShaderCorePropertiesFlagsAMD(0)
+    }
+    pub fn all() -> Self {
+        ShaderCorePropertiesFlagsAMD(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ShaderCorePropertiesFlagsAMD {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        ShaderCorePropertiesFlagsAMD(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ShaderCorePropertiesFlagsAMD {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ShaderCorePropertiesFlagsAMD {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        ShaderCorePropertiesFlagsAMD(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ShaderCorePropertiesFlagsAMD {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ShaderCorePropertiesFlagsAMD {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        ShaderCorePropertiesFlagsAMD(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ShaderCorePropertiesFlagsAMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = CompositeAlphaFlagsKHR(0x1);
@@ -11898,6 +12032,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
     /// Added by extension VK_KHR_shader_atomic_int64.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = StructureType(1000180000);
+    /// Added by extension VK_AMD_pipeline_compiler_control.
+    pub const PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD: Self = StructureType(1000183000);
     /// Added by extension VK_EXT_calibrated_timestamps.
     pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = StructureType(1000184000);
     /// Added by extension VK_AMD_shader_core_properties.
@@ -11976,6 +12112,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT: Self = StructureType(1000225000);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self = StructureType(1000225001);
+    /// Added by extension VK_EXT_subgroup_size_control.
+    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT: Self = StructureType(1000225002);
+    /// Added by extension VK_AMD_shader_core_properties2.
+    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = StructureType(1000227000);
     /// Added by extension VK_EXT_memory_budget.
     pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = StructureType(1000237000);
     /// Added by extension VK_EXT_memory_priority.
@@ -12343,6 +12483,7 @@ impl fmt::Display for StructureType {
             1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
             1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
             1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
+            1000183000 => Some(&"PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD"),
             1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_EXT"),
             1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
             1000189000 => Some(&"DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD"),
@@ -12382,6 +12523,8 @@ impl fmt::Display for StructureType {
             1000221000 => Some(&"PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT"),
             1000225000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT"),
             1000225001 => Some(&"PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT"),
+            1000225002 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT"),
+            1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
@@ -26070,6 +26213,37 @@ impl fmt::Debug for PhysicalDeviceShaderCorePropertiesAMD {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderCoreProperties2AMD {
+    pub s_type: StructureType,
+    /// Pointer to next structure
+    pub p_next: *mut c_void,
+    /// features supported by the shader core
+    pub shader_core_features: ShaderCorePropertiesFlagsAMD,
+    /// number of active compute units across all shader engines/arrays
+    pub active_compute_unit_count: u32,
+}
+impl default::Default for PhysicalDeviceShaderCoreProperties2AMD {
+    fn default() -> Self {
+        PhysicalDeviceShaderCoreProperties2AMD {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD,
+            p_next: ptr::null_mut(),
+            shader_core_features: ShaderCorePropertiesFlagsAMD::default(),
+            active_compute_unit_count: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderCoreProperties2AMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderCoreProperties2AMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_core_features", &self.shader_core_features)
+            .field("active_compute_unit_count", &self.active_compute_unit_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PipelineRasterizationConservativeStateCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -30211,6 +30385,34 @@ impl fmt::Debug for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub subgroup_size_control: Bool32,
+    pub compute_full_subgroups: Bool32,
+}
+impl default::Default for PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+    fn default() -> Self {
+        PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+            s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            subgroup_size_control: Bool32::default(),
+            compute_full_subgroups: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSubgroupSizeControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subgroup_size_control", &self.subgroup_size_control)
+            .field("compute_full_subgroups", &self.compute_full_subgroups)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceSubgroupSizeControlPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -30368,6 +30570,31 @@ impl fmt::Debug for PipelineRasterizationLineStateCreateInfoEXT {
             .field("stippled_line_enable", &self.stippled_line_enable)
             .field("line_stipple_factor", &self.line_stipple_factor)
             .field("line_stipple_pattern", &self.line_stipple_pattern)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCompilerControlCreateInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub compiler_control_flags: PipelineCompilerControlFlagsAMD,
+}
+impl default::Default for PipelineCompilerControlCreateInfoAMD {
+    fn default() -> Self {
+        PipelineCompilerControlCreateInfoAMD {
+            s_type: StructureType::PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD,
+            p_next: ptr::null(),
+            compiler_control_flags: PipelineCompilerControlFlagsAMD::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCompilerControlCreateInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCompilerControlCreateInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("compiler_control_flags", &self.compiler_control_flags)
             .finish()
     }
 }

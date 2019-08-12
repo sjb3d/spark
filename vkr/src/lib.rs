@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 117
+//! Generated from vk.xml with `VK_HEADER_VERSION` 118
 pub mod builder;
 pub mod vk;
 
@@ -2704,6 +2704,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_host: bool,
     pub amd_buffer_marker: bool,
     pub khr_shader_atomic_int64: bool,
+    pub amd_pipeline_compiler_control: bool,
     pub ext_calibrated_timestamps: bool,
     pub amd_shader_core_properties: bool,
     pub amd_memory_overallocation_behavior: bool,
@@ -2730,6 +2731,7 @@ pub struct DeviceExtensions {
     pub google_hlsl_functionality1: bool,
     pub google_decorate_string: bool,
     pub ext_subgroup_size_control: bool,
+    pub amd_shader_core_properties2: bool,
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
     pub nv_dedicated_allocation_image_aliasing: bool,
@@ -3347,6 +3349,9 @@ impl Device {
     pub fn khr_shader_atomic_int64_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_atomic_int64\0") }
     }
+    pub fn amd_pipeline_compiler_control_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_pipeline_compiler_control\0") }
+    }
     pub fn ext_calibrated_timestamps_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_calibrated_timestamps\0") }
     }
@@ -3424,6 +3429,9 @@ impl Device {
     }
     pub fn ext_subgroup_size_control_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subgroup_size_control\0") }
+    }
+    pub fn amd_shader_core_properties2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties2\0") }
     }
     pub fn ext_memory_budget_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") }
@@ -3596,6 +3604,7 @@ impl Device {
                     b"VK_EXT_external_memory_host" => extensions.ext_external_memory_host = true,
                     b"VK_AMD_buffer_marker" => extensions.amd_buffer_marker = true,
                     b"VK_KHR_shader_atomic_int64" => extensions.khr_shader_atomic_int64 = true,
+                    b"VK_AMD_pipeline_compiler_control" => extensions.amd_pipeline_compiler_control = true,
                     b"VK_EXT_calibrated_timestamps" => extensions.ext_calibrated_timestamps = true,
                     b"VK_AMD_shader_core_properties" => extensions.amd_shader_core_properties = true,
                     b"VK_AMD_memory_overallocation_behavior" => extensions.amd_memory_overallocation_behavior = true,
@@ -3622,6 +3631,7 @@ impl Device {
                     b"VK_GOOGLE_hlsl_functionality1" => extensions.google_hlsl_functionality1 = true,
                     b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
                     b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
+                    b"VK_AMD_shader_core_properties2" => extensions.amd_shader_core_properties2 = true,
                     b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
                     b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
                     b"VK_NV_dedicated_allocation_image_aliasing" => {
