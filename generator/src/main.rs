@@ -2386,7 +2386,10 @@ impl<'a> Generator<'a> {
                         write!(w, "match err {{ {} => Ok(err), _ => Err(err) }}", ok_matches)?;
                     }
                     LibReturnType::ResultObject => {
-                        write!(w, "match err {{ vk::Result::SUCCESS => Ok(res.assume_init()), _ => Err(err) }}",)?;
+                        write!(
+                            w,
+                            "match err {{ vk::Result::SUCCESS => Ok(res.assume_init()), _ => Err(err) }}",
+                        )?;
                     }
                     LibReturnType::ResultEnumAndObject => {
                         let matches: Vec<String> = cmd_def
@@ -2423,13 +2426,14 @@ impl<'a> Generator<'a> {
                         LibCommandStyle::Default => {
                             write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }}")?;
                         }
-                        LibCommandStyle::ToVecUnknownLen
-                        | LibCommandStyle::ToVecKnownLen => {
+                        LibCommandStyle::ToVecUnknownLen | LibCommandStyle::ToVecKnownLen => {
                             write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
                         }
-                        LibCommandStyle::Array
-                        | LibCommandStyle::Single => {
-                            write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v.assume_init()), _ => Err(v_err) }}")?;
+                        LibCommandStyle::Array | LibCommandStyle::Single => {
+                            write!(
+                                w,
+                                "match v_err {{ vk::Result::SUCCESS => Ok(v.assume_init()), _ => Err(v_err) }}"
+                            )?;
                         }
                     },
                 }
