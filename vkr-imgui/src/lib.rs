@@ -1,3 +1,6 @@
+// silence unneeded_field_pattern due to offset_of, cast_ptr_alignment in memory management
+#![allow(clippy::unneeded_field_pattern, clippy::cast_ptr_alignment)]
+
 use arrayvec::ArrayVec;
 use imgui::internal::RawWrapper;
 use imgui::{Context, DrawCmd, DrawCmdParams, DrawData, DrawIdx, DrawVert};
@@ -117,7 +120,7 @@ impl Renderer {
         };
 
         let mut host_allocation_size = 0;
-        let mut host_memory_type_filter = 0xffffffff;
+        let mut host_memory_type_filter = 0xffff_ffff;
 
         let (vertex_buffers, vertex_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
@@ -174,7 +177,7 @@ impl Renderer {
 
         let (image_buffer, image_mem_offset) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (texture.width * texture.height) as vk::DeviceSize,
+                size: vk::DeviceSize::from(texture.width * texture.height),
                 usage: vk::BufferUsageFlags::TRANSFER_SRC,
                 ..Default::default()
             };
@@ -328,7 +331,7 @@ impl Renderer {
             let mapped_memory_range = vk::MappedMemoryRange {
                 memory: Some(host_mem),
                 offset: image_mem_offset as vk::DeviceSize,
-                size: align_up(texture.data.len() as u32, atom_size) as vk::DeviceSize,
+                size: vk::DeviceSize::from(align_up(texture.data.len() as u32, atom_size)),
                 ..Default::default()
             };
             unsafe { device.flush_mapped_memory_ranges(slice::from_ref(&mapped_memory_range)) }
@@ -714,19 +717,19 @@ impl Renderer {
                 vk::MappedMemoryRange {
                     memory: Some(self.host_mem),
                     offset: vertex_mem_offset as vk::DeviceSize,
-                    size: align_up(
+                    size: vk::DeviceSize::from(align_up(
                         (vertex_offset * mem::size_of::<DrawVert>()) as u32,
                         self.atom_size,
-                    ) as vk::DeviceSize,
+                    )),
                     ..Default::default()
                 },
                 vk::MappedMemoryRange {
                     memory: Some(self.host_mem),
                     offset: index_mem_offset as vk::DeviceSize,
-                    size: align_up(
+                    size: vk::DeviceSize::from(align_up(
                         (index_offset * mem::size_of::<DrawIdx>()) as u32,
                         self.atom_size,
-                    ) as vk::DeviceSize,
+                    )),
                     ..Default::default()
                 },
             ];

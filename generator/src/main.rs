@@ -798,7 +798,7 @@ impl<'a> Generator<'a> {
                         },
                         CExpr::Uint32(x) => writeln!(w, "u32 = {:#x};", x)?,
                         CExpr::Uint64(x) => writeln!(w, "u64 = {:#x};", x)?,
-                        CExpr::Float(x) => writeln!(w, "f32 = {} as f32;", x)?,
+                        CExpr::Float(x) => writeln!(w, "f32 = {}_f32;", x)?,
                     }
                     expr_by_name.insert(en.name.as_str(), expr);
                 }
@@ -1129,7 +1129,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {0}(num::NonZeroUsize);\
-                        impl {0} {{ pub fn from_raw(x: usize) -> Option<Self> {{ num::NonZeroUsize::new(x).map(|x| {0}(x)) }} }}",
+                        impl {0} {{ pub fn from_raw(x: usize) -> Option<Self> {{ num::NonZeroUsize::new(x).map({0}) }} }}",
                         handle_name
                     )?;
                 }
@@ -1137,7 +1137,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroU64);\
-                        impl {0} {{ pub fn from_raw(x: u64) -> Option<Self> {{ num::NonZeroU64::new(x).map(|x| {0}(x)) }} }}",
+                        impl {0} {{ pub fn from_raw(x: u64) -> Option<Self> {{ num::NonZeroU64::new(x).map({0}) }} }}",
                         handle_name
                     )?;
                 }
@@ -2562,6 +2562,7 @@ impl<'a> Generator<'a> {
                 )?;
             }
             Category::Instance => {
+                writeln!(w, "#[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]")?;
                 writeln!(
                     w,
                     "pub unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo) -> LoaderResult<Self> {{\
@@ -2583,6 +2584,7 @@ impl<'a> Generator<'a> {
                 )?;
             }
             Category::Device => {
+                writeln!(w, "#[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]")?;
                 writeln!(
                     w,
                     "pub unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\

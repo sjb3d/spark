@@ -1,3 +1,5 @@
+#![allow(clippy::wrong_self_convention)]
+
 use std::ffi::CStr;
 use std::os::raw::{c_void, c_char, c_int};
 use std::ptr;

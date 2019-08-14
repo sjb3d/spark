@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
+
 use std::default;
 use std::os::raw::{c_void, c_char, c_int, c_ulong};
 use std::ptr;

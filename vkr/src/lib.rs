@@ -1,4 +1,6 @@
 //! Generated from vk.xml with `VK_HEADER_VERSION` 119
+#![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
+
 pub mod builder;
 pub mod vk;
 
@@ -439,6 +441,7 @@ impl Instance {
     pub fn ext_headless_surface_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
     }
+    #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         loader: &Loader,
         instance: vk::Instance,
@@ -3489,6 +3492,7 @@ impl Device {
     pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
     }
+    #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
         device: vk::Device,

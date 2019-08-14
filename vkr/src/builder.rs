@@ -1,3 +1,5 @@
+#![allow(clippy::wrong_self_convention)]
+
 use super::vk;
 use std::ffi::CStr;
 use std::marker::PhantomData;

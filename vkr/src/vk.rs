@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
+
 use std::default;
 use std::ffi::CStr;
 use std::fmt;
@@ -132,7 +134,7 @@ pub const MAX_EXTENSION_NAME_SIZE: usize = 256;
 pub const MAX_DESCRIPTION_SIZE: usize = 256;
 pub const MAX_MEMORY_TYPES: usize = 32;
 pub const MAX_MEMORY_HEAPS: usize = 16;
-pub const LOD_CLAMP_NONE: f32 = 1000 as f32;
+pub const LOD_CLAMP_NONE: f32 = 1000_f32;
 pub const REMAINING_MIP_LEVELS: u32 = 0xffffffff;
 pub const REMAINING_ARRAY_LAYERS: u32 = 0xffffffff;
 pub const WHOLE_SIZE: u64 = 0xffffffffffffffff;
@@ -9394,7 +9396,7 @@ impl fmt::Display for SwapchainImageUsageFlagsANDROID {
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(|x| Instance(x))
+        num::NonZeroUsize::new(x).map(Instance)
     }
 }
 #[repr(transparent)]
@@ -9402,7 +9404,7 @@ impl Instance {
 pub struct PhysicalDevice(num::NonZeroUsize);
 impl PhysicalDevice {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(|x| PhysicalDevice(x))
+        num::NonZeroUsize::new(x).map(PhysicalDevice)
     }
 }
 #[repr(transparent)]
@@ -9410,7 +9412,7 @@ impl PhysicalDevice {
 pub struct Device(num::NonZeroUsize);
 impl Device {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(|x| Device(x))
+        num::NonZeroUsize::new(x).map(Device)
     }
 }
 #[repr(transparent)]
@@ -9418,7 +9420,7 @@ impl Device {
 pub struct Queue(num::NonZeroUsize);
 impl Queue {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(|x| Queue(x))
+        num::NonZeroUsize::new(x).map(Queue)
     }
 }
 #[repr(transparent)]
@@ -9426,7 +9428,7 @@ impl Queue {
 pub struct CommandBuffer(num::NonZeroUsize);
 impl CommandBuffer {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(|x| CommandBuffer(x))
+        num::NonZeroUsize::new(x).map(CommandBuffer)
     }
 }
 #[repr(transparent)]
@@ -9434,7 +9436,7 @@ impl CommandBuffer {
 pub struct DeviceMemory(num::NonZeroU64);
 impl DeviceMemory {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DeviceMemory(x))
+        num::NonZeroU64::new(x).map(DeviceMemory)
     }
 }
 #[repr(transparent)]
@@ -9442,7 +9444,7 @@ impl DeviceMemory {
 pub struct CommandPool(num::NonZeroU64);
 impl CommandPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| CommandPool(x))
+        num::NonZeroU64::new(x).map(CommandPool)
     }
 }
 #[repr(transparent)]
@@ -9450,7 +9452,7 @@ impl CommandPool {
 pub struct Buffer(num::NonZeroU64);
 impl Buffer {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Buffer(x))
+        num::NonZeroU64::new(x).map(Buffer)
     }
 }
 #[repr(transparent)]
@@ -9458,7 +9460,7 @@ impl Buffer {
 pub struct BufferView(num::NonZeroU64);
 impl BufferView {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| BufferView(x))
+        num::NonZeroU64::new(x).map(BufferView)
     }
 }
 #[repr(transparent)]
@@ -9466,7 +9468,7 @@ impl BufferView {
 pub struct Image(num::NonZeroU64);
 impl Image {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Image(x))
+        num::NonZeroU64::new(x).map(Image)
     }
 }
 #[repr(transparent)]
@@ -9474,7 +9476,7 @@ impl Image {
 pub struct ImageView(num::NonZeroU64);
 impl ImageView {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| ImageView(x))
+        num::NonZeroU64::new(x).map(ImageView)
     }
 }
 #[repr(transparent)]
@@ -9482,7 +9484,7 @@ impl ImageView {
 pub struct ShaderModule(num::NonZeroU64);
 impl ShaderModule {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| ShaderModule(x))
+        num::NonZeroU64::new(x).map(ShaderModule)
     }
 }
 #[repr(transparent)]
@@ -9490,7 +9492,7 @@ impl ShaderModule {
 pub struct Pipeline(num::NonZeroU64);
 impl Pipeline {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Pipeline(x))
+        num::NonZeroU64::new(x).map(Pipeline)
     }
 }
 #[repr(transparent)]
@@ -9498,7 +9500,7 @@ impl Pipeline {
 pub struct PipelineLayout(num::NonZeroU64);
 impl PipelineLayout {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| PipelineLayout(x))
+        num::NonZeroU64::new(x).map(PipelineLayout)
     }
 }
 #[repr(transparent)]
@@ -9506,7 +9508,7 @@ impl PipelineLayout {
 pub struct Sampler(num::NonZeroU64);
 impl Sampler {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Sampler(x))
+        num::NonZeroU64::new(x).map(Sampler)
     }
 }
 #[repr(transparent)]
@@ -9514,7 +9516,7 @@ impl Sampler {
 pub struct DescriptorSet(num::NonZeroU64);
 impl DescriptorSet {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DescriptorSet(x))
+        num::NonZeroU64::new(x).map(DescriptorSet)
     }
 }
 #[repr(transparent)]
@@ -9522,7 +9524,7 @@ impl DescriptorSet {
 pub struct DescriptorSetLayout(num::NonZeroU64);
 impl DescriptorSetLayout {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DescriptorSetLayout(x))
+        num::NonZeroU64::new(x).map(DescriptorSetLayout)
     }
 }
 #[repr(transparent)]
@@ -9530,7 +9532,7 @@ impl DescriptorSetLayout {
 pub struct DescriptorPool(num::NonZeroU64);
 impl DescriptorPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DescriptorPool(x))
+        num::NonZeroU64::new(x).map(DescriptorPool)
     }
 }
 #[repr(transparent)]
@@ -9538,7 +9540,7 @@ impl DescriptorPool {
 pub struct Fence(num::NonZeroU64);
 impl Fence {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Fence(x))
+        num::NonZeroU64::new(x).map(Fence)
     }
 }
 #[repr(transparent)]
@@ -9546,7 +9548,7 @@ impl Fence {
 pub struct Semaphore(num::NonZeroU64);
 impl Semaphore {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Semaphore(x))
+        num::NonZeroU64::new(x).map(Semaphore)
     }
 }
 #[repr(transparent)]
@@ -9554,7 +9556,7 @@ impl Semaphore {
 pub struct Event(num::NonZeroU64);
 impl Event {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Event(x))
+        num::NonZeroU64::new(x).map(Event)
     }
 }
 #[repr(transparent)]
@@ -9562,7 +9564,7 @@ impl Event {
 pub struct QueryPool(num::NonZeroU64);
 impl QueryPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| QueryPool(x))
+        num::NonZeroU64::new(x).map(QueryPool)
     }
 }
 #[repr(transparent)]
@@ -9570,7 +9572,7 @@ impl QueryPool {
 pub struct Framebuffer(num::NonZeroU64);
 impl Framebuffer {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| Framebuffer(x))
+        num::NonZeroU64::new(x).map(Framebuffer)
     }
 }
 #[repr(transparent)]
@@ -9578,7 +9580,7 @@ impl Framebuffer {
 pub struct RenderPass(num::NonZeroU64);
 impl RenderPass {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| RenderPass(x))
+        num::NonZeroU64::new(x).map(RenderPass)
     }
 }
 #[repr(transparent)]
@@ -9586,7 +9588,7 @@ impl RenderPass {
 pub struct PipelineCache(num::NonZeroU64);
 impl PipelineCache {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| PipelineCache(x))
+        num::NonZeroU64::new(x).map(PipelineCache)
     }
 }
 #[repr(transparent)]
@@ -9594,7 +9596,7 @@ impl PipelineCache {
 pub struct ObjectTableNVX(num::NonZeroU64);
 impl ObjectTableNVX {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| ObjectTableNVX(x))
+        num::NonZeroU64::new(x).map(ObjectTableNVX)
     }
 }
 #[repr(transparent)]
@@ -9602,7 +9604,7 @@ impl ObjectTableNVX {
 pub struct IndirectCommandsLayoutNVX(num::NonZeroU64);
 impl IndirectCommandsLayoutNVX {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| IndirectCommandsLayoutNVX(x))
+        num::NonZeroU64::new(x).map(IndirectCommandsLayoutNVX)
     }
 }
 #[repr(transparent)]
@@ -9610,7 +9612,7 @@ impl IndirectCommandsLayoutNVX {
 pub struct DescriptorUpdateTemplate(num::NonZeroU64);
 impl DescriptorUpdateTemplate {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DescriptorUpdateTemplate(x))
+        num::NonZeroU64::new(x).map(DescriptorUpdateTemplate)
     }
 }
 pub type DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
@@ -9619,7 +9621,7 @@ pub type DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
 pub struct SamplerYcbcrConversion(num::NonZeroU64);
 impl SamplerYcbcrConversion {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| SamplerYcbcrConversion(x))
+        num::NonZeroU64::new(x).map(SamplerYcbcrConversion)
     }
 }
 pub type SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
@@ -9628,7 +9630,7 @@ pub type SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
 pub struct ValidationCacheEXT(num::NonZeroU64);
 impl ValidationCacheEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| ValidationCacheEXT(x))
+        num::NonZeroU64::new(x).map(ValidationCacheEXT)
     }
 }
 #[repr(transparent)]
@@ -9636,7 +9638,7 @@ impl ValidationCacheEXT {
 pub struct AccelerationStructureNV(num::NonZeroU64);
 impl AccelerationStructureNV {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| AccelerationStructureNV(x))
+        num::NonZeroU64::new(x).map(AccelerationStructureNV)
     }
 }
 #[repr(transparent)]
@@ -9644,7 +9646,7 @@ impl AccelerationStructureNV {
 pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
 impl PerformanceConfigurationINTEL {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| PerformanceConfigurationINTEL(x))
+        num::NonZeroU64::new(x).map(PerformanceConfigurationINTEL)
     }
 }
 #[repr(transparent)]
@@ -9652,7 +9654,7 @@ impl PerformanceConfigurationINTEL {
 pub struct DisplayKHR(num::NonZeroU64);
 impl DisplayKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DisplayKHR(x))
+        num::NonZeroU64::new(x).map(DisplayKHR)
     }
 }
 #[repr(transparent)]
@@ -9660,7 +9662,7 @@ impl DisplayKHR {
 pub struct DisplayModeKHR(num::NonZeroU64);
 impl DisplayModeKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DisplayModeKHR(x))
+        num::NonZeroU64::new(x).map(DisplayModeKHR)
     }
 }
 #[repr(transparent)]
@@ -9668,7 +9670,7 @@ impl DisplayModeKHR {
 pub struct SurfaceKHR(num::NonZeroU64);
 impl SurfaceKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| SurfaceKHR(x))
+        num::NonZeroU64::new(x).map(SurfaceKHR)
     }
 }
 #[repr(transparent)]
@@ -9676,7 +9678,7 @@ impl SurfaceKHR {
 pub struct SwapchainKHR(num::NonZeroU64);
 impl SwapchainKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| SwapchainKHR(x))
+        num::NonZeroU64::new(x).map(SwapchainKHR)
     }
 }
 #[repr(transparent)]
@@ -9684,7 +9686,7 @@ impl SwapchainKHR {
 pub struct DebugReportCallbackEXT(num::NonZeroU64);
 impl DebugReportCallbackEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DebugReportCallbackEXT(x))
+        num::NonZeroU64::new(x).map(DebugReportCallbackEXT)
     }
 }
 #[repr(transparent)]
@@ -9692,7 +9694,7 @@ impl DebugReportCallbackEXT {
 pub struct DebugUtilsMessengerEXT(num::NonZeroU64);
 impl DebugUtilsMessengerEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(|x| DebugUtilsMessengerEXT(x))
+        num::NonZeroU64::new(x).map(DebugUtilsMessengerEXT)
     }
 }
 #[repr(transparent)]
