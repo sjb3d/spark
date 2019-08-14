@@ -439,7 +439,7 @@ impl Instance {
     pub fn ext_headless_surface_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
     }
-    unsafe fn load(
+    pub unsafe fn load(
         loader: &Loader,
         instance: vk::Instance,
         create_info: &vk::InstanceCreateInfo,
@@ -3489,7 +3489,7 @@ impl Device {
     pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
     }
-    unsafe fn load(
+    pub unsafe fn load(
         instance: &Instance,
         device: vk::Device,
         create_info: &vk::DeviceCreateInfo,

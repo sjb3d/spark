@@ -2564,7 +2564,7 @@ impl<'a> Generator<'a> {
             Category::Instance => {
                 writeln!(
                     w,
-                    "unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo) -> LoaderResult<Self> {{\
+                    "pub unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo) -> LoaderResult<Self> {{\
                      let version = create_info.p_application_info.as_ref().map(|app_info| app_info.api_version).unwrap_or_default();\
                      let mut extensions = {}Extensions::default();", category)?;
                 writeln!(w,
@@ -2585,7 +2585,7 @@ impl<'a> Generator<'a> {
             Category::Device => {
                 writeln!(
                     w,
-                    "unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
+                    "pub unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
                      let mut extensions = {}Extensions::default();", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
