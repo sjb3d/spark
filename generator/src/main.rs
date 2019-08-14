@@ -1128,14 +1128,16 @@ impl<'a> Generator<'a> {
                 Some("VK_DEFINE_HANDLE") => {
                     writeln!(
                         w,
-                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroUsize);",
+                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {0}(num::NonZeroUsize);\
+                        impl {0} {{ pub fn from_raw(x: usize) -> Option<Self> {{ num::NonZeroUsize::new(x).map(|x| {0}(x)) }} }}",
                         handle_name
                     )?;
                 }
                 Some("VK_DEFINE_NON_DISPATCHABLE_HANDLE") => {
                     writeln!(
                         w,
-                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroU64);",
+                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroU64);\
+                        impl {0} {{ pub fn from_raw(x: u64) -> Option<Self> {{ num::NonZeroU64::new(x).map(|x| {0}(x)) }} }}",
                         handle_name
                     )?;
                 }

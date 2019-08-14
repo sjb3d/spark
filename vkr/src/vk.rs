@@ -9392,119 +9392,309 @@ impl fmt::Display for SwapchainImageUsageFlagsANDROID {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
+impl Instance {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(|x| Instance(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PhysicalDevice(num::NonZeroUsize);
+impl PhysicalDevice {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(|x| PhysicalDevice(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Device(num::NonZeroUsize);
+impl Device {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(|x| Device(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Queue(num::NonZeroUsize);
+impl Queue {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(|x| Queue(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CommandBuffer(num::NonZeroUsize);
+impl CommandBuffer {
+    pub fn from_raw(x: usize) -> Option<Self> {
+        num::NonZeroUsize::new(x).map(|x| CommandBuffer(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DeviceMemory(num::NonZeroU64);
+impl DeviceMemory {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DeviceMemory(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CommandPool(num::NonZeroU64);
+impl CommandPool {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| CommandPool(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Buffer(num::NonZeroU64);
+impl Buffer {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Buffer(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct BufferView(num::NonZeroU64);
+impl BufferView {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| BufferView(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Image(num::NonZeroU64);
+impl Image {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Image(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageView(num::NonZeroU64);
+impl ImageView {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| ImageView(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderModule(num::NonZeroU64);
+impl ShaderModule {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| ShaderModule(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Pipeline(num::NonZeroU64);
+impl Pipeline {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Pipeline(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineLayout(num::NonZeroU64);
+impl PipelineLayout {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| PipelineLayout(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Sampler(num::NonZeroU64);
+impl Sampler {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Sampler(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorSet(num::NonZeroU64);
+impl DescriptorSet {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DescriptorSet(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorSetLayout(num::NonZeroU64);
+impl DescriptorSetLayout {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DescriptorSetLayout(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorPool(num::NonZeroU64);
+impl DescriptorPool {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DescriptorPool(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Fence(num::NonZeroU64);
+impl Fence {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Fence(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Semaphore(num::NonZeroU64);
+impl Semaphore {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Semaphore(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Event(num::NonZeroU64);
+impl Event {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Event(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct QueryPool(num::NonZeroU64);
+impl QueryPool {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| QueryPool(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Framebuffer(num::NonZeroU64);
+impl Framebuffer {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| Framebuffer(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct RenderPass(num::NonZeroU64);
+impl RenderPass {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| RenderPass(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCache(num::NonZeroU64);
+impl PipelineCache {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| PipelineCache(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectTableNVX(num::NonZeroU64);
+impl ObjectTableNVX {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| ObjectTableNVX(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsLayoutNVX(num::NonZeroU64);
+impl IndirectCommandsLayoutNVX {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| IndirectCommandsLayoutNVX(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplate(num::NonZeroU64);
+impl DescriptorUpdateTemplate {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DescriptorUpdateTemplate(x))
+    }
+}
 pub type DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SamplerYcbcrConversion(num::NonZeroU64);
+impl SamplerYcbcrConversion {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| SamplerYcbcrConversion(x))
+    }
+}
 pub type SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ValidationCacheEXT(num::NonZeroU64);
+impl ValidationCacheEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| ValidationCacheEXT(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureNV(num::NonZeroU64);
+impl AccelerationStructureNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| AccelerationStructureNV(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
+impl PerformanceConfigurationINTEL {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| PerformanceConfigurationINTEL(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayKHR(num::NonZeroU64);
+impl DisplayKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DisplayKHR(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayModeKHR(num::NonZeroU64);
+impl DisplayModeKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DisplayModeKHR(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SurfaceKHR(num::NonZeroU64);
+impl SurfaceKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| SurfaceKHR(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SwapchainKHR(num::NonZeroU64);
+impl SwapchainKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| SwapchainKHR(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DebugReportCallbackEXT(num::NonZeroU64);
+impl DebugReportCallbackEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DebugReportCallbackEXT(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessengerEXT(num::NonZeroU64);
+impl DebugUtilsMessengerEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(|x| DebugUtilsMessengerEXT(x))
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentLoadOp(i32);
