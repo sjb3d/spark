@@ -58,7 +58,7 @@ pub enum LoaderError {
 }
 
 impl From<vk::Result> for LoaderError {
-    fn from(err: vk::Result) -> LoaderError {
+    fn from(err: vk::Result) -> Self {
         LoaderError::Vulkan(err)
     }
 }

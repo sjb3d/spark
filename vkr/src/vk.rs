@@ -22,11 +22,11 @@ impl Version {
     /// assert_eq!(v.to_raw(), (1 << 22) | (2 << 12));
     /// ```
     pub const fn from_raw_parts(major: u32, minor: u32, patch: u32) -> Self {
-        Version((major << 22) | ((minor & 0x3ff) << 12) | (patch & 0xfff))
+        Self((major << 22) | ((minor & 0x3ff) << 12) | (patch & 0xfff))
     }
 
     pub const fn from_raw(version: u32) -> Self {
-        Version(version)
+        Self(version)
     }
     pub fn to_raw(self) -> u32 {
         self.0
@@ -44,7 +44,7 @@ impl Version {
 }
 impl default::Default for Version {
     fn default() -> Self {
-        Version::from_raw_parts(1, 0, 0)
+        Self::from_raw_parts(1, 0, 0)
     }
 }
 impl fmt::Display for Version {
@@ -161,19 +161,19 @@ pub type DeviceAddress = u64;
 pub struct FramebufferCreateFlags(u32);
 impl FramebufferCreateFlags {
     /// Added by extension VK_KHR_imageless_framebuffer.
-    pub const IMAGELESS_KHR: Self = FramebufferCreateFlags(0x1);
+    pub const IMAGELESS_KHR: Self = Self(0x1);
 }
 impl default::Default for FramebufferCreateFlags {
     fn default() -> Self {
-        FramebufferCreateFlags(0)
+        Self(0)
     }
 }
 impl FramebufferCreateFlags {
     pub fn empty() -> Self {
-        FramebufferCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        FramebufferCreateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -191,7 +191,7 @@ impl FramebufferCreateFlags {
 impl ops::BitOr for FramebufferCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        FramebufferCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for FramebufferCreateFlags {
@@ -202,7 +202,7 @@ impl ops::BitOrAssign for FramebufferCreateFlags {
 impl ops::BitAnd for FramebufferCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        FramebufferCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for FramebufferCreateFlags {
@@ -213,7 +213,7 @@ impl ops::BitAndAssign for FramebufferCreateFlags {
 impl ops::BitXor for FramebufferCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        FramebufferCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for FramebufferCreateFlags {
@@ -232,15 +232,15 @@ pub struct QueryPoolCreateFlags(u32);
 impl QueryPoolCreateFlags {}
 impl default::Default for QueryPoolCreateFlags {
     fn default() -> Self {
-        QueryPoolCreateFlags(0)
+        Self(0)
     }
 }
 impl QueryPoolCreateFlags {
     pub fn empty() -> Self {
-        QueryPoolCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        QueryPoolCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -258,7 +258,7 @@ impl QueryPoolCreateFlags {
 impl ops::BitOr for QueryPoolCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        QueryPoolCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for QueryPoolCreateFlags {
@@ -269,7 +269,7 @@ impl ops::BitOrAssign for QueryPoolCreateFlags {
 impl ops::BitAnd for QueryPoolCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        QueryPoolCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for QueryPoolCreateFlags {
@@ -280,7 +280,7 @@ impl ops::BitAndAssign for QueryPoolCreateFlags {
 impl ops::BitXor for QueryPoolCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        QueryPoolCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for QueryPoolCreateFlags {
@@ -298,21 +298,21 @@ impl fmt::Display for QueryPoolCreateFlags {
 pub struct RenderPassCreateFlags(u32);
 impl RenderPassCreateFlags {
     /// Added by extension VK_KHR_extension_221.
-    pub const RESERVED_0_KHR: Self = RenderPassCreateFlags(0x1);
+    pub const RESERVED_0_KHR: Self = Self(0x1);
     /// Added by extension VK_QCOM_extension_283.
-    pub const RESERVED_BIT_1_QCOM: Self = RenderPassCreateFlags(0x2);
+    pub const RESERVED_BIT_1_QCOM: Self = Self(0x2);
 }
 impl default::Default for RenderPassCreateFlags {
     fn default() -> Self {
-        RenderPassCreateFlags(0)
+        Self(0)
     }
 }
 impl RenderPassCreateFlags {
     pub fn empty() -> Self {
-        RenderPassCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        RenderPassCreateFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -330,7 +330,7 @@ impl RenderPassCreateFlags {
 impl ops::BitOr for RenderPassCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        RenderPassCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for RenderPassCreateFlags {
@@ -341,7 +341,7 @@ impl ops::BitOrAssign for RenderPassCreateFlags {
 impl ops::BitAnd for RenderPassCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        RenderPassCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for RenderPassCreateFlags {
@@ -352,7 +352,7 @@ impl ops::BitAndAssign for RenderPassCreateFlags {
 impl ops::BitXor for RenderPassCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        RenderPassCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for RenderPassCreateFlags {
@@ -370,21 +370,21 @@ impl fmt::Display for RenderPassCreateFlags {
 pub struct SamplerCreateFlags(u32);
 impl SamplerCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const SUBSAMPLED_EXT: Self = SamplerCreateFlags(0x1);
+    pub const SUBSAMPLED_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = SamplerCreateFlags(0x2);
+    pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = Self(0x2);
 }
 impl default::Default for SamplerCreateFlags {
     fn default() -> Self {
-        SamplerCreateFlags(0)
+        Self(0)
     }
 }
 impl SamplerCreateFlags {
     pub fn empty() -> Self {
-        SamplerCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SamplerCreateFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -402,7 +402,7 @@ impl SamplerCreateFlags {
 impl ops::BitOr for SamplerCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SamplerCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SamplerCreateFlags {
@@ -413,7 +413,7 @@ impl ops::BitOrAssign for SamplerCreateFlags {
 impl ops::BitAnd for SamplerCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SamplerCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SamplerCreateFlags {
@@ -424,7 +424,7 @@ impl ops::BitAndAssign for SamplerCreateFlags {
 impl ops::BitXor for SamplerCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SamplerCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SamplerCreateFlags {
@@ -447,15 +447,15 @@ pub struct PipelineLayoutCreateFlags(u32);
 impl PipelineLayoutCreateFlags {}
 impl default::Default for PipelineLayoutCreateFlags {
     fn default() -> Self {
-        PipelineLayoutCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineLayoutCreateFlags {
     pub fn empty() -> Self {
-        PipelineLayoutCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineLayoutCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -473,7 +473,7 @@ impl PipelineLayoutCreateFlags {
 impl ops::BitOr for PipelineLayoutCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineLayoutCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineLayoutCreateFlags {
@@ -484,7 +484,7 @@ impl ops::BitOrAssign for PipelineLayoutCreateFlags {
 impl ops::BitAnd for PipelineLayoutCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineLayoutCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineLayoutCreateFlags {
@@ -495,7 +495,7 @@ impl ops::BitAndAssign for PipelineLayoutCreateFlags {
 impl ops::BitXor for PipelineLayoutCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineLayoutCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineLayoutCreateFlags {
@@ -514,15 +514,15 @@ pub struct PipelineCacheCreateFlags(u32);
 impl PipelineCacheCreateFlags {}
 impl default::Default for PipelineCacheCreateFlags {
     fn default() -> Self {
-        PipelineCacheCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineCacheCreateFlags {
     pub fn empty() -> Self {
-        PipelineCacheCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCacheCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -540,7 +540,7 @@ impl PipelineCacheCreateFlags {
 impl ops::BitOr for PipelineCacheCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCacheCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCacheCreateFlags {
@@ -551,7 +551,7 @@ impl ops::BitOrAssign for PipelineCacheCreateFlags {
 impl ops::BitAnd for PipelineCacheCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCacheCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCacheCreateFlags {
@@ -562,7 +562,7 @@ impl ops::BitAndAssign for PipelineCacheCreateFlags {
 impl ops::BitXor for PipelineCacheCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCacheCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCacheCreateFlags {
@@ -581,15 +581,15 @@ pub struct PipelineDepthStencilStateCreateFlags(u32);
 impl PipelineDepthStencilStateCreateFlags {}
 impl default::Default for PipelineDepthStencilStateCreateFlags {
     fn default() -> Self {
-        PipelineDepthStencilStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineDepthStencilStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineDepthStencilStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineDepthStencilStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -607,7 +607,7 @@ impl PipelineDepthStencilStateCreateFlags {
 impl ops::BitOr for PipelineDepthStencilStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineDepthStencilStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineDepthStencilStateCreateFlags {
@@ -618,7 +618,7 @@ impl ops::BitOrAssign for PipelineDepthStencilStateCreateFlags {
 impl ops::BitAnd for PipelineDepthStencilStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineDepthStencilStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineDepthStencilStateCreateFlags {
@@ -629,7 +629,7 @@ impl ops::BitAndAssign for PipelineDepthStencilStateCreateFlags {
 impl ops::BitXor for PipelineDepthStencilStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineDepthStencilStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineDepthStencilStateCreateFlags {
@@ -648,15 +648,15 @@ pub struct PipelineDynamicStateCreateFlags(u32);
 impl PipelineDynamicStateCreateFlags {}
 impl default::Default for PipelineDynamicStateCreateFlags {
     fn default() -> Self {
-        PipelineDynamicStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineDynamicStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineDynamicStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineDynamicStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -674,7 +674,7 @@ impl PipelineDynamicStateCreateFlags {
 impl ops::BitOr for PipelineDynamicStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineDynamicStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineDynamicStateCreateFlags {
@@ -685,7 +685,7 @@ impl ops::BitOrAssign for PipelineDynamicStateCreateFlags {
 impl ops::BitAnd for PipelineDynamicStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineDynamicStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineDynamicStateCreateFlags {
@@ -696,7 +696,7 @@ impl ops::BitAndAssign for PipelineDynamicStateCreateFlags {
 impl ops::BitXor for PipelineDynamicStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineDynamicStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineDynamicStateCreateFlags {
@@ -715,15 +715,15 @@ pub struct PipelineColorBlendStateCreateFlags(u32);
 impl PipelineColorBlendStateCreateFlags {}
 impl default::Default for PipelineColorBlendStateCreateFlags {
     fn default() -> Self {
-        PipelineColorBlendStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineColorBlendStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineColorBlendStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineColorBlendStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -741,7 +741,7 @@ impl PipelineColorBlendStateCreateFlags {
 impl ops::BitOr for PipelineColorBlendStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineColorBlendStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineColorBlendStateCreateFlags {
@@ -752,7 +752,7 @@ impl ops::BitOrAssign for PipelineColorBlendStateCreateFlags {
 impl ops::BitAnd for PipelineColorBlendStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineColorBlendStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineColorBlendStateCreateFlags {
@@ -763,7 +763,7 @@ impl ops::BitAndAssign for PipelineColorBlendStateCreateFlags {
 impl ops::BitXor for PipelineColorBlendStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineColorBlendStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineColorBlendStateCreateFlags {
@@ -782,15 +782,15 @@ pub struct PipelineMultisampleStateCreateFlags(u32);
 impl PipelineMultisampleStateCreateFlags {}
 impl default::Default for PipelineMultisampleStateCreateFlags {
     fn default() -> Self {
-        PipelineMultisampleStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineMultisampleStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineMultisampleStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineMultisampleStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -808,7 +808,7 @@ impl PipelineMultisampleStateCreateFlags {
 impl ops::BitOr for PipelineMultisampleStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineMultisampleStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineMultisampleStateCreateFlags {
@@ -819,7 +819,7 @@ impl ops::BitOrAssign for PipelineMultisampleStateCreateFlags {
 impl ops::BitAnd for PipelineMultisampleStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineMultisampleStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineMultisampleStateCreateFlags {
@@ -830,7 +830,7 @@ impl ops::BitAndAssign for PipelineMultisampleStateCreateFlags {
 impl ops::BitXor for PipelineMultisampleStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineMultisampleStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineMultisampleStateCreateFlags {
@@ -849,15 +849,15 @@ pub struct PipelineRasterizationStateCreateFlags(u32);
 impl PipelineRasterizationStateCreateFlags {}
 impl default::Default for PipelineRasterizationStateCreateFlags {
     fn default() -> Self {
-        PipelineRasterizationStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineRasterizationStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineRasterizationStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineRasterizationStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -875,7 +875,7 @@ impl PipelineRasterizationStateCreateFlags {
 impl ops::BitOr for PipelineRasterizationStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineRasterizationStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineRasterizationStateCreateFlags {
@@ -886,7 +886,7 @@ impl ops::BitOrAssign for PipelineRasterizationStateCreateFlags {
 impl ops::BitAnd for PipelineRasterizationStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineRasterizationStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineRasterizationStateCreateFlags {
@@ -897,7 +897,7 @@ impl ops::BitAndAssign for PipelineRasterizationStateCreateFlags {
 impl ops::BitXor for PipelineRasterizationStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineRasterizationStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineRasterizationStateCreateFlags {
@@ -916,15 +916,15 @@ pub struct PipelineViewportStateCreateFlags(u32);
 impl PipelineViewportStateCreateFlags {}
 impl default::Default for PipelineViewportStateCreateFlags {
     fn default() -> Self {
-        PipelineViewportStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineViewportStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineViewportStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineViewportStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -942,7 +942,7 @@ impl PipelineViewportStateCreateFlags {
 impl ops::BitOr for PipelineViewportStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineViewportStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineViewportStateCreateFlags {
@@ -953,7 +953,7 @@ impl ops::BitOrAssign for PipelineViewportStateCreateFlags {
 impl ops::BitAnd for PipelineViewportStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineViewportStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineViewportStateCreateFlags {
@@ -964,7 +964,7 @@ impl ops::BitAndAssign for PipelineViewportStateCreateFlags {
 impl ops::BitXor for PipelineViewportStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineViewportStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineViewportStateCreateFlags {
@@ -983,15 +983,15 @@ pub struct PipelineTessellationStateCreateFlags(u32);
 impl PipelineTessellationStateCreateFlags {}
 impl default::Default for PipelineTessellationStateCreateFlags {
     fn default() -> Self {
-        PipelineTessellationStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineTessellationStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineTessellationStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineTessellationStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1009,7 +1009,7 @@ impl PipelineTessellationStateCreateFlags {
 impl ops::BitOr for PipelineTessellationStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineTessellationStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineTessellationStateCreateFlags {
@@ -1020,7 +1020,7 @@ impl ops::BitOrAssign for PipelineTessellationStateCreateFlags {
 impl ops::BitAnd for PipelineTessellationStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineTessellationStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineTessellationStateCreateFlags {
@@ -1031,7 +1031,7 @@ impl ops::BitAndAssign for PipelineTessellationStateCreateFlags {
 impl ops::BitXor for PipelineTessellationStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineTessellationStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineTessellationStateCreateFlags {
@@ -1050,15 +1050,15 @@ pub struct PipelineInputAssemblyStateCreateFlags(u32);
 impl PipelineInputAssemblyStateCreateFlags {}
 impl default::Default for PipelineInputAssemblyStateCreateFlags {
     fn default() -> Self {
-        PipelineInputAssemblyStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineInputAssemblyStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineInputAssemblyStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineInputAssemblyStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1076,7 +1076,7 @@ impl PipelineInputAssemblyStateCreateFlags {
 impl ops::BitOr for PipelineInputAssemblyStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineInputAssemblyStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineInputAssemblyStateCreateFlags {
@@ -1087,7 +1087,7 @@ impl ops::BitOrAssign for PipelineInputAssemblyStateCreateFlags {
 impl ops::BitAnd for PipelineInputAssemblyStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineInputAssemblyStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineInputAssemblyStateCreateFlags {
@@ -1098,7 +1098,7 @@ impl ops::BitAndAssign for PipelineInputAssemblyStateCreateFlags {
 impl ops::BitXor for PipelineInputAssemblyStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineInputAssemblyStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineInputAssemblyStateCreateFlags {
@@ -1117,15 +1117,15 @@ pub struct PipelineVertexInputStateCreateFlags(u32);
 impl PipelineVertexInputStateCreateFlags {}
 impl default::Default for PipelineVertexInputStateCreateFlags {
     fn default() -> Self {
-        PipelineVertexInputStateCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineVertexInputStateCreateFlags {
     pub fn empty() -> Self {
-        PipelineVertexInputStateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineVertexInputStateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1143,7 +1143,7 @@ impl PipelineVertexInputStateCreateFlags {
 impl ops::BitOr for PipelineVertexInputStateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineVertexInputStateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineVertexInputStateCreateFlags {
@@ -1154,7 +1154,7 @@ impl ops::BitOrAssign for PipelineVertexInputStateCreateFlags {
 impl ops::BitAnd for PipelineVertexInputStateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineVertexInputStateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineVertexInputStateCreateFlags {
@@ -1165,7 +1165,7 @@ impl ops::BitAndAssign for PipelineVertexInputStateCreateFlags {
 impl ops::BitXor for PipelineVertexInputStateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineVertexInputStateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineVertexInputStateCreateFlags {
@@ -1183,23 +1183,23 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
 pub struct PipelineShaderStageCreateFlags(u32);
 impl PipelineShaderStageCreateFlags {
     /// Added by extension VK_NV_extension_52.
-    pub const RESERVED_2_NV: Self = PipelineShaderStageCreateFlags(0x4);
+    pub const RESERVED_2_NV: Self = Self(0x4);
     /// Added by extension VK_EXT_subgroup_size_control.
-    pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = PipelineShaderStageCreateFlags(0x1);
+    pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_subgroup_size_control.
-    pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = PipelineShaderStageCreateFlags(0x2);
+    pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = Self(0x2);
 }
 impl default::Default for PipelineShaderStageCreateFlags {
     fn default() -> Self {
-        PipelineShaderStageCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineShaderStageCreateFlags {
     pub fn empty() -> Self {
-        PipelineShaderStageCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineShaderStageCreateFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1217,7 +1217,7 @@ impl PipelineShaderStageCreateFlags {
 impl ops::BitOr for PipelineShaderStageCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineShaderStageCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineShaderStageCreateFlags {
@@ -1228,7 +1228,7 @@ impl ops::BitOrAssign for PipelineShaderStageCreateFlags {
 impl ops::BitAnd for PipelineShaderStageCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineShaderStageCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineShaderStageCreateFlags {
@@ -1239,7 +1239,7 @@ impl ops::BitAndAssign for PipelineShaderStageCreateFlags {
 impl ops::BitXor for PipelineShaderStageCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineShaderStageCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineShaderStageCreateFlags {
@@ -1266,21 +1266,21 @@ pub struct DescriptorSetLayoutCreateFlags(u32);
 impl DescriptorSetLayoutCreateFlags {
     /// Descriptors are pushed via flink:vkCmdPushDescriptorSetKHR
     /// Added by extension VK_KHR_push_descriptor.
-    pub const PUSH_DESCRIPTOR_KHR: Self = DescriptorSetLayoutCreateFlags(0x1);
+    pub const PUSH_DESCRIPTOR_KHR: Self = Self(0x1);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const UPDATE_AFTER_BIND_POOL_EXT: Self = DescriptorSetLayoutCreateFlags(0x2);
+    pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self(0x2);
 }
 impl default::Default for DescriptorSetLayoutCreateFlags {
     fn default() -> Self {
-        DescriptorSetLayoutCreateFlags(0)
+        Self(0)
     }
 }
 impl DescriptorSetLayoutCreateFlags {
     pub fn empty() -> Self {
-        DescriptorSetLayoutCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DescriptorSetLayoutCreateFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1298,7 +1298,7 @@ impl DescriptorSetLayoutCreateFlags {
 impl ops::BitOr for DescriptorSetLayoutCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DescriptorSetLayoutCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DescriptorSetLayoutCreateFlags {
@@ -1309,7 +1309,7 @@ impl ops::BitOrAssign for DescriptorSetLayoutCreateFlags {
 impl ops::BitAnd for DescriptorSetLayoutCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DescriptorSetLayoutCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DescriptorSetLayoutCreateFlags {
@@ -1320,7 +1320,7 @@ impl ops::BitAndAssign for DescriptorSetLayoutCreateFlags {
 impl ops::BitXor for DescriptorSetLayoutCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DescriptorSetLayoutCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DescriptorSetLayoutCreateFlags {
@@ -1343,15 +1343,15 @@ pub struct BufferViewCreateFlags(u32);
 impl BufferViewCreateFlags {}
 impl default::Default for BufferViewCreateFlags {
     fn default() -> Self {
-        BufferViewCreateFlags(0)
+        Self(0)
     }
 }
 impl BufferViewCreateFlags {
     pub fn empty() -> Self {
-        BufferViewCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        BufferViewCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1369,7 +1369,7 @@ impl BufferViewCreateFlags {
 impl ops::BitOr for BufferViewCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        BufferViewCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for BufferViewCreateFlags {
@@ -1380,7 +1380,7 @@ impl ops::BitOrAssign for BufferViewCreateFlags {
 impl ops::BitAnd for BufferViewCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        BufferViewCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for BufferViewCreateFlags {
@@ -1391,7 +1391,7 @@ impl ops::BitAndAssign for BufferViewCreateFlags {
 impl ops::BitXor for BufferViewCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        BufferViewCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for BufferViewCreateFlags {
@@ -1410,15 +1410,15 @@ pub struct InstanceCreateFlags(u32);
 impl InstanceCreateFlags {}
 impl default::Default for InstanceCreateFlags {
     fn default() -> Self {
-        InstanceCreateFlags(0)
+        Self(0)
     }
 }
 impl InstanceCreateFlags {
     pub fn empty() -> Self {
-        InstanceCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        InstanceCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1436,7 +1436,7 @@ impl InstanceCreateFlags {
 impl ops::BitOr for InstanceCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        InstanceCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for InstanceCreateFlags {
@@ -1447,7 +1447,7 @@ impl ops::BitOrAssign for InstanceCreateFlags {
 impl ops::BitAnd for InstanceCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        InstanceCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for InstanceCreateFlags {
@@ -1458,7 +1458,7 @@ impl ops::BitAndAssign for InstanceCreateFlags {
 impl ops::BitXor for InstanceCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        InstanceCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for InstanceCreateFlags {
@@ -1477,15 +1477,15 @@ pub struct DeviceCreateFlags(u32);
 impl DeviceCreateFlags {}
 impl default::Default for DeviceCreateFlags {
     fn default() -> Self {
-        DeviceCreateFlags(0)
+        Self(0)
     }
 }
 impl DeviceCreateFlags {
     pub fn empty() -> Self {
-        DeviceCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DeviceCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1503,7 +1503,7 @@ impl DeviceCreateFlags {
 impl ops::BitOr for DeviceCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DeviceCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DeviceCreateFlags {
@@ -1514,7 +1514,7 @@ impl ops::BitOrAssign for DeviceCreateFlags {
 impl ops::BitAnd for DeviceCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DeviceCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DeviceCreateFlags {
@@ -1525,7 +1525,7 @@ impl ops::BitAndAssign for DeviceCreateFlags {
 impl ops::BitXor for DeviceCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DeviceCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DeviceCreateFlags {
@@ -1543,19 +1543,19 @@ impl fmt::Display for DeviceCreateFlags {
 pub struct DeviceQueueCreateFlags(u32);
 impl DeviceQueueCreateFlags {
     /// Queue is a protected-capable device queue
-    pub const PROTECTED: Self = DeviceQueueCreateFlags(0x1);
+    pub const PROTECTED: Self = Self(0x1);
 }
 impl default::Default for DeviceQueueCreateFlags {
     fn default() -> Self {
-        DeviceQueueCreateFlags(0)
+        Self(0)
     }
 }
 impl DeviceQueueCreateFlags {
     pub fn empty() -> Self {
-        DeviceQueueCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DeviceQueueCreateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1573,7 +1573,7 @@ impl DeviceQueueCreateFlags {
 impl ops::BitOr for DeviceQueueCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DeviceQueueCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DeviceQueueCreateFlags {
@@ -1584,7 +1584,7 @@ impl ops::BitOrAssign for DeviceQueueCreateFlags {
 impl ops::BitAnd for DeviceQueueCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DeviceQueueCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DeviceQueueCreateFlags {
@@ -1595,7 +1595,7 @@ impl ops::BitAndAssign for DeviceQueueCreateFlags {
 impl ops::BitXor for DeviceQueueCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DeviceQueueCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DeviceQueueCreateFlags {
@@ -1613,31 +1613,31 @@ impl fmt::Display for DeviceQueueCreateFlags {
 pub struct QueueFlags(u32);
 impl QueueFlags {
     /// Queue supports graphics operations
-    pub const GRAPHICS: Self = QueueFlags(0x1);
+    pub const GRAPHICS: Self = Self(0x1);
     /// Queue supports compute operations
-    pub const COMPUTE: Self = QueueFlags(0x2);
+    pub const COMPUTE: Self = Self(0x2);
     /// Queue supports transfer operations
-    pub const TRANSFER: Self = QueueFlags(0x4);
+    pub const TRANSFER: Self = Self(0x4);
     /// Queue supports sparse resource memory management operations
-    pub const SPARSE_BINDING: Self = QueueFlags(0x8);
+    pub const SPARSE_BINDING: Self = Self(0x8);
     /// Queues may support protected operations
-    pub const PROTECTED: Self = QueueFlags(0x10);
+    pub const PROTECTED: Self = Self(0x10);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_6_KHR: Self = QueueFlags(0x40);
+    pub const RESERVED_6_KHR: Self = Self(0x40);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_5_KHR: Self = QueueFlags(0x20);
+    pub const RESERVED_5_KHR: Self = Self(0x20);
 }
 impl default::Default for QueueFlags {
     fn default() -> Self {
-        QueueFlags(0)
+        Self(0)
     }
 }
 impl QueueFlags {
     pub fn empty() -> Self {
-        QueueFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        QueueFlags(0x7f)
+        Self(0x7f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1655,7 +1655,7 @@ impl QueueFlags {
 impl ops::BitOr for QueueFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        QueueFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for QueueFlags {
@@ -1666,7 +1666,7 @@ impl ops::BitOrAssign for QueueFlags {
 impl ops::BitAnd for QueueFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        QueueFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for QueueFlags {
@@ -1677,7 +1677,7 @@ impl ops::BitAndAssign for QueueFlags {
 impl ops::BitXor for QueueFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        QueueFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for QueueFlags {
@@ -1707,29 +1707,29 @@ impl fmt::Display for QueueFlags {
 pub struct MemoryPropertyFlags(u32);
 impl MemoryPropertyFlags {
     /// If otherwise stated, then allocate memory on device
-    pub const DEVICE_LOCAL: Self = MemoryPropertyFlags(0x1);
+    pub const DEVICE_LOCAL: Self = Self(0x1);
     /// Memory is mappable by host
-    pub const HOST_VISIBLE: Self = MemoryPropertyFlags(0x2);
+    pub const HOST_VISIBLE: Self = Self(0x2);
     /// Memory will have i/o coherency. If not set, application may need to use vkFlushMappedMemoryRanges and vkInvalidateMappedMemoryRanges to flush/invalidate host cache
-    pub const HOST_COHERENT: Self = MemoryPropertyFlags(0x4);
+    pub const HOST_COHERENT: Self = Self(0x4);
     /// Memory will be cached by the host
-    pub const HOST_CACHED: Self = MemoryPropertyFlags(0x8);
+    pub const HOST_CACHED: Self = Self(0x8);
     /// Memory may be allocated by the driver when it is required
-    pub const LAZILY_ALLOCATED: Self = MemoryPropertyFlags(0x10);
+    pub const LAZILY_ALLOCATED: Self = Self(0x10);
     /// Memory is protected
-    pub const PROTECTED: Self = MemoryPropertyFlags(0x20);
+    pub const PROTECTED: Self = Self(0x20);
 }
 impl default::Default for MemoryPropertyFlags {
     fn default() -> Self {
-        MemoryPropertyFlags(0)
+        Self(0)
     }
 }
 impl MemoryPropertyFlags {
     pub fn empty() -> Self {
-        MemoryPropertyFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MemoryPropertyFlags(0x3f)
+        Self(0x3f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1747,7 +1747,7 @@ impl MemoryPropertyFlags {
 impl ops::BitOr for MemoryPropertyFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MemoryPropertyFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MemoryPropertyFlags {
@@ -1758,7 +1758,7 @@ impl ops::BitOrAssign for MemoryPropertyFlags {
 impl ops::BitAnd for MemoryPropertyFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MemoryPropertyFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MemoryPropertyFlags {
@@ -1769,7 +1769,7 @@ impl ops::BitAndAssign for MemoryPropertyFlags {
 impl ops::BitXor for MemoryPropertyFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MemoryPropertyFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MemoryPropertyFlags {
@@ -1798,22 +1798,22 @@ impl fmt::Display for MemoryPropertyFlags {
 pub struct MemoryHeapFlags(u32);
 impl MemoryHeapFlags {
     /// If set, heap represents device memory
-    pub const DEVICE_LOCAL: Self = MemoryHeapFlags(0x1);
+    pub const DEVICE_LOCAL: Self = Self(0x1);
     /// If set, heap allocations allocate multiple instances by default
-    pub const MULTI_INSTANCE: Self = MemoryHeapFlags(0x2);
+    pub const MULTI_INSTANCE: Self = Self(0x2);
     pub const MULTI_INSTANCE_KHR: Self = Self::MULTI_INSTANCE;
 }
 impl default::Default for MemoryHeapFlags {
     fn default() -> Self {
-        MemoryHeapFlags(0)
+        Self(0)
     }
 }
 impl MemoryHeapFlags {
     pub fn empty() -> Self {
-        MemoryHeapFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MemoryHeapFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1831,7 +1831,7 @@ impl MemoryHeapFlags {
 impl ops::BitOr for MemoryHeapFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MemoryHeapFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MemoryHeapFlags {
@@ -1842,7 +1842,7 @@ impl ops::BitOrAssign for MemoryHeapFlags {
 impl ops::BitAnd for MemoryHeapFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MemoryHeapFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MemoryHeapFlags {
@@ -1853,7 +1853,7 @@ impl ops::BitAndAssign for MemoryHeapFlags {
 impl ops::BitXor for MemoryHeapFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MemoryHeapFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MemoryHeapFlags {
@@ -1871,82 +1871,82 @@ impl fmt::Display for MemoryHeapFlags {
 pub struct AccessFlags(u32);
 impl AccessFlags {
     /// Controls coherency of indirect command reads
-    pub const INDIRECT_COMMAND_READ: Self = AccessFlags(0x1);
+    pub const INDIRECT_COMMAND_READ: Self = Self(0x1);
     /// Controls coherency of index reads
-    pub const INDEX_READ: Self = AccessFlags(0x2);
+    pub const INDEX_READ: Self = Self(0x2);
     /// Controls coherency of vertex attribute reads
-    pub const VERTEX_ATTRIBUTE_READ: Self = AccessFlags(0x4);
+    pub const VERTEX_ATTRIBUTE_READ: Self = Self(0x4);
     /// Controls coherency of uniform buffer reads
-    pub const UNIFORM_READ: Self = AccessFlags(0x8);
+    pub const UNIFORM_READ: Self = Self(0x8);
     /// Controls coherency of input attachment reads
-    pub const INPUT_ATTACHMENT_READ: Self = AccessFlags(0x10);
+    pub const INPUT_ATTACHMENT_READ: Self = Self(0x10);
     /// Controls coherency of shader reads
-    pub const SHADER_READ: Self = AccessFlags(0x20);
+    pub const SHADER_READ: Self = Self(0x20);
     /// Controls coherency of shader writes
-    pub const SHADER_WRITE: Self = AccessFlags(0x40);
+    pub const SHADER_WRITE: Self = Self(0x40);
     /// Controls coherency of color attachment reads
-    pub const COLOR_ATTACHMENT_READ: Self = AccessFlags(0x80);
+    pub const COLOR_ATTACHMENT_READ: Self = Self(0x80);
     /// Controls coherency of color attachment writes
-    pub const COLOR_ATTACHMENT_WRITE: Self = AccessFlags(0x100);
+    pub const COLOR_ATTACHMENT_WRITE: Self = Self(0x100);
     /// Controls coherency of depth/stencil attachment reads
-    pub const DEPTH_STENCIL_ATTACHMENT_READ: Self = AccessFlags(0x200);
+    pub const DEPTH_STENCIL_ATTACHMENT_READ: Self = Self(0x200);
     /// Controls coherency of depth/stencil attachment writes
-    pub const DEPTH_STENCIL_ATTACHMENT_WRITE: Self = AccessFlags(0x400);
+    pub const DEPTH_STENCIL_ATTACHMENT_WRITE: Self = Self(0x400);
     /// Controls coherency of transfer reads
-    pub const TRANSFER_READ: Self = AccessFlags(0x800);
+    pub const TRANSFER_READ: Self = Self(0x800);
     /// Controls coherency of transfer writes
-    pub const TRANSFER_WRITE: Self = AccessFlags(0x1000);
+    pub const TRANSFER_WRITE: Self = Self(0x1000);
     /// Controls coherency of host reads
-    pub const HOST_READ: Self = AccessFlags(0x2000);
+    pub const HOST_READ: Self = Self(0x2000);
     /// Controls coherency of host writes
-    pub const HOST_WRITE: Self = AccessFlags(0x4000);
+    pub const HOST_WRITE: Self = Self(0x4000);
     /// Controls coherency of memory reads
-    pub const MEMORY_READ: Self = AccessFlags(0x8000);
+    pub const MEMORY_READ: Self = Self(0x8000);
     /// Controls coherency of memory writes
-    pub const MEMORY_WRITE: Self = AccessFlags(0x10000);
+    pub const MEMORY_WRITE: Self = Self(0x10000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_30_KHR: Self = AccessFlags(0x40000000);
+    pub const RESERVED_30_KHR: Self = Self(0x40000000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_31_KHR: Self = AccessFlags(0x80000000);
+    pub const RESERVED_31_KHR: Self = Self(0x80000000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_28_KHR: Self = AccessFlags(0x10000000);
+    pub const RESERVED_28_KHR: Self = Self(0x10000000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_29_KHR: Self = AccessFlags(0x20000000);
+    pub const RESERVED_29_KHR: Self = Self(0x20000000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = AccessFlags(0x2000000);
+    pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = AccessFlags(0x4000000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = Self(0x4000000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = AccessFlags(0x8000000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = Self(0x8000000);
     /// read access flag for reading conditional rendering predicate
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const CONDITIONAL_RENDERING_READ_EXT: Self = AccessFlags(0x100000);
+    pub const CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_READ_NVX: Self = AccessFlags(0x20000);
+    pub const COMMAND_PROCESS_READ_NVX: Self = Self(0x20000);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_WRITE_NVX: Self = AccessFlags(0x40000);
+    pub const COMMAND_PROCESS_WRITE_NVX: Self = Self(0x40000);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = AccessFlags(0x80000);
+    pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_READ_NV: Self = AccessFlags(0x800000);
+    pub const SHADING_RATE_IMAGE_READ_NV: Self = Self(0x800000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_READ_NV: Self = AccessFlags(0x200000);
+    pub const ACCELERATION_STRUCTURE_READ_NV: Self = Self(0x200000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = AccessFlags(0x400000);
+    pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self(0x400000);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = AccessFlags(0x1000000);
+    pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
 }
 impl default::Default for AccessFlags {
     fn default() -> Self {
-        AccessFlags(0)
+        Self(0)
     }
 }
 impl AccessFlags {
     pub fn empty() -> Self {
-        AccessFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        AccessFlags(0xffffffff)
+        Self(0xffffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -1964,7 +1964,7 @@ impl AccessFlags {
 impl ops::BitOr for AccessFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        AccessFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for AccessFlags {
@@ -1975,7 +1975,7 @@ impl ops::BitOrAssign for AccessFlags {
 impl ops::BitAnd for AccessFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        AccessFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for AccessFlags {
@@ -1986,7 +1986,7 @@ impl ops::BitAndAssign for AccessFlags {
 impl ops::BitXor for AccessFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        AccessFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for AccessFlags {
@@ -2041,54 +2041,54 @@ impl fmt::Display for AccessFlags {
 pub struct BufferUsageFlags(u32);
 impl BufferUsageFlags {
     /// Can be used as a source of transfer operations
-    pub const TRANSFER_SRC: Self = BufferUsageFlags(0x1);
+    pub const TRANSFER_SRC: Self = Self(0x1);
     /// Can be used as a destination of transfer operations
-    pub const TRANSFER_DST: Self = BufferUsageFlags(0x2);
+    pub const TRANSFER_DST: Self = Self(0x2);
     /// Can be used as TBO
-    pub const UNIFORM_TEXEL_BUFFER: Self = BufferUsageFlags(0x4);
+    pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x4);
     /// Can be used as IBO
-    pub const STORAGE_TEXEL_BUFFER: Self = BufferUsageFlags(0x8);
+    pub const STORAGE_TEXEL_BUFFER: Self = Self(0x8);
     /// Can be used as UBO
-    pub const UNIFORM_BUFFER: Self = BufferUsageFlags(0x10);
+    pub const UNIFORM_BUFFER: Self = Self(0x10);
     /// Can be used as SSBO
-    pub const STORAGE_BUFFER: Self = BufferUsageFlags(0x20);
+    pub const STORAGE_BUFFER: Self = Self(0x20);
     /// Can be used as source of fixed-function index fetch (index buffer)
-    pub const INDEX_BUFFER: Self = BufferUsageFlags(0x40);
+    pub const INDEX_BUFFER: Self = Self(0x40);
     /// Can be used as source of fixed-function vertex fetch (VBO)
-    pub const VERTEX_BUFFER: Self = BufferUsageFlags(0x80);
+    pub const VERTEX_BUFFER: Self = Self(0x80);
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
-    pub const INDIRECT_BUFFER: Self = BufferUsageFlags(0x100);
+    pub const INDIRECT_BUFFER: Self = Self(0x100);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_15_KHR: Self = BufferUsageFlags(0x8000);
+    pub const RESERVED_15_KHR: Self = Self(0x8000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_16_KHR: Self = BufferUsageFlags(0x10000);
+    pub const RESERVED_16_KHR: Self = Self(0x10000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_13_KHR: Self = BufferUsageFlags(0x2000);
+    pub const RESERVED_13_KHR: Self = Self(0x2000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_14_KHR: Self = BufferUsageFlags(0x4000);
+    pub const RESERVED_14_KHR: Self = Self(0x4000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = BufferUsageFlags(0x800);
+    pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = Self(0x800);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = BufferUsageFlags(0x1000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = Self(0x1000);
     /// Specifies the buffer can be used as predicate in conditional rendering
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const CONDITIONAL_RENDERING_EXT: Self = BufferUsageFlags(0x200);
+    pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_NV: Self = BufferUsageFlags(0x400);
+    pub const RAY_TRACING_NV: Self = Self(0x400);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const SHADER_DEVICE_ADDRESS_EXT: Self = BufferUsageFlags(0x20000);
+    pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self(0x20000);
 }
 impl default::Default for BufferUsageFlags {
     fn default() -> Self {
-        BufferUsageFlags(0)
+        Self(0)
     }
 }
 impl BufferUsageFlags {
     pub fn empty() -> Self {
-        BufferUsageFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        BufferUsageFlags(0x3ffff)
+        Self(0x3ffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2106,7 +2106,7 @@ impl BufferUsageFlags {
 impl ops::BitOr for BufferUsageFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        BufferUsageFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for BufferUsageFlags {
@@ -2117,7 +2117,7 @@ impl ops::BitOrAssign for BufferUsageFlags {
 impl ops::BitAnd for BufferUsageFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        BufferUsageFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for BufferUsageFlags {
@@ -2128,7 +2128,7 @@ impl ops::BitAndAssign for BufferUsageFlags {
 impl ops::BitXor for BufferUsageFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        BufferUsageFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for BufferUsageFlags {
@@ -2169,27 +2169,27 @@ impl fmt::Display for BufferUsageFlags {
 pub struct BufferCreateFlags(u32);
 impl BufferCreateFlags {
     /// Buffer should support sparse backing
-    pub const SPARSE_BINDING: Self = BufferCreateFlags(0x1);
+    pub const SPARSE_BINDING: Self = Self(0x1);
     /// Buffer should support sparse backing with partial residency
-    pub const SPARSE_RESIDENCY: Self = BufferCreateFlags(0x2);
+    pub const SPARSE_RESIDENCY: Self = Self(0x2);
     /// Buffer should support constent data access to physical memory ranges mapped into multiple locations of sparse buffers
-    pub const SPARSE_ALIASED: Self = BufferCreateFlags(0x4);
+    pub const SPARSE_ALIASED: Self = Self(0x4);
     /// Buffer requires protected memory
-    pub const PROTECTED: Self = BufferCreateFlags(0x8);
+    pub const PROTECTED: Self = Self(0x8);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = BufferCreateFlags(0x10);
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self(0x10);
 }
 impl default::Default for BufferCreateFlags {
     fn default() -> Self {
-        BufferCreateFlags(0)
+        Self(0)
     }
 }
 impl BufferCreateFlags {
     pub fn empty() -> Self {
-        BufferCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        BufferCreateFlags(0x1f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2207,7 +2207,7 @@ impl BufferCreateFlags {
 impl ops::BitOr for BufferCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        BufferCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for BufferCreateFlags {
@@ -2218,7 +2218,7 @@ impl ops::BitOrAssign for BufferCreateFlags {
 impl ops::BitAnd for BufferCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        BufferCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for BufferCreateFlags {
@@ -2229,7 +2229,7 @@ impl ops::BitAndAssign for BufferCreateFlags {
 impl ops::BitXor for BufferCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        BufferCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for BufferCreateFlags {
@@ -2256,42 +2256,42 @@ impl fmt::Display for BufferCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderStageFlags(u32);
 impl ShaderStageFlags {
-    pub const VERTEX: Self = ShaderStageFlags(0x1);
-    pub const TESSELLATION_CONTROL: Self = ShaderStageFlags(0x2);
-    pub const TESSELLATION_EVALUATION: Self = ShaderStageFlags(0x4);
-    pub const GEOMETRY: Self = ShaderStageFlags(0x8);
-    pub const FRAGMENT: Self = ShaderStageFlags(0x10);
-    pub const COMPUTE: Self = ShaderStageFlags(0x20);
-    pub const ALL_GRAPHICS: Self = ShaderStageFlags(0x1f);
-    pub const ALL: Self = ShaderStageFlags(0x7fffffff);
+    pub const VERTEX: Self = Self(0x1);
+    pub const TESSELLATION_CONTROL: Self = Self(0x2);
+    pub const TESSELLATION_EVALUATION: Self = Self(0x4);
+    pub const GEOMETRY: Self = Self(0x8);
+    pub const FRAGMENT: Self = Self(0x10);
+    pub const COMPUTE: Self = Self(0x20);
+    pub const ALL_GRAPHICS: Self = Self(0x1f);
+    pub const ALL: Self = Self(0x7fffffff);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAYGEN_NV: Self = ShaderStageFlags(0x100);
+    pub const RAYGEN_NV: Self = Self(0x100);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ANY_HIT_NV: Self = ShaderStageFlags(0x200);
+    pub const ANY_HIT_NV: Self = Self(0x200);
     /// Added by extension VK_NV_ray_tracing.
-    pub const CLOSEST_HIT_NV: Self = ShaderStageFlags(0x400);
+    pub const CLOSEST_HIT_NV: Self = Self(0x400);
     /// Added by extension VK_NV_ray_tracing.
-    pub const MISS_NV: Self = ShaderStageFlags(0x800);
+    pub const MISS_NV: Self = Self(0x800);
     /// Added by extension VK_NV_ray_tracing.
-    pub const INTERSECTION_NV: Self = ShaderStageFlags(0x1000);
+    pub const INTERSECTION_NV: Self = Self(0x1000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const CALLABLE_NV: Self = ShaderStageFlags(0x2000);
+    pub const CALLABLE_NV: Self = Self(0x2000);
     /// Added by extension VK_NV_mesh_shader.
-    pub const TASK_NV: Self = ShaderStageFlags(0x40);
+    pub const TASK_NV: Self = Self(0x40);
     /// Added by extension VK_NV_mesh_shader.
-    pub const MESH_NV: Self = ShaderStageFlags(0x80);
+    pub const MESH_NV: Self = Self(0x80);
 }
 impl default::Default for ShaderStageFlags {
     fn default() -> Self {
-        ShaderStageFlags(0)
+        Self(0)
     }
 }
 impl ShaderStageFlags {
     pub fn empty() -> Self {
-        ShaderStageFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ShaderStageFlags(0x7fffffff)
+        Self(0x7fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2309,7 +2309,7 @@ impl ShaderStageFlags {
 impl ops::BitOr for ShaderStageFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ShaderStageFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ShaderStageFlags {
@@ -2320,7 +2320,7 @@ impl ops::BitOrAssign for ShaderStageFlags {
 impl ops::BitAnd for ShaderStageFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ShaderStageFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ShaderStageFlags {
@@ -2331,7 +2331,7 @@ impl ops::BitAndAssign for ShaderStageFlags {
 impl ops::BitXor for ShaderStageFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ShaderStageFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ShaderStageFlags {
@@ -2370,49 +2370,49 @@ impl fmt::Display for ShaderStageFlags {
 pub struct ImageUsageFlags(u32);
 impl ImageUsageFlags {
     /// Can be used as a source of transfer operations
-    pub const TRANSFER_SRC: Self = ImageUsageFlags(0x1);
+    pub const TRANSFER_SRC: Self = Self(0x1);
     /// Can be used as a destination of transfer operations
-    pub const TRANSFER_DST: Self = ImageUsageFlags(0x2);
+    pub const TRANSFER_DST: Self = Self(0x2);
     /// Can be sampled from (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
-    pub const SAMPLED: Self = ImageUsageFlags(0x4);
+    pub const SAMPLED: Self = Self(0x4);
     /// Can be used as storage image (STORAGE_IMAGE descriptor type)
-    pub const STORAGE: Self = ImageUsageFlags(0x8);
+    pub const STORAGE: Self = Self(0x8);
     /// Can be used as framebuffer color attachment
-    pub const COLOR_ATTACHMENT: Self = ImageUsageFlags(0x10);
+    pub const COLOR_ATTACHMENT: Self = Self(0x10);
     /// Can be used as framebuffer depth/stencil attachment
-    pub const DEPTH_STENCIL_ATTACHMENT: Self = ImageUsageFlags(0x20);
+    pub const DEPTH_STENCIL_ATTACHMENT: Self = Self(0x20);
     /// Image data not needed outside of rendering
-    pub const TRANSIENT_ATTACHMENT: Self = ImageUsageFlags(0x40);
+    pub const TRANSIENT_ATTACHMENT: Self = Self(0x40);
     /// Can be used as framebuffer input attachment
-    pub const INPUT_ATTACHMENT: Self = ImageUsageFlags(0x80);
+    pub const INPUT_ATTACHMENT: Self = Self(0x80);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_13_KHR: Self = ImageUsageFlags(0x2000);
+    pub const RESERVED_13_KHR: Self = Self(0x2000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_14_KHR: Self = ImageUsageFlags(0x4000);
+    pub const RESERVED_14_KHR: Self = Self(0x4000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_15_KHR: Self = ImageUsageFlags(0x8000);
+    pub const RESERVED_15_KHR: Self = Self(0x8000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_10_KHR: Self = ImageUsageFlags(0x400);
+    pub const RESERVED_10_KHR: Self = Self(0x400);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_11_KHR: Self = ImageUsageFlags(0x800);
+    pub const RESERVED_11_KHR: Self = Self(0x800);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_12_KHR: Self = ImageUsageFlags(0x1000);
+    pub const RESERVED_12_KHR: Self = Self(0x1000);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_NV: Self = ImageUsageFlags(0x100);
+    pub const SHADING_RATE_IMAGE_NV: Self = Self(0x100);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_MAP_EXT: Self = ImageUsageFlags(0x200);
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
 }
 impl default::Default for ImageUsageFlags {
     fn default() -> Self {
-        ImageUsageFlags(0)
+        Self(0)
     }
 }
 impl ImageUsageFlags {
     pub fn empty() -> Self {
-        ImageUsageFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ImageUsageFlags(0xffff)
+        Self(0xffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2430,7 +2430,7 @@ impl ImageUsageFlags {
 impl ops::BitOr for ImageUsageFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ImageUsageFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ImageUsageFlags {
@@ -2441,7 +2441,7 @@ impl ops::BitOrAssign for ImageUsageFlags {
 impl ops::BitAnd for ImageUsageFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ImageUsageFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ImageUsageFlags {
@@ -2452,7 +2452,7 @@ impl ops::BitAndAssign for ImageUsageFlags {
 impl ops::BitXor for ImageUsageFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ImageUsageFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ImageUsageFlags {
@@ -2491,49 +2491,49 @@ impl fmt::Display for ImageUsageFlags {
 pub struct ImageCreateFlags(u32);
 impl ImageCreateFlags {
     /// Image should support sparse backing
-    pub const SPARSE_BINDING: Self = ImageCreateFlags(0x1);
+    pub const SPARSE_BINDING: Self = Self(0x1);
     /// Image should support sparse backing with partial residency
-    pub const SPARSE_RESIDENCY: Self = ImageCreateFlags(0x2);
+    pub const SPARSE_RESIDENCY: Self = Self(0x2);
     /// Image should support constent data access to physical memory ranges mapped into multiple locations of sparse images
-    pub const SPARSE_ALIASED: Self = ImageCreateFlags(0x4);
+    pub const SPARSE_ALIASED: Self = Self(0x4);
     /// Allows image views to have different format than the base image
-    pub const MUTABLE_FORMAT: Self = ImageCreateFlags(0x8);
+    pub const MUTABLE_FORMAT: Self = Self(0x8);
     /// Allows creating image views with cube type from the created image
-    pub const CUBE_COMPATIBLE: Self = ImageCreateFlags(0x10);
-    pub const ALIAS: Self = ImageCreateFlags(0x400);
+    pub const CUBE_COMPATIBLE: Self = Self(0x10);
+    pub const ALIAS: Self = Self(0x400);
     /// Allows using VkBindImageMemoryDeviceGroupInfo::pSplitInstanceBindRegions when binding memory to the image
-    pub const SPLIT_INSTANCE_BIND_REGIONS: Self = ImageCreateFlags(0x40);
+    pub const SPLIT_INSTANCE_BIND_REGIONS: Self = Self(0x40);
     /// The 3D image can be viewed as a 2D or 2D array image
-    pub const N2D_ARRAY_COMPATIBLE: Self = ImageCreateFlags(0x20);
-    pub const BLOCK_TEXEL_VIEW_COMPATIBLE: Self = ImageCreateFlags(0x80);
-    pub const EXTENDED_USAGE: Self = ImageCreateFlags(0x100);
+    pub const N2D_ARRAY_COMPATIBLE: Self = Self(0x20);
+    pub const BLOCK_TEXEL_VIEW_COMPATIBLE: Self = Self(0x80);
+    pub const EXTENDED_USAGE: Self = Self(0x100);
     /// Image requires protected memory
-    pub const PROTECTED: Self = ImageCreateFlags(0x800);
-    pub const DISJOINT: Self = ImageCreateFlags(0x200);
+    pub const PROTECTED: Self = Self(0x800);
+    pub const DISJOINT: Self = Self(0x200);
     /// Added by extension VK_NV_corner_sampled_image.
-    pub const CORNER_SAMPLED_NV: Self = ImageCreateFlags(0x2000);
+    pub const CORNER_SAMPLED_NV: Self = Self(0x2000);
     pub const SPLIT_INSTANCE_BIND_REGIONS_KHR: Self = Self::SPLIT_INSTANCE_BIND_REGIONS;
     pub const N2D_ARRAY_COMPATIBLE_KHR: Self = Self::N2D_ARRAY_COMPATIBLE;
     pub const BLOCK_TEXEL_VIEW_COMPATIBLE_KHR: Self = Self::BLOCK_TEXEL_VIEW_COMPATIBLE;
     pub const EXTENDED_USAGE_KHR: Self = Self::EXTENDED_USAGE;
     /// Added by extension VK_EXT_sample_locations.
-    pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = ImageCreateFlags(0x1000);
+    pub const SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT: Self = Self(0x1000);
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const SUBSAMPLED_EXT: Self = ImageCreateFlags(0x4000);
+    pub const SUBSAMPLED_EXT: Self = Self(0x4000);
 }
 impl default::Default for ImageCreateFlags {
     fn default() -> Self {
-        ImageCreateFlags(0)
+        Self(0)
     }
 }
 impl ImageCreateFlags {
     pub fn empty() -> Self {
-        ImageCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ImageCreateFlags(0x7fff)
+        Self(0x7fff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2551,7 +2551,7 @@ impl ImageCreateFlags {
 impl ops::BitOr for ImageCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ImageCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ImageCreateFlags {
@@ -2562,7 +2562,7 @@ impl ops::BitOrAssign for ImageCreateFlags {
 impl ops::BitAnd for ImageCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ImageCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ImageCreateFlags {
@@ -2573,7 +2573,7 @@ impl ops::BitAndAssign for ImageCreateFlags {
 impl ops::BitXor for ImageCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ImageCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ImageCreateFlags {
@@ -2611,19 +2611,19 @@ impl fmt::Display for ImageCreateFlags {
 pub struct ImageViewCreateFlags(u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = ImageViewCreateFlags(0x1);
+    pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
 }
 impl default::Default for ImageViewCreateFlags {
     fn default() -> Self {
-        ImageViewCreateFlags(0)
+        Self(0)
     }
 }
 impl ImageViewCreateFlags {
     pub fn empty() -> Self {
-        ImageViewCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ImageViewCreateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2641,7 +2641,7 @@ impl ImageViewCreateFlags {
 impl ops::BitOr for ImageViewCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ImageViewCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ImageViewCreateFlags {
@@ -2652,7 +2652,7 @@ impl ops::BitOrAssign for ImageViewCreateFlags {
 impl ops::BitAnd for ImageViewCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ImageViewCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ImageViewCreateFlags {
@@ -2663,7 +2663,7 @@ impl ops::BitAndAssign for ImageViewCreateFlags {
 impl ops::BitXor for ImageViewCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ImageViewCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ImageViewCreateFlags {
@@ -2680,31 +2680,31 @@ impl fmt::Display for ImageViewCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCreateFlags(u32);
 impl PipelineCreateFlags {
-    pub const DISABLE_OPTIMIZATION: Self = PipelineCreateFlags(0x1);
-    pub const ALLOW_DERIVATIVES: Self = PipelineCreateFlags(0x2);
-    pub const DERIVATIVE: Self = PipelineCreateFlags(0x4);
-    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = PipelineCreateFlags(0x8);
-    pub const DISPATCH_BASE: Self = PipelineCreateFlags(0x10);
+    pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
+    pub const ALLOW_DERIVATIVES: Self = Self(0x2);
+    pub const DERIVATIVE: Self = Self(0x4);
+    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
+    pub const DISPATCH_BASE: Self = Self(0x10);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_NV_ray_tracing.
-    pub const DEFER_COMPILE_NV: Self = PipelineCreateFlags(0x20);
+    pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const CAPTURE_STATISTICS_KHR: Self = PipelineCreateFlags(0x40);
+    pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = PipelineCreateFlags(0x80);
+    pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = Self(0x80);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
-        PipelineCreateFlags(0)
+        Self(0)
     }
 }
 impl PipelineCreateFlags {
     pub fn empty() -> Self {
-        PipelineCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCreateFlags(0xff)
+        Self(0xff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2722,7 +2722,7 @@ impl PipelineCreateFlags {
 impl ops::BitOr for PipelineCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCreateFlags {
@@ -2733,7 +2733,7 @@ impl ops::BitOrAssign for PipelineCreateFlags {
 impl ops::BitAnd for PipelineCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCreateFlags {
@@ -2744,7 +2744,7 @@ impl ops::BitAndAssign for PipelineCreateFlags {
 impl ops::BitXor for PipelineCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCreateFlags {
@@ -2774,22 +2774,22 @@ impl fmt::Display for PipelineCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ColorComponentFlags(u32);
 impl ColorComponentFlags {
-    pub const R: Self = ColorComponentFlags(0x1);
-    pub const G: Self = ColorComponentFlags(0x2);
-    pub const B: Self = ColorComponentFlags(0x4);
-    pub const A: Self = ColorComponentFlags(0x8);
+    pub const R: Self = Self(0x1);
+    pub const G: Self = Self(0x2);
+    pub const B: Self = Self(0x4);
+    pub const A: Self = Self(0x8);
 }
 impl default::Default for ColorComponentFlags {
     fn default() -> Self {
-        ColorComponentFlags(0)
+        Self(0)
     }
 }
 impl ColorComponentFlags {
     pub fn empty() -> Self {
-        ColorComponentFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ColorComponentFlags(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2807,7 +2807,7 @@ impl ColorComponentFlags {
 impl ops::BitOr for ColorComponentFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ColorComponentFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ColorComponentFlags {
@@ -2818,7 +2818,7 @@ impl ops::BitOrAssign for ColorComponentFlags {
 impl ops::BitAnd for ColorComponentFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ColorComponentFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ColorComponentFlags {
@@ -2829,7 +2829,7 @@ impl ops::BitAndAssign for ColorComponentFlags {
 impl ops::BitXor for ColorComponentFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ColorComponentFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ColorComponentFlags {
@@ -2846,19 +2846,19 @@ impl fmt::Display for ColorComponentFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct FenceCreateFlags(u32);
 impl FenceCreateFlags {
-    pub const SIGNALED: Self = FenceCreateFlags(0x1);
+    pub const SIGNALED: Self = Self(0x1);
 }
 impl default::Default for FenceCreateFlags {
     fn default() -> Self {
-        FenceCreateFlags(0)
+        Self(0)
     }
 }
 impl FenceCreateFlags {
     pub fn empty() -> Self {
-        FenceCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        FenceCreateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2876,7 +2876,7 @@ impl FenceCreateFlags {
 impl ops::BitOr for FenceCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        FenceCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for FenceCreateFlags {
@@ -2887,7 +2887,7 @@ impl ops::BitOrAssign for FenceCreateFlags {
 impl ops::BitAnd for FenceCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        FenceCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for FenceCreateFlags {
@@ -2898,7 +2898,7 @@ impl ops::BitAndAssign for FenceCreateFlags {
 impl ops::BitXor for FenceCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        FenceCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for FenceCreateFlags {
@@ -2917,15 +2917,15 @@ pub struct SemaphoreCreateFlags(u32);
 impl SemaphoreCreateFlags {}
 impl default::Default for SemaphoreCreateFlags {
     fn default() -> Self {
-        SemaphoreCreateFlags(0)
+        Self(0)
     }
 }
 impl SemaphoreCreateFlags {
     pub fn empty() -> Self {
-        SemaphoreCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SemaphoreCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -2943,7 +2943,7 @@ impl SemaphoreCreateFlags {
 impl ops::BitOr for SemaphoreCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SemaphoreCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SemaphoreCreateFlags {
@@ -2954,7 +2954,7 @@ impl ops::BitOrAssign for SemaphoreCreateFlags {
 impl ops::BitAnd for SemaphoreCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SemaphoreCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SemaphoreCreateFlags {
@@ -2965,7 +2965,7 @@ impl ops::BitAndAssign for SemaphoreCreateFlags {
 impl ops::BitXor for SemaphoreCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SemaphoreCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SemaphoreCreateFlags {
@@ -2983,64 +2983,63 @@ impl fmt::Display for SemaphoreCreateFlags {
 pub struct FormatFeatureFlags(u32);
 impl FormatFeatureFlags {
     /// Format can be used for sampled images (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
-    pub const SAMPLED_IMAGE: Self = FormatFeatureFlags(0x1);
+    pub const SAMPLED_IMAGE: Self = Self(0x1);
     /// Format can be used for storage images (STORAGE_IMAGE descriptor type)
-    pub const STORAGE_IMAGE: Self = FormatFeatureFlags(0x2);
+    pub const STORAGE_IMAGE: Self = Self(0x2);
     /// Format supports atomic operations in case it is used for storage images
-    pub const STORAGE_IMAGE_ATOMIC: Self = FormatFeatureFlags(0x4);
+    pub const STORAGE_IMAGE_ATOMIC: Self = Self(0x4);
     /// Format can be used for uniform texel buffers (TBOs)
-    pub const UNIFORM_TEXEL_BUFFER: Self = FormatFeatureFlags(0x8);
+    pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x8);
     /// Format can be used for storage texel buffers (IBOs)
-    pub const STORAGE_TEXEL_BUFFER: Self = FormatFeatureFlags(0x10);
+    pub const STORAGE_TEXEL_BUFFER: Self = Self(0x10);
     /// Format supports atomic operations in case it is used for storage texel buffers
-    pub const STORAGE_TEXEL_BUFFER_ATOMIC: Self = FormatFeatureFlags(0x20);
+    pub const STORAGE_TEXEL_BUFFER_ATOMIC: Self = Self(0x20);
     /// Format can be used for vertex buffers (VBOs)
-    pub const VERTEX_BUFFER: Self = FormatFeatureFlags(0x40);
+    pub const VERTEX_BUFFER: Self = Self(0x40);
     /// Format can be used for color attachment images
-    pub const COLOR_ATTACHMENT: Self = FormatFeatureFlags(0x80);
+    pub const COLOR_ATTACHMENT: Self = Self(0x80);
     /// Format supports blending in case it is used for color attachment images
-    pub const COLOR_ATTACHMENT_BLEND: Self = FormatFeatureFlags(0x100);
+    pub const COLOR_ATTACHMENT_BLEND: Self = Self(0x100);
     /// Format can be used for depth/stencil attachment images
-    pub const DEPTH_STENCIL_ATTACHMENT: Self = FormatFeatureFlags(0x200);
+    pub const DEPTH_STENCIL_ATTACHMENT: Self = Self(0x200);
     /// Format can be used as the source image of blits with vkCmdBlitImage
-    pub const BLIT_SRC: Self = FormatFeatureFlags(0x400);
+    pub const BLIT_SRC: Self = Self(0x400);
     /// Format can be used as the destination image of blits with vkCmdBlitImage
-    pub const BLIT_DST: Self = FormatFeatureFlags(0x800);
+    pub const BLIT_DST: Self = Self(0x800);
     /// Format can be filtered with VK_FILTER_LINEAR when being sampled
-    pub const SAMPLED_IMAGE_FILTER_LINEAR: Self = FormatFeatureFlags(0x1000);
+    pub const SAMPLED_IMAGE_FILTER_LINEAR: Self = Self(0x1000);
     /// Format can be used as the source image of image transfer commands
-    pub const TRANSFER_SRC: Self = FormatFeatureFlags(0x4000);
+    pub const TRANSFER_SRC: Self = Self(0x4000);
     /// Format can be used as the destination image of image transfer commands
-    pub const TRANSFER_DST: Self = FormatFeatureFlags(0x8000);
+    pub const TRANSFER_DST: Self = Self(0x8000);
     /// Format can have midpoint rather than cosited chroma samples
-    pub const MIDPOINT_CHROMA_SAMPLES: Self = FormatFeatureFlags(0x20000);
+    pub const MIDPOINT_CHROMA_SAMPLES: Self = Self(0x20000);
     /// Format can be used with linear filtering whilst color conversion is enabled
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER: Self = FormatFeatureFlags(0x40000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER: Self = Self(0x40000);
     /// Format can have different chroma, min and mag filters
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self = FormatFeatureFlags(0x80000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self = FormatFeatureFlags(0x100000);
-    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE: Self =
-        FormatFeatureFlags(0x200000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self = Self(0x80000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self = Self(0x100000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE: Self = Self(0x200000);
     /// Format supports disjoint planes
-    pub const DISJOINT: Self = FormatFeatureFlags(0x400000);
+    pub const DISJOINT: Self = Self(0x400000);
     /// Format can have cosited rather than midpoint chroma samples
-    pub const COSITED_CHROMA_SAMPLES: Self = FormatFeatureFlags(0x800000);
+    pub const COSITED_CHROMA_SAMPLES: Self = Self(0x800000);
     /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
     /// Added by extension VK_IMG_filter_cubic.
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = FormatFeatureFlags(0x2000);
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = Self(0x2000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_27_KHR: Self = FormatFeatureFlags(0x8000000);
+    pub const RESERVED_27_KHR: Self = Self(0x8000000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_28_KHR: Self = FormatFeatureFlags(0x10000000);
+    pub const RESERVED_28_KHR: Self = Self(0x10000000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_25_KHR: Self = FormatFeatureFlags(0x2000000);
+    pub const RESERVED_25_KHR: Self = Self(0x2000000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_26_KHR: Self = FormatFeatureFlags(0x4000000);
+    pub const RESERVED_26_KHR: Self = Self(0x4000000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     /// Format can be used with min/max reduction filtering
     /// Added by extension VK_EXT_sampler_filter_minmax.
-    pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = FormatFeatureFlags(0x10000);
+    pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self(0x10000);
     pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER;
@@ -3054,19 +3053,19 @@ impl FormatFeatureFlags {
     pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_IMG;
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_MAP_EXT: Self = FormatFeatureFlags(0x1000000);
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
 }
 impl default::Default for FormatFeatureFlags {
     fn default() -> Self {
-        FormatFeatureFlags(0)
+        Self(0)
     }
 }
 impl FormatFeatureFlags {
     pub fn empty() -> Self {
-        FormatFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        FormatFeatureFlags(0x1fffffff)
+        Self(0x1fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3084,7 +3083,7 @@ impl FormatFeatureFlags {
 impl ops::BitOr for FormatFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        FormatFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for FormatFeatureFlags {
@@ -3095,7 +3094,7 @@ impl ops::BitOrAssign for FormatFeatureFlags {
 impl ops::BitAnd for FormatFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        FormatFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for FormatFeatureFlags {
@@ -3106,7 +3105,7 @@ impl ops::BitAndAssign for FormatFeatureFlags {
 impl ops::BitXor for FormatFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        FormatFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for FormatFeatureFlags {
@@ -3164,19 +3163,19 @@ impl fmt::Display for FormatFeatureFlags {
 pub struct QueryControlFlags(u32);
 impl QueryControlFlags {
     /// Require precise results to be collected by the query
-    pub const PRECISE: Self = QueryControlFlags(0x1);
+    pub const PRECISE: Self = Self(0x1);
 }
 impl default::Default for QueryControlFlags {
     fn default() -> Self {
-        QueryControlFlags(0)
+        Self(0)
     }
 }
 impl QueryControlFlags {
     pub fn empty() -> Self {
-        QueryControlFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        QueryControlFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3194,7 +3193,7 @@ impl QueryControlFlags {
 impl ops::BitOr for QueryControlFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        QueryControlFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for QueryControlFlags {
@@ -3205,7 +3204,7 @@ impl ops::BitOrAssign for QueryControlFlags {
 impl ops::BitAnd for QueryControlFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        QueryControlFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for QueryControlFlags {
@@ -3216,7 +3215,7 @@ impl ops::BitAndAssign for QueryControlFlags {
 impl ops::BitXor for QueryControlFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        QueryControlFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for QueryControlFlags {
@@ -3234,25 +3233,25 @@ impl fmt::Display for QueryControlFlags {
 pub struct QueryResultFlags(u32);
 impl QueryResultFlags {
     /// Results of the queries are written to the destination buffer as 64-bit values
-    pub const N64: Self = QueryResultFlags(0x1);
+    pub const N64: Self = Self(0x1);
     /// Results of the queries are waited on before proceeding with the result copy
-    pub const WAIT: Self = QueryResultFlags(0x2);
+    pub const WAIT: Self = Self(0x2);
     /// Besides the results of the query, the availability of the results is also written
-    pub const WITH_AVAILABILITY: Self = QueryResultFlags(0x4);
+    pub const WITH_AVAILABILITY: Self = Self(0x4);
     /// Copy the partial results of the query even if the final results are not available
-    pub const PARTIAL: Self = QueryResultFlags(0x8);
+    pub const PARTIAL: Self = Self(0x8);
 }
 impl default::Default for QueryResultFlags {
     fn default() -> Self {
-        QueryResultFlags(0)
+        Self(0)
     }
 }
 impl QueryResultFlags {
     pub fn empty() -> Self {
-        QueryResultFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        QueryResultFlags(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3270,7 +3269,7 @@ impl QueryResultFlags {
 impl ops::BitOr for QueryResultFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        QueryResultFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for QueryResultFlags {
@@ -3281,7 +3280,7 @@ impl ops::BitOrAssign for QueryResultFlags {
 impl ops::BitAnd for QueryResultFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        QueryResultFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for QueryResultFlags {
@@ -3292,7 +3291,7 @@ impl ops::BitAndAssign for QueryResultFlags {
 impl ops::BitXor for QueryResultFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        QueryResultFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for QueryResultFlags {
@@ -3319,19 +3318,19 @@ impl fmt::Display for QueryResultFlags {
 pub struct ShaderModuleCreateFlags(u32);
 impl ShaderModuleCreateFlags {
     /// Added by extension VK_NV_extension_52.
-    pub const RESERVED_0_NV: Self = ShaderModuleCreateFlags(0x1);
+    pub const RESERVED_0_NV: Self = Self(0x1);
 }
 impl default::Default for ShaderModuleCreateFlags {
     fn default() -> Self {
-        ShaderModuleCreateFlags(0)
+        Self(0)
     }
 }
 impl ShaderModuleCreateFlags {
     pub fn empty() -> Self {
-        ShaderModuleCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ShaderModuleCreateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3349,7 +3348,7 @@ impl ShaderModuleCreateFlags {
 impl ops::BitOr for ShaderModuleCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ShaderModuleCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ShaderModuleCreateFlags {
@@ -3360,7 +3359,7 @@ impl ops::BitOrAssign for ShaderModuleCreateFlags {
 impl ops::BitAnd for ShaderModuleCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ShaderModuleCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ShaderModuleCreateFlags {
@@ -3371,7 +3370,7 @@ impl ops::BitAndAssign for ShaderModuleCreateFlags {
 impl ops::BitXor for ShaderModuleCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ShaderModuleCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ShaderModuleCreateFlags {
@@ -3390,15 +3389,15 @@ pub struct EventCreateFlags(u32);
 impl EventCreateFlags {}
 impl default::Default for EventCreateFlags {
     fn default() -> Self {
-        EventCreateFlags(0)
+        Self(0)
     }
 }
 impl EventCreateFlags {
     pub fn empty() -> Self {
-        EventCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        EventCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3416,7 +3415,7 @@ impl EventCreateFlags {
 impl ops::BitOr for EventCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        EventCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for EventCreateFlags {
@@ -3427,7 +3426,7 @@ impl ops::BitOrAssign for EventCreateFlags {
 impl ops::BitAnd for EventCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        EventCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for EventCreateFlags {
@@ -3438,7 +3437,7 @@ impl ops::BitAndAssign for EventCreateFlags {
 impl ops::BitXor for EventCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        EventCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for EventCreateFlags {
@@ -3456,23 +3455,23 @@ impl fmt::Display for EventCreateFlags {
 pub struct CommandPoolCreateFlags(u32);
 impl CommandPoolCreateFlags {
     /// Command buffers have a short lifetime
-    pub const TRANSIENT: Self = CommandPoolCreateFlags(0x1);
+    pub const TRANSIENT: Self = Self(0x1);
     /// Command buffers may release their memory individually
-    pub const RESET_COMMAND_BUFFER: Self = CommandPoolCreateFlags(0x2);
+    pub const RESET_COMMAND_BUFFER: Self = Self(0x2);
     /// Command buffers allocated from pool are protected command buffers
-    pub const PROTECTED: Self = CommandPoolCreateFlags(0x4);
+    pub const PROTECTED: Self = Self(0x4);
 }
 impl default::Default for CommandPoolCreateFlags {
     fn default() -> Self {
-        CommandPoolCreateFlags(0)
+        Self(0)
     }
 }
 impl CommandPoolCreateFlags {
     pub fn empty() -> Self {
-        CommandPoolCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CommandPoolCreateFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3490,7 +3489,7 @@ impl CommandPoolCreateFlags {
 impl ops::BitOr for CommandPoolCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CommandPoolCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CommandPoolCreateFlags {
@@ -3501,7 +3500,7 @@ impl ops::BitOrAssign for CommandPoolCreateFlags {
 impl ops::BitAnd for CommandPoolCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CommandPoolCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CommandPoolCreateFlags {
@@ -3512,7 +3511,7 @@ impl ops::BitAndAssign for CommandPoolCreateFlags {
 impl ops::BitXor for CommandPoolCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CommandPoolCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CommandPoolCreateFlags {
@@ -3534,19 +3533,19 @@ impl fmt::Display for CommandPoolCreateFlags {
 pub struct CommandPoolResetFlags(u32);
 impl CommandPoolResetFlags {
     /// Release resources owned by the pool
-    pub const RELEASE_RESOURCES: Self = CommandPoolResetFlags(0x1);
+    pub const RELEASE_RESOURCES: Self = Self(0x1);
 }
 impl default::Default for CommandPoolResetFlags {
     fn default() -> Self {
-        CommandPoolResetFlags(0)
+        Self(0)
     }
 }
 impl CommandPoolResetFlags {
     pub fn empty() -> Self {
-        CommandPoolResetFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CommandPoolResetFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3564,7 +3563,7 @@ impl CommandPoolResetFlags {
 impl ops::BitOr for CommandPoolResetFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CommandPoolResetFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CommandPoolResetFlags {
@@ -3575,7 +3574,7 @@ impl ops::BitOrAssign for CommandPoolResetFlags {
 impl ops::BitAnd for CommandPoolResetFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CommandPoolResetFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CommandPoolResetFlags {
@@ -3586,7 +3585,7 @@ impl ops::BitAndAssign for CommandPoolResetFlags {
 impl ops::BitXor for CommandPoolResetFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CommandPoolResetFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CommandPoolResetFlags {
@@ -3604,19 +3603,19 @@ impl fmt::Display for CommandPoolResetFlags {
 pub struct CommandBufferResetFlags(u32);
 impl CommandBufferResetFlags {
     /// Release resources owned by the buffer
-    pub const RELEASE_RESOURCES: Self = CommandBufferResetFlags(0x1);
+    pub const RELEASE_RESOURCES: Self = Self(0x1);
 }
 impl default::Default for CommandBufferResetFlags {
     fn default() -> Self {
-        CommandBufferResetFlags(0)
+        Self(0)
     }
 }
 impl CommandBufferResetFlags {
     pub fn empty() -> Self {
-        CommandBufferResetFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CommandBufferResetFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3634,7 +3633,7 @@ impl CommandBufferResetFlags {
 impl ops::BitOr for CommandBufferResetFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CommandBufferResetFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CommandBufferResetFlags {
@@ -3645,7 +3644,7 @@ impl ops::BitOrAssign for CommandBufferResetFlags {
 impl ops::BitAnd for CommandBufferResetFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CommandBufferResetFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CommandBufferResetFlags {
@@ -3656,7 +3655,7 @@ impl ops::BitAndAssign for CommandBufferResetFlags {
 impl ops::BitXor for CommandBufferResetFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CommandBufferResetFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CommandBufferResetFlags {
@@ -3673,22 +3672,22 @@ impl fmt::Display for CommandBufferResetFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CommandBufferUsageFlags(u32);
 impl CommandBufferUsageFlags {
-    pub const ONE_TIME_SUBMIT: Self = CommandBufferUsageFlags(0x1);
-    pub const RENDER_PASS_CONTINUE: Self = CommandBufferUsageFlags(0x2);
+    pub const ONE_TIME_SUBMIT: Self = Self(0x1);
+    pub const RENDER_PASS_CONTINUE: Self = Self(0x2);
     /// Command buffer may be submitted/executed more than once simultaneously
-    pub const SIMULTANEOUS_USE: Self = CommandBufferUsageFlags(0x4);
+    pub const SIMULTANEOUS_USE: Self = Self(0x4);
 }
 impl default::Default for CommandBufferUsageFlags {
     fn default() -> Self {
-        CommandBufferUsageFlags(0)
+        Self(0)
     }
 }
 impl CommandBufferUsageFlags {
     pub fn empty() -> Self {
-        CommandBufferUsageFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CommandBufferUsageFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3706,7 +3705,7 @@ impl CommandBufferUsageFlags {
 impl ops::BitOr for CommandBufferUsageFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CommandBufferUsageFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CommandBufferUsageFlags {
@@ -3717,7 +3716,7 @@ impl ops::BitOrAssign for CommandBufferUsageFlags {
 impl ops::BitAnd for CommandBufferUsageFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CommandBufferUsageFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CommandBufferUsageFlags {
@@ -3728,7 +3727,7 @@ impl ops::BitAndAssign for CommandBufferUsageFlags {
 impl ops::BitXor for CommandBufferUsageFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CommandBufferUsageFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CommandBufferUsageFlags {
@@ -3754,39 +3753,39 @@ impl fmt::Display for CommandBufferUsageFlags {
 pub struct QueryPipelineStatisticFlags(u32);
 impl QueryPipelineStatisticFlags {
     /// Optional
-    pub const INPUT_ASSEMBLY_VERTICES: Self = QueryPipelineStatisticFlags(0x1);
+    pub const INPUT_ASSEMBLY_VERTICES: Self = Self(0x1);
     /// Optional
-    pub const INPUT_ASSEMBLY_PRIMITIVES: Self = QueryPipelineStatisticFlags(0x2);
+    pub const INPUT_ASSEMBLY_PRIMITIVES: Self = Self(0x2);
     /// Optional
-    pub const VERTEX_SHADER_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x4);
+    pub const VERTEX_SHADER_INVOCATIONS: Self = Self(0x4);
     /// Optional
-    pub const GEOMETRY_SHADER_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x8);
+    pub const GEOMETRY_SHADER_INVOCATIONS: Self = Self(0x8);
     /// Optional
-    pub const GEOMETRY_SHADER_PRIMITIVES: Self = QueryPipelineStatisticFlags(0x10);
+    pub const GEOMETRY_SHADER_PRIMITIVES: Self = Self(0x10);
     /// Optional
-    pub const CLIPPING_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x20);
+    pub const CLIPPING_INVOCATIONS: Self = Self(0x20);
     /// Optional
-    pub const CLIPPING_PRIMITIVES: Self = QueryPipelineStatisticFlags(0x40);
+    pub const CLIPPING_PRIMITIVES: Self = Self(0x40);
     /// Optional
-    pub const FRAGMENT_SHADER_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x80);
+    pub const FRAGMENT_SHADER_INVOCATIONS: Self = Self(0x80);
     /// Optional
-    pub const TESSELLATION_CONTROL_SHADER_PATCHES: Self = QueryPipelineStatisticFlags(0x100);
+    pub const TESSELLATION_CONTROL_SHADER_PATCHES: Self = Self(0x100);
     /// Optional
-    pub const TESSELLATION_EVALUATION_SHADER_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x200);
+    pub const TESSELLATION_EVALUATION_SHADER_INVOCATIONS: Self = Self(0x200);
     /// Optional
-    pub const COMPUTE_SHADER_INVOCATIONS: Self = QueryPipelineStatisticFlags(0x400);
+    pub const COMPUTE_SHADER_INVOCATIONS: Self = Self(0x400);
 }
 impl default::Default for QueryPipelineStatisticFlags {
     fn default() -> Self {
-        QueryPipelineStatisticFlags(0)
+        Self(0)
     }
 }
 impl QueryPipelineStatisticFlags {
     pub fn empty() -> Self {
-        QueryPipelineStatisticFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        QueryPipelineStatisticFlags(0x7ff)
+        Self(0x7ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3804,7 +3803,7 @@ impl QueryPipelineStatisticFlags {
 impl ops::BitOr for QueryPipelineStatisticFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        QueryPipelineStatisticFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for QueryPipelineStatisticFlags {
@@ -3815,7 +3814,7 @@ impl ops::BitOrAssign for QueryPipelineStatisticFlags {
 impl ops::BitAnd for QueryPipelineStatisticFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        QueryPipelineStatisticFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for QueryPipelineStatisticFlags {
@@ -3826,7 +3825,7 @@ impl ops::BitAndAssign for QueryPipelineStatisticFlags {
 impl ops::BitXor for QueryPipelineStatisticFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        QueryPipelineStatisticFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for QueryPipelineStatisticFlags {
@@ -3861,15 +3860,15 @@ pub struct MemoryMapFlags(u32);
 impl MemoryMapFlags {}
 impl default::Default for MemoryMapFlags {
     fn default() -> Self {
-        MemoryMapFlags(0)
+        Self(0)
     }
 }
 impl MemoryMapFlags {
     pub fn empty() -> Self {
-        MemoryMapFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MemoryMapFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3887,7 +3886,7 @@ impl MemoryMapFlags {
 impl ops::BitOr for MemoryMapFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MemoryMapFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MemoryMapFlags {
@@ -3898,7 +3897,7 @@ impl ops::BitOrAssign for MemoryMapFlags {
 impl ops::BitAnd for MemoryMapFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MemoryMapFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MemoryMapFlags {
@@ -3909,7 +3908,7 @@ impl ops::BitAndAssign for MemoryMapFlags {
 impl ops::BitXor for MemoryMapFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MemoryMapFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MemoryMapFlags {
@@ -3926,36 +3925,36 @@ impl fmt::Display for MemoryMapFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ImageAspectFlags(u32);
 impl ImageAspectFlags {
-    pub const COLOR: Self = ImageAspectFlags(0x1);
-    pub const DEPTH: Self = ImageAspectFlags(0x2);
-    pub const STENCIL: Self = ImageAspectFlags(0x4);
-    pub const METADATA: Self = ImageAspectFlags(0x8);
-    pub const PLANE_0: Self = ImageAspectFlags(0x10);
-    pub const PLANE_1: Self = ImageAspectFlags(0x20);
-    pub const PLANE_2: Self = ImageAspectFlags(0x40);
+    pub const COLOR: Self = Self(0x1);
+    pub const DEPTH: Self = Self(0x2);
+    pub const STENCIL: Self = Self(0x4);
+    pub const METADATA: Self = Self(0x8);
+    pub const PLANE_0: Self = Self(0x10);
+    pub const PLANE_1: Self = Self(0x20);
+    pub const PLANE_2: Self = Self(0x40);
     pub const PLANE_0_KHR: Self = Self::PLANE_0;
     pub const PLANE_1_KHR: Self = Self::PLANE_1;
     pub const PLANE_2_KHR: Self = Self::PLANE_2;
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const MEMORY_PLANE_0_EXT: Self = ImageAspectFlags(0x80);
+    pub const MEMORY_PLANE_0_EXT: Self = Self(0x80);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const MEMORY_PLANE_1_EXT: Self = ImageAspectFlags(0x100);
+    pub const MEMORY_PLANE_1_EXT: Self = Self(0x100);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const MEMORY_PLANE_2_EXT: Self = ImageAspectFlags(0x200);
+    pub const MEMORY_PLANE_2_EXT: Self = Self(0x200);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const MEMORY_PLANE_3_EXT: Self = ImageAspectFlags(0x400);
+    pub const MEMORY_PLANE_3_EXT: Self = Self(0x400);
 }
 impl default::Default for ImageAspectFlags {
     fn default() -> Self {
-        ImageAspectFlags(0)
+        Self(0)
     }
 }
 impl ImageAspectFlags {
     pub fn empty() -> Self {
-        ImageAspectFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ImageAspectFlags(0x7ff)
+        Self(0x7ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -3973,7 +3972,7 @@ impl ImageAspectFlags {
 impl ops::BitOr for ImageAspectFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ImageAspectFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ImageAspectFlags {
@@ -3984,7 +3983,7 @@ impl ops::BitOrAssign for ImageAspectFlags {
 impl ops::BitAnd for ImageAspectFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ImageAspectFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ImageAspectFlags {
@@ -3995,7 +3994,7 @@ impl ops::BitAndAssign for ImageAspectFlags {
 impl ops::BitXor for ImageAspectFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ImageAspectFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ImageAspectFlags {
@@ -4029,19 +4028,19 @@ impl fmt::Display for ImageAspectFlags {
 pub struct SparseMemoryBindFlags(u32);
 impl SparseMemoryBindFlags {
     /// Operation binds resource metadata to memory
-    pub const METADATA: Self = SparseMemoryBindFlags(0x1);
+    pub const METADATA: Self = Self(0x1);
 }
 impl default::Default for SparseMemoryBindFlags {
     fn default() -> Self {
-        SparseMemoryBindFlags(0)
+        Self(0)
     }
 }
 impl SparseMemoryBindFlags {
     pub fn empty() -> Self {
-        SparseMemoryBindFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SparseMemoryBindFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4059,7 +4058,7 @@ impl SparseMemoryBindFlags {
 impl ops::BitOr for SparseMemoryBindFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SparseMemoryBindFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SparseMemoryBindFlags {
@@ -4070,7 +4069,7 @@ impl ops::BitOrAssign for SparseMemoryBindFlags {
 impl ops::BitAnd for SparseMemoryBindFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SparseMemoryBindFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SparseMemoryBindFlags {
@@ -4081,7 +4080,7 @@ impl ops::BitAndAssign for SparseMemoryBindFlags {
 impl ops::BitXor for SparseMemoryBindFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SparseMemoryBindFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SparseMemoryBindFlags {
@@ -4099,23 +4098,23 @@ impl fmt::Display for SparseMemoryBindFlags {
 pub struct SparseImageFormatFlags(u32);
 impl SparseImageFormatFlags {
     /// Image uses a single mip tail region for all array layers
-    pub const SINGLE_MIPTAIL: Self = SparseImageFormatFlags(0x1);
+    pub const SINGLE_MIPTAIL: Self = Self(0x1);
     /// Image requires mip level dimensions to be an integer multiple of the sparse image block dimensions for non-tail mip levels.
-    pub const ALIGNED_MIP_SIZE: Self = SparseImageFormatFlags(0x2);
+    pub const ALIGNED_MIP_SIZE: Self = Self(0x2);
     /// Image uses a non-standard sparse image block dimensions
-    pub const NONSTANDARD_BLOCK_SIZE: Self = SparseImageFormatFlags(0x4);
+    pub const NONSTANDARD_BLOCK_SIZE: Self = Self(0x4);
 }
 impl default::Default for SparseImageFormatFlags {
     fn default() -> Self {
-        SparseImageFormatFlags(0)
+        Self(0)
     }
 }
 impl SparseImageFormatFlags {
     pub fn empty() -> Self {
-        SparseImageFormatFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SparseImageFormatFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4133,7 +4132,7 @@ impl SparseImageFormatFlags {
 impl ops::BitOr for SparseImageFormatFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SparseImageFormatFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SparseImageFormatFlags {
@@ -4144,7 +4143,7 @@ impl ops::BitOrAssign for SparseImageFormatFlags {
 impl ops::BitAnd for SparseImageFormatFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SparseImageFormatFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SparseImageFormatFlags {
@@ -4155,7 +4154,7 @@ impl ops::BitAndAssign for SparseImageFormatFlags {
 impl ops::BitXor for SparseImageFormatFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SparseImageFormatFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SparseImageFormatFlags {
@@ -4181,25 +4180,25 @@ impl fmt::Display for SparseImageFormatFlags {
 pub struct SubpassDescriptionFlags(u32);
 impl SubpassDescriptionFlags {
     /// Added by extension VK_NVX_multiview_per_view_attributes.
-    pub const PER_VIEW_ATTRIBUTES_NVX: Self = SubpassDescriptionFlags(0x1);
+    pub const PER_VIEW_ATTRIBUTES_NVX: Self = Self(0x1);
     /// Added by extension VK_NVX_multiview_per_view_attributes.
-    pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = SubpassDescriptionFlags(0x2);
+    pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = Self(0x2);
     /// Added by extension VK_QCOM_extension_172.
-    pub const RESERVED_2_QCOM: Self = SubpassDescriptionFlags(0x4);
+    pub const RESERVED_2_QCOM: Self = Self(0x4);
     /// Added by extension VK_QCOM_extension_172.
-    pub const RESERVED_3_QCOM: Self = SubpassDescriptionFlags(0x8);
+    pub const RESERVED_3_QCOM: Self = Self(0x8);
 }
 impl default::Default for SubpassDescriptionFlags {
     fn default() -> Self {
-        SubpassDescriptionFlags(0)
+        Self(0)
     }
 }
 impl SubpassDescriptionFlags {
     pub fn empty() -> Self {
-        SubpassDescriptionFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SubpassDescriptionFlags(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4217,7 +4216,7 @@ impl SubpassDescriptionFlags {
 impl ops::BitOr for SubpassDescriptionFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SubpassDescriptionFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SubpassDescriptionFlags {
@@ -4228,7 +4227,7 @@ impl ops::BitOrAssign for SubpassDescriptionFlags {
 impl ops::BitAnd for SubpassDescriptionFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SubpassDescriptionFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SubpassDescriptionFlags {
@@ -4239,7 +4238,7 @@ impl ops::BitAndAssign for SubpassDescriptionFlags {
 impl ops::BitXor for SubpassDescriptionFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SubpassDescriptionFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SubpassDescriptionFlags {
@@ -4266,74 +4265,74 @@ impl fmt::Display for SubpassDescriptionFlags {
 pub struct PipelineStageFlags(u32);
 impl PipelineStageFlags {
     /// Before subsequent commands are processed
-    pub const TOP_OF_PIPE: Self = PipelineStageFlags(0x1);
+    pub const TOP_OF_PIPE: Self = Self(0x1);
     /// Draw/DispatchIndirect command fetch
-    pub const DRAW_INDIRECT: Self = PipelineStageFlags(0x2);
+    pub const DRAW_INDIRECT: Self = Self(0x2);
     /// Vertex/index fetch
-    pub const VERTEX_INPUT: Self = PipelineStageFlags(0x4);
+    pub const VERTEX_INPUT: Self = Self(0x4);
     /// Vertex shading
-    pub const VERTEX_SHADER: Self = PipelineStageFlags(0x8);
+    pub const VERTEX_SHADER: Self = Self(0x8);
     /// Tessellation control shading
-    pub const TESSELLATION_CONTROL_SHADER: Self = PipelineStageFlags(0x10);
+    pub const TESSELLATION_CONTROL_SHADER: Self = Self(0x10);
     /// Tessellation evaluation shading
-    pub const TESSELLATION_EVALUATION_SHADER: Self = PipelineStageFlags(0x20);
+    pub const TESSELLATION_EVALUATION_SHADER: Self = Self(0x20);
     /// Geometry shading
-    pub const GEOMETRY_SHADER: Self = PipelineStageFlags(0x40);
+    pub const GEOMETRY_SHADER: Self = Self(0x40);
     /// Fragment shading
-    pub const FRAGMENT_SHADER: Self = PipelineStageFlags(0x80);
+    pub const FRAGMENT_SHADER: Self = Self(0x80);
     /// Early fragment (depth and stencil) tests
-    pub const EARLY_FRAGMENT_TESTS: Self = PipelineStageFlags(0x100);
+    pub const EARLY_FRAGMENT_TESTS: Self = Self(0x100);
     /// Late fragment (depth and stencil) tests
-    pub const LATE_FRAGMENT_TESTS: Self = PipelineStageFlags(0x200);
+    pub const LATE_FRAGMENT_TESTS: Self = Self(0x200);
     /// Color attachment writes
-    pub const COLOR_ATTACHMENT_OUTPUT: Self = PipelineStageFlags(0x400);
+    pub const COLOR_ATTACHMENT_OUTPUT: Self = Self(0x400);
     /// Compute shading
-    pub const COMPUTE_SHADER: Self = PipelineStageFlags(0x800);
+    pub const COMPUTE_SHADER: Self = Self(0x800);
     /// Transfer/copy operations
-    pub const TRANSFER: Self = PipelineStageFlags(0x1000);
+    pub const TRANSFER: Self = Self(0x1000);
     /// After previous commands have completed
-    pub const BOTTOM_OF_PIPE: Self = PipelineStageFlags(0x2000);
+    pub const BOTTOM_OF_PIPE: Self = Self(0x2000);
     /// Indicates host (CPU) is a source/sink of the dependency
-    pub const HOST: Self = PipelineStageFlags(0x4000);
+    pub const HOST: Self = Self(0x4000);
     /// All stages of the graphics pipeline
-    pub const ALL_GRAPHICS: Self = PipelineStageFlags(0x8000);
+    pub const ALL_GRAPHICS: Self = Self(0x8000);
     /// All stages supported on the queue
-    pub const ALL_COMMANDS: Self = PipelineStageFlags(0x10000);
+    pub const ALL_COMMANDS: Self = Self(0x10000);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_27_KHR: Self = PipelineStageFlags(0x8000000);
+    pub const RESERVED_27_KHR: Self = Self(0x8000000);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_26_KHR: Self = PipelineStageFlags(0x4000000);
+    pub const RESERVED_26_KHR: Self = Self(0x4000000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_EXT: Self = PipelineStageFlags(0x1000000);
+    pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const CONDITIONAL_RENDERING_EXT: Self = PipelineStageFlags(0x40000);
+    pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_NVX: Self = PipelineStageFlags(0x20000);
+    pub const COMMAND_PROCESS_NVX: Self = Self(0x20000);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_NV: Self = PipelineStageFlags(0x400000);
+    pub const SHADING_RATE_IMAGE_NV: Self = Self(0x400000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_SHADER_NV: Self = PipelineStageFlags(0x200000);
+    pub const RAY_TRACING_SHADER_NV: Self = Self(0x200000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = PipelineStageFlags(0x2000000);
+    pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self(0x2000000);
     /// Added by extension VK_NV_mesh_shader.
-    pub const TASK_SHADER_NV: Self = PipelineStageFlags(0x80000);
+    pub const TASK_SHADER_NV: Self = Self(0x80000);
     /// Added by extension VK_NV_mesh_shader.
-    pub const MESH_SHADER_NV: Self = PipelineStageFlags(0x100000);
+    pub const MESH_SHADER_NV: Self = Self(0x100000);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = PipelineStageFlags(0x800000);
+    pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
 }
 impl default::Default for PipelineStageFlags {
     fn default() -> Self {
-        PipelineStageFlags(0)
+        Self(0)
     }
 }
 impl PipelineStageFlags {
     pub fn empty() -> Self {
-        PipelineStageFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineStageFlags(0xfffffff)
+        Self(0xfffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4351,7 +4350,7 @@ impl PipelineStageFlags {
 impl ops::BitOr for PipelineStageFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineStageFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineStageFlags {
@@ -4362,7 +4361,7 @@ impl ops::BitOrAssign for PipelineStageFlags {
 impl ops::BitAnd for PipelineStageFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineStageFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineStageFlags {
@@ -4373,7 +4372,7 @@ impl ops::BitAndAssign for PipelineStageFlags {
 impl ops::BitXor for PipelineStageFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineStageFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineStageFlags {
@@ -4424,31 +4423,31 @@ impl fmt::Display for PipelineStageFlags {
 pub struct SampleCountFlags(u32);
 impl SampleCountFlags {
     /// Sample count 1 supported
-    pub const N1: Self = SampleCountFlags(0x1);
+    pub const N1: Self = Self(0x1);
     /// Sample count 2 supported
-    pub const N2: Self = SampleCountFlags(0x2);
+    pub const N2: Self = Self(0x2);
     /// Sample count 4 supported
-    pub const N4: Self = SampleCountFlags(0x4);
+    pub const N4: Self = Self(0x4);
     /// Sample count 8 supported
-    pub const N8: Self = SampleCountFlags(0x8);
+    pub const N8: Self = Self(0x8);
     /// Sample count 16 supported
-    pub const N16: Self = SampleCountFlags(0x10);
+    pub const N16: Self = Self(0x10);
     /// Sample count 32 supported
-    pub const N32: Self = SampleCountFlags(0x20);
+    pub const N32: Self = Self(0x20);
     /// Sample count 64 supported
-    pub const N64: Self = SampleCountFlags(0x40);
+    pub const N64: Self = Self(0x40);
 }
 impl default::Default for SampleCountFlags {
     fn default() -> Self {
-        SampleCountFlags(0)
+        Self(0)
     }
 }
 impl SampleCountFlags {
     pub fn empty() -> Self {
-        SampleCountFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SampleCountFlags(0x7f)
+        Self(0x7f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4466,7 +4465,7 @@ impl SampleCountFlags {
 impl ops::BitOr for SampleCountFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SampleCountFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SampleCountFlags {
@@ -4477,7 +4476,7 @@ impl ops::BitOrAssign for SampleCountFlags {
 impl ops::BitAnd for SampleCountFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SampleCountFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SampleCountFlags {
@@ -4488,7 +4487,7 @@ impl ops::BitAndAssign for SampleCountFlags {
 impl ops::BitXor for SampleCountFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SampleCountFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SampleCountFlags {
@@ -4518,19 +4517,19 @@ impl fmt::Display for SampleCountFlags {
 pub struct AttachmentDescriptionFlags(u32);
 impl AttachmentDescriptionFlags {
     /// The attachment may alias physical memory of another attachment in the same render pass
-    pub const MAY_ALIAS: Self = AttachmentDescriptionFlags(0x1);
+    pub const MAY_ALIAS: Self = Self(0x1);
 }
 impl default::Default for AttachmentDescriptionFlags {
     fn default() -> Self {
-        AttachmentDescriptionFlags(0)
+        Self(0)
     }
 }
 impl AttachmentDescriptionFlags {
     pub fn empty() -> Self {
-        AttachmentDescriptionFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        AttachmentDescriptionFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4548,7 +4547,7 @@ impl AttachmentDescriptionFlags {
 impl ops::BitOr for AttachmentDescriptionFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        AttachmentDescriptionFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for AttachmentDescriptionFlags {
@@ -4559,7 +4558,7 @@ impl ops::BitOrAssign for AttachmentDescriptionFlags {
 impl ops::BitAnd for AttachmentDescriptionFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        AttachmentDescriptionFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for AttachmentDescriptionFlags {
@@ -4570,7 +4569,7 @@ impl ops::BitAndAssign for AttachmentDescriptionFlags {
 impl ops::BitXor for AttachmentDescriptionFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        AttachmentDescriptionFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for AttachmentDescriptionFlags {
@@ -4588,23 +4587,23 @@ impl fmt::Display for AttachmentDescriptionFlags {
 pub struct StencilFaceFlags(u32);
 impl StencilFaceFlags {
     /// Front face
-    pub const FRONT: Self = StencilFaceFlags(0x1);
+    pub const FRONT: Self = Self(0x1);
     /// Back face
-    pub const BACK: Self = StencilFaceFlags(0x2);
+    pub const BACK: Self = Self(0x2);
     /// Front and back faces
-    pub const FRONT_AND_BACK: Self = StencilFaceFlags(0x3);
+    pub const FRONT_AND_BACK: Self = Self(0x3);
 }
 impl default::Default for StencilFaceFlags {
     fn default() -> Self {
-        StencilFaceFlags(0)
+        Self(0)
     }
 }
 impl StencilFaceFlags {
     pub fn empty() -> Self {
-        StencilFaceFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        StencilFaceFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4622,7 +4621,7 @@ impl StencilFaceFlags {
 impl ops::BitOr for StencilFaceFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        StencilFaceFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for StencilFaceFlags {
@@ -4633,7 +4632,7 @@ impl ops::BitOrAssign for StencilFaceFlags {
 impl ops::BitAnd for StencilFaceFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        StencilFaceFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for StencilFaceFlags {
@@ -4644,7 +4643,7 @@ impl ops::BitAndAssign for StencilFaceFlags {
 impl ops::BitXor for StencilFaceFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        StencilFaceFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for StencilFaceFlags {
@@ -4661,22 +4660,22 @@ impl fmt::Display for StencilFaceFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CullModeFlags(u32);
 impl CullModeFlags {
-    pub const NONE: Self = CullModeFlags(0x0);
-    pub const FRONT: Self = CullModeFlags(0x1);
-    pub const BACK: Self = CullModeFlags(0x2);
-    pub const FRONT_AND_BACK: Self = CullModeFlags(0x3);
+    pub const NONE: Self = Self(0x0);
+    pub const FRONT: Self = Self(0x1);
+    pub const BACK: Self = Self(0x2);
+    pub const FRONT_AND_BACK: Self = Self(0x3);
 }
 impl default::Default for CullModeFlags {
     fn default() -> Self {
-        CullModeFlags(0)
+        Self(0)
     }
 }
 impl CullModeFlags {
     pub fn empty() -> Self {
-        CullModeFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CullModeFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4694,7 +4693,7 @@ impl CullModeFlags {
 impl ops::BitOr for CullModeFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CullModeFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CullModeFlags {
@@ -4705,7 +4704,7 @@ impl ops::BitOrAssign for CullModeFlags {
 impl ops::BitAnd for CullModeFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CullModeFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CullModeFlags {
@@ -4716,7 +4715,7 @@ impl ops::BitAndAssign for CullModeFlags {
 impl ops::BitXor for CullModeFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CullModeFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CullModeFlags {
@@ -4738,21 +4737,21 @@ impl fmt::Display for CullModeFlags {
 pub struct DescriptorPoolCreateFlags(u32);
 impl DescriptorPoolCreateFlags {
     /// Descriptor sets may be freed individually
-    pub const FREE_DESCRIPTOR_SET: Self = DescriptorPoolCreateFlags(0x1);
+    pub const FREE_DESCRIPTOR_SET: Self = Self(0x1);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const UPDATE_AFTER_BIND_EXT: Self = DescriptorPoolCreateFlags(0x2);
+    pub const UPDATE_AFTER_BIND_EXT: Self = Self(0x2);
 }
 impl default::Default for DescriptorPoolCreateFlags {
     fn default() -> Self {
-        DescriptorPoolCreateFlags(0)
+        Self(0)
     }
 }
 impl DescriptorPoolCreateFlags {
     pub fn empty() -> Self {
-        DescriptorPoolCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DescriptorPoolCreateFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4770,7 +4769,7 @@ impl DescriptorPoolCreateFlags {
 impl ops::BitOr for DescriptorPoolCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DescriptorPoolCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DescriptorPoolCreateFlags {
@@ -4781,7 +4780,7 @@ impl ops::BitOrAssign for DescriptorPoolCreateFlags {
 impl ops::BitAnd for DescriptorPoolCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DescriptorPoolCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DescriptorPoolCreateFlags {
@@ -4792,7 +4791,7 @@ impl ops::BitAndAssign for DescriptorPoolCreateFlags {
 impl ops::BitXor for DescriptorPoolCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DescriptorPoolCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DescriptorPoolCreateFlags {
@@ -4815,15 +4814,15 @@ pub struct DescriptorPoolResetFlags(u32);
 impl DescriptorPoolResetFlags {}
 impl default::Default for DescriptorPoolResetFlags {
     fn default() -> Self {
-        DescriptorPoolResetFlags(0)
+        Self(0)
     }
 }
 impl DescriptorPoolResetFlags {
     pub fn empty() -> Self {
-        DescriptorPoolResetFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DescriptorPoolResetFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4841,7 +4840,7 @@ impl DescriptorPoolResetFlags {
 impl ops::BitOr for DescriptorPoolResetFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DescriptorPoolResetFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DescriptorPoolResetFlags {
@@ -4852,7 +4851,7 @@ impl ops::BitOrAssign for DescriptorPoolResetFlags {
 impl ops::BitAnd for DescriptorPoolResetFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DescriptorPoolResetFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DescriptorPoolResetFlags {
@@ -4863,7 +4862,7 @@ impl ops::BitAndAssign for DescriptorPoolResetFlags {
 impl ops::BitXor for DescriptorPoolResetFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DescriptorPoolResetFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DescriptorPoolResetFlags {
@@ -4881,24 +4880,24 @@ impl fmt::Display for DescriptorPoolResetFlags {
 pub struct DependencyFlags(u32);
 impl DependencyFlags {
     /// Dependency is per pixel region
-    pub const BY_REGION: Self = DependencyFlags(0x1);
+    pub const BY_REGION: Self = Self(0x1);
     /// Dependency is across devices
-    pub const DEVICE_GROUP: Self = DependencyFlags(0x4);
-    pub const VIEW_LOCAL: Self = DependencyFlags(0x2);
+    pub const DEVICE_GROUP: Self = Self(0x4);
+    pub const VIEW_LOCAL: Self = Self(0x2);
     pub const VIEW_LOCAL_KHR: Self = Self::VIEW_LOCAL;
     pub const DEVICE_GROUP_KHR: Self = Self::DEVICE_GROUP;
 }
 impl default::Default for DependencyFlags {
     fn default() -> Self {
-        DependencyFlags(0)
+        Self(0)
     }
 }
 impl DependencyFlags {
     pub fn empty() -> Self {
-        DependencyFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DependencyFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -4916,7 +4915,7 @@ impl DependencyFlags {
 impl ops::BitOr for DependencyFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DependencyFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DependencyFlags {
@@ -4927,7 +4926,7 @@ impl ops::BitOrAssign for DependencyFlags {
 impl ops::BitAnd for DependencyFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DependencyFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DependencyFlags {
@@ -4938,7 +4937,7 @@ impl ops::BitAndAssign for DependencyFlags {
 impl ops::BitXor for DependencyFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DependencyFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DependencyFlags {
@@ -4960,35 +4959,35 @@ impl fmt::Display for DependencyFlags {
 pub struct SubgroupFeatureFlags(u32);
 impl SubgroupFeatureFlags {
     /// Basic subgroup operations
-    pub const BASIC: Self = SubgroupFeatureFlags(0x1);
+    pub const BASIC: Self = Self(0x1);
     /// Vote subgroup operations
-    pub const VOTE: Self = SubgroupFeatureFlags(0x2);
+    pub const VOTE: Self = Self(0x2);
     /// Arithmetic subgroup operations
-    pub const ARITHMETIC: Self = SubgroupFeatureFlags(0x4);
+    pub const ARITHMETIC: Self = Self(0x4);
     /// Ballot subgroup operations
-    pub const BALLOT: Self = SubgroupFeatureFlags(0x8);
+    pub const BALLOT: Self = Self(0x8);
     /// Shuffle subgroup operations
-    pub const SHUFFLE: Self = SubgroupFeatureFlags(0x10);
+    pub const SHUFFLE: Self = Self(0x10);
     /// Shuffle relative subgroup operations
-    pub const SHUFFLE_RELATIVE: Self = SubgroupFeatureFlags(0x20);
+    pub const SHUFFLE_RELATIVE: Self = Self(0x20);
     /// Clustered subgroup operations
-    pub const CLUSTERED: Self = SubgroupFeatureFlags(0x40);
+    pub const CLUSTERED: Self = Self(0x40);
     /// Quad subgroup operations
-    pub const QUAD: Self = SubgroupFeatureFlags(0x80);
+    pub const QUAD: Self = Self(0x80);
     /// Added by extension VK_NV_shader_subgroup_partitioned.
-    pub const PARTITIONED_NV: Self = SubgroupFeatureFlags(0x100);
+    pub const PARTITIONED_NV: Self = Self(0x100);
 }
 impl default::Default for SubgroupFeatureFlags {
     fn default() -> Self {
-        SubgroupFeatureFlags(0)
+        Self(0)
     }
 }
 impl SubgroupFeatureFlags {
     pub fn empty() -> Self {
-        SubgroupFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SubgroupFeatureFlags(0x1ff)
+        Self(0x1ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5006,7 +5005,7 @@ impl SubgroupFeatureFlags {
 impl ops::BitOr for SubgroupFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SubgroupFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SubgroupFeatureFlags {
@@ -5017,7 +5016,7 @@ impl ops::BitOrAssign for SubgroupFeatureFlags {
 impl ops::BitAnd for SubgroupFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SubgroupFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SubgroupFeatureFlags {
@@ -5028,7 +5027,7 @@ impl ops::BitAndAssign for SubgroupFeatureFlags {
 impl ops::BitXor for SubgroupFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SubgroupFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SubgroupFeatureFlags {
@@ -5059,22 +5058,22 @@ impl fmt::Display for SubgroupFeatureFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsLayoutUsageFlagsNVX(u32);
 impl IndirectCommandsLayoutUsageFlagsNVX {
-    pub const UNORDERED_SEQUENCES: Self = IndirectCommandsLayoutUsageFlagsNVX(0x1);
-    pub const SPARSE_SEQUENCES: Self = IndirectCommandsLayoutUsageFlagsNVX(0x2);
-    pub const EMPTY_EXECUTIONS: Self = IndirectCommandsLayoutUsageFlagsNVX(0x4);
-    pub const INDEXED_SEQUENCES: Self = IndirectCommandsLayoutUsageFlagsNVX(0x8);
+    pub const UNORDERED_SEQUENCES: Self = Self(0x1);
+    pub const SPARSE_SEQUENCES: Self = Self(0x2);
+    pub const EMPTY_EXECUTIONS: Self = Self(0x4);
+    pub const INDEXED_SEQUENCES: Self = Self(0x8);
 }
 impl default::Default for IndirectCommandsLayoutUsageFlagsNVX {
     fn default() -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(0)
+        Self(0)
     }
 }
 impl IndirectCommandsLayoutUsageFlagsNVX {
     pub fn empty() -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5092,7 +5091,7 @@ impl IndirectCommandsLayoutUsageFlagsNVX {
 impl ops::BitOr for IndirectCommandsLayoutUsageFlagsNVX {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for IndirectCommandsLayoutUsageFlagsNVX {
@@ -5103,7 +5102,7 @@ impl ops::BitOrAssign for IndirectCommandsLayoutUsageFlagsNVX {
 impl ops::BitAnd for IndirectCommandsLayoutUsageFlagsNVX {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for IndirectCommandsLayoutUsageFlagsNVX {
@@ -5114,7 +5113,7 @@ impl ops::BitAndAssign for IndirectCommandsLayoutUsageFlagsNVX {
 impl ops::BitXor for IndirectCommandsLayoutUsageFlagsNVX {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        IndirectCommandsLayoutUsageFlagsNVX(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNVX {
@@ -5140,20 +5139,20 @@ impl fmt::Display for IndirectCommandsLayoutUsageFlagsNVX {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectEntryUsageFlagsNVX(u32);
 impl ObjectEntryUsageFlagsNVX {
-    pub const GRAPHICS: Self = ObjectEntryUsageFlagsNVX(0x1);
-    pub const COMPUTE: Self = ObjectEntryUsageFlagsNVX(0x2);
+    pub const GRAPHICS: Self = Self(0x1);
+    pub const COMPUTE: Self = Self(0x2);
 }
 impl default::Default for ObjectEntryUsageFlagsNVX {
     fn default() -> Self {
-        ObjectEntryUsageFlagsNVX(0)
+        Self(0)
     }
 }
 impl ObjectEntryUsageFlagsNVX {
     pub fn empty() -> Self {
-        ObjectEntryUsageFlagsNVX(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ObjectEntryUsageFlagsNVX(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5171,7 +5170,7 @@ impl ObjectEntryUsageFlagsNVX {
 impl ops::BitOr for ObjectEntryUsageFlagsNVX {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ObjectEntryUsageFlagsNVX(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ObjectEntryUsageFlagsNVX {
@@ -5182,7 +5181,7 @@ impl ops::BitOrAssign for ObjectEntryUsageFlagsNVX {
 impl ops::BitAnd for ObjectEntryUsageFlagsNVX {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ObjectEntryUsageFlagsNVX(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ObjectEntryUsageFlagsNVX {
@@ -5193,7 +5192,7 @@ impl ops::BitAndAssign for ObjectEntryUsageFlagsNVX {
 impl ops::BitXor for ObjectEntryUsageFlagsNVX {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ObjectEntryUsageFlagsNVX(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ObjectEntryUsageFlagsNVX {
@@ -5210,20 +5209,20 @@ impl fmt::Display for ObjectEntryUsageFlagsNVX {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct GeometryFlagsNV(u32);
 impl GeometryFlagsNV {
-    pub const OPAQUE: Self = GeometryFlagsNV(0x1);
-    pub const NO_DUPLICATE_ANY_HIT_INVOCATION: Self = GeometryFlagsNV(0x2);
+    pub const OPAQUE: Self = Self(0x1);
+    pub const NO_DUPLICATE_ANY_HIT_INVOCATION: Self = Self(0x2);
 }
 impl default::Default for GeometryFlagsNV {
     fn default() -> Self {
-        GeometryFlagsNV(0)
+        Self(0)
     }
 }
 impl GeometryFlagsNV {
     pub fn empty() -> Self {
-        GeometryFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        GeometryFlagsNV(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5241,7 +5240,7 @@ impl GeometryFlagsNV {
 impl ops::BitOr for GeometryFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        GeometryFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for GeometryFlagsNV {
@@ -5252,7 +5251,7 @@ impl ops::BitOrAssign for GeometryFlagsNV {
 impl ops::BitAnd for GeometryFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        GeometryFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for GeometryFlagsNV {
@@ -5263,7 +5262,7 @@ impl ops::BitAndAssign for GeometryFlagsNV {
 impl ops::BitXor for GeometryFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        GeometryFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for GeometryFlagsNV {
@@ -5280,22 +5279,22 @@ impl fmt::Display for GeometryFlagsNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct GeometryInstanceFlagsNV(u32);
 impl GeometryInstanceFlagsNV {
-    pub const TRIANGLE_CULL_DISABLE: Self = GeometryInstanceFlagsNV(0x1);
-    pub const TRIANGLE_FRONT_COUNTERCLOCKWISE: Self = GeometryInstanceFlagsNV(0x2);
-    pub const FORCE_OPAQUE: Self = GeometryInstanceFlagsNV(0x4);
-    pub const FORCE_NO_OPAQUE: Self = GeometryInstanceFlagsNV(0x8);
+    pub const TRIANGLE_CULL_DISABLE: Self = Self(0x1);
+    pub const TRIANGLE_FRONT_COUNTERCLOCKWISE: Self = Self(0x2);
+    pub const FORCE_OPAQUE: Self = Self(0x4);
+    pub const FORCE_NO_OPAQUE: Self = Self(0x8);
 }
 impl default::Default for GeometryInstanceFlagsNV {
     fn default() -> Self {
-        GeometryInstanceFlagsNV(0)
+        Self(0)
     }
 }
 impl GeometryInstanceFlagsNV {
     pub fn empty() -> Self {
-        GeometryInstanceFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        GeometryInstanceFlagsNV(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5313,7 +5312,7 @@ impl GeometryInstanceFlagsNV {
 impl ops::BitOr for GeometryInstanceFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        GeometryInstanceFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for GeometryInstanceFlagsNV {
@@ -5324,7 +5323,7 @@ impl ops::BitOrAssign for GeometryInstanceFlagsNV {
 impl ops::BitAnd for GeometryInstanceFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        GeometryInstanceFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for GeometryInstanceFlagsNV {
@@ -5335,7 +5334,7 @@ impl ops::BitAndAssign for GeometryInstanceFlagsNV {
 impl ops::BitXor for GeometryInstanceFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        GeometryInstanceFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for GeometryInstanceFlagsNV {
@@ -5361,23 +5360,23 @@ impl fmt::Display for GeometryInstanceFlagsNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct BuildAccelerationStructureFlagsNV(u32);
 impl BuildAccelerationStructureFlagsNV {
-    pub const ALLOW_UPDATE: Self = BuildAccelerationStructureFlagsNV(0x1);
-    pub const ALLOW_COMPACTION: Self = BuildAccelerationStructureFlagsNV(0x2);
-    pub const PREFER_FAST_TRACE: Self = BuildAccelerationStructureFlagsNV(0x4);
-    pub const PREFER_FAST_BUILD: Self = BuildAccelerationStructureFlagsNV(0x8);
-    pub const LOW_MEMORY: Self = BuildAccelerationStructureFlagsNV(0x10);
+    pub const ALLOW_UPDATE: Self = Self(0x1);
+    pub const ALLOW_COMPACTION: Self = Self(0x2);
+    pub const PREFER_FAST_TRACE: Self = Self(0x4);
+    pub const PREFER_FAST_BUILD: Self = Self(0x8);
+    pub const LOW_MEMORY: Self = Self(0x10);
 }
 impl default::Default for BuildAccelerationStructureFlagsNV {
     fn default() -> Self {
-        BuildAccelerationStructureFlagsNV(0)
+        Self(0)
     }
 }
 impl BuildAccelerationStructureFlagsNV {
     pub fn empty() -> Self {
-        BuildAccelerationStructureFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        BuildAccelerationStructureFlagsNV(0x1f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5395,7 +5394,7 @@ impl BuildAccelerationStructureFlagsNV {
 impl ops::BitOr for BuildAccelerationStructureFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        BuildAccelerationStructureFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for BuildAccelerationStructureFlagsNV {
@@ -5406,7 +5405,7 @@ impl ops::BitOrAssign for BuildAccelerationStructureFlagsNV {
 impl ops::BitAnd for BuildAccelerationStructureFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        BuildAccelerationStructureFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for BuildAccelerationStructureFlagsNV {
@@ -5417,7 +5416,7 @@ impl ops::BitAndAssign for BuildAccelerationStructureFlagsNV {
 impl ops::BitXor for BuildAccelerationStructureFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        BuildAccelerationStructureFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for BuildAccelerationStructureFlagsNV {
@@ -5446,15 +5445,15 @@ pub struct DescriptorUpdateTemplateCreateFlags(u32);
 impl DescriptorUpdateTemplateCreateFlags {}
 impl default::Default for DescriptorUpdateTemplateCreateFlags {
     fn default() -> Self {
-        DescriptorUpdateTemplateCreateFlags(0)
+        Self(0)
     }
 }
 impl DescriptorUpdateTemplateCreateFlags {
     pub fn empty() -> Self {
-        DescriptorUpdateTemplateCreateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DescriptorUpdateTemplateCreateFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5472,7 +5471,7 @@ impl DescriptorUpdateTemplateCreateFlags {
 impl ops::BitOr for DescriptorUpdateTemplateCreateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DescriptorUpdateTemplateCreateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DescriptorUpdateTemplateCreateFlags {
@@ -5483,7 +5482,7 @@ impl ops::BitOrAssign for DescriptorUpdateTemplateCreateFlags {
 impl ops::BitAnd for DescriptorUpdateTemplateCreateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DescriptorUpdateTemplateCreateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DescriptorUpdateTemplateCreateFlags {
@@ -5494,7 +5493,7 @@ impl ops::BitAndAssign for DescriptorUpdateTemplateCreateFlags {
 impl ops::BitXor for DescriptorUpdateTemplateCreateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DescriptorUpdateTemplateCreateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DescriptorUpdateTemplateCreateFlags {
@@ -5512,21 +5511,21 @@ pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreate
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCreationFeedbackFlagsEXT(u32);
 impl PipelineCreationFeedbackFlagsEXT {
-    pub const VALID: Self = PipelineCreationFeedbackFlagsEXT(0x1);
-    pub const APPLICATION_PIPELINE_CACHE_HIT: Self = PipelineCreationFeedbackFlagsEXT(0x2);
-    pub const BASE_PIPELINE_ACCELERATION: Self = PipelineCreationFeedbackFlagsEXT(0x4);
+    pub const VALID: Self = Self(0x1);
+    pub const APPLICATION_PIPELINE_CACHE_HIT: Self = Self(0x2);
+    pub const BASE_PIPELINE_ACCELERATION: Self = Self(0x4);
 }
 impl default::Default for PipelineCreationFeedbackFlagsEXT {
     fn default() -> Self {
-        PipelineCreationFeedbackFlagsEXT(0)
+        Self(0)
     }
 }
 impl PipelineCreationFeedbackFlagsEXT {
     pub fn empty() -> Self {
-        PipelineCreationFeedbackFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCreationFeedbackFlagsEXT(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5544,7 +5543,7 @@ impl PipelineCreationFeedbackFlagsEXT {
 impl ops::BitOr for PipelineCreationFeedbackFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCreationFeedbackFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCreationFeedbackFlagsEXT {
@@ -5555,7 +5554,7 @@ impl ops::BitOrAssign for PipelineCreationFeedbackFlagsEXT {
 impl ops::BitAnd for PipelineCreationFeedbackFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCreationFeedbackFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCreationFeedbackFlagsEXT {
@@ -5566,7 +5565,7 @@ impl ops::BitAndAssign for PipelineCreationFeedbackFlagsEXT {
 impl ops::BitXor for PipelineCreationFeedbackFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCreationFeedbackFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCreationFeedbackFlagsEXT {
@@ -5593,15 +5592,15 @@ pub struct PipelineCompilerControlFlagsAMD(u32);
 impl PipelineCompilerControlFlagsAMD {}
 impl default::Default for PipelineCompilerControlFlagsAMD {
     fn default() -> Self {
-        PipelineCompilerControlFlagsAMD(0)
+        Self(0)
     }
 }
 impl PipelineCompilerControlFlagsAMD {
     pub fn empty() -> Self {
-        PipelineCompilerControlFlagsAMD(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCompilerControlFlagsAMD(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5619,7 +5618,7 @@ impl PipelineCompilerControlFlagsAMD {
 impl ops::BitOr for PipelineCompilerControlFlagsAMD {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCompilerControlFlagsAMD(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCompilerControlFlagsAMD {
@@ -5630,7 +5629,7 @@ impl ops::BitOrAssign for PipelineCompilerControlFlagsAMD {
 impl ops::BitAnd for PipelineCompilerControlFlagsAMD {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCompilerControlFlagsAMD(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCompilerControlFlagsAMD {
@@ -5641,7 +5640,7 @@ impl ops::BitAndAssign for PipelineCompilerControlFlagsAMD {
 impl ops::BitXor for PipelineCompilerControlFlagsAMD {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCompilerControlFlagsAMD(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCompilerControlFlagsAMD {
@@ -5660,15 +5659,15 @@ pub struct ShaderCorePropertiesFlagsAMD(u32);
 impl ShaderCorePropertiesFlagsAMD {}
 impl default::Default for ShaderCorePropertiesFlagsAMD {
     fn default() -> Self {
-        ShaderCorePropertiesFlagsAMD(0)
+        Self(0)
     }
 }
 impl ShaderCorePropertiesFlagsAMD {
     pub fn empty() -> Self {
-        ShaderCorePropertiesFlagsAMD(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ShaderCorePropertiesFlagsAMD(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5686,7 +5685,7 @@ impl ShaderCorePropertiesFlagsAMD {
 impl ops::BitOr for ShaderCorePropertiesFlagsAMD {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ShaderCorePropertiesFlagsAMD(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ShaderCorePropertiesFlagsAMD {
@@ -5697,7 +5696,7 @@ impl ops::BitOrAssign for ShaderCorePropertiesFlagsAMD {
 impl ops::BitAnd for ShaderCorePropertiesFlagsAMD {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ShaderCorePropertiesFlagsAMD(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ShaderCorePropertiesFlagsAMD {
@@ -5708,7 +5707,7 @@ impl ops::BitAndAssign for ShaderCorePropertiesFlagsAMD {
 impl ops::BitXor for ShaderCorePropertiesFlagsAMD {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ShaderCorePropertiesFlagsAMD(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
@@ -5725,22 +5724,22 @@ impl fmt::Display for ShaderCorePropertiesFlagsAMD {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
 impl CompositeAlphaFlagsKHR {
-    pub const OPAQUE: Self = CompositeAlphaFlagsKHR(0x1);
-    pub const PRE_MULTIPLIED: Self = CompositeAlphaFlagsKHR(0x2);
-    pub const POST_MULTIPLIED: Self = CompositeAlphaFlagsKHR(0x4);
-    pub const INHERIT: Self = CompositeAlphaFlagsKHR(0x8);
+    pub const OPAQUE: Self = Self(0x1);
+    pub const PRE_MULTIPLIED: Self = Self(0x2);
+    pub const POST_MULTIPLIED: Self = Self(0x4);
+    pub const INHERIT: Self = Self(0x8);
 }
 impl default::Default for CompositeAlphaFlagsKHR {
     fn default() -> Self {
-        CompositeAlphaFlagsKHR(0)
+        Self(0)
     }
 }
 impl CompositeAlphaFlagsKHR {
     pub fn empty() -> Self {
-        CompositeAlphaFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CompositeAlphaFlagsKHR(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5758,7 +5757,7 @@ impl CompositeAlphaFlagsKHR {
 impl ops::BitOr for CompositeAlphaFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CompositeAlphaFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CompositeAlphaFlagsKHR {
@@ -5769,7 +5768,7 @@ impl ops::BitOrAssign for CompositeAlphaFlagsKHR {
 impl ops::BitAnd for CompositeAlphaFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CompositeAlphaFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CompositeAlphaFlagsKHR {
@@ -5780,7 +5779,7 @@ impl ops::BitAndAssign for CompositeAlphaFlagsKHR {
 impl ops::BitXor for CompositeAlphaFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CompositeAlphaFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CompositeAlphaFlagsKHR {
@@ -5806,22 +5805,22 @@ impl fmt::Display for CompositeAlphaFlagsKHR {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayPlaneAlphaFlagsKHR(u32);
 impl DisplayPlaneAlphaFlagsKHR {
-    pub const OPAQUE: Self = DisplayPlaneAlphaFlagsKHR(0x1);
-    pub const GLOBAL: Self = DisplayPlaneAlphaFlagsKHR(0x2);
-    pub const PER_PIXEL: Self = DisplayPlaneAlphaFlagsKHR(0x4);
-    pub const PER_PIXEL_PREMULTIPLIED: Self = DisplayPlaneAlphaFlagsKHR(0x8);
+    pub const OPAQUE: Self = Self(0x1);
+    pub const GLOBAL: Self = Self(0x2);
+    pub const PER_PIXEL: Self = Self(0x4);
+    pub const PER_PIXEL_PREMULTIPLIED: Self = Self(0x8);
 }
 impl default::Default for DisplayPlaneAlphaFlagsKHR {
     fn default() -> Self {
-        DisplayPlaneAlphaFlagsKHR(0)
+        Self(0)
     }
 }
 impl DisplayPlaneAlphaFlagsKHR {
     pub fn empty() -> Self {
-        DisplayPlaneAlphaFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DisplayPlaneAlphaFlagsKHR(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5839,7 +5838,7 @@ impl DisplayPlaneAlphaFlagsKHR {
 impl ops::BitOr for DisplayPlaneAlphaFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DisplayPlaneAlphaFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DisplayPlaneAlphaFlagsKHR {
@@ -5850,7 +5849,7 @@ impl ops::BitOrAssign for DisplayPlaneAlphaFlagsKHR {
 impl ops::BitAnd for DisplayPlaneAlphaFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DisplayPlaneAlphaFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DisplayPlaneAlphaFlagsKHR {
@@ -5861,7 +5860,7 @@ impl ops::BitAndAssign for DisplayPlaneAlphaFlagsKHR {
 impl ops::BitXor for DisplayPlaneAlphaFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DisplayPlaneAlphaFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DisplayPlaneAlphaFlagsKHR {
@@ -5887,27 +5886,27 @@ impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SurfaceTransformFlagsKHR(u32);
 impl SurfaceTransformFlagsKHR {
-    pub const IDENTITY: Self = SurfaceTransformFlagsKHR(0x1);
-    pub const ROTATE_90: Self = SurfaceTransformFlagsKHR(0x2);
-    pub const ROTATE_180: Self = SurfaceTransformFlagsKHR(0x4);
-    pub const ROTATE_270: Self = SurfaceTransformFlagsKHR(0x8);
-    pub const HORIZONTAL_MIRROR: Self = SurfaceTransformFlagsKHR(0x10);
-    pub const HORIZONTAL_MIRROR_ROTATE_90: Self = SurfaceTransformFlagsKHR(0x20);
-    pub const HORIZONTAL_MIRROR_ROTATE_180: Self = SurfaceTransformFlagsKHR(0x40);
-    pub const HORIZONTAL_MIRROR_ROTATE_270: Self = SurfaceTransformFlagsKHR(0x80);
-    pub const INHERIT: Self = SurfaceTransformFlagsKHR(0x100);
+    pub const IDENTITY: Self = Self(0x1);
+    pub const ROTATE_90: Self = Self(0x2);
+    pub const ROTATE_180: Self = Self(0x4);
+    pub const ROTATE_270: Self = Self(0x8);
+    pub const HORIZONTAL_MIRROR: Self = Self(0x10);
+    pub const HORIZONTAL_MIRROR_ROTATE_90: Self = Self(0x20);
+    pub const HORIZONTAL_MIRROR_ROTATE_180: Self = Self(0x40);
+    pub const HORIZONTAL_MIRROR_ROTATE_270: Self = Self(0x80);
+    pub const INHERIT: Self = Self(0x100);
 }
 impl default::Default for SurfaceTransformFlagsKHR {
     fn default() -> Self {
-        SurfaceTransformFlagsKHR(0)
+        Self(0)
     }
 }
 impl SurfaceTransformFlagsKHR {
     pub fn empty() -> Self {
-        SurfaceTransformFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SurfaceTransformFlagsKHR(0x1ff)
+        Self(0x1ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -5925,7 +5924,7 @@ impl SurfaceTransformFlagsKHR {
 impl ops::BitOr for SurfaceTransformFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SurfaceTransformFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SurfaceTransformFlagsKHR {
@@ -5936,7 +5935,7 @@ impl ops::BitOrAssign for SurfaceTransformFlagsKHR {
 impl ops::BitAnd for SurfaceTransformFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SurfaceTransformFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SurfaceTransformFlagsKHR {
@@ -5947,7 +5946,7 @@ impl ops::BitAndAssign for SurfaceTransformFlagsKHR {
 impl ops::BitXor for SurfaceTransformFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SurfaceTransformFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SurfaceTransformFlagsKHR {
@@ -5980,24 +5979,24 @@ pub struct SwapchainCreateFlagsKHR(u32);
 impl SwapchainCreateFlagsKHR {
     /// Allow images with VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT
     /// Added by extension VK_KHR_device_group.
-    pub const SPLIT_INSTANCE_BIND_REGIONS: Self = SwapchainCreateFlagsKHR(0x1);
+    pub const SPLIT_INSTANCE_BIND_REGIONS: Self = Self(0x1);
     /// Swapchain is protected
     /// Added by extension VK_KHR_swapchain.
-    pub const PROTECTED: Self = SwapchainCreateFlagsKHR(0x2);
+    pub const PROTECTED: Self = Self(0x2);
     /// Added by extension VK_KHR_swapchain_mutable_format.
-    pub const MUTABLE_FORMAT: Self = SwapchainCreateFlagsKHR(0x4);
+    pub const MUTABLE_FORMAT: Self = Self(0x4);
 }
 impl default::Default for SwapchainCreateFlagsKHR {
     fn default() -> Self {
-        SwapchainCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl SwapchainCreateFlagsKHR {
     pub fn empty() -> Self {
-        SwapchainCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SwapchainCreateFlagsKHR(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6015,7 +6014,7 @@ impl SwapchainCreateFlagsKHR {
 impl ops::BitOr for SwapchainCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SwapchainCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SwapchainCreateFlagsKHR {
@@ -6026,7 +6025,7 @@ impl ops::BitOrAssign for SwapchainCreateFlagsKHR {
 impl ops::BitAnd for SwapchainCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SwapchainCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SwapchainCreateFlagsKHR {
@@ -6037,7 +6036,7 @@ impl ops::BitAndAssign for SwapchainCreateFlagsKHR {
 impl ops::BitXor for SwapchainCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SwapchainCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SwapchainCreateFlagsKHR {
@@ -6064,15 +6063,15 @@ pub struct DisplayModeCreateFlagsKHR(u32);
 impl DisplayModeCreateFlagsKHR {}
 impl default::Default for DisplayModeCreateFlagsKHR {
     fn default() -> Self {
-        DisplayModeCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl DisplayModeCreateFlagsKHR {
     pub fn empty() -> Self {
-        DisplayModeCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DisplayModeCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6090,7 +6089,7 @@ impl DisplayModeCreateFlagsKHR {
 impl ops::BitOr for DisplayModeCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DisplayModeCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DisplayModeCreateFlagsKHR {
@@ -6101,7 +6100,7 @@ impl ops::BitOrAssign for DisplayModeCreateFlagsKHR {
 impl ops::BitAnd for DisplayModeCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DisplayModeCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DisplayModeCreateFlagsKHR {
@@ -6112,7 +6111,7 @@ impl ops::BitAndAssign for DisplayModeCreateFlagsKHR {
 impl ops::BitXor for DisplayModeCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DisplayModeCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DisplayModeCreateFlagsKHR {
@@ -6131,15 +6130,15 @@ pub struct DisplaySurfaceCreateFlagsKHR(u32);
 impl DisplaySurfaceCreateFlagsKHR {}
 impl default::Default for DisplaySurfaceCreateFlagsKHR {
     fn default() -> Self {
-        DisplaySurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl DisplaySurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        DisplaySurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DisplaySurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6157,7 +6156,7 @@ impl DisplaySurfaceCreateFlagsKHR {
 impl ops::BitOr for DisplaySurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DisplaySurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DisplaySurfaceCreateFlagsKHR {
@@ -6168,7 +6167,7 @@ impl ops::BitOrAssign for DisplaySurfaceCreateFlagsKHR {
 impl ops::BitAnd for DisplaySurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DisplaySurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DisplaySurfaceCreateFlagsKHR {
@@ -6179,7 +6178,7 @@ impl ops::BitAndAssign for DisplaySurfaceCreateFlagsKHR {
 impl ops::BitXor for DisplaySurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DisplaySurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DisplaySurfaceCreateFlagsKHR {
@@ -6198,15 +6197,15 @@ pub struct AndroidSurfaceCreateFlagsKHR(u32);
 impl AndroidSurfaceCreateFlagsKHR {}
 impl default::Default for AndroidSurfaceCreateFlagsKHR {
     fn default() -> Self {
-        AndroidSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl AndroidSurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        AndroidSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        AndroidSurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6224,7 +6223,7 @@ impl AndroidSurfaceCreateFlagsKHR {
 impl ops::BitOr for AndroidSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        AndroidSurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for AndroidSurfaceCreateFlagsKHR {
@@ -6235,7 +6234,7 @@ impl ops::BitOrAssign for AndroidSurfaceCreateFlagsKHR {
 impl ops::BitAnd for AndroidSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        AndroidSurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for AndroidSurfaceCreateFlagsKHR {
@@ -6246,7 +6245,7 @@ impl ops::BitAndAssign for AndroidSurfaceCreateFlagsKHR {
 impl ops::BitXor for AndroidSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        AndroidSurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for AndroidSurfaceCreateFlagsKHR {
@@ -6265,15 +6264,15 @@ pub struct ViSurfaceCreateFlagsNN(u32);
 impl ViSurfaceCreateFlagsNN {}
 impl default::Default for ViSurfaceCreateFlagsNN {
     fn default() -> Self {
-        ViSurfaceCreateFlagsNN(0)
+        Self(0)
     }
 }
 impl ViSurfaceCreateFlagsNN {
     pub fn empty() -> Self {
-        ViSurfaceCreateFlagsNN(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ViSurfaceCreateFlagsNN(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6291,7 +6290,7 @@ impl ViSurfaceCreateFlagsNN {
 impl ops::BitOr for ViSurfaceCreateFlagsNN {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ViSurfaceCreateFlagsNN(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ViSurfaceCreateFlagsNN {
@@ -6302,7 +6301,7 @@ impl ops::BitOrAssign for ViSurfaceCreateFlagsNN {
 impl ops::BitAnd for ViSurfaceCreateFlagsNN {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ViSurfaceCreateFlagsNN(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ViSurfaceCreateFlagsNN {
@@ -6313,7 +6312,7 @@ impl ops::BitAndAssign for ViSurfaceCreateFlagsNN {
 impl ops::BitXor for ViSurfaceCreateFlagsNN {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ViSurfaceCreateFlagsNN(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ViSurfaceCreateFlagsNN {
@@ -6332,15 +6331,15 @@ pub struct WaylandSurfaceCreateFlagsKHR(u32);
 impl WaylandSurfaceCreateFlagsKHR {}
 impl default::Default for WaylandSurfaceCreateFlagsKHR {
     fn default() -> Self {
-        WaylandSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl WaylandSurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        WaylandSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        WaylandSurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6358,7 +6357,7 @@ impl WaylandSurfaceCreateFlagsKHR {
 impl ops::BitOr for WaylandSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        WaylandSurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for WaylandSurfaceCreateFlagsKHR {
@@ -6369,7 +6368,7 @@ impl ops::BitOrAssign for WaylandSurfaceCreateFlagsKHR {
 impl ops::BitAnd for WaylandSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        WaylandSurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for WaylandSurfaceCreateFlagsKHR {
@@ -6380,7 +6379,7 @@ impl ops::BitAndAssign for WaylandSurfaceCreateFlagsKHR {
 impl ops::BitXor for WaylandSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        WaylandSurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for WaylandSurfaceCreateFlagsKHR {
@@ -6399,15 +6398,15 @@ pub struct Win32SurfaceCreateFlagsKHR(u32);
 impl Win32SurfaceCreateFlagsKHR {}
 impl default::Default for Win32SurfaceCreateFlagsKHR {
     fn default() -> Self {
-        Win32SurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl Win32SurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        Win32SurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        Win32SurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6425,7 +6424,7 @@ impl Win32SurfaceCreateFlagsKHR {
 impl ops::BitOr for Win32SurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        Win32SurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for Win32SurfaceCreateFlagsKHR {
@@ -6436,7 +6435,7 @@ impl ops::BitOrAssign for Win32SurfaceCreateFlagsKHR {
 impl ops::BitAnd for Win32SurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        Win32SurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for Win32SurfaceCreateFlagsKHR {
@@ -6447,7 +6446,7 @@ impl ops::BitAndAssign for Win32SurfaceCreateFlagsKHR {
 impl ops::BitXor for Win32SurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        Win32SurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for Win32SurfaceCreateFlagsKHR {
@@ -6466,15 +6465,15 @@ pub struct XlibSurfaceCreateFlagsKHR(u32);
 impl XlibSurfaceCreateFlagsKHR {}
 impl default::Default for XlibSurfaceCreateFlagsKHR {
     fn default() -> Self {
-        XlibSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl XlibSurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        XlibSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        XlibSurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6492,7 +6491,7 @@ impl XlibSurfaceCreateFlagsKHR {
 impl ops::BitOr for XlibSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        XlibSurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for XlibSurfaceCreateFlagsKHR {
@@ -6503,7 +6502,7 @@ impl ops::BitOrAssign for XlibSurfaceCreateFlagsKHR {
 impl ops::BitAnd for XlibSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        XlibSurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for XlibSurfaceCreateFlagsKHR {
@@ -6514,7 +6513,7 @@ impl ops::BitAndAssign for XlibSurfaceCreateFlagsKHR {
 impl ops::BitXor for XlibSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        XlibSurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for XlibSurfaceCreateFlagsKHR {
@@ -6533,15 +6532,15 @@ pub struct XcbSurfaceCreateFlagsKHR(u32);
 impl XcbSurfaceCreateFlagsKHR {}
 impl default::Default for XcbSurfaceCreateFlagsKHR {
     fn default() -> Self {
-        XcbSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
 }
 impl XcbSurfaceCreateFlagsKHR {
     pub fn empty() -> Self {
-        XcbSurfaceCreateFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        XcbSurfaceCreateFlagsKHR(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6559,7 +6558,7 @@ impl XcbSurfaceCreateFlagsKHR {
 impl ops::BitOr for XcbSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        XcbSurfaceCreateFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for XcbSurfaceCreateFlagsKHR {
@@ -6570,7 +6569,7 @@ impl ops::BitOrAssign for XcbSurfaceCreateFlagsKHR {
 impl ops::BitAnd for XcbSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        XcbSurfaceCreateFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for XcbSurfaceCreateFlagsKHR {
@@ -6581,7 +6580,7 @@ impl ops::BitAndAssign for XcbSurfaceCreateFlagsKHR {
 impl ops::BitXor for XcbSurfaceCreateFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        XcbSurfaceCreateFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for XcbSurfaceCreateFlagsKHR {
@@ -6600,15 +6599,15 @@ pub struct IOSSurfaceCreateFlagsMVK(u32);
 impl IOSSurfaceCreateFlagsMVK {}
 impl default::Default for IOSSurfaceCreateFlagsMVK {
     fn default() -> Self {
-        IOSSurfaceCreateFlagsMVK(0)
+        Self(0)
     }
 }
 impl IOSSurfaceCreateFlagsMVK {
     pub fn empty() -> Self {
-        IOSSurfaceCreateFlagsMVK(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        IOSSurfaceCreateFlagsMVK(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6626,7 +6625,7 @@ impl IOSSurfaceCreateFlagsMVK {
 impl ops::BitOr for IOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        IOSSurfaceCreateFlagsMVK(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for IOSSurfaceCreateFlagsMVK {
@@ -6637,7 +6636,7 @@ impl ops::BitOrAssign for IOSSurfaceCreateFlagsMVK {
 impl ops::BitAnd for IOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        IOSSurfaceCreateFlagsMVK(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for IOSSurfaceCreateFlagsMVK {
@@ -6648,7 +6647,7 @@ impl ops::BitAndAssign for IOSSurfaceCreateFlagsMVK {
 impl ops::BitXor for IOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        IOSSurfaceCreateFlagsMVK(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for IOSSurfaceCreateFlagsMVK {
@@ -6667,15 +6666,15 @@ pub struct MacOSSurfaceCreateFlagsMVK(u32);
 impl MacOSSurfaceCreateFlagsMVK {}
 impl default::Default for MacOSSurfaceCreateFlagsMVK {
     fn default() -> Self {
-        MacOSSurfaceCreateFlagsMVK(0)
+        Self(0)
     }
 }
 impl MacOSSurfaceCreateFlagsMVK {
     pub fn empty() -> Self {
-        MacOSSurfaceCreateFlagsMVK(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MacOSSurfaceCreateFlagsMVK(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6693,7 +6692,7 @@ impl MacOSSurfaceCreateFlagsMVK {
 impl ops::BitOr for MacOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MacOSSurfaceCreateFlagsMVK(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MacOSSurfaceCreateFlagsMVK {
@@ -6704,7 +6703,7 @@ impl ops::BitOrAssign for MacOSSurfaceCreateFlagsMVK {
 impl ops::BitAnd for MacOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MacOSSurfaceCreateFlagsMVK(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MacOSSurfaceCreateFlagsMVK {
@@ -6715,7 +6714,7 @@ impl ops::BitAndAssign for MacOSSurfaceCreateFlagsMVK {
 impl ops::BitXor for MacOSSurfaceCreateFlagsMVK {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MacOSSurfaceCreateFlagsMVK(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MacOSSurfaceCreateFlagsMVK {
@@ -6734,15 +6733,15 @@ pub struct MetalSurfaceCreateFlagsEXT(u32);
 impl MetalSurfaceCreateFlagsEXT {}
 impl default::Default for MetalSurfaceCreateFlagsEXT {
     fn default() -> Self {
-        MetalSurfaceCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl MetalSurfaceCreateFlagsEXT {
     pub fn empty() -> Self {
-        MetalSurfaceCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MetalSurfaceCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6760,7 +6759,7 @@ impl MetalSurfaceCreateFlagsEXT {
 impl ops::BitOr for MetalSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MetalSurfaceCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MetalSurfaceCreateFlagsEXT {
@@ -6771,7 +6770,7 @@ impl ops::BitOrAssign for MetalSurfaceCreateFlagsEXT {
 impl ops::BitAnd for MetalSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MetalSurfaceCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MetalSurfaceCreateFlagsEXT {
@@ -6782,7 +6781,7 @@ impl ops::BitAndAssign for MetalSurfaceCreateFlagsEXT {
 impl ops::BitXor for MetalSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MetalSurfaceCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MetalSurfaceCreateFlagsEXT {
@@ -6801,15 +6800,15 @@ pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(u32);
 impl ImagePipeSurfaceCreateFlagsFUCHSIA {}
 impl default::Default for ImagePipeSurfaceCreateFlagsFUCHSIA {
     fn default() -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(0)
+        Self(0)
     }
 }
 impl ImagePipeSurfaceCreateFlagsFUCHSIA {
     pub fn empty() -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6827,7 +6826,7 @@ impl ImagePipeSurfaceCreateFlagsFUCHSIA {
 impl ops::BitOr for ImagePipeSurfaceCreateFlagsFUCHSIA {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
@@ -6838,7 +6837,7 @@ impl ops::BitOrAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
 impl ops::BitAnd for ImagePipeSurfaceCreateFlagsFUCHSIA {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
@@ -6849,7 +6848,7 @@ impl ops::BitAndAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
 impl ops::BitXor for ImagePipeSurfaceCreateFlagsFUCHSIA {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ImagePipeSurfaceCreateFlagsFUCHSIA(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
@@ -6868,15 +6867,15 @@ pub struct HeadlessSurfaceCreateFlagsEXT(u32);
 impl HeadlessSurfaceCreateFlagsEXT {}
 impl default::Default for HeadlessSurfaceCreateFlagsEXT {
     fn default() -> Self {
-        HeadlessSurfaceCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl HeadlessSurfaceCreateFlagsEXT {
     pub fn empty() -> Self {
-        HeadlessSurfaceCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        HeadlessSurfaceCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6894,7 +6893,7 @@ impl HeadlessSurfaceCreateFlagsEXT {
 impl ops::BitOr for HeadlessSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        HeadlessSurfaceCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for HeadlessSurfaceCreateFlagsEXT {
@@ -6905,7 +6904,7 @@ impl ops::BitOrAssign for HeadlessSurfaceCreateFlagsEXT {
 impl ops::BitAnd for HeadlessSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        HeadlessSurfaceCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for HeadlessSurfaceCreateFlagsEXT {
@@ -6916,7 +6915,7 @@ impl ops::BitAndAssign for HeadlessSurfaceCreateFlagsEXT {
 impl ops::BitXor for HeadlessSurfaceCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        HeadlessSurfaceCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for HeadlessSurfaceCreateFlagsEXT {
@@ -6934,13 +6933,13 @@ impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
 pub struct PeerMemoryFeatureFlags(u32);
 impl PeerMemoryFeatureFlags {
     /// Can read with vkCmdCopy commands
-    pub const COPY_SRC: Self = PeerMemoryFeatureFlags(0x1);
+    pub const COPY_SRC: Self = Self(0x1);
     /// Can write with vkCmdCopy commands
-    pub const COPY_DST: Self = PeerMemoryFeatureFlags(0x2);
+    pub const COPY_DST: Self = Self(0x2);
     /// Can read with any access type/command
-    pub const GENERIC_SRC: Self = PeerMemoryFeatureFlags(0x4);
+    pub const GENERIC_SRC: Self = Self(0x4);
     /// Can write with and access type/command
-    pub const GENERIC_DST: Self = PeerMemoryFeatureFlags(0x8);
+    pub const GENERIC_DST: Self = Self(0x8);
     pub const COPY_SRC_KHR: Self = Self::COPY_SRC;
     pub const COPY_DST_KHR: Self = Self::COPY_DST;
     pub const GENERIC_SRC_KHR: Self = Self::GENERIC_SRC;
@@ -6948,15 +6947,15 @@ impl PeerMemoryFeatureFlags {
 }
 impl default::Default for PeerMemoryFeatureFlags {
     fn default() -> Self {
-        PeerMemoryFeatureFlags(0)
+        Self(0)
     }
 }
 impl PeerMemoryFeatureFlags {
     pub fn empty() -> Self {
-        PeerMemoryFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PeerMemoryFeatureFlags(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -6974,7 +6973,7 @@ impl PeerMemoryFeatureFlags {
 impl ops::BitOr for PeerMemoryFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PeerMemoryFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PeerMemoryFeatureFlags {
@@ -6985,7 +6984,7 @@ impl ops::BitOrAssign for PeerMemoryFeatureFlags {
 impl ops::BitAnd for PeerMemoryFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PeerMemoryFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PeerMemoryFeatureFlags {
@@ -6996,7 +6995,7 @@ impl ops::BitAndAssign for PeerMemoryFeatureFlags {
 impl ops::BitXor for PeerMemoryFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PeerMemoryFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PeerMemoryFeatureFlags {
@@ -7024,20 +7023,20 @@ pub type PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
 pub struct MemoryAllocateFlags(u32);
 impl MemoryAllocateFlags {
     /// Force allocation on specific devices
-    pub const DEVICE_MASK: Self = MemoryAllocateFlags(0x1);
+    pub const DEVICE_MASK: Self = Self(0x1);
     pub const DEVICE_MASK_KHR: Self = Self::DEVICE_MASK;
 }
 impl default::Default for MemoryAllocateFlags {
     fn default() -> Self {
-        MemoryAllocateFlags(0)
+        Self(0)
     }
 }
 impl MemoryAllocateFlags {
     pub fn empty() -> Self {
-        MemoryAllocateFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        MemoryAllocateFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7055,7 +7054,7 @@ impl MemoryAllocateFlags {
 impl ops::BitOr for MemoryAllocateFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        MemoryAllocateFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for MemoryAllocateFlags {
@@ -7066,7 +7065,7 @@ impl ops::BitOrAssign for MemoryAllocateFlags {
 impl ops::BitAnd for MemoryAllocateFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        MemoryAllocateFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for MemoryAllocateFlags {
@@ -7077,7 +7076,7 @@ impl ops::BitAndAssign for MemoryAllocateFlags {
 impl ops::BitXor for MemoryAllocateFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        MemoryAllocateFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for MemoryAllocateFlags {
@@ -7096,25 +7095,25 @@ pub type MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 pub struct DeviceGroupPresentModeFlagsKHR(u32);
 impl DeviceGroupPresentModeFlagsKHR {
     /// Present from local memory
-    pub const LOCAL: Self = DeviceGroupPresentModeFlagsKHR(0x1);
+    pub const LOCAL: Self = Self(0x1);
     /// Present from remote memory
-    pub const REMOTE: Self = DeviceGroupPresentModeFlagsKHR(0x2);
+    pub const REMOTE: Self = Self(0x2);
     /// Present sum of local and/or remote memory
-    pub const SUM: Self = DeviceGroupPresentModeFlagsKHR(0x4);
+    pub const SUM: Self = Self(0x4);
     /// Each physical device presents from local memory
-    pub const LOCAL_MULTI_DEVICE: Self = DeviceGroupPresentModeFlagsKHR(0x8);
+    pub const LOCAL_MULTI_DEVICE: Self = Self(0x8);
 }
 impl default::Default for DeviceGroupPresentModeFlagsKHR {
     fn default() -> Self {
-        DeviceGroupPresentModeFlagsKHR(0)
+        Self(0)
     }
 }
 impl DeviceGroupPresentModeFlagsKHR {
     pub fn empty() -> Self {
-        DeviceGroupPresentModeFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DeviceGroupPresentModeFlagsKHR(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7132,7 +7131,7 @@ impl DeviceGroupPresentModeFlagsKHR {
 impl ops::BitOr for DeviceGroupPresentModeFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DeviceGroupPresentModeFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DeviceGroupPresentModeFlagsKHR {
@@ -7143,7 +7142,7 @@ impl ops::BitOrAssign for DeviceGroupPresentModeFlagsKHR {
 impl ops::BitAnd for DeviceGroupPresentModeFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DeviceGroupPresentModeFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DeviceGroupPresentModeFlagsKHR {
@@ -7154,7 +7153,7 @@ impl ops::BitAndAssign for DeviceGroupPresentModeFlagsKHR {
 impl ops::BitXor for DeviceGroupPresentModeFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DeviceGroupPresentModeFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DeviceGroupPresentModeFlagsKHR {
@@ -7180,23 +7179,23 @@ impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DebugReportFlagsEXT(u32);
 impl DebugReportFlagsEXT {
-    pub const INFORMATION: Self = DebugReportFlagsEXT(0x1);
-    pub const WARNING: Self = DebugReportFlagsEXT(0x2);
-    pub const PERFORMANCE_WARNING: Self = DebugReportFlagsEXT(0x4);
-    pub const ERROR: Self = DebugReportFlagsEXT(0x8);
-    pub const DEBUG: Self = DebugReportFlagsEXT(0x10);
+    pub const INFORMATION: Self = Self(0x1);
+    pub const WARNING: Self = Self(0x2);
+    pub const PERFORMANCE_WARNING: Self = Self(0x4);
+    pub const ERROR: Self = Self(0x8);
+    pub const DEBUG: Self = Self(0x10);
 }
 impl default::Default for DebugReportFlagsEXT {
     fn default() -> Self {
-        DebugReportFlagsEXT(0)
+        Self(0)
     }
 }
 impl DebugReportFlagsEXT {
     pub fn empty() -> Self {
-        DebugReportFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DebugReportFlagsEXT(0x1f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7214,7 +7213,7 @@ impl DebugReportFlagsEXT {
 impl ops::BitOr for DebugReportFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DebugReportFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DebugReportFlagsEXT {
@@ -7225,7 +7224,7 @@ impl ops::BitOrAssign for DebugReportFlagsEXT {
 impl ops::BitAnd for DebugReportFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DebugReportFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DebugReportFlagsEXT {
@@ -7236,7 +7235,7 @@ impl ops::BitAndAssign for DebugReportFlagsEXT {
 impl ops::BitXor for DebugReportFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DebugReportFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DebugReportFlagsEXT {
@@ -7265,15 +7264,15 @@ pub struct CommandPoolTrimFlags(u32);
 impl CommandPoolTrimFlags {}
 impl default::Default for CommandPoolTrimFlags {
     fn default() -> Self {
-        CommandPoolTrimFlags(0)
+        Self(0)
     }
 }
 impl CommandPoolTrimFlags {
     pub fn empty() -> Self {
-        CommandPoolTrimFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        CommandPoolTrimFlags(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7291,7 +7290,7 @@ impl CommandPoolTrimFlags {
 impl ops::BitOr for CommandPoolTrimFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        CommandPoolTrimFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for CommandPoolTrimFlags {
@@ -7302,7 +7301,7 @@ impl ops::BitOrAssign for CommandPoolTrimFlags {
 impl ops::BitAnd for CommandPoolTrimFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        CommandPoolTrimFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for CommandPoolTrimFlags {
@@ -7313,7 +7312,7 @@ impl ops::BitAndAssign for CommandPoolTrimFlags {
 impl ops::BitXor for CommandPoolTrimFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        CommandPoolTrimFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for CommandPoolTrimFlags {
@@ -7331,22 +7330,22 @@ pub type CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryHandleTypeFlagsNV(u32);
 impl ExternalMemoryHandleTypeFlagsNV {
-    pub const OPAQUE_WIN32: Self = ExternalMemoryHandleTypeFlagsNV(0x1);
-    pub const OPAQUE_WIN32_KMT: Self = ExternalMemoryHandleTypeFlagsNV(0x2);
-    pub const D3D11_IMAGE: Self = ExternalMemoryHandleTypeFlagsNV(0x4);
-    pub const D3D11_IMAGE_KMT: Self = ExternalMemoryHandleTypeFlagsNV(0x8);
+    pub const OPAQUE_WIN32: Self = Self(0x1);
+    pub const OPAQUE_WIN32_KMT: Self = Self(0x2);
+    pub const D3D11_IMAGE: Self = Self(0x4);
+    pub const D3D11_IMAGE_KMT: Self = Self(0x8);
 }
 impl default::Default for ExternalMemoryHandleTypeFlagsNV {
     fn default() -> Self {
-        ExternalMemoryHandleTypeFlagsNV(0)
+        Self(0)
     }
 }
 impl ExternalMemoryHandleTypeFlagsNV {
     pub fn empty() -> Self {
-        ExternalMemoryHandleTypeFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalMemoryHandleTypeFlagsNV(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7364,7 +7363,7 @@ impl ExternalMemoryHandleTypeFlagsNV {
 impl ops::BitOr for ExternalMemoryHandleTypeFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalMemoryHandleTypeFlagsNV {
@@ -7375,7 +7374,7 @@ impl ops::BitOrAssign for ExternalMemoryHandleTypeFlagsNV {
 impl ops::BitAnd for ExternalMemoryHandleTypeFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalMemoryHandleTypeFlagsNV {
@@ -7386,7 +7385,7 @@ impl ops::BitAndAssign for ExternalMemoryHandleTypeFlagsNV {
 impl ops::BitXor for ExternalMemoryHandleTypeFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalMemoryHandleTypeFlagsNV {
@@ -7412,21 +7411,21 @@ impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryFeatureFlagsNV(u32);
 impl ExternalMemoryFeatureFlagsNV {
-    pub const DEDICATED_ONLY: Self = ExternalMemoryFeatureFlagsNV(0x1);
-    pub const EXPORTABLE: Self = ExternalMemoryFeatureFlagsNV(0x2);
-    pub const IMPORTABLE: Self = ExternalMemoryFeatureFlagsNV(0x4);
+    pub const DEDICATED_ONLY: Self = Self(0x1);
+    pub const EXPORTABLE: Self = Self(0x2);
+    pub const IMPORTABLE: Self = Self(0x4);
 }
 impl default::Default for ExternalMemoryFeatureFlagsNV {
     fn default() -> Self {
-        ExternalMemoryFeatureFlagsNV(0)
+        Self(0)
     }
 }
 impl ExternalMemoryFeatureFlagsNV {
     pub fn empty() -> Self {
-        ExternalMemoryFeatureFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalMemoryFeatureFlagsNV(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7444,7 +7443,7 @@ impl ExternalMemoryFeatureFlagsNV {
 impl ops::BitOr for ExternalMemoryFeatureFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalMemoryFeatureFlagsNV {
@@ -7455,7 +7454,7 @@ impl ops::BitOrAssign for ExternalMemoryFeatureFlagsNV {
 impl ops::BitAnd for ExternalMemoryFeatureFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalMemoryFeatureFlagsNV {
@@ -7466,7 +7465,7 @@ impl ops::BitAndAssign for ExternalMemoryFeatureFlagsNV {
 impl ops::BitXor for ExternalMemoryFeatureFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalMemoryFeatureFlagsNV {
@@ -7487,13 +7486,13 @@ impl fmt::Display for ExternalMemoryFeatureFlagsNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryHandleTypeFlags(u32);
 impl ExternalMemoryHandleTypeFlags {
-    pub const OPAQUE_FD: Self = ExternalMemoryHandleTypeFlags(0x1);
-    pub const OPAQUE_WIN32: Self = ExternalMemoryHandleTypeFlags(0x2);
-    pub const OPAQUE_WIN32_KMT: Self = ExternalMemoryHandleTypeFlags(0x4);
-    pub const D3D11_TEXTURE: Self = ExternalMemoryHandleTypeFlags(0x8);
-    pub const D3D11_TEXTURE_KMT: Self = ExternalMemoryHandleTypeFlags(0x10);
-    pub const D3D12_HEAP: Self = ExternalMemoryHandleTypeFlags(0x20);
-    pub const D3D12_RESOURCE: Self = ExternalMemoryHandleTypeFlags(0x40);
+    pub const OPAQUE_FD: Self = Self(0x1);
+    pub const OPAQUE_WIN32: Self = Self(0x2);
+    pub const OPAQUE_WIN32_KMT: Self = Self(0x4);
+    pub const D3D11_TEXTURE: Self = Self(0x8);
+    pub const D3D11_TEXTURE_KMT: Self = Self(0x10);
+    pub const D3D12_HEAP: Self = Self(0x20);
+    pub const D3D12_RESOURCE: Self = Self(0x40);
     pub const OPAQUE_FD_KHR: Self = Self::OPAQUE_FD;
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
@@ -7502,25 +7501,25 @@ impl ExternalMemoryHandleTypeFlags {
     pub const D3D12_HEAP_KHR: Self = Self::D3D12_HEAP;
     pub const D3D12_RESOURCE_KHR: Self = Self::D3D12_RESOURCE;
     /// Added by extension VK_EXT_external_memory_dma_buf.
-    pub const DMA_BUF_EXT: Self = ExternalMemoryHandleTypeFlags(0x200);
+    pub const DMA_BUF_EXT: Self = Self(0x200);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const ANDROID_HARDWARE_BUFFER_ANDROID: Self = ExternalMemoryHandleTypeFlags(0x400);
+    pub const ANDROID_HARDWARE_BUFFER_ANDROID: Self = Self(0x400);
     /// Added by extension VK_EXT_external_memory_host.
-    pub const HOST_ALLOCATION_EXT: Self = ExternalMemoryHandleTypeFlags(0x80);
+    pub const HOST_ALLOCATION_EXT: Self = Self(0x80);
     /// Added by extension VK_EXT_external_memory_host.
-    pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = ExternalMemoryHandleTypeFlags(0x100);
+    pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = Self(0x100);
 }
 impl default::Default for ExternalMemoryHandleTypeFlags {
     fn default() -> Self {
-        ExternalMemoryHandleTypeFlags(0)
+        Self(0)
     }
 }
 impl ExternalMemoryHandleTypeFlags {
     pub fn empty() -> Self {
-        ExternalMemoryHandleTypeFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalMemoryHandleTypeFlags(0x7ff)
+        Self(0x7ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7538,7 +7537,7 @@ impl ExternalMemoryHandleTypeFlags {
 impl ops::BitOr for ExternalMemoryHandleTypeFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalMemoryHandleTypeFlags {
@@ -7549,7 +7548,7 @@ impl ops::BitOrAssign for ExternalMemoryHandleTypeFlags {
 impl ops::BitAnd for ExternalMemoryHandleTypeFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalMemoryHandleTypeFlags {
@@ -7560,7 +7559,7 @@ impl ops::BitAndAssign for ExternalMemoryHandleTypeFlags {
 impl ops::BitXor for ExternalMemoryHandleTypeFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalMemoryHandleTypeFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalMemoryHandleTypeFlags {
@@ -7594,24 +7593,24 @@ pub type ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryFeatureFlags(u32);
 impl ExternalMemoryFeatureFlags {
-    pub const DEDICATED_ONLY: Self = ExternalMemoryFeatureFlags(0x1);
-    pub const EXPORTABLE: Self = ExternalMemoryFeatureFlags(0x2);
-    pub const IMPORTABLE: Self = ExternalMemoryFeatureFlags(0x4);
+    pub const DEDICATED_ONLY: Self = Self(0x1);
+    pub const EXPORTABLE: Self = Self(0x2);
+    pub const IMPORTABLE: Self = Self(0x4);
     pub const DEDICATED_ONLY_KHR: Self = Self::DEDICATED_ONLY;
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
 }
 impl default::Default for ExternalMemoryFeatureFlags {
     fn default() -> Self {
-        ExternalMemoryFeatureFlags(0)
+        Self(0)
     }
 }
 impl ExternalMemoryFeatureFlags {
     pub fn empty() -> Self {
-        ExternalMemoryFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalMemoryFeatureFlags(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7629,7 +7628,7 @@ impl ExternalMemoryFeatureFlags {
 impl ops::BitOr for ExternalMemoryFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalMemoryFeatureFlags {
@@ -7640,7 +7639,7 @@ impl ops::BitOrAssign for ExternalMemoryFeatureFlags {
 impl ops::BitAnd for ExternalMemoryFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalMemoryFeatureFlags {
@@ -7651,7 +7650,7 @@ impl ops::BitAndAssign for ExternalMemoryFeatureFlags {
 impl ops::BitXor for ExternalMemoryFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalMemoryFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalMemoryFeatureFlags {
@@ -7673,11 +7672,11 @@ pub type ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalSemaphoreHandleTypeFlags(u32);
 impl ExternalSemaphoreHandleTypeFlags {
-    pub const OPAQUE_FD: Self = ExternalSemaphoreHandleTypeFlags(0x1);
-    pub const OPAQUE_WIN32: Self = ExternalSemaphoreHandleTypeFlags(0x2);
-    pub const OPAQUE_WIN32_KMT: Self = ExternalSemaphoreHandleTypeFlags(0x4);
-    pub const D3D12_FENCE: Self = ExternalSemaphoreHandleTypeFlags(0x8);
-    pub const SYNC_FD: Self = ExternalSemaphoreHandleTypeFlags(0x10);
+    pub const OPAQUE_FD: Self = Self(0x1);
+    pub const OPAQUE_WIN32: Self = Self(0x2);
+    pub const OPAQUE_WIN32_KMT: Self = Self(0x4);
+    pub const D3D12_FENCE: Self = Self(0x8);
+    pub const SYNC_FD: Self = Self(0x10);
     pub const OPAQUE_FD_KHR: Self = Self::OPAQUE_FD;
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
@@ -7686,15 +7685,15 @@ impl ExternalSemaphoreHandleTypeFlags {
 }
 impl default::Default for ExternalSemaphoreHandleTypeFlags {
     fn default() -> Self {
-        ExternalSemaphoreHandleTypeFlags(0)
+        Self(0)
     }
 }
 impl ExternalSemaphoreHandleTypeFlags {
     pub fn empty() -> Self {
-        ExternalSemaphoreHandleTypeFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalSemaphoreHandleTypeFlags(0x1f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7712,7 +7711,7 @@ impl ExternalSemaphoreHandleTypeFlags {
 impl ops::BitOr for ExternalSemaphoreHandleTypeFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalSemaphoreHandleTypeFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalSemaphoreHandleTypeFlags {
@@ -7723,7 +7722,7 @@ impl ops::BitOrAssign for ExternalSemaphoreHandleTypeFlags {
 impl ops::BitAnd for ExternalSemaphoreHandleTypeFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalSemaphoreHandleTypeFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalSemaphoreHandleTypeFlags {
@@ -7734,7 +7733,7 @@ impl ops::BitAndAssign for ExternalSemaphoreHandleTypeFlags {
 impl ops::BitXor for ExternalSemaphoreHandleTypeFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalSemaphoreHandleTypeFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalSemaphoreHandleTypeFlags {
@@ -7762,22 +7761,22 @@ pub type ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalSemaphoreFeatureFlags(u32);
 impl ExternalSemaphoreFeatureFlags {
-    pub const EXPORTABLE: Self = ExternalSemaphoreFeatureFlags(0x1);
-    pub const IMPORTABLE: Self = ExternalSemaphoreFeatureFlags(0x2);
+    pub const EXPORTABLE: Self = Self(0x1);
+    pub const IMPORTABLE: Self = Self(0x2);
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
 }
 impl default::Default for ExternalSemaphoreFeatureFlags {
     fn default() -> Self {
-        ExternalSemaphoreFeatureFlags(0)
+        Self(0)
     }
 }
 impl ExternalSemaphoreFeatureFlags {
     pub fn empty() -> Self {
-        ExternalSemaphoreFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalSemaphoreFeatureFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7795,7 +7794,7 @@ impl ExternalSemaphoreFeatureFlags {
 impl ops::BitOr for ExternalSemaphoreFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalSemaphoreFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalSemaphoreFeatureFlags {
@@ -7806,7 +7805,7 @@ impl ops::BitOrAssign for ExternalSemaphoreFeatureFlags {
 impl ops::BitAnd for ExternalSemaphoreFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalSemaphoreFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalSemaphoreFeatureFlags {
@@ -7817,7 +7816,7 @@ impl ops::BitAndAssign for ExternalSemaphoreFeatureFlags {
 impl ops::BitXor for ExternalSemaphoreFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalSemaphoreFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalSemaphoreFeatureFlags {
@@ -7835,20 +7834,20 @@ pub type ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SemaphoreImportFlags(u32);
 impl SemaphoreImportFlags {
-    pub const TEMPORARY: Self = SemaphoreImportFlags(0x1);
+    pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
 }
 impl default::Default for SemaphoreImportFlags {
     fn default() -> Self {
-        SemaphoreImportFlags(0)
+        Self(0)
     }
 }
 impl SemaphoreImportFlags {
     pub fn empty() -> Self {
-        SemaphoreImportFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SemaphoreImportFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7866,7 +7865,7 @@ impl SemaphoreImportFlags {
 impl ops::BitOr for SemaphoreImportFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SemaphoreImportFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SemaphoreImportFlags {
@@ -7877,7 +7876,7 @@ impl ops::BitOrAssign for SemaphoreImportFlags {
 impl ops::BitAnd for SemaphoreImportFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SemaphoreImportFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SemaphoreImportFlags {
@@ -7888,7 +7887,7 @@ impl ops::BitAndAssign for SemaphoreImportFlags {
 impl ops::BitXor for SemaphoreImportFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SemaphoreImportFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SemaphoreImportFlags {
@@ -7906,10 +7905,10 @@ pub type SemaphoreImportFlagsKHR = SemaphoreImportFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalFenceHandleTypeFlags(u32);
 impl ExternalFenceHandleTypeFlags {
-    pub const OPAQUE_FD: Self = ExternalFenceHandleTypeFlags(0x1);
-    pub const OPAQUE_WIN32: Self = ExternalFenceHandleTypeFlags(0x2);
-    pub const OPAQUE_WIN32_KMT: Self = ExternalFenceHandleTypeFlags(0x4);
-    pub const SYNC_FD: Self = ExternalFenceHandleTypeFlags(0x8);
+    pub const OPAQUE_FD: Self = Self(0x1);
+    pub const OPAQUE_WIN32: Self = Self(0x2);
+    pub const OPAQUE_WIN32_KMT: Self = Self(0x4);
+    pub const SYNC_FD: Self = Self(0x8);
     pub const OPAQUE_FD_KHR: Self = Self::OPAQUE_FD;
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
@@ -7917,15 +7916,15 @@ impl ExternalFenceHandleTypeFlags {
 }
 impl default::Default for ExternalFenceHandleTypeFlags {
     fn default() -> Self {
-        ExternalFenceHandleTypeFlags(0)
+        Self(0)
     }
 }
 impl ExternalFenceHandleTypeFlags {
     pub fn empty() -> Self {
-        ExternalFenceHandleTypeFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalFenceHandleTypeFlags(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -7943,7 +7942,7 @@ impl ExternalFenceHandleTypeFlags {
 impl ops::BitOr for ExternalFenceHandleTypeFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalFenceHandleTypeFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalFenceHandleTypeFlags {
@@ -7954,7 +7953,7 @@ impl ops::BitOrAssign for ExternalFenceHandleTypeFlags {
 impl ops::BitAnd for ExternalFenceHandleTypeFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalFenceHandleTypeFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalFenceHandleTypeFlags {
@@ -7965,7 +7964,7 @@ impl ops::BitAndAssign for ExternalFenceHandleTypeFlags {
 impl ops::BitXor for ExternalFenceHandleTypeFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalFenceHandleTypeFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalFenceHandleTypeFlags {
@@ -7992,22 +7991,22 @@ pub type ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ExternalFenceFeatureFlags(u32);
 impl ExternalFenceFeatureFlags {
-    pub const EXPORTABLE: Self = ExternalFenceFeatureFlags(0x1);
-    pub const IMPORTABLE: Self = ExternalFenceFeatureFlags(0x2);
+    pub const EXPORTABLE: Self = Self(0x1);
+    pub const IMPORTABLE: Self = Self(0x2);
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
 }
 impl default::Default for ExternalFenceFeatureFlags {
     fn default() -> Self {
-        ExternalFenceFeatureFlags(0)
+        Self(0)
     }
 }
 impl ExternalFenceFeatureFlags {
     pub fn empty() -> Self {
-        ExternalFenceFeatureFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ExternalFenceFeatureFlags(0x3)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8025,7 +8024,7 @@ impl ExternalFenceFeatureFlags {
 impl ops::BitOr for ExternalFenceFeatureFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ExternalFenceFeatureFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ExternalFenceFeatureFlags {
@@ -8036,7 +8035,7 @@ impl ops::BitOrAssign for ExternalFenceFeatureFlags {
 impl ops::BitAnd for ExternalFenceFeatureFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ExternalFenceFeatureFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ExternalFenceFeatureFlags {
@@ -8047,7 +8046,7 @@ impl ops::BitAndAssign for ExternalFenceFeatureFlags {
 impl ops::BitXor for ExternalFenceFeatureFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ExternalFenceFeatureFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ExternalFenceFeatureFlags {
@@ -8065,20 +8064,20 @@ pub type ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct FenceImportFlags(u32);
 impl FenceImportFlags {
-    pub const TEMPORARY: Self = FenceImportFlags(0x1);
+    pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
 }
 impl default::Default for FenceImportFlags {
     fn default() -> Self {
-        FenceImportFlags(0)
+        Self(0)
     }
 }
 impl FenceImportFlags {
     pub fn empty() -> Self {
-        FenceImportFlags(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        FenceImportFlags(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8096,7 +8095,7 @@ impl FenceImportFlags {
 impl ops::BitOr for FenceImportFlags {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        FenceImportFlags(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for FenceImportFlags {
@@ -8107,7 +8106,7 @@ impl ops::BitOrAssign for FenceImportFlags {
 impl ops::BitAnd for FenceImportFlags {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        FenceImportFlags(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for FenceImportFlags {
@@ -8118,7 +8117,7 @@ impl ops::BitAndAssign for FenceImportFlags {
 impl ops::BitXor for FenceImportFlags {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        FenceImportFlags(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for FenceImportFlags {
@@ -8136,19 +8135,19 @@ pub type FenceImportFlagsKHR = FenceImportFlags;
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SurfaceCounterFlagsEXT(u32);
 impl SurfaceCounterFlagsEXT {
-    pub const VBLANK: Self = SurfaceCounterFlagsEXT(0x1);
+    pub const VBLANK: Self = Self(0x1);
 }
 impl default::Default for SurfaceCounterFlagsEXT {
     fn default() -> Self {
-        SurfaceCounterFlagsEXT(0)
+        Self(0)
     }
 }
 impl SurfaceCounterFlagsEXT {
     pub fn empty() -> Self {
-        SurfaceCounterFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SurfaceCounterFlagsEXT(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8166,7 +8165,7 @@ impl SurfaceCounterFlagsEXT {
 impl ops::BitOr for SurfaceCounterFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SurfaceCounterFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SurfaceCounterFlagsEXT {
@@ -8177,7 +8176,7 @@ impl ops::BitOrAssign for SurfaceCounterFlagsEXT {
 impl ops::BitAnd for SurfaceCounterFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SurfaceCounterFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SurfaceCounterFlagsEXT {
@@ -8188,7 +8187,7 @@ impl ops::BitAndAssign for SurfaceCounterFlagsEXT {
 impl ops::BitXor for SurfaceCounterFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SurfaceCounterFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SurfaceCounterFlagsEXT {
@@ -8207,15 +8206,15 @@ pub struct PipelineViewportSwizzleStateCreateFlagsNV(u32);
 impl PipelineViewportSwizzleStateCreateFlagsNV {}
 impl default::Default for PipelineViewportSwizzleStateCreateFlagsNV {
     fn default() -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(0)
+        Self(0)
     }
 }
 impl PipelineViewportSwizzleStateCreateFlagsNV {
     pub fn empty() -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8233,7 +8232,7 @@ impl PipelineViewportSwizzleStateCreateFlagsNV {
 impl ops::BitOr for PipelineViewportSwizzleStateCreateFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineViewportSwizzleStateCreateFlagsNV {
@@ -8244,7 +8243,7 @@ impl ops::BitOrAssign for PipelineViewportSwizzleStateCreateFlagsNV {
 impl ops::BitAnd for PipelineViewportSwizzleStateCreateFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineViewportSwizzleStateCreateFlagsNV {
@@ -8255,7 +8254,7 @@ impl ops::BitAndAssign for PipelineViewportSwizzleStateCreateFlagsNV {
 impl ops::BitXor for PipelineViewportSwizzleStateCreateFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineViewportSwizzleStateCreateFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineViewportSwizzleStateCreateFlagsNV {
@@ -8274,15 +8273,15 @@ pub struct PipelineDiscardRectangleStateCreateFlagsEXT(u32);
 impl PipelineDiscardRectangleStateCreateFlagsEXT {}
 impl default::Default for PipelineDiscardRectangleStateCreateFlagsEXT {
     fn default() -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl PipelineDiscardRectangleStateCreateFlagsEXT {
     pub fn empty() -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8300,7 +8299,7 @@ impl PipelineDiscardRectangleStateCreateFlagsEXT {
 impl ops::BitOr for PipelineDiscardRectangleStateCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
@@ -8311,7 +8310,7 @@ impl ops::BitOrAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
 impl ops::BitAnd for PipelineDiscardRectangleStateCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
@@ -8322,7 +8321,7 @@ impl ops::BitAndAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
 impl ops::BitXor for PipelineDiscardRectangleStateCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineDiscardRectangleStateCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
@@ -8341,15 +8340,15 @@ pub struct PipelineCoverageToColorStateCreateFlagsNV(u32);
 impl PipelineCoverageToColorStateCreateFlagsNV {}
 impl default::Default for PipelineCoverageToColorStateCreateFlagsNV {
     fn default() -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(0)
+        Self(0)
     }
 }
 impl PipelineCoverageToColorStateCreateFlagsNV {
     pub fn empty() -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8367,7 +8366,7 @@ impl PipelineCoverageToColorStateCreateFlagsNV {
 impl ops::BitOr for PipelineCoverageToColorStateCreateFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCoverageToColorStateCreateFlagsNV {
@@ -8378,7 +8377,7 @@ impl ops::BitOrAssign for PipelineCoverageToColorStateCreateFlagsNV {
 impl ops::BitAnd for PipelineCoverageToColorStateCreateFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCoverageToColorStateCreateFlagsNV {
@@ -8389,7 +8388,7 @@ impl ops::BitAndAssign for PipelineCoverageToColorStateCreateFlagsNV {
 impl ops::BitXor for PipelineCoverageToColorStateCreateFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCoverageToColorStateCreateFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCoverageToColorStateCreateFlagsNV {
@@ -8408,15 +8407,15 @@ pub struct PipelineCoverageModulationStateCreateFlagsNV(u32);
 impl PipelineCoverageModulationStateCreateFlagsNV {}
 impl default::Default for PipelineCoverageModulationStateCreateFlagsNV {
     fn default() -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(0)
+        Self(0)
     }
 }
 impl PipelineCoverageModulationStateCreateFlagsNV {
     pub fn empty() -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8434,7 +8433,7 @@ impl PipelineCoverageModulationStateCreateFlagsNV {
 impl ops::BitOr for PipelineCoverageModulationStateCreateFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCoverageModulationStateCreateFlagsNV {
@@ -8445,7 +8444,7 @@ impl ops::BitOrAssign for PipelineCoverageModulationStateCreateFlagsNV {
 impl ops::BitAnd for PipelineCoverageModulationStateCreateFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCoverageModulationStateCreateFlagsNV {
@@ -8456,7 +8455,7 @@ impl ops::BitAndAssign for PipelineCoverageModulationStateCreateFlagsNV {
 impl ops::BitXor for PipelineCoverageModulationStateCreateFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCoverageModulationStateCreateFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCoverageModulationStateCreateFlagsNV {
@@ -8475,15 +8474,15 @@ pub struct PipelineCoverageReductionStateCreateFlagsNV(u32);
 impl PipelineCoverageReductionStateCreateFlagsNV {}
 impl default::Default for PipelineCoverageReductionStateCreateFlagsNV {
     fn default() -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(0)
+        Self(0)
     }
 }
 impl PipelineCoverageReductionStateCreateFlagsNV {
     pub fn empty() -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8501,7 +8500,7 @@ impl PipelineCoverageReductionStateCreateFlagsNV {
 impl ops::BitOr for PipelineCoverageReductionStateCreateFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineCoverageReductionStateCreateFlagsNV {
@@ -8512,7 +8511,7 @@ impl ops::BitOrAssign for PipelineCoverageReductionStateCreateFlagsNV {
 impl ops::BitAnd for PipelineCoverageReductionStateCreateFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineCoverageReductionStateCreateFlagsNV {
@@ -8523,7 +8522,7 @@ impl ops::BitAndAssign for PipelineCoverageReductionStateCreateFlagsNV {
 impl ops::BitXor for PipelineCoverageReductionStateCreateFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineCoverageReductionStateCreateFlagsNV(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineCoverageReductionStateCreateFlagsNV {
@@ -8542,15 +8541,15 @@ pub struct ValidationCacheCreateFlagsEXT(u32);
 impl ValidationCacheCreateFlagsEXT {}
 impl default::Default for ValidationCacheCreateFlagsEXT {
     fn default() -> Self {
-        ValidationCacheCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl ValidationCacheCreateFlagsEXT {
     pub fn empty() -> Self {
-        ValidationCacheCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ValidationCacheCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8568,7 +8567,7 @@ impl ValidationCacheCreateFlagsEXT {
 impl ops::BitOr for ValidationCacheCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ValidationCacheCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ValidationCacheCreateFlagsEXT {
@@ -8579,7 +8578,7 @@ impl ops::BitOrAssign for ValidationCacheCreateFlagsEXT {
 impl ops::BitAnd for ValidationCacheCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ValidationCacheCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ValidationCacheCreateFlagsEXT {
@@ -8590,7 +8589,7 @@ impl ops::BitAndAssign for ValidationCacheCreateFlagsEXT {
 impl ops::BitXor for ValidationCacheCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ValidationCacheCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ValidationCacheCreateFlagsEXT {
@@ -8607,22 +8606,22 @@ impl fmt::Display for ValidationCacheCreateFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessageSeverityFlagsEXT(u32);
 impl DebugUtilsMessageSeverityFlagsEXT {
-    pub const VERBOSE: Self = DebugUtilsMessageSeverityFlagsEXT(0x1);
-    pub const INFO: Self = DebugUtilsMessageSeverityFlagsEXT(0x10);
-    pub const WARNING: Self = DebugUtilsMessageSeverityFlagsEXT(0x100);
-    pub const ERROR: Self = DebugUtilsMessageSeverityFlagsEXT(0x1000);
+    pub const VERBOSE: Self = Self(0x1);
+    pub const INFO: Self = Self(0x10);
+    pub const WARNING: Self = Self(0x100);
+    pub const ERROR: Self = Self(0x1000);
 }
 impl default::Default for DebugUtilsMessageSeverityFlagsEXT {
     fn default() -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(0)
+        Self(0)
     }
 }
 impl DebugUtilsMessageSeverityFlagsEXT {
     pub fn empty() -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(0x1111)
+        Self(0x1111)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8640,7 +8639,7 @@ impl DebugUtilsMessageSeverityFlagsEXT {
 impl ops::BitOr for DebugUtilsMessageSeverityFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DebugUtilsMessageSeverityFlagsEXT {
@@ -8651,7 +8650,7 @@ impl ops::BitOrAssign for DebugUtilsMessageSeverityFlagsEXT {
 impl ops::BitAnd for DebugUtilsMessageSeverityFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DebugUtilsMessageSeverityFlagsEXT {
@@ -8662,7 +8661,7 @@ impl ops::BitAndAssign for DebugUtilsMessageSeverityFlagsEXT {
 impl ops::BitXor for DebugUtilsMessageSeverityFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DebugUtilsMessageSeverityFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DebugUtilsMessageSeverityFlagsEXT {
@@ -8683,21 +8682,21 @@ impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessageTypeFlagsEXT(u32);
 impl DebugUtilsMessageTypeFlagsEXT {
-    pub const GENERAL: Self = DebugUtilsMessageTypeFlagsEXT(0x1);
-    pub const VALIDATION: Self = DebugUtilsMessageTypeFlagsEXT(0x2);
-    pub const PERFORMANCE: Self = DebugUtilsMessageTypeFlagsEXT(0x4);
+    pub const GENERAL: Self = Self(0x1);
+    pub const VALIDATION: Self = Self(0x2);
+    pub const PERFORMANCE: Self = Self(0x4);
 }
 impl default::Default for DebugUtilsMessageTypeFlagsEXT {
     fn default() -> Self {
-        DebugUtilsMessageTypeFlagsEXT(0)
+        Self(0)
     }
 }
 impl DebugUtilsMessageTypeFlagsEXT {
     pub fn empty() -> Self {
-        DebugUtilsMessageTypeFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DebugUtilsMessageTypeFlagsEXT(0x7)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8715,7 +8714,7 @@ impl DebugUtilsMessageTypeFlagsEXT {
 impl ops::BitOr for DebugUtilsMessageTypeFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DebugUtilsMessageTypeFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DebugUtilsMessageTypeFlagsEXT {
@@ -8726,7 +8725,7 @@ impl ops::BitOrAssign for DebugUtilsMessageTypeFlagsEXT {
 impl ops::BitAnd for DebugUtilsMessageTypeFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DebugUtilsMessageTypeFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DebugUtilsMessageTypeFlagsEXT {
@@ -8737,7 +8736,7 @@ impl ops::BitAndAssign for DebugUtilsMessageTypeFlagsEXT {
 impl ops::BitXor for DebugUtilsMessageTypeFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DebugUtilsMessageTypeFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DebugUtilsMessageTypeFlagsEXT {
@@ -8760,15 +8759,15 @@ pub struct DebugUtilsMessengerCreateFlagsEXT(u32);
 impl DebugUtilsMessengerCreateFlagsEXT {}
 impl default::Default for DebugUtilsMessengerCreateFlagsEXT {
     fn default() -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl DebugUtilsMessengerCreateFlagsEXT {
     pub fn empty() -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8786,7 +8785,7 @@ impl DebugUtilsMessengerCreateFlagsEXT {
 impl ops::BitOr for DebugUtilsMessengerCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DebugUtilsMessengerCreateFlagsEXT {
@@ -8797,7 +8796,7 @@ impl ops::BitOrAssign for DebugUtilsMessengerCreateFlagsEXT {
 impl ops::BitAnd for DebugUtilsMessengerCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DebugUtilsMessengerCreateFlagsEXT {
@@ -8808,7 +8807,7 @@ impl ops::BitAndAssign for DebugUtilsMessengerCreateFlagsEXT {
 impl ops::BitXor for DebugUtilsMessengerCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DebugUtilsMessengerCreateFlagsEXT {
@@ -8827,15 +8826,15 @@ pub struct DebugUtilsMessengerCallbackDataFlagsEXT(u32);
 impl DebugUtilsMessengerCallbackDataFlagsEXT {}
 impl default::Default for DebugUtilsMessengerCallbackDataFlagsEXT {
     fn default() -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(0)
+        Self(0)
     }
 }
 impl DebugUtilsMessengerCallbackDataFlagsEXT {
     pub fn empty() -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8853,7 +8852,7 @@ impl DebugUtilsMessengerCallbackDataFlagsEXT {
 impl ops::BitOr for DebugUtilsMessengerCallbackDataFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
@@ -8864,7 +8863,7 @@ impl ops::BitOrAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
 impl ops::BitAnd for DebugUtilsMessengerCallbackDataFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
@@ -8875,7 +8874,7 @@ impl ops::BitAndAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
 impl ops::BitXor for DebugUtilsMessengerCallbackDataFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DebugUtilsMessengerCallbackDataFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
@@ -8894,15 +8893,15 @@ pub struct PipelineRasterizationConservativeStateCreateFlagsEXT(u32);
 impl PipelineRasterizationConservativeStateCreateFlagsEXT {}
 impl default::Default for PipelineRasterizationConservativeStateCreateFlagsEXT {
     fn default() -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl PipelineRasterizationConservativeStateCreateFlagsEXT {
     pub fn empty() -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8920,7 +8919,7 @@ impl PipelineRasterizationConservativeStateCreateFlagsEXT {
 impl ops::BitOr for PipelineRasterizationConservativeStateCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
@@ -8931,7 +8930,7 @@ impl ops::BitOrAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
 impl ops::BitAnd for PipelineRasterizationConservativeStateCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
@@ -8942,7 +8941,7 @@ impl ops::BitAndAssign for PipelineRasterizationConservativeStateCreateFlagsEXT 
 impl ops::BitXor for PipelineRasterizationConservativeStateCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineRasterizationConservativeStateCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
@@ -8959,22 +8958,22 @@ impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorBindingFlagsEXT(u32);
 impl DescriptorBindingFlagsEXT {
-    pub const UPDATE_AFTER_BIND: Self = DescriptorBindingFlagsEXT(0x1);
-    pub const UPDATE_UNUSED_WHILE_PENDING: Self = DescriptorBindingFlagsEXT(0x2);
-    pub const PARTIALLY_BOUND: Self = DescriptorBindingFlagsEXT(0x4);
-    pub const VARIABLE_DESCRIPTOR_COUNT: Self = DescriptorBindingFlagsEXT(0x8);
+    pub const UPDATE_AFTER_BIND: Self = Self(0x1);
+    pub const UPDATE_UNUSED_WHILE_PENDING: Self = Self(0x2);
+    pub const PARTIALLY_BOUND: Self = Self(0x4);
+    pub const VARIABLE_DESCRIPTOR_COUNT: Self = Self(0x8);
 }
 impl default::Default for DescriptorBindingFlagsEXT {
     fn default() -> Self {
-        DescriptorBindingFlagsEXT(0)
+        Self(0)
     }
 }
 impl DescriptorBindingFlagsEXT {
     pub fn empty() -> Self {
-        DescriptorBindingFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        DescriptorBindingFlagsEXT(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -8992,7 +8991,7 @@ impl DescriptorBindingFlagsEXT {
 impl ops::BitOr for DescriptorBindingFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        DescriptorBindingFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for DescriptorBindingFlagsEXT {
@@ -9003,7 +9002,7 @@ impl ops::BitOrAssign for DescriptorBindingFlagsEXT {
 impl ops::BitAnd for DescriptorBindingFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        DescriptorBindingFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for DescriptorBindingFlagsEXT {
@@ -9014,7 +9013,7 @@ impl ops::BitAndAssign for DescriptorBindingFlagsEXT {
 impl ops::BitXor for DescriptorBindingFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        DescriptorBindingFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for DescriptorBindingFlagsEXT {
@@ -9040,19 +9039,19 @@ impl fmt::Display for DescriptorBindingFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ConditionalRenderingFlagsEXT(u32);
 impl ConditionalRenderingFlagsEXT {
-    pub const INVERTED: Self = ConditionalRenderingFlagsEXT(0x1);
+    pub const INVERTED: Self = Self(0x1);
 }
 impl default::Default for ConditionalRenderingFlagsEXT {
     fn default() -> Self {
-        ConditionalRenderingFlagsEXT(0)
+        Self(0)
     }
 }
 impl ConditionalRenderingFlagsEXT {
     pub fn empty() -> Self {
-        ConditionalRenderingFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ConditionalRenderingFlagsEXT(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -9070,7 +9069,7 @@ impl ConditionalRenderingFlagsEXT {
 impl ops::BitOr for ConditionalRenderingFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ConditionalRenderingFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ConditionalRenderingFlagsEXT {
@@ -9081,7 +9080,7 @@ impl ops::BitOrAssign for ConditionalRenderingFlagsEXT {
 impl ops::BitAnd for ConditionalRenderingFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ConditionalRenderingFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ConditionalRenderingFlagsEXT {
@@ -9092,7 +9091,7 @@ impl ops::BitAndAssign for ConditionalRenderingFlagsEXT {
 impl ops::BitXor for ConditionalRenderingFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ConditionalRenderingFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ConditionalRenderingFlagsEXT {
@@ -9109,23 +9108,23 @@ impl fmt::Display for ConditionalRenderingFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ResolveModeFlagsKHR(u32);
 impl ResolveModeFlagsKHR {
-    pub const NONE: Self = ResolveModeFlagsKHR(0x0);
-    pub const SAMPLE_ZERO: Self = ResolveModeFlagsKHR(0x1);
-    pub const AVERAGE: Self = ResolveModeFlagsKHR(0x2);
-    pub const MIN: Self = ResolveModeFlagsKHR(0x4);
-    pub const MAX: Self = ResolveModeFlagsKHR(0x8);
+    pub const NONE: Self = Self(0x0);
+    pub const SAMPLE_ZERO: Self = Self(0x1);
+    pub const AVERAGE: Self = Self(0x2);
+    pub const MIN: Self = Self(0x4);
+    pub const MAX: Self = Self(0x8);
 }
 impl default::Default for ResolveModeFlagsKHR {
     fn default() -> Self {
-        ResolveModeFlagsKHR(0)
+        Self(0)
     }
 }
 impl ResolveModeFlagsKHR {
     pub fn empty() -> Self {
-        ResolveModeFlagsKHR(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        ResolveModeFlagsKHR(0xf)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -9143,7 +9142,7 @@ impl ResolveModeFlagsKHR {
 impl ops::BitOr for ResolveModeFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        ResolveModeFlagsKHR(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for ResolveModeFlagsKHR {
@@ -9154,7 +9153,7 @@ impl ops::BitOrAssign for ResolveModeFlagsKHR {
 impl ops::BitAnd for ResolveModeFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        ResolveModeFlagsKHR(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for ResolveModeFlagsKHR {
@@ -9165,7 +9164,7 @@ impl ops::BitAndAssign for ResolveModeFlagsKHR {
 impl ops::BitXor for ResolveModeFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        ResolveModeFlagsKHR(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for ResolveModeFlagsKHR {
@@ -9194,15 +9193,15 @@ pub struct PipelineRasterizationStateStreamCreateFlagsEXT(u32);
 impl PipelineRasterizationStateStreamCreateFlagsEXT {}
 impl default::Default for PipelineRasterizationStateStreamCreateFlagsEXT {
     fn default() -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl PipelineRasterizationStateStreamCreateFlagsEXT {
     pub fn empty() -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -9220,7 +9219,7 @@ impl PipelineRasterizationStateStreamCreateFlagsEXT {
 impl ops::BitOr for PipelineRasterizationStateStreamCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
@@ -9231,7 +9230,7 @@ impl ops::BitOrAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
 impl ops::BitAnd for PipelineRasterizationStateStreamCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
@@ -9242,7 +9241,7 @@ impl ops::BitAndAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
 impl ops::BitXor for PipelineRasterizationStateStreamCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineRasterizationStateStreamCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
@@ -9261,15 +9260,15 @@ pub struct PipelineRasterizationDepthClipStateCreateFlagsEXT(u32);
 impl PipelineRasterizationDepthClipStateCreateFlagsEXT {}
 impl default::Default for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     fn default() -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(0)
+        Self(0)
     }
 }
 impl PipelineRasterizationDepthClipStateCreateFlagsEXT {
     pub fn empty() -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(0x0)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -9287,7 +9286,7 @@ impl PipelineRasterizationDepthClipStateCreateFlagsEXT {
 impl ops::BitOr for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
@@ -9298,7 +9297,7 @@ impl ops::BitOrAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 impl ops::BitAnd for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
@@ -9309,7 +9308,7 @@ impl ops::BitAndAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 impl ops::BitXor for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        PipelineRasterizationDepthClipStateCreateFlagsEXT(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
@@ -9326,19 +9325,19 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SwapchainImageUsageFlagsANDROID(u32);
 impl SwapchainImageUsageFlagsANDROID {
-    pub const SHARED: Self = SwapchainImageUsageFlagsANDROID(0x1);
+    pub const SHARED: Self = Self(0x1);
 }
 impl default::Default for SwapchainImageUsageFlagsANDROID {
     fn default() -> Self {
-        SwapchainImageUsageFlagsANDROID(0)
+        Self(0)
     }
 }
 impl SwapchainImageUsageFlagsANDROID {
     pub fn empty() -> Self {
-        SwapchainImageUsageFlagsANDROID(0)
+        Self(0)
     }
     pub fn all() -> Self {
-        SwapchainImageUsageFlagsANDROID(0x1)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
@@ -9356,7 +9355,7 @@ impl SwapchainImageUsageFlagsANDROID {
 impl ops::BitOr for SwapchainImageUsageFlagsANDROID {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
-        SwapchainImageUsageFlagsANDROID(self.0 | rhs.0)
+        Self(self.0 | rhs.0)
     }
 }
 impl ops::BitOrAssign for SwapchainImageUsageFlagsANDROID {
@@ -9367,7 +9366,7 @@ impl ops::BitOrAssign for SwapchainImageUsageFlagsANDROID {
 impl ops::BitAnd for SwapchainImageUsageFlagsANDROID {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
-        SwapchainImageUsageFlagsANDROID(self.0 & rhs.0)
+        Self(self.0 & rhs.0)
     }
 }
 impl ops::BitAndAssign for SwapchainImageUsageFlagsANDROID {
@@ -9378,7 +9377,7 @@ impl ops::BitAndAssign for SwapchainImageUsageFlagsANDROID {
 impl ops::BitXor for SwapchainImageUsageFlagsANDROID {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
-        SwapchainImageUsageFlagsANDROID(self.0 ^ rhs.0)
+        Self(self.0 ^ rhs.0)
     }
 }
 impl ops::BitXorAssign for SwapchainImageUsageFlagsANDROID {
@@ -9396,7 +9395,7 @@ impl fmt::Display for SwapchainImageUsageFlagsANDROID {
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(Instance)
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9404,7 +9403,7 @@ impl Instance {
 pub struct PhysicalDevice(num::NonZeroUsize);
 impl PhysicalDevice {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(PhysicalDevice)
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9412,7 +9411,7 @@ impl PhysicalDevice {
 pub struct Device(num::NonZeroUsize);
 impl Device {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(Device)
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9420,7 +9419,7 @@ impl Device {
 pub struct Queue(num::NonZeroUsize);
 impl Queue {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(Queue)
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9428,7 +9427,7 @@ impl Queue {
 pub struct CommandBuffer(num::NonZeroUsize);
 impl CommandBuffer {
     pub fn from_raw(x: usize) -> Option<Self> {
-        num::NonZeroUsize::new(x).map(CommandBuffer)
+        num::NonZeroUsize::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9436,7 +9435,7 @@ impl CommandBuffer {
 pub struct DeviceMemory(num::NonZeroU64);
 impl DeviceMemory {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DeviceMemory)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9444,7 +9443,7 @@ impl DeviceMemory {
 pub struct CommandPool(num::NonZeroU64);
 impl CommandPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(CommandPool)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9452,7 +9451,7 @@ impl CommandPool {
 pub struct Buffer(num::NonZeroU64);
 impl Buffer {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Buffer)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9460,7 +9459,7 @@ impl Buffer {
 pub struct BufferView(num::NonZeroU64);
 impl BufferView {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(BufferView)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9468,7 +9467,7 @@ impl BufferView {
 pub struct Image(num::NonZeroU64);
 impl Image {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Image)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9476,7 +9475,7 @@ impl Image {
 pub struct ImageView(num::NonZeroU64);
 impl ImageView {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(ImageView)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9484,7 +9483,7 @@ impl ImageView {
 pub struct ShaderModule(num::NonZeroU64);
 impl ShaderModule {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(ShaderModule)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9492,7 +9491,7 @@ impl ShaderModule {
 pub struct Pipeline(num::NonZeroU64);
 impl Pipeline {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Pipeline)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9500,7 +9499,7 @@ impl Pipeline {
 pub struct PipelineLayout(num::NonZeroU64);
 impl PipelineLayout {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(PipelineLayout)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9508,7 +9507,7 @@ impl PipelineLayout {
 pub struct Sampler(num::NonZeroU64);
 impl Sampler {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Sampler)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9516,7 +9515,7 @@ impl Sampler {
 pub struct DescriptorSet(num::NonZeroU64);
 impl DescriptorSet {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DescriptorSet)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9524,7 +9523,7 @@ impl DescriptorSet {
 pub struct DescriptorSetLayout(num::NonZeroU64);
 impl DescriptorSetLayout {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DescriptorSetLayout)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9532,7 +9531,7 @@ impl DescriptorSetLayout {
 pub struct DescriptorPool(num::NonZeroU64);
 impl DescriptorPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DescriptorPool)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9540,7 +9539,7 @@ impl DescriptorPool {
 pub struct Fence(num::NonZeroU64);
 impl Fence {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Fence)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9548,7 +9547,7 @@ impl Fence {
 pub struct Semaphore(num::NonZeroU64);
 impl Semaphore {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Semaphore)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9556,7 +9555,7 @@ impl Semaphore {
 pub struct Event(num::NonZeroU64);
 impl Event {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Event)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9564,7 +9563,7 @@ impl Event {
 pub struct QueryPool(num::NonZeroU64);
 impl QueryPool {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(QueryPool)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9572,7 +9571,7 @@ impl QueryPool {
 pub struct Framebuffer(num::NonZeroU64);
 impl Framebuffer {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Framebuffer)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9580,7 +9579,7 @@ impl Framebuffer {
 pub struct RenderPass(num::NonZeroU64);
 impl RenderPass {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(RenderPass)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9588,7 +9587,7 @@ impl RenderPass {
 pub struct PipelineCache(num::NonZeroU64);
 impl PipelineCache {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(PipelineCache)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9596,7 +9595,7 @@ impl PipelineCache {
 pub struct ObjectTableNVX(num::NonZeroU64);
 impl ObjectTableNVX {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(ObjectTableNVX)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9604,7 +9603,7 @@ impl ObjectTableNVX {
 pub struct IndirectCommandsLayoutNVX(num::NonZeroU64);
 impl IndirectCommandsLayoutNVX {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(IndirectCommandsLayoutNVX)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9612,7 +9611,7 @@ impl IndirectCommandsLayoutNVX {
 pub struct DescriptorUpdateTemplate(num::NonZeroU64);
 impl DescriptorUpdateTemplate {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DescriptorUpdateTemplate)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 pub type DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
@@ -9621,7 +9620,7 @@ pub type DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
 pub struct SamplerYcbcrConversion(num::NonZeroU64);
 impl SamplerYcbcrConversion {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(SamplerYcbcrConversion)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 pub type SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
@@ -9630,7 +9629,7 @@ pub type SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
 pub struct ValidationCacheEXT(num::NonZeroU64);
 impl ValidationCacheEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(ValidationCacheEXT)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9638,7 +9637,7 @@ impl ValidationCacheEXT {
 pub struct AccelerationStructureNV(num::NonZeroU64);
 impl AccelerationStructureNV {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(AccelerationStructureNV)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9646,7 +9645,7 @@ impl AccelerationStructureNV {
 pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
 impl PerformanceConfigurationINTEL {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(PerformanceConfigurationINTEL)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9654,7 +9653,7 @@ impl PerformanceConfigurationINTEL {
 pub struct DisplayKHR(num::NonZeroU64);
 impl DisplayKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DisplayKHR)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9662,7 +9661,7 @@ impl DisplayKHR {
 pub struct DisplayModeKHR(num::NonZeroU64);
 impl DisplayModeKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DisplayModeKHR)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9670,7 +9669,7 @@ impl DisplayModeKHR {
 pub struct SurfaceKHR(num::NonZeroU64);
 impl SurfaceKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(SurfaceKHR)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9678,7 +9677,7 @@ impl SurfaceKHR {
 pub struct SwapchainKHR(num::NonZeroU64);
 impl SwapchainKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(SwapchainKHR)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9686,7 +9685,7 @@ impl SwapchainKHR {
 pub struct DebugReportCallbackEXT(num::NonZeroU64);
 impl DebugReportCallbackEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DebugReportCallbackEXT)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
@@ -9694,20 +9693,20 @@ impl DebugReportCallbackEXT {
 pub struct DebugUtilsMessengerEXT(num::NonZeroU64);
 impl DebugUtilsMessengerEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(DebugUtilsMessengerEXT)
+        num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentLoadOp(i32);
 impl AttachmentLoadOp {
-    pub const LOAD: Self = AttachmentLoadOp(0);
-    pub const CLEAR: Self = AttachmentLoadOp(1);
-    pub const DONT_CARE: Self = AttachmentLoadOp(2);
+    pub const LOAD: Self = Self(0);
+    pub const CLEAR: Self = Self(1);
+    pub const DONT_CARE: Self = Self(2);
 }
 impl default::Default for AttachmentLoadOp {
     fn default() -> Self {
-        AttachmentLoadOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for AttachmentLoadOp {
@@ -9729,12 +9728,12 @@ impl fmt::Display for AttachmentLoadOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentStoreOp(i32);
 impl AttachmentStoreOp {
-    pub const STORE: Self = AttachmentStoreOp(0);
-    pub const DONT_CARE: Self = AttachmentStoreOp(1);
+    pub const STORE: Self = Self(0);
+    pub const DONT_CARE: Self = Self(1);
 }
 impl default::Default for AttachmentStoreOp {
     fn default() -> Self {
-        AttachmentStoreOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for AttachmentStoreOp {
@@ -9755,29 +9754,29 @@ impl fmt::Display for AttachmentStoreOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendFactor(i32);
 impl BlendFactor {
-    pub const ZERO: Self = BlendFactor(0);
-    pub const ONE: Self = BlendFactor(1);
-    pub const SRC_COLOR: Self = BlendFactor(2);
-    pub const ONE_MINUS_SRC_COLOR: Self = BlendFactor(3);
-    pub const DST_COLOR: Self = BlendFactor(4);
-    pub const ONE_MINUS_DST_COLOR: Self = BlendFactor(5);
-    pub const SRC_ALPHA: Self = BlendFactor(6);
-    pub const ONE_MINUS_SRC_ALPHA: Self = BlendFactor(7);
-    pub const DST_ALPHA: Self = BlendFactor(8);
-    pub const ONE_MINUS_DST_ALPHA: Self = BlendFactor(9);
-    pub const CONSTANT_COLOR: Self = BlendFactor(10);
-    pub const ONE_MINUS_CONSTANT_COLOR: Self = BlendFactor(11);
-    pub const CONSTANT_ALPHA: Self = BlendFactor(12);
-    pub const ONE_MINUS_CONSTANT_ALPHA: Self = BlendFactor(13);
-    pub const SRC_ALPHA_SATURATE: Self = BlendFactor(14);
-    pub const SRC1_COLOR: Self = BlendFactor(15);
-    pub const ONE_MINUS_SRC1_COLOR: Self = BlendFactor(16);
-    pub const SRC1_ALPHA: Self = BlendFactor(17);
-    pub const ONE_MINUS_SRC1_ALPHA: Self = BlendFactor(18);
+    pub const ZERO: Self = Self(0);
+    pub const ONE: Self = Self(1);
+    pub const SRC_COLOR: Self = Self(2);
+    pub const ONE_MINUS_SRC_COLOR: Self = Self(3);
+    pub const DST_COLOR: Self = Self(4);
+    pub const ONE_MINUS_DST_COLOR: Self = Self(5);
+    pub const SRC_ALPHA: Self = Self(6);
+    pub const ONE_MINUS_SRC_ALPHA: Self = Self(7);
+    pub const DST_ALPHA: Self = Self(8);
+    pub const ONE_MINUS_DST_ALPHA: Self = Self(9);
+    pub const CONSTANT_COLOR: Self = Self(10);
+    pub const ONE_MINUS_CONSTANT_COLOR: Self = Self(11);
+    pub const CONSTANT_ALPHA: Self = Self(12);
+    pub const ONE_MINUS_CONSTANT_ALPHA: Self = Self(13);
+    pub const SRC_ALPHA_SATURATE: Self = Self(14);
+    pub const SRC1_COLOR: Self = Self(15);
+    pub const ONE_MINUS_SRC1_COLOR: Self = Self(16);
+    pub const SRC1_ALPHA: Self = Self(17);
+    pub const ONE_MINUS_SRC1_ALPHA: Self = Self(18);
 }
 impl default::Default for BlendFactor {
     fn default() -> Self {
-        BlendFactor(0)
+        Self(0)
     }
 }
 impl fmt::Display for BlendFactor {
@@ -9815,107 +9814,107 @@ impl fmt::Display for BlendFactor {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendOp(i32);
 impl BlendOp {
-    pub const ADD: Self = BlendOp(0);
-    pub const SUBTRACT: Self = BlendOp(1);
-    pub const REVERSE_SUBTRACT: Self = BlendOp(2);
-    pub const MIN: Self = BlendOp(3);
-    pub const MAX: Self = BlendOp(4);
+    pub const ADD: Self = Self(0);
+    pub const SUBTRACT: Self = Self(1);
+    pub const REVERSE_SUBTRACT: Self = Self(2);
+    pub const MIN: Self = Self(3);
+    pub const MAX: Self = Self(4);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const ZERO_EXT: Self = BlendOp(1000148000);
+    pub const ZERO_EXT: Self = Self(1000148000);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SRC_EXT: Self = BlendOp(1000148001);
+    pub const SRC_EXT: Self = Self(1000148001);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DST_EXT: Self = BlendOp(1000148002);
+    pub const DST_EXT: Self = Self(1000148002);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SRC_OVER_EXT: Self = BlendOp(1000148003);
+    pub const SRC_OVER_EXT: Self = Self(1000148003);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DST_OVER_EXT: Self = BlendOp(1000148004);
+    pub const DST_OVER_EXT: Self = Self(1000148004);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SRC_IN_EXT: Self = BlendOp(1000148005);
+    pub const SRC_IN_EXT: Self = Self(1000148005);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DST_IN_EXT: Self = BlendOp(1000148006);
+    pub const DST_IN_EXT: Self = Self(1000148006);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SRC_OUT_EXT: Self = BlendOp(1000148007);
+    pub const SRC_OUT_EXT: Self = Self(1000148007);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DST_OUT_EXT: Self = BlendOp(1000148008);
+    pub const DST_OUT_EXT: Self = Self(1000148008);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SRC_ATOP_EXT: Self = BlendOp(1000148009);
+    pub const SRC_ATOP_EXT: Self = Self(1000148009);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DST_ATOP_EXT: Self = BlendOp(1000148010);
+    pub const DST_ATOP_EXT: Self = Self(1000148010);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const XOR_EXT: Self = BlendOp(1000148011);
+    pub const XOR_EXT: Self = Self(1000148011);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const MULTIPLY_EXT: Self = BlendOp(1000148012);
+    pub const MULTIPLY_EXT: Self = Self(1000148012);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SCREEN_EXT: Self = BlendOp(1000148013);
+    pub const SCREEN_EXT: Self = Self(1000148013);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const OVERLAY_EXT: Self = BlendOp(1000148014);
+    pub const OVERLAY_EXT: Self = Self(1000148014);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DARKEN_EXT: Self = BlendOp(1000148015);
+    pub const DARKEN_EXT: Self = Self(1000148015);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const LIGHTEN_EXT: Self = BlendOp(1000148016);
+    pub const LIGHTEN_EXT: Self = Self(1000148016);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const COLORDODGE_EXT: Self = BlendOp(1000148017);
+    pub const COLORDODGE_EXT: Self = Self(1000148017);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const COLORBURN_EXT: Self = BlendOp(1000148018);
+    pub const COLORBURN_EXT: Self = Self(1000148018);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HARDLIGHT_EXT: Self = BlendOp(1000148019);
+    pub const HARDLIGHT_EXT: Self = Self(1000148019);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const SOFTLIGHT_EXT: Self = BlendOp(1000148020);
+    pub const SOFTLIGHT_EXT: Self = Self(1000148020);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const DIFFERENCE_EXT: Self = BlendOp(1000148021);
+    pub const DIFFERENCE_EXT: Self = Self(1000148021);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const EXCLUSION_EXT: Self = BlendOp(1000148022);
+    pub const EXCLUSION_EXT: Self = Self(1000148022);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const INVERT_EXT: Self = BlendOp(1000148023);
+    pub const INVERT_EXT: Self = Self(1000148023);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const INVERT_RGB_EXT: Self = BlendOp(1000148024);
+    pub const INVERT_RGB_EXT: Self = Self(1000148024);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const LINEARDODGE_EXT: Self = BlendOp(1000148025);
+    pub const LINEARDODGE_EXT: Self = Self(1000148025);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const LINEARBURN_EXT: Self = BlendOp(1000148026);
+    pub const LINEARBURN_EXT: Self = Self(1000148026);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const VIVIDLIGHT_EXT: Self = BlendOp(1000148027);
+    pub const VIVIDLIGHT_EXT: Self = Self(1000148027);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const LINEARLIGHT_EXT: Self = BlendOp(1000148028);
+    pub const LINEARLIGHT_EXT: Self = Self(1000148028);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PINLIGHT_EXT: Self = BlendOp(1000148029);
+    pub const PINLIGHT_EXT: Self = Self(1000148029);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HARDMIX_EXT: Self = BlendOp(1000148030);
+    pub const HARDMIX_EXT: Self = Self(1000148030);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HSL_HUE_EXT: Self = BlendOp(1000148031);
+    pub const HSL_HUE_EXT: Self = Self(1000148031);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HSL_SATURATION_EXT: Self = BlendOp(1000148032);
+    pub const HSL_SATURATION_EXT: Self = Self(1000148032);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HSL_COLOR_EXT: Self = BlendOp(1000148033);
+    pub const HSL_COLOR_EXT: Self = Self(1000148033);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const HSL_LUMINOSITY_EXT: Self = BlendOp(1000148034);
+    pub const HSL_LUMINOSITY_EXT: Self = Self(1000148034);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PLUS_EXT: Self = BlendOp(1000148035);
+    pub const PLUS_EXT: Self = Self(1000148035);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PLUS_CLAMPED_EXT: Self = BlendOp(1000148036);
+    pub const PLUS_CLAMPED_EXT: Self = Self(1000148036);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PLUS_CLAMPED_ALPHA_EXT: Self = BlendOp(1000148037);
+    pub const PLUS_CLAMPED_ALPHA_EXT: Self = Self(1000148037);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PLUS_DARKER_EXT: Self = BlendOp(1000148038);
+    pub const PLUS_DARKER_EXT: Self = Self(1000148038);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const MINUS_EXT: Self = BlendOp(1000148039);
+    pub const MINUS_EXT: Self = Self(1000148039);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const MINUS_CLAMPED_EXT: Self = BlendOp(1000148040);
+    pub const MINUS_CLAMPED_EXT: Self = Self(1000148040);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const CONTRAST_EXT: Self = BlendOp(1000148041);
+    pub const CONTRAST_EXT: Self = Self(1000148041);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const INVERT_OVG_EXT: Self = BlendOp(1000148042);
+    pub const INVERT_OVG_EXT: Self = Self(1000148042);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const RED_EXT: Self = BlendOp(1000148043);
+    pub const RED_EXT: Self = Self(1000148043);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const GREEN_EXT: Self = BlendOp(1000148044);
+    pub const GREEN_EXT: Self = Self(1000148044);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const BLUE_EXT: Self = BlendOp(1000148045);
+    pub const BLUE_EXT: Self = Self(1000148045);
 }
 impl default::Default for BlendOp {
     fn default() -> Self {
-        BlendOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for BlendOp {
@@ -9985,16 +9984,16 @@ impl fmt::Display for BlendOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BorderColor(i32);
 impl BorderColor {
-    pub const FLOAT_TRANSPARENT_BLACK: Self = BorderColor(0);
-    pub const INT_TRANSPARENT_BLACK: Self = BorderColor(1);
-    pub const FLOAT_OPAQUE_BLACK: Self = BorderColor(2);
-    pub const INT_OPAQUE_BLACK: Self = BorderColor(3);
-    pub const FLOAT_OPAQUE_WHITE: Self = BorderColor(4);
-    pub const INT_OPAQUE_WHITE: Self = BorderColor(5);
+    pub const FLOAT_TRANSPARENT_BLACK: Self = Self(0);
+    pub const INT_TRANSPARENT_BLACK: Self = Self(1);
+    pub const FLOAT_OPAQUE_BLACK: Self = Self(2);
+    pub const INT_OPAQUE_BLACK: Self = Self(3);
+    pub const FLOAT_OPAQUE_WHITE: Self = Self(4);
+    pub const INT_OPAQUE_WHITE: Self = Self(5);
 }
 impl default::Default for BorderColor {
     fn default() -> Self {
-        BorderColor(0)
+        Self(0)
     }
 }
 impl fmt::Display for BorderColor {
@@ -10021,7 +10020,7 @@ pub struct QueryPoolCreateFlagBits(i32);
 impl QueryPoolCreateFlagBits {}
 impl default::Default for QueryPoolCreateFlagBits {
     fn default() -> Self {
-        QueryPoolCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for QueryPoolCreateFlagBits {
@@ -10033,11 +10032,11 @@ impl fmt::Display for QueryPoolCreateFlagBits {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineCacheHeaderVersion(i32);
 impl PipelineCacheHeaderVersion {
-    pub const ONE: Self = PipelineCacheHeaderVersion(1);
+    pub const ONE: Self = Self(1);
 }
 impl default::Default for PipelineCacheHeaderVersion {
     fn default() -> Self {
-        PipelineCacheHeaderVersion(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineCacheHeaderVersion {
@@ -10059,7 +10058,7 @@ pub struct PipelineLayoutCreateFlagBits(i32);
 impl PipelineLayoutCreateFlagBits {}
 impl default::Default for PipelineLayoutCreateFlagBits {
     fn default() -> Self {
-        PipelineLayoutCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineLayoutCreateFlagBits {
@@ -10073,7 +10072,7 @@ pub struct PipelineCacheCreateFlagBits(i32);
 impl PipelineCacheCreateFlagBits {}
 impl default::Default for PipelineCacheCreateFlagBits {
     fn default() -> Self {
-        PipelineCacheCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineCacheCreateFlagBits {
@@ -10087,7 +10086,7 @@ pub struct PipelineDepthStencilStateCreateFlagBits(i32);
 impl PipelineDepthStencilStateCreateFlagBits {}
 impl default::Default for PipelineDepthStencilStateCreateFlagBits {
     fn default() -> Self {
-        PipelineDepthStencilStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineDepthStencilStateCreateFlagBits {
@@ -10101,7 +10100,7 @@ pub struct PipelineDynamicStateCreateFlagBits(i32);
 impl PipelineDynamicStateCreateFlagBits {}
 impl default::Default for PipelineDynamicStateCreateFlagBits {
     fn default() -> Self {
-        PipelineDynamicStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineDynamicStateCreateFlagBits {
@@ -10115,7 +10114,7 @@ pub struct PipelineColorBlendStateCreateFlagBits(i32);
 impl PipelineColorBlendStateCreateFlagBits {}
 impl default::Default for PipelineColorBlendStateCreateFlagBits {
     fn default() -> Self {
-        PipelineColorBlendStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineColorBlendStateCreateFlagBits {
@@ -10129,7 +10128,7 @@ pub struct PipelineMultisampleStateCreateFlagBits(i32);
 impl PipelineMultisampleStateCreateFlagBits {}
 impl default::Default for PipelineMultisampleStateCreateFlagBits {
     fn default() -> Self {
-        PipelineMultisampleStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineMultisampleStateCreateFlagBits {
@@ -10143,7 +10142,7 @@ pub struct PipelineRasterizationStateCreateFlagBits(i32);
 impl PipelineRasterizationStateCreateFlagBits {}
 impl default::Default for PipelineRasterizationStateCreateFlagBits {
     fn default() -> Self {
-        PipelineRasterizationStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineRasterizationStateCreateFlagBits {
@@ -10157,7 +10156,7 @@ pub struct PipelineViewportStateCreateFlagBits(i32);
 impl PipelineViewportStateCreateFlagBits {}
 impl default::Default for PipelineViewportStateCreateFlagBits {
     fn default() -> Self {
-        PipelineViewportStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineViewportStateCreateFlagBits {
@@ -10171,7 +10170,7 @@ pub struct PipelineTessellationStateCreateFlagBits(i32);
 impl PipelineTessellationStateCreateFlagBits {}
 impl default::Default for PipelineTessellationStateCreateFlagBits {
     fn default() -> Self {
-        PipelineTessellationStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineTessellationStateCreateFlagBits {
@@ -10185,7 +10184,7 @@ pub struct PipelineInputAssemblyStateCreateFlagBits(i32);
 impl PipelineInputAssemblyStateCreateFlagBits {}
 impl default::Default for PipelineInputAssemblyStateCreateFlagBits {
     fn default() -> Self {
-        PipelineInputAssemblyStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineInputAssemblyStateCreateFlagBits {
@@ -10199,7 +10198,7 @@ pub struct PipelineVertexInputStateCreateFlagBits(i32);
 impl PipelineVertexInputStateCreateFlagBits {}
 impl default::Default for PipelineVertexInputStateCreateFlagBits {
     fn default() -> Self {
-        PipelineVertexInputStateCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineVertexInputStateCreateFlagBits {
@@ -10213,7 +10212,7 @@ pub struct BufferViewCreateFlagBits(i32);
 impl BufferViewCreateFlagBits {}
 impl default::Default for BufferViewCreateFlagBits {
     fn default() -> Self {
-        BufferViewCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for BufferViewCreateFlagBits {
@@ -10227,7 +10226,7 @@ pub struct InstanceCreateFlagBits(i32);
 impl InstanceCreateFlagBits {}
 impl default::Default for InstanceCreateFlagBits {
     fn default() -> Self {
-        InstanceCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for InstanceCreateFlagBits {
@@ -10239,17 +10238,17 @@ impl fmt::Display for InstanceCreateFlagBits {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ComponentSwizzle(i32);
 impl ComponentSwizzle {
-    pub const IDENTITY: Self = ComponentSwizzle(0);
-    pub const ZERO: Self = ComponentSwizzle(1);
-    pub const ONE: Self = ComponentSwizzle(2);
-    pub const R: Self = ComponentSwizzle(3);
-    pub const G: Self = ComponentSwizzle(4);
-    pub const B: Self = ComponentSwizzle(5);
-    pub const A: Self = ComponentSwizzle(6);
+    pub const IDENTITY: Self = Self(0);
+    pub const ZERO: Self = Self(1);
+    pub const ONE: Self = Self(2);
+    pub const R: Self = Self(3);
+    pub const G: Self = Self(4);
+    pub const B: Self = Self(5);
+    pub const A: Self = Self(6);
 }
 impl default::Default for ComponentSwizzle {
     fn default() -> Self {
-        ComponentSwizzle(0)
+        Self(0)
     }
 }
 impl fmt::Display for ComponentSwizzle {
@@ -10275,12 +10274,12 @@ impl fmt::Display for ComponentSwizzle {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CommandBufferLevel(i32);
 impl CommandBufferLevel {
-    pub const PRIMARY: Self = CommandBufferLevel(0);
-    pub const SECONDARY: Self = CommandBufferLevel(1);
+    pub const PRIMARY: Self = Self(0);
+    pub const SECONDARY: Self = Self(1);
 }
 impl default::Default for CommandBufferLevel {
     fn default() -> Self {
-        CommandBufferLevel(0)
+        Self(0)
     }
 }
 impl fmt::Display for CommandBufferLevel {
@@ -10301,18 +10300,18 @@ impl fmt::Display for CommandBufferLevel {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CompareOp(i32);
 impl CompareOp {
-    pub const NEVER: Self = CompareOp(0);
-    pub const LESS: Self = CompareOp(1);
-    pub const EQUAL: Self = CompareOp(2);
-    pub const LESS_OR_EQUAL: Self = CompareOp(3);
-    pub const GREATER: Self = CompareOp(4);
-    pub const NOT_EQUAL: Self = CompareOp(5);
-    pub const GREATER_OR_EQUAL: Self = CompareOp(6);
-    pub const ALWAYS: Self = CompareOp(7);
+    pub const NEVER: Self = Self(0);
+    pub const LESS: Self = Self(1);
+    pub const EQUAL: Self = Self(2);
+    pub const LESS_OR_EQUAL: Self = Self(3);
+    pub const GREATER: Self = Self(4);
+    pub const NOT_EQUAL: Self = Self(5);
+    pub const GREATER_OR_EQUAL: Self = Self(6);
+    pub const ALWAYS: Self = Self(7);
 }
 impl default::Default for CompareOp {
     fn default() -> Self {
-        CompareOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for CompareOp {
@@ -10339,25 +10338,25 @@ impl fmt::Display for CompareOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DescriptorType(i32);
 impl DescriptorType {
-    pub const SAMPLER: Self = DescriptorType(0);
-    pub const COMBINED_IMAGE_SAMPLER: Self = DescriptorType(1);
-    pub const SAMPLED_IMAGE: Self = DescriptorType(2);
-    pub const STORAGE_IMAGE: Self = DescriptorType(3);
-    pub const UNIFORM_TEXEL_BUFFER: Self = DescriptorType(4);
-    pub const STORAGE_TEXEL_BUFFER: Self = DescriptorType(5);
-    pub const UNIFORM_BUFFER: Self = DescriptorType(6);
-    pub const STORAGE_BUFFER: Self = DescriptorType(7);
-    pub const UNIFORM_BUFFER_DYNAMIC: Self = DescriptorType(8);
-    pub const STORAGE_BUFFER_DYNAMIC: Self = DescriptorType(9);
-    pub const INPUT_ATTACHMENT: Self = DescriptorType(10);
+    pub const SAMPLER: Self = Self(0);
+    pub const COMBINED_IMAGE_SAMPLER: Self = Self(1);
+    pub const SAMPLED_IMAGE: Self = Self(2);
+    pub const STORAGE_IMAGE: Self = Self(3);
+    pub const UNIFORM_TEXEL_BUFFER: Self = Self(4);
+    pub const STORAGE_TEXEL_BUFFER: Self = Self(5);
+    pub const UNIFORM_BUFFER: Self = Self(6);
+    pub const STORAGE_BUFFER: Self = Self(7);
+    pub const UNIFORM_BUFFER_DYNAMIC: Self = Self(8);
+    pub const STORAGE_BUFFER_DYNAMIC: Self = Self(9);
+    pub const INPUT_ATTACHMENT: Self = Self(10);
     /// Added by extension VK_EXT_inline_uniform_block.
-    pub const INLINE_UNIFORM_BLOCK_EXT: Self = DescriptorType(1000138000);
+    pub const INLINE_UNIFORM_BLOCK_EXT: Self = Self(1000138000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = DescriptorType(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
 }
 impl default::Default for DescriptorType {
     fn default() -> Self {
-        DescriptorType(0)
+        Self(0)
     }
 }
 impl fmt::Display for DescriptorType {
@@ -10391,7 +10390,7 @@ pub struct DeviceCreateFlagBits(i32);
 impl DeviceCreateFlagBits {}
 impl default::Default for DeviceCreateFlagBits {
     fn default() -> Self {
-        DeviceCreateFlagBits(0)
+        Self(0)
     }
 }
 impl fmt::Display for DeviceCreateFlagBits {
@@ -10403,33 +10402,33 @@ impl fmt::Display for DeviceCreateFlagBits {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DynamicState(i32);
 impl DynamicState {
-    pub const VIEWPORT: Self = DynamicState(0);
-    pub const SCISSOR: Self = DynamicState(1);
-    pub const LINE_WIDTH: Self = DynamicState(2);
-    pub const DEPTH_BIAS: Self = DynamicState(3);
-    pub const BLEND_CONSTANTS: Self = DynamicState(4);
-    pub const DEPTH_BOUNDS: Self = DynamicState(5);
-    pub const STENCIL_COMPARE_MASK: Self = DynamicState(6);
-    pub const STENCIL_WRITE_MASK: Self = DynamicState(7);
-    pub const STENCIL_REFERENCE: Self = DynamicState(8);
+    pub const VIEWPORT: Self = Self(0);
+    pub const SCISSOR: Self = Self(1);
+    pub const LINE_WIDTH: Self = Self(2);
+    pub const DEPTH_BIAS: Self = Self(3);
+    pub const BLEND_CONSTANTS: Self = Self(4);
+    pub const DEPTH_BOUNDS: Self = Self(5);
+    pub const STENCIL_COMPARE_MASK: Self = Self(6);
+    pub const STENCIL_WRITE_MASK: Self = Self(7);
+    pub const STENCIL_REFERENCE: Self = Self(8);
     /// Added by extension VK_NV_clip_space_w_scaling.
-    pub const VIEWPORT_W_SCALING_NV: Self = DynamicState(1000087000);
+    pub const VIEWPORT_W_SCALING_NV: Self = Self(1000087000);
     /// Added by extension VK_EXT_discard_rectangles.
-    pub const DISCARD_RECTANGLE_EXT: Self = DynamicState(1000099000);
+    pub const DISCARD_RECTANGLE_EXT: Self = Self(1000099000);
     /// Added by extension VK_EXT_sample_locations.
-    pub const SAMPLE_LOCATIONS_EXT: Self = DynamicState(1000143000);
+    pub const SAMPLE_LOCATIONS_EXT: Self = Self(1000143000);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const VIEWPORT_SHADING_RATE_PALETTE_NV: Self = DynamicState(1000164004);
+    pub const VIEWPORT_SHADING_RATE_PALETTE_NV: Self = Self(1000164004);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = DynamicState(1000164006);
+    pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = Self(1000164006);
     /// Added by extension VK_NV_scissor_exclusive.
-    pub const EXCLUSIVE_SCISSOR_NV: Self = DynamicState(1000205001);
+    pub const EXCLUSIVE_SCISSOR_NV: Self = Self(1000205001);
     /// Added by extension VK_EXT_line_rasterization.
-    pub const LINE_STIPPLE_EXT: Self = DynamicState(1000259000);
+    pub const LINE_STIPPLE_EXT: Self = Self(1000259000);
 }
 impl default::Default for DynamicState {
     fn default() -> Self {
-        DynamicState(0)
+        Self(0)
     }
 }
 impl fmt::Display for DynamicState {
@@ -10464,15 +10463,15 @@ impl fmt::Display for DynamicState {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PolygonMode(i32);
 impl PolygonMode {
-    pub const FILL: Self = PolygonMode(0);
-    pub const LINE: Self = PolygonMode(1);
-    pub const POINT: Self = PolygonMode(2);
+    pub const FILL: Self = Self(0);
+    pub const LINE: Self = Self(1);
+    pub const POINT: Self = Self(2);
     /// Added by extension VK_NV_fill_rectangle.
-    pub const FILL_RECTANGLE_NV: Self = PolygonMode(1000153000);
+    pub const FILL_RECTANGLE_NV: Self = Self(1000153000);
 }
 impl default::Default for PolygonMode {
     fn default() -> Self {
-        PolygonMode(0)
+        Self(0)
     }
 }
 impl fmt::Display for PolygonMode {
@@ -10495,269 +10494,269 @@ impl fmt::Display for PolygonMode {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct Format(i32);
 impl Format {
-    pub const UNDEFINED: Self = Format(0);
-    pub const R4G4_UNORM_PACK8: Self = Format(1);
-    pub const R4G4B4A4_UNORM_PACK16: Self = Format(2);
-    pub const B4G4R4A4_UNORM_PACK16: Self = Format(3);
-    pub const R5G6B5_UNORM_PACK16: Self = Format(4);
-    pub const B5G6R5_UNORM_PACK16: Self = Format(5);
-    pub const R5G5B5A1_UNORM_PACK16: Self = Format(6);
-    pub const B5G5R5A1_UNORM_PACK16: Self = Format(7);
-    pub const A1R5G5B5_UNORM_PACK16: Self = Format(8);
-    pub const R8_UNORM: Self = Format(9);
-    pub const R8_SNORM: Self = Format(10);
-    pub const R8_USCALED: Self = Format(11);
-    pub const R8_SSCALED: Self = Format(12);
-    pub const R8_UINT: Self = Format(13);
-    pub const R8_SINT: Self = Format(14);
-    pub const R8_SRGB: Self = Format(15);
-    pub const R8G8_UNORM: Self = Format(16);
-    pub const R8G8_SNORM: Self = Format(17);
-    pub const R8G8_USCALED: Self = Format(18);
-    pub const R8G8_SSCALED: Self = Format(19);
-    pub const R8G8_UINT: Self = Format(20);
-    pub const R8G8_SINT: Self = Format(21);
-    pub const R8G8_SRGB: Self = Format(22);
-    pub const R8G8B8_UNORM: Self = Format(23);
-    pub const R8G8B8_SNORM: Self = Format(24);
-    pub const R8G8B8_USCALED: Self = Format(25);
-    pub const R8G8B8_SSCALED: Self = Format(26);
-    pub const R8G8B8_UINT: Self = Format(27);
-    pub const R8G8B8_SINT: Self = Format(28);
-    pub const R8G8B8_SRGB: Self = Format(29);
-    pub const B8G8R8_UNORM: Self = Format(30);
-    pub const B8G8R8_SNORM: Self = Format(31);
-    pub const B8G8R8_USCALED: Self = Format(32);
-    pub const B8G8R8_SSCALED: Self = Format(33);
-    pub const B8G8R8_UINT: Self = Format(34);
-    pub const B8G8R8_SINT: Self = Format(35);
-    pub const B8G8R8_SRGB: Self = Format(36);
-    pub const R8G8B8A8_UNORM: Self = Format(37);
-    pub const R8G8B8A8_SNORM: Self = Format(38);
-    pub const R8G8B8A8_USCALED: Self = Format(39);
-    pub const R8G8B8A8_SSCALED: Self = Format(40);
-    pub const R8G8B8A8_UINT: Self = Format(41);
-    pub const R8G8B8A8_SINT: Self = Format(42);
-    pub const R8G8B8A8_SRGB: Self = Format(43);
-    pub const B8G8R8A8_UNORM: Self = Format(44);
-    pub const B8G8R8A8_SNORM: Self = Format(45);
-    pub const B8G8R8A8_USCALED: Self = Format(46);
-    pub const B8G8R8A8_SSCALED: Self = Format(47);
-    pub const B8G8R8A8_UINT: Self = Format(48);
-    pub const B8G8R8A8_SINT: Self = Format(49);
-    pub const B8G8R8A8_SRGB: Self = Format(50);
-    pub const A8B8G8R8_UNORM_PACK32: Self = Format(51);
-    pub const A8B8G8R8_SNORM_PACK32: Self = Format(52);
-    pub const A8B8G8R8_USCALED_PACK32: Self = Format(53);
-    pub const A8B8G8R8_SSCALED_PACK32: Self = Format(54);
-    pub const A8B8G8R8_UINT_PACK32: Self = Format(55);
-    pub const A8B8G8R8_SINT_PACK32: Self = Format(56);
-    pub const A8B8G8R8_SRGB_PACK32: Self = Format(57);
-    pub const A2R10G10B10_UNORM_PACK32: Self = Format(58);
-    pub const A2R10G10B10_SNORM_PACK32: Self = Format(59);
-    pub const A2R10G10B10_USCALED_PACK32: Self = Format(60);
-    pub const A2R10G10B10_SSCALED_PACK32: Self = Format(61);
-    pub const A2R10G10B10_UINT_PACK32: Self = Format(62);
-    pub const A2R10G10B10_SINT_PACK32: Self = Format(63);
-    pub const A2B10G10R10_UNORM_PACK32: Self = Format(64);
-    pub const A2B10G10R10_SNORM_PACK32: Self = Format(65);
-    pub const A2B10G10R10_USCALED_PACK32: Self = Format(66);
-    pub const A2B10G10R10_SSCALED_PACK32: Self = Format(67);
-    pub const A2B10G10R10_UINT_PACK32: Self = Format(68);
-    pub const A2B10G10R10_SINT_PACK32: Self = Format(69);
-    pub const R16_UNORM: Self = Format(70);
-    pub const R16_SNORM: Self = Format(71);
-    pub const R16_USCALED: Self = Format(72);
-    pub const R16_SSCALED: Self = Format(73);
-    pub const R16_UINT: Self = Format(74);
-    pub const R16_SINT: Self = Format(75);
-    pub const R16_SFLOAT: Self = Format(76);
-    pub const R16G16_UNORM: Self = Format(77);
-    pub const R16G16_SNORM: Self = Format(78);
-    pub const R16G16_USCALED: Self = Format(79);
-    pub const R16G16_SSCALED: Self = Format(80);
-    pub const R16G16_UINT: Self = Format(81);
-    pub const R16G16_SINT: Self = Format(82);
-    pub const R16G16_SFLOAT: Self = Format(83);
-    pub const R16G16B16_UNORM: Self = Format(84);
-    pub const R16G16B16_SNORM: Self = Format(85);
-    pub const R16G16B16_USCALED: Self = Format(86);
-    pub const R16G16B16_SSCALED: Self = Format(87);
-    pub const R16G16B16_UINT: Self = Format(88);
-    pub const R16G16B16_SINT: Self = Format(89);
-    pub const R16G16B16_SFLOAT: Self = Format(90);
-    pub const R16G16B16A16_UNORM: Self = Format(91);
-    pub const R16G16B16A16_SNORM: Self = Format(92);
-    pub const R16G16B16A16_USCALED: Self = Format(93);
-    pub const R16G16B16A16_SSCALED: Self = Format(94);
-    pub const R16G16B16A16_UINT: Self = Format(95);
-    pub const R16G16B16A16_SINT: Self = Format(96);
-    pub const R16G16B16A16_SFLOAT: Self = Format(97);
-    pub const R32_UINT: Self = Format(98);
-    pub const R32_SINT: Self = Format(99);
-    pub const R32_SFLOAT: Self = Format(100);
-    pub const R32G32_UINT: Self = Format(101);
-    pub const R32G32_SINT: Self = Format(102);
-    pub const R32G32_SFLOAT: Self = Format(103);
-    pub const R32G32B32_UINT: Self = Format(104);
-    pub const R32G32B32_SINT: Self = Format(105);
-    pub const R32G32B32_SFLOAT: Self = Format(106);
-    pub const R32G32B32A32_UINT: Self = Format(107);
-    pub const R32G32B32A32_SINT: Self = Format(108);
-    pub const R32G32B32A32_SFLOAT: Self = Format(109);
-    pub const R64_UINT: Self = Format(110);
-    pub const R64_SINT: Self = Format(111);
-    pub const R64_SFLOAT: Self = Format(112);
-    pub const R64G64_UINT: Self = Format(113);
-    pub const R64G64_SINT: Self = Format(114);
-    pub const R64G64_SFLOAT: Self = Format(115);
-    pub const R64G64B64_UINT: Self = Format(116);
-    pub const R64G64B64_SINT: Self = Format(117);
-    pub const R64G64B64_SFLOAT: Self = Format(118);
-    pub const R64G64B64A64_UINT: Self = Format(119);
-    pub const R64G64B64A64_SINT: Self = Format(120);
-    pub const R64G64B64A64_SFLOAT: Self = Format(121);
-    pub const B10G11R11_UFLOAT_PACK32: Self = Format(122);
-    pub const E5B9G9R9_UFLOAT_PACK32: Self = Format(123);
-    pub const D16_UNORM: Self = Format(124);
-    pub const X8_D24_UNORM_PACK32: Self = Format(125);
-    pub const D32_SFLOAT: Self = Format(126);
-    pub const S8_UINT: Self = Format(127);
-    pub const D16_UNORM_S8_UINT: Self = Format(128);
-    pub const D24_UNORM_S8_UINT: Self = Format(129);
-    pub const D32_SFLOAT_S8_UINT: Self = Format(130);
-    pub const BC1_RGB_UNORM_BLOCK: Self = Format(131);
-    pub const BC1_RGB_SRGB_BLOCK: Self = Format(132);
-    pub const BC1_RGBA_UNORM_BLOCK: Self = Format(133);
-    pub const BC1_RGBA_SRGB_BLOCK: Self = Format(134);
-    pub const BC2_UNORM_BLOCK: Self = Format(135);
-    pub const BC2_SRGB_BLOCK: Self = Format(136);
-    pub const BC3_UNORM_BLOCK: Self = Format(137);
-    pub const BC3_SRGB_BLOCK: Self = Format(138);
-    pub const BC4_UNORM_BLOCK: Self = Format(139);
-    pub const BC4_SNORM_BLOCK: Self = Format(140);
-    pub const BC5_UNORM_BLOCK: Self = Format(141);
-    pub const BC5_SNORM_BLOCK: Self = Format(142);
-    pub const BC6H_UFLOAT_BLOCK: Self = Format(143);
-    pub const BC6H_SFLOAT_BLOCK: Self = Format(144);
-    pub const BC7_UNORM_BLOCK: Self = Format(145);
-    pub const BC7_SRGB_BLOCK: Self = Format(146);
-    pub const ETC2_R8G8B8_UNORM_BLOCK: Self = Format(147);
-    pub const ETC2_R8G8B8_SRGB_BLOCK: Self = Format(148);
-    pub const ETC2_R8G8B8A1_UNORM_BLOCK: Self = Format(149);
-    pub const ETC2_R8G8B8A1_SRGB_BLOCK: Self = Format(150);
-    pub const ETC2_R8G8B8A8_UNORM_BLOCK: Self = Format(151);
-    pub const ETC2_R8G8B8A8_SRGB_BLOCK: Self = Format(152);
-    pub const EAC_R11_UNORM_BLOCK: Self = Format(153);
-    pub const EAC_R11_SNORM_BLOCK: Self = Format(154);
-    pub const EAC_R11G11_UNORM_BLOCK: Self = Format(155);
-    pub const EAC_R11G11_SNORM_BLOCK: Self = Format(156);
-    pub const ASTC_4X4_UNORM_BLOCK: Self = Format(157);
-    pub const ASTC_4X4_SRGB_BLOCK: Self = Format(158);
-    pub const ASTC_5X4_UNORM_BLOCK: Self = Format(159);
-    pub const ASTC_5X4_SRGB_BLOCK: Self = Format(160);
-    pub const ASTC_5X5_UNORM_BLOCK: Self = Format(161);
-    pub const ASTC_5X5_SRGB_BLOCK: Self = Format(162);
-    pub const ASTC_6X5_UNORM_BLOCK: Self = Format(163);
-    pub const ASTC_6X5_SRGB_BLOCK: Self = Format(164);
-    pub const ASTC_6X6_UNORM_BLOCK: Self = Format(165);
-    pub const ASTC_6X6_SRGB_BLOCK: Self = Format(166);
-    pub const ASTC_8X5_UNORM_BLOCK: Self = Format(167);
-    pub const ASTC_8X5_SRGB_BLOCK: Self = Format(168);
-    pub const ASTC_8X6_UNORM_BLOCK: Self = Format(169);
-    pub const ASTC_8X6_SRGB_BLOCK: Self = Format(170);
-    pub const ASTC_8X8_UNORM_BLOCK: Self = Format(171);
-    pub const ASTC_8X8_SRGB_BLOCK: Self = Format(172);
-    pub const ASTC_10X5_UNORM_BLOCK: Self = Format(173);
-    pub const ASTC_10X5_SRGB_BLOCK: Self = Format(174);
-    pub const ASTC_10X6_UNORM_BLOCK: Self = Format(175);
-    pub const ASTC_10X6_SRGB_BLOCK: Self = Format(176);
-    pub const ASTC_10X8_UNORM_BLOCK: Self = Format(177);
-    pub const ASTC_10X8_SRGB_BLOCK: Self = Format(178);
-    pub const ASTC_10X10_UNORM_BLOCK: Self = Format(179);
-    pub const ASTC_10X10_SRGB_BLOCK: Self = Format(180);
-    pub const ASTC_12X10_UNORM_BLOCK: Self = Format(181);
-    pub const ASTC_12X10_SRGB_BLOCK: Self = Format(182);
-    pub const ASTC_12X12_UNORM_BLOCK: Self = Format(183);
-    pub const ASTC_12X12_SRGB_BLOCK: Self = Format(184);
-    pub const G8B8G8R8_422_UNORM: Self = Format(1000156000);
-    pub const B8G8R8G8_422_UNORM: Self = Format(1000156001);
-    pub const G8_B8_R8_3PLANE_420_UNORM: Self = Format(1000156002);
-    pub const G8_B8R8_2PLANE_420_UNORM: Self = Format(1000156003);
-    pub const G8_B8_R8_3PLANE_422_UNORM: Self = Format(1000156004);
-    pub const G8_B8R8_2PLANE_422_UNORM: Self = Format(1000156005);
-    pub const G8_B8_R8_3PLANE_444_UNORM: Self = Format(1000156006);
-    pub const R10X6_UNORM_PACK16: Self = Format(1000156007);
-    pub const R10X6G10X6_UNORM_2PACK16: Self = Format(1000156008);
-    pub const R10X6G10X6B10X6A10X6_UNORM_4PACK16: Self = Format(1000156009);
-    pub const G10X6B10X6G10X6R10X6_422_UNORM_4PACK16: Self = Format(1000156010);
-    pub const B10X6G10X6R10X6G10X6_422_UNORM_4PACK16: Self = Format(1000156011);
-    pub const G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16: Self = Format(1000156012);
-    pub const G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16: Self = Format(1000156013);
-    pub const G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16: Self = Format(1000156014);
-    pub const G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16: Self = Format(1000156015);
-    pub const G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16: Self = Format(1000156016);
-    pub const R12X4_UNORM_PACK16: Self = Format(1000156017);
-    pub const R12X4G12X4_UNORM_2PACK16: Self = Format(1000156018);
-    pub const R12X4G12X4B12X4A12X4_UNORM_4PACK16: Self = Format(1000156019);
-    pub const G12X4B12X4G12X4R12X4_422_UNORM_4PACK16: Self = Format(1000156020);
-    pub const B12X4G12X4R12X4G12X4_422_UNORM_4PACK16: Self = Format(1000156021);
-    pub const G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16: Self = Format(1000156022);
-    pub const G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16: Self = Format(1000156023);
-    pub const G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16: Self = Format(1000156024);
-    pub const G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16: Self = Format(1000156025);
-    pub const G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16: Self = Format(1000156026);
-    pub const G16B16G16R16_422_UNORM: Self = Format(1000156027);
-    pub const B16G16R16G16_422_UNORM: Self = Format(1000156028);
-    pub const G16_B16_R16_3PLANE_420_UNORM: Self = Format(1000156029);
-    pub const G16_B16R16_2PLANE_420_UNORM: Self = Format(1000156030);
-    pub const G16_B16_R16_3PLANE_422_UNORM: Self = Format(1000156031);
-    pub const G16_B16R16_2PLANE_422_UNORM: Self = Format(1000156032);
-    pub const G16_B16_R16_3PLANE_444_UNORM: Self = Format(1000156033);
+    pub const UNDEFINED: Self = Self(0);
+    pub const R4G4_UNORM_PACK8: Self = Self(1);
+    pub const R4G4B4A4_UNORM_PACK16: Self = Self(2);
+    pub const B4G4R4A4_UNORM_PACK16: Self = Self(3);
+    pub const R5G6B5_UNORM_PACK16: Self = Self(4);
+    pub const B5G6R5_UNORM_PACK16: Self = Self(5);
+    pub const R5G5B5A1_UNORM_PACK16: Self = Self(6);
+    pub const B5G5R5A1_UNORM_PACK16: Self = Self(7);
+    pub const A1R5G5B5_UNORM_PACK16: Self = Self(8);
+    pub const R8_UNORM: Self = Self(9);
+    pub const R8_SNORM: Self = Self(10);
+    pub const R8_USCALED: Self = Self(11);
+    pub const R8_SSCALED: Self = Self(12);
+    pub const R8_UINT: Self = Self(13);
+    pub const R8_SINT: Self = Self(14);
+    pub const R8_SRGB: Self = Self(15);
+    pub const R8G8_UNORM: Self = Self(16);
+    pub const R8G8_SNORM: Self = Self(17);
+    pub const R8G8_USCALED: Self = Self(18);
+    pub const R8G8_SSCALED: Self = Self(19);
+    pub const R8G8_UINT: Self = Self(20);
+    pub const R8G8_SINT: Self = Self(21);
+    pub const R8G8_SRGB: Self = Self(22);
+    pub const R8G8B8_UNORM: Self = Self(23);
+    pub const R8G8B8_SNORM: Self = Self(24);
+    pub const R8G8B8_USCALED: Self = Self(25);
+    pub const R8G8B8_SSCALED: Self = Self(26);
+    pub const R8G8B8_UINT: Self = Self(27);
+    pub const R8G8B8_SINT: Self = Self(28);
+    pub const R8G8B8_SRGB: Self = Self(29);
+    pub const B8G8R8_UNORM: Self = Self(30);
+    pub const B8G8R8_SNORM: Self = Self(31);
+    pub const B8G8R8_USCALED: Self = Self(32);
+    pub const B8G8R8_SSCALED: Self = Self(33);
+    pub const B8G8R8_UINT: Self = Self(34);
+    pub const B8G8R8_SINT: Self = Self(35);
+    pub const B8G8R8_SRGB: Self = Self(36);
+    pub const R8G8B8A8_UNORM: Self = Self(37);
+    pub const R8G8B8A8_SNORM: Self = Self(38);
+    pub const R8G8B8A8_USCALED: Self = Self(39);
+    pub const R8G8B8A8_SSCALED: Self = Self(40);
+    pub const R8G8B8A8_UINT: Self = Self(41);
+    pub const R8G8B8A8_SINT: Self = Self(42);
+    pub const R8G8B8A8_SRGB: Self = Self(43);
+    pub const B8G8R8A8_UNORM: Self = Self(44);
+    pub const B8G8R8A8_SNORM: Self = Self(45);
+    pub const B8G8R8A8_USCALED: Self = Self(46);
+    pub const B8G8R8A8_SSCALED: Self = Self(47);
+    pub const B8G8R8A8_UINT: Self = Self(48);
+    pub const B8G8R8A8_SINT: Self = Self(49);
+    pub const B8G8R8A8_SRGB: Self = Self(50);
+    pub const A8B8G8R8_UNORM_PACK32: Self = Self(51);
+    pub const A8B8G8R8_SNORM_PACK32: Self = Self(52);
+    pub const A8B8G8R8_USCALED_PACK32: Self = Self(53);
+    pub const A8B8G8R8_SSCALED_PACK32: Self = Self(54);
+    pub const A8B8G8R8_UINT_PACK32: Self = Self(55);
+    pub const A8B8G8R8_SINT_PACK32: Self = Self(56);
+    pub const A8B8G8R8_SRGB_PACK32: Self = Self(57);
+    pub const A2R10G10B10_UNORM_PACK32: Self = Self(58);
+    pub const A2R10G10B10_SNORM_PACK32: Self = Self(59);
+    pub const A2R10G10B10_USCALED_PACK32: Self = Self(60);
+    pub const A2R10G10B10_SSCALED_PACK32: Self = Self(61);
+    pub const A2R10G10B10_UINT_PACK32: Self = Self(62);
+    pub const A2R10G10B10_SINT_PACK32: Self = Self(63);
+    pub const A2B10G10R10_UNORM_PACK32: Self = Self(64);
+    pub const A2B10G10R10_SNORM_PACK32: Self = Self(65);
+    pub const A2B10G10R10_USCALED_PACK32: Self = Self(66);
+    pub const A2B10G10R10_SSCALED_PACK32: Self = Self(67);
+    pub const A2B10G10R10_UINT_PACK32: Self = Self(68);
+    pub const A2B10G10R10_SINT_PACK32: Self = Self(69);
+    pub const R16_UNORM: Self = Self(70);
+    pub const R16_SNORM: Self = Self(71);
+    pub const R16_USCALED: Self = Self(72);
+    pub const R16_SSCALED: Self = Self(73);
+    pub const R16_UINT: Self = Self(74);
+    pub const R16_SINT: Self = Self(75);
+    pub const R16_SFLOAT: Self = Self(76);
+    pub const R16G16_UNORM: Self = Self(77);
+    pub const R16G16_SNORM: Self = Self(78);
+    pub const R16G16_USCALED: Self = Self(79);
+    pub const R16G16_SSCALED: Self = Self(80);
+    pub const R16G16_UINT: Self = Self(81);
+    pub const R16G16_SINT: Self = Self(82);
+    pub const R16G16_SFLOAT: Self = Self(83);
+    pub const R16G16B16_UNORM: Self = Self(84);
+    pub const R16G16B16_SNORM: Self = Self(85);
+    pub const R16G16B16_USCALED: Self = Self(86);
+    pub const R16G16B16_SSCALED: Self = Self(87);
+    pub const R16G16B16_UINT: Self = Self(88);
+    pub const R16G16B16_SINT: Self = Self(89);
+    pub const R16G16B16_SFLOAT: Self = Self(90);
+    pub const R16G16B16A16_UNORM: Self = Self(91);
+    pub const R16G16B16A16_SNORM: Self = Self(92);
+    pub const R16G16B16A16_USCALED: Self = Self(93);
+    pub const R16G16B16A16_SSCALED: Self = Self(94);
+    pub const R16G16B16A16_UINT: Self = Self(95);
+    pub const R16G16B16A16_SINT: Self = Self(96);
+    pub const R16G16B16A16_SFLOAT: Self = Self(97);
+    pub const R32_UINT: Self = Self(98);
+    pub const R32_SINT: Self = Self(99);
+    pub const R32_SFLOAT: Self = Self(100);
+    pub const R32G32_UINT: Self = Self(101);
+    pub const R32G32_SINT: Self = Self(102);
+    pub const R32G32_SFLOAT: Self = Self(103);
+    pub const R32G32B32_UINT: Self = Self(104);
+    pub const R32G32B32_SINT: Self = Self(105);
+    pub const R32G32B32_SFLOAT: Self = Self(106);
+    pub const R32G32B32A32_UINT: Self = Self(107);
+    pub const R32G32B32A32_SINT: Self = Self(108);
+    pub const R32G32B32A32_SFLOAT: Self = Self(109);
+    pub const R64_UINT: Self = Self(110);
+    pub const R64_SINT: Self = Self(111);
+    pub const R64_SFLOAT: Self = Self(112);
+    pub const R64G64_UINT: Self = Self(113);
+    pub const R64G64_SINT: Self = Self(114);
+    pub const R64G64_SFLOAT: Self = Self(115);
+    pub const R64G64B64_UINT: Self = Self(116);
+    pub const R64G64B64_SINT: Self = Self(117);
+    pub const R64G64B64_SFLOAT: Self = Self(118);
+    pub const R64G64B64A64_UINT: Self = Self(119);
+    pub const R64G64B64A64_SINT: Self = Self(120);
+    pub const R64G64B64A64_SFLOAT: Self = Self(121);
+    pub const B10G11R11_UFLOAT_PACK32: Self = Self(122);
+    pub const E5B9G9R9_UFLOAT_PACK32: Self = Self(123);
+    pub const D16_UNORM: Self = Self(124);
+    pub const X8_D24_UNORM_PACK32: Self = Self(125);
+    pub const D32_SFLOAT: Self = Self(126);
+    pub const S8_UINT: Self = Self(127);
+    pub const D16_UNORM_S8_UINT: Self = Self(128);
+    pub const D24_UNORM_S8_UINT: Self = Self(129);
+    pub const D32_SFLOAT_S8_UINT: Self = Self(130);
+    pub const BC1_RGB_UNORM_BLOCK: Self = Self(131);
+    pub const BC1_RGB_SRGB_BLOCK: Self = Self(132);
+    pub const BC1_RGBA_UNORM_BLOCK: Self = Self(133);
+    pub const BC1_RGBA_SRGB_BLOCK: Self = Self(134);
+    pub const BC2_UNORM_BLOCK: Self = Self(135);
+    pub const BC2_SRGB_BLOCK: Self = Self(136);
+    pub const BC3_UNORM_BLOCK: Self = Self(137);
+    pub const BC3_SRGB_BLOCK: Self = Self(138);
+    pub const BC4_UNORM_BLOCK: Self = Self(139);
+    pub const BC4_SNORM_BLOCK: Self = Self(140);
+    pub const BC5_UNORM_BLOCK: Self = Self(141);
+    pub const BC5_SNORM_BLOCK: Self = Self(142);
+    pub const BC6H_UFLOAT_BLOCK: Self = Self(143);
+    pub const BC6H_SFLOAT_BLOCK: Self = Self(144);
+    pub const BC7_UNORM_BLOCK: Self = Self(145);
+    pub const BC7_SRGB_BLOCK: Self = Self(146);
+    pub const ETC2_R8G8B8_UNORM_BLOCK: Self = Self(147);
+    pub const ETC2_R8G8B8_SRGB_BLOCK: Self = Self(148);
+    pub const ETC2_R8G8B8A1_UNORM_BLOCK: Self = Self(149);
+    pub const ETC2_R8G8B8A1_SRGB_BLOCK: Self = Self(150);
+    pub const ETC2_R8G8B8A8_UNORM_BLOCK: Self = Self(151);
+    pub const ETC2_R8G8B8A8_SRGB_BLOCK: Self = Self(152);
+    pub const EAC_R11_UNORM_BLOCK: Self = Self(153);
+    pub const EAC_R11_SNORM_BLOCK: Self = Self(154);
+    pub const EAC_R11G11_UNORM_BLOCK: Self = Self(155);
+    pub const EAC_R11G11_SNORM_BLOCK: Self = Self(156);
+    pub const ASTC_4X4_UNORM_BLOCK: Self = Self(157);
+    pub const ASTC_4X4_SRGB_BLOCK: Self = Self(158);
+    pub const ASTC_5X4_UNORM_BLOCK: Self = Self(159);
+    pub const ASTC_5X4_SRGB_BLOCK: Self = Self(160);
+    pub const ASTC_5X5_UNORM_BLOCK: Self = Self(161);
+    pub const ASTC_5X5_SRGB_BLOCK: Self = Self(162);
+    pub const ASTC_6X5_UNORM_BLOCK: Self = Self(163);
+    pub const ASTC_6X5_SRGB_BLOCK: Self = Self(164);
+    pub const ASTC_6X6_UNORM_BLOCK: Self = Self(165);
+    pub const ASTC_6X6_SRGB_BLOCK: Self = Self(166);
+    pub const ASTC_8X5_UNORM_BLOCK: Self = Self(167);
+    pub const ASTC_8X5_SRGB_BLOCK: Self = Self(168);
+    pub const ASTC_8X6_UNORM_BLOCK: Self = Self(169);
+    pub const ASTC_8X6_SRGB_BLOCK: Self = Self(170);
+    pub const ASTC_8X8_UNORM_BLOCK: Self = Self(171);
+    pub const ASTC_8X8_SRGB_BLOCK: Self = Self(172);
+    pub const ASTC_10X5_UNORM_BLOCK: Self = Self(173);
+    pub const ASTC_10X5_SRGB_BLOCK: Self = Self(174);
+    pub const ASTC_10X6_UNORM_BLOCK: Self = Self(175);
+    pub const ASTC_10X6_SRGB_BLOCK: Self = Self(176);
+    pub const ASTC_10X8_UNORM_BLOCK: Self = Self(177);
+    pub const ASTC_10X8_SRGB_BLOCK: Self = Self(178);
+    pub const ASTC_10X10_UNORM_BLOCK: Self = Self(179);
+    pub const ASTC_10X10_SRGB_BLOCK: Self = Self(180);
+    pub const ASTC_12X10_UNORM_BLOCK: Self = Self(181);
+    pub const ASTC_12X10_SRGB_BLOCK: Self = Self(182);
+    pub const ASTC_12X12_UNORM_BLOCK: Self = Self(183);
+    pub const ASTC_12X12_SRGB_BLOCK: Self = Self(184);
+    pub const G8B8G8R8_422_UNORM: Self = Self(1000156000);
+    pub const B8G8R8G8_422_UNORM: Self = Self(1000156001);
+    pub const G8_B8_R8_3PLANE_420_UNORM: Self = Self(1000156002);
+    pub const G8_B8R8_2PLANE_420_UNORM: Self = Self(1000156003);
+    pub const G8_B8_R8_3PLANE_422_UNORM: Self = Self(1000156004);
+    pub const G8_B8R8_2PLANE_422_UNORM: Self = Self(1000156005);
+    pub const G8_B8_R8_3PLANE_444_UNORM: Self = Self(1000156006);
+    pub const R10X6_UNORM_PACK16: Self = Self(1000156007);
+    pub const R10X6G10X6_UNORM_2PACK16: Self = Self(1000156008);
+    pub const R10X6G10X6B10X6A10X6_UNORM_4PACK16: Self = Self(1000156009);
+    pub const G10X6B10X6G10X6R10X6_422_UNORM_4PACK16: Self = Self(1000156010);
+    pub const B10X6G10X6R10X6G10X6_422_UNORM_4PACK16: Self = Self(1000156011);
+    pub const G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16: Self = Self(1000156012);
+    pub const G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16: Self = Self(1000156013);
+    pub const G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16: Self = Self(1000156014);
+    pub const G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16: Self = Self(1000156015);
+    pub const G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16: Self = Self(1000156016);
+    pub const R12X4_UNORM_PACK16: Self = Self(1000156017);
+    pub const R12X4G12X4_UNORM_2PACK16: Self = Self(1000156018);
+    pub const R12X4G12X4B12X4A12X4_UNORM_4PACK16: Self = Self(1000156019);
+    pub const G12X4B12X4G12X4R12X4_422_UNORM_4PACK16: Self = Self(1000156020);
+    pub const B12X4G12X4R12X4G12X4_422_UNORM_4PACK16: Self = Self(1000156021);
+    pub const G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16: Self = Self(1000156022);
+    pub const G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16: Self = Self(1000156023);
+    pub const G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16: Self = Self(1000156024);
+    pub const G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16: Self = Self(1000156025);
+    pub const G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16: Self = Self(1000156026);
+    pub const G16B16G16R16_422_UNORM: Self = Self(1000156027);
+    pub const B16G16R16G16_422_UNORM: Self = Self(1000156028);
+    pub const G16_B16_R16_3PLANE_420_UNORM: Self = Self(1000156029);
+    pub const G16_B16R16_2PLANE_420_UNORM: Self = Self(1000156030);
+    pub const G16_B16_R16_3PLANE_422_UNORM: Self = Self(1000156031);
+    pub const G16_B16R16_2PLANE_422_UNORM: Self = Self(1000156032);
+    pub const G16_B16_R16_3PLANE_444_UNORM: Self = Self(1000156033);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC1_2BPP_UNORM_BLOCK_IMG: Self = Format(1000054000);
+    pub const PVRTC1_2BPP_UNORM_BLOCK_IMG: Self = Self(1000054000);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC1_4BPP_UNORM_BLOCK_IMG: Self = Format(1000054001);
+    pub const PVRTC1_4BPP_UNORM_BLOCK_IMG: Self = Self(1000054001);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC2_2BPP_UNORM_BLOCK_IMG: Self = Format(1000054002);
+    pub const PVRTC2_2BPP_UNORM_BLOCK_IMG: Self = Self(1000054002);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC2_4BPP_UNORM_BLOCK_IMG: Self = Format(1000054003);
+    pub const PVRTC2_4BPP_UNORM_BLOCK_IMG: Self = Self(1000054003);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC1_2BPP_SRGB_BLOCK_IMG: Self = Format(1000054004);
+    pub const PVRTC1_2BPP_SRGB_BLOCK_IMG: Self = Self(1000054004);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC1_4BPP_SRGB_BLOCK_IMG: Self = Format(1000054005);
+    pub const PVRTC1_4BPP_SRGB_BLOCK_IMG: Self = Self(1000054005);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC2_2BPP_SRGB_BLOCK_IMG: Self = Format(1000054006);
+    pub const PVRTC2_2BPP_SRGB_BLOCK_IMG: Self = Self(1000054006);
     /// Added by extension VK_IMG_format_pvrtc.
-    pub const PVRTC2_4BPP_SRGB_BLOCK_IMG: Self = Format(1000054007);
+    pub const PVRTC2_4BPP_SRGB_BLOCK_IMG: Self = Self(1000054007);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_4X4_SFLOAT_BLOCK_EXT: Self = Format(1000066000);
+    pub const ASTC_4X4_SFLOAT_BLOCK_EXT: Self = Self(1000066000);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_5X4_SFLOAT_BLOCK_EXT: Self = Format(1000066001);
+    pub const ASTC_5X4_SFLOAT_BLOCK_EXT: Self = Self(1000066001);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_5X5_SFLOAT_BLOCK_EXT: Self = Format(1000066002);
+    pub const ASTC_5X5_SFLOAT_BLOCK_EXT: Self = Self(1000066002);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_6X5_SFLOAT_BLOCK_EXT: Self = Format(1000066003);
+    pub const ASTC_6X5_SFLOAT_BLOCK_EXT: Self = Self(1000066003);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_6X6_SFLOAT_BLOCK_EXT: Self = Format(1000066004);
+    pub const ASTC_6X6_SFLOAT_BLOCK_EXT: Self = Self(1000066004);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_8X5_SFLOAT_BLOCK_EXT: Self = Format(1000066005);
+    pub const ASTC_8X5_SFLOAT_BLOCK_EXT: Self = Self(1000066005);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_8X6_SFLOAT_BLOCK_EXT: Self = Format(1000066006);
+    pub const ASTC_8X6_SFLOAT_BLOCK_EXT: Self = Self(1000066006);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_8X8_SFLOAT_BLOCK_EXT: Self = Format(1000066007);
+    pub const ASTC_8X8_SFLOAT_BLOCK_EXT: Self = Self(1000066007);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_10X5_SFLOAT_BLOCK_EXT: Self = Format(1000066008);
+    pub const ASTC_10X5_SFLOAT_BLOCK_EXT: Self = Self(1000066008);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_10X6_SFLOAT_BLOCK_EXT: Self = Format(1000066009);
+    pub const ASTC_10X6_SFLOAT_BLOCK_EXT: Self = Self(1000066009);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_10X8_SFLOAT_BLOCK_EXT: Self = Format(1000066010);
+    pub const ASTC_10X8_SFLOAT_BLOCK_EXT: Self = Self(1000066010);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_10X10_SFLOAT_BLOCK_EXT: Self = Format(1000066011);
+    pub const ASTC_10X10_SFLOAT_BLOCK_EXT: Self = Self(1000066011);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_12X10_SFLOAT_BLOCK_EXT: Self = Format(1000066012);
+    pub const ASTC_12X10_SFLOAT_BLOCK_EXT: Self = Self(1000066012);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const ASTC_12X12_SFLOAT_BLOCK_EXT: Self = Format(1000066013);
+    pub const ASTC_12X12_SFLOAT_BLOCK_EXT: Self = Self(1000066013);
     pub const G8B8G8R8_422_UNORM_KHR: Self = Self::G8B8G8R8_422_UNORM;
     pub const B8G8R8G8_422_UNORM_KHR: Self = Self::B8G8R8G8_422_UNORM;
     pub const G8_B8_R8_3PLANE_420_UNORM_KHR: Self = Self::G8_B8_R8_3PLANE_420_UNORM;
@@ -10795,7 +10794,7 @@ impl Format {
 }
 impl default::Default for Format {
     fn default() -> Self {
-        Format(0)
+        Self(0)
     }
 }
 impl fmt::Display for Format {
@@ -11055,12 +11054,12 @@ impl fmt::Display for Format {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FrontFace(i32);
 impl FrontFace {
-    pub const COUNTER_CLOCKWISE: Self = FrontFace(0);
-    pub const CLOCKWISE: Self = FrontFace(1);
+    pub const COUNTER_CLOCKWISE: Self = Self(0);
+    pub const CLOCKWISE: Self = Self(1);
 }
 impl default::Default for FrontFace {
     fn default() -> Self {
-        FrontFace(0)
+        Self(0)
     }
 }
 impl fmt::Display for FrontFace {
@@ -11082,39 +11081,39 @@ impl fmt::Display for FrontFace {
 pub struct ImageLayout(i32);
 impl ImageLayout {
     /// Implicit layout an image is when its contents are undefined due to various reasons (e.g. right after creation)
-    pub const UNDEFINED: Self = ImageLayout(0);
+    pub const UNDEFINED: Self = Self(0);
     /// General layout when image can be used for any kind of access
-    pub const GENERAL: Self = ImageLayout(1);
+    pub const GENERAL: Self = Self(1);
     /// Optimal layout when image is only used for color attachment read/write
-    pub const COLOR_ATTACHMENT_OPTIMAL: Self = ImageLayout(2);
+    pub const COLOR_ATTACHMENT_OPTIMAL: Self = Self(2);
     /// Optimal layout when image is only used for depth/stencil attachment read/write
-    pub const DEPTH_STENCIL_ATTACHMENT_OPTIMAL: Self = ImageLayout(3);
+    pub const DEPTH_STENCIL_ATTACHMENT_OPTIMAL: Self = Self(3);
     /// Optimal layout when image is used for read only depth/stencil attachment and shader access
-    pub const DEPTH_STENCIL_READ_ONLY_OPTIMAL: Self = ImageLayout(4);
+    pub const DEPTH_STENCIL_READ_ONLY_OPTIMAL: Self = Self(4);
     /// Optimal layout when image is used for read only shader access
-    pub const SHADER_READ_ONLY_OPTIMAL: Self = ImageLayout(5);
+    pub const SHADER_READ_ONLY_OPTIMAL: Self = Self(5);
     /// Optimal layout when image is used only as source of transfer operations
-    pub const TRANSFER_SRC_OPTIMAL: Self = ImageLayout(6);
+    pub const TRANSFER_SRC_OPTIMAL: Self = Self(6);
     /// Optimal layout when image is used only as destination of transfer operations
-    pub const TRANSFER_DST_OPTIMAL: Self = ImageLayout(7);
+    pub const TRANSFER_DST_OPTIMAL: Self = Self(7);
     /// Initial layout used when the data is populated by the CPU
-    pub const PREINITIALIZED: Self = ImageLayout(8);
-    pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL: Self = ImageLayout(1000117000);
-    pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL: Self = ImageLayout(1000117001);
+    pub const PREINITIALIZED: Self = Self(8);
+    pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL: Self = Self(1000117000);
+    pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL: Self = Self(1000117001);
     /// Added by extension VK_KHR_swapchain.
-    pub const PRESENT_SRC_KHR: Self = ImageLayout(1000001002);
+    pub const PRESENT_SRC_KHR: Self = Self(1000001002);
     /// Added by extension VK_KHR_shared_presentable_image.
-    pub const SHARED_PRESENT_KHR: Self = ImageLayout(1000111000);
+    pub const SHARED_PRESENT_KHR: Self = Self(1000111000);
     pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
     /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_OPTIMAL_NV: Self = ImageLayout(1000164003);
+    pub const SHADING_RATE_OPTIMAL_NV: Self = Self(1000164003);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = ImageLayout(1000218000);
+    pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
 }
 impl default::Default for ImageLayout {
     fn default() -> Self {
-        ImageLayout(0)
+        Self(0)
     }
 }
 impl fmt::Display for ImageLayout {
@@ -11148,14 +11147,14 @@ impl fmt::Display for ImageLayout {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageTiling(i32);
 impl ImageTiling {
-    pub const OPTIMAL: Self = ImageTiling(0);
-    pub const LINEAR: Self = ImageTiling(1);
+    pub const OPTIMAL: Self = Self(0);
+    pub const LINEAR: Self = Self(1);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const DRM_FORMAT_MODIFIER_EXT: Self = ImageTiling(1000158000);
+    pub const DRM_FORMAT_MODIFIER_EXT: Self = Self(1000158000);
 }
 impl default::Default for ImageTiling {
     fn default() -> Self {
-        ImageTiling(0)
+        Self(0)
     }
 }
 impl fmt::Display for ImageTiling {
@@ -11177,13 +11176,13 @@ impl fmt::Display for ImageTiling {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageType(i32);
 impl ImageType {
-    pub const N1D: Self = ImageType(0);
-    pub const N2D: Self = ImageType(1);
-    pub const N3D: Self = ImageType(2);
+    pub const N1D: Self = Self(0);
+    pub const N2D: Self = Self(1);
+    pub const N3D: Self = Self(2);
 }
 impl default::Default for ImageType {
     fn default() -> Self {
-        ImageType(0)
+        Self(0)
     }
 }
 impl fmt::Display for ImageType {
@@ -11205,17 +11204,17 @@ impl fmt::Display for ImageType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageViewType(i32);
 impl ImageViewType {
-    pub const N1D: Self = ImageViewType(0);
-    pub const N2D: Self = ImageViewType(1);
-    pub const N3D: Self = ImageViewType(2);
-    pub const CUBE: Self = ImageViewType(3);
-    pub const N1D_ARRAY: Self = ImageViewType(4);
-    pub const N2D_ARRAY: Self = ImageViewType(5);
-    pub const CUBE_ARRAY: Self = ImageViewType(6);
+    pub const N1D: Self = Self(0);
+    pub const N2D: Self = Self(1);
+    pub const N3D: Self = Self(2);
+    pub const CUBE: Self = Self(3);
+    pub const N1D_ARRAY: Self = Self(4);
+    pub const N2D_ARRAY: Self = Self(5);
+    pub const CUBE_ARRAY: Self = Self(6);
 }
 impl default::Default for ImageViewType {
     fn default() -> Self {
-        ImageViewType(0)
+        Self(0)
     }
 }
 impl fmt::Display for ImageViewType {
@@ -11241,12 +11240,12 @@ impl fmt::Display for ImageViewType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SharingMode(i32);
 impl SharingMode {
-    pub const EXCLUSIVE: Self = SharingMode(0);
-    pub const CONCURRENT: Self = SharingMode(1);
+    pub const EXCLUSIVE: Self = Self(0);
+    pub const CONCURRENT: Self = Self(1);
 }
 impl default::Default for SharingMode {
     fn default() -> Self {
-        SharingMode(0)
+        Self(0)
     }
 }
 impl fmt::Display for SharingMode {
@@ -11267,16 +11266,16 @@ impl fmt::Display for SharingMode {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct IndexType(i32);
 impl IndexType {
-    pub const UINT16: Self = IndexType(0);
-    pub const UINT32: Self = IndexType(1);
+    pub const UINT16: Self = Self(0);
+    pub const UINT32: Self = Self(1);
     /// Added by extension VK_NV_ray_tracing.
-    pub const NONE_NV: Self = IndexType(1000165000);
+    pub const NONE_NV: Self = Self(1000165000);
     /// Added by extension VK_EXT_index_type_uint8.
-    pub const UINT8_EXT: Self = IndexType(1000265000);
+    pub const UINT8_EXT: Self = Self(1000265000);
 }
 impl default::Default for IndexType {
     fn default() -> Self {
-        IndexType(0)
+        Self(0)
     }
 }
 impl fmt::Display for IndexType {
@@ -11299,26 +11298,26 @@ impl fmt::Display for IndexType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LogicOp(i32);
 impl LogicOp {
-    pub const CLEAR: Self = LogicOp(0);
-    pub const AND: Self = LogicOp(1);
-    pub const AND_REVERSE: Self = LogicOp(2);
-    pub const COPY: Self = LogicOp(3);
-    pub const AND_INVERTED: Self = LogicOp(4);
-    pub const NO_OP: Self = LogicOp(5);
-    pub const XOR: Self = LogicOp(6);
-    pub const OR: Self = LogicOp(7);
-    pub const NOR: Self = LogicOp(8);
-    pub const EQUIVALENT: Self = LogicOp(9);
-    pub const INVERT: Self = LogicOp(10);
-    pub const OR_REVERSE: Self = LogicOp(11);
-    pub const COPY_INVERTED: Self = LogicOp(12);
-    pub const OR_INVERTED: Self = LogicOp(13);
-    pub const NAND: Self = LogicOp(14);
-    pub const SET: Self = LogicOp(15);
+    pub const CLEAR: Self = Self(0);
+    pub const AND: Self = Self(1);
+    pub const AND_REVERSE: Self = Self(2);
+    pub const COPY: Self = Self(3);
+    pub const AND_INVERTED: Self = Self(4);
+    pub const NO_OP: Self = Self(5);
+    pub const XOR: Self = Self(6);
+    pub const OR: Self = Self(7);
+    pub const NOR: Self = Self(8);
+    pub const EQUIVALENT: Self = Self(9);
+    pub const INVERT: Self = Self(10);
+    pub const OR_REVERSE: Self = Self(11);
+    pub const COPY_INVERTED: Self = Self(12);
+    pub const OR_INVERTED: Self = Self(13);
+    pub const NAND: Self = Self(14);
+    pub const SET: Self = Self(15);
 }
 impl default::Default for LogicOp {
     fn default() -> Self {
-        LogicOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for LogicOp {
@@ -11353,15 +11352,15 @@ impl fmt::Display for LogicOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceType(i32);
 impl PhysicalDeviceType {
-    pub const OTHER: Self = PhysicalDeviceType(0);
-    pub const INTEGRATED_GPU: Self = PhysicalDeviceType(1);
-    pub const DISCRETE_GPU: Self = PhysicalDeviceType(2);
-    pub const VIRTUAL_GPU: Self = PhysicalDeviceType(3);
-    pub const CPU: Self = PhysicalDeviceType(4);
+    pub const OTHER: Self = Self(0);
+    pub const INTEGRATED_GPU: Self = Self(1);
+    pub const DISCRETE_GPU: Self = Self(2);
+    pub const VIRTUAL_GPU: Self = Self(3);
+    pub const CPU: Self = Self(4);
 }
 impl default::Default for PhysicalDeviceType {
     fn default() -> Self {
-        PhysicalDeviceType(0)
+        Self(0)
     }
 }
 impl fmt::Display for PhysicalDeviceType {
@@ -11385,14 +11384,14 @@ impl fmt::Display for PhysicalDeviceType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineBindPoint(i32);
 impl PipelineBindPoint {
-    pub const GRAPHICS: Self = PipelineBindPoint(0);
-    pub const COMPUTE: Self = PipelineBindPoint(1);
+    pub const GRAPHICS: Self = Self(0);
+    pub const COMPUTE: Self = Self(1);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_NV: Self = PipelineBindPoint(1000165000);
+    pub const RAY_TRACING_NV: Self = Self(1000165000);
 }
 impl default::Default for PipelineBindPoint {
     fn default() -> Self {
-        PipelineBindPoint(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineBindPoint {
@@ -11414,21 +11413,21 @@ impl fmt::Display for PipelineBindPoint {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PrimitiveTopology(i32);
 impl PrimitiveTopology {
-    pub const POINT_LIST: Self = PrimitiveTopology(0);
-    pub const LINE_LIST: Self = PrimitiveTopology(1);
-    pub const LINE_STRIP: Self = PrimitiveTopology(2);
-    pub const TRIANGLE_LIST: Self = PrimitiveTopology(3);
-    pub const TRIANGLE_STRIP: Self = PrimitiveTopology(4);
-    pub const TRIANGLE_FAN: Self = PrimitiveTopology(5);
-    pub const LINE_LIST_WITH_ADJACENCY: Self = PrimitiveTopology(6);
-    pub const LINE_STRIP_WITH_ADJACENCY: Self = PrimitiveTopology(7);
-    pub const TRIANGLE_LIST_WITH_ADJACENCY: Self = PrimitiveTopology(8);
-    pub const TRIANGLE_STRIP_WITH_ADJACENCY: Self = PrimitiveTopology(9);
-    pub const PATCH_LIST: Self = PrimitiveTopology(10);
+    pub const POINT_LIST: Self = Self(0);
+    pub const LINE_LIST: Self = Self(1);
+    pub const LINE_STRIP: Self = Self(2);
+    pub const TRIANGLE_LIST: Self = Self(3);
+    pub const TRIANGLE_STRIP: Self = Self(4);
+    pub const TRIANGLE_FAN: Self = Self(5);
+    pub const LINE_LIST_WITH_ADJACENCY: Self = Self(6);
+    pub const LINE_STRIP_WITH_ADJACENCY: Self = Self(7);
+    pub const TRIANGLE_LIST_WITH_ADJACENCY: Self = Self(8);
+    pub const TRIANGLE_STRIP_WITH_ADJACENCY: Self = Self(9);
+    pub const PATCH_LIST: Self = Self(10);
 }
 impl default::Default for PrimitiveTopology {
     fn default() -> Self {
-        PrimitiveTopology(0)
+        Self(0)
     }
 }
 impl fmt::Display for PrimitiveTopology {
@@ -11458,24 +11457,24 @@ impl fmt::Display for PrimitiveTopology {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueryType(i32);
 impl QueryType {
-    pub const OCCLUSION: Self = QueryType(0);
+    pub const OCCLUSION: Self = Self(0);
     /// Optional
-    pub const PIPELINE_STATISTICS: Self = QueryType(1);
-    pub const TIMESTAMP: Self = QueryType(2);
+    pub const PIPELINE_STATISTICS: Self = Self(1);
+    pub const TIMESTAMP: Self = Self(2);
     /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_8: Self = QueryType(1000023008);
+    pub const RESERVED_8: Self = Self(1000023008);
     /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_4: Self = QueryType(1000024004);
+    pub const RESERVED_4: Self = Self(1000024004);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = QueryType(1000028004);
+    pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = Self(1000028004);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = QueryType(1000165000);
+    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_QUERY_INTEL: Self = QueryType(1000210000);
+    pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
 }
 impl default::Default for QueryType {
     fn default() -> Self {
-        QueryType(0)
+        Self(0)
     }
 }
 impl fmt::Display for QueryType {
@@ -11502,12 +11501,12 @@ impl fmt::Display for QueryType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SubpassContents(i32);
 impl SubpassContents {
-    pub const INLINE: Self = SubpassContents(0);
-    pub const SECONDARY_COMMAND_BUFFERS: Self = SubpassContents(1);
+    pub const INLINE: Self = Self(0);
+    pub const SECONDARY_COMMAND_BUFFERS: Self = Self(1);
 }
 impl default::Default for SubpassContents {
     fn default() -> Self {
-        SubpassContents(0)
+        Self(0)
     }
 }
 impl fmt::Display for SubpassContents {
@@ -11529,73 +11528,73 @@ impl fmt::Display for SubpassContents {
 pub struct Result(i32);
 impl Result {
     /// Command completed successfully
-    pub const SUCCESS: Self = Result(0);
+    pub const SUCCESS: Self = Self(0);
     /// A fence or query has not yet completed
-    pub const NOT_READY: Self = Result(1);
+    pub const NOT_READY: Self = Self(1);
     /// A wait operation has not completed in the specified time
-    pub const TIMEOUT: Self = Result(2);
+    pub const TIMEOUT: Self = Self(2);
     /// An event is signaled
-    pub const EVENT_SET: Self = Result(3);
+    pub const EVENT_SET: Self = Self(3);
     /// An event is unsignaled
-    pub const EVENT_RESET: Self = Result(4);
+    pub const EVENT_RESET: Self = Self(4);
     /// A return array was too small for the result
-    pub const INCOMPLETE: Self = Result(5);
+    pub const INCOMPLETE: Self = Self(5);
     /// A host memory allocation has failed
-    pub const ERROR_OUT_OF_HOST_MEMORY: Self = Result(-1);
+    pub const ERROR_OUT_OF_HOST_MEMORY: Self = Self(-1);
     /// A device memory allocation has failed
-    pub const ERROR_OUT_OF_DEVICE_MEMORY: Self = Result(-2);
+    pub const ERROR_OUT_OF_DEVICE_MEMORY: Self = Self(-2);
     /// Initialization of a object has failed
-    pub const ERROR_INITIALIZATION_FAILED: Self = Result(-3);
+    pub const ERROR_INITIALIZATION_FAILED: Self = Self(-3);
     /// The logical device has been lost. See <<devsandqueues-lost-device>>
-    pub const ERROR_DEVICE_LOST: Self = Result(-4);
+    pub const ERROR_DEVICE_LOST: Self = Self(-4);
     /// Mapping of a memory object has failed
-    pub const ERROR_MEMORY_MAP_FAILED: Self = Result(-5);
+    pub const ERROR_MEMORY_MAP_FAILED: Self = Self(-5);
     /// Layer specified does not exist
-    pub const ERROR_LAYER_NOT_PRESENT: Self = Result(-6);
+    pub const ERROR_LAYER_NOT_PRESENT: Self = Self(-6);
     /// Extension specified does not exist
-    pub const ERROR_EXTENSION_NOT_PRESENT: Self = Result(-7);
+    pub const ERROR_EXTENSION_NOT_PRESENT: Self = Self(-7);
     /// Requested feature is not available on this device
-    pub const ERROR_FEATURE_NOT_PRESENT: Self = Result(-8);
+    pub const ERROR_FEATURE_NOT_PRESENT: Self = Self(-8);
     /// Unable to find a Vulkan driver
-    pub const ERROR_INCOMPATIBLE_DRIVER: Self = Result(-9);
+    pub const ERROR_INCOMPATIBLE_DRIVER: Self = Self(-9);
     /// Too many objects of the type have already been created
-    pub const ERROR_TOO_MANY_OBJECTS: Self = Result(-10);
+    pub const ERROR_TOO_MANY_OBJECTS: Self = Self(-10);
     /// Requested format is not supported on this device
-    pub const ERROR_FORMAT_NOT_SUPPORTED: Self = Result(-11);
+    pub const ERROR_FORMAT_NOT_SUPPORTED: Self = Self(-11);
     /// A requested pool allocation has failed due to fragmentation of the pool's memory
-    pub const ERROR_FRAGMENTED_POOL: Self = Result(-12);
-    pub const ERROR_OUT_OF_POOL_MEMORY: Self = Result(-1000069000);
-    pub const ERROR_INVALID_EXTERNAL_HANDLE: Self = Result(-1000072003);
+    pub const ERROR_FRAGMENTED_POOL: Self = Self(-12);
+    pub const ERROR_OUT_OF_POOL_MEMORY: Self = Self(-1000069000);
+    pub const ERROR_INVALID_EXTERNAL_HANDLE: Self = Self(-1000072003);
     /// Added by extension VK_KHR_surface.
-    pub const ERROR_SURFACE_LOST_KHR: Self = Result(-1000000000);
+    pub const ERROR_SURFACE_LOST_KHR: Self = Self(-1000000000);
     /// Added by extension VK_KHR_surface.
-    pub const ERROR_NATIVE_WINDOW_IN_USE_KHR: Self = Result(-1000000001);
+    pub const ERROR_NATIVE_WINDOW_IN_USE_KHR: Self = Self(-1000000001);
     /// Added by extension VK_KHR_swapchain.
-    pub const SUBOPTIMAL_KHR: Self = Result(1000001003);
+    pub const SUBOPTIMAL_KHR: Self = Self(1000001003);
     /// Added by extension VK_KHR_swapchain.
-    pub const ERROR_OUT_OF_DATE_KHR: Self = Result(-1000001004);
+    pub const ERROR_OUT_OF_DATE_KHR: Self = Self(-1000001004);
     /// Added by extension VK_KHR_display_swapchain.
-    pub const ERROR_INCOMPATIBLE_DISPLAY_KHR: Self = Result(-1000003001);
+    pub const ERROR_INCOMPATIBLE_DISPLAY_KHR: Self = Self(-1000003001);
     /// Added by extension VK_EXT_debug_report.
-    pub const ERROR_VALIDATION_FAILED_EXT: Self = Result(-1000011001);
+    pub const ERROR_VALIDATION_FAILED_EXT: Self = Self(-1000011001);
     /// Added by extension VK_NV_glsl_shader.
-    pub const ERROR_INVALID_SHADER_NV: Self = Result(-1000012000);
+    pub const ERROR_INVALID_SHADER_NV: Self = Self(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Result(-1000158000);
+    pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Self(-1000158000);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const ERROR_FRAGMENTATION_EXT: Self = Result(-1000161000);
+    pub const ERROR_FRAGMENTATION_EXT: Self = Self(-1000161000);
     /// Added by extension VK_EXT_global_priority.
-    pub const ERROR_NOT_PERMITTED_EXT: Self = Result(-1000174001);
+    pub const ERROR_NOT_PERMITTED_EXT: Self = Self(-1000174001);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Result(-1000244000);
+    pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self(-1000244000);
     /// Added by extension VK_EXT_full_screen_exclusive.
-    pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Result(-1000255000);
+    pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
 }
 impl default::Default for Result {
     fn default() -> Self {
-        Result(0)
+        Self(0)
     }
 }
 impl fmt::Display for Result {
@@ -11646,18 +11645,18 @@ impl fmt::Display for Result {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct StencilOp(i32);
 impl StencilOp {
-    pub const KEEP: Self = StencilOp(0);
-    pub const ZERO: Self = StencilOp(1);
-    pub const REPLACE: Self = StencilOp(2);
-    pub const INCREMENT_AND_CLAMP: Self = StencilOp(3);
-    pub const DECREMENT_AND_CLAMP: Self = StencilOp(4);
-    pub const INVERT: Self = StencilOp(5);
-    pub const INCREMENT_AND_WRAP: Self = StencilOp(6);
-    pub const DECREMENT_AND_WRAP: Self = StencilOp(7);
+    pub const KEEP: Self = Self(0);
+    pub const ZERO: Self = Self(1);
+    pub const REPLACE: Self = Self(2);
+    pub const INCREMENT_AND_CLAMP: Self = Self(3);
+    pub const DECREMENT_AND_CLAMP: Self = Self(4);
+    pub const INVERT: Self = Self(5);
+    pub const INCREMENT_AND_WRAP: Self = Self(6);
+    pub const DECREMENT_AND_WRAP: Self = Self(7);
 }
 impl default::Default for StencilOp {
     fn default() -> Self {
-        StencilOp(0)
+        Self(0)
     }
 }
 impl fmt::Display for StencilOp {
@@ -11684,205 +11683,205 @@ impl fmt::Display for StencilOp {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct StructureType(i32);
 impl StructureType {
-    pub const APPLICATION_INFO: Self = StructureType(0);
-    pub const INSTANCE_CREATE_INFO: Self = StructureType(1);
-    pub const DEVICE_QUEUE_CREATE_INFO: Self = StructureType(2);
-    pub const DEVICE_CREATE_INFO: Self = StructureType(3);
-    pub const SUBMIT_INFO: Self = StructureType(4);
-    pub const MEMORY_ALLOCATE_INFO: Self = StructureType(5);
-    pub const MAPPED_MEMORY_RANGE: Self = StructureType(6);
-    pub const BIND_SPARSE_INFO: Self = StructureType(7);
-    pub const FENCE_CREATE_INFO: Self = StructureType(8);
-    pub const SEMAPHORE_CREATE_INFO: Self = StructureType(9);
-    pub const EVENT_CREATE_INFO: Self = StructureType(10);
-    pub const QUERY_POOL_CREATE_INFO: Self = StructureType(11);
-    pub const BUFFER_CREATE_INFO: Self = StructureType(12);
-    pub const BUFFER_VIEW_CREATE_INFO: Self = StructureType(13);
-    pub const IMAGE_CREATE_INFO: Self = StructureType(14);
-    pub const IMAGE_VIEW_CREATE_INFO: Self = StructureType(15);
-    pub const SHADER_MODULE_CREATE_INFO: Self = StructureType(16);
-    pub const PIPELINE_CACHE_CREATE_INFO: Self = StructureType(17);
-    pub const PIPELINE_SHADER_STAGE_CREATE_INFO: Self = StructureType(18);
-    pub const PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO: Self = StructureType(19);
-    pub const PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO: Self = StructureType(20);
-    pub const PIPELINE_TESSELLATION_STATE_CREATE_INFO: Self = StructureType(21);
-    pub const PIPELINE_VIEWPORT_STATE_CREATE_INFO: Self = StructureType(22);
-    pub const PIPELINE_RASTERIZATION_STATE_CREATE_INFO: Self = StructureType(23);
-    pub const PIPELINE_MULTISAMPLE_STATE_CREATE_INFO: Self = StructureType(24);
-    pub const PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO: Self = StructureType(25);
-    pub const PIPELINE_COLOR_BLEND_STATE_CREATE_INFO: Self = StructureType(26);
-    pub const PIPELINE_DYNAMIC_STATE_CREATE_INFO: Self = StructureType(27);
-    pub const GRAPHICS_PIPELINE_CREATE_INFO: Self = StructureType(28);
-    pub const COMPUTE_PIPELINE_CREATE_INFO: Self = StructureType(29);
-    pub const PIPELINE_LAYOUT_CREATE_INFO: Self = StructureType(30);
-    pub const SAMPLER_CREATE_INFO: Self = StructureType(31);
-    pub const DESCRIPTOR_SET_LAYOUT_CREATE_INFO: Self = StructureType(32);
-    pub const DESCRIPTOR_POOL_CREATE_INFO: Self = StructureType(33);
-    pub const DESCRIPTOR_SET_ALLOCATE_INFO: Self = StructureType(34);
-    pub const WRITE_DESCRIPTOR_SET: Self = StructureType(35);
-    pub const COPY_DESCRIPTOR_SET: Self = StructureType(36);
-    pub const FRAMEBUFFER_CREATE_INFO: Self = StructureType(37);
-    pub const RENDER_PASS_CREATE_INFO: Self = StructureType(38);
-    pub const COMMAND_POOL_CREATE_INFO: Self = StructureType(39);
-    pub const COMMAND_BUFFER_ALLOCATE_INFO: Self = StructureType(40);
-    pub const COMMAND_BUFFER_INHERITANCE_INFO: Self = StructureType(41);
-    pub const COMMAND_BUFFER_BEGIN_INFO: Self = StructureType(42);
-    pub const RENDER_PASS_BEGIN_INFO: Self = StructureType(43);
-    pub const BUFFER_MEMORY_BARRIER: Self = StructureType(44);
-    pub const IMAGE_MEMORY_BARRIER: Self = StructureType(45);
-    pub const MEMORY_BARRIER: Self = StructureType(46);
+    pub const APPLICATION_INFO: Self = Self(0);
+    pub const INSTANCE_CREATE_INFO: Self = Self(1);
+    pub const DEVICE_QUEUE_CREATE_INFO: Self = Self(2);
+    pub const DEVICE_CREATE_INFO: Self = Self(3);
+    pub const SUBMIT_INFO: Self = Self(4);
+    pub const MEMORY_ALLOCATE_INFO: Self = Self(5);
+    pub const MAPPED_MEMORY_RANGE: Self = Self(6);
+    pub const BIND_SPARSE_INFO: Self = Self(7);
+    pub const FENCE_CREATE_INFO: Self = Self(8);
+    pub const SEMAPHORE_CREATE_INFO: Self = Self(9);
+    pub const EVENT_CREATE_INFO: Self = Self(10);
+    pub const QUERY_POOL_CREATE_INFO: Self = Self(11);
+    pub const BUFFER_CREATE_INFO: Self = Self(12);
+    pub const BUFFER_VIEW_CREATE_INFO: Self = Self(13);
+    pub const IMAGE_CREATE_INFO: Self = Self(14);
+    pub const IMAGE_VIEW_CREATE_INFO: Self = Self(15);
+    pub const SHADER_MODULE_CREATE_INFO: Self = Self(16);
+    pub const PIPELINE_CACHE_CREATE_INFO: Self = Self(17);
+    pub const PIPELINE_SHADER_STAGE_CREATE_INFO: Self = Self(18);
+    pub const PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO: Self = Self(19);
+    pub const PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO: Self = Self(20);
+    pub const PIPELINE_TESSELLATION_STATE_CREATE_INFO: Self = Self(21);
+    pub const PIPELINE_VIEWPORT_STATE_CREATE_INFO: Self = Self(22);
+    pub const PIPELINE_RASTERIZATION_STATE_CREATE_INFO: Self = Self(23);
+    pub const PIPELINE_MULTISAMPLE_STATE_CREATE_INFO: Self = Self(24);
+    pub const PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO: Self = Self(25);
+    pub const PIPELINE_COLOR_BLEND_STATE_CREATE_INFO: Self = Self(26);
+    pub const PIPELINE_DYNAMIC_STATE_CREATE_INFO: Self = Self(27);
+    pub const GRAPHICS_PIPELINE_CREATE_INFO: Self = Self(28);
+    pub const COMPUTE_PIPELINE_CREATE_INFO: Self = Self(29);
+    pub const PIPELINE_LAYOUT_CREATE_INFO: Self = Self(30);
+    pub const SAMPLER_CREATE_INFO: Self = Self(31);
+    pub const DESCRIPTOR_SET_LAYOUT_CREATE_INFO: Self = Self(32);
+    pub const DESCRIPTOR_POOL_CREATE_INFO: Self = Self(33);
+    pub const DESCRIPTOR_SET_ALLOCATE_INFO: Self = Self(34);
+    pub const WRITE_DESCRIPTOR_SET: Self = Self(35);
+    pub const COPY_DESCRIPTOR_SET: Self = Self(36);
+    pub const FRAMEBUFFER_CREATE_INFO: Self = Self(37);
+    pub const RENDER_PASS_CREATE_INFO: Self = Self(38);
+    pub const COMMAND_POOL_CREATE_INFO: Self = Self(39);
+    pub const COMMAND_BUFFER_ALLOCATE_INFO: Self = Self(40);
+    pub const COMMAND_BUFFER_INHERITANCE_INFO: Self = Self(41);
+    pub const COMMAND_BUFFER_BEGIN_INFO: Self = Self(42);
+    pub const RENDER_PASS_BEGIN_INFO: Self = Self(43);
+    pub const BUFFER_MEMORY_BARRIER: Self = Self(44);
+    pub const IMAGE_MEMORY_BARRIER: Self = Self(45);
+    pub const MEMORY_BARRIER: Self = Self(46);
     /// Reserved for internal use by the loader, layers, and ICDs
-    pub const LOADER_INSTANCE_CREATE_INFO: Self = StructureType(47);
+    pub const LOADER_INSTANCE_CREATE_INFO: Self = Self(47);
     /// Reserved for internal use by the loader, layers, and ICDs
-    pub const LOADER_DEVICE_CREATE_INFO: Self = StructureType(48);
-    pub const PHYSICAL_DEVICE_SUBGROUP_PROPERTIES: Self = StructureType(1000094000);
-    pub const BIND_BUFFER_MEMORY_INFO: Self = StructureType(1000157000);
-    pub const BIND_IMAGE_MEMORY_INFO: Self = StructureType(1000157001);
-    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES: Self = StructureType(1000083000);
-    pub const MEMORY_DEDICATED_REQUIREMENTS: Self = StructureType(1000127000);
-    pub const MEMORY_DEDICATED_ALLOCATE_INFO: Self = StructureType(1000127001);
-    pub const MEMORY_ALLOCATE_FLAGS_INFO: Self = StructureType(1000060000);
-    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO: Self = StructureType(1000060003);
-    pub const DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO: Self = StructureType(1000060004);
-    pub const DEVICE_GROUP_SUBMIT_INFO: Self = StructureType(1000060005);
-    pub const DEVICE_GROUP_BIND_SPARSE_INFO: Self = StructureType(1000060006);
-    pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO: Self = StructureType(1000060013);
-    pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO: Self = StructureType(1000060014);
-    pub const PHYSICAL_DEVICE_GROUP_PROPERTIES: Self = StructureType(1000070000);
-    pub const DEVICE_GROUP_DEVICE_CREATE_INFO: Self = StructureType(1000070001);
-    pub const BUFFER_MEMORY_REQUIREMENTS_INFO_2: Self = StructureType(1000146000);
-    pub const IMAGE_MEMORY_REQUIREMENTS_INFO_2: Self = StructureType(1000146001);
-    pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2: Self = StructureType(1000146002);
-    pub const MEMORY_REQUIREMENTS_2: Self = StructureType(1000146003);
-    pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2: Self = StructureType(1000146004);
-    pub const PHYSICAL_DEVICE_FEATURES_2: Self = StructureType(1000059000);
-    pub const PHYSICAL_DEVICE_PROPERTIES_2: Self = StructureType(1000059001);
-    pub const FORMAT_PROPERTIES_2: Self = StructureType(1000059002);
-    pub const IMAGE_FORMAT_PROPERTIES_2: Self = StructureType(1000059003);
-    pub const PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2: Self = StructureType(1000059004);
-    pub const QUEUE_FAMILY_PROPERTIES_2: Self = StructureType(1000059005);
-    pub const PHYSICAL_DEVICE_MEMORY_PROPERTIES_2: Self = StructureType(1000059006);
-    pub const SPARSE_IMAGE_FORMAT_PROPERTIES_2: Self = StructureType(1000059007);
-    pub const PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2: Self = StructureType(1000059008);
-    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES: Self = StructureType(1000117000);
-    pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO: Self = StructureType(1000117001);
-    pub const IMAGE_VIEW_USAGE_CREATE_INFO: Self = StructureType(1000117002);
-    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self = StructureType(1000117003);
-    pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = StructureType(1000053000);
-    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = StructureType(1000053001);
-    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = StructureType(1000053002);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES: Self = StructureType(1000120000);
+    pub const LOADER_DEVICE_CREATE_INFO: Self = Self(48);
+    pub const PHYSICAL_DEVICE_SUBGROUP_PROPERTIES: Self = Self(1000094000);
+    pub const BIND_BUFFER_MEMORY_INFO: Self = Self(1000157000);
+    pub const BIND_IMAGE_MEMORY_INFO: Self = Self(1000157001);
+    pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES: Self = Self(1000083000);
+    pub const MEMORY_DEDICATED_REQUIREMENTS: Self = Self(1000127000);
+    pub const MEMORY_DEDICATED_ALLOCATE_INFO: Self = Self(1000127001);
+    pub const MEMORY_ALLOCATE_FLAGS_INFO: Self = Self(1000060000);
+    pub const DEVICE_GROUP_RENDER_PASS_BEGIN_INFO: Self = Self(1000060003);
+    pub const DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO: Self = Self(1000060004);
+    pub const DEVICE_GROUP_SUBMIT_INFO: Self = Self(1000060005);
+    pub const DEVICE_GROUP_BIND_SPARSE_INFO: Self = Self(1000060006);
+    pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO: Self = Self(1000060013);
+    pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO: Self = Self(1000060014);
+    pub const PHYSICAL_DEVICE_GROUP_PROPERTIES: Self = Self(1000070000);
+    pub const DEVICE_GROUP_DEVICE_CREATE_INFO: Self = Self(1000070001);
+    pub const BUFFER_MEMORY_REQUIREMENTS_INFO_2: Self = Self(1000146000);
+    pub const IMAGE_MEMORY_REQUIREMENTS_INFO_2: Self = Self(1000146001);
+    pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2: Self = Self(1000146002);
+    pub const MEMORY_REQUIREMENTS_2: Self = Self(1000146003);
+    pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2: Self = Self(1000146004);
+    pub const PHYSICAL_DEVICE_FEATURES_2: Self = Self(1000059000);
+    pub const PHYSICAL_DEVICE_PROPERTIES_2: Self = Self(1000059001);
+    pub const FORMAT_PROPERTIES_2: Self = Self(1000059002);
+    pub const IMAGE_FORMAT_PROPERTIES_2: Self = Self(1000059003);
+    pub const PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2: Self = Self(1000059004);
+    pub const QUEUE_FAMILY_PROPERTIES_2: Self = Self(1000059005);
+    pub const PHYSICAL_DEVICE_MEMORY_PROPERTIES_2: Self = Self(1000059006);
+    pub const SPARSE_IMAGE_FORMAT_PROPERTIES_2: Self = Self(1000059007);
+    pub const PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2: Self = Self(1000059008);
+    pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES: Self = Self(1000117000);
+    pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO: Self = Self(1000117001);
+    pub const IMAGE_VIEW_USAGE_CREATE_INFO: Self = Self(1000117002);
+    pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO: Self = Self(1000117003);
+    pub const RENDER_PASS_MULTIVIEW_CREATE_INFO: Self = Self(1000053000);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES: Self = Self(1000053001);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES: Self = Self(1000053002);
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES: Self = Self(1000120000);
     pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES;
-    pub const PROTECTED_SUBMIT_INFO: Self = StructureType(1000145000);
-    pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES: Self = StructureType(1000145001);
-    pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES: Self = StructureType(1000145002);
-    pub const DEVICE_QUEUE_INFO_2: Self = StructureType(1000145003);
-    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO: Self = StructureType(1000156000);
-    pub const SAMPLER_YCBCR_CONVERSION_INFO: Self = StructureType(1000156001);
-    pub const BIND_IMAGE_PLANE_MEMORY_INFO: Self = StructureType(1000156002);
-    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO: Self = StructureType(1000156003);
-    pub const PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES: Self = StructureType(1000156004);
-    pub const SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES: Self = StructureType(1000156005);
-    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO: Self = StructureType(1000085000);
-    pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO: Self = StructureType(1000071000);
-    pub const EXTERNAL_IMAGE_FORMAT_PROPERTIES: Self = StructureType(1000071001);
-    pub const PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO: Self = StructureType(1000071002);
-    pub const EXTERNAL_BUFFER_PROPERTIES: Self = StructureType(1000071003);
-    pub const PHYSICAL_DEVICE_ID_PROPERTIES: Self = StructureType(1000071004);
-    pub const EXTERNAL_MEMORY_BUFFER_CREATE_INFO: Self = StructureType(1000072000);
-    pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO: Self = StructureType(1000072001);
-    pub const EXPORT_MEMORY_ALLOCATE_INFO: Self = StructureType(1000072002);
-    pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO: Self = StructureType(1000112000);
-    pub const EXTERNAL_FENCE_PROPERTIES: Self = StructureType(1000112001);
-    pub const EXPORT_FENCE_CREATE_INFO: Self = StructureType(1000113000);
-    pub const EXPORT_SEMAPHORE_CREATE_INFO: Self = StructureType(1000077000);
-    pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO: Self = StructureType(1000076000);
-    pub const EXTERNAL_SEMAPHORE_PROPERTIES: Self = StructureType(1000076001);
-    pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES: Self = StructureType(1000168000);
-    pub const DESCRIPTOR_SET_LAYOUT_SUPPORT: Self = StructureType(1000168001);
-    pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES: Self = StructureType(1000063000);
+    pub const PROTECTED_SUBMIT_INFO: Self = Self(1000145000);
+    pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES: Self = Self(1000145001);
+    pub const PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES: Self = Self(1000145002);
+    pub const DEVICE_QUEUE_INFO_2: Self = Self(1000145003);
+    pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO: Self = Self(1000156000);
+    pub const SAMPLER_YCBCR_CONVERSION_INFO: Self = Self(1000156001);
+    pub const BIND_IMAGE_PLANE_MEMORY_INFO: Self = Self(1000156002);
+    pub const IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO: Self = Self(1000156003);
+    pub const PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES: Self = Self(1000156004);
+    pub const SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES: Self = Self(1000156005);
+    pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO: Self = Self(1000085000);
+    pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO: Self = Self(1000071000);
+    pub const EXTERNAL_IMAGE_FORMAT_PROPERTIES: Self = Self(1000071001);
+    pub const PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO: Self = Self(1000071002);
+    pub const EXTERNAL_BUFFER_PROPERTIES: Self = Self(1000071003);
+    pub const PHYSICAL_DEVICE_ID_PROPERTIES: Self = Self(1000071004);
+    pub const EXTERNAL_MEMORY_BUFFER_CREATE_INFO: Self = Self(1000072000);
+    pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO: Self = Self(1000072001);
+    pub const EXPORT_MEMORY_ALLOCATE_INFO: Self = Self(1000072002);
+    pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO: Self = Self(1000112000);
+    pub const EXTERNAL_FENCE_PROPERTIES: Self = Self(1000112001);
+    pub const EXPORT_FENCE_CREATE_INFO: Self = Self(1000113000);
+    pub const EXPORT_SEMAPHORE_CREATE_INFO: Self = Self(1000077000);
+    pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO: Self = Self(1000076000);
+    pub const EXTERNAL_SEMAPHORE_PROPERTIES: Self = Self(1000076001);
+    pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES: Self = Self(1000168000);
+    pub const DESCRIPTOR_SET_LAYOUT_SUPPORT: Self = Self(1000168001);
+    pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES: Self = Self(1000063000);
     pub const PHYSICAL_DEVICE_SHADER_DRAW_PARAMETER_FEATURES: Self =
         Self::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES;
     /// Added by extension VK_KHR_swapchain.
-    pub const SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000001000);
+    pub const SWAPCHAIN_CREATE_INFO_KHR: Self = Self(1000001000);
     /// Added by extension VK_KHR_swapchain.
-    pub const PRESENT_INFO_KHR: Self = StructureType(1000001001);
+    pub const PRESENT_INFO_KHR: Self = Self(1000001001);
     /// Added by extension VK_KHR_device_group.
-    pub const DEVICE_GROUP_PRESENT_CAPABILITIES_KHR: Self = StructureType(1000060007);
+    pub const DEVICE_GROUP_PRESENT_CAPABILITIES_KHR: Self = Self(1000060007);
     /// Added by extension VK_KHR_device_group.
-    pub const IMAGE_SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000060008);
+    pub const IMAGE_SWAPCHAIN_CREATE_INFO_KHR: Self = Self(1000060008);
     /// Added by extension VK_KHR_device_group.
-    pub const BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR: Self = StructureType(1000060009);
+    pub const BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR: Self = Self(1000060009);
     /// Added by extension VK_KHR_device_group.
-    pub const ACQUIRE_NEXT_IMAGE_INFO_KHR: Self = StructureType(1000060010);
+    pub const ACQUIRE_NEXT_IMAGE_INFO_KHR: Self = Self(1000060010);
     /// Added by extension VK_KHR_device_group.
-    pub const DEVICE_GROUP_PRESENT_INFO_KHR: Self = StructureType(1000060011);
+    pub const DEVICE_GROUP_PRESENT_INFO_KHR: Self = Self(1000060011);
     /// Added by extension VK_KHR_device_group.
-    pub const DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR: Self = StructureType(1000060012);
+    pub const DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR: Self = Self(1000060012);
     /// Added by extension VK_KHR_display.
-    pub const DISPLAY_MODE_CREATE_INFO_KHR: Self = StructureType(1000002000);
+    pub const DISPLAY_MODE_CREATE_INFO_KHR: Self = Self(1000002000);
     /// Added by extension VK_KHR_display.
-    pub const DISPLAY_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000002001);
+    pub const DISPLAY_SURFACE_CREATE_INFO_KHR: Self = Self(1000002001);
     /// Added by extension VK_KHR_display_swapchain.
-    pub const DISPLAY_PRESENT_INFO_KHR: Self = StructureType(1000003000);
+    pub const DISPLAY_PRESENT_INFO_KHR: Self = Self(1000003000);
     /// Added by extension VK_KHR_xlib_surface.
-    pub const XLIB_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000004000);
+    pub const XLIB_SURFACE_CREATE_INFO_KHR: Self = Self(1000004000);
     /// Added by extension VK_KHR_xcb_surface.
-    pub const XCB_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000005000);
+    pub const XCB_SURFACE_CREATE_INFO_KHR: Self = Self(1000005000);
     /// Added by extension VK_KHR_wayland_surface.
-    pub const WAYLAND_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000006000);
+    pub const WAYLAND_SURFACE_CREATE_INFO_KHR: Self = Self(1000006000);
     /// Added by extension VK_KHR_android_surface.
-    pub const ANDROID_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000008000);
+    pub const ANDROID_SURFACE_CREATE_INFO_KHR: Self = Self(1000008000);
     /// Added by extension VK_KHR_win32_surface.
-    pub const WIN32_SURFACE_CREATE_INFO_KHR: Self = StructureType(1000009000);
+    pub const WIN32_SURFACE_CREATE_INFO_KHR: Self = Self(1000009000);
     /// Added by extension VK_ANDROID_native_buffer.
-    pub const NATIVE_BUFFER_ANDROID: Self = StructureType(1000010000);
+    pub const NATIVE_BUFFER_ANDROID: Self = Self(1000010000);
     /// Added by extension VK_ANDROID_native_buffer.
-    pub const SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID: Self = StructureType(1000010001);
+    pub const SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID: Self = Self(1000010001);
     /// Added by extension VK_ANDROID_native_buffer.
-    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID: Self = StructureType(1000010002);
+    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID: Self = Self(1000010002);
     /// Added by extension VK_EXT_debug_report.
-    pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = StructureType(1000011000);
+    pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = Self(1000011000);
     pub const DEBUG_REPORT_CREATE_INFO_EXT: Self = Self::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
     /// Added by extension VK_AMD_rasterization_order.
-    pub const PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD: Self = StructureType(1000018000);
+    pub const PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD: Self = Self(1000018000);
     /// Added by extension VK_EXT_debug_marker.
-    pub const DEBUG_MARKER_OBJECT_NAME_INFO_EXT: Self = StructureType(1000022000);
+    pub const DEBUG_MARKER_OBJECT_NAME_INFO_EXT: Self = Self(1000022000);
     /// Added by extension VK_EXT_debug_marker.
-    pub const DEBUG_MARKER_OBJECT_TAG_INFO_EXT: Self = StructureType(1000022001);
+    pub const DEBUG_MARKER_OBJECT_TAG_INFO_EXT: Self = Self(1000022001);
     /// Added by extension VK_EXT_debug_marker.
-    pub const DEBUG_MARKER_MARKER_INFO_EXT: Self = StructureType(1000022002);
+    pub const DEBUG_MARKER_MARKER_INFO_EXT: Self = Self(1000022002);
     /// Added by extension VK_NV_dedicated_allocation.
-    pub const DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV: Self = StructureType(1000026000);
+    pub const DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV: Self = Self(1000026000);
     /// Added by extension VK_NV_dedicated_allocation.
-    pub const DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV: Self = StructureType(1000026001);
+    pub const DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV: Self = Self(1000026001);
     /// Added by extension VK_NV_dedicated_allocation.
-    pub const DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000026002);
+    pub const DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV: Self = Self(1000026002);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT: Self = StructureType(1000028000);
+    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT: Self = Self(1000028000);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT: Self = StructureType(1000028001);
+    pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT: Self = Self(1000028001);
     /// Added by extension VK_EXT_transform_feedback.
-    pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = StructureType(1000028002);
+    pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = Self(1000028002);
     /// Added by extension VK_NVX_image_view_handle.
-    pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = StructureType(1000030000);
+    pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = Self(1000030000);
     /// Added by extension VK_AMD_texture_gather_bias_lod.
-    pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = StructureType(1000041000);
+    pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = Self(1000041000);
     /// Added by extension VK_NV_corner_sampled_image.
-    pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = StructureType(1000050000);
+    pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = Self(1000050000);
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO_KHR: Self = Self::RENDER_PASS_MULTIVIEW_CREATE_INFO;
     pub const PHYSICAL_DEVICE_MULTIVIEW_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_FEATURES;
     pub const PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES;
     /// Added by extension VK_NV_external_memory.
-    pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV: Self = StructureType(1000056000);
+    pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV: Self = Self(1000056000);
     /// Added by extension VK_NV_external_memory.
-    pub const EXPORT_MEMORY_ALLOCATE_INFO_NV: Self = StructureType(1000056001);
+    pub const EXPORT_MEMORY_ALLOCATE_INFO_NV: Self = Self(1000056001);
     /// Added by extension VK_NV_external_memory_win32.
-    pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = StructureType(1000057000);
+    pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = Self(1000057000);
     /// Added by extension VK_NV_external_memory_win32.
-    pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = StructureType(1000057001);
+    pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_NV: Self = Self(1000057001);
     /// Added by extension VK_NV_win32_keyed_mutex.
-    pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV: Self = StructureType(1000058000);
+    pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV: Self = Self(1000058000);
     pub const PHYSICAL_DEVICE_FEATURES_2_KHR: Self = Self::PHYSICAL_DEVICE_FEATURES_2;
     pub const PHYSICAL_DEVICE_PROPERTIES_2_KHR: Self = Self::PHYSICAL_DEVICE_PROPERTIES_2;
     pub const FORMAT_PROPERTIES_2_KHR: Self = Self::FORMAT_PROPERTIES_2;
@@ -11900,15 +11899,15 @@ impl StructureType {
     pub const BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO;
     pub const BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO;
     /// Added by extension VK_EXT_validation_flags.
-    pub const VALIDATION_FLAGS_EXT: Self = StructureType(1000061000);
+    pub const VALIDATION_FLAGS_EXT: Self = Self(1000061000);
     /// Added by extension VK_NN_vi_surface.
-    pub const VI_SURFACE_CREATE_INFO_NN: Self = StructureType(1000062000);
+    pub const VI_SURFACE_CREATE_INFO_NN: Self = Self(1000062000);
     /// Added by extension VK_EXT_texture_compression_astc_hdr.
-    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT: Self = StructureType(1000066000);
+    pub const PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT: Self = Self(1000066000);
     /// Added by extension VK_EXT_astc_decode_mode.
-    pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = StructureType(1000067000);
+    pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = Self(1000067000);
     /// Added by extension VK_EXT_astc_decode_mode.
-    pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = StructureType(1000067001);
+    pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = Self(1000067001);
     pub const PHYSICAL_DEVICE_GROUP_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pub const DEVICE_GROUP_DEVICE_CREATE_INFO_KHR: Self = Self::DEVICE_GROUP_DEVICE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
@@ -11920,133 +11919,133 @@ impl StructureType {
     pub const EXTERNAL_MEMORY_IMAGE_CREATE_INFO_KHR: Self = Self::EXTERNAL_MEMORY_IMAGE_CREATE_INFO;
     pub const EXPORT_MEMORY_ALLOCATE_INFO_KHR: Self = Self::EXPORT_MEMORY_ALLOCATE_INFO;
     /// Added by extension VK_KHR_external_memory_win32.
-    pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073000);
+    pub const IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = Self(1000073000);
     /// Added by extension VK_KHR_external_memory_win32.
-    pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073001);
+    pub const EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR: Self = Self(1000073001);
     /// Added by extension VK_KHR_external_memory_win32.
-    pub const MEMORY_WIN32_HANDLE_PROPERTIES_KHR: Self = StructureType(1000073002);
+    pub const MEMORY_WIN32_HANDLE_PROPERTIES_KHR: Self = Self(1000073002);
     /// Added by extension VK_KHR_external_memory_win32.
-    pub const MEMORY_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000073003);
+    pub const MEMORY_GET_WIN32_HANDLE_INFO_KHR: Self = Self(1000073003);
     /// Added by extension VK_KHR_external_memory_fd.
-    pub const IMPORT_MEMORY_FD_INFO_KHR: Self = StructureType(1000074000);
+    pub const IMPORT_MEMORY_FD_INFO_KHR: Self = Self(1000074000);
     /// Added by extension VK_KHR_external_memory_fd.
-    pub const MEMORY_FD_PROPERTIES_KHR: Self = StructureType(1000074001);
+    pub const MEMORY_FD_PROPERTIES_KHR: Self = Self(1000074001);
     /// Added by extension VK_KHR_external_memory_fd.
-    pub const MEMORY_GET_FD_INFO_KHR: Self = StructureType(1000074002);
+    pub const MEMORY_GET_FD_INFO_KHR: Self = Self(1000074002);
     /// Added by extension VK_KHR_win32_keyed_mutex.
-    pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR: Self = StructureType(1000075000);
+    pub const WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR: Self = Self(1000075000);
     pub const PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO;
     pub const EXTERNAL_SEMAPHORE_PROPERTIES_KHR: Self = Self::EXTERNAL_SEMAPHORE_PROPERTIES;
     pub const EXPORT_SEMAPHORE_CREATE_INFO_KHR: Self = Self::EXPORT_SEMAPHORE_CREATE_INFO;
     /// Added by extension VK_KHR_external_semaphore_win32.
-    pub const IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078000);
+    pub const IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = Self(1000078000);
     /// Added by extension VK_KHR_external_semaphore_win32.
-    pub const EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078001);
+    pub const EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR: Self = Self(1000078001);
     /// Added by extension VK_KHR_external_semaphore_win32.
-    pub const D3D12_FENCE_SUBMIT_INFO_KHR: Self = StructureType(1000078002);
+    pub const D3D12_FENCE_SUBMIT_INFO_KHR: Self = Self(1000078002);
     /// Added by extension VK_KHR_external_semaphore_win32.
-    pub const SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000078003);
+    pub const SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR: Self = Self(1000078003);
     /// Added by extension VK_KHR_external_semaphore_fd.
-    pub const IMPORT_SEMAPHORE_FD_INFO_KHR: Self = StructureType(1000079000);
+    pub const IMPORT_SEMAPHORE_FD_INFO_KHR: Self = Self(1000079000);
     /// Added by extension VK_KHR_external_semaphore_fd.
-    pub const SEMAPHORE_GET_FD_INFO_KHR: Self = StructureType(1000079001);
+    pub const SEMAPHORE_GET_FD_INFO_KHR: Self = Self(1000079001);
     /// Added by extension VK_KHR_push_descriptor.
-    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = StructureType(1000080000);
+    pub const PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: Self = Self(1000080000);
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self = StructureType(1000081000);
+    pub const COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT: Self = Self(1000081000);
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT: Self = StructureType(1000081001);
+    pub const PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT: Self = Self(1000081001);
     /// Added by extension VK_EXT_conditional_rendering.
-    pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = StructureType(1000081002);
+    pub const CONDITIONAL_RENDERING_BEGIN_INFO_EXT: Self = Self(1000081002);
     /// Added by extension VK_KHR_shader_float16_int8.
-    pub const PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR: Self = StructureType(1000082000);
+    pub const PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR: Self = Self(1000082000);
     pub const PHYSICAL_DEVICE_FLOAT16_INT8_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR;
     pub const PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES;
     /// Added by extension VK_KHR_incremental_present.
-    pub const PRESENT_REGIONS_KHR: Self = StructureType(1000084000);
+    pub const PRESENT_REGIONS_KHR: Self = Self(1000084000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const OBJECT_TABLE_CREATE_INFO_NVX: Self = StructureType(1000086000);
+    pub const OBJECT_TABLE_CREATE_INFO_NVX: Self = Self(1000086000);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX: Self = StructureType(1000086001);
+    pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX: Self = Self(1000086001);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const CMD_PROCESS_COMMANDS_INFO_NVX: Self = StructureType(1000086002);
+    pub const CMD_PROCESS_COMMANDS_INFO_NVX: Self = Self(1000086002);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX: Self = StructureType(1000086003);
+    pub const CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX: Self = Self(1000086003);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const DEVICE_GENERATED_COMMANDS_LIMITS_NVX: Self = StructureType(1000086004);
+    pub const DEVICE_GENERATED_COMMANDS_LIMITS_NVX: Self = Self(1000086004);
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const DEVICE_GENERATED_COMMANDS_FEATURES_NVX: Self = StructureType(1000086005);
+    pub const DEVICE_GENERATED_COMMANDS_FEATURES_NVX: Self = Self(1000086005);
     /// Added by extension VK_NV_clip_space_w_scaling.
-    pub const PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV: Self = StructureType(1000087000);
+    pub const PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV: Self = Self(1000087000);
     /// Added by extension VK_EXT_display_surface_counter.
-    pub const SURFACE_CAPABILITIES_2_EXT: Self = StructureType(1000090000);
+    pub const SURFACE_CAPABILITIES_2_EXT: Self = Self(1000090000);
     pub const SURFACE_CAPABILITIES2_EXT: Self = Self::SURFACE_CAPABILITIES_2_EXT;
     /// Added by extension VK_EXT_display_control.
-    pub const DISPLAY_POWER_INFO_EXT: Self = StructureType(1000091000);
+    pub const DISPLAY_POWER_INFO_EXT: Self = Self(1000091000);
     /// Added by extension VK_EXT_display_control.
-    pub const DEVICE_EVENT_INFO_EXT: Self = StructureType(1000091001);
+    pub const DEVICE_EVENT_INFO_EXT: Self = Self(1000091001);
     /// Added by extension VK_EXT_display_control.
-    pub const DISPLAY_EVENT_INFO_EXT: Self = StructureType(1000091002);
+    pub const DISPLAY_EVENT_INFO_EXT: Self = Self(1000091002);
     /// Added by extension VK_EXT_display_control.
-    pub const SWAPCHAIN_COUNTER_CREATE_INFO_EXT: Self = StructureType(1000091003);
+    pub const SWAPCHAIN_COUNTER_CREATE_INFO_EXT: Self = Self(1000091003);
     /// Added by extension VK_GOOGLE_display_timing.
-    pub const PRESENT_TIMES_INFO_GOOGLE: Self = StructureType(1000092000);
+    pub const PRESENT_TIMES_INFO_GOOGLE: Self = Self(1000092000);
     /// Added by extension VK_NVX_multiview_per_view_attributes.
-    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX: Self = StructureType(1000097000);
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX: Self = Self(1000097000);
     /// Added by extension VK_NV_viewport_swizzle.
-    pub const PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV: Self = StructureType(1000098000);
+    pub const PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV: Self = Self(1000098000);
     /// Added by extension VK_EXT_discard_rectangles.
-    pub const PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT: Self = StructureType(1000099000);
+    pub const PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT: Self = Self(1000099000);
     /// Added by extension VK_EXT_discard_rectangles.
-    pub const PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT: Self = StructureType(1000099001);
+    pub const PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT: Self = Self(1000099001);
     /// Added by extension VK_EXT_conservative_rasterization.
-    pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000101000);
+    pub const PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT: Self = Self(1000101000);
     /// Added by extension VK_EXT_conservative_rasterization.
-    pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self = StructureType(1000101001);
+    pub const PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT: Self = Self(1000101001);
     /// Added by extension VK_EXT_depth_clip_enable.
-    pub const PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT: Self = StructureType(1000102000);
+    pub const PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT: Self = Self(1000102000);
     /// Added by extension VK_EXT_depth_clip_enable.
-    pub const PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT: Self = StructureType(1000102001);
+    pub const PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT: Self = Self(1000102001);
     /// Added by extension VK_EXT_hdr_metadata.
-    pub const HDR_METADATA_EXT: Self = StructureType(1000105000);
+    pub const HDR_METADATA_EXT: Self = Self(1000105000);
     /// Added by extension VK_KHR_imageless_framebuffer.
-    pub const PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR: Self = StructureType(1000108000);
+    pub const PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR: Self = Self(1000108000);
     /// Added by extension VK_KHR_imageless_framebuffer.
-    pub const FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR: Self = StructureType(1000108001);
+    pub const FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR: Self = Self(1000108001);
     /// Added by extension VK_KHR_imageless_framebuffer.
-    pub const FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR: Self = StructureType(1000108002);
+    pub const FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR: Self = Self(1000108002);
     /// Added by extension VK_KHR_imageless_framebuffer.
-    pub const RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR: Self = StructureType(1000108003);
+    pub const RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR: Self = Self(1000108003);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const ATTACHMENT_DESCRIPTION_2_KHR: Self = StructureType(1000109000);
+    pub const ATTACHMENT_DESCRIPTION_2_KHR: Self = Self(1000109000);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const ATTACHMENT_REFERENCE_2_KHR: Self = StructureType(1000109001);
+    pub const ATTACHMENT_REFERENCE_2_KHR: Self = Self(1000109001);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const SUBPASS_DESCRIPTION_2_KHR: Self = StructureType(1000109002);
+    pub const SUBPASS_DESCRIPTION_2_KHR: Self = Self(1000109002);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const SUBPASS_DEPENDENCY_2_KHR: Self = StructureType(1000109003);
+    pub const SUBPASS_DEPENDENCY_2_KHR: Self = Self(1000109003);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const RENDER_PASS_CREATE_INFO_2_KHR: Self = StructureType(1000109004);
+    pub const RENDER_PASS_CREATE_INFO_2_KHR: Self = Self(1000109004);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const SUBPASS_BEGIN_INFO_KHR: Self = StructureType(1000109005);
+    pub const SUBPASS_BEGIN_INFO_KHR: Self = Self(1000109005);
     /// Added by extension VK_KHR_create_renderpass2.
-    pub const SUBPASS_END_INFO_KHR: Self = StructureType(1000109006);
+    pub const SUBPASS_END_INFO_KHR: Self = Self(1000109006);
     /// Added by extension VK_KHR_shared_presentable_image.
-    pub const SHARED_PRESENT_SURFACE_CAPABILITIES_KHR: Self = StructureType(1000111000);
+    pub const SHARED_PRESENT_SURFACE_CAPABILITIES_KHR: Self = Self(1000111000);
     pub const PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO;
     pub const EXTERNAL_FENCE_PROPERTIES_KHR: Self = Self::EXTERNAL_FENCE_PROPERTIES;
     pub const EXPORT_FENCE_CREATE_INFO_KHR: Self = Self::EXPORT_FENCE_CREATE_INFO;
     /// Added by extension VK_KHR_external_fence_win32.
-    pub const IMPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114000);
+    pub const IMPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = Self(1000114000);
     /// Added by extension VK_KHR_external_fence_win32.
-    pub const EXPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114001);
+    pub const EXPORT_FENCE_WIN32_HANDLE_INFO_KHR: Self = Self(1000114001);
     /// Added by extension VK_KHR_external_fence_win32.
-    pub const FENCE_GET_WIN32_HANDLE_INFO_KHR: Self = StructureType(1000114002);
+    pub const FENCE_GET_WIN32_HANDLE_INFO_KHR: Self = Self(1000114002);
     /// Added by extension VK_KHR_external_fence_fd.
-    pub const IMPORT_FENCE_FD_INFO_KHR: Self = StructureType(1000115000);
+    pub const IMPORT_FENCE_FD_INFO_KHR: Self = Self(1000115000);
     /// Added by extension VK_KHR_external_fence_fd.
-    pub const FENCE_GET_FD_INFO_KHR: Self = StructureType(1000115001);
+    pub const FENCE_GET_FD_INFO_KHR: Self = Self(1000115001);
     pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR: Self =
         Self::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO;
@@ -12054,94 +12053,94 @@ impl StructureType {
     pub const PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO_KHR: Self =
         Self::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO;
     /// Added by extension VK_KHR_get_surface_capabilities2.
-    pub const PHYSICAL_DEVICE_SURFACE_INFO_2_KHR: Self = StructureType(1000119000);
+    pub const PHYSICAL_DEVICE_SURFACE_INFO_2_KHR: Self = Self(1000119000);
     /// Added by extension VK_KHR_get_surface_capabilities2.
-    pub const SURFACE_CAPABILITIES_2_KHR: Self = StructureType(1000119001);
+    pub const SURFACE_CAPABILITIES_2_KHR: Self = Self(1000119001);
     /// Added by extension VK_KHR_get_surface_capabilities2.
-    pub const SURFACE_FORMAT_2_KHR: Self = StructureType(1000119002);
+    pub const SURFACE_FORMAT_2_KHR: Self = Self(1000119002);
     pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
     pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
     /// Added by extension VK_KHR_get_display_properties2.
-    pub const DISPLAY_PROPERTIES_2_KHR: Self = StructureType(1000121000);
+    pub const DISPLAY_PROPERTIES_2_KHR: Self = Self(1000121000);
     /// Added by extension VK_KHR_get_display_properties2.
-    pub const DISPLAY_PLANE_PROPERTIES_2_KHR: Self = StructureType(1000121001);
+    pub const DISPLAY_PLANE_PROPERTIES_2_KHR: Self = Self(1000121001);
     /// Added by extension VK_KHR_get_display_properties2.
-    pub const DISPLAY_MODE_PROPERTIES_2_KHR: Self = StructureType(1000121002);
+    pub const DISPLAY_MODE_PROPERTIES_2_KHR: Self = Self(1000121002);
     /// Added by extension VK_KHR_get_display_properties2.
-    pub const DISPLAY_PLANE_INFO_2_KHR: Self = StructureType(1000121003);
+    pub const DISPLAY_PLANE_INFO_2_KHR: Self = Self(1000121003);
     /// Added by extension VK_KHR_get_display_properties2.
-    pub const DISPLAY_PLANE_CAPABILITIES_2_KHR: Self = StructureType(1000121004);
+    pub const DISPLAY_PLANE_CAPABILITIES_2_KHR: Self = Self(1000121004);
     /// Added by extension VK_MVK_ios_surface.
-    pub const IOS_SURFACE_CREATE_INFO_MVK: Self = StructureType(1000122000);
+    pub const IOS_SURFACE_CREATE_INFO_MVK: Self = Self(1000122000);
     /// Added by extension VK_MVK_macos_surface.
-    pub const MACOS_SURFACE_CREATE_INFO_MVK: Self = StructureType(1000123000);
+    pub const MACOS_SURFACE_CREATE_INFO_MVK: Self = Self(1000123000);
     pub const MEMORY_DEDICATED_REQUIREMENTS_KHR: Self = Self::MEMORY_DEDICATED_REQUIREMENTS;
     pub const MEMORY_DEDICATED_ALLOCATE_INFO_KHR: Self = Self::MEMORY_DEDICATED_ALLOCATE_INFO;
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_OBJECT_NAME_INFO_EXT: Self = StructureType(1000128000);
+    pub const DEBUG_UTILS_OBJECT_NAME_INFO_EXT: Self = Self(1000128000);
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_OBJECT_TAG_INFO_EXT: Self = StructureType(1000128001);
+    pub const DEBUG_UTILS_OBJECT_TAG_INFO_EXT: Self = Self(1000128001);
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_LABEL_EXT: Self = StructureType(1000128002);
+    pub const DEBUG_UTILS_LABEL_EXT: Self = Self(1000128002);
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT: Self = StructureType(1000128003);
+    pub const DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT: Self = Self(1000128003);
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT: Self = StructureType(1000128004);
+    pub const DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT: Self = Self(1000128004);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const ANDROID_HARDWARE_BUFFER_USAGE_ANDROID: Self = StructureType(1000129000);
+    pub const ANDROID_HARDWARE_BUFFER_USAGE_ANDROID: Self = Self(1000129000);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID: Self = StructureType(1000129001);
+    pub const ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID: Self = Self(1000129001);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID: Self = StructureType(1000129002);
+    pub const ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID: Self = Self(1000129002);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129003);
+    pub const IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = Self(1000129003);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = StructureType(1000129004);
+    pub const MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = Self(1000129004);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
-    pub const EXTERNAL_FORMAT_ANDROID: Self = StructureType(1000129005);
+    pub const EXTERNAL_FORMAT_ANDROID: Self = Self(1000129005);
     /// Added by extension VK_EXT_sampler_filter_minmax.
-    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self = StructureType(1000130000);
+    pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self = Self(1000130000);
     /// Added by extension VK_EXT_sampler_filter_minmax.
-    pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = StructureType(1000130001);
+    pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = Self(1000130001);
     /// Added by extension VK_EXT_inline_uniform_block.
-    pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self = StructureType(1000138000);
+    pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self = Self(1000138000);
     /// Added by extension VK_EXT_inline_uniform_block.
-    pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT: Self = StructureType(1000138001);
+    pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT: Self = Self(1000138001);
     /// Added by extension VK_EXT_inline_uniform_block.
-    pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT: Self = StructureType(1000138002);
+    pub const WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT: Self = Self(1000138002);
     /// Added by extension VK_EXT_inline_uniform_block.
-    pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self = StructureType(1000138003);
+    pub const DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT: Self = Self(1000138003);
     /// Added by extension VK_EXT_sample_locations.
-    pub const SAMPLE_LOCATIONS_INFO_EXT: Self = StructureType(1000143000);
+    pub const SAMPLE_LOCATIONS_INFO_EXT: Self = Self(1000143000);
     /// Added by extension VK_EXT_sample_locations.
-    pub const RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT: Self = StructureType(1000143001);
+    pub const RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT: Self = Self(1000143001);
     /// Added by extension VK_EXT_sample_locations.
-    pub const PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT: Self = StructureType(1000143002);
+    pub const PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT: Self = Self(1000143002);
     /// Added by extension VK_EXT_sample_locations.
-    pub const PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT: Self = StructureType(1000143003);
+    pub const PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT: Self = Self(1000143003);
     /// Added by extension VK_EXT_sample_locations.
-    pub const MULTISAMPLE_PROPERTIES_EXT: Self = StructureType(1000143004);
+    pub const MULTISAMPLE_PROPERTIES_EXT: Self = Self(1000143004);
     pub const BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::BUFFER_MEMORY_REQUIREMENTS_INFO_2;
     pub const IMAGE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_MEMORY_REQUIREMENTS_INFO_2;
     pub const IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2_KHR: Self = Self::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2;
     pub const MEMORY_REQUIREMENTS_2_KHR: Self = Self::MEMORY_REQUIREMENTS_2;
     pub const SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR: Self = Self::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2;
     /// Added by extension VK_KHR_image_format_list.
-    pub const IMAGE_FORMAT_LIST_CREATE_INFO_KHR: Self = StructureType(1000147000);
+    pub const IMAGE_FORMAT_LIST_CREATE_INFO_KHR: Self = Self(1000147000);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT: Self = StructureType(1000148000);
+    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT: Self = Self(1000148000);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT: Self = StructureType(1000148001);
+    pub const PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT: Self = Self(1000148001);
     /// Added by extension VK_EXT_blend_operation_advanced.
-    pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = StructureType(1000148002);
+    pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = Self(1000148002);
     /// Added by extension VK_NV_fragment_coverage_to_color.
-    pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = StructureType(1000149000);
+    pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = Self(1000149000);
     /// Added by extension VK_NV_framebuffer_mixed_samples.
-    pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = StructureType(1000152000);
+    pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = Self(1000152000);
     /// Added by extension VK_NV_shader_sm_builtins.
-    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV: Self = StructureType(1000154000);
+    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV: Self = Self(1000154000);
     /// Added by extension VK_NV_shader_sm_builtins.
-    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV: Self = StructureType(1000154001);
+    pub const PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV: Self = Self(1000154001);
     pub const SAMPLER_YCBCR_CONVERSION_CREATE_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_CREATE_INFO;
     pub const SAMPLER_YCBCR_CONVERSION_INFO_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION_INFO;
     pub const BIND_IMAGE_PLANE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_PLANE_MEMORY_INFO;
@@ -12153,247 +12152,247 @@ impl StructureType {
     pub const BIND_BUFFER_MEMORY_INFO_KHR: Self = Self::BIND_BUFFER_MEMORY_INFO;
     pub const BIND_IMAGE_MEMORY_INFO_KHR: Self = Self::BIND_IMAGE_MEMORY_INFO;
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT: Self = StructureType(1000158000);
+    pub const DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT: Self = Self(1000158000);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = StructureType(1000158001);
+    pub const DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = Self(1000158001);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT: Self = StructureType(1000158002);
+    pub const PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT: Self = Self(1000158002);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT: Self = StructureType(1000158003);
+    pub const IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT: Self = Self(1000158003);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT: Self = StructureType(1000158004);
+    pub const IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT: Self = Self(1000158004);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = StructureType(1000158005);
+    pub const IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = Self(1000158005);
     /// Added by extension VK_EXT_validation_cache.
-    pub const VALIDATION_CACHE_CREATE_INFO_EXT: Self = StructureType(1000160000);
+    pub const VALIDATION_CACHE_CREATE_INFO_EXT: Self = Self(1000160000);
     /// Added by extension VK_EXT_validation_cache.
-    pub const SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT: Self = StructureType(1000160001);
+    pub const SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT: Self = Self(1000160001);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT: Self = StructureType(1000161000);
+    pub const DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT: Self = Self(1000161000);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT: Self = StructureType(1000161001);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT: Self = Self(1000161001);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT: Self = StructureType(1000161002);
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT: Self = Self(1000161002);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT: Self = StructureType(1000161003);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT: Self = Self(1000161003);
     /// Added by extension VK_EXT_descriptor_indexing.
-    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self = StructureType(1000161004);
+    pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self = Self(1000161004);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self = StructureType(1000164000);
+    pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self = Self(1000164000);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV: Self = StructureType(1000164001);
+    pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV: Self = Self(1000164001);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV: Self = StructureType(1000164002);
+    pub const PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV: Self = Self(1000164002);
     /// Added by extension VK_NV_shading_rate_image.
-    pub const PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV: Self = StructureType(1000164005);
+    pub const PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV: Self = Self(1000164005);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_PIPELINE_CREATE_INFO_NV: Self = StructureType(1000165000);
+    pub const RAY_TRACING_PIPELINE_CREATE_INFO_NV: Self = Self(1000165000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_CREATE_INFO_NV: Self = StructureType(1000165001);
+    pub const ACCELERATION_STRUCTURE_CREATE_INFO_NV: Self = Self(1000165001);
     /// Added by extension VK_NV_ray_tracing.
-    pub const GEOMETRY_NV: Self = StructureType(1000165003);
+    pub const GEOMETRY_NV: Self = Self(1000165003);
     /// Added by extension VK_NV_ray_tracing.
-    pub const GEOMETRY_TRIANGLES_NV: Self = StructureType(1000165004);
+    pub const GEOMETRY_TRIANGLES_NV: Self = Self(1000165004);
     /// Added by extension VK_NV_ray_tracing.
-    pub const GEOMETRY_AABB_NV: Self = StructureType(1000165005);
+    pub const GEOMETRY_AABB_NV: Self = Self(1000165005);
     /// Added by extension VK_NV_ray_tracing.
-    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = StructureType(1000165006);
+    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = Self(1000165006);
     /// Added by extension VK_NV_ray_tracing.
-    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self = StructureType(1000165007);
+    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self = Self(1000165007);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV: Self = StructureType(1000165008);
+    pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV: Self = Self(1000165008);
     /// Added by extension VK_NV_ray_tracing.
-    pub const PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV: Self = StructureType(1000165009);
+    pub const PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV: Self = Self(1000165009);
     /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV: Self = StructureType(1000165011);
+    pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV: Self = Self(1000165011);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_INFO_NV: Self = StructureType(1000165012);
+    pub const ACCELERATION_STRUCTURE_INFO_NV: Self = Self(1000165012);
     /// Added by extension VK_NV_representative_fragment_test.
-    pub const PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV: Self = StructureType(1000166000);
+    pub const PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV: Self = Self(1000166000);
     /// Added by extension VK_NV_representative_fragment_test.
-    pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self = StructureType(1000166001);
+    pub const PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV: Self = Self(1000166001);
     pub const PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES;
     pub const DESCRIPTOR_SET_LAYOUT_SUPPORT_KHR: Self = Self::DESCRIPTOR_SET_LAYOUT_SUPPORT;
     /// Added by extension VK_EXT_filter_cubic.
-    pub const PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT: Self = StructureType(1000170000);
+    pub const PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT: Self = Self(1000170000);
     /// Added by extension VK_EXT_filter_cubic.
-    pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = StructureType(1000170001);
+    pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = Self(1000170001);
     /// Added by extension VK_EXT_global_priority.
-    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = StructureType(1000174000);
+    pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = Self(1000174000);
     /// Added by extension VK_KHR_8bit_storage.
-    pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = StructureType(1000177000);
+    pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = Self(1000177000);
     /// Added by extension VK_EXT_external_memory_host.
-    pub const IMPORT_MEMORY_HOST_POINTER_INFO_EXT: Self = StructureType(1000178000);
+    pub const IMPORT_MEMORY_HOST_POINTER_INFO_EXT: Self = Self(1000178000);
     /// Added by extension VK_EXT_external_memory_host.
-    pub const MEMORY_HOST_POINTER_PROPERTIES_EXT: Self = StructureType(1000178001);
+    pub const MEMORY_HOST_POINTER_PROPERTIES_EXT: Self = Self(1000178001);
     /// Added by extension VK_EXT_external_memory_host.
-    pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = StructureType(1000178002);
+    pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = Self(1000178002);
     /// Added by extension VK_KHR_shader_atomic_int64.
-    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = StructureType(1000180000);
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = Self(1000180000);
     /// Added by extension VK_AMD_pipeline_compiler_control.
-    pub const PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD: Self = StructureType(1000183000);
+    pub const PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD: Self = Self(1000183000);
     /// Added by extension VK_EXT_calibrated_timestamps.
-    pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = StructureType(1000184000);
+    pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self(1000184000);
     /// Added by extension VK_AMD_shader_core_properties.
-    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = StructureType(1000185000);
+    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = Self(1000185000);
     /// Added by extension VK_AMD_memory_overallocation_behavior.
-    pub const DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD: Self = StructureType(1000189000);
+    pub const DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD: Self = Self(1000189000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = StructureType(1000190000);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT: Self = Self(1000190000);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
-    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = StructureType(1000190001);
+    pub const PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT: Self = Self(1000190001);
     /// Added by extension VK_EXT_vertex_attribute_divisor.
-    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = StructureType(1000190002);
+    pub const PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT: Self = Self(1000190002);
     /// Added by extension VK_EXT_pipeline_creation_feedback.
-    pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = StructureType(1000192000);
+    pub const PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000192000);
     /// Added by extension VK_KHR_driver_properties.
-    pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = StructureType(1000196000);
+    pub const PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR: Self = Self(1000196000);
     /// Added by extension VK_KHR_shader_float_controls.
-    pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = StructureType(1000197000);
+    pub const PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR: Self = Self(1000197000);
     /// Added by extension VK_KHR_depth_stencil_resolve.
-    pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR: Self = StructureType(1000199000);
+    pub const PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR: Self = Self(1000199000);
     /// Added by extension VK_KHR_depth_stencil_resolve.
-    pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR: Self = StructureType(1000199001);
+    pub const SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR: Self = Self(1000199001);
     /// Added by extension VK_NV_compute_shader_derivatives.
-    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = StructureType(1000201000);
+    pub const PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV: Self = Self(1000201000);
     /// Added by extension VK_NV_mesh_shader.
-    pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = StructureType(1000202000);
+    pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = Self(1000202000);
     /// Added by extension VK_NV_mesh_shader.
-    pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV: Self = StructureType(1000202001);
+    pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV: Self = Self(1000202001);
     /// Added by extension VK_NV_fragment_shader_barycentric.
-    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self = StructureType(1000203000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self = Self(1000203000);
     /// Added by extension VK_NV_shader_image_footprint.
-    pub const PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV: Self = StructureType(1000204000);
+    pub const PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV: Self = Self(1000204000);
     /// Added by extension VK_NV_scissor_exclusive.
-    pub const PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV: Self = StructureType(1000205000);
+    pub const PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV: Self = Self(1000205000);
     /// Added by extension VK_NV_scissor_exclusive.
-    pub const PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV: Self = StructureType(1000205002);
+    pub const PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV: Self = Self(1000205002);
     /// Added by extension VK_NV_device_diagnostic_checkpoints.
-    pub const CHECKPOINT_DATA_NV: Self = StructureType(1000206000);
+    pub const CHECKPOINT_DATA_NV: Self = Self(1000206000);
     /// Added by extension VK_NV_device_diagnostic_checkpoints.
-    pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = StructureType(1000206001);
+    pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = Self(1000206001);
     /// Added by extension VK_INTEL_shader_integer_functions2.
-    pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = StructureType(1000209000);
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = Self(1000209000);
     /// Added by extension VK_INTEL_performance_query.
-    pub const QUERY_POOL_CREATE_INFO_INTEL: Self = StructureType(1000210000);
+    pub const QUERY_POOL_CREATE_INFO_INTEL: Self = Self(1000210000);
     /// Added by extension VK_INTEL_performance_query.
-    pub const INITIALIZE_PERFORMANCE_API_INFO_INTEL: Self = StructureType(1000210001);
+    pub const INITIALIZE_PERFORMANCE_API_INFO_INTEL: Self = Self(1000210001);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_MARKER_INFO_INTEL: Self = StructureType(1000210002);
+    pub const PERFORMANCE_MARKER_INFO_INTEL: Self = Self(1000210002);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_STREAM_MARKER_INFO_INTEL: Self = StructureType(1000210003);
+    pub const PERFORMANCE_STREAM_MARKER_INFO_INTEL: Self = Self(1000210003);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_OVERRIDE_INFO_INTEL: Self = StructureType(1000210004);
+    pub const PERFORMANCE_OVERRIDE_INFO_INTEL: Self = Self(1000210004);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL: Self = StructureType(1000210005);
+    pub const PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL: Self = Self(1000210005);
     /// Added by extension VK_KHR_vulkan_memory_model.
-    pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = StructureType(1000211000);
+    pub const PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR: Self = Self(1000211000);
     /// Added by extension VK_EXT_pci_bus_info.
-    pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = StructureType(1000212000);
+    pub const PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT: Self = Self(1000212000);
     /// Added by extension VK_AMD_display_native_hdr.
-    pub const DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD: Self = StructureType(1000213000);
+    pub const DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD: Self = Self(1000213000);
     /// Added by extension VK_AMD_display_native_hdr.
-    pub const SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD: Self = StructureType(1000213001);
+    pub const SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD: Self = Self(1000213001);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
-    pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = StructureType(1000214000);
+    pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = Self(1000214000);
     /// Added by extension VK_EXT_metal_surface.
-    pub const METAL_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000217000);
+    pub const METAL_SURFACE_CREATE_INFO_EXT: Self = Self(1000217000);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT: Self = StructureType(1000218000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT: Self = Self(1000218000);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT: Self = StructureType(1000218001);
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT: Self = Self(1000218001);
     /// Added by extension VK_EXT_fragment_density_map.
-    pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT: Self = StructureType(1000218002);
+    pub const RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT: Self = Self(1000218002);
     /// Added by extension VK_EXT_scalar_block_layout.
-    pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT: Self = StructureType(1000221000);
+    pub const PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT: Self = Self(1000221000);
     /// Added by extension VK_EXT_subgroup_size_control.
-    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT: Self = StructureType(1000225000);
+    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT: Self = Self(1000225000);
     /// Added by extension VK_EXT_subgroup_size_control.
-    pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self = StructureType(1000225001);
+    pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self = Self(1000225001);
     /// Added by extension VK_EXT_subgroup_size_control.
-    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT: Self = StructureType(1000225002);
+    pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT: Self = Self(1000225002);
     /// Added by extension VK_AMD_shader_core_properties2.
-    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = StructureType(1000227000);
+    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
     /// Added by extension VK_EXT_memory_budget.
-    pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = StructureType(1000237000);
+    pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = Self(1000237000);
     /// Added by extension VK_EXT_memory_priority.
-    pub const PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT: Self = StructureType(1000238000);
+    pub const PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT: Self = Self(1000238000);
     /// Added by extension VK_EXT_memory_priority.
-    pub const MEMORY_PRIORITY_ALLOCATE_INFO_EXT: Self = StructureType(1000238001);
+    pub const MEMORY_PRIORITY_ALLOCATE_INFO_EXT: Self = Self(1000238001);
     /// Added by extension VK_KHR_surface_protected_capabilities.
-    pub const SURFACE_PROTECTED_CAPABILITIES_KHR: Self = StructureType(1000239000);
+    pub const SURFACE_PROTECTED_CAPABILITIES_KHR: Self = Self(1000239000);
     /// Added by extension VK_NV_dedicated_allocation_image_aliasing.
-    pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = StructureType(1000240000);
+    pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = Self(1000240000);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT: Self = StructureType(1000244000);
+    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT: Self = Self(1000244000);
     pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT;
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = StructureType(1000244001);
+    pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = Self(1000244001);
     /// Added by extension VK_EXT_buffer_device_address.
-    pub const BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT: Self = StructureType(1000244002);
+    pub const BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT: Self = Self(1000244002);
     /// Added by extension VK_EXT_separate_stencil_usage.
-    pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = StructureType(1000246000);
+    pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = Self(1000246000);
     /// Added by extension VK_EXT_validation_features.
-    pub const VALIDATION_FEATURES_EXT: Self = StructureType(1000247000);
+    pub const VALIDATION_FEATURES_EXT: Self = Self(1000247000);
     /// Added by extension VK_NV_cooperative_matrix.
-    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV: Self = StructureType(1000249000);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV: Self = Self(1000249000);
     /// Added by extension VK_NV_cooperative_matrix.
-    pub const COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249001);
+    pub const COOPERATIVE_MATRIX_PROPERTIES_NV: Self = Self(1000249001);
     /// Added by extension VK_NV_cooperative_matrix.
-    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = StructureType(1000249002);
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV: Self = Self(1000249002);
     /// Added by extension VK_NV_coverage_reduction_mode.
-    pub const PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV: Self = StructureType(1000250000);
+    pub const PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV: Self = Self(1000250000);
     /// Added by extension VK_NV_coverage_reduction_mode.
-    pub const PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV: Self = StructureType(1000250001);
+    pub const PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV: Self = Self(1000250001);
     /// Added by extension VK_NV_coverage_reduction_mode.
-    pub const FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV: Self = StructureType(1000250002);
+    pub const FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV: Self = Self(1000250002);
     /// Added by extension VK_EXT_fragment_shader_interlock.
-    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT: Self = StructureType(1000251000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT: Self = Self(1000251000);
     /// Added by extension VK_EXT_ycbcr_image_arrays.
-    pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = StructureType(1000252000);
+    pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = Self(1000252000);
     /// Added by extension VK_KHR_uniform_buffer_standard_layout.
-    pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR: Self = StructureType(1000253000);
+    pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR: Self = Self(1000253000);
     /// Added by extension VK_EXT_full_screen_exclusive.
-    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT: Self = StructureType(1000255000);
+    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT: Self = Self(1000255000);
     /// Added by extension VK_EXT_full_screen_exclusive.
-    pub const SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT: Self = StructureType(1000255002);
+    pub const SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT: Self = Self(1000255002);
     /// Added by extension VK_EXT_full_screen_exclusive.
-    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = StructureType(1000255001);
+    pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = Self(1000255001);
     /// Added by extension VK_EXT_headless_surface.
-    pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = StructureType(1000256000);
+    pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = Self(1000256000);
     /// Added by extension VK_EXT_line_rasterization.
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self = StructureType(1000259000);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self = Self(1000259000);
     /// Added by extension VK_EXT_line_rasterization.
-    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT: Self = StructureType(1000259001);
+    pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT: Self = Self(1000259001);
     /// Added by extension VK_EXT_line_rasterization.
-    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT: Self = StructureType(1000259002);
+    pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT: Self = Self(1000259002);
     /// Added by extension VK_EXT_host_query_reset.
-    pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = StructureType(1000261000);
+    pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = Self(1000261000);
     /// Added by extension VK_EXT_index_type_uint8.
-    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = StructureType(1000265000);
+    pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self(1000265000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR: Self = StructureType(1000269000);
+    pub const PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR: Self = Self(1000269000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PIPELINE_INFO_KHR: Self = StructureType(1000269001);
+    pub const PIPELINE_INFO_KHR: Self = Self(1000269001);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PIPELINE_EXECUTABLE_PROPERTIES_KHR: Self = StructureType(1000269002);
+    pub const PIPELINE_EXECUTABLE_PROPERTIES_KHR: Self = Self(1000269002);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PIPELINE_EXECUTABLE_INFO_KHR: Self = StructureType(1000269003);
+    pub const PIPELINE_EXECUTABLE_INFO_KHR: Self = Self(1000269003);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = StructureType(1000269004);
+    pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = Self(1000269004);
     /// Added by extension VK_KHR_pipeline_executable_properties.
-    pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = StructureType(1000269005);
+    pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
     /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
-    pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = StructureType(1000276000);
+    pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = Self(1000276000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
-    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = StructureType(1000281000);
+    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
-    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT: Self = StructureType(1000281001);
+    pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT: Self = Self(1000281001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
-        StructureType(0)
+        Self(0)
     }
 }
 impl fmt::Display for StructureType {
@@ -12785,15 +12784,15 @@ impl fmt::Display for StructureType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SystemAllocationScope(i32);
 impl SystemAllocationScope {
-    pub const COMMAND: Self = SystemAllocationScope(0);
-    pub const OBJECT: Self = SystemAllocationScope(1);
-    pub const CACHE: Self = SystemAllocationScope(2);
-    pub const DEVICE: Self = SystemAllocationScope(3);
-    pub const INSTANCE: Self = SystemAllocationScope(4);
+    pub const COMMAND: Self = Self(0);
+    pub const OBJECT: Self = Self(1);
+    pub const CACHE: Self = Self(2);
+    pub const DEVICE: Self = Self(3);
+    pub const INSTANCE: Self = Self(4);
 }
 impl default::Default for SystemAllocationScope {
     fn default() -> Self {
-        SystemAllocationScope(0)
+        Self(0)
     }
 }
 impl fmt::Display for SystemAllocationScope {
@@ -12817,11 +12816,11 @@ impl fmt::Display for SystemAllocationScope {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct InternalAllocationType(i32);
 impl InternalAllocationType {
-    pub const EXECUTABLE: Self = InternalAllocationType(0);
+    pub const EXECUTABLE: Self = Self(0);
 }
 impl default::Default for InternalAllocationType {
     fn default() -> Self {
-        InternalAllocationType(0)
+        Self(0)
     }
 }
 impl fmt::Display for InternalAllocationType {
@@ -12841,17 +12840,17 @@ impl fmt::Display for InternalAllocationType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerAddressMode(i32);
 impl SamplerAddressMode {
-    pub const REPEAT: Self = SamplerAddressMode(0);
-    pub const MIRRORED_REPEAT: Self = SamplerAddressMode(1);
-    pub const CLAMP_TO_EDGE: Self = SamplerAddressMode(2);
-    pub const CLAMP_TO_BORDER: Self = SamplerAddressMode(3);
+    pub const REPEAT: Self = Self(0);
+    pub const MIRRORED_REPEAT: Self = Self(1);
+    pub const CLAMP_TO_EDGE: Self = Self(2);
+    pub const CLAMP_TO_BORDER: Self = Self(3);
     /// Note that this defines what was previously a core enum, and so uses the 'value' attribute rather than 'offset', and does not have a suffix. This is a special case, and should not be repeated
     /// Added by extension VK_KHR_sampler_mirror_clamp_to_edge.
-    pub const MIRROR_CLAMP_TO_EDGE: Self = SamplerAddressMode(4);
+    pub const MIRROR_CLAMP_TO_EDGE: Self = Self(4);
 }
 impl default::Default for SamplerAddressMode {
     fn default() -> Self {
-        SamplerAddressMode(0)
+        Self(0)
     }
 }
 impl fmt::Display for SamplerAddressMode {
@@ -12875,15 +12874,15 @@ impl fmt::Display for SamplerAddressMode {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct Filter(i32);
 impl Filter {
-    pub const NEAREST: Self = Filter(0);
-    pub const LINEAR: Self = Filter(1);
+    pub const NEAREST: Self = Self(0);
+    pub const LINEAR: Self = Self(1);
     /// Added by extension VK_IMG_filter_cubic.
-    pub const CUBIC_IMG: Self = Filter(1000015000);
+    pub const CUBIC_IMG: Self = Self(1000015000);
     pub const CUBIC_EXT: Self = Self::CUBIC_IMG;
 }
 impl default::Default for Filter {
     fn default() -> Self {
-        Filter(0)
+        Self(0)
     }
 }
 impl fmt::Display for Filter {
@@ -12906,13 +12905,13 @@ impl fmt::Display for Filter {
 pub struct SamplerMipmapMode(i32);
 impl SamplerMipmapMode {
     /// Choose nearest mip level
-    pub const NEAREST: Self = SamplerMipmapMode(0);
+    pub const NEAREST: Self = Self(0);
     /// Linear filter between mip levels
-    pub const LINEAR: Self = SamplerMipmapMode(1);
+    pub const LINEAR: Self = Self(1);
 }
 impl default::Default for SamplerMipmapMode {
     fn default() -> Self {
-        SamplerMipmapMode(0)
+        Self(0)
     }
 }
 impl fmt::Display for SamplerMipmapMode {
@@ -12933,12 +12932,12 @@ impl fmt::Display for SamplerMipmapMode {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VertexInputRate(i32);
 impl VertexInputRate {
-    pub const VERTEX: Self = VertexInputRate(0);
-    pub const INSTANCE: Self = VertexInputRate(1);
+    pub const VERTEX: Self = Self(0);
+    pub const INSTANCE: Self = Self(1);
 }
 impl default::Default for VertexInputRate {
     fn default() -> Self {
-        VertexInputRate(0)
+        Self(0)
     }
 }
 impl fmt::Display for VertexInputRate {
@@ -12959,96 +12958,96 @@ impl fmt::Display for VertexInputRate {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ObjectType(i32);
 impl ObjectType {
-    pub const UNKNOWN: Self = ObjectType(0);
+    pub const UNKNOWN: Self = Self(0);
     /// VkInstance
-    pub const INSTANCE: Self = ObjectType(1);
+    pub const INSTANCE: Self = Self(1);
     /// VkPhysicalDevice
-    pub const PHYSICAL_DEVICE: Self = ObjectType(2);
+    pub const PHYSICAL_DEVICE: Self = Self(2);
     /// VkDevice
-    pub const DEVICE: Self = ObjectType(3);
+    pub const DEVICE: Self = Self(3);
     /// VkQueue
-    pub const QUEUE: Self = ObjectType(4);
+    pub const QUEUE: Self = Self(4);
     /// VkSemaphore
-    pub const SEMAPHORE: Self = ObjectType(5);
+    pub const SEMAPHORE: Self = Self(5);
     /// VkCommandBuffer
-    pub const COMMAND_BUFFER: Self = ObjectType(6);
+    pub const COMMAND_BUFFER: Self = Self(6);
     /// VkFence
-    pub const FENCE: Self = ObjectType(7);
+    pub const FENCE: Self = Self(7);
     /// VkDeviceMemory
-    pub const DEVICE_MEMORY: Self = ObjectType(8);
+    pub const DEVICE_MEMORY: Self = Self(8);
     /// VkBuffer
-    pub const BUFFER: Self = ObjectType(9);
+    pub const BUFFER: Self = Self(9);
     /// VkImage
-    pub const IMAGE: Self = ObjectType(10);
+    pub const IMAGE: Self = Self(10);
     /// VkEvent
-    pub const EVENT: Self = ObjectType(11);
+    pub const EVENT: Self = Self(11);
     /// VkQueryPool
-    pub const QUERY_POOL: Self = ObjectType(12);
+    pub const QUERY_POOL: Self = Self(12);
     /// VkBufferView
-    pub const BUFFER_VIEW: Self = ObjectType(13);
+    pub const BUFFER_VIEW: Self = Self(13);
     /// VkImageView
-    pub const IMAGE_VIEW: Self = ObjectType(14);
+    pub const IMAGE_VIEW: Self = Self(14);
     /// VkShaderModule
-    pub const SHADER_MODULE: Self = ObjectType(15);
+    pub const SHADER_MODULE: Self = Self(15);
     /// VkPipelineCache
-    pub const PIPELINE_CACHE: Self = ObjectType(16);
+    pub const PIPELINE_CACHE: Self = Self(16);
     /// VkPipelineLayout
-    pub const PIPELINE_LAYOUT: Self = ObjectType(17);
+    pub const PIPELINE_LAYOUT: Self = Self(17);
     /// VkRenderPass
-    pub const RENDER_PASS: Self = ObjectType(18);
+    pub const RENDER_PASS: Self = Self(18);
     /// VkPipeline
-    pub const PIPELINE: Self = ObjectType(19);
+    pub const PIPELINE: Self = Self(19);
     /// VkDescriptorSetLayout
-    pub const DESCRIPTOR_SET_LAYOUT: Self = ObjectType(20);
+    pub const DESCRIPTOR_SET_LAYOUT: Self = Self(20);
     /// VkSampler
-    pub const SAMPLER: Self = ObjectType(21);
+    pub const SAMPLER: Self = Self(21);
     /// VkDescriptorPool
-    pub const DESCRIPTOR_POOL: Self = ObjectType(22);
+    pub const DESCRIPTOR_POOL: Self = Self(22);
     /// VkDescriptorSet
-    pub const DESCRIPTOR_SET: Self = ObjectType(23);
+    pub const DESCRIPTOR_SET: Self = Self(23);
     /// VkFramebuffer
-    pub const FRAMEBUFFER: Self = ObjectType(24);
+    pub const FRAMEBUFFER: Self = Self(24);
     /// VkCommandPool
-    pub const COMMAND_POOL: Self = ObjectType(25);
-    pub const SAMPLER_YCBCR_CONVERSION: Self = ObjectType(1000156000);
-    pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = ObjectType(1000085000);
+    pub const COMMAND_POOL: Self = Self(25);
+    pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
+    pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
     /// VkSurfaceKHR
     /// Added by extension VK_KHR_surface.
-    pub const SURFACE_KHR: Self = ObjectType(1000000000);
+    pub const SURFACE_KHR: Self = Self(1000000000);
     /// VkSwapchainKHR
     /// Added by extension VK_KHR_swapchain.
-    pub const SWAPCHAIN_KHR: Self = ObjectType(1000001000);
+    pub const SWAPCHAIN_KHR: Self = Self(1000001000);
     /// VkDisplayKHR
     /// Added by extension VK_KHR_display.
-    pub const DISPLAY_KHR: Self = ObjectType(1000002000);
+    pub const DISPLAY_KHR: Self = Self(1000002000);
     /// VkDisplayModeKHR
     /// Added by extension VK_KHR_display.
-    pub const DISPLAY_MODE_KHR: Self = ObjectType(1000002001);
+    pub const DISPLAY_MODE_KHR: Self = Self(1000002001);
     /// VkDebugReportCallbackEXT
     /// Added by extension VK_EXT_debug_report.
-    pub const DEBUG_REPORT_CALLBACK_EXT: Self = ObjectType(1000011000);
+    pub const DEBUG_REPORT_CALLBACK_EXT: Self = Self(1000011000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     /// VkobjectTableNVX
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const OBJECT_TABLE_NVX: Self = ObjectType(1000086000);
+    pub const OBJECT_TABLE_NVX: Self = Self(1000086000);
     /// VkIndirectCommandsLayoutNVX
     /// Added by extension VK_NVX_device_generated_commands.
-    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = ObjectType(1000086001);
+    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = Self(1000086001);
     /// VkDebugUtilsMessengerEXT
     /// Added by extension VK_EXT_debug_utils.
-    pub const DEBUG_UTILS_MESSENGER_EXT: Self = ObjectType(1000128000);
+    pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// VkValidationCacheEXT
     /// Added by extension VK_EXT_validation_cache.
-    pub const VALIDATION_CACHE_EXT: Self = ObjectType(1000160000);
+    pub const VALIDATION_CACHE_EXT: Self = Self(1000160000);
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = ObjectType(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
-    pub const PERFORMANCE_CONFIGURATION_INTEL: Self = ObjectType(1000210000);
+    pub const PERFORMANCE_CONFIGURATION_INTEL: Self = Self(1000210000);
 }
 impl default::Default for ObjectType {
     fn default() -> Self {
-        ObjectType(0)
+        Self(0)
     }
 }
 impl fmt::Display for ObjectType {
@@ -13106,18 +13105,18 @@ impl fmt::Display for ObjectType {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsTokenTypeNVX(i32);
 impl IndirectCommandsTokenTypeNVX {
-    pub const PIPELINE: Self = IndirectCommandsTokenTypeNVX(0);
-    pub const DESCRIPTOR_SET: Self = IndirectCommandsTokenTypeNVX(1);
-    pub const INDEX_BUFFER: Self = IndirectCommandsTokenTypeNVX(2);
-    pub const VERTEX_BUFFER: Self = IndirectCommandsTokenTypeNVX(3);
-    pub const PUSH_CONSTANT: Self = IndirectCommandsTokenTypeNVX(4);
-    pub const DRAW_INDEXED: Self = IndirectCommandsTokenTypeNVX(5);
-    pub const DRAW: Self = IndirectCommandsTokenTypeNVX(6);
-    pub const DISPATCH: Self = IndirectCommandsTokenTypeNVX(7);
+    pub const PIPELINE: Self = Self(0);
+    pub const DESCRIPTOR_SET: Self = Self(1);
+    pub const INDEX_BUFFER: Self = Self(2);
+    pub const VERTEX_BUFFER: Self = Self(3);
+    pub const PUSH_CONSTANT: Self = Self(4);
+    pub const DRAW_INDEXED: Self = Self(5);
+    pub const DRAW: Self = Self(6);
+    pub const DISPATCH: Self = Self(7);
 }
 impl default::Default for IndirectCommandsTokenTypeNVX {
     fn default() -> Self {
-        IndirectCommandsTokenTypeNVX(0)
+        Self(0)
     }
 }
 impl fmt::Display for IndirectCommandsTokenTypeNVX {
@@ -13144,15 +13143,15 @@ impl fmt::Display for IndirectCommandsTokenTypeNVX {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ObjectEntryTypeNVX(i32);
 impl ObjectEntryTypeNVX {
-    pub const DESCRIPTOR_SET: Self = ObjectEntryTypeNVX(0);
-    pub const PIPELINE: Self = ObjectEntryTypeNVX(1);
-    pub const INDEX_BUFFER: Self = ObjectEntryTypeNVX(2);
-    pub const VERTEX_BUFFER: Self = ObjectEntryTypeNVX(3);
-    pub const PUSH_CONSTANT: Self = ObjectEntryTypeNVX(4);
+    pub const DESCRIPTOR_SET: Self = Self(0);
+    pub const PIPELINE: Self = Self(1);
+    pub const INDEX_BUFFER: Self = Self(2);
+    pub const VERTEX_BUFFER: Self = Self(3);
+    pub const PUSH_CONSTANT: Self = Self(4);
 }
 impl default::Default for ObjectEntryTypeNVX {
     fn default() -> Self {
-        ObjectEntryTypeNVX(0)
+        Self(0)
     }
 }
 impl fmt::Display for ObjectEntryTypeNVX {
@@ -13177,15 +13176,15 @@ impl fmt::Display for ObjectEntryTypeNVX {
 pub struct DescriptorUpdateTemplateType(i32);
 impl DescriptorUpdateTemplateType {
     /// Create descriptor update template for descriptor set updates
-    pub const DESCRIPTOR_SET: Self = DescriptorUpdateTemplateType(0);
+    pub const DESCRIPTOR_SET: Self = Self(0);
     /// Create descriptor update template for pushed descriptor updates
     /// Added by extension VK_KHR_descriptor_update_template.
-    pub const PUSH_DESCRIPTORS_KHR: Self = DescriptorUpdateTemplateType(1);
+    pub const PUSH_DESCRIPTORS_KHR: Self = Self(1);
     pub const DESCRIPTOR_SET_KHR: Self = Self::DESCRIPTOR_SET;
 }
 impl default::Default for DescriptorUpdateTemplateType {
     fn default() -> Self {
-        DescriptorUpdateTemplateType(0)
+        Self(0)
     }
 }
 impl fmt::Display for DescriptorUpdateTemplateType {
@@ -13207,18 +13206,18 @@ pub type DescriptorUpdateTemplateTypeKHR = DescriptorUpdateTemplateType;
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ViewportCoordinateSwizzleNV(i32);
 impl ViewportCoordinateSwizzleNV {
-    pub const POSITIVE_X: Self = ViewportCoordinateSwizzleNV(0);
-    pub const NEGATIVE_X: Self = ViewportCoordinateSwizzleNV(1);
-    pub const POSITIVE_Y: Self = ViewportCoordinateSwizzleNV(2);
-    pub const NEGATIVE_Y: Self = ViewportCoordinateSwizzleNV(3);
-    pub const POSITIVE_Z: Self = ViewportCoordinateSwizzleNV(4);
-    pub const NEGATIVE_Z: Self = ViewportCoordinateSwizzleNV(5);
-    pub const POSITIVE_W: Self = ViewportCoordinateSwizzleNV(6);
-    pub const NEGATIVE_W: Self = ViewportCoordinateSwizzleNV(7);
+    pub const POSITIVE_X: Self = Self(0);
+    pub const NEGATIVE_X: Self = Self(1);
+    pub const POSITIVE_Y: Self = Self(2);
+    pub const NEGATIVE_Y: Self = Self(3);
+    pub const POSITIVE_Z: Self = Self(4);
+    pub const NEGATIVE_Z: Self = Self(5);
+    pub const POSITIVE_W: Self = Self(6);
+    pub const NEGATIVE_W: Self = Self(7);
 }
 impl default::Default for ViewportCoordinateSwizzleNV {
     fn default() -> Self {
-        ViewportCoordinateSwizzleNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for ViewportCoordinateSwizzleNV {
@@ -13245,12 +13244,12 @@ impl fmt::Display for ViewportCoordinateSwizzleNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DiscardRectangleModeEXT(i32);
 impl DiscardRectangleModeEXT {
-    pub const INCLUSIVE: Self = DiscardRectangleModeEXT(0);
-    pub const EXCLUSIVE: Self = DiscardRectangleModeEXT(1);
+    pub const INCLUSIVE: Self = Self(0);
+    pub const EXCLUSIVE: Self = Self(1);
 }
 impl default::Default for DiscardRectangleModeEXT {
     fn default() -> Self {
-        DiscardRectangleModeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for DiscardRectangleModeEXT {
@@ -13271,14 +13270,14 @@ impl fmt::Display for DiscardRectangleModeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PointClippingBehavior(i32);
 impl PointClippingBehavior {
-    pub const ALL_CLIP_PLANES: Self = PointClippingBehavior(0);
-    pub const USER_CLIP_PLANES_ONLY: Self = PointClippingBehavior(1);
+    pub const ALL_CLIP_PLANES: Self = Self(0);
+    pub const USER_CLIP_PLANES_ONLY: Self = Self(1);
     pub const ALL_CLIP_PLANES_KHR: Self = Self::ALL_CLIP_PLANES;
     pub const USER_CLIP_PLANES_ONLY_KHR: Self = Self::USER_CLIP_PLANES_ONLY;
 }
 impl default::Default for PointClippingBehavior {
     fn default() -> Self {
-        PointClippingBehavior(0)
+        Self(0)
     }
 }
 impl fmt::Display for PointClippingBehavior {
@@ -13300,14 +13299,14 @@ pub type PointClippingBehaviorKHR = PointClippingBehavior;
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoverageModulationModeNV(i32);
 impl CoverageModulationModeNV {
-    pub const NONE: Self = CoverageModulationModeNV(0);
-    pub const RGB: Self = CoverageModulationModeNV(1);
-    pub const ALPHA: Self = CoverageModulationModeNV(2);
-    pub const RGBA: Self = CoverageModulationModeNV(3);
+    pub const NONE: Self = Self(0);
+    pub const RGB: Self = Self(1);
+    pub const ALPHA: Self = Self(2);
+    pub const RGBA: Self = Self(3);
 }
 impl default::Default for CoverageModulationModeNV {
     fn default() -> Self {
-        CoverageModulationModeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for CoverageModulationModeNV {
@@ -13330,12 +13329,12 @@ impl fmt::Display for CoverageModulationModeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoverageReductionModeNV(i32);
 impl CoverageReductionModeNV {
-    pub const MERGE: Self = CoverageReductionModeNV(0);
-    pub const TRUNCATE: Self = CoverageReductionModeNV(1);
+    pub const MERGE: Self = Self(0);
+    pub const TRUNCATE: Self = Self(1);
 }
 impl default::Default for CoverageReductionModeNV {
     fn default() -> Self {
-        CoverageReductionModeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for CoverageReductionModeNV {
@@ -13356,11 +13355,11 @@ impl fmt::Display for CoverageReductionModeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationCacheHeaderVersionEXT(i32);
 impl ValidationCacheHeaderVersionEXT {
-    pub const ONE: Self = ValidationCacheHeaderVersionEXT(1);
+    pub const ONE: Self = Self(1);
 }
 impl default::Default for ValidationCacheHeaderVersionEXT {
     fn default() -> Self {
-        ValidationCacheHeaderVersionEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for ValidationCacheHeaderVersionEXT {
@@ -13380,13 +13379,13 @@ impl fmt::Display for ValidationCacheHeaderVersionEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShaderInfoTypeAMD(i32);
 impl ShaderInfoTypeAMD {
-    pub const STATISTICS: Self = ShaderInfoTypeAMD(0);
-    pub const BINARY: Self = ShaderInfoTypeAMD(1);
-    pub const DISASSEMBLY: Self = ShaderInfoTypeAMD(2);
+    pub const STATISTICS: Self = Self(0);
+    pub const BINARY: Self = Self(1);
+    pub const DISASSEMBLY: Self = Self(2);
 }
 impl default::Default for ShaderInfoTypeAMD {
     fn default() -> Self {
-        ShaderInfoTypeAMD(0)
+        Self(0)
     }
 }
 impl fmt::Display for ShaderInfoTypeAMD {
@@ -13408,14 +13407,14 @@ impl fmt::Display for ShaderInfoTypeAMD {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueueGlobalPriorityEXT(i32);
 impl QueueGlobalPriorityEXT {
-    pub const LOW: Self = QueueGlobalPriorityEXT(128);
-    pub const MEDIUM: Self = QueueGlobalPriorityEXT(256);
-    pub const HIGH: Self = QueueGlobalPriorityEXT(512);
-    pub const REALTIME: Self = QueueGlobalPriorityEXT(1024);
+    pub const LOW: Self = Self(128);
+    pub const MEDIUM: Self = Self(256);
+    pub const HIGH: Self = Self(512);
+    pub const REALTIME: Self = Self(1024);
 }
 impl default::Default for QueueGlobalPriorityEXT {
     fn default() -> Self {
-        QueueGlobalPriorityEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for QueueGlobalPriorityEXT {
@@ -13438,14 +13437,14 @@ impl fmt::Display for QueueGlobalPriorityEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct TimeDomainEXT(i32);
 impl TimeDomainEXT {
-    pub const DEVICE: Self = TimeDomainEXT(0);
-    pub const CLOCK_MONOTONIC: Self = TimeDomainEXT(1);
-    pub const CLOCK_MONOTONIC_RAW: Self = TimeDomainEXT(2);
-    pub const QUERY_PERFORMANCE_COUNTER: Self = TimeDomainEXT(3);
+    pub const DEVICE: Self = Self(0);
+    pub const CLOCK_MONOTONIC: Self = Self(1);
+    pub const CLOCK_MONOTONIC_RAW: Self = Self(2);
+    pub const QUERY_PERFORMANCE_COUNTER: Self = Self(3);
 }
 impl default::Default for TimeDomainEXT {
     fn default() -> Self {
-        TimeDomainEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for TimeDomainEXT {
@@ -13468,13 +13467,13 @@ impl fmt::Display for TimeDomainEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ConservativeRasterizationModeEXT(i32);
 impl ConservativeRasterizationModeEXT {
-    pub const DISABLED: Self = ConservativeRasterizationModeEXT(0);
-    pub const OVERESTIMATE: Self = ConservativeRasterizationModeEXT(1);
-    pub const UNDERESTIMATE: Self = ConservativeRasterizationModeEXT(2);
+    pub const DISABLED: Self = Self(0);
+    pub const OVERESTIMATE: Self = Self(1);
+    pub const UNDERESTIMATE: Self = Self(2);
 }
 impl default::Default for ConservativeRasterizationModeEXT {
     fn default() -> Self {
-        ConservativeRasterizationModeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for ConservativeRasterizationModeEXT {
@@ -13496,12 +13495,12 @@ impl fmt::Display for ConservativeRasterizationModeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CopyAccelerationStructureModeNV(i32);
 impl CopyAccelerationStructureModeNV {
-    pub const CLONE: Self = CopyAccelerationStructureModeNV(0);
-    pub const COMPACT: Self = CopyAccelerationStructureModeNV(1);
+    pub const CLONE: Self = Self(0);
+    pub const COMPACT: Self = Self(1);
 }
 impl default::Default for CopyAccelerationStructureModeNV {
     fn default() -> Self {
-        CopyAccelerationStructureModeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for CopyAccelerationStructureModeNV {
@@ -13522,12 +13521,12 @@ impl fmt::Display for CopyAccelerationStructureModeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureTypeNV(i32);
 impl AccelerationStructureTypeNV {
-    pub const TOP_LEVEL: Self = AccelerationStructureTypeNV(0);
-    pub const BOTTOM_LEVEL: Self = AccelerationStructureTypeNV(1);
+    pub const TOP_LEVEL: Self = Self(0);
+    pub const BOTTOM_LEVEL: Self = Self(1);
 }
 impl default::Default for AccelerationStructureTypeNV {
     fn default() -> Self {
-        AccelerationStructureTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for AccelerationStructureTypeNV {
@@ -13548,12 +13547,12 @@ impl fmt::Display for AccelerationStructureTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GeometryTypeNV(i32);
 impl GeometryTypeNV {
-    pub const TRIANGLES: Self = GeometryTypeNV(0);
-    pub const AABBS: Self = GeometryTypeNV(1);
+    pub const TRIANGLES: Self = Self(0);
+    pub const AABBS: Self = Self(1);
 }
 impl default::Default for GeometryTypeNV {
     fn default() -> Self {
-        GeometryTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for GeometryTypeNV {
@@ -13574,13 +13573,13 @@ impl fmt::Display for GeometryTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RayTracingShaderGroupTypeNV(i32);
 impl RayTracingShaderGroupTypeNV {
-    pub const GENERAL: Self = RayTracingShaderGroupTypeNV(0);
-    pub const TRIANGLES_HIT_GROUP: Self = RayTracingShaderGroupTypeNV(1);
-    pub const PROCEDURAL_HIT_GROUP: Self = RayTracingShaderGroupTypeNV(2);
+    pub const GENERAL: Self = Self(0);
+    pub const TRIANGLES_HIT_GROUP: Self = Self(1);
+    pub const PROCEDURAL_HIT_GROUP: Self = Self(2);
 }
 impl default::Default for RayTracingShaderGroupTypeNV {
     fn default() -> Self {
-        RayTracingShaderGroupTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for RayTracingShaderGroupTypeNV {
@@ -13602,13 +13601,13 @@ impl fmt::Display for RayTracingShaderGroupTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureMemoryRequirementsTypeNV(i32);
 impl AccelerationStructureMemoryRequirementsTypeNV {
-    pub const OBJECT: Self = AccelerationStructureMemoryRequirementsTypeNV(0);
-    pub const BUILD_SCRATCH: Self = AccelerationStructureMemoryRequirementsTypeNV(1);
-    pub const UPDATE_SCRATCH: Self = AccelerationStructureMemoryRequirementsTypeNV(2);
+    pub const OBJECT: Self = Self(0);
+    pub const BUILD_SCRATCH: Self = Self(1);
+    pub const UPDATE_SCRATCH: Self = Self(2);
 }
 impl default::Default for AccelerationStructureMemoryRequirementsTypeNV {
     fn default() -> Self {
-        AccelerationStructureMemoryRequirementsTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
@@ -13630,13 +13629,13 @@ impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct MemoryOverallocationBehaviorAMD(i32);
 impl MemoryOverallocationBehaviorAMD {
-    pub const DEFAULT: Self = MemoryOverallocationBehaviorAMD(0);
-    pub const ALLOWED: Self = MemoryOverallocationBehaviorAMD(1);
-    pub const DISALLOWED: Self = MemoryOverallocationBehaviorAMD(2);
+    pub const DEFAULT: Self = Self(0);
+    pub const ALLOWED: Self = Self(1);
+    pub const DISALLOWED: Self = Self(2);
 }
 impl default::Default for MemoryOverallocationBehaviorAMD {
     fn default() -> Self {
-        MemoryOverallocationBehaviorAMD(0)
+        Self(0)
     }
 }
 impl fmt::Display for MemoryOverallocationBehaviorAMD {
@@ -13658,14 +13657,14 @@ impl fmt::Display for MemoryOverallocationBehaviorAMD {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ScopeNV(i32);
 impl ScopeNV {
-    pub const DEVICE: Self = ScopeNV(1);
-    pub const WORKGROUP: Self = ScopeNV(2);
-    pub const SUBGROUP: Self = ScopeNV(3);
-    pub const QUEUE_FAMILY: Self = ScopeNV(5);
+    pub const DEVICE: Self = Self(1);
+    pub const WORKGROUP: Self = Self(2);
+    pub const SUBGROUP: Self = Self(3);
+    pub const QUEUE_FAMILY: Self = Self(5);
 }
 impl default::Default for ScopeNV {
     fn default() -> Self {
-        ScopeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for ScopeNV {
@@ -13688,21 +13687,21 @@ impl fmt::Display for ScopeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ComponentTypeNV(i32);
 impl ComponentTypeNV {
-    pub const FLOAT16: Self = ComponentTypeNV(0);
-    pub const FLOAT32: Self = ComponentTypeNV(1);
-    pub const FLOAT64: Self = ComponentTypeNV(2);
-    pub const SINT8: Self = ComponentTypeNV(3);
-    pub const SINT16: Self = ComponentTypeNV(4);
-    pub const SINT32: Self = ComponentTypeNV(5);
-    pub const SINT64: Self = ComponentTypeNV(6);
-    pub const UINT8: Self = ComponentTypeNV(7);
-    pub const UINT16: Self = ComponentTypeNV(8);
-    pub const UINT32: Self = ComponentTypeNV(9);
-    pub const UINT64: Self = ComponentTypeNV(10);
+    pub const FLOAT16: Self = Self(0);
+    pub const FLOAT32: Self = Self(1);
+    pub const FLOAT64: Self = Self(2);
+    pub const SINT8: Self = Self(3);
+    pub const SINT16: Self = Self(4);
+    pub const SINT32: Self = Self(5);
+    pub const SINT64: Self = Self(6);
+    pub const UINT8: Self = Self(7);
+    pub const UINT16: Self = Self(8);
+    pub const UINT32: Self = Self(9);
+    pub const UINT64: Self = Self(10);
 }
 impl default::Default for ComponentTypeNV {
     fn default() -> Self {
-        ComponentTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for ComponentTypeNV {
@@ -13732,11 +13731,11 @@ impl fmt::Display for ComponentTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceConfigurationTypeINTEL(i32);
 impl PerformanceConfigurationTypeINTEL {
-    pub const COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED: Self = PerformanceConfigurationTypeINTEL(0);
+    pub const COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED: Self = Self(0);
 }
 impl default::Default for PerformanceConfigurationTypeINTEL {
     fn default() -> Self {
-        PerformanceConfigurationTypeINTEL(0)
+        Self(0)
     }
 }
 impl fmt::Display for PerformanceConfigurationTypeINTEL {
@@ -13756,11 +13755,11 @@ impl fmt::Display for PerformanceConfigurationTypeINTEL {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueryPoolSamplingModeINTEL(i32);
 impl QueryPoolSamplingModeINTEL {
-    pub const MANUAL: Self = QueryPoolSamplingModeINTEL(0);
+    pub const MANUAL: Self = Self(0);
 }
 impl default::Default for QueryPoolSamplingModeINTEL {
     fn default() -> Self {
-        QueryPoolSamplingModeINTEL(0)
+        Self(0)
     }
 }
 impl fmt::Display for QueryPoolSamplingModeINTEL {
@@ -13780,12 +13779,12 @@ impl fmt::Display for QueryPoolSamplingModeINTEL {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceOverrideTypeINTEL(i32);
 impl PerformanceOverrideTypeINTEL {
-    pub const NULL_HARDWARE: Self = PerformanceOverrideTypeINTEL(0);
-    pub const FLUSH_GPU_CACHES: Self = PerformanceOverrideTypeINTEL(1);
+    pub const NULL_HARDWARE: Self = Self(0);
+    pub const FLUSH_GPU_CACHES: Self = Self(1);
 }
 impl default::Default for PerformanceOverrideTypeINTEL {
     fn default() -> Self {
-        PerformanceOverrideTypeINTEL(0)
+        Self(0)
     }
 }
 impl fmt::Display for PerformanceOverrideTypeINTEL {
@@ -13806,12 +13805,12 @@ impl fmt::Display for PerformanceOverrideTypeINTEL {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceParameterTypeINTEL(i32);
 impl PerformanceParameterTypeINTEL {
-    pub const HW_COUNTERS_SUPPORTED: Self = PerformanceParameterTypeINTEL(0);
-    pub const STREAM_MARKER_VALID_BITS: Self = PerformanceParameterTypeINTEL(1);
+    pub const HW_COUNTERS_SUPPORTED: Self = Self(0);
+    pub const STREAM_MARKER_VALID_BITS: Self = Self(1);
 }
 impl default::Default for PerformanceParameterTypeINTEL {
     fn default() -> Self {
-        PerformanceParameterTypeINTEL(0)
+        Self(0)
     }
 }
 impl fmt::Display for PerformanceParameterTypeINTEL {
@@ -13832,15 +13831,15 @@ impl fmt::Display for PerformanceParameterTypeINTEL {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceValueTypeINTEL(i32);
 impl PerformanceValueTypeINTEL {
-    pub const UINT32: Self = PerformanceValueTypeINTEL(0);
-    pub const UINT64: Self = PerformanceValueTypeINTEL(1);
-    pub const FLOAT: Self = PerformanceValueTypeINTEL(2);
-    pub const BOOL: Self = PerformanceValueTypeINTEL(3);
-    pub const STRING: Self = PerformanceValueTypeINTEL(4);
+    pub const UINT32: Self = Self(0);
+    pub const UINT64: Self = Self(1);
+    pub const FLOAT: Self = Self(2);
+    pub const BOOL: Self = Self(3);
+    pub const STRING: Self = Self(4);
 }
 impl default::Default for PerformanceValueTypeINTEL {
     fn default() -> Self {
-        PerformanceValueTypeINTEL(0)
+        Self(0)
     }
 }
 impl fmt::Display for PerformanceValueTypeINTEL {
@@ -13864,14 +13863,14 @@ impl fmt::Display for PerformanceValueTypeINTEL {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LineRasterizationModeEXT(i32);
 impl LineRasterizationModeEXT {
-    pub const DEFAULT: Self = LineRasterizationModeEXT(0);
-    pub const RECTANGULAR: Self = LineRasterizationModeEXT(1);
-    pub const BRESENHAM: Self = LineRasterizationModeEXT(2);
-    pub const RECTANGULAR_SMOOTH: Self = LineRasterizationModeEXT(3);
+    pub const DEFAULT: Self = Self(0);
+    pub const RECTANGULAR: Self = Self(1);
+    pub const BRESENHAM: Self = Self(2);
+    pub const RECTANGULAR_SMOOTH: Self = Self(3);
 }
 impl default::Default for LineRasterizationModeEXT {
     fn default() -> Self {
-        LineRasterizationModeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for LineRasterizationModeEXT {
@@ -13894,43 +13893,43 @@ impl fmt::Display for LineRasterizationModeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(i32);
 impl ColorSpaceKHR {
-    pub const SRGB_NONLINEAR: Self = ColorSpaceKHR(0);
+    pub const SRGB_NONLINEAR: Self = Self(0);
     pub const COLORSPACE_SRGB_NONLINEAR: Self = Self::SRGB_NONLINEAR;
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const DISPLAY_P3_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104001);
+    pub const DISPLAY_P3_NONLINEAR_EXT: Self = Self(1000104001);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const EXTENDED_SRGB_LINEAR_EXT: Self = ColorSpaceKHR(1000104002);
+    pub const EXTENDED_SRGB_LINEAR_EXT: Self = Self(1000104002);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const DISPLAY_P3_LINEAR_EXT: Self = ColorSpaceKHR(1000104003);
+    pub const DISPLAY_P3_LINEAR_EXT: Self = Self(1000104003);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const DCI_P3_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104004);
+    pub const DCI_P3_NONLINEAR_EXT: Self = Self(1000104004);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const BT709_LINEAR_EXT: Self = ColorSpaceKHR(1000104005);
+    pub const BT709_LINEAR_EXT: Self = Self(1000104005);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const BT709_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104006);
+    pub const BT709_NONLINEAR_EXT: Self = Self(1000104006);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const BT2020_LINEAR_EXT: Self = ColorSpaceKHR(1000104007);
+    pub const BT2020_LINEAR_EXT: Self = Self(1000104007);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const HDR10_ST2084_EXT: Self = ColorSpaceKHR(1000104008);
+    pub const HDR10_ST2084_EXT: Self = Self(1000104008);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const DOLBYVISION_EXT: Self = ColorSpaceKHR(1000104009);
+    pub const DOLBYVISION_EXT: Self = Self(1000104009);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const HDR10_HLG_EXT: Self = ColorSpaceKHR(1000104010);
+    pub const HDR10_HLG_EXT: Self = Self(1000104010);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const ADOBERGB_LINEAR_EXT: Self = ColorSpaceKHR(1000104011);
+    pub const ADOBERGB_LINEAR_EXT: Self = Self(1000104011);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const ADOBERGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104012);
+    pub const ADOBERGB_NONLINEAR_EXT: Self = Self(1000104012);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const PASS_THROUGH_EXT: Self = ColorSpaceKHR(1000104013);
+    pub const PASS_THROUGH_EXT: Self = Self(1000104013);
     /// Added by extension VK_EXT_swapchain_colorspace.
-    pub const EXTENDED_SRGB_NONLINEAR_EXT: Self = ColorSpaceKHR(1000104014);
+    pub const EXTENDED_SRGB_NONLINEAR_EXT: Self = Self(1000104014);
     pub const DCI_P3_LINEAR_EXT: Self = Self::DISPLAY_P3_LINEAR_EXT;
     /// Added by extension VK_AMD_display_native_hdr.
-    pub const DISPLAY_NATIVE_AMD: Self = ColorSpaceKHR(1000213000);
+    pub const DISPLAY_NATIVE_AMD: Self = Self(1000213000);
 }
 impl default::Default for ColorSpaceKHR {
     fn default() -> Self {
-        ColorSpaceKHR(0)
+        Self(0)
     }
 }
 impl fmt::Display for ColorSpaceKHR {
@@ -13965,18 +13964,18 @@ impl fmt::Display for ColorSpaceKHR {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PresentModeKHR(i32);
 impl PresentModeKHR {
-    pub const IMMEDIATE: Self = PresentModeKHR(0);
-    pub const MAILBOX: Self = PresentModeKHR(1);
-    pub const FIFO: Self = PresentModeKHR(2);
-    pub const FIFO_RELAXED: Self = PresentModeKHR(3);
+    pub const IMMEDIATE: Self = Self(0);
+    pub const MAILBOX: Self = Self(1);
+    pub const FIFO: Self = Self(2);
+    pub const FIFO_RELAXED: Self = Self(3);
     /// Added by extension VK_KHR_shared_presentable_image.
-    pub const SHARED_DEMAND_REFRESH: Self = PresentModeKHR(1000111000);
+    pub const SHARED_DEMAND_REFRESH: Self = Self(1000111000);
     /// Added by extension VK_KHR_shared_presentable_image.
-    pub const SHARED_CONTINUOUS_REFRESH: Self = PresentModeKHR(1000111001);
+    pub const SHARED_CONTINUOUS_REFRESH: Self = Self(1000111001);
 }
 impl default::Default for PresentModeKHR {
     fn default() -> Self {
-        PresentModeKHR(0)
+        Self(0)
     }
 }
 impl fmt::Display for PresentModeKHR {
@@ -14001,54 +14000,54 @@ impl fmt::Display for PresentModeKHR {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DebugReportObjectTypeEXT(i32);
 impl DebugReportObjectTypeEXT {
-    pub const UNKNOWN: Self = DebugReportObjectTypeEXT(0);
-    pub const INSTANCE: Self = DebugReportObjectTypeEXT(1);
-    pub const PHYSICAL_DEVICE: Self = DebugReportObjectTypeEXT(2);
-    pub const DEVICE: Self = DebugReportObjectTypeEXT(3);
-    pub const QUEUE: Self = DebugReportObjectTypeEXT(4);
-    pub const SEMAPHORE: Self = DebugReportObjectTypeEXT(5);
-    pub const COMMAND_BUFFER: Self = DebugReportObjectTypeEXT(6);
-    pub const FENCE: Self = DebugReportObjectTypeEXT(7);
-    pub const DEVICE_MEMORY: Self = DebugReportObjectTypeEXT(8);
-    pub const BUFFER: Self = DebugReportObjectTypeEXT(9);
-    pub const IMAGE: Self = DebugReportObjectTypeEXT(10);
-    pub const EVENT: Self = DebugReportObjectTypeEXT(11);
-    pub const QUERY_POOL: Self = DebugReportObjectTypeEXT(12);
-    pub const BUFFER_VIEW: Self = DebugReportObjectTypeEXT(13);
-    pub const IMAGE_VIEW: Self = DebugReportObjectTypeEXT(14);
-    pub const SHADER_MODULE: Self = DebugReportObjectTypeEXT(15);
-    pub const PIPELINE_CACHE: Self = DebugReportObjectTypeEXT(16);
-    pub const PIPELINE_LAYOUT: Self = DebugReportObjectTypeEXT(17);
-    pub const RENDER_PASS: Self = DebugReportObjectTypeEXT(18);
-    pub const PIPELINE: Self = DebugReportObjectTypeEXT(19);
-    pub const DESCRIPTOR_SET_LAYOUT: Self = DebugReportObjectTypeEXT(20);
-    pub const SAMPLER: Self = DebugReportObjectTypeEXT(21);
-    pub const DESCRIPTOR_POOL: Self = DebugReportObjectTypeEXT(22);
-    pub const DESCRIPTOR_SET: Self = DebugReportObjectTypeEXT(23);
-    pub const FRAMEBUFFER: Self = DebugReportObjectTypeEXT(24);
-    pub const COMMAND_POOL: Self = DebugReportObjectTypeEXT(25);
-    pub const SURFACE_KHR: Self = DebugReportObjectTypeEXT(26);
-    pub const SWAPCHAIN_KHR: Self = DebugReportObjectTypeEXT(27);
-    pub const DEBUG_REPORT_CALLBACK_EXT: Self = DebugReportObjectTypeEXT(28);
+    pub const UNKNOWN: Self = Self(0);
+    pub const INSTANCE: Self = Self(1);
+    pub const PHYSICAL_DEVICE: Self = Self(2);
+    pub const DEVICE: Self = Self(3);
+    pub const QUEUE: Self = Self(4);
+    pub const SEMAPHORE: Self = Self(5);
+    pub const COMMAND_BUFFER: Self = Self(6);
+    pub const FENCE: Self = Self(7);
+    pub const DEVICE_MEMORY: Self = Self(8);
+    pub const BUFFER: Self = Self(9);
+    pub const IMAGE: Self = Self(10);
+    pub const EVENT: Self = Self(11);
+    pub const QUERY_POOL: Self = Self(12);
+    pub const BUFFER_VIEW: Self = Self(13);
+    pub const IMAGE_VIEW: Self = Self(14);
+    pub const SHADER_MODULE: Self = Self(15);
+    pub const PIPELINE_CACHE: Self = Self(16);
+    pub const PIPELINE_LAYOUT: Self = Self(17);
+    pub const RENDER_PASS: Self = Self(18);
+    pub const PIPELINE: Self = Self(19);
+    pub const DESCRIPTOR_SET_LAYOUT: Self = Self(20);
+    pub const SAMPLER: Self = Self(21);
+    pub const DESCRIPTOR_POOL: Self = Self(22);
+    pub const DESCRIPTOR_SET: Self = Self(23);
+    pub const FRAMEBUFFER: Self = Self(24);
+    pub const COMMAND_POOL: Self = Self(25);
+    pub const SURFACE_KHR: Self = Self(26);
+    pub const SWAPCHAIN_KHR: Self = Self(27);
+    pub const DEBUG_REPORT_CALLBACK_EXT: Self = Self(28);
     pub const DEBUG_REPORT: Self = Self::DEBUG_REPORT_CALLBACK_EXT;
-    pub const DISPLAY_KHR: Self = DebugReportObjectTypeEXT(29);
-    pub const DISPLAY_MODE_KHR: Self = DebugReportObjectTypeEXT(30);
-    pub const OBJECT_TABLE_NVX: Self = DebugReportObjectTypeEXT(31);
-    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = DebugReportObjectTypeEXT(32);
-    pub const VALIDATION_CACHE_EXT: Self = DebugReportObjectTypeEXT(33);
+    pub const DISPLAY_KHR: Self = Self(29);
+    pub const DISPLAY_MODE_KHR: Self = Self(30);
+    pub const OBJECT_TABLE_NVX: Self = Self(31);
+    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = Self(32);
+    pub const VALIDATION_CACHE_EXT: Self = Self(33);
     pub const VALIDATION_CACHE: Self = Self::VALIDATION_CACHE_EXT;
     /// Added by extension VK_KHR_sampler_ycbcr_conversion.
-    pub const SAMPLER_YCBCR_CONVERSION: Self = DebugReportObjectTypeEXT(1000156000);
+    pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
     /// Added by extension VK_EXT_debug_report.
-    pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = DebugReportObjectTypeEXT(1000085000);
+    pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = DebugReportObjectTypeEXT(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
 }
 impl default::Default for DebugReportObjectTypeEXT {
     fn default() -> Self {
-        DebugReportObjectTypeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for DebugReportObjectTypeEXT {
@@ -14104,12 +14103,12 @@ impl fmt::Display for DebugReportObjectTypeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RasterizationOrderAMD(i32);
 impl RasterizationOrderAMD {
-    pub const STRICT: Self = RasterizationOrderAMD(0);
-    pub const RELAXED: Self = RasterizationOrderAMD(1);
+    pub const STRICT: Self = Self(0);
+    pub const RELAXED: Self = Self(1);
 }
 impl default::Default for RasterizationOrderAMD {
     fn default() -> Self {
-        RasterizationOrderAMD(0)
+        Self(0)
     }
 }
 impl fmt::Display for RasterizationOrderAMD {
@@ -14130,12 +14129,12 @@ impl fmt::Display for RasterizationOrderAMD {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationCheckEXT(i32);
 impl ValidationCheckEXT {
-    pub const ALL: Self = ValidationCheckEXT(0);
-    pub const SHADERS: Self = ValidationCheckEXT(1);
+    pub const ALL: Self = Self(0);
+    pub const SHADERS: Self = Self(1);
 }
 impl default::Default for ValidationCheckEXT {
     fn default() -> Self {
-        ValidationCheckEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for ValidationCheckEXT {
@@ -14156,12 +14155,12 @@ impl fmt::Display for ValidationCheckEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationFeatureEnableEXT(i32);
 impl ValidationFeatureEnableEXT {
-    pub const GPU_ASSISTED: Self = ValidationFeatureEnableEXT(0);
-    pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = ValidationFeatureEnableEXT(1);
+    pub const GPU_ASSISTED: Self = Self(0);
+    pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = Self(1);
 }
 impl default::Default for ValidationFeatureEnableEXT {
     fn default() -> Self {
-        ValidationFeatureEnableEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for ValidationFeatureEnableEXT {
@@ -14182,17 +14181,17 @@ impl fmt::Display for ValidationFeatureEnableEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationFeatureDisableEXT(i32);
 impl ValidationFeatureDisableEXT {
-    pub const ALL: Self = ValidationFeatureDisableEXT(0);
-    pub const SHADERS: Self = ValidationFeatureDisableEXT(1);
-    pub const THREAD_SAFETY: Self = ValidationFeatureDisableEXT(2);
-    pub const API_PARAMETERS: Self = ValidationFeatureDisableEXT(3);
-    pub const OBJECT_LIFETIMES: Self = ValidationFeatureDisableEXT(4);
-    pub const CORE_CHECKS: Self = ValidationFeatureDisableEXT(5);
-    pub const UNIQUE_HANDLES: Self = ValidationFeatureDisableEXT(6);
+    pub const ALL: Self = Self(0);
+    pub const SHADERS: Self = Self(1);
+    pub const THREAD_SAFETY: Self = Self(2);
+    pub const API_PARAMETERS: Self = Self(3);
+    pub const OBJECT_LIFETIMES: Self = Self(4);
+    pub const CORE_CHECKS: Self = Self(5);
+    pub const UNIQUE_HANDLES: Self = Self(6);
 }
 impl default::Default for ValidationFeatureDisableEXT {
     fn default() -> Self {
-        ValidationFeatureDisableEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for ValidationFeatureDisableEXT {
@@ -14218,13 +14217,13 @@ impl fmt::Display for ValidationFeatureDisableEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayPowerStateEXT(i32);
 impl DisplayPowerStateEXT {
-    pub const OFF: Self = DisplayPowerStateEXT(0);
-    pub const SUSPEND: Self = DisplayPowerStateEXT(1);
-    pub const ON: Self = DisplayPowerStateEXT(2);
+    pub const OFF: Self = Self(0);
+    pub const SUSPEND: Self = Self(1);
+    pub const ON: Self = Self(2);
 }
 impl default::Default for DisplayPowerStateEXT {
     fn default() -> Self {
-        DisplayPowerStateEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for DisplayPowerStateEXT {
@@ -14246,11 +14245,11 @@ impl fmt::Display for DisplayPowerStateEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DeviceEventTypeEXT(i32);
 impl DeviceEventTypeEXT {
-    pub const DISPLAY_HOTPLUG: Self = DeviceEventTypeEXT(0);
+    pub const DISPLAY_HOTPLUG: Self = Self(0);
 }
 impl default::Default for DeviceEventTypeEXT {
     fn default() -> Self {
-        DeviceEventTypeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for DeviceEventTypeEXT {
@@ -14270,11 +14269,11 @@ impl fmt::Display for DeviceEventTypeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayEventTypeEXT(i32);
 impl DisplayEventTypeEXT {
-    pub const FIRST_PIXEL_OUT: Self = DisplayEventTypeEXT(0);
+    pub const FIRST_PIXEL_OUT: Self = Self(0);
 }
 impl default::Default for DisplayEventTypeEXT {
     fn default() -> Self {
-        DisplayEventTypeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for DisplayEventTypeEXT {
@@ -14294,14 +14293,14 @@ impl fmt::Display for DisplayEventTypeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct TessellationDomainOrigin(i32);
 impl TessellationDomainOrigin {
-    pub const UPPER_LEFT: Self = TessellationDomainOrigin(0);
-    pub const LOWER_LEFT: Self = TessellationDomainOrigin(1);
+    pub const UPPER_LEFT: Self = Self(0);
+    pub const LOWER_LEFT: Self = Self(1);
     pub const UPPER_LEFT_KHR: Self = Self::UPPER_LEFT;
     pub const LOWER_LEFT_KHR: Self = Self::LOWER_LEFT;
 }
 impl default::Default for TessellationDomainOrigin {
     fn default() -> Self {
-        TessellationDomainOrigin(0)
+        Self(0)
     }
 }
 impl fmt::Display for TessellationDomainOrigin {
@@ -14323,15 +14322,15 @@ pub type TessellationDomainOriginKHR = TessellationDomainOrigin;
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerYcbcrModelConversion(i32);
 impl SamplerYcbcrModelConversion {
-    pub const RGB_IDENTITY: Self = SamplerYcbcrModelConversion(0);
+    pub const RGB_IDENTITY: Self = Self(0);
     /// just range expansion
-    pub const YCBCR_IDENTITY: Self = SamplerYcbcrModelConversion(1);
+    pub const YCBCR_IDENTITY: Self = Self(1);
     /// aka HD YUV
-    pub const YCBCR_709: Self = SamplerYcbcrModelConversion(2);
+    pub const YCBCR_709: Self = Self(2);
     /// aka SD YUV
-    pub const YCBCR_601: Self = SamplerYcbcrModelConversion(3);
+    pub const YCBCR_601: Self = Self(3);
     /// aka UHD YUV
-    pub const YCBCR_2020: Self = SamplerYcbcrModelConversion(4);
+    pub const YCBCR_2020: Self = Self(4);
     pub const RGB_IDENTITY_KHR: Self = Self::RGB_IDENTITY;
     pub const YCBCR_IDENTITY_KHR: Self = Self::YCBCR_IDENTITY;
     pub const YCBCR_709_KHR: Self = Self::YCBCR_709;
@@ -14340,7 +14339,7 @@ impl SamplerYcbcrModelConversion {
 }
 impl default::Default for SamplerYcbcrModelConversion {
     fn default() -> Self {
-        SamplerYcbcrModelConversion(0)
+        Self(0)
     }
 }
 impl fmt::Display for SamplerYcbcrModelConversion {
@@ -14366,15 +14365,15 @@ pub type SamplerYcbcrModelConversionKHR = SamplerYcbcrModelConversion;
 pub struct SamplerYcbcrRange(i32);
 impl SamplerYcbcrRange {
     /// Luma 0..1 maps to 0..255, chroma -0.5..0.5 to 1..255 (clamped)
-    pub const ITU_FULL: Self = SamplerYcbcrRange(0);
+    pub const ITU_FULL: Self = Self(0);
     /// Luma 0..1 maps to 16..235, chroma -0.5..0.5 to 16..240
-    pub const ITU_NARROW: Self = SamplerYcbcrRange(1);
+    pub const ITU_NARROW: Self = Self(1);
     pub const ITU_FULL_KHR: Self = Self::ITU_FULL;
     pub const ITU_NARROW_KHR: Self = Self::ITU_NARROW;
 }
 impl default::Default for SamplerYcbcrRange {
     fn default() -> Self {
-        SamplerYcbcrRange(0)
+        Self(0)
     }
 }
 impl fmt::Display for SamplerYcbcrRange {
@@ -14396,14 +14395,14 @@ pub type SamplerYcbcrRangeKHR = SamplerYcbcrRange;
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ChromaLocation(i32);
 impl ChromaLocation {
-    pub const COSITED_EVEN: Self = ChromaLocation(0);
-    pub const MIDPOINT: Self = ChromaLocation(1);
+    pub const COSITED_EVEN: Self = Self(0);
+    pub const MIDPOINT: Self = Self(1);
     pub const COSITED_EVEN_KHR: Self = Self::COSITED_EVEN;
     pub const MIDPOINT_KHR: Self = Self::MIDPOINT;
 }
 impl default::Default for ChromaLocation {
     fn default() -> Self {
-        ChromaLocation(0)
+        Self(0)
     }
 }
 impl fmt::Display for ChromaLocation {
@@ -14425,13 +14424,13 @@ pub type ChromaLocationKHR = ChromaLocation;
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerReductionModeEXT(i32);
 impl SamplerReductionModeEXT {
-    pub const WEIGHTED_AVERAGE: Self = SamplerReductionModeEXT(0);
-    pub const MIN: Self = SamplerReductionModeEXT(1);
-    pub const MAX: Self = SamplerReductionModeEXT(2);
+    pub const WEIGHTED_AVERAGE: Self = Self(0);
+    pub const MIN: Self = Self(1);
+    pub const MAX: Self = Self(2);
 }
 impl default::Default for SamplerReductionModeEXT {
     fn default() -> Self {
-        SamplerReductionModeEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for SamplerReductionModeEXT {
@@ -14453,13 +14452,13 @@ impl fmt::Display for SamplerReductionModeEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendOverlapEXT(i32);
 impl BlendOverlapEXT {
-    pub const UNCORRELATED: Self = BlendOverlapEXT(0);
-    pub const DISJOINT: Self = BlendOverlapEXT(1);
-    pub const CONJOINT: Self = BlendOverlapEXT(2);
+    pub const UNCORRELATED: Self = Self(0);
+    pub const DISJOINT: Self = Self(1);
+    pub const CONJOINT: Self = Self(2);
 }
 impl default::Default for BlendOverlapEXT {
     fn default() -> Self {
-        BlendOverlapEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for BlendOverlapEXT {
@@ -14481,14 +14480,14 @@ impl fmt::Display for BlendOverlapEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FullScreenExclusiveEXT(i32);
 impl FullScreenExclusiveEXT {
-    pub const DEFAULT: Self = FullScreenExclusiveEXT(0);
-    pub const ALLOWED: Self = FullScreenExclusiveEXT(1);
-    pub const DISALLOWED: Self = FullScreenExclusiveEXT(2);
-    pub const APPLICATION_CONTROLLED: Self = FullScreenExclusiveEXT(3);
+    pub const DEFAULT: Self = Self(0);
+    pub const ALLOWED: Self = Self(1);
+    pub const DISALLOWED: Self = Self(2);
+    pub const APPLICATION_CONTROLLED: Self = Self(3);
 }
 impl default::Default for FullScreenExclusiveEXT {
     fn default() -> Self {
-        FullScreenExclusiveEXT(0)
+        Self(0)
     }
 }
 impl fmt::Display for FullScreenExclusiveEXT {
@@ -14511,13 +14510,13 @@ impl fmt::Display for FullScreenExclusiveEXT {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShaderFloatControlsIndependenceKHR(i32);
 impl ShaderFloatControlsIndependenceKHR {
-    pub const N32_BIT_ONLY: Self = ShaderFloatControlsIndependenceKHR(0);
-    pub const ALL: Self = ShaderFloatControlsIndependenceKHR(1);
-    pub const NONE: Self = ShaderFloatControlsIndependenceKHR(2);
+    pub const N32_BIT_ONLY: Self = Self(0);
+    pub const ALL: Self = Self(1);
+    pub const NONE: Self = Self(2);
 }
 impl default::Default for ShaderFloatControlsIndependenceKHR {
     fn default() -> Self {
-        ShaderFloatControlsIndependenceKHR(0)
+        Self(0)
     }
 }
 impl fmt::Display for ShaderFloatControlsIndependenceKHR {
@@ -14540,15 +14539,15 @@ impl fmt::Display for ShaderFloatControlsIndependenceKHR {
 pub struct VendorId(i32);
 impl VendorId {
     /// Vivante vendor ID
-    pub const VIV: Self = VendorId(65537);
+    pub const VIV: Self = Self(65537);
     /// VeriSilicon vendor ID
-    pub const VSI: Self = VendorId(65538);
+    pub const VSI: Self = Self(65538);
     /// Kazan Software Renderer
-    pub const KAZAN: Self = VendorId(65539);
+    pub const KAZAN: Self = Self(65539);
 }
 impl default::Default for VendorId {
     fn default() -> Self {
-        VendorId(0)
+        Self(0)
     }
 }
 impl fmt::Display for VendorId {
@@ -14571,33 +14570,33 @@ impl fmt::Display for VendorId {
 pub struct DriverIdKHR(i32);
 impl DriverIdKHR {
     /// Advanced Micro Devices, Inc.
-    pub const AMD_PROPRIETARY: Self = DriverIdKHR(1);
+    pub const AMD_PROPRIETARY: Self = Self(1);
     /// Advanced Micro Devices, Inc.
-    pub const AMD_OPEN_SOURCE: Self = DriverIdKHR(2);
+    pub const AMD_OPEN_SOURCE: Self = Self(2);
     /// Mesa open source project
-    pub const MESA_RADV: Self = DriverIdKHR(3);
+    pub const MESA_RADV: Self = Self(3);
     /// NVIDIA Corporation
-    pub const NVIDIA_PROPRIETARY: Self = DriverIdKHR(4);
+    pub const NVIDIA_PROPRIETARY: Self = Self(4);
     /// Intel Corporation
-    pub const INTEL_PROPRIETARY_WINDOWS: Self = DriverIdKHR(5);
+    pub const INTEL_PROPRIETARY_WINDOWS: Self = Self(5);
     /// Intel Corporation
-    pub const INTEL_OPEN_SOURCE_MESA: Self = DriverIdKHR(6);
+    pub const INTEL_OPEN_SOURCE_MESA: Self = Self(6);
     /// Imagination Technologies
-    pub const IMAGINATION_PROPRIETARY: Self = DriverIdKHR(7);
+    pub const IMAGINATION_PROPRIETARY: Self = Self(7);
     /// Qualcomm Technologies, Inc.
-    pub const QUALCOMM_PROPRIETARY: Self = DriverIdKHR(8);
+    pub const QUALCOMM_PROPRIETARY: Self = Self(8);
     /// Arm Limited
-    pub const ARM_PROPRIETARY: Self = DriverIdKHR(9);
+    pub const ARM_PROPRIETARY: Self = Self(9);
     /// Google LLC
-    pub const GOOGLE_SWIFTSHADER: Self = DriverIdKHR(10);
+    pub const GOOGLE_SWIFTSHADER: Self = Self(10);
     /// Google LLC
-    pub const GGP_PROPRIETARY: Self = DriverIdKHR(11);
+    pub const GGP_PROPRIETARY: Self = Self(11);
     /// Broadcom Inc.
-    pub const BROADCOM_PROPRIETARY: Self = DriverIdKHR(12);
+    pub const BROADCOM_PROPRIETARY: Self = Self(12);
 }
 impl default::Default for DriverIdKHR {
     fn default() -> Self {
-        DriverIdKHR(0)
+        Self(0)
     }
 }
 impl fmt::Display for DriverIdKHR {
@@ -14628,22 +14627,22 @@ impl fmt::Display for DriverIdKHR {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShadingRatePaletteEntryNV(i32);
 impl ShadingRatePaletteEntryNV {
-    pub const NO_INVOCATIONS: Self = ShadingRatePaletteEntryNV(0);
-    pub const N16_INVOCATIONS_PER_PIXEL: Self = ShadingRatePaletteEntryNV(1);
-    pub const N8_INVOCATIONS_PER_PIXEL: Self = ShadingRatePaletteEntryNV(2);
-    pub const N4_INVOCATIONS_PER_PIXEL: Self = ShadingRatePaletteEntryNV(3);
-    pub const N2_INVOCATIONS_PER_PIXEL: Self = ShadingRatePaletteEntryNV(4);
-    pub const N1_INVOCATION_PER_PIXEL: Self = ShadingRatePaletteEntryNV(5);
-    pub const N1_INVOCATION_PER_2X1_PIXELS: Self = ShadingRatePaletteEntryNV(6);
-    pub const N1_INVOCATION_PER_1X2_PIXELS: Self = ShadingRatePaletteEntryNV(7);
-    pub const N1_INVOCATION_PER_2X2_PIXELS: Self = ShadingRatePaletteEntryNV(8);
-    pub const N1_INVOCATION_PER_4X2_PIXELS: Self = ShadingRatePaletteEntryNV(9);
-    pub const N1_INVOCATION_PER_2X4_PIXELS: Self = ShadingRatePaletteEntryNV(10);
-    pub const N1_INVOCATION_PER_4X4_PIXELS: Self = ShadingRatePaletteEntryNV(11);
+    pub const NO_INVOCATIONS: Self = Self(0);
+    pub const N16_INVOCATIONS_PER_PIXEL: Self = Self(1);
+    pub const N8_INVOCATIONS_PER_PIXEL: Self = Self(2);
+    pub const N4_INVOCATIONS_PER_PIXEL: Self = Self(3);
+    pub const N2_INVOCATIONS_PER_PIXEL: Self = Self(4);
+    pub const N1_INVOCATION_PER_PIXEL: Self = Self(5);
+    pub const N1_INVOCATION_PER_2X1_PIXELS: Self = Self(6);
+    pub const N1_INVOCATION_PER_1X2_PIXELS: Self = Self(7);
+    pub const N1_INVOCATION_PER_2X2_PIXELS: Self = Self(8);
+    pub const N1_INVOCATION_PER_4X2_PIXELS: Self = Self(9);
+    pub const N1_INVOCATION_PER_2X4_PIXELS: Self = Self(10);
+    pub const N1_INVOCATION_PER_4X4_PIXELS: Self = Self(11);
 }
 impl default::Default for ShadingRatePaletteEntryNV {
     fn default() -> Self {
-        ShadingRatePaletteEntryNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for ShadingRatePaletteEntryNV {
@@ -14674,14 +14673,14 @@ impl fmt::Display for ShadingRatePaletteEntryNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoarseSampleOrderTypeNV(i32);
 impl CoarseSampleOrderTypeNV {
-    pub const DEFAULT: Self = CoarseSampleOrderTypeNV(0);
-    pub const CUSTOM: Self = CoarseSampleOrderTypeNV(1);
-    pub const PIXEL_MAJOR: Self = CoarseSampleOrderTypeNV(2);
-    pub const SAMPLE_MAJOR: Self = CoarseSampleOrderTypeNV(3);
+    pub const DEFAULT: Self = Self(0);
+    pub const CUSTOM: Self = Self(1);
+    pub const PIXEL_MAJOR: Self = Self(2);
+    pub const SAMPLE_MAJOR: Self = Self(3);
 }
 impl default::Default for CoarseSampleOrderTypeNV {
     fn default() -> Self {
-        CoarseSampleOrderTypeNV(0)
+        Self(0)
     }
 }
 impl fmt::Display for CoarseSampleOrderTypeNV {
@@ -14704,14 +14703,14 @@ impl fmt::Display for CoarseSampleOrderTypeNV {
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineExecutableStatisticFormatKHR(i32);
 impl PipelineExecutableStatisticFormatKHR {
-    pub const BOOL32: Self = PipelineExecutableStatisticFormatKHR(0);
-    pub const INT64: Self = PipelineExecutableStatisticFormatKHR(1);
-    pub const UINT64: Self = PipelineExecutableStatisticFormatKHR(2);
-    pub const FLOAT64: Self = PipelineExecutableStatisticFormatKHR(3);
+    pub const BOOL32: Self = Self(0);
+    pub const INT64: Self = Self(1);
+    pub const UINT64: Self = Self(2);
+    pub const FLOAT64: Self = Self(3);
 }
 impl default::Default for PipelineExecutableStatisticFormatKHR {
     fn default() -> Self {
-        PipelineExecutableStatisticFormatKHR(0)
+        Self(0)
     }
 }
 impl fmt::Display for PipelineExecutableStatisticFormatKHR {
@@ -14781,7 +14780,7 @@ pub struct BaseOutStructure {
 }
 impl default::Default for BaseOutStructure {
     fn default() -> Self {
-        BaseOutStructure {
+        Self {
             s_type: StructureType::default(),
             p_next: ptr::null_mut(),
         }
@@ -14803,7 +14802,7 @@ pub struct BaseInStructure {
 }
 impl default::Default for BaseInStructure {
     fn default() -> Self {
-        BaseInStructure {
+        Self {
             s_type: StructureType::default(),
             p_next: ptr::null(),
         }
@@ -14825,7 +14824,7 @@ pub struct Offset2D {
 }
 impl default::Default for Offset2D {
     fn default() -> Self {
-        Offset2D {
+        Self {
             x: i32::default(),
             y: i32::default(),
         }
@@ -14848,7 +14847,7 @@ pub struct Offset3D {
 }
 impl default::Default for Offset3D {
     fn default() -> Self {
-        Offset3D {
+        Self {
             x: i32::default(),
             y: i32::default(),
             z: i32::default(),
@@ -14872,7 +14871,7 @@ pub struct Extent2D {
 }
 impl default::Default for Extent2D {
     fn default() -> Self {
-        Extent2D {
+        Self {
             width: u32::default(),
             height: u32::default(),
         }
@@ -14895,7 +14894,7 @@ pub struct Extent3D {
 }
 impl default::Default for Extent3D {
     fn default() -> Self {
-        Extent3D {
+        Self {
             width: u32::default(),
             height: u32::default(),
             depth: u32::default(),
@@ -14923,7 +14922,7 @@ pub struct Viewport {
 }
 impl default::Default for Viewport {
     fn default() -> Self {
-        Viewport {
+        Self {
             x: f32::default(),
             y: f32::default(),
             width: f32::default(),
@@ -14953,7 +14952,7 @@ pub struct Rect2D {
 }
 impl default::Default for Rect2D {
     fn default() -> Self {
-        Rect2D {
+        Self {
             offset: Offset2D::default(),
             extent: Extent2D::default(),
         }
@@ -14976,7 +14975,7 @@ pub struct ClearRect {
 }
 impl default::Default for ClearRect {
     fn default() -> Self {
-        ClearRect {
+        Self {
             rect: Rect2D::default(),
             base_array_layer: u32::default(),
             layer_count: u32::default(),
@@ -15002,7 +15001,7 @@ pub struct ComponentMapping {
 }
 impl default::Default for ComponentMapping {
     fn default() -> Self {
-        ComponentMapping {
+        Self {
             r: ComponentSwizzle::default(),
             g: ComponentSwizzle::default(),
             b: ComponentSwizzle::default(),
@@ -15035,7 +15034,7 @@ pub struct PhysicalDeviceProperties {
 }
 impl default::Default for PhysicalDeviceProperties {
     fn default() -> Self {
-        PhysicalDeviceProperties {
+        Self {
             api_version: Version::default(),
             driver_version: u32::default(),
             vendor_id: u32::default(),
@@ -15073,7 +15072,7 @@ pub struct ExtensionProperties {
 }
 impl default::Default for ExtensionProperties {
     fn default() -> Self {
-        ExtensionProperties {
+        Self {
             extension_name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
             spec_version: u32::default(),
         }
@@ -15103,7 +15102,7 @@ pub struct LayerProperties {
 }
 impl default::Default for LayerProperties {
     fn default() -> Self {
-        LayerProperties {
+        Self {
             layer_name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
             spec_version: Version::default(),
             implementation_version: u32::default(),
@@ -15134,7 +15133,7 @@ pub struct ApplicationInfo {
 }
 impl default::Default for ApplicationInfo {
     fn default() -> Self {
-        ApplicationInfo {
+        Self {
             s_type: StructureType::APPLICATION_INFO,
             p_next: ptr::null(),
             p_application_name: ptr::null(),
@@ -15170,7 +15169,7 @@ pub struct AllocationCallbacks {
 }
 impl default::Default for AllocationCallbacks {
     fn default() -> Self {
-        AllocationCallbacks {
+        Self {
             p_user_data: ptr::null_mut(),
             pfn_allocation: None,
             pfn_reallocation: None,
@@ -15232,7 +15231,7 @@ pub struct DeviceQueueCreateInfo {
 }
 impl default::Default for DeviceQueueCreateInfo {
     fn default() -> Self {
-        DeviceQueueCreateInfo {
+        Self {
             s_type: StructureType::DEVICE_QUEUE_CREATE_INFO,
             p_next: ptr::null(),
             flags: DeviceQueueCreateFlags::default(),
@@ -15271,7 +15270,7 @@ pub struct DeviceCreateInfo {
 }
 impl default::Default for DeviceCreateInfo {
     fn default() -> Self {
-        DeviceCreateInfo {
+        Self {
             s_type: StructureType::DEVICE_CREATE_INFO,
             p_next: ptr::null(),
             flags: DeviceCreateFlags::default(),
@@ -15317,7 +15316,7 @@ pub struct InstanceCreateInfo {
 }
 impl default::Default for InstanceCreateInfo {
     fn default() -> Self {
-        InstanceCreateInfo {
+        Self {
             s_type: StructureType::INSTANCE_CREATE_INFO,
             p_next: ptr::null(),
             flags: InstanceCreateFlags::default(),
@@ -15355,7 +15354,7 @@ pub struct QueueFamilyProperties {
 }
 impl default::Default for QueueFamilyProperties {
     fn default() -> Self {
-        QueueFamilyProperties {
+        Self {
             queue_flags: QueueFlags::default(),
             queue_count: u32::default(),
             timestamp_valid_bits: u32::default(),
@@ -15383,7 +15382,7 @@ pub struct PhysicalDeviceMemoryProperties {
 }
 impl default::Default for PhysicalDeviceMemoryProperties {
     fn default() -> Self {
-        PhysicalDeviceMemoryProperties {
+        Self {
             memory_type_count: u32::default(),
             memory_types: [MemoryType::default(); MAX_MEMORY_TYPES],
             memory_heap_count: u32::default(),
@@ -15413,7 +15412,7 @@ pub struct MemoryAllocateInfo {
 }
 impl default::Default for MemoryAllocateInfo {
     fn default() -> Self {
-        MemoryAllocateInfo {
+        Self {
             s_type: StructureType::MEMORY_ALLOCATE_INFO,
             p_next: ptr::null(),
             allocation_size: DeviceSize::default(),
@@ -15443,7 +15442,7 @@ pub struct MemoryRequirements {
 }
 impl default::Default for MemoryRequirements {
     fn default() -> Self {
-        MemoryRequirements {
+        Self {
             size: DeviceSize::default(),
             alignment: DeviceSize::default(),
             memory_type_bits: u32::default(),
@@ -15468,7 +15467,7 @@ pub struct SparseImageFormatProperties {
 }
 impl default::Default for SparseImageFormatProperties {
     fn default() -> Self {
-        SparseImageFormatProperties {
+        Self {
             aspect_mask: ImageAspectFlags::default(),
             image_granularity: Extent3D::default(),
             flags: SparseImageFormatFlags::default(),
@@ -15498,7 +15497,7 @@ pub struct SparseImageMemoryRequirements {
 }
 impl default::Default for SparseImageMemoryRequirements {
     fn default() -> Self {
-        SparseImageMemoryRequirements {
+        Self {
             format_properties: SparseImageFormatProperties::default(),
             image_mip_tail_first_lod: u32::default(),
             image_mip_tail_size: DeviceSize::default(),
@@ -15528,7 +15527,7 @@ pub struct MemoryType {
 }
 impl default::Default for MemoryType {
     fn default() -> Self {
-        MemoryType {
+        Self {
             property_flags: MemoryPropertyFlags::default(),
             heap_index: u32::default(),
         }
@@ -15552,7 +15551,7 @@ pub struct MemoryHeap {
 }
 impl default::Default for MemoryHeap {
     fn default() -> Self {
-        MemoryHeap {
+        Self {
             size: DeviceSize::default(),
             flags: MemoryHeapFlags::default(),
         }
@@ -15580,7 +15579,7 @@ pub struct MappedMemoryRange {
 }
 impl default::Default for MappedMemoryRange {
     fn default() -> Self {
-        MappedMemoryRange {
+        Self {
             s_type: StructureType::MAPPED_MEMORY_RANGE,
             p_next: ptr::null(),
             memory: None,
@@ -15612,7 +15611,7 @@ pub struct FormatProperties {
 }
 impl default::Default for FormatProperties {
     fn default() -> Self {
-        FormatProperties {
+        Self {
             linear_tiling_features: FormatFeatureFlags::default(),
             optimal_tiling_features: FormatFeatureFlags::default(),
             buffer_features: FormatFeatureFlags::default(),
@@ -15644,7 +15643,7 @@ pub struct ImageFormatProperties {
 }
 impl default::Default for ImageFormatProperties {
     fn default() -> Self {
-        ImageFormatProperties {
+        Self {
             max_extent: Extent3D::default(),
             max_mip_levels: u32::default(),
             max_array_layers: u32::default(),
@@ -15676,7 +15675,7 @@ pub struct DescriptorBufferInfo {
 }
 impl default::Default for DescriptorBufferInfo {
     fn default() -> Self {
-        DescriptorBufferInfo {
+        Self {
             buffer: None,
             offset: DeviceSize::default(),
             range: DeviceSize::default(),
@@ -15704,7 +15703,7 @@ pub struct DescriptorImageInfo {
 }
 impl default::Default for DescriptorImageInfo {
     fn default() -> Self {
-        DescriptorImageInfo {
+        Self {
             sampler: None,
             image_view: None,
             image_layout: ImageLayout::default(),
@@ -15744,7 +15743,7 @@ pub struct WriteDescriptorSet {
 }
 impl default::Default for WriteDescriptorSet {
     fn default() -> Self {
-        WriteDescriptorSet {
+        Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET,
             p_next: ptr::null(),
             dst_set: None,
@@ -15796,7 +15795,7 @@ pub struct CopyDescriptorSet {
 }
 impl default::Default for CopyDescriptorSet {
     fn default() -> Self {
-        CopyDescriptorSet {
+        Self {
             s_type: StructureType::COPY_DESCRIPTOR_SET,
             p_next: ptr::null(),
             src_set: None,
@@ -15841,7 +15840,7 @@ pub struct BufferCreateInfo {
 }
 impl default::Default for BufferCreateInfo {
     fn default() -> Self {
-        BufferCreateInfo {
+        Self {
             s_type: StructureType::BUFFER_CREATE_INFO,
             p_next: ptr::null(),
             flags: BufferCreateFlags::default(),
@@ -15883,7 +15882,7 @@ pub struct BufferViewCreateInfo {
 }
 impl default::Default for BufferViewCreateInfo {
     fn default() -> Self {
-        BufferViewCreateInfo {
+        Self {
             s_type: StructureType::BUFFER_VIEW_CREATE_INFO,
             p_next: ptr::null(),
             flags: BufferViewCreateFlags::default(),
@@ -15916,7 +15915,7 @@ pub struct ImageSubresource {
 }
 impl default::Default for ImageSubresource {
     fn default() -> Self {
-        ImageSubresource {
+        Self {
             aspect_mask: ImageAspectFlags::default(),
             mip_level: u32::default(),
             array_layer: u32::default(),
@@ -15942,7 +15941,7 @@ pub struct ImageSubresourceLayers {
 }
 impl default::Default for ImageSubresourceLayers {
     fn default() -> Self {
-        ImageSubresourceLayers {
+        Self {
             aspect_mask: ImageAspectFlags::default(),
             mip_level: u32::default(),
             base_array_layer: u32::default(),
@@ -15971,7 +15970,7 @@ pub struct ImageSubresourceRange {
 }
 impl default::Default for ImageSubresourceRange {
     fn default() -> Self {
-        ImageSubresourceRange {
+        Self {
             aspect_mask: ImageAspectFlags::default(),
             base_mip_level: u32::default(),
             level_count: u32::default(),
@@ -16003,7 +16002,7 @@ pub struct MemoryBarrier {
 }
 impl default::Default for MemoryBarrier {
     fn default() -> Self {
-        MemoryBarrier {
+        Self {
             s_type: StructureType::MEMORY_BARRIER,
             p_next: ptr::null(),
             src_access_mask: AccessFlags::default(),
@@ -16043,7 +16042,7 @@ pub struct BufferMemoryBarrier {
 }
 impl default::Default for BufferMemoryBarrier {
     fn default() -> Self {
-        BufferMemoryBarrier {
+        Self {
             s_type: StructureType::BUFFER_MEMORY_BARRIER,
             p_next: ptr::null(),
             src_access_mask: AccessFlags::default(),
@@ -16095,7 +16094,7 @@ pub struct ImageMemoryBarrier {
 }
 impl default::Default for ImageMemoryBarrier {
     fn default() -> Self {
-        ImageMemoryBarrier {
+        Self {
             s_type: StructureType::IMAGE_MEMORY_BARRIER,
             p_next: ptr::null(),
             src_access_mask: AccessFlags::default(),
@@ -16152,7 +16151,7 @@ pub struct ImageCreateInfo {
 }
 impl default::Default for ImageCreateInfo {
     fn default() -> Self {
-        ImageCreateInfo {
+        Self {
             s_type: StructureType::IMAGE_CREATE_INFO,
             p_next: ptr::null(),
             flags: ImageCreateFlags::default(),
@@ -16208,7 +16207,7 @@ pub struct SubresourceLayout {
 }
 impl default::Default for SubresourceLayout {
     fn default() -> Self {
-        SubresourceLayout {
+        Self {
             offset: DeviceSize::default(),
             size: DeviceSize::default(),
             row_pitch: DeviceSize::default(),
@@ -16242,7 +16241,7 @@ pub struct ImageViewCreateInfo {
 }
 impl default::Default for ImageViewCreateInfo {
     fn default() -> Self {
-        ImageViewCreateInfo {
+        Self {
             s_type: StructureType::IMAGE_VIEW_CREATE_INFO,
             p_next: ptr::null(),
             flags: ImageViewCreateFlags::default(),
@@ -16280,7 +16279,7 @@ pub struct BufferCopy {
 }
 impl default::Default for BufferCopy {
     fn default() -> Self {
-        BufferCopy {
+        Self {
             src_offset: DeviceSize::default(),
             dst_offset: DeviceSize::default(),
             size: DeviceSize::default(),
@@ -16310,7 +16309,7 @@ pub struct SparseMemoryBind {
 }
 impl default::Default for SparseMemoryBind {
     fn default() -> Self {
-        SparseMemoryBind {
+        Self {
             resource_offset: DeviceSize::default(),
             size: DeviceSize::default(),
             memory: None,
@@ -16343,7 +16342,7 @@ pub struct SparseImageMemoryBind {
 }
 impl default::Default for SparseImageMemoryBind {
     fn default() -> Self {
-        SparseImageMemoryBind {
+        Self {
             subresource: ImageSubresource::default(),
             offset: Offset3D::default(),
             extent: Extent3D::default(),
@@ -16374,7 +16373,7 @@ pub struct SparseBufferMemoryBindInfo {
 }
 impl default::Default for SparseBufferMemoryBindInfo {
     fn default() -> Self {
-        SparseBufferMemoryBindInfo {
+        Self {
             buffer: None,
             bind_count: u32::default(),
             p_binds: ptr::null(),
@@ -16399,7 +16398,7 @@ pub struct SparseImageOpaqueMemoryBindInfo {
 }
 impl default::Default for SparseImageOpaqueMemoryBindInfo {
     fn default() -> Self {
-        SparseImageOpaqueMemoryBindInfo {
+        Self {
             image: None,
             bind_count: u32::default(),
             p_binds: ptr::null(),
@@ -16424,7 +16423,7 @@ pub struct SparseImageMemoryBindInfo {
 }
 impl default::Default for SparseImageMemoryBindInfo {
     fn default() -> Self {
-        SparseImageMemoryBindInfo {
+        Self {
             image: None,
             bind_count: u32::default(),
             p_binds: ptr::null(),
@@ -16458,7 +16457,7 @@ pub struct BindSparseInfo {
 }
 impl default::Default for BindSparseInfo {
     fn default() -> Self {
-        BindSparseInfo {
+        Self {
             s_type: StructureType::BIND_SPARSE_INFO,
             p_next: ptr::null(),
             wait_semaphore_count: u32::default(),
@@ -16506,7 +16505,7 @@ pub struct ImageCopy {
 }
 impl default::Default for ImageCopy {
     fn default() -> Self {
-        ImageCopy {
+        Self {
             src_subresource: ImageSubresourceLayers::default(),
             src_offset: Offset3D::default(),
             dst_subresource: ImageSubresourceLayers::default(),
@@ -16538,7 +16537,7 @@ pub struct ImageBlit {
 }
 impl default::Default for ImageBlit {
     fn default() -> Self {
-        ImageBlit {
+        Self {
             src_subresource: ImageSubresourceLayers::default(),
             src_offsets: [Offset3D::default(); 2],
             dst_subresource: ImageSubresourceLayers::default(),
@@ -16572,7 +16571,7 @@ pub struct BufferImageCopy {
 }
 impl default::Default for BufferImageCopy {
     fn default() -> Self {
-        BufferImageCopy {
+        Self {
             buffer_offset: DeviceSize::default(),
             buffer_row_length: u32::default(),
             buffer_image_height: u32::default(),
@@ -16605,7 +16604,7 @@ pub struct ImageResolve {
 }
 impl default::Default for ImageResolve {
     fn default() -> Self {
-        ImageResolve {
+        Self {
             src_subresource: ImageSubresourceLayers::default(),
             src_offset: Offset3D::default(),
             dst_subresource: ImageSubresourceLayers::default(),
@@ -16638,7 +16637,7 @@ pub struct ShaderModuleCreateInfo {
 }
 impl default::Default for ShaderModuleCreateInfo {
     fn default() -> Self {
-        ShaderModuleCreateInfo {
+        Self {
             s_type: StructureType::SHADER_MODULE_CREATE_INFO,
             p_next: ptr::null(),
             flags: ShaderModuleCreateFlags::default(),
@@ -16674,7 +16673,7 @@ pub struct DescriptorSetLayoutBinding {
 }
 impl default::Default for DescriptorSetLayoutBinding {
     fn default() -> Self {
-        DescriptorSetLayoutBinding {
+        Self {
             binding: u32::default(),
             descriptor_type: DescriptorType::default(),
             descriptor_count: u32::default(),
@@ -16707,7 +16706,7 @@ pub struct DescriptorSetLayoutCreateInfo {
 }
 impl default::Default for DescriptorSetLayoutCreateInfo {
     fn default() -> Self {
-        DescriptorSetLayoutCreateInfo {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
             p_next: ptr::null(),
             flags: DescriptorSetLayoutCreateFlags::default(),
@@ -16735,7 +16734,7 @@ pub struct DescriptorPoolSize {
 }
 impl default::Default for DescriptorPoolSize {
     fn default() -> Self {
-        DescriptorPoolSize {
+        Self {
             ty: DescriptorType::default(),
             descriptor_count: u32::default(),
         }
@@ -16761,7 +16760,7 @@ pub struct DescriptorPoolCreateInfo {
 }
 impl default::Default for DescriptorPoolCreateInfo {
     fn default() -> Self {
-        DescriptorPoolCreateInfo {
+        Self {
             s_type: StructureType::DESCRIPTOR_POOL_CREATE_INFO,
             p_next: ptr::null(),
             flags: DescriptorPoolCreateFlags::default(),
@@ -16794,7 +16793,7 @@ pub struct DescriptorSetAllocateInfo {
 }
 impl default::Default for DescriptorSetAllocateInfo {
     fn default() -> Self {
-        DescriptorSetAllocateInfo {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_ALLOCATE_INFO,
             p_next: ptr::null(),
             descriptor_pool: None,
@@ -16826,7 +16825,7 @@ pub struct SpecializationMapEntry {
 }
 impl default::Default for SpecializationMapEntry {
     fn default() -> Self {
-        SpecializationMapEntry {
+        Self {
             constant_id: u32::default(),
             offset: u32::default(),
             size: usize::default(),
@@ -16856,7 +16855,7 @@ pub struct SpecializationInfo {
 }
 impl default::Default for SpecializationInfo {
     fn default() -> Self {
-        SpecializationInfo {
+        Self {
             map_entry_count: u32::default(),
             p_map_entries: ptr::null(),
             data_size: usize::default(),
@@ -16890,7 +16889,7 @@ pub struct PipelineShaderStageCreateInfo {
 }
 impl default::Default for PipelineShaderStageCreateInfo {
     fn default() -> Self {
-        PipelineShaderStageCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_SHADER_STAGE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineShaderStageCreateFlags::default(),
@@ -16931,7 +16930,7 @@ pub struct ComputePipelineCreateInfo {
 }
 impl default::Default for ComputePipelineCreateInfo {
     fn default() -> Self {
-        ComputePipelineCreateInfo {
+        Self {
             s_type: StructureType::COMPUTE_PIPELINE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineCreateFlags::default(),
@@ -16967,7 +16966,7 @@ pub struct VertexInputBindingDescription {
 }
 impl default::Default for VertexInputBindingDescription {
     fn default() -> Self {
-        VertexInputBindingDescription {
+        Self {
             binding: u32::default(),
             stride: u32::default(),
             input_rate: VertexInputRate::default(),
@@ -16997,7 +16996,7 @@ pub struct VertexInputAttributeDescription {
 }
 impl default::Default for VertexInputAttributeDescription {
     fn default() -> Self {
-        VertexInputAttributeDescription {
+        Self {
             location: u32::default(),
             binding: u32::default(),
             format: Format::default(),
@@ -17030,7 +17029,7 @@ pub struct PipelineVertexInputStateCreateInfo {
 }
 impl default::Default for PipelineVertexInputStateCreateInfo {
     fn default() -> Self {
-        PipelineVertexInputStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineVertexInputStateCreateFlags::default(),
@@ -17071,7 +17070,7 @@ pub struct PipelineInputAssemblyStateCreateInfo {
 }
 impl default::Default for PipelineInputAssemblyStateCreateInfo {
     fn default() -> Self {
-        PipelineInputAssemblyStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineInputAssemblyStateCreateFlags::default(),
@@ -17101,7 +17100,7 @@ pub struct PipelineTessellationStateCreateInfo {
 }
 impl default::Default for PipelineTessellationStateCreateInfo {
     fn default() -> Self {
-        PipelineTessellationStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_TESSELLATION_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineTessellationStateCreateFlags::default(),
@@ -17132,7 +17131,7 @@ pub struct PipelineViewportStateCreateInfo {
 }
 impl default::Default for PipelineViewportStateCreateInfo {
     fn default() -> Self {
-        PipelineViewportStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineViewportStateCreateFlags::default(),
@@ -17176,7 +17175,7 @@ pub struct PipelineRasterizationStateCreateInfo {
 }
 impl default::Default for PipelineRasterizationStateCreateInfo {
     fn default() -> Self {
-        PipelineRasterizationStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineRasterizationStateCreateFlags::default(),
@@ -17231,7 +17230,7 @@ pub struct PipelineMultisampleStateCreateInfo {
 }
 impl default::Default for PipelineMultisampleStateCreateInfo {
     fn default() -> Self {
-        PipelineMultisampleStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineMultisampleStateCreateFlags::default(),
@@ -17273,7 +17272,7 @@ pub struct PipelineColorBlendAttachmentState {
 }
 impl default::Default for PipelineColorBlendAttachmentState {
     fn default() -> Self {
-        PipelineColorBlendAttachmentState {
+        Self {
             blend_enable: Bool32::default(),
             src_color_blend_factor: BlendFactor::default(),
             dst_color_blend_factor: BlendFactor::default(),
@@ -17314,7 +17313,7 @@ pub struct PipelineColorBlendStateCreateInfo {
 }
 impl default::Default for PipelineColorBlendStateCreateInfo {
     fn default() -> Self {
-        PipelineColorBlendStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineColorBlendStateCreateFlags::default(),
@@ -17351,7 +17350,7 @@ pub struct PipelineDynamicStateCreateInfo {
 }
 impl default::Default for PipelineDynamicStateCreateInfo {
     fn default() -> Self {
-        PipelineDynamicStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_DYNAMIC_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineDynamicStateCreateFlags::default(),
@@ -17384,7 +17383,7 @@ pub struct StencilOpState {
 }
 impl default::Default for StencilOpState {
     fn default() -> Self {
-        StencilOpState {
+        Self {
             fail_op: StencilOp::default(),
             pass_op: StencilOp::default(),
             depth_fail_op: StencilOp::default(),
@@ -17427,7 +17426,7 @@ pub struct PipelineDepthStencilStateCreateInfo {
 }
 impl default::Default for PipelineDepthStencilStateCreateInfo {
     fn default() -> Self {
-        PipelineDepthStencilStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineDepthStencilStateCreateFlags::default(),
@@ -17491,7 +17490,7 @@ pub struct GraphicsPipelineCreateInfo {
 }
 impl default::Default for GraphicsPipelineCreateInfo {
     fn default() -> Self {
-        GraphicsPipelineCreateInfo {
+        Self {
             s_type: StructureType::GRAPHICS_PIPELINE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineCreateFlags::default(),
@@ -17552,7 +17551,7 @@ pub struct PipelineCacheCreateInfo {
 }
 impl default::Default for PipelineCacheCreateInfo {
     fn default() -> Self {
-        PipelineCacheCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_CACHE_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineCacheCreateFlags::default(),
@@ -17584,7 +17583,7 @@ pub struct PushConstantRange {
 }
 impl default::Default for PushConstantRange {
     fn default() -> Self {
-        PushConstantRange {
+        Self {
             stage_flags: ShaderStageFlags::default(),
             offset: u32::default(),
             size: u32::default(),
@@ -17617,7 +17616,7 @@ pub struct PipelineLayoutCreateInfo {
 }
 impl default::Default for PipelineLayoutCreateInfo {
     fn default() -> Self {
-        PipelineLayoutCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_LAYOUT_CREATE_INFO,
             p_next: ptr::null(),
             flags: PipelineLayoutCreateFlags::default(),
@@ -17668,7 +17667,7 @@ pub struct SamplerCreateInfo {
 }
 impl default::Default for SamplerCreateInfo {
     fn default() -> Self {
-        SamplerCreateInfo {
+        Self {
             s_type: StructureType::SAMPLER_CREATE_INFO,
             p_next: ptr::null(),
             flags: SamplerCreateFlags::default(),
@@ -17725,7 +17724,7 @@ pub struct CommandPoolCreateInfo {
 }
 impl default::Default for CommandPoolCreateInfo {
     fn default() -> Self {
-        CommandPoolCreateInfo {
+        Self {
             s_type: StructureType::COMMAND_POOL_CREATE_INFO,
             p_next: ptr::null(),
             flags: CommandPoolCreateFlags::default(),
@@ -17754,7 +17753,7 @@ pub struct CommandBufferAllocateInfo {
 }
 impl default::Default for CommandBufferAllocateInfo {
     fn default() -> Self {
-        CommandBufferAllocateInfo {
+        Self {
             s_type: StructureType::COMMAND_BUFFER_ALLOCATE_INFO,
             p_next: ptr::null(),
             command_pool: None,
@@ -17793,7 +17792,7 @@ pub struct CommandBufferInheritanceInfo {
 }
 impl default::Default for CommandBufferInheritanceInfo {
     fn default() -> Self {
-        CommandBufferInheritanceInfo {
+        Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_INFO,
             p_next: ptr::null(),
             render_pass: None,
@@ -17831,7 +17830,7 @@ pub struct CommandBufferBeginInfo {
 }
 impl default::Default for CommandBufferBeginInfo {
     fn default() -> Self {
-        CommandBufferBeginInfo {
+        Self {
             s_type: StructureType::COMMAND_BUFFER_BEGIN_INFO,
             p_next: ptr::null(),
             flags: CommandBufferUsageFlags::default(),
@@ -17862,7 +17861,7 @@ pub struct RenderPassBeginInfo {
 }
 impl default::Default for RenderPassBeginInfo {
     fn default() -> Self {
-        RenderPassBeginInfo {
+        Self {
             s_type: StructureType::RENDER_PASS_BEGIN_INFO,
             p_next: ptr::null(),
             render_pass: None,
@@ -17916,7 +17915,7 @@ pub struct ClearDepthStencilValue {
 }
 impl default::Default for ClearDepthStencilValue {
     fn default() -> Self {
-        ClearDepthStencilValue {
+        Self {
             depth: f32::default(),
             stencil: u32::default(),
         }
@@ -17959,7 +17958,7 @@ pub struct ClearAttachment {
 }
 impl default::Default for ClearAttachment {
     fn default() -> Self {
-        ClearAttachment {
+        Self {
             aspect_mask: ImageAspectFlags::default(),
             color_attachment: u32::default(),
             clear_value: ClearValue::default(),
@@ -17994,7 +17993,7 @@ pub struct AttachmentDescription {
 }
 impl default::Default for AttachmentDescription {
     fn default() -> Self {
-        AttachmentDescription {
+        Self {
             flags: AttachmentDescriptionFlags::default(),
             format: Format::default(),
             samples: SampleCountFlags::default(),
@@ -18030,7 +18029,7 @@ pub struct AttachmentReference {
 }
 impl default::Default for AttachmentReference {
     fn default() -> Self {
-        AttachmentReference {
+        Self {
             attachment: u32::default(),
             layout: ImageLayout::default(),
         }
@@ -18061,7 +18060,7 @@ pub struct SubpassDescription {
 }
 impl default::Default for SubpassDescription {
     fn default() -> Self {
-        SubpassDescription {
+        Self {
             flags: SubpassDescriptionFlags::default(),
             pipeline_bind_point: PipelineBindPoint::default(),
             input_attachment_count: u32::default(),
@@ -18106,7 +18105,7 @@ pub struct SubpassDependency {
 }
 impl default::Default for SubpassDependency {
     fn default() -> Self {
-        SubpassDependency {
+        Self {
             src_subpass: u32::default(),
             dst_subpass: u32::default(),
             src_stage_mask: PipelineStageFlags::default(),
@@ -18145,7 +18144,7 @@ pub struct RenderPassCreateInfo {
 }
 impl default::Default for RenderPassCreateInfo {
     fn default() -> Self {
-        RenderPassCreateInfo {
+        Self {
             s_type: StructureType::RENDER_PASS_CREATE_INFO,
             p_next: ptr::null(),
             flags: RenderPassCreateFlags::default(),
@@ -18183,7 +18182,7 @@ pub struct EventCreateInfo {
 }
 impl default::Default for EventCreateInfo {
     fn default() -> Self {
-        EventCreateInfo {
+        Self {
             s_type: StructureType::EVENT_CREATE_INFO,
             p_next: ptr::null(),
             flags: EventCreateFlags::default(),
@@ -18209,7 +18208,7 @@ pub struct FenceCreateInfo {
 }
 impl default::Default for FenceCreateInfo {
     fn default() -> Self {
-        FenceCreateInfo {
+        Self {
             s_type: StructureType::FENCE_CREATE_INFO,
             p_next: ptr::null(),
             flags: FenceCreateFlags::default(),
@@ -18341,7 +18340,7 @@ pub struct PhysicalDeviceFeatures {
 }
 impl default::Default for PhysicalDeviceFeatures {
     fn default() -> Self {
-        PhysicalDeviceFeatures {
+        Self {
             robust_buffer_access: Bool32::default(),
             full_draw_index_uint32: Bool32::default(),
             image_cube_array: Bool32::default(),
@@ -18507,7 +18506,7 @@ pub struct PhysicalDeviceSparseProperties {
 }
 impl default::Default for PhysicalDeviceSparseProperties {
     fn default() -> Self {
-        PhysicalDeviceSparseProperties {
+        Self {
             residency_standard2_d_block_shape: Bool32::default(),
             residency_standard2_d_multisample_block_shape: Bool32::default(),
             residency_standard3_d_block_shape: Bool32::default(),
@@ -18754,7 +18753,7 @@ pub struct PhysicalDeviceLimits {
 }
 impl default::Default for PhysicalDeviceLimits {
     fn default() -> Self {
-        PhysicalDeviceLimits {
+        Self {
             max_image_dimension1_d: u32::default(),
             max_image_dimension2_d: u32::default(),
             max_image_dimension3_d: u32::default(),
@@ -19100,7 +19099,7 @@ pub struct SemaphoreCreateInfo {
 }
 impl default::Default for SemaphoreCreateInfo {
     fn default() -> Self {
-        SemaphoreCreateInfo {
+        Self {
             s_type: StructureType::SEMAPHORE_CREATE_INFO,
             p_next: ptr::null(),
             flags: SemaphoreCreateFlags::default(),
@@ -19129,7 +19128,7 @@ pub struct QueryPoolCreateInfo {
 }
 impl default::Default for QueryPoolCreateInfo {
     fn default() -> Self {
-        QueryPoolCreateInfo {
+        Self {
             s_type: StructureType::QUERY_POOL_CREATE_INFO,
             p_next: ptr::null(),
             flags: QueryPoolCreateFlags::default(),
@@ -19166,7 +19165,7 @@ pub struct FramebufferCreateInfo {
 }
 impl default::Default for FramebufferCreateInfo {
     fn default() -> Self {
-        FramebufferCreateInfo {
+        Self {
             s_type: StructureType::FRAMEBUFFER_CREATE_INFO,
             p_next: ptr::null(),
             flags: FramebufferCreateFlags::default(),
@@ -19204,7 +19203,7 @@ pub struct DrawIndirectCommand {
 }
 impl default::Default for DrawIndirectCommand {
     fn default() -> Self {
-        DrawIndirectCommand {
+        Self {
             vertex_count: u32::default(),
             instance_count: u32::default(),
             first_vertex: u32::default(),
@@ -19233,7 +19232,7 @@ pub struct DrawIndexedIndirectCommand {
 }
 impl default::Default for DrawIndexedIndirectCommand {
     fn default() -> Self {
-        DrawIndexedIndirectCommand {
+        Self {
             index_count: u32::default(),
             instance_count: u32::default(),
             first_index: u32::default(),
@@ -19262,7 +19261,7 @@ pub struct DispatchIndirectCommand {
 }
 impl default::Default for DispatchIndirectCommand {
     fn default() -> Self {
-        DispatchIndirectCommand {
+        Self {
             x: u32::default(),
             y: u32::default(),
             z: u32::default(),
@@ -19293,7 +19292,7 @@ pub struct SubmitInfo {
 }
 impl default::Default for SubmitInfo {
     fn default() -> Self {
-        SubmitInfo {
+        Self {
             s_type: StructureType::SUBMIT_INFO,
             p_next: ptr::null(),
             wait_semaphore_count: u32::default(),
@@ -19341,7 +19340,7 @@ pub struct DisplayPropertiesKHR {
 }
 impl default::Default for DisplayPropertiesKHR {
     fn default() -> Self {
-        DisplayPropertiesKHR {
+        Self {
             display: None,
             display_name: ptr::null(),
             physical_dimensions: Extent2D::default(),
@@ -19375,7 +19374,7 @@ pub struct DisplayPlanePropertiesKHR {
 }
 impl default::Default for DisplayPlanePropertiesKHR {
     fn default() -> Self {
-        DisplayPlanePropertiesKHR {
+        Self {
             current_display: None,
             current_stack_index: u32::default(),
         }
@@ -19399,7 +19398,7 @@ pub struct DisplayModeParametersKHR {
 }
 impl default::Default for DisplayModeParametersKHR {
     fn default() -> Self {
-        DisplayModeParametersKHR {
+        Self {
             visible_region: Extent2D::default(),
             refresh_rate: u32::default(),
         }
@@ -19423,7 +19422,7 @@ pub struct DisplayModePropertiesKHR {
 }
 impl default::Default for DisplayModePropertiesKHR {
     fn default() -> Self {
-        DisplayModePropertiesKHR {
+        Self {
             display_mode: None,
             parameters: DisplayModeParametersKHR::default(),
         }
@@ -19448,7 +19447,7 @@ pub struct DisplayModeCreateInfoKHR {
 }
 impl default::Default for DisplayModeCreateInfoKHR {
     fn default() -> Self {
-        DisplayModeCreateInfoKHR {
+        Self {
             s_type: StructureType::DISPLAY_MODE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: DisplayModeCreateFlagsKHR::default(),
@@ -19483,7 +19482,7 @@ pub struct DisplayPlaneCapabilitiesKHR {
 }
 impl default::Default for DisplayPlaneCapabilitiesKHR {
     fn default() -> Self {
-        DisplayPlaneCapabilitiesKHR {
+        Self {
             supported_alpha: DisplayPlaneAlphaFlagsKHR::default(),
             min_src_position: Offset2D::default(),
             max_src_position: Offset2D::default(),
@@ -19534,7 +19533,7 @@ pub struct DisplaySurfaceCreateInfoKHR {
 }
 impl default::Default for DisplaySurfaceCreateInfoKHR {
     fn default() -> Self {
-        DisplaySurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::DISPLAY_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: DisplaySurfaceCreateFlagsKHR::default(),
@@ -19578,7 +19577,7 @@ pub struct DisplayPresentInfoKHR {
 }
 impl default::Default for DisplayPresentInfoKHR {
     fn default() -> Self {
-        DisplayPresentInfoKHR {
+        Self {
             s_type: StructureType::DISPLAY_PRESENT_INFO_KHR,
             p_next: ptr::null(),
             src_rect: Rect2D::default(),
@@ -19624,7 +19623,7 @@ pub struct SurfaceCapabilitiesKHR {
 }
 impl default::Default for SurfaceCapabilitiesKHR {
     fn default() -> Self {
-        SurfaceCapabilitiesKHR {
+        Self {
             min_image_count: u32::default(),
             max_image_count: u32::default(),
             current_extent: Extent2D::default(),
@@ -19664,7 +19663,7 @@ pub struct AndroidSurfaceCreateInfoKHR {
 }
 impl default::Default for AndroidSurfaceCreateInfoKHR {
     fn default() -> Self {
-        AndroidSurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::ANDROID_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: AndroidSurfaceCreateFlagsKHR::default(),
@@ -19692,7 +19691,7 @@ pub struct ViSurfaceCreateInfoNN {
 }
 impl default::Default for ViSurfaceCreateInfoNN {
     fn default() -> Self {
-        ViSurfaceCreateInfoNN {
+        Self {
             s_type: StructureType::VI_SURFACE_CREATE_INFO_NN,
             p_next: ptr::null(),
             flags: ViSurfaceCreateFlagsNN::default(),
@@ -19721,7 +19720,7 @@ pub struct WaylandSurfaceCreateInfoKHR {
 }
 impl default::Default for WaylandSurfaceCreateInfoKHR {
     fn default() -> Self {
-        WaylandSurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::WAYLAND_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: WaylandSurfaceCreateFlagsKHR::default(),
@@ -19752,7 +19751,7 @@ pub struct Win32SurfaceCreateInfoKHR {
 }
 impl default::Default for Win32SurfaceCreateInfoKHR {
     fn default() -> Self {
-        Win32SurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::WIN32_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: Win32SurfaceCreateFlagsKHR::default(),
@@ -19783,7 +19782,7 @@ pub struct XlibSurfaceCreateInfoKHR {
 }
 impl default::Default for XlibSurfaceCreateInfoKHR {
     fn default() -> Self {
-        XlibSurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::XLIB_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: XlibSurfaceCreateFlagsKHR::default(),
@@ -19814,7 +19813,7 @@ pub struct XcbSurfaceCreateInfoKHR {
 }
 impl default::Default for XcbSurfaceCreateInfoKHR {
     fn default() -> Self {
-        XcbSurfaceCreateInfoKHR {
+        Self {
             s_type: StructureType::XCB_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: XcbSurfaceCreateFlagsKHR::default(),
@@ -19844,7 +19843,7 @@ pub struct ImagePipeSurfaceCreateInfoFUCHSIA {
 }
 impl default::Default for ImagePipeSurfaceCreateInfoFUCHSIA {
     fn default() -> Self {
-        ImagePipeSurfaceCreateInfoFUCHSIA {
+        Self {
             s_type: StructureType::IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA,
             p_next: ptr::null(),
             flags: ImagePipeSurfaceCreateFlagsFUCHSIA::default(),
@@ -19872,7 +19871,7 @@ pub struct SurfaceFormatKHR {
 }
 impl default::Default for SurfaceFormatKHR {
     fn default() -> Self {
-        SurfaceFormatKHR {
+        Self {
             format: Format::default(),
             color_space: ColorSpaceKHR::default(),
         }
@@ -19925,7 +19924,7 @@ pub struct SwapchainCreateInfoKHR {
 }
 impl default::Default for SwapchainCreateInfoKHR {
     fn default() -> Self {
-        SwapchainCreateInfoKHR {
+        Self {
             s_type: StructureType::SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
             flags: SwapchainCreateFlagsKHR::default(),
@@ -19991,7 +19990,7 @@ pub struct PresentInfoKHR {
 }
 impl default::Default for PresentInfoKHR {
     fn default() -> Self {
-        PresentInfoKHR {
+        Self {
             s_type: StructureType::PRESENT_INFO_KHR,
             p_next: ptr::null(),
             wait_semaphore_count: u32::default(),
@@ -20031,7 +20030,7 @@ pub struct DebugReportCallbackCreateInfoEXT {
 }
 impl default::Default for DebugReportCallbackCreateInfoEXT {
     fn default() -> Self {
-        DebugReportCallbackCreateInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: DebugReportFlagsEXT::default(),
@@ -20067,7 +20066,7 @@ pub struct ValidationFlagsEXT {
 }
 impl default::Default for ValidationFlagsEXT {
     fn default() -> Self {
-        ValidationFlagsEXT {
+        Self {
             s_type: StructureType::VALIDATION_FLAGS_EXT,
             p_next: ptr::null(),
             disabled_validation_check_count: u32::default(),
@@ -20102,7 +20101,7 @@ pub struct ValidationFeaturesEXT {
 }
 impl default::Default for ValidationFeaturesEXT {
     fn default() -> Self {
-        ValidationFeaturesEXT {
+        Self {
             s_type: StructureType::VALIDATION_FEATURES_EXT,
             p_next: ptr::null(),
             enabled_validation_feature_count: u32::default(),
@@ -20140,7 +20139,7 @@ pub struct PipelineRasterizationStateRasterizationOrderAMD {
 }
 impl default::Default for PipelineRasterizationStateRasterizationOrderAMD {
     fn default() -> Self {
-        PipelineRasterizationStateRasterizationOrderAMD {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
             p_next: ptr::null(),
             rasterization_order: RasterizationOrderAMD::default(),
@@ -20170,7 +20169,7 @@ pub struct DebugMarkerObjectNameInfoEXT {
 }
 impl default::Default for DebugMarkerObjectNameInfoEXT {
     fn default() -> Self {
-        DebugMarkerObjectNameInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
             p_next: ptr::null(),
             object_type: DebugReportObjectTypeEXT::default(),
@@ -20208,7 +20207,7 @@ pub struct DebugMarkerObjectTagInfoEXT {
 }
 impl default::Default for DebugMarkerObjectTagInfoEXT {
     fn default() -> Self {
-        DebugMarkerObjectTagInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
             p_next: ptr::null(),
             object_type: DebugReportObjectTypeEXT::default(),
@@ -20244,7 +20243,7 @@ pub struct DebugMarkerMarkerInfoEXT {
 }
 impl default::Default for DebugMarkerMarkerInfoEXT {
     fn default() -> Self {
-        DebugMarkerMarkerInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_MARKER_MARKER_INFO_EXT,
             p_next: ptr::null(),
             p_marker_name: ptr::null(),
@@ -20272,7 +20271,7 @@ pub struct DedicatedAllocationImageCreateInfoNV {
 }
 impl default::Default for DedicatedAllocationImageCreateInfoNV {
     fn default() -> Self {
-        DedicatedAllocationImageCreateInfoNV {
+        Self {
             s_type: StructureType::DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
             p_next: ptr::null(),
             dedicated_allocation: Bool32::default(),
@@ -20298,7 +20297,7 @@ pub struct DedicatedAllocationBufferCreateInfoNV {
 }
 impl default::Default for DedicatedAllocationBufferCreateInfoNV {
     fn default() -> Self {
-        DedicatedAllocationBufferCreateInfoNV {
+        Self {
             s_type: StructureType::DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
             p_next: ptr::null(),
             dedicated_allocation: Bool32::default(),
@@ -20326,7 +20325,7 @@ pub struct DedicatedAllocationMemoryAllocateInfoNV {
 }
 impl default::Default for DedicatedAllocationMemoryAllocateInfoNV {
     fn default() -> Self {
-        DedicatedAllocationMemoryAllocateInfoNV {
+        Self {
             s_type: StructureType::DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
             p_next: ptr::null(),
             image: None,
@@ -20354,7 +20353,7 @@ pub struct ExternalImageFormatPropertiesNV {
 }
 impl default::Default for ExternalImageFormatPropertiesNV {
     fn default() -> Self {
-        ExternalImageFormatPropertiesNV {
+        Self {
             image_format_properties: ImageFormatProperties::default(),
             external_memory_features: ExternalMemoryFeatureFlagsNV::default(),
             export_from_imported_handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
@@ -20384,7 +20383,7 @@ pub struct ExternalMemoryImageCreateInfoNV {
 }
 impl default::Default for ExternalMemoryImageCreateInfoNV {
     fn default() -> Self {
-        ExternalMemoryImageCreateInfoNV {
+        Self {
             s_type: StructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
             p_next: ptr::null(),
             handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
@@ -20409,7 +20408,7 @@ pub struct ExportMemoryAllocateInfoNV {
 }
 impl default::Default for ExportMemoryAllocateInfoNV {
     fn default() -> Self {
-        ExportMemoryAllocateInfoNV {
+        Self {
             s_type: StructureType::EXPORT_MEMORY_ALLOCATE_INFO_NV,
             p_next: ptr::null(),
             handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
@@ -20435,7 +20434,7 @@ pub struct ImportMemoryWin32HandleInfoNV {
 }
 impl default::Default for ImportMemoryWin32HandleInfoNV {
     fn default() -> Self {
-        ImportMemoryWin32HandleInfoNV {
+        Self {
             s_type: StructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
             p_next: ptr::null(),
             handle_type: ExternalMemoryHandleTypeFlagsNV::default(),
@@ -20463,7 +20462,7 @@ pub struct ExportMemoryWin32HandleInfoNV {
 }
 impl default::Default for ExportMemoryWin32HandleInfoNV {
     fn default() -> Self {
-        ExportMemoryWin32HandleInfoNV {
+        Self {
             s_type: StructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
             p_next: ptr::null(),
             p_attributes: ptr::null(),
@@ -20496,7 +20495,7 @@ pub struct Win32KeyedMutexAcquireReleaseInfoNV {
 }
 impl default::Default for Win32KeyedMutexAcquireReleaseInfoNV {
     fn default() -> Self {
-        Win32KeyedMutexAcquireReleaseInfoNV {
+        Self {
             s_type: StructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
             p_next: ptr::null(),
             acquire_count: u32::default(),
@@ -20533,7 +20532,7 @@ pub struct DeviceGeneratedCommandsFeaturesNVX {
 }
 impl default::Default for DeviceGeneratedCommandsFeaturesNVX {
     fn default() -> Self {
-        DeviceGeneratedCommandsFeaturesNVX {
+        Self {
             s_type: StructureType::DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
             p_next: ptr::null(),
             compute_binding_point_support: Bool32::default(),
@@ -20562,7 +20561,7 @@ pub struct DeviceGeneratedCommandsLimitsNVX {
 }
 impl default::Default for DeviceGeneratedCommandsLimitsNVX {
     fn default() -> Self {
-        DeviceGeneratedCommandsLimitsNVX {
+        Self {
             s_type: StructureType::DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
             p_next: ptr::null(),
             max_indirect_commands_layout_token_count: u32::default(),
@@ -20609,7 +20608,7 @@ pub struct IndirectCommandsTokenNVX {
 }
 impl default::Default for IndirectCommandsTokenNVX {
     fn default() -> Self {
-        IndirectCommandsTokenNVX {
+        Self {
             token_type: IndirectCommandsTokenTypeNVX::default(),
             buffer: None,
             offset: DeviceSize::default(),
@@ -20638,7 +20637,7 @@ pub struct IndirectCommandsLayoutTokenNVX {
 }
 impl default::Default for IndirectCommandsLayoutTokenNVX {
     fn default() -> Self {
-        IndirectCommandsLayoutTokenNVX {
+        Self {
             token_type: IndirectCommandsTokenTypeNVX::default(),
             binding_unit: u32::default(),
             dynamic_count: u32::default(),
@@ -20668,7 +20667,7 @@ pub struct IndirectCommandsLayoutCreateInfoNVX {
 }
 impl default::Default for IndirectCommandsLayoutCreateInfoNVX {
     fn default() -> Self {
-        IndirectCommandsLayoutCreateInfoNVX {
+        Self {
             s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
             p_next: ptr::null(),
             pipeline_bind_point: PipelineBindPoint::default(),
@@ -20708,7 +20707,7 @@ pub struct CmdProcessCommandsInfoNVX {
 }
 impl default::Default for CmdProcessCommandsInfoNVX {
     fn default() -> Self {
-        CmdProcessCommandsInfoNVX {
+        Self {
             s_type: StructureType::CMD_PROCESS_COMMANDS_INFO_NVX,
             p_next: ptr::null(),
             object_table: None,
@@ -20753,7 +20752,7 @@ pub struct CmdReserveSpaceForCommandsInfoNVX {
 }
 impl default::Default for CmdReserveSpaceForCommandsInfoNVX {
     fn default() -> Self {
-        CmdReserveSpaceForCommandsInfoNVX {
+        Self {
             s_type: StructureType::CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
             p_next: ptr::null(),
             object_table: None,
@@ -20790,7 +20789,7 @@ pub struct ObjectTableCreateInfoNVX {
 }
 impl default::Default for ObjectTableCreateInfoNVX {
     fn default() -> Self {
-        ObjectTableCreateInfoNVX {
+        Self {
             s_type: StructureType::OBJECT_TABLE_CREATE_INFO_NVX,
             p_next: ptr::null(),
             object_count: u32::default(),
@@ -20842,7 +20841,7 @@ pub struct ObjectTableEntryNVX {
 }
 impl default::Default for ObjectTableEntryNVX {
     fn default() -> Self {
-        ObjectTableEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
         }
@@ -20865,7 +20864,7 @@ pub struct ObjectTablePipelineEntryNVX {
 }
 impl default::Default for ObjectTablePipelineEntryNVX {
     fn default() -> Self {
-        ObjectTablePipelineEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
             pipeline: None,
@@ -20891,7 +20890,7 @@ pub struct ObjectTableDescriptorSetEntryNVX {
 }
 impl default::Default for ObjectTableDescriptorSetEntryNVX {
     fn default() -> Self {
-        ObjectTableDescriptorSetEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
             pipeline_layout: None,
@@ -20918,7 +20917,7 @@ pub struct ObjectTableVertexBufferEntryNVX {
 }
 impl default::Default for ObjectTableVertexBufferEntryNVX {
     fn default() -> Self {
-        ObjectTableVertexBufferEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
             buffer: None,
@@ -20944,7 +20943,7 @@ pub struct ObjectTableIndexBufferEntryNVX {
 }
 impl default::Default for ObjectTableIndexBufferEntryNVX {
     fn default() -> Self {
-        ObjectTableIndexBufferEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
             buffer: None,
@@ -20972,7 +20971,7 @@ pub struct ObjectTablePushConstantEntryNVX {
 }
 impl default::Default for ObjectTablePushConstantEntryNVX {
     fn default() -> Self {
-        ObjectTablePushConstantEntryNVX {
+        Self {
             ty: ObjectEntryTypeNVX::default(),
             flags: ObjectEntryUsageFlagsNVX::default(),
             pipeline_layout: None,
@@ -20999,7 +20998,7 @@ pub struct PhysicalDeviceFeatures2 {
 }
 impl default::Default for PhysicalDeviceFeatures2 {
     fn default() -> Self {
-        PhysicalDeviceFeatures2 {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FEATURES_2,
             p_next: ptr::null_mut(),
             features: PhysicalDeviceFeatures::default(),
@@ -21025,7 +21024,7 @@ pub struct PhysicalDeviceProperties2 {
 }
 impl default::Default for PhysicalDeviceProperties2 {
     fn default() -> Self {
-        PhysicalDeviceProperties2 {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROPERTIES_2,
             p_next: ptr::null_mut(),
             properties: PhysicalDeviceProperties::default(),
@@ -21051,7 +21050,7 @@ pub struct FormatProperties2 {
 }
 impl default::Default for FormatProperties2 {
     fn default() -> Self {
-        FormatProperties2 {
+        Self {
             s_type: StructureType::FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
             format_properties: FormatProperties::default(),
@@ -21077,7 +21076,7 @@ pub struct ImageFormatProperties2 {
 }
 impl default::Default for ImageFormatProperties2 {
     fn default() -> Self {
-        ImageFormatProperties2 {
+        Self {
             s_type: StructureType::IMAGE_FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
             image_format_properties: ImageFormatProperties::default(),
@@ -21107,7 +21106,7 @@ pub struct PhysicalDeviceImageFormatInfo2 {
 }
 impl default::Default for PhysicalDeviceImageFormatInfo2 {
     fn default() -> Self {
-        PhysicalDeviceImageFormatInfo2 {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2,
             p_next: ptr::null(),
             format: Format::default(),
@@ -21141,7 +21140,7 @@ pub struct QueueFamilyProperties2 {
 }
 impl default::Default for QueueFamilyProperties2 {
     fn default() -> Self {
-        QueueFamilyProperties2 {
+        Self {
             s_type: StructureType::QUEUE_FAMILY_PROPERTIES_2,
             p_next: ptr::null_mut(),
             queue_family_properties: QueueFamilyProperties::default(),
@@ -21167,7 +21166,7 @@ pub struct PhysicalDeviceMemoryProperties2 {
 }
 impl default::Default for PhysicalDeviceMemoryProperties2 {
     fn default() -> Self {
-        PhysicalDeviceMemoryProperties2 {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2,
             p_next: ptr::null_mut(),
             memory_properties: PhysicalDeviceMemoryProperties::default(),
@@ -21193,7 +21192,7 @@ pub struct SparseImageFormatProperties2 {
 }
 impl default::Default for SparseImageFormatProperties2 {
     fn default() -> Self {
-        SparseImageFormatProperties2 {
+        Self {
             s_type: StructureType::SPARSE_IMAGE_FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
             properties: SparseImageFormatProperties::default(),
@@ -21223,7 +21222,7 @@ pub struct PhysicalDeviceSparseImageFormatInfo2 {
 }
 impl default::Default for PhysicalDeviceSparseImageFormatInfo2 {
     fn default() -> Self {
-        PhysicalDeviceSparseImageFormatInfo2 {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2,
             p_next: ptr::null(),
             format: Format::default(),
@@ -21257,7 +21256,7 @@ pub struct PhysicalDevicePushDescriptorPropertiesKHR {
 }
 impl default::Default for PhysicalDevicePushDescriptorPropertiesKHR {
     fn default() -> Self {
-        PhysicalDevicePushDescriptorPropertiesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             max_push_descriptors: u32::default(),
@@ -21283,7 +21282,7 @@ pub struct ConformanceVersionKHR {
 }
 impl default::Default for ConformanceVersionKHR {
     fn default() -> Self {
-        ConformanceVersionKHR {
+        Self {
             major: u8::default(),
             minor: u8::default(),
             subminor: u8::default(),
@@ -21313,7 +21312,7 @@ pub struct PhysicalDeviceDriverPropertiesKHR {
 }
 impl default::Default for PhysicalDeviceDriverPropertiesKHR {
     fn default() -> Self {
-        PhysicalDeviceDriverPropertiesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             driver_id: DriverIdKHR::default(),
@@ -21347,7 +21346,7 @@ pub struct PresentRegionsKHR {
 }
 impl default::Default for PresentRegionsKHR {
     fn default() -> Self {
-        PresentRegionsKHR {
+        Self {
             s_type: StructureType::PRESENT_REGIONS_KHR,
             p_next: ptr::null(),
             swapchain_count: u32::default(),
@@ -21375,7 +21374,7 @@ pub struct PresentRegionKHR {
 }
 impl default::Default for PresentRegionKHR {
     fn default() -> Self {
-        PresentRegionKHR {
+        Self {
             rectangle_count: u32::default(),
             p_rectangles: ptr::null(),
         }
@@ -21401,7 +21400,7 @@ pub struct RectLayerKHR {
 }
 impl default::Default for RectLayerKHR {
     fn default() -> Self {
-        RectLayerKHR {
+        Self {
             offset: Offset2D::default(),
             extent: Extent2D::default(),
             layer: u32::default(),
@@ -21427,7 +21426,7 @@ pub struct PhysicalDeviceVariablePointersFeatures {
 }
 impl default::Default for PhysicalDeviceVariablePointersFeatures {
     fn default() -> Self {
-        PhysicalDeviceVariablePointersFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES,
             p_next: ptr::null_mut(),
             variable_pointers_storage_buffer: Bool32::default(),
@@ -21460,7 +21459,7 @@ pub struct ExternalMemoryProperties {
 }
 impl default::Default for ExternalMemoryProperties {
     fn default() -> Self {
-        ExternalMemoryProperties {
+        Self {
             external_memory_features: ExternalMemoryFeatureFlags::default(),
             export_from_imported_handle_types: ExternalMemoryHandleTypeFlags::default(),
             compatible_handle_types: ExternalMemoryHandleTypeFlags::default(),
@@ -21489,7 +21488,7 @@ pub struct PhysicalDeviceExternalImageFormatInfo {
 }
 impl default::Default for PhysicalDeviceExternalImageFormatInfo {
     fn default() -> Self {
-        PhysicalDeviceExternalImageFormatInfo {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO,
             p_next: ptr::null(),
             handle_type: ExternalMemoryHandleTypeFlags::default(),
@@ -21515,7 +21514,7 @@ pub struct ExternalImageFormatProperties {
 }
 impl default::Default for ExternalImageFormatProperties {
     fn default() -> Self {
-        ExternalImageFormatProperties {
+        Self {
             s_type: StructureType::EXTERNAL_IMAGE_FORMAT_PROPERTIES,
             p_next: ptr::null_mut(),
             external_memory_properties: ExternalMemoryProperties::default(),
@@ -21543,7 +21542,7 @@ pub struct PhysicalDeviceExternalBufferInfo {
 }
 impl default::Default for PhysicalDeviceExternalBufferInfo {
     fn default() -> Self {
-        PhysicalDeviceExternalBufferInfo {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO,
             p_next: ptr::null(),
             flags: BufferCreateFlags::default(),
@@ -21573,7 +21572,7 @@ pub struct ExternalBufferProperties {
 }
 impl default::Default for ExternalBufferProperties {
     fn default() -> Self {
-        ExternalBufferProperties {
+        Self {
             s_type: StructureType::EXTERNAL_BUFFER_PROPERTIES,
             p_next: ptr::null_mut(),
             external_memory_properties: ExternalMemoryProperties::default(),
@@ -21603,7 +21602,7 @@ pub struct PhysicalDeviceIDProperties {
 }
 impl default::Default for PhysicalDeviceIDProperties {
     fn default() -> Self {
-        PhysicalDeviceIDProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_ID_PROPERTIES,
             p_next: ptr::null_mut(),
             device_uuid: [u8::default(); UUID_SIZE],
@@ -21637,7 +21636,7 @@ pub struct ExternalMemoryImageCreateInfo {
 }
 impl default::Default for ExternalMemoryImageCreateInfo {
     fn default() -> Self {
-        ExternalMemoryImageCreateInfo {
+        Self {
             s_type: StructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO,
             p_next: ptr::null(),
             handle_types: ExternalMemoryHandleTypeFlags::default(),
@@ -21663,7 +21662,7 @@ pub struct ExternalMemoryBufferCreateInfo {
 }
 impl default::Default for ExternalMemoryBufferCreateInfo {
     fn default() -> Self {
-        ExternalMemoryBufferCreateInfo {
+        Self {
             s_type: StructureType::EXTERNAL_MEMORY_BUFFER_CREATE_INFO,
             p_next: ptr::null(),
             handle_types: ExternalMemoryHandleTypeFlags::default(),
@@ -21689,7 +21688,7 @@ pub struct ExportMemoryAllocateInfo {
 }
 impl default::Default for ExportMemoryAllocateInfo {
     fn default() -> Self {
-        ExportMemoryAllocateInfo {
+        Self {
             s_type: StructureType::EXPORT_MEMORY_ALLOCATE_INFO,
             p_next: ptr::null(),
             handle_types: ExternalMemoryHandleTypeFlags::default(),
@@ -21717,7 +21716,7 @@ pub struct ImportMemoryWin32HandleInfoKHR {
 }
 impl default::Default for ImportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
-        ImportMemoryWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             handle_type: ExternalMemoryHandleTypeFlags::default(),
@@ -21748,7 +21747,7 @@ pub struct ExportMemoryWin32HandleInfoKHR {
 }
 impl default::Default for ExportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
-        ExportMemoryWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             p_attributes: ptr::null(),
@@ -21777,7 +21776,7 @@ pub struct MemoryWin32HandlePropertiesKHR {
 }
 impl default::Default for MemoryWin32HandlePropertiesKHR {
     fn default() -> Self {
-        MemoryWin32HandlePropertiesKHR {
+        Self {
             s_type: StructureType::MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             memory_type_bits: u32::default(),
@@ -21803,7 +21802,7 @@ pub struct MemoryGetWin32HandleInfoKHR {
 }
 impl default::Default for MemoryGetWin32HandleInfoKHR {
     fn default() -> Self {
-        MemoryGetWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::MEMORY_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             memory: None,
@@ -21831,7 +21830,7 @@ pub struct ImportMemoryFdInfoKHR {
 }
 impl default::Default for ImportMemoryFdInfoKHR {
     fn default() -> Self {
-        ImportMemoryFdInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_MEMORY_FD_INFO_KHR,
             p_next: ptr::null(),
             handle_type: ExternalMemoryHandleTypeFlags::default(),
@@ -21858,7 +21857,7 @@ pub struct MemoryFdPropertiesKHR {
 }
 impl default::Default for MemoryFdPropertiesKHR {
     fn default() -> Self {
-        MemoryFdPropertiesKHR {
+        Self {
             s_type: StructureType::MEMORY_FD_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             memory_type_bits: u32::default(),
@@ -21884,7 +21883,7 @@ pub struct MemoryGetFdInfoKHR {
 }
 impl default::Default for MemoryGetFdInfoKHR {
     fn default() -> Self {
-        MemoryGetFdInfoKHR {
+        Self {
             s_type: StructureType::MEMORY_GET_FD_INFO_KHR,
             p_next: ptr::null(),
             memory: None,
@@ -21917,7 +21916,7 @@ pub struct Win32KeyedMutexAcquireReleaseInfoKHR {
 }
 impl default::Default for Win32KeyedMutexAcquireReleaseInfoKHR {
     fn default() -> Self {
-        Win32KeyedMutexAcquireReleaseInfoKHR {
+        Self {
             s_type: StructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
             p_next: ptr::null(),
             acquire_count: u32::default(),
@@ -21954,7 +21953,7 @@ pub struct PhysicalDeviceExternalSemaphoreInfo {
 }
 impl default::Default for PhysicalDeviceExternalSemaphoreInfo {
     fn default() -> Self {
-        PhysicalDeviceExternalSemaphoreInfo {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO,
             p_next: ptr::null(),
             handle_type: ExternalSemaphoreHandleTypeFlags::default(),
@@ -21982,7 +21981,7 @@ pub struct ExternalSemaphoreProperties {
 }
 impl default::Default for ExternalSemaphoreProperties {
     fn default() -> Self {
-        ExternalSemaphoreProperties {
+        Self {
             s_type: StructureType::EXTERNAL_SEMAPHORE_PROPERTIES,
             p_next: ptr::null_mut(),
             export_from_imported_handle_types: ExternalSemaphoreHandleTypeFlags::default(),
@@ -22015,7 +22014,7 @@ pub struct ExportSemaphoreCreateInfo {
 }
 impl default::Default for ExportSemaphoreCreateInfo {
     fn default() -> Self {
-        ExportSemaphoreCreateInfo {
+        Self {
             s_type: StructureType::EXPORT_SEMAPHORE_CREATE_INFO,
             p_next: ptr::null(),
             handle_types: ExternalSemaphoreHandleTypeFlags::default(),
@@ -22045,7 +22044,7 @@ pub struct ImportSemaphoreWin32HandleInfoKHR {
 }
 impl default::Default for ImportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
-        ImportSemaphoreWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             semaphore: None,
@@ -22080,7 +22079,7 @@ pub struct ExportSemaphoreWin32HandleInfoKHR {
 }
 impl default::Default for ExportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
-        ExportSemaphoreWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             p_attributes: ptr::null(),
@@ -22112,7 +22111,7 @@ pub struct D3D12FenceSubmitInfoKHR {
 }
 impl default::Default for D3D12FenceSubmitInfoKHR {
     fn default() -> Self {
-        D3D12FenceSubmitInfoKHR {
+        Self {
             s_type: StructureType::D3D12_FENCE_SUBMIT_INFO_KHR,
             p_next: ptr::null(),
             wait_semaphore_values_count: u32::default(),
@@ -22144,7 +22143,7 @@ pub struct SemaphoreGetWin32HandleInfoKHR {
 }
 impl default::Default for SemaphoreGetWin32HandleInfoKHR {
     fn default() -> Self {
-        SemaphoreGetWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             semaphore: None,
@@ -22174,7 +22173,7 @@ pub struct ImportSemaphoreFdInfoKHR {
 }
 impl default::Default for ImportSemaphoreFdInfoKHR {
     fn default() -> Self {
-        ImportSemaphoreFdInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_SEMAPHORE_FD_INFO_KHR,
             p_next: ptr::null(),
             semaphore: None,
@@ -22206,7 +22205,7 @@ pub struct SemaphoreGetFdInfoKHR {
 }
 impl default::Default for SemaphoreGetFdInfoKHR {
     fn default() -> Self {
-        SemaphoreGetFdInfoKHR {
+        Self {
             s_type: StructureType::SEMAPHORE_GET_FD_INFO_KHR,
             p_next: ptr::null(),
             semaphore: None,
@@ -22233,7 +22232,7 @@ pub struct PhysicalDeviceExternalFenceInfo {
 }
 impl default::Default for PhysicalDeviceExternalFenceInfo {
     fn default() -> Self {
-        PhysicalDeviceExternalFenceInfo {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO,
             p_next: ptr::null(),
             handle_type: ExternalFenceHandleTypeFlags::default(),
@@ -22261,7 +22260,7 @@ pub struct ExternalFenceProperties {
 }
 impl default::Default for ExternalFenceProperties {
     fn default() -> Self {
-        ExternalFenceProperties {
+        Self {
             s_type: StructureType::EXTERNAL_FENCE_PROPERTIES,
             p_next: ptr::null_mut(),
             export_from_imported_handle_types: ExternalFenceHandleTypeFlags::default(),
@@ -22294,7 +22293,7 @@ pub struct ExportFenceCreateInfo {
 }
 impl default::Default for ExportFenceCreateInfo {
     fn default() -> Self {
-        ExportFenceCreateInfo {
+        Self {
             s_type: StructureType::EXPORT_FENCE_CREATE_INFO,
             p_next: ptr::null(),
             handle_types: ExternalFenceHandleTypeFlags::default(),
@@ -22324,7 +22323,7 @@ pub struct ImportFenceWin32HandleInfoKHR {
 }
 impl default::Default for ImportFenceWin32HandleInfoKHR {
     fn default() -> Self {
-        ImportFenceWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             fence: None,
@@ -22359,7 +22358,7 @@ pub struct ExportFenceWin32HandleInfoKHR {
 }
 impl default::Default for ExportFenceWin32HandleInfoKHR {
     fn default() -> Self {
-        ExportFenceWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             p_attributes: ptr::null(),
@@ -22389,7 +22388,7 @@ pub struct FenceGetWin32HandleInfoKHR {
 }
 impl default::Default for FenceGetWin32HandleInfoKHR {
     fn default() -> Self {
-        FenceGetWin32HandleInfoKHR {
+        Self {
             s_type: StructureType::FENCE_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
             fence: None,
@@ -22419,7 +22418,7 @@ pub struct ImportFenceFdInfoKHR {
 }
 impl default::Default for ImportFenceFdInfoKHR {
     fn default() -> Self {
-        ImportFenceFdInfoKHR {
+        Self {
             s_type: StructureType::IMPORT_FENCE_FD_INFO_KHR,
             p_next: ptr::null(),
             fence: None,
@@ -22451,7 +22450,7 @@ pub struct FenceGetFdInfoKHR {
 }
 impl default::Default for FenceGetFdInfoKHR {
     fn default() -> Self {
-        FenceGetFdInfoKHR {
+        Self {
             s_type: StructureType::FENCE_GET_FD_INFO_KHR,
             p_next: ptr::null(),
             fence: None,
@@ -22483,7 +22482,7 @@ pub struct PhysicalDeviceMultiviewFeatures {
 }
 impl default::Default for PhysicalDeviceMultiviewFeatures {
     fn default() -> Self {
-        PhysicalDeviceMultiviewFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_FEATURES,
             p_next: ptr::null_mut(),
             multiview: Bool32::default(),
@@ -22516,7 +22515,7 @@ pub struct PhysicalDeviceMultiviewProperties {
 }
 impl default::Default for PhysicalDeviceMultiviewProperties {
     fn default() -> Self {
-        PhysicalDeviceMultiviewProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES,
             p_next: ptr::null_mut(),
             max_multiview_view_count: u32::default(),
@@ -22549,7 +22548,7 @@ pub struct RenderPassMultiviewCreateInfo {
 }
 impl default::Default for RenderPassMultiviewCreateInfo {
     fn default() -> Self {
-        RenderPassMultiviewCreateInfo {
+        Self {
             s_type: StructureType::RENDER_PASS_MULTIVIEW_CREATE_INFO,
             p_next: ptr::null(),
             subpass_count: u32::default(),
@@ -22605,7 +22604,7 @@ pub struct SurfaceCapabilities2EXT {
 }
 impl default::Default for SurfaceCapabilities2EXT {
     fn default() -> Self {
-        SurfaceCapabilities2EXT {
+        Self {
             s_type: StructureType::SURFACE_CAPABILITIES_2_EXT,
             p_next: ptr::null_mut(),
             min_image_count: u32::default(),
@@ -22650,7 +22649,7 @@ pub struct DisplayPowerInfoEXT {
 }
 impl default::Default for DisplayPowerInfoEXT {
     fn default() -> Self {
-        DisplayPowerInfoEXT {
+        Self {
             s_type: StructureType::DISPLAY_POWER_INFO_EXT,
             p_next: ptr::null(),
             power_state: DisplayPowerStateEXT::default(),
@@ -22675,7 +22674,7 @@ pub struct DeviceEventInfoEXT {
 }
 impl default::Default for DeviceEventInfoEXT {
     fn default() -> Self {
-        DeviceEventInfoEXT {
+        Self {
             s_type: StructureType::DEVICE_EVENT_INFO_EXT,
             p_next: ptr::null(),
             device_event: DeviceEventTypeEXT::default(),
@@ -22700,7 +22699,7 @@ pub struct DisplayEventInfoEXT {
 }
 impl default::Default for DisplayEventInfoEXT {
     fn default() -> Self {
-        DisplayEventInfoEXT {
+        Self {
             s_type: StructureType::DISPLAY_EVENT_INFO_EXT,
             p_next: ptr::null(),
             display_event: DisplayEventTypeEXT::default(),
@@ -22725,7 +22724,7 @@ pub struct SwapchainCounterCreateInfoEXT {
 }
 impl default::Default for SwapchainCounterCreateInfoEXT {
     fn default() -> Self {
-        SwapchainCounterCreateInfoEXT {
+        Self {
             s_type: StructureType::SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
             p_next: ptr::null(),
             surface_counters: SurfaceCounterFlagsEXT::default(),
@@ -22752,7 +22751,7 @@ pub struct PhysicalDeviceGroupProperties {
 }
 impl default::Default for PhysicalDeviceGroupProperties {
     fn default() -> Self {
-        PhysicalDeviceGroupProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_GROUP_PROPERTIES,
             p_next: ptr::null_mut(),
             physical_device_count: u32::default(),
@@ -22783,7 +22782,7 @@ pub struct MemoryAllocateFlagsInfo {
 }
 impl default::Default for MemoryAllocateFlagsInfo {
     fn default() -> Self {
-        MemoryAllocateFlagsInfo {
+        Self {
             s_type: StructureType::MEMORY_ALLOCATE_FLAGS_INFO,
             p_next: ptr::null(),
             flags: MemoryAllocateFlags::default(),
@@ -22813,7 +22812,7 @@ pub struct BindBufferMemoryInfo {
 }
 impl default::Default for BindBufferMemoryInfo {
     fn default() -> Self {
-        BindBufferMemoryInfo {
+        Self {
             s_type: StructureType::BIND_BUFFER_MEMORY_INFO,
             p_next: ptr::null(),
             buffer: None,
@@ -22844,7 +22843,7 @@ pub struct BindBufferMemoryDeviceGroupInfo {
 }
 impl default::Default for BindBufferMemoryDeviceGroupInfo {
     fn default() -> Self {
-        BindBufferMemoryDeviceGroupInfo {
+        Self {
             s_type: StructureType::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO,
             p_next: ptr::null(),
             device_index_count: u32::default(),
@@ -22874,7 +22873,7 @@ pub struct BindImageMemoryInfo {
 }
 impl default::Default for BindImageMemoryInfo {
     fn default() -> Self {
-        BindImageMemoryInfo {
+        Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_INFO,
             p_next: ptr::null(),
             image: None,
@@ -22907,7 +22906,7 @@ pub struct BindImageMemoryDeviceGroupInfo {
 }
 impl default::Default for BindImageMemoryDeviceGroupInfo {
     fn default() -> Self {
-        BindImageMemoryDeviceGroupInfo {
+        Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO,
             p_next: ptr::null(),
             device_index_count: u32::default(),
@@ -22944,7 +22943,7 @@ pub struct DeviceGroupRenderPassBeginInfo {
 }
 impl default::Default for DeviceGroupRenderPassBeginInfo {
     fn default() -> Self {
-        DeviceGroupRenderPassBeginInfo {
+        Self {
             s_type: StructureType::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO,
             p_next: ptr::null(),
             device_mask: u32::default(),
@@ -22974,7 +22973,7 @@ pub struct DeviceGroupCommandBufferBeginInfo {
 }
 impl default::Default for DeviceGroupCommandBufferBeginInfo {
     fn default() -> Self {
-        DeviceGroupCommandBufferBeginInfo {
+        Self {
             s_type: StructureType::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO,
             p_next: ptr::null(),
             device_mask: u32::default(),
@@ -23005,7 +23004,7 @@ pub struct DeviceGroupSubmitInfo {
 }
 impl default::Default for DeviceGroupSubmitInfo {
     fn default() -> Self {
-        DeviceGroupSubmitInfo {
+        Self {
             s_type: StructureType::DEVICE_GROUP_SUBMIT_INFO,
             p_next: ptr::null(),
             wait_semaphore_count: u32::default(),
@@ -23045,7 +23044,7 @@ pub struct DeviceGroupBindSparseInfo {
 }
 impl default::Default for DeviceGroupBindSparseInfo {
     fn default() -> Self {
-        DeviceGroupBindSparseInfo {
+        Self {
             s_type: StructureType::DEVICE_GROUP_BIND_SPARSE_INFO,
             p_next: ptr::null(),
             resource_device_index: u32::default(),
@@ -23074,7 +23073,7 @@ pub struct DeviceGroupPresentCapabilitiesKHR {
 }
 impl default::Default for DeviceGroupPresentCapabilitiesKHR {
     fn default() -> Self {
-        DeviceGroupPresentCapabilitiesKHR {
+        Self {
             s_type: StructureType::DEVICE_GROUP_PRESENT_CAPABILITIES_KHR,
             p_next: ptr::null(),
             present_mask: [u32::default(); MAX_DEVICE_GROUP_SIZE],
@@ -23101,7 +23100,7 @@ pub struct ImageSwapchainCreateInfoKHR {
 }
 impl default::Default for ImageSwapchainCreateInfoKHR {
     fn default() -> Self {
-        ImageSwapchainCreateInfoKHR {
+        Self {
             s_type: StructureType::IMAGE_SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
             swapchain: None,
@@ -23127,7 +23126,7 @@ pub struct BindImageMemorySwapchainInfoKHR {
 }
 impl default::Default for BindImageMemorySwapchainInfoKHR {
     fn default() -> Self {
-        BindImageMemorySwapchainInfoKHR {
+        Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR,
             p_next: ptr::null(),
             swapchain: None,
@@ -23158,7 +23157,7 @@ pub struct AcquireNextImageInfoKHR {
 }
 impl default::Default for AcquireNextImageInfoKHR {
     fn default() -> Self {
-        AcquireNextImageInfoKHR {
+        Self {
             s_type: StructureType::ACQUIRE_NEXT_IMAGE_INFO_KHR,
             p_next: ptr::null(),
             swapchain: None,
@@ -23193,7 +23192,7 @@ pub struct DeviceGroupPresentInfoKHR {
 }
 impl default::Default for DeviceGroupPresentInfoKHR {
     fn default() -> Self {
-        DeviceGroupPresentInfoKHR {
+        Self {
             s_type: StructureType::DEVICE_GROUP_PRESENT_INFO_KHR,
             p_next: ptr::null(),
             swapchain_count: u32::default(),
@@ -23223,7 +23222,7 @@ pub struct DeviceGroupDeviceCreateInfo {
 }
 impl default::Default for DeviceGroupDeviceCreateInfo {
     fn default() -> Self {
-        DeviceGroupDeviceCreateInfo {
+        Self {
             s_type: StructureType::DEVICE_GROUP_DEVICE_CREATE_INFO,
             p_next: ptr::null(),
             physical_device_count: u32::default(),
@@ -23251,7 +23250,7 @@ pub struct DeviceGroupSwapchainCreateInfoKHR {
 }
 impl default::Default for DeviceGroupSwapchainCreateInfoKHR {
     fn default() -> Self {
-        DeviceGroupSwapchainCreateInfoKHR {
+        Self {
             s_type: StructureType::DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
             modes: DeviceGroupPresentModeFlagsKHR::default(),
@@ -23285,7 +23284,7 @@ pub struct DescriptorUpdateTemplateEntry {
 }
 impl default::Default for DescriptorUpdateTemplateEntry {
     fn default() -> Self {
-        DescriptorUpdateTemplateEntry {
+        Self {
             dst_binding: u32::default(),
             dst_array_element: u32::default(),
             descriptor_count: u32::default(),
@@ -23327,7 +23326,7 @@ pub struct DescriptorUpdateTemplateCreateInfo {
 }
 impl default::Default for DescriptorUpdateTemplateCreateInfo {
     fn default() -> Self {
-        DescriptorUpdateTemplateCreateInfo {
+        Self {
             s_type: StructureType::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO,
             p_next: ptr::null(),
             flags: DescriptorUpdateTemplateCreateFlags::default(),
@@ -23367,7 +23366,7 @@ pub struct XYColorEXT {
 }
 impl default::Default for XYColorEXT {
     fn default() -> Self {
-        XYColorEXT {
+        Self {
             x: f32::default(),
             y: f32::default(),
         }
@@ -23404,7 +23403,7 @@ pub struct HdrMetadataEXT {
 }
 impl default::Default for HdrMetadataEXT {
     fn default() -> Self {
-        HdrMetadataEXT {
+        Self {
             s_type: StructureType::HDR_METADATA_EXT,
             p_next: ptr::null(),
             display_primary_red: XYColorEXT::default(),
@@ -23443,7 +23442,7 @@ pub struct DisplayNativeHdrSurfaceCapabilitiesAMD {
 }
 impl default::Default for DisplayNativeHdrSurfaceCapabilitiesAMD {
     fn default() -> Self {
-        DisplayNativeHdrSurfaceCapabilitiesAMD {
+        Self {
             s_type: StructureType::DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD,
             p_next: ptr::null_mut(),
             local_dimming_support: Bool32::default(),
@@ -23468,7 +23467,7 @@ pub struct SwapchainDisplayNativeHdrCreateInfoAMD {
 }
 impl default::Default for SwapchainDisplayNativeHdrCreateInfoAMD {
     fn default() -> Self {
-        SwapchainDisplayNativeHdrCreateInfoAMD {
+        Self {
             s_type: StructureType::SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD,
             p_next: ptr::null(),
             local_dimming_enable: Bool32::default(),
@@ -23492,7 +23491,7 @@ pub struct RefreshCycleDurationGOOGLE {
 }
 impl default::Default for RefreshCycleDurationGOOGLE {
     fn default() -> Self {
-        RefreshCycleDurationGOOGLE {
+        Self {
             refresh_duration: u64::default(),
         }
     }
@@ -23520,7 +23519,7 @@ pub struct PastPresentationTimingGOOGLE {
 }
 impl default::Default for PastPresentationTimingGOOGLE {
     fn default() -> Self {
-        PastPresentationTimingGOOGLE {
+        Self {
             present_id: u32::default(),
             desired_present_time: u64::default(),
             actual_present_time: u64::default(),
@@ -23552,7 +23551,7 @@ pub struct PresentTimesInfoGOOGLE {
 }
 impl default::Default for PresentTimesInfoGOOGLE {
     fn default() -> Self {
-        PresentTimesInfoGOOGLE {
+        Self {
             s_type: StructureType::PRESENT_TIMES_INFO_GOOGLE,
             p_next: ptr::null(),
             swapchain_count: u32::default(),
@@ -23580,7 +23579,7 @@ pub struct PresentTimeGOOGLE {
 }
 impl default::Default for PresentTimeGOOGLE {
     fn default() -> Self {
-        PresentTimeGOOGLE {
+        Self {
             present_id: u32::default(),
             desired_present_time: u64::default(),
         }
@@ -23604,7 +23603,7 @@ pub struct IOSSurfaceCreateInfoMVK {
 }
 impl default::Default for IOSSurfaceCreateInfoMVK {
     fn default() -> Self {
-        IOSSurfaceCreateInfoMVK {
+        Self {
             s_type: StructureType::IOS_SURFACE_CREATE_INFO_MVK,
             p_next: ptr::null(),
             flags: IOSSurfaceCreateFlagsMVK::default(),
@@ -23632,7 +23631,7 @@ pub struct MacOSSurfaceCreateInfoMVK {
 }
 impl default::Default for MacOSSurfaceCreateInfoMVK {
     fn default() -> Self {
-        MacOSSurfaceCreateInfoMVK {
+        Self {
             s_type: StructureType::MACOS_SURFACE_CREATE_INFO_MVK,
             p_next: ptr::null(),
             flags: MacOSSurfaceCreateFlagsMVK::default(),
@@ -23660,7 +23659,7 @@ pub struct MetalSurfaceCreateInfoEXT {
 }
 impl default::Default for MetalSurfaceCreateInfoEXT {
     fn default() -> Self {
-        MetalSurfaceCreateInfoEXT {
+        Self {
             s_type: StructureType::METAL_SURFACE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: MetalSurfaceCreateFlagsEXT::default(),
@@ -23686,7 +23685,7 @@ pub struct ViewportWScalingNV {
 }
 impl default::Default for ViewportWScalingNV {
     fn default() -> Self {
-        ViewportWScalingNV {
+        Self {
             xcoeff: f32::default(),
             ycoeff: f32::default(),
         }
@@ -23711,7 +23710,7 @@ pub struct PipelineViewportWScalingStateCreateInfoNV {
 }
 impl default::Default for PipelineViewportWScalingStateCreateInfoNV {
     fn default() -> Self {
-        PipelineViewportWScalingStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             viewport_w_scaling_enable: Bool32::default(),
@@ -23741,7 +23740,7 @@ pub struct ViewportSwizzleNV {
 }
 impl default::Default for ViewportSwizzleNV {
     fn default() -> Self {
-        ViewportSwizzleNV {
+        Self {
             x: ViewportCoordinateSwizzleNV::default(),
             y: ViewportCoordinateSwizzleNV::default(),
             z: ViewportCoordinateSwizzleNV::default(),
@@ -23770,7 +23769,7 @@ pub struct PipelineViewportSwizzleStateCreateInfoNV {
 }
 impl default::Default for PipelineViewportSwizzleStateCreateInfoNV {
     fn default() -> Self {
-        PipelineViewportSwizzleStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             flags: PipelineViewportSwizzleStateCreateFlagsNV::default(),
@@ -23800,7 +23799,7 @@ pub struct PhysicalDeviceDiscardRectanglePropertiesEXT {
 }
 impl default::Default for PhysicalDeviceDiscardRectanglePropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceDiscardRectanglePropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_discard_rectangles: u32::default(),
@@ -23828,7 +23827,7 @@ pub struct PipelineDiscardRectangleStateCreateInfoEXT {
 }
 impl default::Default for PipelineDiscardRectangleStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineDiscardRectangleStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: PipelineDiscardRectangleStateCreateFlagsEXT::default(),
@@ -23859,7 +23858,7 @@ pub struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
 }
 impl default::Default for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     fn default() -> Self {
-        PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX,
             p_next: ptr::null_mut(),
             per_view_position_all_components: Bool32::default(),
@@ -23887,7 +23886,7 @@ pub struct InputAttachmentAspectReference {
 }
 impl default::Default for InputAttachmentAspectReference {
     fn default() -> Self {
-        InputAttachmentAspectReference {
+        Self {
             subpass: u32::default(),
             input_attachment_index: u32::default(),
             aspect_mask: ImageAspectFlags::default(),
@@ -23914,7 +23913,7 @@ pub struct RenderPassInputAttachmentAspectCreateInfo {
 }
 impl default::Default for RenderPassInputAttachmentAspectCreateInfo {
     fn default() -> Self {
-        RenderPassInputAttachmentAspectCreateInfo {
+        Self {
             s_type: StructureType::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO,
             p_next: ptr::null(),
             aspect_reference_count: u32::default(),
@@ -23942,7 +23941,7 @@ pub struct PhysicalDeviceSurfaceInfo2KHR {
 }
 impl default::Default for PhysicalDeviceSurfaceInfo2KHR {
     fn default() -> Self {
-        PhysicalDeviceSurfaceInfo2KHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
             p_next: ptr::null(),
             surface: None,
@@ -23967,7 +23966,7 @@ pub struct SurfaceCapabilities2KHR {
 }
 impl default::Default for SurfaceCapabilities2KHR {
     fn default() -> Self {
-        SurfaceCapabilities2KHR {
+        Self {
             s_type: StructureType::SURFACE_CAPABILITIES_2_KHR,
             p_next: ptr::null_mut(),
             surface_capabilities: SurfaceCapabilitiesKHR::default(),
@@ -23992,7 +23991,7 @@ pub struct SurfaceFormat2KHR {
 }
 impl default::Default for SurfaceFormat2KHR {
     fn default() -> Self {
-        SurfaceFormat2KHR {
+        Self {
             s_type: StructureType::SURFACE_FORMAT_2_KHR,
             p_next: ptr::null_mut(),
             surface_format: SurfaceFormatKHR::default(),
@@ -24017,7 +24016,7 @@ pub struct DisplayProperties2KHR {
 }
 impl default::Default for DisplayProperties2KHR {
     fn default() -> Self {
-        DisplayProperties2KHR {
+        Self {
             s_type: StructureType::DISPLAY_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
             display_properties: DisplayPropertiesKHR::default(),
@@ -24042,7 +24041,7 @@ pub struct DisplayPlaneProperties2KHR {
 }
 impl default::Default for DisplayPlaneProperties2KHR {
     fn default() -> Self {
-        DisplayPlaneProperties2KHR {
+        Self {
             s_type: StructureType::DISPLAY_PLANE_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
             display_plane_properties: DisplayPlanePropertiesKHR::default(),
@@ -24067,7 +24066,7 @@ pub struct DisplayModeProperties2KHR {
 }
 impl default::Default for DisplayModeProperties2KHR {
     fn default() -> Self {
-        DisplayModeProperties2KHR {
+        Self {
             s_type: StructureType::DISPLAY_MODE_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
             display_mode_properties: DisplayModePropertiesKHR::default(),
@@ -24093,7 +24092,7 @@ pub struct DisplayPlaneInfo2KHR {
 }
 impl default::Default for DisplayPlaneInfo2KHR {
     fn default() -> Self {
-        DisplayPlaneInfo2KHR {
+        Self {
             s_type: StructureType::DISPLAY_PLANE_INFO_2_KHR,
             p_next: ptr::null(),
             mode: None,
@@ -24120,7 +24119,7 @@ pub struct DisplayPlaneCapabilities2KHR {
 }
 impl default::Default for DisplayPlaneCapabilities2KHR {
     fn default() -> Self {
-        DisplayPlaneCapabilities2KHR {
+        Self {
             s_type: StructureType::DISPLAY_PLANE_CAPABILITIES_2_KHR,
             p_next: ptr::null_mut(),
             capabilities: DisplayPlaneCapabilitiesKHR::default(),
@@ -24146,7 +24145,7 @@ pub struct SharedPresentSurfaceCapabilitiesKHR {
 }
 impl default::Default for SharedPresentSurfaceCapabilitiesKHR {
     fn default() -> Self {
-        SharedPresentSurfaceCapabilitiesKHR {
+        Self {
             s_type: StructureType::SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
             p_next: ptr::null_mut(),
             shared_present_supported_usage_flags: ImageUsageFlags::default(),
@@ -24181,7 +24180,7 @@ pub struct PhysicalDevice16BitStorageFeatures {
 }
 impl default::Default for PhysicalDevice16BitStorageFeatures {
     fn default() -> Self {
-        PhysicalDevice16BitStorageFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES,
             p_next: ptr::null_mut(),
             storage_buffer16_bit_access: Bool32::default(),
@@ -24223,7 +24222,7 @@ pub struct PhysicalDeviceSubgroupProperties {
 }
 impl default::Default for PhysicalDeviceSubgroupProperties {
     fn default() -> Self {
-        PhysicalDeviceSubgroupProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_PROPERTIES,
             p_next: ptr::null_mut(),
             subgroup_size: u32::default(),
@@ -24254,7 +24253,7 @@ pub struct BufferMemoryRequirementsInfo2 {
 }
 impl default::Default for BufferMemoryRequirementsInfo2 {
     fn default() -> Self {
-        BufferMemoryRequirementsInfo2 {
+        Self {
             s_type: StructureType::BUFFER_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
             buffer: None,
@@ -24280,7 +24279,7 @@ pub struct ImageMemoryRequirementsInfo2 {
 }
 impl default::Default for ImageMemoryRequirementsInfo2 {
     fn default() -> Self {
-        ImageMemoryRequirementsInfo2 {
+        Self {
             s_type: StructureType::IMAGE_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
             image: None,
@@ -24306,7 +24305,7 @@ pub struct ImageSparseMemoryRequirementsInfo2 {
 }
 impl default::Default for ImageSparseMemoryRequirementsInfo2 {
     fn default() -> Self {
-        ImageSparseMemoryRequirementsInfo2 {
+        Self {
             s_type: StructureType::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
             image: None,
@@ -24332,7 +24331,7 @@ pub struct MemoryRequirements2 {
 }
 impl default::Default for MemoryRequirements2 {
     fn default() -> Self {
-        MemoryRequirements2 {
+        Self {
             s_type: StructureType::MEMORY_REQUIREMENTS_2,
             p_next: ptr::null_mut(),
             memory_requirements: MemoryRequirements::default(),
@@ -24358,7 +24357,7 @@ pub struct SparseImageMemoryRequirements2 {
 }
 impl default::Default for SparseImageMemoryRequirements2 {
     fn default() -> Self {
-        SparseImageMemoryRequirements2 {
+        Self {
             s_type: StructureType::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2,
             p_next: ptr::null_mut(),
             memory_requirements: SparseImageMemoryRequirements::default(),
@@ -24384,7 +24383,7 @@ pub struct PhysicalDevicePointClippingProperties {
 }
 impl default::Default for PhysicalDevicePointClippingProperties {
     fn default() -> Self {
-        PhysicalDevicePointClippingProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES,
             p_next: ptr::null_mut(),
             point_clipping_behavior: PointClippingBehavior::default(),
@@ -24411,7 +24410,7 @@ pub struct MemoryDedicatedRequirements {
 }
 impl default::Default for MemoryDedicatedRequirements {
     fn default() -> Self {
-        MemoryDedicatedRequirements {
+        Self {
             s_type: StructureType::MEMORY_DEDICATED_REQUIREMENTS,
             p_next: ptr::null_mut(),
             prefers_dedicated_allocation: Bool32::default(),
@@ -24442,7 +24441,7 @@ pub struct MemoryDedicatedAllocateInfo {
 }
 impl default::Default for MemoryDedicatedAllocateInfo {
     fn default() -> Self {
-        MemoryDedicatedAllocateInfo {
+        Self {
             s_type: StructureType::MEMORY_DEDICATED_ALLOCATE_INFO,
             p_next: ptr::null(),
             image: None,
@@ -24470,7 +24469,7 @@ pub struct ImageViewUsageCreateInfo {
 }
 impl default::Default for ImageViewUsageCreateInfo {
     fn default() -> Self {
-        ImageViewUsageCreateInfo {
+        Self {
             s_type: StructureType::IMAGE_VIEW_USAGE_CREATE_INFO,
             p_next: ptr::null(),
             usage: ImageUsageFlags::default(),
@@ -24496,7 +24495,7 @@ pub struct PipelineTessellationDomainOriginStateCreateInfo {
 }
 impl default::Default for PipelineTessellationDomainOriginStateCreateInfo {
     fn default() -> Self {
-        PipelineTessellationDomainOriginStateCreateInfo {
+        Self {
             s_type: StructureType::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO,
             p_next: ptr::null(),
             domain_origin: TessellationDomainOrigin::default(),
@@ -24522,7 +24521,7 @@ pub struct SamplerYcbcrConversionInfo {
 }
 impl default::Default for SamplerYcbcrConversionInfo {
     fn default() -> Self {
-        SamplerYcbcrConversionInfo {
+        Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_INFO,
             p_next: ptr::null(),
             conversion: None,
@@ -24555,7 +24554,7 @@ pub struct SamplerYcbcrConversionCreateInfo {
 }
 impl default::Default for SamplerYcbcrConversionCreateInfo {
     fn default() -> Self {
-        SamplerYcbcrConversionCreateInfo {
+        Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_CREATE_INFO,
             p_next: ptr::null(),
             format: Format::default(),
@@ -24595,7 +24594,7 @@ pub struct BindImagePlaneMemoryInfo {
 }
 impl default::Default for BindImagePlaneMemoryInfo {
     fn default() -> Self {
-        BindImagePlaneMemoryInfo {
+        Self {
             s_type: StructureType::BIND_IMAGE_PLANE_MEMORY_INFO,
             p_next: ptr::null(),
             plane_aspect: ImageAspectFlags::default(),
@@ -24621,7 +24620,7 @@ pub struct ImagePlaneMemoryRequirementsInfo {
 }
 impl default::Default for ImagePlaneMemoryRequirementsInfo {
     fn default() -> Self {
-        ImagePlaneMemoryRequirementsInfo {
+        Self {
             s_type: StructureType::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO,
             p_next: ptr::null(),
             plane_aspect: ImageAspectFlags::default(),
@@ -24648,7 +24647,7 @@ pub struct PhysicalDeviceSamplerYcbcrConversionFeatures {
 }
 impl default::Default for PhysicalDeviceSamplerYcbcrConversionFeatures {
     fn default() -> Self {
-        PhysicalDeviceSamplerYcbcrConversionFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES,
             p_next: ptr::null_mut(),
             sampler_ycbcr_conversion: Bool32::default(),
@@ -24674,7 +24673,7 @@ pub struct SamplerYcbcrConversionImageFormatProperties {
 }
 impl default::Default for SamplerYcbcrConversionImageFormatProperties {
     fn default() -> Self {
-        SamplerYcbcrConversionImageFormatProperties {
+        Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES,
             p_next: ptr::null_mut(),
             combined_image_sampler_descriptor_count: u32::default(),
@@ -24703,7 +24702,7 @@ pub struct TextureLODGatherFormatPropertiesAMD {
 }
 impl default::Default for TextureLODGatherFormatPropertiesAMD {
     fn default() -> Self {
-        TextureLODGatherFormatPropertiesAMD {
+        Self {
             s_type: StructureType::TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
             p_next: ptr::null_mut(),
             supports_texture_gather_lod_bias_amd: Bool32::default(),
@@ -24733,7 +24732,7 @@ pub struct ConditionalRenderingBeginInfoEXT {
 }
 impl default::Default for ConditionalRenderingBeginInfoEXT {
     fn default() -> Self {
-        ConditionalRenderingBeginInfoEXT {
+        Self {
             s_type: StructureType::CONDITIONAL_RENDERING_BEGIN_INFO_EXT,
             p_next: ptr::null(),
             buffer: None,
@@ -24763,7 +24762,7 @@ pub struct ProtectedSubmitInfo {
 }
 impl default::Default for ProtectedSubmitInfo {
     fn default() -> Self {
-        ProtectedSubmitInfo {
+        Self {
             s_type: StructureType::PROTECTED_SUBMIT_INFO,
             p_next: ptr::null(),
             protected_submit: Bool32::default(),
@@ -24788,7 +24787,7 @@ pub struct PhysicalDeviceProtectedMemoryFeatures {
 }
 impl default::Default for PhysicalDeviceProtectedMemoryFeatures {
     fn default() -> Self {
-        PhysicalDeviceProtectedMemoryFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES,
             p_next: ptr::null_mut(),
             protected_memory: Bool32::default(),
@@ -24813,7 +24812,7 @@ pub struct PhysicalDeviceProtectedMemoryProperties {
 }
 impl default::Default for PhysicalDeviceProtectedMemoryProperties {
     fn default() -> Self {
-        PhysicalDeviceProtectedMemoryProperties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES,
             p_next: ptr::null_mut(),
             protected_no_fault: Bool32::default(),
@@ -24840,7 +24839,7 @@ pub struct DeviceQueueInfo2 {
 }
 impl default::Default for DeviceQueueInfo2 {
     fn default() -> Self {
-        DeviceQueueInfo2 {
+        Self {
             s_type: StructureType::DEVICE_QUEUE_INFO_2,
             p_next: ptr::null(),
             flags: DeviceQueueCreateFlags::default(),
@@ -24871,7 +24870,7 @@ pub struct PipelineCoverageToColorStateCreateInfoNV {
 }
 impl default::Default for PipelineCoverageToColorStateCreateInfoNV {
     fn default() -> Self {
-        PipelineCoverageToColorStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             flags: PipelineCoverageToColorStateCreateFlagsNV::default(),
@@ -24901,7 +24900,7 @@ pub struct PhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceSamplerFilterMinmaxPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             filter_minmax_single_component_formats: Bool32::default(),
@@ -24933,7 +24932,7 @@ pub struct SampleLocationEXT {
 }
 impl default::Default for SampleLocationEXT {
     fn default() -> Self {
-        SampleLocationEXT {
+        Self {
             x: f32::default(),
             y: f32::default(),
         }
@@ -24959,7 +24958,7 @@ pub struct SampleLocationsInfoEXT {
 }
 impl default::Default for SampleLocationsInfoEXT {
     fn default() -> Self {
-        SampleLocationsInfoEXT {
+        Self {
             s_type: StructureType::SAMPLE_LOCATIONS_INFO_EXT,
             p_next: ptr::null(),
             sample_locations_per_pixel: SampleCountFlags::default(),
@@ -24989,7 +24988,7 @@ pub struct AttachmentSampleLocationsEXT {
 }
 impl default::Default for AttachmentSampleLocationsEXT {
     fn default() -> Self {
-        AttachmentSampleLocationsEXT {
+        Self {
             attachment_index: u32::default(),
             sample_locations_info: SampleLocationsInfoEXT::default(),
         }
@@ -25011,7 +25010,7 @@ pub struct SubpassSampleLocationsEXT {
 }
 impl default::Default for SubpassSampleLocationsEXT {
     fn default() -> Self {
-        SubpassSampleLocationsEXT {
+        Self {
             subpass_index: u32::default(),
             sample_locations_info: SampleLocationsInfoEXT::default(),
         }
@@ -25037,7 +25036,7 @@ pub struct RenderPassSampleLocationsBeginInfoEXT {
 }
 impl default::Default for RenderPassSampleLocationsBeginInfoEXT {
     fn default() -> Self {
-        RenderPassSampleLocationsBeginInfoEXT {
+        Self {
             s_type: StructureType::RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT,
             p_next: ptr::null(),
             attachment_initial_sample_locations_count: u32::default(),
@@ -25078,7 +25077,7 @@ pub struct PipelineSampleLocationsStateCreateInfoEXT {
 }
 impl default::Default for PipelineSampleLocationsStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineSampleLocationsStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             sample_locations_enable: Bool32::default(),
@@ -25109,7 +25108,7 @@ pub struct PhysicalDeviceSampleLocationsPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceSampleLocationsPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceSampleLocationsPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             sample_location_sample_counts: SampleCountFlags::default(),
@@ -25145,7 +25144,7 @@ pub struct MultisamplePropertiesEXT {
 }
 impl default::Default for MultisamplePropertiesEXT {
     fn default() -> Self {
-        MultisamplePropertiesEXT {
+        Self {
             s_type: StructureType::MULTISAMPLE_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_sample_location_grid_size: Extent2D::default(),
@@ -25170,7 +25169,7 @@ pub struct SamplerReductionModeCreateInfoEXT {
 }
 impl default::Default for SamplerReductionModeCreateInfoEXT {
     fn default() -> Self {
-        SamplerReductionModeCreateInfoEXT {
+        Self {
             s_type: StructureType::SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             reduction_mode: SamplerReductionModeEXT::default(),
@@ -25195,7 +25194,7 @@ pub struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT,
             p_next: ptr::null_mut(),
             advanced_blend_coherent_operations: Bool32::default(),
@@ -25228,7 +25227,7 @@ pub struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             advanced_blend_max_color_attachments: u32::default(),
@@ -25280,7 +25279,7 @@ pub struct PipelineColorBlendAdvancedStateCreateInfoEXT {
 }
 impl default::Default for PipelineColorBlendAdvancedStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineColorBlendAdvancedStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             src_premultiplied: Bool32::default(),
@@ -25310,7 +25309,7 @@ pub struct PhysicalDeviceInlineUniformBlockFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceInlineUniformBlockFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceInlineUniformBlockFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT,
             p_next: ptr::null_mut(),
             inline_uniform_block: Bool32::default(),
@@ -25344,7 +25343,7 @@ pub struct PhysicalDeviceInlineUniformBlockPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceInlineUniformBlockPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceInlineUniformBlockPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_inline_uniform_block_size: u32::default(),
@@ -25390,7 +25389,7 @@ pub struct WriteDescriptorSetInlineUniformBlockEXT {
 }
 impl default::Default for WriteDescriptorSetInlineUniformBlockEXT {
     fn default() -> Self {
-        WriteDescriptorSetInlineUniformBlockEXT {
+        Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT,
             p_next: ptr::null(),
             data_size: u32::default(),
@@ -25417,7 +25416,7 @@ pub struct DescriptorPoolInlineUniformBlockCreateInfoEXT {
 }
 impl default::Default for DescriptorPoolInlineUniformBlockCreateInfoEXT {
     fn default() -> Self {
-        DescriptorPoolInlineUniformBlockCreateInfoEXT {
+        Self {
             s_type: StructureType::DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO_EXT,
             p_next: ptr::null(),
             max_inline_uniform_block_bindings: u32::default(),
@@ -25449,7 +25448,7 @@ pub struct PipelineCoverageModulationStateCreateInfoNV {
 }
 impl default::Default for PipelineCoverageModulationStateCreateInfoNV {
     fn default() -> Self {
-        PipelineCoverageModulationStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             flags: PipelineCoverageModulationStateCreateFlagsNV::default(),
@@ -25486,7 +25485,7 @@ pub struct ImageFormatListCreateInfoKHR {
 }
 impl default::Default for ImageFormatListCreateInfoKHR {
     fn default() -> Self {
-        ImageFormatListCreateInfoKHR {
+        Self {
             s_type: StructureType::IMAGE_FORMAT_LIST_CREATE_INFO_KHR,
             p_next: ptr::null(),
             view_format_count: u32::default(),
@@ -25515,7 +25514,7 @@ pub struct ValidationCacheCreateInfoEXT {
 }
 impl default::Default for ValidationCacheCreateInfoEXT {
     fn default() -> Self {
-        ValidationCacheCreateInfoEXT {
+        Self {
             s_type: StructureType::VALIDATION_CACHE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: ValidationCacheCreateFlagsEXT::default(),
@@ -25544,7 +25543,7 @@ pub struct ShaderModuleValidationCacheCreateInfoEXT {
 }
 impl default::Default for ShaderModuleValidationCacheCreateInfoEXT {
     fn default() -> Self {
-        ShaderModuleValidationCacheCreateInfoEXT {
+        Self {
             s_type: StructureType::SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             validation_cache: None,
@@ -25570,7 +25569,7 @@ pub struct PhysicalDeviceMaintenance3Properties {
 }
 impl default::Default for PhysicalDeviceMaintenance3Properties {
     fn default() -> Self {
-        PhysicalDeviceMaintenance3Properties {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES,
             p_next: ptr::null_mut(),
             max_per_set_descriptors: u32::default(),
@@ -25598,7 +25597,7 @@ pub struct DescriptorSetLayoutSupport {
 }
 impl default::Default for DescriptorSetLayoutSupport {
     fn default() -> Self {
-        DescriptorSetLayoutSupport {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_SUPPORT,
             p_next: ptr::null_mut(),
             supported: Bool32::default(),
@@ -25624,7 +25623,7 @@ pub struct PhysicalDeviceShaderDrawParametersFeatures {
 }
 impl default::Default for PhysicalDeviceShaderDrawParametersFeatures {
     fn default() -> Self {
-        PhysicalDeviceShaderDrawParametersFeatures {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES,
             p_next: ptr::null_mut(),
             shader_draw_parameters: Bool32::default(),
@@ -25651,7 +25650,7 @@ pub struct PhysicalDeviceShaderFloat16Int8FeaturesKHR {
 }
 impl default::Default for PhysicalDeviceShaderFloat16Int8FeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceShaderFloat16Int8FeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR,
             p_next: ptr::null_mut(),
             shader_float16: Bool32::default(),
@@ -25695,7 +25694,7 @@ pub struct PhysicalDeviceFloatControlsPropertiesKHR {
 }
 impl default::Default for PhysicalDeviceFloatControlsPropertiesKHR {
     fn default() -> Self {
-        PhysicalDeviceFloatControlsPropertiesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             denorm_behavior_independence: ShaderFloatControlsIndependenceKHR::default(),
@@ -25788,7 +25787,7 @@ pub struct PhysicalDeviceHostQueryResetFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceHostQueryResetFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceHostQueryResetFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT,
             p_next: ptr::null_mut(),
             host_query_reset: Bool32::default(),
@@ -25812,7 +25811,7 @@ pub struct NativeBufferUsage2ANDROID {
 }
 impl default::Default for NativeBufferUsage2ANDROID {
     fn default() -> Self {
-        NativeBufferUsage2ANDROID {
+        Self {
             consumer: u64::default(),
             producer: u64::default(),
         }
@@ -25839,7 +25838,7 @@ pub struct NativeBufferANDROID {
 }
 impl default::Default for NativeBufferANDROID {
     fn default() -> Self {
-        NativeBufferANDROID {
+        Self {
             s_type: StructureType::NATIVE_BUFFER_ANDROID,
             p_next: ptr::null(),
             handle: ptr::null(),
@@ -25872,7 +25871,7 @@ pub struct SwapchainImageCreateInfoANDROID {
 }
 impl default::Default for SwapchainImageCreateInfoANDROID {
     fn default() -> Self {
-        SwapchainImageCreateInfoANDROID {
+        Self {
             s_type: StructureType::SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID,
             p_next: ptr::null(),
             usage: SwapchainImageUsageFlagsANDROID::default(),
@@ -25897,7 +25896,7 @@ pub struct PhysicalDevicePresentationPropertiesANDROID {
 }
 impl default::Default for PhysicalDevicePresentationPropertiesANDROID {
     fn default() -> Self {
-        PhysicalDevicePresentationPropertiesANDROID {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID,
             p_next: ptr::null(),
             shared_image: Bool32::default(),
@@ -25924,7 +25923,7 @@ pub struct ShaderResourceUsageAMD {
 }
 impl default::Default for ShaderResourceUsageAMD {
     fn default() -> Self {
-        ShaderResourceUsageAMD {
+        Self {
             num_used_vgprs: u32::default(),
             num_used_sgprs: u32::default(),
             lds_size_per_local_work_group: u32::default(),
@@ -25957,7 +25956,7 @@ pub struct ShaderStatisticsInfoAMD {
 }
 impl default::Default for ShaderStatisticsInfoAMD {
     fn default() -> Self {
-        ShaderStatisticsInfoAMD {
+        Self {
             shader_stage_mask: ShaderStageFlags::default(),
             resource_usage: ShaderResourceUsageAMD::default(),
             num_physical_vgprs: u32::default(),
@@ -25990,7 +25989,7 @@ pub struct DeviceQueueGlobalPriorityCreateInfoEXT {
 }
 impl default::Default for DeviceQueueGlobalPriorityCreateInfoEXT {
     fn default() -> Self {
-        DeviceQueueGlobalPriorityCreateInfoEXT {
+        Self {
             s_type: StructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
             p_next: ptr::null(),
             global_priority: QueueGlobalPriorityEXT::default(),
@@ -26017,7 +26016,7 @@ pub struct DebugUtilsObjectNameInfoEXT {
 }
 impl default::Default for DebugUtilsObjectNameInfoEXT {
     fn default() -> Self {
-        DebugUtilsObjectNameInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
             p_next: ptr::null(),
             object_type: ObjectType::default(),
@@ -26050,7 +26049,7 @@ pub struct DebugUtilsObjectTagInfoEXT {
 }
 impl default::Default for DebugUtilsObjectTagInfoEXT {
     fn default() -> Self {
-        DebugUtilsObjectTagInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_UTILS_OBJECT_TAG_INFO_EXT,
             p_next: ptr::null(),
             object_type: ObjectType::default(),
@@ -26084,7 +26083,7 @@ pub struct DebugUtilsLabelEXT {
 }
 impl default::Default for DebugUtilsLabelEXT {
     fn default() -> Self {
-        DebugUtilsLabelEXT {
+        Self {
             s_type: StructureType::DEBUG_UTILS_LABEL_EXT,
             p_next: ptr::null(),
             p_label_name: ptr::null(),
@@ -26115,7 +26114,7 @@ pub struct DebugUtilsMessengerCreateInfoEXT {
 }
 impl default::Default for DebugUtilsMessengerCreateInfoEXT {
     fn default() -> Self {
-        DebugUtilsMessengerCreateInfoEXT {
+        Self {
             s_type: StructureType::DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: DebugUtilsMessengerCreateFlagsEXT::default(),
@@ -26164,7 +26163,7 @@ pub struct DebugUtilsMessengerCallbackDataEXT {
 }
 impl default::Default for DebugUtilsMessengerCallbackDataEXT {
     fn default() -> Self {
-        DebugUtilsMessengerCallbackDataEXT {
+        Self {
             s_type: StructureType::DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT,
             p_next: ptr::null(),
             flags: DebugUtilsMessengerCallbackDataFlagsEXT::default(),
@@ -26208,7 +26207,7 @@ pub struct ImportMemoryHostPointerInfoEXT {
 }
 impl default::Default for ImportMemoryHostPointerInfoEXT {
     fn default() -> Self {
-        ImportMemoryHostPointerInfoEXT {
+        Self {
             s_type: StructureType::IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
             p_next: ptr::null(),
             handle_type: ExternalMemoryHandleTypeFlags::default(),
@@ -26235,7 +26234,7 @@ pub struct MemoryHostPointerPropertiesEXT {
 }
 impl default::Default for MemoryHostPointerPropertiesEXT {
     fn default() -> Self {
-        MemoryHostPointerPropertiesEXT {
+        Self {
             s_type: StructureType::MEMORY_HOST_POINTER_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             memory_type_bits: u32::default(),
@@ -26260,7 +26259,7 @@ pub struct PhysicalDeviceExternalMemoryHostPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceExternalMemoryHostPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceExternalMemoryHostPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             min_imported_host_pointer_alignment: DeviceSize::default(),
@@ -26306,7 +26305,7 @@ pub struct PhysicalDeviceConservativeRasterizationPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceConservativeRasterizationPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceConservativeRasterizationPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             primitive_overestimation_size: f32::default(),
@@ -26362,7 +26361,7 @@ pub struct CalibratedTimestampInfoEXT {
 }
 impl default::Default for CalibratedTimestampInfoEXT {
     fn default() -> Self {
-        CalibratedTimestampInfoEXT {
+        Self {
             s_type: StructureType::CALIBRATED_TIMESTAMP_INFO_EXT,
             p_next: ptr::null(),
             time_domain: TimeDomainEXT::default(),
@@ -26415,7 +26414,7 @@ pub struct PhysicalDeviceShaderCorePropertiesAMD {
 }
 impl default::Default for PhysicalDeviceShaderCorePropertiesAMD {
     fn default() -> Self {
-        PhysicalDeviceShaderCorePropertiesAMD {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
             p_next: ptr::null_mut(),
             shader_engine_count: u32::default(),
@@ -26470,7 +26469,7 @@ pub struct PhysicalDeviceShaderCoreProperties2AMD {
 }
 impl default::Default for PhysicalDeviceShaderCoreProperties2AMD {
     fn default() -> Self {
-        PhysicalDeviceShaderCoreProperties2AMD {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD,
             p_next: ptr::null_mut(),
             shader_core_features: ShaderCorePropertiesFlagsAMD::default(),
@@ -26499,7 +26498,7 @@ pub struct PipelineRasterizationConservativeStateCreateInfoEXT {
 }
 impl default::Default for PipelineRasterizationConservativeStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineRasterizationConservativeStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: PipelineRasterizationConservativeStateCreateFlagsEXT::default(),
@@ -26550,7 +26549,7 @@ pub struct PhysicalDeviceDescriptorIndexingFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceDescriptorIndexingFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceDescriptorIndexingFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES_EXT,
             p_next: ptr::null_mut(),
             shader_input_attachment_array_dynamic_indexing: Bool32::default(),
@@ -26692,7 +26691,7 @@ pub struct PhysicalDeviceDescriptorIndexingPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceDescriptorIndexingPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceDescriptorIndexingPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_update_after_bind_descriptors_in_all_pools: u32::default(),
@@ -26828,7 +26827,7 @@ pub struct DescriptorSetLayoutBindingFlagsCreateInfoEXT {
 }
 impl default::Default for DescriptorSetLayoutBindingFlagsCreateInfoEXT {
     fn default() -> Self {
-        DescriptorSetLayoutBindingFlagsCreateInfoEXT {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO_EXT,
             p_next: ptr::null(),
             binding_count: u32::default(),
@@ -26856,7 +26855,7 @@ pub struct DescriptorSetVariableDescriptorCountAllocateInfoEXT {
 }
 impl default::Default for DescriptorSetVariableDescriptorCountAllocateInfoEXT {
     fn default() -> Self {
-        DescriptorSetVariableDescriptorCountAllocateInfoEXT {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO_EXT,
             p_next: ptr::null(),
             descriptor_set_count: u32::default(),
@@ -26883,7 +26882,7 @@ pub struct DescriptorSetVariableDescriptorCountLayoutSupportEXT {
 }
 impl default::Default for DescriptorSetVariableDescriptorCountLayoutSupportEXT {
     fn default() -> Self {
-        DescriptorSetVariableDescriptorCountLayoutSupportEXT {
+        Self {
             s_type: StructureType::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT,
             p_next: ptr::null_mut(),
             max_variable_descriptor_count: u32::default(),
@@ -26920,7 +26919,7 @@ pub struct AttachmentDescription2KHR {
 }
 impl default::Default for AttachmentDescription2KHR {
     fn default() -> Self {
-        AttachmentDescription2KHR {
+        Self {
             s_type: StructureType::ATTACHMENT_DESCRIPTION_2_KHR,
             p_next: ptr::null(),
             flags: AttachmentDescriptionFlags::default(),
@@ -26963,7 +26962,7 @@ pub struct AttachmentReference2KHR {
 }
 impl default::Default for AttachmentReference2KHR {
     fn default() -> Self {
-        AttachmentReference2KHR {
+        Self {
             s_type: StructureType::ATTACHMENT_REFERENCE_2_KHR,
             p_next: ptr::null(),
             attachment: u32::default(),
@@ -27002,7 +27001,7 @@ pub struct SubpassDescription2KHR {
 }
 impl default::Default for SubpassDescription2KHR {
     fn default() -> Self {
-        SubpassDescription2KHR {
+        Self {
             s_type: StructureType::SUBPASS_DESCRIPTION_2_KHR,
             p_next: ptr::null(),
             flags: SubpassDescriptionFlags::default(),
@@ -27054,7 +27053,7 @@ pub struct SubpassDependency2KHR {
 }
 impl default::Default for SubpassDependency2KHR {
     fn default() -> Self {
-        SubpassDependency2KHR {
+        Self {
             s_type: StructureType::SUBPASS_DEPENDENCY_2_KHR,
             p_next: ptr::null(),
             src_subpass: u32::default(),
@@ -27101,7 +27100,7 @@ pub struct RenderPassCreateInfo2KHR {
 }
 impl default::Default for RenderPassCreateInfo2KHR {
     fn default() -> Self {
-        RenderPassCreateInfo2KHR {
+        Self {
             s_type: StructureType::RENDER_PASS_CREATE_INFO_2_KHR,
             p_next: ptr::null(),
             flags: RenderPassCreateFlags::default(),
@@ -27142,7 +27141,7 @@ pub struct SubpassBeginInfoKHR {
 }
 impl default::Default for SubpassBeginInfoKHR {
     fn default() -> Self {
-        SubpassBeginInfoKHR {
+        Self {
             s_type: StructureType::SUBPASS_BEGIN_INFO_KHR,
             p_next: ptr::null(),
             contents: SubpassContents::default(),
@@ -27166,7 +27165,7 @@ pub struct SubpassEndInfoKHR {
 }
 impl default::Default for SubpassEndInfoKHR {
     fn default() -> Self {
-        SubpassEndInfoKHR {
+        Self {
             s_type: StructureType::SUBPASS_END_INFO_KHR,
             p_next: ptr::null(),
         }
@@ -27188,7 +27187,7 @@ pub struct VertexInputBindingDivisorDescriptionEXT {
 }
 impl default::Default for VertexInputBindingDivisorDescriptionEXT {
     fn default() -> Self {
-        VertexInputBindingDivisorDescriptionEXT {
+        Self {
             binding: u32::default(),
             divisor: u32::default(),
         }
@@ -27212,7 +27211,7 @@ pub struct PipelineVertexInputDivisorStateCreateInfoEXT {
 }
 impl default::Default for PipelineVertexInputDivisorStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineVertexInputDivisorStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             vertex_binding_divisor_count: u32::default(),
@@ -27240,7 +27239,7 @@ pub struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_vertex_attrib_divisor: u32::default(),
@@ -27268,7 +27267,7 @@ pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
 }
 impl default::Default for PhysicalDevicePCIBusInfoPropertiesEXT {
     fn default() -> Self {
-        PhysicalDevicePCIBusInfoPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             pci_domain: u32::default(),
@@ -27299,7 +27298,7 @@ pub struct ImportAndroidHardwareBufferInfoANDROID {
 }
 impl default::Default for ImportAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
-        ImportAndroidHardwareBufferInfoANDROID {
+        Self {
             s_type: StructureType::IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
             p_next: ptr::null(),
             buffer: ptr::null_mut(),
@@ -27324,7 +27323,7 @@ pub struct AndroidHardwareBufferUsageANDROID {
 }
 impl default::Default for AndroidHardwareBufferUsageANDROID {
     fn default() -> Self {
-        AndroidHardwareBufferUsageANDROID {
+        Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_USAGE_ANDROID,
             p_next: ptr::null_mut(),
             android_hardware_buffer_usage: u64::default(),
@@ -27350,7 +27349,7 @@ pub struct AndroidHardwareBufferPropertiesANDROID {
 }
 impl default::Default for AndroidHardwareBufferPropertiesANDROID {
     fn default() -> Self {
-        AndroidHardwareBufferPropertiesANDROID {
+        Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID,
             p_next: ptr::null_mut(),
             allocation_size: DeviceSize::default(),
@@ -27377,7 +27376,7 @@ pub struct MemoryGetAndroidHardwareBufferInfoANDROID {
 }
 impl default::Default for MemoryGetAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
-        MemoryGetAndroidHardwareBufferInfoANDROID {
+        Self {
             s_type: StructureType::MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
             p_next: ptr::null(),
             memory: None,
@@ -27409,7 +27408,7 @@ pub struct AndroidHardwareBufferFormatPropertiesANDROID {
 }
 impl default::Default for AndroidHardwareBufferFormatPropertiesANDROID {
     fn default() -> Self {
-        AndroidHardwareBufferFormatPropertiesANDROID {
+        Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID,
             p_next: ptr::null_mut(),
             format: Format::default(),
@@ -27452,7 +27451,7 @@ pub struct CommandBufferInheritanceConditionalRenderingInfoEXT {
 }
 impl default::Default for CommandBufferInheritanceConditionalRenderingInfoEXT {
     fn default() -> Self {
-        CommandBufferInheritanceConditionalRenderingInfoEXT {
+        Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT,
             p_next: ptr::null(),
             conditional_rendering_enable: Bool32::default(),
@@ -27477,7 +27476,7 @@ pub struct ExternalFormatANDROID {
 }
 impl default::Default for ExternalFormatANDROID {
     fn default() -> Self {
-        ExternalFormatANDROID {
+        Self {
             s_type: StructureType::EXTERNAL_FORMAT_ANDROID,
             p_next: ptr::null_mut(),
             external_format: u64::default(),
@@ -27507,7 +27506,7 @@ pub struct PhysicalDevice8BitStorageFeaturesKHR {
 }
 impl default::Default for PhysicalDevice8BitStorageFeaturesKHR {
     fn default() -> Self {
-        PhysicalDevice8BitStorageFeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR,
             p_next: ptr::null_mut(),
             storage_buffer8_bit_access: Bool32::default(),
@@ -27540,7 +27539,7 @@ pub struct PhysicalDeviceConditionalRenderingFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceConditionalRenderingFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceConditionalRenderingFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT,
             p_next: ptr::null_mut(),
             conditional_rendering: Bool32::default(),
@@ -27569,7 +27568,7 @@ pub struct PhysicalDeviceVulkanMemoryModelFeaturesKHR {
 }
 impl default::Default for PhysicalDeviceVulkanMemoryModelFeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceVulkanMemoryModelFeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES_KHR,
             p_next: ptr::null_mut(),
             vulkan_memory_model: Bool32::default(),
@@ -27605,7 +27604,7 @@ pub struct PhysicalDeviceShaderAtomicInt64FeaturesKHR {
 }
 impl default::Default for PhysicalDeviceShaderAtomicInt64FeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceShaderAtomicInt64FeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR,
             p_next: ptr::null_mut(),
             shader_buffer_int64_atomics: Bool32::default(),
@@ -27633,7 +27632,7 @@ pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
             p_next: ptr::null_mut(),
             vertex_attribute_instance_rate_divisor: Bool32::default(),
@@ -27666,7 +27665,7 @@ pub struct QueueFamilyCheckpointPropertiesNV {
 }
 impl default::Default for QueueFamilyCheckpointPropertiesNV {
     fn default() -> Self {
-        QueueFamilyCheckpointPropertiesNV {
+        Self {
             s_type: StructureType::QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             checkpoint_execution_stage_mask: PipelineStageFlags::default(),
@@ -27692,7 +27691,7 @@ pub struct CheckpointDataNV {
 }
 impl default::Default for CheckpointDataNV {
     fn default() -> Self {
-        CheckpointDataNV {
+        Self {
             s_type: StructureType::CHECKPOINT_DATA_NV,
             p_next: ptr::null_mut(),
             stage: PipelineStageFlags::default(),
@@ -27726,7 +27725,7 @@ pub struct PhysicalDeviceDepthStencilResolvePropertiesKHR {
 }
 impl default::Default for PhysicalDeviceDepthStencilResolvePropertiesKHR {
     fn default() -> Self {
-        PhysicalDeviceDepthStencilResolvePropertiesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             supported_depth_resolve_modes: ResolveModeFlagsKHR::default(),
@@ -27762,7 +27761,7 @@ pub struct SubpassDescriptionDepthStencilResolveKHR {
 }
 impl default::Default for SubpassDescriptionDepthStencilResolveKHR {
     fn default() -> Self {
-        SubpassDescriptionDepthStencilResolveKHR {
+        Self {
             s_type: StructureType::SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE_KHR,
             p_next: ptr::null(),
             depth_resolve_mode: ResolveModeFlagsKHR::default(),
@@ -27794,7 +27793,7 @@ pub struct ImageViewASTCDecodeModeEXT {
 }
 impl default::Default for ImageViewASTCDecodeModeEXT {
     fn default() -> Self {
-        ImageViewASTCDecodeModeEXT {
+        Self {
             s_type: StructureType::IMAGE_VIEW_ASTC_DECODE_MODE_EXT,
             p_next: ptr::null(),
             decode_mode: Format::default(),
@@ -27819,7 +27818,7 @@ pub struct PhysicalDeviceASTCDecodeFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceASTCDecodeFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceASTCDecodeFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT,
             p_next: ptr::null_mut(),
             decode_mode_shared_exponent: Bool32::default(),
@@ -27845,7 +27844,7 @@ pub struct PhysicalDeviceTransformFeedbackFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceTransformFeedbackFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceTransformFeedbackFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT,
             p_next: ptr::null_mut(),
             transform_feedback: Bool32::default(),
@@ -27881,7 +27880,7 @@ pub struct PhysicalDeviceTransformFeedbackPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceTransformFeedbackPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceTransformFeedbackPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             max_transform_feedback_streams: u32::default(),
@@ -27943,7 +27942,7 @@ pub struct PipelineRasterizationStateStreamCreateInfoEXT {
 }
 impl default::Default for PipelineRasterizationStateStreamCreateInfoEXT {
     fn default() -> Self {
-        PipelineRasterizationStateStreamCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: PipelineRasterizationStateStreamCreateFlagsEXT::default(),
@@ -27970,7 +27969,7 @@ pub struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
 }
 impl default::Default for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV,
             p_next: ptr::null_mut(),
             representative_fragment_test: Bool32::default(),
@@ -27995,7 +27994,7 @@ pub struct PipelineRepresentativeFragmentTestStateCreateInfoNV {
 }
 impl default::Default for PipelineRepresentativeFragmentTestStateCreateInfoNV {
     fn default() -> Self {
-        PipelineRepresentativeFragmentTestStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             representative_fragment_test_enable: Bool32::default(),
@@ -28023,7 +28022,7 @@ pub struct PhysicalDeviceExclusiveScissorFeaturesNV {
 }
 impl default::Default for PhysicalDeviceExclusiveScissorFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceExclusiveScissorFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV,
             p_next: ptr::null_mut(),
             exclusive_scissor: Bool32::default(),
@@ -28049,7 +28048,7 @@ pub struct PipelineViewportExclusiveScissorStateCreateInfoNV {
 }
 impl default::Default for PipelineViewportExclusiveScissorStateCreateInfoNV {
     fn default() -> Self {
-        PipelineViewportExclusiveScissorStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             exclusive_scissor_count: u32::default(),
@@ -28076,7 +28075,7 @@ pub struct PhysicalDeviceCornerSampledImageFeaturesNV {
 }
 impl default::Default for PhysicalDeviceCornerSampledImageFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceCornerSampledImageFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV,
             p_next: ptr::null_mut(),
             corner_sampled_image: Bool32::default(),
@@ -28102,7 +28101,7 @@ pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNV {
 }
 impl default::Default for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceComputeShaderDerivativesFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV,
             p_next: ptr::null_mut(),
             compute_derivative_group_quads: Bool32::default(),
@@ -28129,7 +28128,7 @@ pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
 }
 impl default::Default for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV,
             p_next: ptr::null_mut(),
             fragment_shader_barycentric: Bool32::default(),
@@ -28154,7 +28153,7 @@ pub struct PhysicalDeviceShaderImageFootprintFeaturesNV {
 }
 impl default::Default for PhysicalDeviceShaderImageFootprintFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceShaderImageFootprintFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV,
             p_next: ptr::null_mut(),
             image_footprint: Bool32::default(),
@@ -28179,7 +28178,7 @@ pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
 }
 impl default::Default for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
             p_next: ptr::null_mut(),
             dedicated_allocation_image_aliasing: Bool32::default(),
@@ -28206,7 +28205,7 @@ pub struct ShadingRatePaletteNV {
 }
 impl default::Default for ShadingRatePaletteNV {
     fn default() -> Self {
-        ShadingRatePaletteNV {
+        Self {
             shading_rate_palette_entry_count: u32::default(),
             p_shading_rate_palette_entries: ptr::null(),
         }
@@ -28234,7 +28233,7 @@ pub struct PipelineViewportShadingRateImageStateCreateInfoNV {
 }
 impl default::Default for PipelineViewportShadingRateImageStateCreateInfoNV {
     fn default() -> Self {
-        PipelineViewportShadingRateImageStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             shading_rate_image_enable: Bool32::default(),
@@ -28264,7 +28263,7 @@ pub struct PhysicalDeviceShadingRateImageFeaturesNV {
 }
 impl default::Default for PhysicalDeviceShadingRateImageFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceShadingRateImageFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV,
             p_next: ptr::null_mut(),
             shading_rate_image: Bool32::default(),
@@ -28296,7 +28295,7 @@ pub struct PhysicalDeviceShadingRateImagePropertiesNV {
 }
 impl default::Default for PhysicalDeviceShadingRateImagePropertiesNV {
     fn default() -> Self {
-        PhysicalDeviceShadingRateImagePropertiesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             shading_rate_texel_size: Extent2D::default(),
@@ -28325,7 +28324,7 @@ pub struct CoarseSampleLocationNV {
 }
 impl default::Default for CoarseSampleLocationNV {
     fn default() -> Self {
-        CoarseSampleLocationNV {
+        Self {
             pixel_x: u32::default(),
             pixel_y: u32::default(),
             sample: u32::default(),
@@ -28351,7 +28350,7 @@ pub struct CoarseSampleOrderCustomNV {
 }
 impl default::Default for CoarseSampleOrderCustomNV {
     fn default() -> Self {
-        CoarseSampleOrderCustomNV {
+        Self {
             shading_rate: ShadingRatePaletteEntryNV::default(),
             sample_count: u32::default(),
             sample_location_count: u32::default(),
@@ -28380,7 +28379,7 @@ pub struct PipelineViewportCoarseSampleOrderStateCreateInfoNV {
 }
 impl default::Default for PipelineViewportCoarseSampleOrderStateCreateInfoNV {
     fn default() -> Self {
-        PipelineViewportCoarseSampleOrderStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             sample_order_type: CoarseSampleOrderTypeNV::default(),
@@ -28410,7 +28409,7 @@ pub struct PhysicalDeviceMeshShaderFeaturesNV {
 }
 impl default::Default for PhysicalDeviceMeshShaderFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceMeshShaderFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV,
             p_next: ptr::null_mut(),
             task_shader: Bool32::default(),
@@ -28449,7 +28448,7 @@ pub struct PhysicalDeviceMeshShaderPropertiesNV {
 }
 impl default::Default for PhysicalDeviceMeshShaderPropertiesNV {
     fn default() -> Self {
-        PhysicalDeviceMeshShaderPropertiesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             max_draw_mesh_tasks_count: u32::default(),
@@ -28503,7 +28502,7 @@ pub struct DrawMeshTasksIndirectCommandNV {
 }
 impl default::Default for DrawMeshTasksIndirectCommandNV {
     fn default() -> Self {
-        DrawMeshTasksIndirectCommandNV {
+        Self {
             task_count: u32::default(),
             first_task: u32::default(),
         }
@@ -28530,7 +28529,7 @@ pub struct RayTracingShaderGroupCreateInfoNV {
 }
 impl default::Default for RayTracingShaderGroupCreateInfoNV {
     fn default() -> Self {
-        RayTracingShaderGroupCreateInfoNV {
+        Self {
             s_type: StructureType::RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV,
             p_next: ptr::null(),
             ty: RayTracingShaderGroupTypeNV::default(),
@@ -28576,7 +28575,7 @@ pub struct RayTracingPipelineCreateInfoNV {
 }
 impl default::Default for RayTracingPipelineCreateInfoNV {
     fn default() -> Self {
-        RayTracingPipelineCreateInfoNV {
+        Self {
             s_type: StructureType::RAY_TRACING_PIPELINE_CREATE_INFO_NV,
             p_next: ptr::null(),
             flags: PipelineCreateFlags::default(),
@@ -28628,7 +28627,7 @@ pub struct GeometryTrianglesNV {
 }
 impl default::Default for GeometryTrianglesNV {
     fn default() -> Self {
-        GeometryTrianglesNV {
+        Self {
             s_type: StructureType::GEOMETRY_TRIANGLES_NV,
             p_next: ptr::null(),
             vertex_data: None,
@@ -28678,7 +28677,7 @@ pub struct GeometryAABBNV {
 }
 impl default::Default for GeometryAABBNV {
     fn default() -> Self {
-        GeometryAABBNV {
+        Self {
             s_type: StructureType::GEOMETRY_AABB_NV,
             p_next: ptr::null(),
             aabb_data: None,
@@ -28708,7 +28707,7 @@ pub struct GeometryDataNV {
 }
 impl default::Default for GeometryDataNV {
     fn default() -> Self {
-        GeometryDataNV {
+        Self {
             triangles: GeometryTrianglesNV::default(),
             aabbs: GeometryAABBNV::default(),
         }
@@ -28733,7 +28732,7 @@ pub struct GeometryNV {
 }
 impl default::Default for GeometryNV {
     fn default() -> Self {
-        GeometryNV {
+        Self {
             s_type: StructureType::GEOMETRY_NV,
             p_next: ptr::null(),
             geometry_type: GeometryTypeNV::default(),
@@ -28766,7 +28765,7 @@ pub struct AccelerationStructureInfoNV {
 }
 impl default::Default for AccelerationStructureInfoNV {
     fn default() -> Self {
-        AccelerationStructureInfoNV {
+        Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_INFO_NV,
             p_next: ptr::null(),
             ty: AccelerationStructureTypeNV::default(),
@@ -28800,7 +28799,7 @@ pub struct AccelerationStructureCreateInfoNV {
 }
 impl default::Default for AccelerationStructureCreateInfoNV {
     fn default() -> Self {
-        AccelerationStructureCreateInfoNV {
+        Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_NV,
             p_next: ptr::null(),
             compacted_size: DeviceSize::default(),
@@ -28831,7 +28830,7 @@ pub struct BindAccelerationStructureMemoryInfoNV {
 }
 impl default::Default for BindAccelerationStructureMemoryInfoNV {
     fn default() -> Self {
-        BindAccelerationStructureMemoryInfoNV {
+        Self {
             s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV,
             p_next: ptr::null(),
             acceleration_structure: None,
@@ -28865,7 +28864,7 @@ pub struct WriteDescriptorSetAccelerationStructureNV {
 }
 impl default::Default for WriteDescriptorSetAccelerationStructureNV {
     fn default() -> Self {
-        WriteDescriptorSetAccelerationStructureNV {
+        Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV,
             p_next: ptr::null(),
             acceleration_structure_count: u32::default(),
@@ -28893,7 +28892,7 @@ pub struct AccelerationStructureMemoryRequirementsInfoNV {
 }
 impl default::Default for AccelerationStructureMemoryRequirementsInfoNV {
     fn default() -> Self {
-        AccelerationStructureMemoryRequirementsInfoNV {
+        Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV,
             p_next: ptr::null(),
             ty: AccelerationStructureMemoryRequirementsTypeNV::default(),
@@ -28927,7 +28926,7 @@ pub struct PhysicalDeviceRayTracingPropertiesNV {
 }
 impl default::Default for PhysicalDeviceRayTracingPropertiesNV {
     fn default() -> Self {
-        PhysicalDeviceRayTracingPropertiesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             shader_group_handle_size: u32::default(),
@@ -28970,7 +28969,7 @@ pub struct DrmFormatModifierPropertiesListEXT {
 }
 impl default::Default for DrmFormatModifierPropertiesListEXT {
     fn default() -> Self {
-        DrmFormatModifierPropertiesListEXT {
+        Self {
             s_type: StructureType::DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT,
             p_next: ptr::null_mut(),
             drm_format_modifier_count: u32::default(),
@@ -29000,7 +28999,7 @@ pub struct DrmFormatModifierPropertiesEXT {
 }
 impl default::Default for DrmFormatModifierPropertiesEXT {
     fn default() -> Self {
-        DrmFormatModifierPropertiesEXT {
+        Self {
             drm_format_modifier: u64::default(),
             drm_format_modifier_plane_count: u32::default(),
             drm_format_modifier_tiling_features: FormatFeatureFlags::default(),
@@ -29031,7 +29030,7 @@ pub struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
 }
 impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
     fn default() -> Self {
-        PhysicalDeviceImageDrmFormatModifierInfoEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
             p_next: ptr::null(),
             drm_format_modifier: u64::default(),
@@ -29063,7 +29062,7 @@ pub struct ImageDrmFormatModifierListCreateInfoEXT {
 }
 impl default::Default for ImageDrmFormatModifierListCreateInfoEXT {
     fn default() -> Self {
-        ImageDrmFormatModifierListCreateInfoEXT {
+        Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT,
             p_next: ptr::null(),
             drm_format_modifier_count: u32::default(),
@@ -29092,7 +29091,7 @@ pub struct ImageDrmFormatModifierExplicitCreateInfoEXT {
 }
 impl default::Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
     fn default() -> Self {
-        ImageDrmFormatModifierExplicitCreateInfoEXT {
+        Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT,
             p_next: ptr::null(),
             drm_format_modifier: u64::default(),
@@ -29121,7 +29120,7 @@ pub struct ImageDrmFormatModifierPropertiesEXT {
 }
 impl default::Default for ImageDrmFormatModifierPropertiesEXT {
     fn default() -> Self {
-        ImageDrmFormatModifierPropertiesEXT {
+        Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             drm_format_modifier: u64::default(),
@@ -29146,7 +29145,7 @@ pub struct ImageStencilUsageCreateInfoEXT {
 }
 impl default::Default for ImageStencilUsageCreateInfoEXT {
     fn default() -> Self {
-        ImageStencilUsageCreateInfoEXT {
+        Self {
             s_type: StructureType::IMAGE_STENCIL_USAGE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             stencil_usage: ImageUsageFlags::default(),
@@ -29171,7 +29170,7 @@ pub struct DeviceMemoryOverallocationCreateInfoAMD {
 }
 impl default::Default for DeviceMemoryOverallocationCreateInfoAMD {
     fn default() -> Self {
-        DeviceMemoryOverallocationCreateInfoAMD {
+        Self {
             s_type: StructureType::DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD,
             p_next: ptr::null(),
             overallocation_behavior: MemoryOverallocationBehaviorAMD::default(),
@@ -29198,7 +29197,7 @@ pub struct PhysicalDeviceFragmentDensityMapFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceFragmentDensityMapFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceFragmentDensityMapFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT,
             p_next: ptr::null_mut(),
             fragment_density_map: Bool32::default(),
@@ -29232,7 +29231,7 @@ pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceFragmentDensityMapPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceFragmentDensityMapPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             min_fragment_density_texel_size: Extent2D::default(),
@@ -29261,7 +29260,7 @@ pub struct RenderPassFragmentDensityMapCreateInfoEXT {
 }
 impl default::Default for RenderPassFragmentDensityMapCreateInfoEXT {
     fn default() -> Self {
-        RenderPassFragmentDensityMapCreateInfoEXT {
+        Self {
             s_type: StructureType::RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT,
             p_next: ptr::null(),
             fragment_density_map_attachment: AttachmentReference::default(),
@@ -29286,7 +29285,7 @@ pub struct PhysicalDeviceScalarBlockLayoutFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceScalarBlockLayoutFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceScalarBlockLayoutFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES_EXT,
             p_next: ptr::null_mut(),
             scalar_block_layout: Bool32::default(),
@@ -29312,7 +29311,7 @@ pub struct SurfaceProtectedCapabilitiesKHR {
 }
 impl default::Default for SurfaceProtectedCapabilitiesKHR {
     fn default() -> Self {
-        SurfaceProtectedCapabilitiesKHR {
+        Self {
             s_type: StructureType::SURFACE_PROTECTED_CAPABILITIES_KHR,
             p_next: ptr::null(),
             supports_protected: Bool32::default(),
@@ -29337,7 +29336,7 @@ pub struct PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
 }
 impl default::Default for PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceUniformBufferStandardLayoutFeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR,
             p_next: ptr::null_mut(),
             uniform_buffer_standard_layout: Bool32::default(),
@@ -29363,7 +29362,7 @@ pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceDepthClipEnableFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceDepthClipEnableFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT,
             p_next: ptr::null_mut(),
             depth_clip_enable: Bool32::default(),
@@ -29389,7 +29388,7 @@ pub struct PipelineRasterizationDepthClipStateCreateInfoEXT {
 }
 impl default::Default for PipelineRasterizationDepthClipStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineRasterizationDepthClipStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: PipelineRasterizationDepthClipStateCreateFlagsEXT::default(),
@@ -29417,7 +29416,7 @@ pub struct PhysicalDeviceMemoryBudgetPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceMemoryBudgetPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceMemoryBudgetPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             heap_budget: [DeviceSize::default(); MAX_MEMORY_HEAPS],
@@ -29444,7 +29443,7 @@ pub struct PhysicalDeviceMemoryPriorityFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceMemoryPriorityFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceMemoryPriorityFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
             p_next: ptr::null_mut(),
             memory_priority: Bool32::default(),
@@ -29469,7 +29468,7 @@ pub struct MemoryPriorityAllocateInfoEXT {
 }
 impl default::Default for MemoryPriorityAllocateInfoEXT {
     fn default() -> Self {
-        MemoryPriorityAllocateInfoEXT {
+        Self {
             s_type: StructureType::MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
             p_next: ptr::null(),
             priority: f32::default(),
@@ -29496,7 +29495,7 @@ pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceBufferDeviceAddressFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT,
             p_next: ptr::null_mut(),
             buffer_device_address: Bool32::default(),
@@ -29532,7 +29531,7 @@ pub struct BufferDeviceAddressInfoEXT {
 }
 impl default::Default for BufferDeviceAddressInfoEXT {
     fn default() -> Self {
-        BufferDeviceAddressInfoEXT {
+        Self {
             s_type: StructureType::BUFFER_DEVICE_ADDRESS_INFO_EXT,
             p_next: ptr::null(),
             buffer: None,
@@ -29557,7 +29556,7 @@ pub struct BufferDeviceAddressCreateInfoEXT {
 }
 impl default::Default for BufferDeviceAddressCreateInfoEXT {
     fn default() -> Self {
-        BufferDeviceAddressCreateInfoEXT {
+        Self {
             s_type: StructureType::BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
             p_next: ptr::null(),
             device_address: DeviceAddress::default(),
@@ -29582,7 +29581,7 @@ pub struct PhysicalDeviceImageViewImageFormatInfoEXT {
 }
 impl default::Default for PhysicalDeviceImageViewImageFormatInfoEXT {
     fn default() -> Self {
-        PhysicalDeviceImageViewImageFormatInfoEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT,
             p_next: ptr::null_mut(),
             image_view_type: ImageViewType::default(),
@@ -29608,7 +29607,7 @@ pub struct FilterCubicImageViewImageFormatPropertiesEXT {
 }
 impl default::Default for FilterCubicImageViewImageFormatPropertiesEXT {
     fn default() -> Self {
-        FilterCubicImageViewImageFormatPropertiesEXT {
+        Self {
             s_type: StructureType::FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             filter_cubic: Bool32::default(),
@@ -29635,7 +29634,7 @@ pub struct PhysicalDeviceImagelessFramebufferFeaturesKHR {
 }
 impl default::Default for PhysicalDeviceImagelessFramebufferFeaturesKHR {
     fn default() -> Self {
-        PhysicalDeviceImagelessFramebufferFeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES_KHR,
             p_next: ptr::null_mut(),
             imageless_framebuffer: Bool32::default(),
@@ -29661,7 +29660,7 @@ pub struct FramebufferAttachmentsCreateInfoKHR {
 }
 impl default::Default for FramebufferAttachmentsCreateInfoKHR {
     fn default() -> Self {
-        FramebufferAttachmentsCreateInfoKHR {
+        Self {
             s_type: StructureType::FRAMEBUFFER_ATTACHMENTS_CREATE_INFO_KHR,
             p_next: ptr::null(),
             attachment_image_info_count: u32::default(),
@@ -29696,7 +29695,7 @@ pub struct FramebufferAttachmentImageInfoKHR {
 }
 impl default::Default for FramebufferAttachmentImageInfoKHR {
     fn default() -> Self {
-        FramebufferAttachmentImageInfoKHR {
+        Self {
             s_type: StructureType::FRAMEBUFFER_ATTACHMENT_IMAGE_INFO_KHR,
             p_next: ptr::null(),
             flags: ImageCreateFlags::default(),
@@ -29734,7 +29733,7 @@ pub struct RenderPassAttachmentBeginInfoKHR {
 }
 impl default::Default for RenderPassAttachmentBeginInfoKHR {
     fn default() -> Self {
-        RenderPassAttachmentBeginInfoKHR {
+        Self {
             s_type: StructureType::RENDER_PASS_ATTACHMENT_BEGIN_INFO_KHR,
             p_next: ptr::null(),
             attachment_count: u32::default(),
@@ -29761,7 +29760,7 @@ pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT,
             p_next: ptr::null(),
             texture_compression_astc_hdr: Bool32::default(),
@@ -29787,7 +29786,7 @@ pub struct PhysicalDeviceCooperativeMatrixFeaturesNV {
 }
 impl default::Default for PhysicalDeviceCooperativeMatrixFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceCooperativeMatrixFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
             p_next: ptr::null_mut(),
             cooperative_matrix: Bool32::default(),
@@ -29817,7 +29816,7 @@ pub struct PhysicalDeviceCooperativeMatrixPropertiesNV {
 }
 impl default::Default for PhysicalDeviceCooperativeMatrixPropertiesNV {
     fn default() -> Self {
-        PhysicalDeviceCooperativeMatrixPropertiesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             cooperative_matrix_supported_stages: ShaderStageFlags::default(),
@@ -29852,7 +29851,7 @@ pub struct CooperativeMatrixPropertiesNV {
 }
 impl default::Default for CooperativeMatrixPropertiesNV {
     fn default() -> Self {
-        CooperativeMatrixPropertiesNV {
+        Self {
             s_type: StructureType::COOPERATIVE_MATRIX_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             m_size: u32::default(),
@@ -29891,7 +29890,7 @@ pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
             p_next: ptr::null_mut(),
             ycbcr_image_arrays: Bool32::default(),
@@ -29918,7 +29917,7 @@ pub struct ImageViewHandleInfoNVX {
 }
 impl default::Default for ImageViewHandleInfoNVX {
     fn default() -> Self {
-        ImageViewHandleInfoNVX {
+        Self {
             s_type: StructureType::IMAGE_VIEW_HANDLE_INFO_NVX,
             p_next: ptr::null(),
             image_view: None,
@@ -29946,7 +29945,7 @@ pub struct PipelineCreationFeedbackEXT {
 }
 impl default::Default for PipelineCreationFeedbackEXT {
     fn default() -> Self {
-        PipelineCreationFeedbackEXT {
+        Self {
             flags: PipelineCreationFeedbackFlagsEXT::default(),
             duration: u64::default(),
         }
@@ -29973,7 +29972,7 @@ pub struct PipelineCreationFeedbackCreateInfoEXT {
 }
 impl default::Default for PipelineCreationFeedbackCreateInfoEXT {
     fn default() -> Self {
-        PipelineCreationFeedbackCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_CREATION_FEEDBACK_CREATE_INFO_EXT,
             p_next: ptr::null(),
             p_pipeline_creation_feedback: ptr::null_mut(),
@@ -30008,7 +30007,7 @@ pub struct SurfaceFullScreenExclusiveInfoEXT {
 }
 impl default::Default for SurfaceFullScreenExclusiveInfoEXT {
     fn default() -> Self {
-        SurfaceFullScreenExclusiveInfoEXT {
+        Self {
             s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
             p_next: ptr::null_mut(),
             full_screen_exclusive: FullScreenExclusiveEXT::default(),
@@ -30033,7 +30032,7 @@ pub struct SurfaceFullScreenExclusiveWin32InfoEXT {
 }
 impl default::Default for SurfaceFullScreenExclusiveWin32InfoEXT {
     fn default() -> Self {
-        SurfaceFullScreenExclusiveWin32InfoEXT {
+        Self {
             s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
             p_next: ptr::null(),
             hmonitor: unsafe { mem::zeroed() },
@@ -30058,7 +30057,7 @@ pub struct SurfaceCapabilitiesFullScreenExclusiveEXT {
 }
 impl default::Default for SurfaceCapabilitiesFullScreenExclusiveEXT {
     fn default() -> Self {
-        SurfaceCapabilitiesFullScreenExclusiveEXT {
+        Self {
             s_type: StructureType::SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT,
             p_next: ptr::null_mut(),
             full_screen_exclusive_supported: Bool32::default(),
@@ -30083,7 +30082,7 @@ pub struct HeadlessSurfaceCreateInfoEXT {
 }
 impl default::Default for HeadlessSurfaceCreateInfoEXT {
     fn default() -> Self {
-        HeadlessSurfaceCreateInfoEXT {
+        Self {
             s_type: StructureType::HEADLESS_SURFACE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             flags: HeadlessSurfaceCreateFlagsEXT::default(),
@@ -30108,7 +30107,7 @@ pub struct PhysicalDeviceCoverageReductionModeFeaturesNV {
 }
 impl default::Default for PhysicalDeviceCoverageReductionModeFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceCoverageReductionModeFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV,
             p_next: ptr::null_mut(),
             coverage_reduction_mode: Bool32::default(),
@@ -30134,7 +30133,7 @@ pub struct PipelineCoverageReductionStateCreateInfoNV {
 }
 impl default::Default for PipelineCoverageReductionStateCreateInfoNV {
     fn default() -> Self {
-        PipelineCoverageReductionStateCreateInfoNV {
+        Self {
             s_type: StructureType::PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
             flags: PipelineCoverageReductionStateCreateFlagsNV::default(),
@@ -30164,7 +30163,7 @@ pub struct FramebufferMixedSamplesCombinationNV {
 }
 impl default::Default for FramebufferMixedSamplesCombinationNV {
     fn default() -> Self {
-        FramebufferMixedSamplesCombinationNV {
+        Self {
             s_type: StructureType::FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV,
             p_next: ptr::null_mut(),
             coverage_reduction_mode: CoverageReductionModeNV::default(),
@@ -30195,7 +30194,7 @@ pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
 }
 impl default::Default for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     fn default() -> Self {
-        PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
             p_next: ptr::null_mut(),
             shader_integer_functions2: Bool32::default(),
@@ -30244,7 +30243,7 @@ pub struct PerformanceValueINTEL {
 }
 impl default::Default for PerformanceValueINTEL {
     fn default() -> Self {
-        PerformanceValueINTEL {
+        Self {
             ty: PerformanceValueTypeINTEL::default(),
             data: PerformanceValueDataINTEL::default(),
         }
@@ -30267,7 +30266,7 @@ pub struct InitializePerformanceApiInfoINTEL {
 }
 impl default::Default for InitializePerformanceApiInfoINTEL {
     fn default() -> Self {
-        InitializePerformanceApiInfoINTEL {
+        Self {
             s_type: StructureType::INITIALIZE_PERFORMANCE_API_INFO_INTEL,
             p_next: ptr::null(),
             p_user_data: ptr::null_mut(),
@@ -30292,7 +30291,7 @@ pub struct QueryPoolCreateInfoINTEL {
 }
 impl default::Default for QueryPoolCreateInfoINTEL {
     fn default() -> Self {
-        QueryPoolCreateInfoINTEL {
+        Self {
             s_type: StructureType::QUERY_POOL_CREATE_INFO_INTEL,
             p_next: ptr::null(),
             performance_counters_sampling: QueryPoolSamplingModeINTEL::default(),
@@ -30317,7 +30316,7 @@ pub struct PerformanceMarkerInfoINTEL {
 }
 impl default::Default for PerformanceMarkerInfoINTEL {
     fn default() -> Self {
-        PerformanceMarkerInfoINTEL {
+        Self {
             s_type: StructureType::PERFORMANCE_MARKER_INFO_INTEL,
             p_next: ptr::null(),
             marker: u64::default(),
@@ -30342,7 +30341,7 @@ pub struct PerformanceStreamMarkerInfoINTEL {
 }
 impl default::Default for PerformanceStreamMarkerInfoINTEL {
     fn default() -> Self {
-        PerformanceStreamMarkerInfoINTEL {
+        Self {
             s_type: StructureType::PERFORMANCE_STREAM_MARKER_INFO_INTEL,
             p_next: ptr::null(),
             marker: u32::default(),
@@ -30369,7 +30368,7 @@ pub struct PerformanceOverrideInfoINTEL {
 }
 impl default::Default for PerformanceOverrideInfoINTEL {
     fn default() -> Self {
-        PerformanceOverrideInfoINTEL {
+        Self {
             s_type: StructureType::PERFORMANCE_OVERRIDE_INFO_INTEL,
             p_next: ptr::null(),
             ty: PerformanceOverrideTypeINTEL::default(),
@@ -30398,7 +30397,7 @@ pub struct PerformanceConfigurationAcquireInfoINTEL {
 }
 impl default::Default for PerformanceConfigurationAcquireInfoINTEL {
     fn default() -> Self {
-        PerformanceConfigurationAcquireInfoINTEL {
+        Self {
             s_type: StructureType::PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL,
             p_next: ptr::null(),
             ty: PerformanceConfigurationTypeINTEL::default(),
@@ -30423,7 +30422,7 @@ pub struct PhysicalDeviceIndexTypeUint8FeaturesEXT {
 }
 impl default::Default for PhysicalDeviceIndexTypeUint8FeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceIndexTypeUint8FeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
             p_next: ptr::null_mut(),
             index_type_uint8: Bool32::default(),
@@ -30449,7 +30448,7 @@ pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
 }
 impl default::Default for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
     fn default() -> Self {
-        PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV,
             p_next: ptr::null_mut(),
             shader_sm_count: u32::default(),
@@ -30476,7 +30475,7 @@ pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNV {
 }
 impl default::Default for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     fn default() -> Self {
-        PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV,
             p_next: ptr::null_mut(),
             shader_sm_builtins: Bool32::default(),
@@ -30504,7 +30503,7 @@ pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT,
             p_next: ptr::null_mut(),
             fragment_shader_sample_interlock: Bool32::default(),
@@ -30539,7 +30538,7 @@ pub struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
 }
 impl default::Default for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     fn default() -> Self {
-        PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR,
             p_next: ptr::null_mut(),
             pipeline_executable_info: Bool32::default(),
@@ -30564,7 +30563,7 @@ pub struct PipelineInfoKHR {
 }
 impl default::Default for PipelineInfoKHR {
     fn default() -> Self {
-        PipelineInfoKHR {
+        Self {
             s_type: StructureType::PIPELINE_INFO_KHR,
             p_next: ptr::null(),
             pipeline: None,
@@ -30592,7 +30591,7 @@ pub struct PipelineExecutablePropertiesKHR {
 }
 impl default::Default for PipelineExecutablePropertiesKHR {
     fn default() -> Self {
-        PipelineExecutablePropertiesKHR {
+        Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
             stages: ShaderStageFlags::default(),
@@ -30624,7 +30623,7 @@ pub struct PipelineExecutableInfoKHR {
 }
 impl default::Default for PipelineExecutableInfoKHR {
     fn default() -> Self {
-        PipelineExecutableInfoKHR {
+        Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_INFO_KHR,
             p_next: ptr::null(),
             pipeline: None,
@@ -30677,7 +30676,7 @@ pub struct PipelineExecutableStatisticKHR {
 }
 impl default::Default for PipelineExecutableStatisticKHR {
     fn default() -> Self {
-        PipelineExecutableStatisticKHR {
+        Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_STATISTIC_KHR,
             p_next: ptr::null_mut(),
             name: [c_char::default(); MAX_DESCRIPTION_SIZE],
@@ -30712,7 +30711,7 @@ pub struct PipelineExecutableInternalRepresentationKHR {
 }
 impl default::Default for PipelineExecutableInternalRepresentationKHR {
     fn default() -> Self {
-        PipelineExecutableInternalRepresentationKHR {
+        Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR,
             p_next: ptr::null_mut(),
             name: [c_char::default(); MAX_DESCRIPTION_SIZE],
@@ -30745,7 +30744,7 @@ pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT,
             p_next: ptr::null_mut(),
             shader_demote_to_helper_invocation: Bool32::default(),
@@ -30773,7 +30772,7 @@ pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT,
             p_next: ptr::null_mut(),
             texel_buffer_alignment: Bool32::default(),
@@ -30801,7 +30800,7 @@ pub struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             storage_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
@@ -30845,7 +30844,7 @@ pub struct PhysicalDeviceSubgroupSizeControlFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceSubgroupSizeControlFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceSubgroupSizeControlFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT,
             p_next: ptr::null_mut(),
             subgroup_size_control: Bool32::default(),
@@ -30879,7 +30878,7 @@ pub struct PhysicalDeviceSubgroupSizeControlPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceSubgroupSizeControlPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceSubgroupSizeControlPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             min_subgroup_size: u32::default(),
@@ -30910,7 +30909,7 @@ pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
 }
 impl default::Default for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
     fn default() -> Self {
-        PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT,
             p_next: ptr::null_mut(),
             required_subgroup_size: u32::default(),
@@ -30940,7 +30939,7 @@ pub struct PhysicalDeviceLineRasterizationFeaturesEXT {
 }
 impl default::Default for PhysicalDeviceLineRasterizationFeaturesEXT {
     fn default() -> Self {
-        PhysicalDeviceLineRasterizationFeaturesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
             p_next: ptr::null_mut(),
             rectangular_lines: Bool32::default(),
@@ -30975,7 +30974,7 @@ pub struct PhysicalDeviceLineRasterizationPropertiesEXT {
 }
 impl default::Default for PhysicalDeviceLineRasterizationPropertiesEXT {
     fn default() -> Self {
-        PhysicalDeviceLineRasterizationPropertiesEXT {
+        Self {
             s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
             line_sub_pixel_precision_bits: u32::default(),
@@ -31003,7 +31002,7 @@ pub struct PipelineRasterizationLineStateCreateInfoEXT {
 }
 impl default::Default for PipelineRasterizationLineStateCreateInfoEXT {
     fn default() -> Self {
-        PipelineRasterizationLineStateCreateInfoEXT {
+        Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             line_rasterization_mode: LineRasterizationModeEXT::default(),
@@ -31034,7 +31033,7 @@ pub struct PipelineCompilerControlCreateInfoAMD {
 }
 impl default::Default for PipelineCompilerControlCreateInfoAMD {
     fn default() -> Self {
-        PipelineCompilerControlCreateInfoAMD {
+        Self {
             s_type: StructureType::PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD,
             p_next: ptr::null(),
             compiler_control_flags: PipelineCompilerControlFlagsAMD::default(),

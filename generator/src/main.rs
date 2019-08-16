@@ -978,9 +978,8 @@ impl<'a> Generator<'a> {
                         }
                         writeln!(
                             w,
-                            "pub const {}: Self = {}({});",
+                            "pub const {}: Self = Self({});",
                             name,
-                            enum_name,
                             match enum_type {
                                 EnumType::Bitmask => format!("{:#x}", value),
                                 EnumType::Value => format!("{}", value),
@@ -998,7 +997,7 @@ impl<'a> Generator<'a> {
             writeln!(w, "}}")?;
             writeln!(
                 w,
-                "impl default::Default for {} {{ fn default() -> Self {{ {0}(0) }} }}",
+                "impl default::Default for {} {{ fn default() -> Self {{ Self(0) }} }}",
                 enum_name
             )?;
             match enum_type {
@@ -1006,8 +1005,8 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "impl {0} {{\
-                         pub fn empty() -> Self {{ {0}(0) }}\
-                         pub fn all() -> Self {{ {0}({1:#x}) }}\
+                         pub fn empty() -> Self {{ Self(0) }}\
+                         pub fn all() -> Self {{ Self({1:#x}) }}\
                          pub fn is_empty(self) -> bool {{ self.0 == 0 }}\
                          pub fn is_all(self) -> bool {{ self.0 == {1:#x} }}\
                          pub fn intersects(self, other: Self) -> bool {{ (self.0 & other.0) != 0 }}\
@@ -1018,7 +1017,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "impl ops::BitOr for {} {{ type Output = Self;\
-                         fn bitor(self, rhs: Self) -> Self {{ {0}(self.0 | rhs.0) }} }}",
+                         fn bitor(self, rhs: Self) -> Self {{ Self(self.0 | rhs.0) }} }}",
                         enum_name
                     )?;
                     writeln!(
@@ -1030,7 +1029,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "impl ops::BitAnd for {} {{ type Output = Self;\
-                         fn bitand(self, rhs: Self) -> Self {{ {0}(self.0 & rhs.0) }} }}",
+                         fn bitand(self, rhs: Self) -> Self {{ Self(self.0 & rhs.0) }} }}",
                         enum_name
                     )?;
                     writeln!(
@@ -1042,7 +1041,7 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "impl ops::BitXor for {} {{ type Output = Self;\
-                         fn bitxor(self, rhs: Self) -> Self {{ {0}(self.0 ^ rhs.0) }} }}",
+                         fn bitxor(self, rhs: Self) -> Self {{ Self(self.0 ^ rhs.0) }} }}",
                         enum_name
                     )?;
                     writeln!(
@@ -1129,15 +1128,15 @@ impl<'a> Generator<'a> {
                     writeln!(
                         w,
                         "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {0}(num::NonZeroUsize);\
-                        impl {0} {{ pub fn from_raw(x: usize) -> Option<Self> {{ num::NonZeroUsize::new(x).map({0}) }} }}",
+                        impl {0} {{ pub fn from_raw(x: usize) -> Option<Self> {{ num::NonZeroUsize::new(x).map(Self) }} }}",
                         handle_name
                     )?;
                 }
                 Some("VK_DEFINE_NON_DISPATCHABLE_HANDLE") => {
                     writeln!(
                         w,
-                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {}(num::NonZeroU64);\
-                        impl {0} {{ pub fn from_raw(x: u64) -> Option<Self> {{ num::NonZeroU64::new(x).map({0}) }} }}",
+                        "#[repr(transparent)] #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)] pub struct {0}(num::NonZeroU64);\
+                        impl {0} {{ pub fn from_raw(x: u64) -> Option<Self> {{ num::NonZeroU64::new(x).map(Self) }} }}",
                         handle_name
                     )?;
                 }
@@ -1275,7 +1274,7 @@ impl<'a> Generator<'a> {
             writeln!(w, "impl default::Default for {} {{ fn default() -> Self {{", agg_name)?;
             match agg_type {
                 AggregateType::Struct => {
-                    write!(w, "{} {{", agg_name)?;
+                    write!(w, "Self {{")?;
                     for (member_def, decl) in member_defs.iter().zip(decls.iter()) {
                         write!(w, "{}: ", get_rust_variable_name(&decl.name))?;
                         if let Some(values) = member_def.values.as_ref_str() {

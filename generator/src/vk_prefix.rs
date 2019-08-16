@@ -22,11 +22,11 @@ impl Version {
     /// assert_eq!(v.to_raw(), (1 << 22) | (2 << 12));
     /// ```
     pub const fn from_raw_parts(major: u32, minor: u32, patch: u32) -> Self {
-        Version((major << 22) | ((minor & 0x3ff) << 12) | (patch & 0xfff))
+        Self((major << 22) | ((minor & 0x3ff) << 12) | (patch & 0xfff))
     }
 
     pub const fn from_raw(version: u32) -> Self {
-        Version(version)
+        Self(version)
     }
     pub fn to_raw(self) -> u32 {
         self.0
@@ -44,7 +44,7 @@ impl Version {
 }
 impl default::Default for Version {
     fn default() -> Self {
-        Version::from_raw_parts(1, 0, 0)
+        Self::from_raw_parts(1, 0, 0)
     }
 }
 impl fmt::Display for Version {
