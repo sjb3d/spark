@@ -14157,6 +14157,7 @@ pub struct ValidationFeatureEnableEXT(i32);
 impl ValidationFeatureEnableEXT {
     pub const GPU_ASSISTED: Self = Self(0);
     pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = Self(1);
+    pub const BEST_PRACTICES: Self = Self(2);
 }
 impl default::Default for ValidationFeatureEnableEXT {
     fn default() -> Self {
@@ -14168,6 +14169,7 @@ impl fmt::Display for ValidationFeatureEnableEXT {
         let name = match self.0 {
             0 => Some(&"GPU_ASSISTED"),
             1 => Some(&"GPU_ASSISTED_RESERVE_BINDING_SLOT"),
+            2 => Some(&"BEST_PRACTICES"),
             _ => None,
         };
         if let Some(name) = name {
