@@ -1,5 +1,5 @@
 [package]
-name = "examples"
+name = "vkr-examples"
 version = "0.1.0"
 authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
