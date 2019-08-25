@@ -12068,3 +12068,34 @@ impl<'a> Deref for PipelineCompilerControlCreateInfoAMDBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceCoherentMemoryFeaturesAMD {
+    type Type = PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
+    inner: vk::PhysicalDeviceCoherentMemoryFeaturesAMD,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_coherent_memory(mut self, device_coherent_memory: bool) -> Self {
+        self.inner.device_coherent_memory = if device_coherent_memory { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
+    type Target = vk::PhysicalDeviceCoherentMemoryFeaturesAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

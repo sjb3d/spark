@@ -1718,6 +1718,10 @@ impl MemoryPropertyFlags {
     pub const LAZILY_ALLOCATED: Self = Self(0x10);
     /// Memory is protected
     pub const PROTECTED: Self = Self(0x20);
+    /// Added by extension VK_AMD_device_coherent_memory.
+    pub const DEVICE_COHERENT_AMD: Self = Self(0x40);
+    /// Added by extension VK_AMD_device_coherent_memory.
+    pub const DEVICE_UNCACHED_AMD: Self = Self(0x80);
 }
 impl default::Default for MemoryPropertyFlags {
     fn default() -> Self {
@@ -1729,13 +1733,13 @@ impl MemoryPropertyFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3f)
+        Self(0xff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3f
+        self.0 == 0xff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1788,6 +1792,8 @@ impl fmt::Display for MemoryPropertyFlags {
                 (0x8, "HOST_CACHED"),
                 (0x10, "LAZILY_ALLOCATED"),
                 (0x20, "PROTECTED"),
+                (0x40, "DEVICE_COHERENT_AMD"),
+                (0x80, "DEVICE_UNCACHED_AMD"),
             ],
             f,
         )
@@ -12313,6 +12319,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT: Self = Self(1000225002);
     /// Added by extension VK_AMD_shader_core_properties2.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
+    /// Added by extension VK_AMD_device_coherent_memory.
+    pub const PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD: Self = Self(1000229000);
     /// Added by extension VK_EXT_memory_budget.
     pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = Self(1000237000);
     /// Added by extension VK_EXT_memory_priority.
@@ -12734,6 +12742,7 @@ impl fmt::Display for StructureType {
             1000225001 => Some(&"PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT"),
             1000225002 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT"),
             1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
+            1000229000 => Some(&"PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
@@ -12847,6 +12856,7 @@ impl SamplerAddressMode {
     /// Note that this defines what was previously a core enum, and so uses the 'value' attribute rather than 'offset', and does not have a suffix. This is a special case, and should not be repeated
     /// Added by extension VK_KHR_sampler_mirror_clamp_to_edge.
     pub const MIRROR_CLAMP_TO_EDGE: Self = Self(4);
+    pub const MIRROR_CLAMP_TO_EDGE_KHR: Self = Self::MIRROR_CLAMP_TO_EDGE;
 }
 impl default::Default for SamplerAddressMode {
     fn default() -> Self {
@@ -31048,6 +31058,31 @@ impl fmt::Debug for PipelineCompilerControlCreateInfoAMD {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("compiler_control_flags", &self.compiler_control_flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCoherentMemoryFeaturesAMD {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_coherent_memory: Bool32,
+}
+impl default::Default for PhysicalDeviceCoherentMemoryFeaturesAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD,
+            p_next: ptr::null_mut(),
+            device_coherent_memory: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCoherentMemoryFeaturesAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCoherentMemoryFeaturesAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_coherent_memory", &self.device_coherent_memory)
             .finish()
     }
 }

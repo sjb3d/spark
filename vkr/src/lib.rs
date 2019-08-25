@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 120
+//! Generated from vk.xml with `VK_HEADER_VERSION` 121
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2735,6 +2735,7 @@ pub struct DeviceExtensions {
     pub google_decorate_string: bool,
     pub ext_subgroup_size_control: bool,
     pub amd_shader_core_properties2: bool,
+    pub amd_device_coherent_memory: bool,
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
     pub nv_dedicated_allocation_image_aliasing: bool,
@@ -3441,6 +3442,9 @@ impl Device {
     pub fn amd_shader_core_properties2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties2\0") }
     }
+    pub fn amd_device_coherent_memory_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_device_coherent_memory\0") }
+    }
     pub fn ext_memory_budget_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") }
     }
@@ -3644,6 +3648,7 @@ impl Device {
                     b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
                     b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
                     b"VK_AMD_shader_core_properties2" => extensions.amd_shader_core_properties2 = true,
+                    b"VK_AMD_device_coherent_memory" => extensions.amd_device_coherent_memory = true,
                     b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
                     b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
                     b"VK_NV_dedicated_allocation_image_aliasing" => {
