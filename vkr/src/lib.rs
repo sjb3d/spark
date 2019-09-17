@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 121
+//! Generated from vk.xml with `VK_HEADER_VERSION` 123
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2703,6 +2703,7 @@ pub struct DeviceExtensions {
     pub khr_draw_indirect_count: bool,
     pub ext_filter_cubic: bool,
     pub ext_global_priority: bool,
+    pub khr_shader_subgroup_extended_types: bool,
     pub khr_8bit_storage: bool,
     pub ext_external_memory_host: bool,
     pub amd_buffer_marker: bool,
@@ -2753,6 +2754,7 @@ pub struct DeviceExtensions {
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub ext_texel_buffer_alignment: bool,
+    pub google_user_type: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3346,6 +3348,9 @@ impl Device {
     pub fn ext_global_priority_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority\0") }
     }
+    pub fn khr_shader_subgroup_extended_types_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_extended_types\0") }
+    }
     pub fn khr_8bit_storage_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_8bit_storage\0") }
     }
@@ -3496,6 +3501,9 @@ impl Device {
     pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
     }
+    pub fn google_user_type_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3616,6 +3624,7 @@ impl Device {
                     b"VK_KHR_draw_indirect_count" => extensions.khr_draw_indirect_count = true,
                     b"VK_EXT_filter_cubic" => extensions.ext_filter_cubic = true,
                     b"VK_EXT_global_priority" => extensions.ext_global_priority = true,
+                    b"VK_KHR_shader_subgroup_extended_types" => extensions.khr_shader_subgroup_extended_types = true,
                     b"VK_KHR_8bit_storage" => extensions.khr_8bit_storage = true,
                     b"VK_EXT_external_memory_host" => extensions.ext_external_memory_host = true,
                     b"VK_AMD_buffer_marker" => extensions.amd_buffer_marker = true,
@@ -3670,6 +3679,7 @@ impl Device {
                         extensions.ext_shader_demote_to_helper_invocation = true
                     }
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
+                    b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
                     _ => {}
                 }
             }

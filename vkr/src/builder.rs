@@ -5893,8 +5893,8 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         self.inner.template_type = template_type;
         self
     }
-    pub fn descriptor_set_layout(mut self, descriptor_set_layout: Option<vk::DescriptorSetLayout>) -> Self {
-        self.inner.descriptor_set_layout = descriptor_set_layout;
+    pub fn descriptor_set_layout(mut self, descriptor_set_layout: vk::DescriptorSetLayout) -> Self {
+        self.inner.descriptor_set_layout = Some(descriptor_set_layout);
         self
     }
     pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
@@ -6408,6 +6408,41 @@ impl<'a> PhysicalDevice16BitStorageFeaturesBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDevice16BitStorageFeaturesBuilder<'a> {
     type Target = vk::PhysicalDevice16BitStorageFeatures;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR {
+    type Type = PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_subgroup_extended_types(mut self, shader_subgroup_extended_types: bool) -> Self {
+        self.inner.shader_subgroup_extended_types = if shader_subgroup_extended_types {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

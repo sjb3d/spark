@@ -12225,6 +12225,8 @@ impl StructureType {
     pub const FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT: Self = Self(1000170001);
     /// Added by extension VK_EXT_global_priority.
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT: Self = Self(1000174000);
+    /// Added by extension VK_KHR_shader_subgroup_extended_types.
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR: Self = Self(1000175000);
     /// Added by extension VK_KHR_8bit_storage.
     pub const PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR: Self = Self(1000177000);
     /// Added by extension VK_EXT_external_memory_host.
@@ -12695,6 +12697,7 @@ impl fmt::Display for StructureType {
             1000170000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT"),
             1000170001 => Some(&"FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT"),
             1000174000 => Some(&"DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT"),
+            1000175000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR"),
             1000177000 => Some(&"PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR"),
             1000178000 => Some(&"IMPORT_MEMORY_HOST_POINTER_INFO_EXT"),
             1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
@@ -24253,6 +24256,32 @@ impl fmt::Debug for PhysicalDeviceSubgroupProperties {
             .field("supported_stages", &self.supported_stages)
             .field("supported_operations", &self.supported_operations)
             .field("quad_operations_in_all_stages", &self.quad_operations_in_all_stages)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Flag to specify whether subgroup operations with extended types are supported
+    pub shader_subgroup_extended_types: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_subgroup_extended_types: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_subgroup_extended_types", &self.shader_subgroup_extended_types)
             .finish()
     }
 }
