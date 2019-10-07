@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 123
+//! Generated from vk.xml with `VK_HEADER_VERSION` 124
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2708,6 +2708,7 @@ pub struct DeviceExtensions {
     pub ext_external_memory_host: bool,
     pub amd_buffer_marker: bool,
     pub khr_shader_atomic_int64: bool,
+    pub khr_shader_clock: bool,
     pub amd_pipeline_compiler_control: bool,
     pub ext_calibrated_timestamps: bool,
     pub amd_shader_core_properties: bool,
@@ -2725,6 +2726,7 @@ pub struct DeviceExtensions {
     pub nv_shader_image_footprint: bool,
     pub nv_scissor_exclusive: bool,
     pub nv_device_diagnostic_checkpoints: bool,
+    pub khr_timeline_semaphore: bool,
     pub intel_shader_integer_functions2: bool,
     pub intel_performance_query: bool,
     pub khr_vulkan_memory_model: bool,
@@ -2981,6 +2983,9 @@ pub struct Device {
     pub fp_cmd_begin_render_pass2_khr: Option<vk::FnCmdBeginRenderPass2KHR>,
     pub fp_cmd_next_subpass2_khr: Option<vk::FnCmdNextSubpass2KHR>,
     pub fp_cmd_end_render_pass2_khr: Option<vk::FnCmdEndRenderPass2KHR>,
+    pub fp_get_semaphore_counter_value_khr: Option<vk::FnGetSemaphoreCounterValueKHR>,
+    pub fp_wait_semaphores_khr: Option<vk::FnWaitSemaphoresKHR>,
+    pub fp_signal_semaphore_khr: Option<vk::FnSignalSemaphoreKHR>,
     pub fp_get_android_hardware_buffer_properties_android: Option<vk::FnGetAndroidHardwareBufferPropertiesANDROID>,
     pub fp_get_memory_android_hardware_buffer_android: Option<vk::FnGetMemoryAndroidHardwareBufferANDROID>,
     pub fp_cmd_draw_indirect_count_khr: Option<vk::FnCmdDrawIndirectCountKHR>,
@@ -3363,6 +3368,9 @@ impl Device {
     pub fn khr_shader_atomic_int64_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_atomic_int64\0") }
     }
+    pub fn khr_shader_clock_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_clock\0") }
+    }
     pub fn amd_pipeline_compiler_control_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_pipeline_compiler_control\0") }
     }
@@ -3413,6 +3421,9 @@ impl Device {
     }
     pub fn nv_device_diagnostic_checkpoints_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostic_checkpoints\0") }
+    }
+    pub fn khr_timeline_semaphore_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_timeline_semaphore\0") }
     }
     pub fn intel_shader_integer_functions2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_shader_integer_functions2\0") }
@@ -3629,6 +3640,7 @@ impl Device {
                     b"VK_EXT_external_memory_host" => extensions.ext_external_memory_host = true,
                     b"VK_AMD_buffer_marker" => extensions.amd_buffer_marker = true,
                     b"VK_KHR_shader_atomic_int64" => extensions.khr_shader_atomic_int64 = true,
+                    b"VK_KHR_shader_clock" => extensions.khr_shader_clock = true,
                     b"VK_AMD_pipeline_compiler_control" => extensions.amd_pipeline_compiler_control = true,
                     b"VK_EXT_calibrated_timestamps" => extensions.ext_calibrated_timestamps = true,
                     b"VK_AMD_shader_core_properties" => extensions.amd_shader_core_properties = true,
@@ -3646,6 +3658,7 @@ impl Device {
                     b"VK_NV_shader_image_footprint" => extensions.nv_shader_image_footprint = true,
                     b"VK_NV_scissor_exclusive" => extensions.nv_scissor_exclusive = true,
                     b"VK_NV_device_diagnostic_checkpoints" => extensions.nv_device_diagnostic_checkpoints = true,
+                    b"VK_KHR_timeline_semaphore" => extensions.khr_timeline_semaphore = true,
                     b"VK_INTEL_shader_integer_functions2" => extensions.intel_shader_integer_functions2 = true,
                     b"VK_INTEL_performance_query" => extensions.intel_performance_query = true,
                     b"VK_KHR_vulkan_memory_model" => extensions.khr_vulkan_memory_model = true,
@@ -5266,6 +5279,24 @@ impl Device {
             },
             fp_cmd_end_render_pass2_khr: if extensions.khr_create_renderpass2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_semaphore_counter_value_khr: if extensions.khr_timeline_semaphore {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreCounterValueKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_wait_semaphores_khr: if extensions.khr_timeline_semaphore {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitSemaphoresKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_signal_semaphore_khr: if extensions.khr_timeline_semaphore {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSignalSemaphoreKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9063,6 +9094,39 @@ impl Device {
             .fp_cmd_end_render_pass2_khr
             .expect("vkCmdEndRenderPass2KHR is not loaded");
         (fp)(Some(command_buffer), p_subpass_end_info);
+    }
+    pub unsafe fn get_semaphore_counter_value_khr(&self, semaphore: vk::Semaphore) -> Result<u64> {
+        let fp = self
+            .fp_get_semaphore_counter_value_khr
+            .expect("vkGetSemaphoreCounterValueKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(semaphore), res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn wait_semaphores_khr(
+        &self,
+        p_wait_info: &vk::SemaphoreWaitInfoKHR,
+        timeout: u64,
+    ) -> Result<vk::Result> {
+        let fp = self.fp_wait_semaphores_khr.expect("vkWaitSemaphoresKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_wait_info, timeout);
+        match err {
+            vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn signal_semaphore_khr(&self, p_signal_info: &vk::SemaphoreSignalInfoKHR) -> Result<()> {
+        let fp = self
+            .fp_signal_semaphore_khr
+            .expect("vkSignalSemaphoreKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_signal_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn get_android_hardware_buffer_properties_android(
         &self,

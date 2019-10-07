@@ -5728,6 +5728,75 @@ impl fmt::Display for ShaderCorePropertiesFlagsAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct SemaphoreWaitFlagsKHR(u32);
+impl SemaphoreWaitFlagsKHR {
+    pub const ANY: Self = Self(0x1);
+}
+impl default::Default for SemaphoreWaitFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl SemaphoreWaitFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x1)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x1
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for SemaphoreWaitFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for SemaphoreWaitFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for SemaphoreWaitFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for SemaphoreWaitFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0, &[(0x1, "ANY")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
@@ -12237,6 +12306,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT: Self = Self(1000178002);
     /// Added by extension VK_KHR_shader_atomic_int64.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR: Self = Self(1000180000);
+    /// Added by extension VK_KHR_shader_clock.
+    pub const PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR: Self = Self(1000181000);
     /// Added by extension VK_AMD_pipeline_compiler_control.
     pub const PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD: Self = Self(1000183000);
     /// Added by extension VK_EXT_calibrated_timestamps.
@@ -12279,6 +12350,18 @@ impl StructureType {
     pub const CHECKPOINT_DATA_NV: Self = Self(1000206000);
     /// Added by extension VK_NV_device_diagnostic_checkpoints.
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV: Self = Self(1000206001);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR: Self = Self(1000207000);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES_KHR: Self = Self(1000207001);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const SEMAPHORE_TYPE_CREATE_INFO_KHR: Self = Self(1000207002);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR: Self = Self(1000207003);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const SEMAPHORE_WAIT_INFO_KHR: Self = Self(1000207004);
+    /// Added by extension VK_KHR_timeline_semaphore.
+    pub const SEMAPHORE_SIGNAL_INFO_KHR: Self = Self(1000207005);
     /// Added by extension VK_INTEL_shader_integer_functions2.
     pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = Self(1000209000);
     /// Added by extension VK_INTEL_performance_query.
@@ -12703,6 +12786,7 @@ impl fmt::Display for StructureType {
             1000178001 => Some(&"MEMORY_HOST_POINTER_PROPERTIES_EXT"),
             1000178002 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT"),
             1000180000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES_KHR"),
+            1000181000 => Some(&"PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR"),
             1000183000 => Some(&"PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD"),
             1000184000 => Some(&"CALIBRATED_TIMESTAMP_INFO_EXT"),
             1000185000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD"),
@@ -12724,6 +12808,12 @@ impl fmt::Display for StructureType {
             1000205002 => Some(&"PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
             1000206000 => Some(&"CHECKPOINT_DATA_NV"),
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
+            1000207000 => Some(&"PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR"),
+            1000207001 => Some(&"PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES_KHR"),
+            1000207002 => Some(&"SEMAPHORE_TYPE_CREATE_INFO_KHR"),
+            1000207003 => Some(&"TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR"),
+            1000207004 => Some(&"SEMAPHORE_WAIT_INFO_KHR"),
+            1000207005 => Some(&"SEMAPHORE_SIGNAL_INFO_KHR"),
             1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL"),
             1000210000 => Some(&"QUERY_POOL_CREATE_INFO_INTEL"),
             1000210001 => Some(&"INITIALIZE_PERFORMANCE_API_INFO_INTEL"),
@@ -13495,6 +13585,32 @@ impl fmt::Display for ConservativeRasterizationModeEXT {
             0 => Some(&"DISABLED"),
             1 => Some(&"OVERESTIMATE"),
             2 => Some(&"UNDERESTIMATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct SemaphoreTypeKHR(i32);
+impl SemaphoreTypeKHR {
+    pub const BINARY: Self = Self(0);
+    pub const TIMELINE: Self = Self(1);
+}
+impl default::Default for SemaphoreTypeKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for SemaphoreTypeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BINARY"),
+            1 => Some(&"TIMELINE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -27221,6 +27337,183 @@ impl fmt::Debug for SubpassEndInfoKHR {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTimelineSemaphoreFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub timeline_semaphore: Bool32,
+}
+impl default::Default for PhysicalDeviceTimelineSemaphoreFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            timeline_semaphore: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTimelineSemaphoreFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTimelineSemaphoreFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("timeline_semaphore", &self.timeline_semaphore)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTimelineSemaphorePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_timeline_semaphore_value_difference: u64,
+}
+impl default::Default for PhysicalDeviceTimelineSemaphorePropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_timeline_semaphore_value_difference: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTimelineSemaphorePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTimelineSemaphorePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_timeline_semaphore_value_difference",
+                &self.max_timeline_semaphore_value_difference,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SemaphoreTypeCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore_type: SemaphoreTypeKHR,
+    pub initial_value: u64,
+}
+impl default::Default for SemaphoreTypeCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SEMAPHORE_TYPE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            semaphore_type: SemaphoreTypeKHR::default(),
+            initial_value: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for SemaphoreTypeCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SemaphoreTypeCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore_type", &self.semaphore_type)
+            .field("initial_value", &self.initial_value)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TimelineSemaphoreSubmitInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub wait_semaphore_value_count: u32,
+    pub p_wait_semaphore_values: *const u64,
+    pub signal_semaphore_value_count: u32,
+    pub p_signal_semaphore_values: *const u64,
+}
+impl default::Default for TimelineSemaphoreSubmitInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TIMELINE_SEMAPHORE_SUBMIT_INFO_KHR,
+            p_next: ptr::null(),
+            wait_semaphore_value_count: u32::default(),
+            p_wait_semaphore_values: ptr::null(),
+            signal_semaphore_value_count: u32::default(),
+            p_signal_semaphore_values: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for TimelineSemaphoreSubmitInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TimelineSemaphoreSubmitInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("wait_semaphore_value_count", &self.wait_semaphore_value_count)
+            .field("p_wait_semaphore_values", &self.p_wait_semaphore_values)
+            .field("signal_semaphore_value_count", &self.signal_semaphore_value_count)
+            .field("p_signal_semaphore_values", &self.p_signal_semaphore_values)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SemaphoreWaitInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: SemaphoreWaitFlagsKHR,
+    pub semaphore_count: u32,
+    pub p_semaphores: *const Semaphore,
+    pub p_values: *const u64,
+}
+impl default::Default for SemaphoreWaitInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SEMAPHORE_WAIT_INFO_KHR,
+            p_next: ptr::null(),
+            flags: SemaphoreWaitFlagsKHR::default(),
+            semaphore_count: u32::default(),
+            p_semaphores: ptr::null(),
+            p_values: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SemaphoreWaitInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SemaphoreWaitInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("semaphore_count", &self.semaphore_count)
+            .field("p_semaphores", &self.p_semaphores)
+            .field("p_values", &self.p_values)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SemaphoreSignalInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore: Option<Semaphore>,
+    pub value: u64,
+}
+impl default::Default for SemaphoreSignalInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SEMAPHORE_SIGNAL_INFO_KHR,
+            p_next: ptr::null(),
+            semaphore: None,
+            value: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for SemaphoreSignalInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SemaphoreSignalInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore", &self.semaphore)
+            .field("value", &self.value)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDivisorDescriptionEXT {
     pub binding: u32,
@@ -30456,6 +30749,34 @@ impl fmt::Debug for PerformanceConfigurationAcquireInfoINTEL {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderClockFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_subgroup_clock: Bool32,
+    pub shader_device_clock: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderClockFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_subgroup_clock: Bool32::default(),
+            shader_device_clock: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderClockFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderClockFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_subgroup_clock", &self.shader_subgroup_clock)
+            .field("shader_device_clock", &self.shader_device_clock)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceIndexTypeUint8FeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -32644,6 +32965,12 @@ pub type FnCmdEndRenderPass2KHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_subpass_end_info: *const SubpassEndInfoKHR,
 ) -> c_void;
+pub type FnGetSemaphoreCounterValueKHR =
+    unsafe extern "system" fn(device: Option<Device>, semaphore: Option<Semaphore>, p_value: *mut u64) -> Result;
+pub type FnWaitSemaphoresKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_wait_info: *const SemaphoreWaitInfoKHR, timeout: u64) -> Result;
+pub type FnSignalSemaphoreKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_signal_info: *const SemaphoreSignalInfoKHR) -> Result;
 pub type FnGetAndroidHardwareBufferPropertiesANDROID = unsafe extern "system" fn(
     device: Option<Device>,
     buffer: *const AHardwareBuffer,

@@ -8711,6 +8711,182 @@ impl<'a> Deref for SubpassEndInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR {
+    type Type = PhysicalDeviceTimelineSemaphoreFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTimelineSemaphoreFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceTimelineSemaphoreFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn timeline_semaphore(mut self, timeline_semaphore: bool) -> Self {
+        self.inner.timeline_semaphore = if timeline_semaphore { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceTimelineSemaphoreFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceTimelineSemaphoreFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SemaphoreTypeCreateInfoKHR {
+    type Type = SemaphoreTypeCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SemaphoreTypeCreateInfoKHRBuilder<'a> {
+    inner: vk::SemaphoreTypeCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SemaphoreTypeCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore_type(mut self, semaphore_type: vk::SemaphoreTypeKHR) -> Self {
+        self.inner.semaphore_type = semaphore_type;
+        self
+    }
+    pub fn initial_value(mut self, initial_value: u64) -> Self {
+        self.inner.initial_value = initial_value;
+        self
+    }
+}
+impl<'a> Deref for SemaphoreTypeCreateInfoKHRBuilder<'a> {
+    type Target = vk::SemaphoreTypeCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::TimelineSemaphoreSubmitInfoKHR {
+    type Type = TimelineSemaphoreSubmitInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TimelineSemaphoreSubmitInfoKHRBuilder<'a> {
+    inner: vk::TimelineSemaphoreSubmitInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> TimelineSemaphoreSubmitInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_wait_semaphore_values(mut self, p_wait_semaphore_values: &'a [u64]) -> Self {
+        self.inner.wait_semaphore_value_count = p_wait_semaphore_values.len() as u32;
+        self.inner.p_wait_semaphore_values = p_wait_semaphore_values.as_ptr();
+        self
+    }
+    pub fn p_signal_semaphore_values(mut self, p_signal_semaphore_values: &'a [u64]) -> Self {
+        self.inner.signal_semaphore_value_count = p_signal_semaphore_values.len() as u32;
+        self.inner.p_signal_semaphore_values = p_signal_semaphore_values.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for TimelineSemaphoreSubmitInfoKHRBuilder<'a> {
+    type Target = vk::TimelineSemaphoreSubmitInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SemaphoreWaitInfoKHR {
+    type Type = SemaphoreWaitInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SemaphoreWaitInfoKHRBuilder<'a> {
+    inner: vk::SemaphoreWaitInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SemaphoreWaitInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::SemaphoreWaitFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_semaphores(mut self, p_semaphores: &'a [vk::Semaphore], p_values: &'a [u64]) -> Self {
+        self.inner.semaphore_count = p_semaphores.len() as u32;
+        assert_eq!(self.inner.semaphore_count, p_values.len() as u32);
+        self.inner.p_semaphores = p_semaphores.as_ptr();
+        self.inner.p_values = p_values.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for SemaphoreWaitInfoKHRBuilder<'a> {
+    type Target = vk::SemaphoreWaitInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SemaphoreSignalInfoKHR {
+    type Type = SemaphoreSignalInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SemaphoreSignalInfoKHRBuilder<'a> {
+    inner: vk::SemaphoreSignalInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SemaphoreSignalInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+        self.inner.semaphore = Some(semaphore);
+        self
+    }
+    pub fn value(mut self, value: u64) -> Self {
+        self.inner.value = value;
+        self
+    }
+}
+impl<'a> Deref for SemaphoreSignalInfoKHRBuilder<'a> {
+    type Target = vk::SemaphoreSignalInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PipelineVertexInputDivisorStateCreateInfoEXT {
     type Type = PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11620,6 +11796,41 @@ impl<'a> PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
 }
 impl<'a> Deref for PerformanceConfigurationAcquireInfoINTELBuilder<'a> {
     type Target = vk::PerformanceConfigurationAcquireInfoINTEL;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceShaderClockFeaturesKHR {
+    type Type = PhysicalDeviceShaderClockFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderClockFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceShaderClockFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceShaderClockFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_subgroup_clock(mut self, shader_subgroup_clock: bool) -> Self {
+        self.inner.shader_subgroup_clock = if shader_subgroup_clock { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_device_clock(mut self, shader_device_clock: bool) -> Self {
+        self.inner.shader_device_clock = if shader_device_clock { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceShaderClockFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceShaderClockFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
