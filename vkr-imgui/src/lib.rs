@@ -194,10 +194,8 @@ impl Renderer {
             let memory_type_index = get_memory_type_index(
                 physical_device_memory_properties,
                 host_memory_type_filter,
-                vk::MemoryPropertyFlags::DEVICE_LOCAL
-                    | vk::MemoryPropertyFlags::HOST_VISIBLE
-                    | vk::MemoryPropertyFlags::HOST_COHERENT,
-                vk::MemoryPropertyFlags::HOST_VISIBLE | vk::MemoryPropertyFlags::HOST_COHERENT,
+                vk::MemoryPropertyFlags::DEVICE_LOCAL | vk::MemoryPropertyFlags::HOST_VISIBLE,
+                vk::MemoryPropertyFlags::HOST_VISIBLE,
             )
             .unwrap();
             let memory_allocate_info = vk::MemoryAllocateInfo {
