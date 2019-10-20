@@ -24,18 +24,11 @@ fn load_shader_module(device: &Device, bytes: &[u8]) -> vk::ShaderModule {
 fn get_memory_type_index(
     physical_device_memory_properties: &vk::PhysicalDeviceMemoryProperties,
     type_filter: u32,
-    optimal_property_flags: vk::MemoryPropertyFlags,
-    fallback_property_flags: vk::MemoryPropertyFlags,
+    property_flags: vk::MemoryPropertyFlags,
 ) -> Option<u32> {
     for i in 0..physical_device_memory_properties.memory_type_count {
         let mt = &physical_device_memory_properties.memory_types[i as usize];
-        if (type_filter & (1 << i)) != 0 && mt.property_flags.contains(optimal_property_flags) {
-            return Some(i);
-        }
-    }
-    for i in 0..physical_device_memory_properties.memory_type_count {
-        let mt = &physical_device_memory_properties.memory_types[i as usize];
-        if (type_filter & (1 << i)) != 0 && mt.property_flags.contains(fallback_property_flags) {
+        if (type_filter & (1 << i)) != 0 && mt.property_flags.contains(property_flags) {
             return Some(i);
         }
     }
@@ -194,7 +187,6 @@ impl Renderer {
             let memory_type_index = get_memory_type_index(
                 physical_device_memory_properties,
                 host_memory_type_filter,
-                vk::MemoryPropertyFlags::DEVICE_LOCAL | vk::MemoryPropertyFlags::HOST_VISIBLE,
                 vk::MemoryPropertyFlags::HOST_VISIBLE,
             )
             .unwrap();
@@ -247,7 +239,6 @@ impl Renderer {
             let memory_type_index = get_memory_type_index(
                 physical_device_memory_properties,
                 local_memory_type_filter,
-                vk::MemoryPropertyFlags::DEVICE_LOCAL,
                 vk::MemoryPropertyFlags::DEVICE_LOCAL,
             )
             .unwrap();
