@@ -11948,6 +11948,107 @@ impl<'a> Deref for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR {
+    type Type = PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn separate_depth_stencil_layouts(mut self, separate_depth_stencil_layouts: bool) -> Self {
+        self.inner.separate_depth_stencil_layouts = if separate_depth_stencil_layouts {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AttachmentReferenceStencilLayoutKHR {
+    type Type = AttachmentReferenceStencilLayoutKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AttachmentReferenceStencilLayoutKHRBuilder<'a> {
+    inner: vk::AttachmentReferenceStencilLayoutKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AttachmentReferenceStencilLayoutKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stencil_layout(mut self, stencil_layout: vk::ImageLayout) -> Self {
+        self.inner.stencil_layout = stencil_layout;
+        self
+    }
+}
+impl<'a> Deref for AttachmentReferenceStencilLayoutKHRBuilder<'a> {
+    type Target = vk::AttachmentReferenceStencilLayoutKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AttachmentDescriptionStencilLayoutKHR {
+    type Type = AttachmentDescriptionStencilLayoutKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AttachmentDescriptionStencilLayoutKHRBuilder<'a> {
+    inner: vk::AttachmentDescriptionStencilLayoutKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AttachmentDescriptionStencilLayoutKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn stencil_initial_layout(mut self, stencil_initial_layout: vk::ImageLayout) -> Self {
+        self.inner.stencil_initial_layout = stencil_initial_layout;
+        self
+    }
+    pub fn stencil_final_layout(mut self, stencil_final_layout: vk::ImageLayout) -> Self {
+        self.inner.stencil_final_layout = stencil_final_layout;
+        self
+    }
+}
+impl<'a> Deref for AttachmentDescriptionStencilLayoutKHRBuilder<'a> {
+    type Target = vk::AttachmentDescriptionStencilLayoutKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     type Type = PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder<'a>;
     fn builder() -> Self::Type {

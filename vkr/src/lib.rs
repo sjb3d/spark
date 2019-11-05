@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 126
+//! Generated from vk.xml with `VK_HEADER_VERSION` 127
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2743,6 +2743,7 @@ pub struct DeviceExtensions {
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
     pub nv_dedicated_allocation_image_aliasing: bool,
+    pub khr_separate_depth_stencil_layouts: bool,
     pub ext_buffer_device_address: bool,
     pub ext_separate_stencil_usage: bool,
     pub nv_cooperative_matrix: bool,
@@ -3474,6 +3475,9 @@ impl Device {
     pub fn nv_dedicated_allocation_image_aliasing_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation_image_aliasing\0") }
     }
+    pub fn khr_separate_depth_stencil_layouts_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_separate_depth_stencil_layouts\0") }
+    }
     pub fn ext_buffer_device_address_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_buffer_device_address\0") }
     }
@@ -3681,6 +3685,7 @@ impl Device {
                     b"VK_NV_dedicated_allocation_image_aliasing" => {
                         extensions.nv_dedicated_allocation_image_aliasing = true
                     }
+                    b"VK_KHR_separate_depth_stencil_layouts" => extensions.khr_separate_depth_stencil_layouts = true,
                     b"VK_EXT_buffer_device_address" => extensions.ext_buffer_device_address = true,
                     b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
                     b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,

@@ -1188,6 +1188,8 @@ impl PipelineShaderStageCreateFlags {
     pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = Self(0x2);
+    /// Added by extension VK_KHR_extension_297.
+    pub const RESERVED_3_KHR: Self = Self(0x8);
 }
 impl default::Default for PipelineShaderStageCreateFlags {
     fn default() -> Self {
@@ -1199,13 +1201,13 @@ impl PipelineShaderStageCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7
+        self.0 == 0xf
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1255,6 +1257,7 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
                 (0x4, "RESERVED_2_NV"),
                 (0x1, "ALLOW_VARYING_SUBGROUP_SIZE_EXT"),
                 (0x2, "REQUIRE_FULL_SUBGROUPS_EXT"),
+                (0x8, "RESERVED_3_KHR"),
             ],
             f,
         )
@@ -11185,6 +11188,14 @@ impl ImageLayout {
     pub const SHADING_RATE_OPTIMAL_NV: Self = Self(1000164003);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const DEPTH_ATTACHMENT_OPTIMAL_KHR: Self = Self(1000241000);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self(1000241001);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self(1000241002);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self(1000241003);
 }
 impl default::Default for ImageLayout {
     fn default() -> Self {
@@ -11209,6 +11220,10 @@ impl fmt::Display for ImageLayout {
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
             1000164003 => Some(&"SHADING_RATE_OPTIMAL_NV"),
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
+            1000241000 => Some(&"DEPTH_ATTACHMENT_OPTIMAL_KHR"),
+            1000241001 => Some(&"DEPTH_READ_ONLY_OPTIMAL_KHR"),
+            1000241002 => Some(&"STENCIL_ATTACHMENT_OPTIMAL_KHR"),
+            1000241003 => Some(&"STENCIL_READ_ONLY_OPTIMAL_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12416,6 +12431,12 @@ impl StructureType {
     pub const SURFACE_PROTECTED_CAPABILITIES_KHR: Self = Self(1000239000);
     /// Added by extension VK_NV_dedicated_allocation_image_aliasing.
     pub const PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV: Self = Self(1000240000);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES_KHR: Self = Self(1000241000);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR: Self = Self(1000241001);
+    /// Added by extension VK_KHR_separate_depth_stencil_layouts.
+    pub const ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR: Self = Self(1000241002);
     /// Added by extension VK_EXT_buffer_device_address.
     pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT: Self = Self(1000244000);
     pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self =
@@ -12841,6 +12862,9 @@ impl fmt::Display for StructureType {
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
             1000239000 => Some(&"SURFACE_PROTECTED_CAPABILITIES_KHR"),
             1000240000 => Some(&"PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV"),
+            1000241000 => Some(&"PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES_KHR"),
+            1000241001 => Some(&"ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR"),
+            1000241002 => Some(&"ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR"),
             1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT"),
             1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
@@ -30888,6 +30912,84 @@ impl fmt::Debug for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
                 "fragment_shader_shading_rate_interlock",
                 &self.fragment_shader_shading_rate_interlock,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub separate_depth_stencil_layouts: Bool32,
+}
+impl default::Default for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            separate_depth_stencil_layouts: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("separate_depth_stencil_layouts", &self.separate_depth_stencil_layouts)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AttachmentReferenceStencilLayoutKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stencil_layout: ImageLayout,
+}
+impl default::Default for AttachmentReferenceStencilLayoutKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR,
+            p_next: ptr::null_mut(),
+            stencil_layout: ImageLayout::default(),
+        }
+    }
+}
+impl fmt::Debug for AttachmentReferenceStencilLayoutKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AttachmentReferenceStencilLayoutKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stencil_layout", &self.stencil_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AttachmentDescriptionStencilLayoutKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stencil_initial_layout: ImageLayout,
+    pub stencil_final_layout: ImageLayout,
+}
+impl default::Default for AttachmentDescriptionStencilLayoutKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
+            p_next: ptr::null_mut(),
+            stencil_initial_layout: ImageLayout::default(),
+            stencil_final_layout: ImageLayout::default(),
+        }
+    }
+}
+impl fmt::Debug for AttachmentDescriptionStencilLayoutKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AttachmentDescriptionStencilLayoutKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stencil_initial_layout", &self.stencil_initial_layout)
+            .field("stencil_final_layout", &self.stencil_final_layout)
             .finish()
     }
 }
