@@ -437,7 +437,11 @@ impl Renderer {
         self.pipeline.is_some()
     }
 
-    pub fn create_pipeline(&mut self, device: &Device, render_pass: vk::RenderPass) -> Option<vk::Pipeline> {
+    pub fn create_pipeline(
+        &mut self,
+        device: &Device,
+        render_pass: vk::RenderPass,
+    ) -> Option<vk::Pipeline> {
         let pipeline = {
             let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
             let shader_stage_create_info = [
@@ -481,10 +485,9 @@ impl Renderer {
                 },
             ];
 
-            let vertex_input_state_create_info =
-                vk::PipelineVertexInputStateCreateInfo::builder()
-                    .p_vertex_binding_descriptions(slice::from_ref(&vertex_input_binding))
-                    .p_vertex_attribute_descriptions(&vertex_input_attributes);
+            let vertex_input_state_create_info = vk::PipelineVertexInputStateCreateInfo::builder()
+                .p_vertex_binding_descriptions(slice::from_ref(&vertex_input_binding))
+                .p_vertex_attribute_descriptions(&vertex_input_attributes);
 
             let input_assembly_state_create_info = vk::PipelineInputAssemblyStateCreateInfo {
                 topology: vk::PrimitiveTopology::TRIANGLE_LIST,
@@ -519,9 +522,8 @@ impl Renderer {
                 alpha_blend_op: vk::BlendOp::ADD,
                 color_write_mask: vk::ColorComponentFlags::all(),
             };
-            let color_blend_state_create_info =
-                vk::PipelineColorBlendStateCreateInfo::builder()
-                    .p_attachments(slice::from_ref(&color_blend_attachment_state));
+            let color_blend_state_create_info = vk::PipelineColorBlendStateCreateInfo::builder()
+                .p_attachments(slice::from_ref(&color_blend_attachment_state));
 
             let dynamic_states = [vk::DynamicState::VIEWPORT, vk::DynamicState::SCISSOR];
             let pipeline_dynamic_state_create_info =
