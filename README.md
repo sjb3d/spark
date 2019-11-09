@@ -1,36 +1,16 @@
 # vkr
 
-Convenience wrapper for [Vulkan](https://www.khronos.org/registry/vulkan/) in Rust.
-Currently builds on windows and linux (pull requests for other platforms are welcome).
+This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) with convenient syntax.
 
-The wrapper provides:
-* Function pointer loaders for the Vulkan core API and all extensions
-* Type safety for enums and handles
-* Defaults and builders for Vulkan structures to make constructing them less verbose
-* Thin wrappers around Vulkan functions to make them more convenient to call from rust code
+## Design
 
-The wrapper does not provide:
-* Parameter validation
-* Safe functions (all functions are `unsafe`, handle lifetimes and multi-threading must be made safe by the caller)
+It ended up very similar in design and scope to [`ash`](https://github.com/MaikKlein/ash).  Ash seems to be the most popular low-library for Vulkan in Rust, so if you are looking for something with wide support, then I recommend using [`ash`](https://github.com/MaikKlein/ash) instead.
 
-Almost all of the library is generated from the Vulkan API specifications using [vk_parse](https://github.com/krolli/vk-parse) to parse the specifications XML.
+Since `ash` widely used, I'll just list the ways this library currently differs from `ash`.  These are just alternatives I personally found interesting to explore:
 
-## Loaders
+### Extensions Are (Optional) Parts Of `Instance` And `Device`
 
-The structs `Loader`, `Instance` and `Device` load function pointers for the core API and all extensions.
-
-```rust
-// load the Vulkan shared library
-let loader = Loader::new()?;
-
-// create a Vulkan 1.0 instance (skip listing layers and extensions for this example)
-let instance_create_info = vk::InstanceCreateInfo {
-    ..Default::default()
-};
-let instance = unsafe { loader.create_instance(&instance_create_info, None) }?;
-```
-
-Function pointers are loaded only for commands that are referenced by the combination of Vulkan version and list of extensions used during creation.  The `Instance` or `Device` have an `extensions` member variable that can be inspected to check which extensions were loaded.
+When you create an `Instance` or `Device`, the library checks the Vulkan version and array of extension names, and loads all the function pointers that are referenced by that combination.  The `Instance` or `Device` object have an `extensions` member variable that can be inspected to check which extensions were loaded, and all Vulkan functions are accessible from either the `Instance` or `Device`.
 
 ```rust
 // emit marker if we have EXT_debug_utils loaded
@@ -43,21 +23,11 @@ if instance.extensions.ext_debug_utils {
 }
 ```
 
-## Vulkan Handles
+### Non-Zero Handles
 
-Handle types make use of the `std::num::NonZeroUsize` and `std::num::NonZeroU64` rust types and must always be valid.
+This is opinionated, but the library enforces that Vulkan handles must be non-null, by making use of the `NonZeroUsize` and `NonZeroU64` types.  For optional function parameters or struct members, they can be wrapped in `Option` to represent `VK_NULL_HANDLE` directly as `None`.
 
-When used as part of other structures, handles will be wrapped in `Option<T>` to allow encoding of `VK_NULL_HANDLE` as `None`. For example:
-
-```rust
-pub struct DescriptorImageInfo {
-    pub sampler: Option<Sampler>,
-    pub image_view: Option<ImageView>,
-    pub image_layout: ImageLayout,
-}
-```
-
-When used as function parameters, the parameter will only be wrapped in `Option<T>` if that parameter is optional.  For example:
+The parameter type then encodes whether that object is required:
 
 ```rust
 impl Device {
@@ -75,68 +45,87 @@ impl Device {
 }
 ```
 
-## Function Wrappers
+But struct declarations always use `Option` (to be able to have a `Default`), so get a bit more noisy:
 
-Vulkan functions that return `VkResult`, are usually translated to return `Result<T, vk::Result>` for some `T` return value type.
-Where there are multiple success codes, the return type will be `Result<(vk::Result, T), vk::Result>` so that the success code is also returned.
-
-The remaining parameters are translated as follows:
-
-* `Device` or `Instance` handles are passed automatically from the loader where possible
-* `VkBool32` becomes `bool`
-* Pointer to constant null-terminated `char` data become `&CStr`
-* Pointers becomes references (wrapped in `Option` when optional)
-* Pointer and length pairs become slices (wrapped in `Option` when optional)
-* Functions that fill an array of unknown size have a `_to_vec` variant to return all values in a `Vec`
-* Functions that fill an array of known size have `_array` and `_single` variants that do not allocate from the heap, in addition to a `_to_vec` variant
-
-As an example, for this C function:
-
-```C
-VkResult vkAllocateMemory(
-    VkDevice device,
-    const VkMemoryAllocateInfo* pAllocateInfo,
-    const VkAllocationCallbacks* pAllocator,
-    VkDeviceMemory* pMemory);
+```rust
+pub struct DescriptorImageInfo {
+    pub sampler: Option<Sampler>,
+    pub image_view: Option<ImageView>,
+    pub image_layout: ImageLayout,
+}
 ```
 
-The rust wrapper on `Device` is:
+On balance I think this is worth it and more Rust-y for handles to always be valid.
+
+### Fully Generated
+
+I had a go at generating not only the struct and function pointer types as much as possible (hopefully there will be a standard `vk-sys` for this one day), but also **all** the wrappers that exist to make Vulkan functions more Rust-y on `Instance` and `Device` (and all the struct builders too).
+
+This makes it pretty simple to keep up to date with the latest Vulkan spec and expose **all** extensions (apart from some Google ones with unknown types).
+
+These are generated using [vk_parse](https://github.com/krolli/vk-parse) to parse the Vulkan specifications XML, then taking care to use info in the spec as much as possible, such as:
+* All the sensible translations to C from `bool`, rust native types, `CStr`, `Option`, references and slices
+* Pair up arrays with lengths (including cases where multiple arrays share a single length)
+* Which result codes are considered to be successful for that call
+
+This seems to handle tricky cases reasonable well, like functions that have multiple "success" codes:
 
 ```rust
 impl Device {
     /* ... */
-    pub unsafe fn allocate_memory(
+    pub unsafe fn wait_semaphores_khr(
         &self,
-        p_allocate_info: &vk::MemoryAllocateInfo,
+        p_wait_info: &vk::SemaphoreWaitInfoKHR,
+        timeout: u64,
+    ) -> Result<vk::Result> {
+        /*
+            returns Ok(SUCCESS), Ok(TIMEOUT) or Err(other)
+        */
+    }
+    /* ... */
+}
+```
+
+Or functions (in this case a builder) where two arrays must be the same length (so are built together):
+
+```rust
+impl<'a> SubmitInfoBuilder<'a> {
+    /* ... */
+    pub fn p_wait_semaphores(
+        mut self,
+        p_wait_semaphores: &'a [vk::Semaphore],
+        p_wait_dst_stage_mask: &'a [vk::PipelineStageFlags],
+    ) -> Self {
+        self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
+        assert_eq!(self.inner.wait_semaphore_count, p_wait_dst_stage_mask.len() as u32);
+        self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
+        self.inner.p_wait_dst_stage_mask = p_wait_dst_stage_mask.as_ptr();
+        self
+    }
+    /* ... */
+}
+```
+
+### Zero-Allocation Where Possible
+
+This is maybe overkill, but functions that fill an array of known size have `_array` and `_single` variants that do not allocate from the heap, in addition to a `_to_vec` variant that requires a heap allocation.
+
+```rust
+impl Device {
+    /* ... */
+    pub unsafe fn create_compute_pipelines_single(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ComputePipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::DeviceMemory> {
+    ) -> Result<vk::Pipeline> {
         /* ... */
     }
     /* ... */
 }
 ```
 
-## Default and Builders
-
-All structs implement the `Default` trait to avoid having to specify optional members or members that must take a specific value:
-
-```rust
-let vertex_input_state_create_info = vk::PipelineVertexInputStateCreateInfo {
-    ..Default::default()
-};
-```
-
-In addition, most structs also implement the `vkr::Builder` trait to create a builder object, which allows fields to be safely set using slices or `CStr`.
-
-The builder struct implements the `Deref` trait to allow a reference to the builder to be used where a reference to the underlying struct is expected.
-
-```rust
-let render_pass_create_info = vk::RenderPassCreateInfo::builder()
-    .p_attachments(&attachments)
-    .p_subpasses(&subpass_descriptions)
-    .p_dependencies(&subpass_dependencies);
-let render_pass = unsafe { device.create_render_pass(&render_pass_create_info, None) }?;
-```
+The `_array` version is implemented using a trait up to arrays of length 8, but should be possible to make fully generic once *const generics* are part of stable Rust.
 
 ## Examples
 
@@ -149,15 +138,3 @@ A minimal console application that runs a compute shader to fill some memory.  S
 ### `imgui` (soon)
 
 A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)) can be found in [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) now.  An example that demonstrates this will be added soon.
-
-## Other Libraries
-
-There are many other rust crates for Vulkan.  Here are some links to a few:
-
-* [`vulkano`](http://vulkano.rs/): safe wrapper, necessarily higher level
-* [`ash`](https://github.com/MaikKlein/ash): similar level of wrapper, with some differences at this time:
-  * `vkr` uses non-zero types for handles
-  * `ash` uses traits to handle versions, `vkr` combines everything into a single instance/device
-  * `ash` uses a separate loader struct for each extension, `vkr` combines everything into a single instance/device
-  * `vkr` generates code for all Vulkan extensions
-* [`hephaestus`](https://github.com/sheredom/hephaestus): very thin wrapper making use of [`bindgen`](https://github.com/rust-lang-nursery/rust-bindgen)
