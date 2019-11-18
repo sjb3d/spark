@@ -287,7 +287,8 @@ enum LibParamType {
     Ref { inner_type_name: String, is_optional: bool },
     MutRef { inner_type_name: String },
     ReturnObject { inner_type_name: String },
-    ReturnVecLen { slice_name: String },
+    ReturnVecLenShared,
+    ReturnVecLenSingle { slice_name: String },
     ReturnVec { inner_type_name: String },
 }
 
@@ -309,6 +310,7 @@ enum LibReturnType {
     ResultObject,
     ResultVecUnknownLen,
     ResultVecKnownLen { len_expr: String },
+    ResultMultiVecUnknownLen,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -1851,19 +1853,24 @@ impl<'a> Generator<'a> {
                             inner_type_name: inner_type_name.clone(),
                         };
                         let slice_name = params[i].name.clone();
-                        params[len_index].ty = match params[len_index].ty {
-                            LibParamType::CDecl => LibParamType::ReturnVecLen { slice_name },
+                        take_mut::take(&mut params[len_index].ty, |ty| match ty {
+                            LibParamType::CDecl => LibParamType::ReturnVecLenSingle { slice_name },
+                            LibParamType::ReturnVecLenSingle { .. } => LibParamType::ReturnVecLenShared,
                             _ => panic!("purpose already found for {:?}", len_cparam),
-                        };
+                        });
                         take_mut::take(&mut return_type, |ty| match ty {
                             LibReturnType::CDecl => match cmd_return_value {
                                 CommandReturnValue::Result => LibReturnType::ResultVecUnknownLen,
                                 CommandReturnValue::Void => LibReturnType::VecUnknownLen,
                                 CommandReturnValue::Other => panic!("cannot handle return type {:?}", cmd_def.proto),
                             },
+                            LibReturnType::ResultVecUnknownLen => LibReturnType::ResultMultiVecUnknownLen,
                             _ => panic!("already have return type of {:?}", ty),
                         });
-                        return_type_name = inner_type_name;
+                        return_type_name = match return_type {
+                            LibReturnType::ResultMultiVecUnknownLen => "vk::Result".to_string(),
+                            _ => inner_type_name,
+                        };
                         continue;
                     }
                 }
@@ -2146,7 +2153,15 @@ impl<'a> Generator<'a> {
                         write!(w, "{}: &mut {},", rparam.name, inner_type_name,)?;
                     }
                     LibParamType::ReturnObject { .. } => {}
-                    LibParamType::ReturnVecLen { .. } => {}
+                    LibParamType::ReturnVecLenShared => {
+                        write!(
+                            w,
+                            "{}: &mut {},",
+                            rparam.name,
+                            self.get_rust_type_name(&cparam.ty.name, true, Some("vk::")),
+                        )?;
+                    }
+                    LibParamType::ReturnVecLenSingle { .. } => {}
                     LibParamType::ReturnVec { ref inner_type_name } => {
                         if *style == LibCommandStyle::Default {
                             write!(w, "{}: *mut {},", rparam.name, inner_type_name)?;
@@ -2166,16 +2181,17 @@ impl<'a> Generator<'a> {
                 LibReturnType::VecUnknownLen => {
                     write!(w, "-> Vec<{}>", return_type_name)?;
                 }
-                LibReturnType::ResultEmpty | LibReturnType::ResultObject | LibReturnType::ResultEnum => {
-                    match return_transform {
-                        LibReturnTransform::ToInstance | LibReturnTransform::ToDevice => {
-                            write!(w, "-> result::Result<{}, LoaderError>", return_type_name)?;
-                        }
-                        _ => {
-                            write!(w, "-> Result<{}>", return_type_name)?;
-                        }
+                LibReturnType::ResultEmpty
+                | LibReturnType::ResultObject
+                | LibReturnType::ResultEnum
+                | LibReturnType::ResultMultiVecUnknownLen => match return_transform {
+                    LibReturnTransform::ToInstance | LibReturnTransform::ToDevice => {
+                        write!(w, "-> result::Result<{}, LoaderError>", return_type_name)?;
                     }
-                }
+                    _ => {
+                        write!(w, "-> Result<{}>", return_type_name)?;
+                    }
+                },
                 LibReturnType::ResultVecUnknownLen | LibReturnType::ResultVecKnownLen { .. } => match style {
                     LibCommandStyle::Default => {
                         write!(w, "-> Result<()>")?;
@@ -2243,7 +2259,9 @@ impl<'a> Generator<'a> {
             for pass_index in pass_start..2 {
                 match return_type {
                     LibReturnType::None | LibReturnType::CDecl => {}
-                    LibReturnType::ResultEmpty | LibReturnType::ResultEnum => {
+                    LibReturnType::ResultEmpty
+                    | LibReturnType::ResultEnum
+                    | LibReturnType::ResultMultiVecUnknownLen => {
                         write!(w, "let err = ")?;
                     }
                     LibReturnType::ResultObject | LibReturnType::ResultEnumAndObject => {
@@ -2297,7 +2315,7 @@ impl<'a> Generator<'a> {
                 write!(w, "(fp)(")?;
                 for rparam in &params {
                     match rparam.ty {
-                        LibParamType::CDecl | LibParamType::MutRef { .. } => {
+                        LibParamType::CDecl | LibParamType::MutRef { .. } | LibParamType::ReturnVecLenShared => {
                             write!(w, "{}", rparam.name)?;
                         }
                         LibParamType::MemberHandle => {
@@ -2335,7 +2353,7 @@ impl<'a> Generator<'a> {
                         LibParamType::ReturnObject { .. } => {
                             write!(w, "res.as_mut_ptr()")?;
                         }
-                        LibParamType::ReturnVecLen { .. } => {
+                        LibParamType::ReturnVecLenSingle { .. } => {
                             if pass_index == 0 {
                                 write!(w, "len.as_mut_ptr()")?;
                             } else {
@@ -2374,7 +2392,7 @@ impl<'a> Generator<'a> {
                     LibReturnType::ResultEmpty => {
                         write!(w, "match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }}")?;
                     }
-                    LibReturnType::ResultEnum => {
+                    LibReturnType::ResultEnum | LibReturnType::ResultMultiVecUnknownLen => {
                         let ok_matches = if let Some(successcodes) = cmd_def.successcodes.as_ref_str() {
                             let matches: Vec<String> = successcodes
                                 .split(',')
