@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 127
+//! Generated from vk.xml with `VK_HEADER_VERSION` 128
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2667,6 +2667,7 @@ pub struct DeviceExtensions {
     pub khr_external_fence: bool,
     pub khr_external_fence_win32: bool,
     pub khr_external_fence_fd: bool,
+    pub khr_performance_query: bool,
     pub khr_maintenance2: bool,
     pub khr_variable_pointers: bool,
     pub ext_external_memory_dma_buf: bool,
@@ -3022,8 +3023,6 @@ pub struct Device {
     pub fp_get_ray_tracing_shader_group_handles_nv: Option<vk::FnGetRayTracingShaderGroupHandlesNV>,
     pub fp_get_acceleration_structure_handle_nv: Option<vk::FnGetAccelerationStructureHandleNV>,
     pub fp_create_ray_tracing_pipelines_nv: Option<vk::FnCreateRayTracingPipelinesNV>,
-    pub fp_get_image_drm_format_modifier_properties_ext: Option<vk::FnGetImageDrmFormatModifierPropertiesEXT>,
-    pub fp_get_buffer_device_address_ext: Option<vk::FnGetBufferDeviceAddressEXT>,
     pub fp_get_physical_device_cooperative_matrix_properties_nv:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesNV>,
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
@@ -3031,6 +3030,14 @@ pub struct Device {
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
     pub fp_acquire_full_screen_exclusive_mode_ext: Option<vk::FnAcquireFullScreenExclusiveModeEXT>,
     pub fp_release_full_screen_exclusive_mode_ext: Option<vk::FnReleaseFullScreenExclusiveModeEXT>,
+    pub fp_enumerate_physical_device_queue_family_performance_query_counters_khr:
+        Option<vk::FnEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR>,
+    pub fp_get_physical_device_queue_family_performance_query_passes_khr:
+        Option<vk::FnGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR>,
+    pub fp_acquire_profiling_lock_khr: Option<vk::FnAcquireProfilingLockKHR>,
+    pub fp_release_profiling_lock_khr: Option<vk::FnReleaseProfilingLockKHR>,
+    pub fp_get_image_drm_format_modifier_properties_ext: Option<vk::FnGetImageDrmFormatModifierPropertiesEXT>,
+    pub fp_get_buffer_device_address_ext: Option<vk::FnGetBufferDeviceAddressEXT>,
     pub fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv:
         Option<vk::FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>,
     pub fp_initialize_performance_api_intel: Option<vk::FnInitializePerformanceApiINTEL>,
@@ -3246,6 +3253,9 @@ impl Device {
     }
     pub fn khr_external_fence_fd_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_fd\0") }
+    }
+    pub fn khr_performance_query_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_performance_query\0") }
     }
     pub fn khr_maintenance2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance2\0") }
@@ -3605,6 +3615,7 @@ impl Device {
                     b"VK_KHR_external_fence" => extensions.khr_external_fence = true,
                     b"VK_KHR_external_fence_win32" => extensions.khr_external_fence_win32 = true,
                     b"VK_KHR_external_fence_fd" => extensions.khr_external_fence_fd = true,
+                    b"VK_KHR_performance_query" => extensions.khr_performance_query = true,
                     b"VK_KHR_maintenance2" => extensions.khr_maintenance2 = true,
                     b"VK_KHR_variable_pointers" => extensions.khr_variable_pointers = true,
                     b"VK_EXT_external_memory_dma_buf" => extensions.ext_external_memory_dma_buf = true,
@@ -5544,20 +5555,6 @@ impl Device {
             } else {
                 None
             },
-            fp_get_image_drm_format_modifier_properties_ext: if extensions.ext_image_drm_format_modifier {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetImageDrmFormatModifierPropertiesEXT\0",
-                ));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_get_buffer_device_address_ext: if extensions.ext_buffer_device_address {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
             fp_get_physical_device_cooperative_matrix_properties_nv: if extensions.nv_cooperative_matrix {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
@@ -5603,6 +5600,50 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkReleaseFullScreenExclusiveModeEXT\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_enumerate_physical_device_queue_family_performance_query_counters_khr: if extensions
+                .khr_performance_query
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_queue_family_performance_query_passes_khr: if extensions.khr_performance_query {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_profiling_lock_khr: if extensions.khr_performance_query {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireProfilingLockKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_profiling_lock_khr: if extensions.khr_performance_query {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseProfilingLockKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_drm_format_modifier_properties_ext: if extensions.ext_image_drm_format_modifier {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageDrmFormatModifierPropertiesEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_device_address_ext: if extensions.ext_buffer_device_address {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9798,26 +9839,6 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn get_image_drm_format_modifier_properties_ext(
-        &self,
-        image: vk::Image,
-        p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
-    ) -> Result<()> {
-        let fp = self
-            .fp_get_image_drm_format_modifier_properties_ext
-            .expect("vkGetImageDrmFormatModifierPropertiesEXT is not loaded");
-        let err = (fp)(Some(self.handle), Some(image), p_properties);
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
-        let fp = self
-            .fp_get_buffer_device_address_ext
-            .expect("vkGetBufferDeviceAddressEXT is not loaded");
-        (fp)(Some(self.handle), p_info)
-    }
     pub unsafe fn get_physical_device_cooperative_matrix_properties_nv_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
@@ -9900,6 +9921,77 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn enumerate_physical_device_queue_family_performance_query_counters_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        p_counter_count: &mut u32,
+        p_counters: *mut vk::PerformanceCounterKHR,
+        p_counter_descriptions: *mut vk::PerformanceCounterDescriptionKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_enumerate_physical_device_queue_family_performance_query_counters_khr
+            .expect("vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR is not loaded");
+        let err = (fp)(
+            Some(physical_device),
+            queue_family_index,
+            p_counter_count,
+            p_counters,
+            p_counter_descriptions,
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_queue_family_performance_query_passes_khr(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_performance_query_create_info: &vk::QueryPoolPerformanceCreateInfoKHR,
+    ) -> u32 {
+        let fp = self
+            .fp_get_physical_device_queue_family_performance_query_passes_khr
+            .expect("vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(physical_device), p_performance_query_create_info, res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn acquire_profiling_lock_khr(&self, p_info: &vk::AcquireProfilingLockInfoKHR) -> Result<()> {
+        let fp = self
+            .fp_acquire_profiling_lock_khr
+            .expect("vkAcquireProfilingLockKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn release_profiling_lock_khr(&self) {
+        let fp = self
+            .fp_release_profiling_lock_khr
+            .expect("vkReleaseProfilingLockKHR is not loaded");
+        (fp)(Some(self.handle));
+    }
+    pub unsafe fn get_image_drm_format_modifier_properties_ext(
+        &self,
+        image: vk::Image,
+        p_properties: &mut vk::ImageDrmFormatModifierPropertiesEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_image_drm_format_modifier_properties_ext
+            .expect("vkGetImageDrmFormatModifierPropertiesEXT is not loaded");
+        let err = (fp)(Some(self.handle), Some(image), p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
+        let fp = self
+            .fp_get_buffer_device_address_ext
+            .expect("vkGetBufferDeviceAddressEXT is not loaded");
+        (fp)(Some(self.handle), p_info)
     }
     pub unsafe fn get_physical_device_supported_framebuffer_mixed_samples_combinations_nv_to_vec(
         &self,

@@ -2696,12 +2696,24 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE: Self = Self(0x10);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
+    /// Added by extension VK_NV_extension_151.
+    pub const EXTENSION_151_NV: Self = Self(0x800);
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = Self(0x80);
+    /// Added by extension VK_NV_extension_291.
+    pub const EXTENSION_291_BIT0_NV: Self = Self(0x1000);
+    /// Added by extension VK_NV_extension_291.
+    pub const EXTENSION_291_BIT1_NV: Self = Self(0x2000);
+    /// Added by extension VK_EXT_extension_298.
+    pub const RESERVED_8_EXT: Self = Self(0x100);
+    /// Added by extension VK_EXT_extension_298.
+    pub const RESERVED_9_EXT: Self = Self(0x200);
+    /// Added by extension VK_EXT_extension_298.
+    pub const RESERVED_10_EXT: Self = Self(0x400);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2713,13 +2725,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xff)
+        Self(0x3fff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xff
+        self.0 == 0x3fff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2771,9 +2783,15 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4, "DERIVATIVE"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
+                (0x800, "EXTENSION_151_NV"),
                 (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
+                (0x1000, "EXTENSION_291_BIT0_NV"),
+                (0x2000, "EXTENSION_291_BIT1_NV"),
+                (0x100, "RESERVED_8_EXT"),
+                (0x200, "RESERVED_9_EXT"),
+                (0x400, "RESERVED_10_EXT"),
             ],
             f,
         )
@@ -5597,6 +5615,216 @@ impl fmt::Display for PipelineCreationFeedbackFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PerformanceCounterDescriptionFlagsKHR(u32);
+impl PerformanceCounterDescriptionFlagsKHR {
+    pub const PERFORMANCE_IMPACTING: Self = Self(0x1);
+    pub const CONCURRENTLY_IMPACTED: Self = Self(0x2);
+}
+impl default::Default for PerformanceCounterDescriptionFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl PerformanceCounterDescriptionFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x3)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x3
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PerformanceCounterDescriptionFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PerformanceCounterDescriptionFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PerformanceCounterDescriptionFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PerformanceCounterDescriptionFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PerformanceCounterDescriptionFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PerformanceCounterDescriptionFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0,
+            &[(0x1, "PERFORMANCE_IMPACTING"), (0x2, "CONCURRENTLY_IMPACTED")],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AcquireProfilingLockFlagsKHR(u32);
+impl AcquireProfilingLockFlagsKHR {}
+impl default::Default for AcquireProfilingLockFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl AcquireProfilingLockFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for AcquireProfilingLockFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for AcquireProfilingLockFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for AcquireProfilingLockFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for AcquireProfilingLockFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for AcquireProfilingLockFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for AcquireProfilingLockFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for AcquireProfilingLockFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct SemaphoreWaitFlagsKHR(u32);
+impl SemaphoreWaitFlagsKHR {
+    pub const ANY: Self = Self(0x1);
+}
+impl default::Default for SemaphoreWaitFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl SemaphoreWaitFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x1)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x1
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for SemaphoreWaitFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for SemaphoreWaitFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for SemaphoreWaitFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for SemaphoreWaitFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for SemaphoreWaitFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0, &[(0x1, "ANY")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCompilerControlFlagsAMD(u32);
 impl PipelineCompilerControlFlagsAMD {}
 impl default::Default for PipelineCompilerControlFlagsAMD {
@@ -5727,75 +5955,6 @@ impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("0")
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct SemaphoreWaitFlagsKHR(u32);
-impl SemaphoreWaitFlagsKHR {
-    pub const ANY: Self = Self(0x1);
-}
-impl default::Default for SemaphoreWaitFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
-impl SemaphoreWaitFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SemaphoreWaitFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SemaphoreWaitFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SemaphoreWaitFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SemaphoreWaitFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SemaphoreWaitFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SemaphoreWaitFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
-impl fmt::Display for SemaphoreWaitFlagsKHR {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "ANY")], f)
     }
 }
 #[repr(transparent)]
@@ -11557,6 +11716,8 @@ impl QueryType {
     pub const RESERVED_4: Self = Self(1000024004);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = Self(1000028004);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PERFORMANCE_QUERY_KHR: Self = Self(1000116000);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
@@ -11576,6 +11737,7 @@ impl fmt::Display for QueryType {
             1000023008 => Some(&"RESERVED_8"),
             1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
+            1000116000 => Some(&"PERFORMANCE_QUERY_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             _ => None,
@@ -11681,6 +11843,8 @@ impl Result {
     pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self(-1000244000);
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
+    /// Added by extension VK_EXT_extension_298.
+    pub const EXT_298_RESERVED_VALUE_0_EXT: Self = Self(1000297000);
 }
 impl default::Default for Result {
     fn default() -> Self {
@@ -11722,6 +11886,7 @@ impl fmt::Display for Result {
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
             -1000244000 => Some(&"ERROR_INVALID_DEVICE_ADDRESS_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
+            1000297000 => Some(&"EXT_298_RESERVED_VALUE_0_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12136,6 +12301,20 @@ impl StructureType {
     pub const IMPORT_FENCE_FD_INFO_KHR: Self = Self(1000115000);
     /// Added by extension VK_KHR_external_fence_fd.
     pub const FENCE_GET_FD_INFO_KHR: Self = Self(1000115001);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR: Self = Self(1000116000);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR: Self = Self(1000116001);
+    /// Added by extension VK_KHR_performance_query.
+    pub const QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR: Self = Self(1000116002);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PERFORMANCE_QUERY_SUBMIT_INFO_KHR: Self = Self(1000116003);
+    /// Added by extension VK_KHR_performance_query.
+    pub const ACQUIRE_PROFILING_LOCK_INFO_KHR: Self = Self(1000116004);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PERFORMANCE_COUNTER_KHR: Self = Self(1000116005);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PERFORMANCE_COUNTER_DESCRIPTION_KHR: Self = Self(1000116006);
     pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR: Self =
         Self::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO;
@@ -12728,6 +12907,13 @@ impl fmt::Display for StructureType {
             1000114002 => Some(&"FENCE_GET_WIN32_HANDLE_INFO_KHR"),
             1000115000 => Some(&"IMPORT_FENCE_FD_INFO_KHR"),
             1000115001 => Some(&"FENCE_GET_FD_INFO_KHR"),
+            1000116000 => Some(&"PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR"),
+            1000116001 => Some(&"PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR"),
+            1000116002 => Some(&"QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR"),
+            1000116003 => Some(&"PERFORMANCE_QUERY_SUBMIT_INFO_KHR"),
+            1000116004 => Some(&"ACQUIRE_PROFILING_LOCK_INFO_KHR"),
+            1000116005 => Some(&"PERFORMANCE_COUNTER_KHR"),
+            1000116006 => Some(&"PERFORMANCE_COUNTER_DESCRIPTION_KHR"),
             1000119000 => Some(&"PHYSICAL_DEVICE_SURFACE_INFO_2_KHR"),
             1000119001 => Some(&"SURFACE_CAPABILITIES_2_KHR"),
             1000119002 => Some(&"SURFACE_FORMAT_2_KHR"),
@@ -13871,6 +14057,112 @@ impl fmt::Display for ComponentTypeNV {
             8 => Some(&"UINT16"),
             9 => Some(&"UINT32"),
             10 => Some(&"UINT64"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceCounterScopeKHR(i32);
+impl PerformanceCounterScopeKHR {
+    pub const QUERY_SCOPE_COMMAND_BUFFER: Self = Self(0);
+    pub const QUERY_SCOPE_RENDER_PASS: Self = Self(1);
+    pub const QUERY_SCOPE_COMMAND: Self = Self(2);
+}
+impl default::Default for PerformanceCounterScopeKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for PerformanceCounterScopeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"QUERY_SCOPE_COMMAND_BUFFER"),
+            1 => Some(&"QUERY_SCOPE_RENDER_PASS"),
+            2 => Some(&"QUERY_SCOPE_COMMAND"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceCounterUnitKHR(i32);
+impl PerformanceCounterUnitKHR {
+    pub const GENERIC: Self = Self(0);
+    pub const PERCENTAGE: Self = Self(1);
+    pub const NANOSECONDS: Self = Self(2);
+    pub const BYTES: Self = Self(3);
+    pub const BYTES_PER_SECOND: Self = Self(4);
+    pub const KELVIN: Self = Self(5);
+    pub const WATTS: Self = Self(6);
+    pub const VOLTS: Self = Self(7);
+    pub const AMPS: Self = Self(8);
+    pub const HERTZ: Self = Self(9);
+    pub const CYCLES: Self = Self(10);
+}
+impl default::Default for PerformanceCounterUnitKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for PerformanceCounterUnitKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"GENERIC"),
+            1 => Some(&"PERCENTAGE"),
+            2 => Some(&"NANOSECONDS"),
+            3 => Some(&"BYTES"),
+            4 => Some(&"BYTES_PER_SECOND"),
+            5 => Some(&"KELVIN"),
+            6 => Some(&"WATTS"),
+            7 => Some(&"VOLTS"),
+            8 => Some(&"AMPS"),
+            9 => Some(&"HERTZ"),
+            10 => Some(&"CYCLES"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PerformanceCounterStorageKHR(i32);
+impl PerformanceCounterStorageKHR {
+    pub const INT32: Self = Self(0);
+    pub const INT64: Self = Self(1);
+    pub const UINT32: Self = Self(2);
+    pub const UINT64: Self = Self(3);
+    pub const FLOAT32: Self = Self(4);
+    pub const FLOAT64: Self = Self(5);
+}
+impl default::Default for PerformanceCounterStorageKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for PerformanceCounterStorageKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"INT32"),
+            1 => Some(&"INT64"),
+            2 => Some(&"UINT32"),
+            3 => Some(&"UINT64"),
+            4 => Some(&"FLOAT32"),
+            5 => Some(&"FLOAT64"),
             _ => None,
         };
         if let Some(name) = name {
@@ -30113,14 +30405,14 @@ impl fmt::Debug for RenderPassAttachmentBeginInfoKHR {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub texture_compression_astc_hdr: Bool32,
 }
 impl default::Default for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             texture_compression_astc_hdr: Bool32::default(),
         }
     }
@@ -30428,6 +30720,250 @@ impl fmt::Debug for SurfaceCapabilitiesFullScreenExclusiveEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("full_screen_exclusive_supported", &self.full_screen_exclusive_supported)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePerformanceQueryFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// performance counters supported in query pools
+    pub performance_counter_query_pools: Bool32,
+    /// performance counters from multiple query pools can be accessed in the same primary command buffer
+    pub performance_counter_multiple_query_pools: Bool32,
+}
+impl default::Default for PhysicalDevicePerformanceQueryFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            performance_counter_query_pools: Bool32::default(),
+            performance_counter_multiple_query_pools: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePerformanceQueryFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePerformanceQueryFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("performance_counter_query_pools", &self.performance_counter_query_pools)
+            .field(
+                "performance_counter_multiple_query_pools",
+                &self.performance_counter_multiple_query_pools,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePerformanceQueryPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Flag to specify whether performance queries are allowed to be used in vkCmdCopyQueryPoolResults
+    pub allow_command_buffer_query_copies: Bool32,
+}
+impl default::Default for PhysicalDevicePerformanceQueryPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            allow_command_buffer_query_copies: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePerformanceQueryPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePerformanceQueryPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "allow_command_buffer_query_copies",
+                &self.allow_command_buffer_query_copies,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceCounterKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub unit: PerformanceCounterUnitKHR,
+    pub scope: PerformanceCounterScopeKHR,
+    pub storage: PerformanceCounterStorageKHR,
+    pub uuid: [u8; UUID_SIZE],
+}
+impl default::Default for PerformanceCounterKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_COUNTER_KHR,
+            p_next: ptr::null(),
+            unit: PerformanceCounterUnitKHR::default(),
+            scope: PerformanceCounterScopeKHR::default(),
+            storage: PerformanceCounterStorageKHR::default(),
+            uuid: [u8::default(); UUID_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PerformanceCounterKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceCounterKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("unit", &self.unit)
+            .field("scope", &self.scope)
+            .field("storage", &self.storage)
+            .field("uuid", &self.uuid)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceCounterDescriptionKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PerformanceCounterDescriptionFlagsKHR,
+    pub name: [c_char; MAX_DESCRIPTION_SIZE],
+    pub category: [c_char; MAX_DESCRIPTION_SIZE],
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+}
+impl default::Default for PerformanceCounterDescriptionKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_COUNTER_DESCRIPTION_KHR,
+            p_next: ptr::null(),
+            flags: PerformanceCounterDescriptionFlagsKHR::default(),
+            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            category: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PerformanceCounterDescriptionKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceCounterDescriptionKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("name", &unsafe { CStr::from_ptr(self.name.as_ptr()) })
+            .field("category", &unsafe { CStr::from_ptr(self.category.as_ptr()) })
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueryPoolPerformanceCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub queue_family_index: u32,
+    pub counter_index_count: u32,
+    pub p_counter_indices: *const u32,
+}
+impl default::Default for QueryPoolPerformanceCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            queue_family_index: u32::default(),
+            counter_index_count: u32::default(),
+            p_counter_indices: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for QueryPoolPerformanceCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueryPoolPerformanceCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue_family_index", &self.queue_family_index)
+            .field("counter_index_count", &self.counter_index_count)
+            .field("p_counter_indices", &self.p_counter_indices)
+            .finish()
+    }
+}
+///  Union of all the possible return types a counter result could return
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union PerformanceCounterResultKHR {
+    pub int32: i32,
+    pub int64: i64,
+    pub uint32: u32,
+    pub uint64: u64,
+    pub float32: f32,
+    pub float64: f64,
+}
+impl default::Default for PerformanceCounterResultKHR {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for PerformanceCounterResultKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceCounterResultKHR")
+            .field("int32", unsafe { &self.int32 })
+            .field("int64", unsafe { &self.int64 })
+            .field("uint32", unsafe { &self.uint32 })
+            .field("uint64", unsafe { &self.uint64 })
+            .field("float32", unsafe { &self.float32 })
+            .field("float64", unsafe { &self.float64 })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AcquireProfilingLockInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Acquire profiling lock flags
+    pub flags: AcquireProfilingLockFlagsKHR,
+    pub timeout: u64,
+}
+impl default::Default for AcquireProfilingLockInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACQUIRE_PROFILING_LOCK_INFO_KHR,
+            p_next: ptr::null(),
+            flags: AcquireProfilingLockFlagsKHR::default(),
+            timeout: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for AcquireProfilingLockInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AcquireProfilingLockInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("timeout", &self.timeout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PerformanceQuerySubmitInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Index for which counter pass to submit
+    pub counter_pass_index: u32,
+}
+impl default::Default for PerformanceQuerySubmitInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_QUERY_SUBMIT_INFO_KHR,
+            p_next: ptr::null(),
+            counter_pass_index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceQuerySubmitInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceQuerySubmitInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("counter_pass_index", &self.counter_pass_index)
             .finish()
     }
 }
@@ -33282,13 +33818,6 @@ pub type FnCreateRayTracingPipelinesNV = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_pipelines: *mut Pipeline,
 ) -> Result;
-pub type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
-    device: Option<Device>,
-    image: Option<Image>,
-    p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
-) -> Result;
-pub type FnGetBufferDeviceAddressEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
 pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_property_count: *mut u32,
@@ -33311,6 +33840,28 @@ pub type FnAcquireFullScreenExclusiveModeEXT =
     unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
 pub type FnReleaseFullScreenExclusiveModeEXT =
     unsafe extern "system" fn(device: Option<Device>, swapchain: Option<SwapchainKHR>) -> Result;
+pub type FnEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    p_counter_count: *mut u32,
+    p_counters: *mut PerformanceCounterKHR,
+    p_counter_descriptions: *mut PerformanceCounterDescriptionKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_performance_query_create_info: *const QueryPoolPerformanceCreateInfoKHR,
+    p_num_passes: *mut u32,
+) -> c_void;
+pub type FnAcquireProfilingLockKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const AcquireProfilingLockInfoKHR) -> Result;
+pub type FnReleaseProfilingLockKHR = unsafe extern "system" fn(device: Option<Device>) -> c_void;
+pub type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
+) -> Result;
+pub type FnGetBufferDeviceAddressEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
 pub type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
     instance: Option<Instance>,
     p_create_info: *const HeadlessSurfaceCreateInfoEXT,

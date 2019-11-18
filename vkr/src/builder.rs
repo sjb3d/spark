@@ -11146,7 +11146,7 @@ impl<'a> PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder<'a> {
         self.inner.s_type = s_type;
         self
     }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -11471,6 +11471,151 @@ impl<'a> SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
 }
 impl<'a> Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder<'a> {
     type Target = vk::SurfaceCapabilitiesFullScreenExclusiveEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDevicePerformanceQueryFeaturesKHR {
+    type Type = PhysicalDevicePerformanceQueryFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePerformanceQueryFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDevicePerformanceQueryFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDevicePerformanceQueryFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn performance_counter_query_pools(mut self, performance_counter_query_pools: bool) -> Self {
+        self.inner.performance_counter_query_pools = if performance_counter_query_pools {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn performance_counter_multiple_query_pools(mut self, performance_counter_multiple_query_pools: bool) -> Self {
+        self.inner.performance_counter_multiple_query_pools = if performance_counter_multiple_query_pools {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDevicePerformanceQueryFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDevicePerformanceQueryFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::QueryPoolPerformanceCreateInfoKHR {
+    type Type = QueryPoolPerformanceCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
+    inner: vk::QueryPoolPerformanceCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue_family_index(mut self, queue_family_index: u32) -> Self {
+        self.inner.queue_family_index = queue_family_index;
+        self
+    }
+    pub fn p_counter_indices(mut self, p_counter_indices: &'a [u32]) -> Self {
+        self.inner.counter_index_count = p_counter_indices.len() as u32;
+        self.inner.p_counter_indices = p_counter_indices.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
+    type Target = vk::QueryPoolPerformanceCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AcquireProfilingLockInfoKHR {
+    type Type = AcquireProfilingLockInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AcquireProfilingLockInfoKHRBuilder<'a> {
+    inner: vk::AcquireProfilingLockInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AcquireProfilingLockInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::AcquireProfilingLockFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn timeout(mut self, timeout: u64) -> Self {
+        self.inner.timeout = timeout;
+        self
+    }
+}
+impl<'a> Deref for AcquireProfilingLockInfoKHRBuilder<'a> {
+    type Target = vk::AcquireProfilingLockInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PerformanceQuerySubmitInfoKHR {
+    type Type = PerformanceQuerySubmitInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PerformanceQuerySubmitInfoKHRBuilder<'a> {
+    inner: vk::PerformanceQuerySubmitInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PerformanceQuerySubmitInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn counter_pass_index(mut self, counter_pass_index: u32) -> Self {
+        self.inner.counter_pass_index = counter_pass_index;
+        self
+    }
+}
+impl<'a> Deref for PerformanceQuerySubmitInfoKHRBuilder<'a> {
+    type Target = vk::PerformanceQuerySubmitInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
