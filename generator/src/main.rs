@@ -281,8 +281,8 @@ enum LibParamType {
     MemberHandle,
     CStr,
     NonOptional { inner_type_name: String },
-    SharedSliceLen { name: String, slice_infos: Vec<SliceInfo> },
-    SingleSliceLen { slice_infos: Vec<SliceInfo> },
+    SliceLenShared { name: String, slice_infos: Vec<SliceInfo> },
+    SliceLenSingle { slice_infos: Vec<SliceInfo> },
     Slice { inner_type_name: String, is_optional: bool },
     Ref { inner_type_name: String, is_optional: bool },
     MutRef { inner_type_name: String },
@@ -1513,29 +1513,29 @@ impl<'a> Generator<'a> {
                                 is_optional,
                             };
                             take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                                LibParamType::SharedSliceLen { name, mut slice_infos } => {
+                                LibParamType::SliceLenShared { name, mut slice_infos } => {
                                     if is_single {
                                         panic!("unsupported mix of slices")
                                     } else {
                                         slice_infos.push(slice_info);
-                                        LibParamType::SharedSliceLen { name, slice_infos }
+                                        LibParamType::SliceLenShared { name, slice_infos }
                                     }
                                 }
-                                LibParamType::SingleSliceLen { mut slice_infos } => {
+                                LibParamType::SliceLenSingle { mut slice_infos } => {
                                     if is_single {
                                         slice_infos.push(slice_info);
-                                        LibParamType::SingleSliceLen { slice_infos }
+                                        LibParamType::SliceLenSingle { slice_infos }
                                     } else {
                                         panic!("unsupported mix of slices")
                                     }
                                 }
                                 LibParamType::CDecl => {
                                     if is_single {
-                                        LibParamType::SingleSliceLen {
+                                        LibParamType::SliceLenSingle {
                                             slice_infos: vec![slice_info; 1],
                                         }
                                     } else {
-                                        LibParamType::SharedSliceLen {
+                                        LibParamType::SliceLenShared {
                                             name: len_cparam.name.to_snake_case(),
                                             slice_infos: vec![slice_info; 1],
                                         }
@@ -1626,7 +1626,7 @@ impl<'a> Generator<'a> {
                                 )?;
                             }
                             LibParamType::Slice { .. } => {}
-                            LibParamType::SharedSliceLen { ref slice_infos, .. } => {
+                            LibParamType::SliceLenShared { ref slice_infos, .. } => {
                                 write!(w, "pub fn {0}(mut self ", slice_infos[0].name)?;
                                 let has_multiple_slices = slice_infos.len() > 1;
                                 for slice_info in slice_infos {
@@ -1670,7 +1670,7 @@ impl<'a> Generator<'a> {
                                 }
                                 writeln!(w, "self }}",)?;
                             }
-                            LibParamType::SingleSliceLen { ref slice_infos } => {
+                            LibParamType::SliceLenSingle { ref slice_infos } => {
                                 if slice_infos.iter().all(|s| s.is_optional) {
                                     writeln!(
                                         w,
@@ -1817,11 +1817,11 @@ impl<'a> Generator<'a> {
                         is_optional,
                     };
                     take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                        LibParamType::SharedSliceLen { name, mut slice_infos } => {
+                        LibParamType::SliceLenShared { name, mut slice_infos } => {
                             slice_infos.push(slice_info);
-                            LibParamType::SharedSliceLen { name, slice_infos }
+                            LibParamType::SliceLenShared { name, slice_infos }
                         }
-                        LibParamType::CDecl => LibParamType::SharedSliceLen {
+                        LibParamType::CDecl => LibParamType::SliceLenShared {
                             name: len_cparam.name.to_snake_case(),
                             slice_infos: vec![slice_info; 1],
                         },
@@ -1882,10 +1882,10 @@ impl<'a> Generator<'a> {
                         let len_cparam = &decl.parameters[len_index];
                         let len_expr = len_cparam.name.to_snake_case();
                         take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                            LibParamType::SharedSliceLen { name, slice_infos } => {
-                                LibParamType::SharedSliceLen { name, slice_infos }
+                            LibParamType::SliceLenShared { name, slice_infos } => {
+                                LibParamType::SliceLenShared { name, slice_infos }
                             }
-                            LibParamType::CDecl => LibParamType::SharedSliceLen {
+                            LibParamType::CDecl => LibParamType::SliceLenShared {
                                 name: len_expr.clone(),
                                 slice_infos: Vec::new(),
                             },
@@ -2110,7 +2110,7 @@ impl<'a> Generator<'a> {
                     LibParamType::NonOptional { ref inner_type_name } => {
                         write!(w, "{}: {},", rparam.name, inner_type_name)?;
                     }
-                    LibParamType::SharedSliceLen { ref slice_infos, .. } => {
+                    LibParamType::SliceLenShared { ref slice_infos, .. } => {
                         let all_optional = slice_infos.iter().all(|slice_info| slice_info.is_optional);
                         if (*style == LibCommandStyle::Default && slice_infos.is_empty()) || all_optional {
                             write!(
@@ -2121,7 +2121,7 @@ impl<'a> Generator<'a> {
                             )?;
                         }
                     }
-                    LibParamType::SingleSliceLen { .. } => {}
+                    LibParamType::SliceLenSingle { .. } => {}
                     LibParamType::Slice {
                         ref inner_type_name,
                         is_optional,
@@ -2207,7 +2207,7 @@ impl<'a> Generator<'a> {
             }
 
             for rparam in &params {
-                if let LibParamType::SharedSliceLen {
+                if let LibParamType::SliceLenShared {
                     ref name,
                     ref slice_infos,
                 } = rparam.ty
@@ -2312,10 +2312,10 @@ impl<'a> Generator<'a> {
                         LibParamType::NonOptional { .. } => {
                             write!(w, "Some({})", rparam.name)?;
                         }
-                        LibParamType::SharedSliceLen { ref name, .. } => {
+                        LibParamType::SliceLenShared { ref name, .. } => {
                             write!(w, "{}", name)?;
                         }
-                        LibParamType::SingleSliceLen { ref slice_infos } => {
+                        LibParamType::SliceLenSingle { ref slice_infos } => {
                             write!(w, "{}.len() as u32", slice_infos.first().unwrap().name)?;
                         }
                         LibParamType::Slice { is_optional, .. } => {
