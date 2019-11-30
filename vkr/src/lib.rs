@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 128
+//! Generated from vk.xml with `VK_HEADER_VERSION` 129
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2753,6 +2753,7 @@ pub struct DeviceExtensions {
     pub ext_ycbcr_image_arrays: bool,
     pub khr_uniform_buffer_standard_layout: bool,
     pub ext_full_screen_exclusive: bool,
+    pub khr_buffer_device_address: bool,
     pub ext_line_rasterization: bool,
     pub ext_host_query_reset: bool,
     pub ext_index_type_uint8: bool,
@@ -3037,6 +3038,8 @@ pub struct Device {
     pub fp_acquire_profiling_lock_khr: Option<vk::FnAcquireProfilingLockKHR>,
     pub fp_release_profiling_lock_khr: Option<vk::FnReleaseProfilingLockKHR>,
     pub fp_get_image_drm_format_modifier_properties_ext: Option<vk::FnGetImageDrmFormatModifierPropertiesEXT>,
+    pub fp_get_buffer_opaque_capture_address_khr: Option<vk::FnGetBufferOpaqueCaptureAddressKHR>,
+    pub fp_get_buffer_device_address_khr: Option<vk::FnGetBufferDeviceAddressKHR>,
     pub fp_get_buffer_device_address_ext: Option<vk::FnGetBufferDeviceAddressEXT>,
     pub fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv:
         Option<vk::FnGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>,
@@ -3049,6 +3052,7 @@ pub struct Device {
     pub fp_release_performance_configuration_intel: Option<vk::FnReleasePerformanceConfigurationINTEL>,
     pub fp_queue_set_performance_configuration_intel: Option<vk::FnQueueSetPerformanceConfigurationINTEL>,
     pub fp_get_performance_parameter_intel: Option<vk::FnGetPerformanceParameterINTEL>,
+    pub fp_get_device_memory_opaque_capture_address_khr: Option<vk::FnGetDeviceMemoryOpaqueCaptureAddressKHR>,
     pub fp_get_pipeline_executable_properties_khr: Option<vk::FnGetPipelineExecutablePropertiesKHR>,
     pub fp_get_pipeline_executable_statistics_khr: Option<vk::FnGetPipelineExecutableStatisticsKHR>,
     pub fp_get_pipeline_executable_internal_representations_khr:
@@ -3512,6 +3516,9 @@ impl Device {
     pub fn ext_full_screen_exclusive_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") }
     }
+    pub fn khr_buffer_device_address_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_buffer_device_address\0") }
+    }
     pub fn ext_line_rasterization_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_line_rasterization\0") }
     }
@@ -3705,6 +3712,7 @@ impl Device {
                     b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
                     b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
+                    b"VK_KHR_buffer_device_address" => extensions.khr_buffer_device_address = true,
                     b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
@@ -5642,6 +5650,20 @@ impl Device {
             } else {
                 None
             },
+            fp_get_buffer_opaque_capture_address_khr: if extensions.khr_buffer_device_address {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetBufferOpaqueCaptureAddressKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_device_address_khr: if extensions.khr_buffer_device_address {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_buffer_device_address_ext: if extensions.ext_buffer_device_address {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddressEXT\0"));
                 fp.map(|f| mem::transmute(f))
@@ -5722,6 +5744,14 @@ impl Device {
             },
             fp_get_performance_parameter_intel: if extensions.intel_performance_query {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPerformanceParameterINTEL\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_memory_opaque_capture_address_khr: if extensions.khr_buffer_device_address {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceMemoryOpaqueCaptureAddressKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9987,7 +10017,19 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoEXT) -> vk::DeviceAddress {
+    pub unsafe fn get_buffer_opaque_capture_address_khr(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> u64 {
+        let fp = self
+            .fp_get_buffer_opaque_capture_address_khr
+            .expect("vkGetBufferOpaqueCaptureAddressKHR is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_buffer_device_address_khr(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> vk::DeviceAddress {
+        let fp = self
+            .fp_get_buffer_device_address_khr
+            .expect("vkGetBufferDeviceAddressKHR is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> vk::DeviceAddress {
         let fp = self
             .fp_get_buffer_device_address_ext
             .expect("vkGetBufferDeviceAddressEXT is not loaded");
@@ -10129,6 +10171,15 @@ impl Device {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn get_device_memory_opaque_capture_address_khr(
+        &self,
+        p_info: &vk::DeviceMemoryOpaqueCaptureAddressInfoKHR,
+    ) -> u64 {
+        let fp = self
+            .fp_get_device_memory_opaque_capture_address_khr
+            .expect("vkGetDeviceMemoryOpaqueCaptureAddressKHR is not loaded");
+        (fp)(Some(self.handle), p_info)
     }
     pub unsafe fn get_pipeline_executable_properties_khr_to_vec(
         &self,

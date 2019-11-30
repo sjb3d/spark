@@ -10840,6 +10840,53 @@ impl<'a> Deref for MemoryPriorityAllocateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceBufferDeviceAddressFeaturesKHR {
+    type Type = PhysicalDeviceBufferDeviceAddressFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceBufferDeviceAddressFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceBufferDeviceAddressFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceBufferDeviceAddressFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer_device_address(mut self, buffer_device_address: bool) -> Self {
+        self.inner.buffer_device_address = if buffer_device_address { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn buffer_device_address_capture_replay(mut self, buffer_device_address_capture_replay: bool) -> Self {
+        self.inner.buffer_device_address_capture_replay = if buffer_device_address_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn buffer_device_address_multi_device(mut self, buffer_device_address_multi_device: bool) -> Self {
+        self.inner.buffer_device_address_multi_device = if buffer_device_address_multi_device {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceBufferDeviceAddressFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceBufferDeviceAddressFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     type Type = PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10887,18 +10934,18 @@ impl<'a> Deref for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::BufferDeviceAddressInfoEXT {
-    type Type = BufferDeviceAddressInfoEXTBuilder<'a>;
+impl<'a> Builder<'a> for vk::BufferDeviceAddressInfoKHR {
+    type Type = BufferDeviceAddressInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct BufferDeviceAddressInfoEXTBuilder<'a> {
-    inner: vk::BufferDeviceAddressInfoEXT,
+pub struct BufferDeviceAddressInfoKHRBuilder<'a> {
+    inner: vk::BufferDeviceAddressInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> BufferDeviceAddressInfoEXTBuilder<'a> {
+impl<'a> BufferDeviceAddressInfoKHRBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10912,8 +10959,39 @@ impl<'a> BufferDeviceAddressInfoEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for BufferDeviceAddressInfoEXTBuilder<'a> {
-    type Target = vk::BufferDeviceAddressInfoEXT;
+impl<'a> Deref for BufferDeviceAddressInfoKHRBuilder<'a> {
+    type Target = vk::BufferDeviceAddressInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BufferOpaqueCaptureAddressCreateInfoKHR {
+    type Type = BufferOpaqueCaptureAddressCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferOpaqueCaptureAddressCreateInfoKHRBuilder<'a> {
+    inner: vk::BufferOpaqueCaptureAddressCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> BufferOpaqueCaptureAddressCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn opaque_capture_address(mut self, opaque_capture_address: u64) -> Self {
+        self.inner.opaque_capture_address = opaque_capture_address;
+        self
+    }
+}
+impl<'a> Deref for BufferOpaqueCaptureAddressCreateInfoKHRBuilder<'a> {
+    type Target = vk::BufferOpaqueCaptureAddressCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -12427,6 +12505,68 @@ impl<'a> PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder<'a> {
     type Target = vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::MemoryOpaqueCaptureAddressAllocateInfoKHR {
+    type Type = MemoryOpaqueCaptureAddressAllocateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryOpaqueCaptureAddressAllocateInfoKHRBuilder<'a> {
+    inner: vk::MemoryOpaqueCaptureAddressAllocateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> MemoryOpaqueCaptureAddressAllocateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn opaque_capture_address(mut self, opaque_capture_address: u64) -> Self {
+        self.inner.opaque_capture_address = opaque_capture_address;
+        self
+    }
+}
+impl<'a> Deref for MemoryOpaqueCaptureAddressAllocateInfoKHRBuilder<'a> {
+    type Target = vk::MemoryOpaqueCaptureAddressAllocateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DeviceMemoryOpaqueCaptureAddressInfoKHR {
+    type Type = DeviceMemoryOpaqueCaptureAddressInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceMemoryOpaqueCaptureAddressInfoKHRBuilder<'a> {
+    inner: vk::DeviceMemoryOpaqueCaptureAddressInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DeviceMemoryOpaqueCaptureAddressInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+}
+impl<'a> Deref for DeviceMemoryOpaqueCaptureAddressInfoKHRBuilder<'a> {
+    type Target = vk::DeviceMemoryOpaqueCaptureAddressInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

@@ -2084,8 +2084,9 @@ impl BufferUsageFlags {
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
     /// Added by extension VK_NV_ray_tracing.
     pub const RAY_TRACING_NV: Self = Self(0x400);
-    /// Added by extension VK_EXT_buffer_device_address.
-    pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self(0x20000);
+    pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS_KHR;
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self(0x20000);
 }
 impl default::Default for BufferUsageFlags {
     fn default() -> Self {
@@ -2167,7 +2168,7 @@ impl fmt::Display for BufferUsageFlags {
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "RAY_TRACING_NV"),
-                (0x20000, "SHADER_DEVICE_ADDRESS_EXT"),
+                (0x20000, "SHADER_DEVICE_ADDRESS_KHR"),
             ],
             f,
         )
@@ -2185,8 +2186,9 @@ impl BufferCreateFlags {
     pub const SPARSE_ALIASED: Self = Self(0x4);
     /// Buffer requires protected memory
     pub const PROTECTED: Self = Self(0x8);
-    /// Added by extension VK_EXT_buffer_device_address.
-    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self(0x10);
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY_KHR;
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self(0x10);
 }
 impl default::Default for BufferCreateFlags {
     fn default() -> Self {
@@ -2255,7 +2257,7 @@ impl fmt::Display for BufferCreateFlags {
                 (0x2, "SPARSE_RESIDENCY"),
                 (0x4, "SPARSE_ALIASED"),
                 (0x8, "PROTECTED"),
-                (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY_EXT"),
+                (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY_KHR"),
             ],
             f,
         )
@@ -3067,6 +3069,8 @@ impl FormatFeatureFlags {
     /// Format can be used with min/max reduction filtering
     /// Added by extension VK_EXT_sampler_filter_minmax.
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self(0x10000);
+    /// Added by extension VK_NV_extension_151.
+    pub const RESERVED_29_NV: Self = Self(0x20000000);
     pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER;
@@ -3092,13 +3096,13 @@ impl FormatFeatureFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1fffffff)
+        Self(0x3fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1fffffff
+        self.0 == 0x3fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3179,6 +3183,7 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x2000000, "RESERVED_25_KHR"),
                 (0x4000000, "RESERVED_26_KHR"),
                 (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX_EXT"),
+                (0x20000000, "RESERVED_29_NV"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
             ],
             f,
@@ -7262,6 +7267,10 @@ impl MemoryAllocateFlags {
     /// Force allocation on specific devices
     pub const DEVICE_MASK: Self = Self(0x1);
     pub const DEVICE_MASK_KHR: Self = Self::DEVICE_MASK;
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const DEVICE_ADDRESS_KHR: Self = Self(0x2);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self(0x4);
 }
 impl default::Default for MemoryAllocateFlags {
     fn default() -> Self {
@@ -7273,13 +7282,13 @@ impl MemoryAllocateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x7
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -7323,7 +7332,15 @@ impl ops::BitXorAssign for MemoryAllocateFlags {
 }
 impl fmt::Display for MemoryAllocateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "DEVICE_MASK")], f)
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "DEVICE_MASK"),
+                (0x2, "DEVICE_ADDRESS_KHR"),
+                (0x4, "DEVICE_ADDRESS_CAPTURE_REPLAY_KHR"),
+            ],
+            f,
+        )
     }
 }
 pub type MemoryAllocateFlagsKHR = MemoryAllocateFlags;
@@ -11839,10 +11856,11 @@ impl Result {
     pub const ERROR_FRAGMENTATION_EXT: Self = Self(-1000161000);
     /// Added by extension VK_EXT_global_priority.
     pub const ERROR_NOT_PERMITTED_EXT: Self = Self(-1000174001);
-    /// Added by extension VK_EXT_buffer_device_address.
-    pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self(-1000244000);
+    pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR;
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR: Self = Self(-1000244000);
     /// Added by extension VK_EXT_extension_298.
     pub const EXT_298_RESERVED_VALUE_0_EXT: Self = Self(1000297000);
 }
@@ -11884,8 +11902,8 @@ impl fmt::Display for Result {
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000161000 => Some(&"ERROR_FRAGMENTATION_EXT"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
-            -1000244000 => Some(&"ERROR_INVALID_DEVICE_ADDRESS_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
+            -1000244000 => Some(&"ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR"),
             1000297000 => Some(&"EXT_298_RESERVED_VALUE_0_EXT"),
             _ => None,
         };
@@ -12620,8 +12638,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT: Self = Self(1000244000);
     pub const PHYSICAL_DEVICE_BUFFER_ADDRESS_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT;
-    /// Added by extension VK_EXT_buffer_device_address.
-    pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = Self(1000244001);
+    pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = Self::BUFFER_DEVICE_ADDRESS_INFO_KHR;
     /// Added by extension VK_EXT_buffer_device_address.
     pub const BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT: Self = Self(1000244002);
     /// Added by extension VK_EXT_separate_stencil_usage.
@@ -12654,6 +12671,16 @@ impl StructureType {
     pub const SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT: Self = Self(1000255001);
     /// Added by extension VK_EXT_headless_surface.
     pub const HEADLESS_SURFACE_CREATE_INFO_EXT: Self = Self(1000256000);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR: Self = Self(1000257000);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const BUFFER_DEVICE_ADDRESS_INFO_KHR: Self = Self(1000244001);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO_KHR: Self = Self(1000257002);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO_KHR: Self = Self(1000257003);
+    /// Added by extension VK_KHR_buffer_device_address.
+    pub const DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO_KHR: Self = Self(1000257004);
     /// Added by extension VK_EXT_line_rasterization.
     pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT: Self = Self(1000259000);
     /// Added by extension VK_EXT_line_rasterization.
@@ -13052,7 +13079,6 @@ impl fmt::Display for StructureType {
             1000241001 => Some(&"ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR"),
             1000241002 => Some(&"ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR"),
             1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT"),
-            1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_EXT"),
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
             1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
             1000247000 => Some(&"VALIDATION_FEATURES_EXT"),
@@ -13069,6 +13095,11 @@ impl fmt::Display for StructureType {
             1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
             1000256000 => Some(&"HEADLESS_SURFACE_CREATE_INFO_EXT"),
+            1000257000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR"),
+            1000244001 => Some(&"BUFFER_DEVICE_ADDRESS_INFO_KHR"),
+            1000257002 => Some(&"BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO_KHR"),
+            1000257003 => Some(&"MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO_KHR"),
+            1000257004 => Some(&"DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO_KHR"),
             1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT"),
             1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT"),
             1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
@@ -30136,6 +30167,43 @@ impl fmt::Debug for MemoryPriorityAllocateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceBufferDeviceAddressFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub buffer_device_address: Bool32,
+    pub buffer_device_address_capture_replay: Bool32,
+    pub buffer_device_address_multi_device: Bool32,
+}
+impl default::Default for PhysicalDeviceBufferDeviceAddressFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            buffer_device_address: Bool32::default(),
+            buffer_device_address_capture_replay: Bool32::default(),
+            buffer_device_address_multi_device: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceBufferDeviceAddressFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceBufferDeviceAddressFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer_device_address", &self.buffer_device_address)
+            .field(
+                "buffer_device_address_capture_replay",
+                &self.buffer_device_address_capture_replay,
+            )
+            .field(
+                "buffer_device_address_multi_device",
+                &self.buffer_device_address_multi_device,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -30174,26 +30242,52 @@ impl fmt::Debug for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
 pub type PhysicalDeviceBufferAddressFeaturesEXT = PhysicalDeviceBufferDeviceAddressFeaturesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BufferDeviceAddressInfoEXT {
+pub struct BufferDeviceAddressInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub buffer: Option<Buffer>,
 }
-impl default::Default for BufferDeviceAddressInfoEXT {
+impl default::Default for BufferDeviceAddressInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BUFFER_DEVICE_ADDRESS_INFO_EXT,
+            s_type: StructureType::BUFFER_DEVICE_ADDRESS_INFO_KHR,
             p_next: ptr::null(),
             buffer: None,
         }
     }
 }
-impl fmt::Debug for BufferDeviceAddressInfoEXT {
+impl fmt::Debug for BufferDeviceAddressInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BufferDeviceAddressInfoEXT")
+        fmt.debug_struct("BufferDeviceAddressInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("buffer", &self.buffer)
+            .finish()
+    }
+}
+pub type BufferDeviceAddressInfoEXT = BufferDeviceAddressInfoKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferOpaqueCaptureAddressCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub opaque_capture_address: u64,
+}
+impl default::Default for BufferOpaqueCaptureAddressCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            opaque_capture_address: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferOpaqueCaptureAddressCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferOpaqueCaptureAddressCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("opaque_capture_address", &self.opaque_capture_address)
             .finish()
     }
 }
@@ -31922,6 +32016,56 @@ impl fmt::Debug for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("required_subgroup_size", &self.required_subgroup_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryOpaqueCaptureAddressAllocateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub opaque_capture_address: u64,
+}
+impl default::Default for MemoryOpaqueCaptureAddressAllocateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO_KHR,
+            p_next: ptr::null(),
+            opaque_capture_address: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryOpaqueCaptureAddressAllocateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryOpaqueCaptureAddressAllocateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("opaque_capture_address", &self.opaque_capture_address)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceMemoryOpaqueCaptureAddressInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+}
+impl default::Default for DeviceMemoryOpaqueCaptureAddressInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO_KHR,
+            p_next: ptr::null(),
+            memory: None,
+        }
+    }
+}
+impl fmt::Debug for DeviceMemoryOpaqueCaptureAddressInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceMemoryOpaqueCaptureAddressInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
             .finish()
     }
 }
@@ -33860,8 +34004,11 @@ pub type FnGetImageDrmFormatModifierPropertiesEXT = unsafe extern "system" fn(
     image: Option<Image>,
     p_properties: *mut ImageDrmFormatModifierPropertiesEXT,
 ) -> Result;
-pub type FnGetBufferDeviceAddressEXT =
-    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoEXT) -> DeviceAddress;
+pub type FnGetBufferOpaqueCaptureAddressKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoKHR) -> u64;
+pub type FnGetBufferDeviceAddressKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const BufferDeviceAddressInfoKHR) -> DeviceAddress;
+pub type FnGetBufferDeviceAddressEXT = FnGetBufferDeviceAddressKHR;
 pub type FnCreateHeadlessSurfaceEXT = unsafe extern "system" fn(
     instance: Option<Instance>,
     p_create_info: *const HeadlessSurfaceCreateInfoEXT,
@@ -33904,6 +34051,8 @@ pub type FnGetPerformanceParameterINTEL = unsafe extern "system" fn(
     parameter: PerformanceParameterTypeINTEL,
     p_value: *mut PerformanceValueINTEL,
 ) -> Result;
+pub type FnGetDeviceMemoryOpaqueCaptureAddressKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const DeviceMemoryOpaqueCaptureAddressInfoKHR) -> u64;
 pub type FnGetPipelineExecutablePropertiesKHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_pipeline_info: *const PipelineInfoKHR,
