@@ -2,6 +2,8 @@
 
 This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) with convenient syntax.
 
+Supports Vulkan 1.1.129 and all extensions (apart from `GGP` extensions that use unknown data types).
+
 ## Design
 
 It ended up very similar in design and scope to [`ash`](https://github.com/MaikKlein/ash).  Ash seems to be the most popular low-library for Vulkan in Rust, so if you are looking for something with wide support, then I recommend using [`ash`](https://github.com/MaikKlein/ash) instead.
@@ -60,8 +62,6 @@ On balance I think this is worth it and more Rust-y for handles to always be val
 ### Fully Generated
 
 I had a go at generating not only the struct and function pointer types as much as possible (hopefully there will be a standard `vk-sys` for this one day), but also **all** the wrappers that exist to make Vulkan functions more Rust-y on `Instance` and `Device` (and all the struct builders too).
-
-This makes it pretty simple to keep up to date with the latest Vulkan spec and expose **all** extensions (apart from some Google ones with unknown types).
 
 These are generated using [vk_parse](https://github.com/krolli/vk-parse) to parse the Vulkan specifications XML, then taking care to use info in the spec as much as possible, such as:
 * All the sensible translations to C from `bool`, rust native types, `CStr`, `Option`, references and slices
