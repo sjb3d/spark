@@ -2699,7 +2699,15 @@ impl PipelineCreateFlags {
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_NV: Self = Self(0x800);
+    pub const EXTENSION_151_BIT0_NV: Self = Self(0x800);
+    /// Added by extension VK_NV_extension_151.
+    pub const EXTENSION_151_BIT1_NV: Self = Self(0x4000);
+    /// Added by extension VK_NV_extension_151.
+    pub const EXTENSION_151_BIT2_NV: Self = Self(0x8000);
+    /// Added by extension VK_NV_extension_151.
+    pub const EXTENSION_151_BIT3_NV: Self = Self(0x10000);
+    /// Added by extension VK_NV_extension_151.
+    pub const EXTENSION_151_BIT4_NV: Self = Self(0x20000);
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -2727,13 +2735,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3fff)
+        Self(0x3ffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3fff
+        self.0 == 0x3ffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2785,7 +2793,11 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4, "DERIVATIVE"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
-                (0x800, "EXTENSION_151_NV"),
+                (0x800, "EXTENSION_151_BIT0_NV"),
+                (0x4000, "EXTENSION_151_BIT1_NV"),
+                (0x8000, "EXTENSION_151_BIT2_NV"),
+                (0x10000, "EXTENSION_151_BIT3_NV"),
+                (0x20000, "EXTENSION_151_BIT4_NV"),
                 (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
@@ -9646,6 +9658,95 @@ impl fmt::Display for SwapchainImageUsageFlagsANDROID {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ToolPurposeFlagsEXT(u32);
+impl ToolPurposeFlagsEXT {
+    pub const VALIDATION: Self = Self(0x1);
+    pub const PROFILING: Self = Self(0x2);
+    pub const TRACING: Self = Self(0x4);
+    pub const ADDITIONAL_FEATURES: Self = Self(0x8);
+    pub const MODIFYING_FEATURES: Self = Self(0x10);
+    /// Added by extension VK_EXT_tooling_info.
+    pub const DEBUG_REPORTING: Self = Self(0x20);
+    /// Added by extension VK_EXT_tooling_info.
+    pub const DEBUG_MARKERS: Self = Self(0x40);
+}
+impl default::Default for ToolPurposeFlagsEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl ToolPurposeFlagsEXT {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x7f)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x7f
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ToolPurposeFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ToolPurposeFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ToolPurposeFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ToolPurposeFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ToolPurposeFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ToolPurposeFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ToolPurposeFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "VALIDATION"),
+                (0x2, "PROFILING"),
+                (0x4, "TRACING"),
+                (0x8, "ADDITIONAL_FEATURES"),
+                (0x10, "MODIFYING_FEATURES"),
+                (0x20, "DEBUG_REPORTING"),
+                (0x40, "DEBUG_MARKERS"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
     pub fn from_raw(x: usize) -> Option<Self> {
@@ -12641,6 +12742,8 @@ impl StructureType {
     pub const BUFFER_DEVICE_ADDRESS_INFO_EXT: Self = Self::BUFFER_DEVICE_ADDRESS_INFO_KHR;
     /// Added by extension VK_EXT_buffer_device_address.
     pub const BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT: Self = Self(1000244002);
+    /// Added by extension VK_EXT_tooling_info.
+    pub const PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT: Self = Self(1000245000);
     /// Added by extension VK_EXT_separate_stencil_usage.
     pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = Self(1000246000);
     /// Added by extension VK_EXT_validation_features.
@@ -13080,6 +13183,7 @@ impl fmt::Display for StructureType {
             1000241002 => Some(&"ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR"),
             1000244000 => Some(&"PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT"),
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
+            1000245000 => Some(&"PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT"),
             1000246000 => Some(&"IMAGE_STENCIL_USAGE_CREATE_INFO_EXT"),
             1000247000 => Some(&"VALIDATION_FEATURES_EXT"),
             1000249000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV"),
@@ -32218,6 +32322,43 @@ impl fmt::Debug for PhysicalDeviceCoherentMemoryFeaturesAMD {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceToolPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub name: [c_char; MAX_EXTENSION_NAME_SIZE],
+    pub version: [c_char; MAX_EXTENSION_NAME_SIZE],
+    pub purposes: ToolPurposeFlagsEXT,
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub layer: [c_char; MAX_EXTENSION_NAME_SIZE],
+}
+impl default::Default for PhysicalDeviceToolPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
+            version: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
+            purposes: ToolPurposeFlagsEXT::default(),
+            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            layer: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceToolPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceToolPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("name", &unsafe { CStr::from_ptr(self.name.as_ptr()) })
+            .field("version", &unsafe { CStr::from_ptr(self.version.as_ptr()) })
+            .field("purposes", &self.purposes)
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("layer", &unsafe { CStr::from_ptr(self.layer.as_ptr()) })
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -34076,3 +34217,8 @@ pub type FnCmdSetLineStippleEXT = unsafe extern "system" fn(
     line_stipple_factor: u32,
     line_stipple_pattern: u16,
 ) -> c_void;
+pub type FnGetPhysicalDeviceToolPropertiesEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_tool_count: *mut u32,
+    p_tool_properties: *mut PhysicalDeviceToolPropertiesEXT,
+) -> Result;

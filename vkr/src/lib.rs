@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 129
+//! Generated from vk.xml with `VK_HEADER_VERSION` 130
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2746,6 +2746,7 @@ pub struct DeviceExtensions {
     pub nv_dedicated_allocation_image_aliasing: bool,
     pub khr_separate_depth_stencil_layouts: bool,
     pub ext_buffer_device_address: bool,
+    pub ext_tooling_info: bool,
     pub ext_separate_stencil_usage: bool,
     pub nv_cooperative_matrix: bool,
     pub nv_coverage_reduction_mode: bool,
@@ -3058,6 +3059,7 @@ pub struct Device {
     pub fp_get_pipeline_executable_internal_representations_khr:
         Option<vk::FnGetPipelineExecutableInternalRepresentationsKHR>,
     pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
+    pub fp_get_physical_device_tool_properties_ext: Option<vk::FnGetPhysicalDeviceToolPropertiesEXT>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3495,6 +3497,9 @@ impl Device {
     pub fn ext_buffer_device_address_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_buffer_device_address\0") }
     }
+    pub fn ext_tooling_info_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_tooling_info\0") }
+    }
     pub fn ext_separate_stencil_usage_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_separate_stencil_usage\0") }
     }
@@ -3705,6 +3710,7 @@ impl Device {
                     }
                     b"VK_KHR_separate_depth_stencil_layouts" => extensions.khr_separate_depth_stencil_layouts = true,
                     b"VK_EXT_buffer_device_address" => extensions.ext_buffer_device_address = true,
+                    b"VK_EXT_tooling_info" => extensions.ext_tooling_info = true,
                     b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
                     b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,
                     b"VK_NV_coverage_reduction_mode" => extensions.nv_coverage_reduction_mode = true,
@@ -5782,6 +5788,14 @@ impl Device {
             },
             fp_cmd_set_line_stipple_ext: if extensions.ext_line_rasterization {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_tool_properties_ext: if extensions.ext_tooling_info {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceToolPropertiesEXT\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -10254,6 +10268,21 @@ impl Device {
             .fp_cmd_set_line_stipple_ext
             .expect("vkCmdSetLineStippleEXT is not loaded");
         (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
+    }
+    pub unsafe fn get_physical_device_tool_properties_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_tool_count: &mut u32,
+        p_tool_properties: *mut vk::PhysicalDeviceToolPropertiesEXT,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_physical_device_tool_properties_ext
+            .expect("vkGetPhysicalDeviceToolPropertiesEXT is not loaded");
+        let err = (fp)(Some(physical_device), p_tool_count, p_tool_properties);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
     }
 }
 

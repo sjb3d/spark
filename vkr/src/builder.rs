@@ -12369,45 +12369,6 @@ impl<'a> Deref for PipelineExecutableInfoKHRBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PipelineExecutableInternalRepresentationKHR {
-    type Type = PipelineExecutableInternalRepresentationKHRBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PipelineExecutableInternalRepresentationKHRBuilder<'a> {
-    inner: vk::PipelineExecutableInternalRepresentationKHR,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> PipelineExecutableInternalRepresentationKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn is_text(mut self, is_text: bool) -> Self {
-        self.inner.is_text = if is_text { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *mut c_void) -> Self {
-        self.inner.p_data = p_data;
-        self
-    }
-}
-impl<'a> Deref for PipelineExecutableInternalRepresentationKHRBuilder<'a> {
-    type Target = vk::PipelineExecutableInternalRepresentationKHR;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 impl<'a> Builder<'a> for vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     type Type = PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
