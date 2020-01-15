@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 130
+//! Generated from vk.xml with `VK_HEADER_VERSION` 131
 #![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
 
 pub mod builder;
@@ -2800,6 +2800,7 @@ pub struct Device {
     pub fp_create_query_pool: Option<vk::FnCreateQueryPool>,
     pub fp_destroy_query_pool: Option<vk::FnDestroyQueryPool>,
     pub fp_get_query_pool_results: Option<vk::FnGetQueryPoolResults>,
+    pub fp_reset_query_pool: Option<vk::FnResetQueryPool>,
     pub fp_reset_query_pool_ext: Option<vk::FnResetQueryPoolEXT>,
     pub fp_create_buffer: Option<vk::FnCreateBuffer>,
     pub fp_destroy_buffer: Option<vk::FnDestroyBuffer>,
@@ -2984,17 +2985,26 @@ pub struct Device {
     pub fp_get_calibrated_timestamps_ext: Option<vk::FnGetCalibratedTimestampsEXT>,
     pub fp_get_memory_host_pointer_properties_ext: Option<vk::FnGetMemoryHostPointerPropertiesEXT>,
     pub fp_cmd_write_buffer_marker_amd: Option<vk::FnCmdWriteBufferMarkerAMD>,
+    pub fp_create_render_pass2: Option<vk::FnCreateRenderPass2>,
     pub fp_create_render_pass2_khr: Option<vk::FnCreateRenderPass2KHR>,
+    pub fp_cmd_begin_render_pass2: Option<vk::FnCmdBeginRenderPass2>,
     pub fp_cmd_begin_render_pass2_khr: Option<vk::FnCmdBeginRenderPass2KHR>,
+    pub fp_cmd_next_subpass2: Option<vk::FnCmdNextSubpass2>,
     pub fp_cmd_next_subpass2_khr: Option<vk::FnCmdNextSubpass2KHR>,
+    pub fp_cmd_end_render_pass2: Option<vk::FnCmdEndRenderPass2>,
     pub fp_cmd_end_render_pass2_khr: Option<vk::FnCmdEndRenderPass2KHR>,
+    pub fp_get_semaphore_counter_value: Option<vk::FnGetSemaphoreCounterValue>,
     pub fp_get_semaphore_counter_value_khr: Option<vk::FnGetSemaphoreCounterValueKHR>,
+    pub fp_wait_semaphores: Option<vk::FnWaitSemaphores>,
     pub fp_wait_semaphores_khr: Option<vk::FnWaitSemaphoresKHR>,
+    pub fp_signal_semaphore: Option<vk::FnSignalSemaphore>,
     pub fp_signal_semaphore_khr: Option<vk::FnSignalSemaphoreKHR>,
     pub fp_get_android_hardware_buffer_properties_android: Option<vk::FnGetAndroidHardwareBufferPropertiesANDROID>,
     pub fp_get_memory_android_hardware_buffer_android: Option<vk::FnGetMemoryAndroidHardwareBufferANDROID>,
+    pub fp_cmd_draw_indirect_count: Option<vk::FnCmdDrawIndirectCount>,
     pub fp_cmd_draw_indirect_count_khr: Option<vk::FnCmdDrawIndirectCountKHR>,
     pub fp_cmd_draw_indirect_count_amd: Option<vk::FnCmdDrawIndirectCountAMD>,
+    pub fp_cmd_draw_indexed_indirect_count: Option<vk::FnCmdDrawIndexedIndirectCount>,
     pub fp_cmd_draw_indexed_indirect_count_khr: Option<vk::FnCmdDrawIndexedIndirectCountKHR>,
     pub fp_cmd_draw_indexed_indirect_count_amd: Option<vk::FnCmdDrawIndexedIndirectCountAMD>,
     pub fp_cmd_set_checkpoint_nv: Option<vk::FnCmdSetCheckpointNV>,
@@ -3039,7 +3049,9 @@ pub struct Device {
     pub fp_acquire_profiling_lock_khr: Option<vk::FnAcquireProfilingLockKHR>,
     pub fp_release_profiling_lock_khr: Option<vk::FnReleaseProfilingLockKHR>,
     pub fp_get_image_drm_format_modifier_properties_ext: Option<vk::FnGetImageDrmFormatModifierPropertiesEXT>,
+    pub fp_get_buffer_opaque_capture_address: Option<vk::FnGetBufferOpaqueCaptureAddress>,
     pub fp_get_buffer_opaque_capture_address_khr: Option<vk::FnGetBufferOpaqueCaptureAddressKHR>,
+    pub fp_get_buffer_device_address: Option<vk::FnGetBufferDeviceAddress>,
     pub fp_get_buffer_device_address_khr: Option<vk::FnGetBufferDeviceAddressKHR>,
     pub fp_get_buffer_device_address_ext: Option<vk::FnGetBufferDeviceAddressEXT>,
     pub fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv:
@@ -3053,6 +3065,7 @@ pub struct Device {
     pub fp_release_performance_configuration_intel: Option<vk::FnReleasePerformanceConfigurationINTEL>,
     pub fp_queue_set_performance_configuration_intel: Option<vk::FnQueueSetPerformanceConfigurationINTEL>,
     pub fp_get_performance_parameter_intel: Option<vk::FnGetPerformanceParameterINTEL>,
+    pub fp_get_device_memory_opaque_capture_address: Option<vk::FnGetDeviceMemoryOpaqueCaptureAddress>,
     pub fp_get_device_memory_opaque_capture_address_khr: Option<vk::FnGetDeviceMemoryOpaqueCaptureAddressKHR>,
     pub fp_get_pipeline_executable_properties_khr: Option<vk::FnGetPipelineExecutablePropertiesKHR>,
     pub fp_get_pipeline_executable_statistics_khr: Option<vk::FnGetPipelineExecutableStatisticsKHR>,
@@ -3970,6 +3983,15 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkGetQueryPoolResults".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_reset_query_pool: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPool\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkResetQueryPool".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_reset_query_pool_ext: if extensions.ext_host_query_reset {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkResetQueryPoolEXT\0"));
@@ -5294,8 +5316,26 @@ impl Device {
             } else {
                 None
             },
+            fp_create_render_pass2: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCreateRenderPass2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_create_render_pass2_khr: if extensions.khr_create_renderpass2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRenderPass2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_render_pass2: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderPass2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdBeginRenderPass2".to_string()));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5306,8 +5346,26 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_next_subpass2: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdNextSubpass2".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_next_subpass2_khr: if extensions.khr_create_renderpass2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdNextSubpass2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_render_pass2: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderPass2\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdEndRenderPass2".to_string()));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5318,14 +5376,41 @@ impl Device {
             } else {
                 None
             },
+            fp_get_semaphore_counter_value: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreCounterValue\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkGetSemaphoreCounterValue".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_semaphore_counter_value_khr: if extensions.khr_timeline_semaphore {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreCounterValueKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
+            fp_wait_semaphores: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitSemaphores\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkWaitSemaphores".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_wait_semaphores_khr: if extensions.khr_timeline_semaphore {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitSemaphoresKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_signal_semaphore: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSignalSemaphore\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkSignalSemaphore".to_string()));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5355,6 +5440,15 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_draw_indirect_count: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCount\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdDrawIndirectCount".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_draw_indirect_count_khr: if extensions.khr_draw_indirect_count {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountKHR\0"));
                 fp.map(|f| mem::transmute(f))
@@ -5363,6 +5457,15 @@ impl Device {
             },
             fp_cmd_draw_indirect_count_amd: if extensions.amd_draw_indirect_count {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirectCountAMD\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_indexed_indirect_count: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndexedIndirectCount\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCmdDrawIndexedIndirectCount".to_string()));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5656,10 +5759,32 @@ impl Device {
             } else {
                 None
             },
+            fp_get_buffer_opaque_capture_address: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetBufferOpaqueCaptureAddress\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkGetBufferOpaqueCaptureAddress".to_string(),
+                    ));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_buffer_opaque_capture_address_khr: if extensions.khr_buffer_device_address {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetBufferOpaqueCaptureAddressKHR\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_device_address: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetBufferDeviceAddress\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkGetBufferDeviceAddress".to_string()));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5750,6 +5875,19 @@ impl Device {
             },
             fp_get_performance_parameter_intel: if extensions.intel_performance_query {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPerformanceParameterINTEL\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_memory_opaque_capture_address: if version >= vk::Version::from_raw_parts(1, 2, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceMemoryOpaqueCaptureAddress\0",
+                ));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol(
+                        "vkGetDeviceMemoryOpaqueCaptureAddress".to_string(),
+                    ));
+                }
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -6163,6 +6301,10 @@ impl Device {
             vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
             _ => Err(err),
         }
+    }
+    pub unsafe fn reset_query_pool(&self, query_pool: vk::QueryPool, first_query: u32, query_count: u32) {
+        let fp = self.fp_reset_query_pool.expect("vkResetQueryPool is not loaded");
+        (fp)(Some(self.handle), Some(query_pool), first_query, query_count);
     }
     pub unsafe fn reset_query_pool_ext(&self, query_pool: vk::QueryPool, first_query: u32, query_count: u32) {
         let fp = self.fp_reset_query_pool_ext.expect("vkResetQueryPoolEXT is not loaded");
@@ -9138,9 +9280,27 @@ impl Device {
             marker,
         );
     }
+    pub unsafe fn create_render_pass2(
+        &self,
+        p_create_info: &vk::RenderPassCreateInfo2,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::RenderPass> {
+        let fp = self.fp_create_render_pass2.expect("vkCreateRenderPass2 is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn create_render_pass2_khr(
         &self,
-        p_create_info: &vk::RenderPassCreateInfo2KHR,
+        p_create_info: &vk::RenderPassCreateInfo2,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::RenderPass> {
         let fp = self
@@ -9158,37 +9318,76 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn cmd_begin_render_pass2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_render_pass_begin: &vk::RenderPassBeginInfo,
+        p_subpass_begin_info: &vk::SubpassBeginInfo,
+    ) {
+        let fp = self
+            .fp_cmd_begin_render_pass2
+            .expect("vkCmdBeginRenderPass2 is not loaded");
+        (fp)(Some(command_buffer), p_render_pass_begin, p_subpass_begin_info);
+    }
     pub unsafe fn cmd_begin_render_pass2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
         p_render_pass_begin: &vk::RenderPassBeginInfo,
-        p_subpass_begin_info: &vk::SubpassBeginInfoKHR,
+        p_subpass_begin_info: &vk::SubpassBeginInfo,
     ) {
         let fp = self
             .fp_cmd_begin_render_pass2_khr
             .expect("vkCmdBeginRenderPass2KHR is not loaded");
         (fp)(Some(command_buffer), p_render_pass_begin, p_subpass_begin_info);
     }
+    pub unsafe fn cmd_next_subpass2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_subpass_begin_info: &vk::SubpassBeginInfo,
+        p_subpass_end_info: &vk::SubpassEndInfo,
+    ) {
+        let fp = self.fp_cmd_next_subpass2.expect("vkCmdNextSubpass2 is not loaded");
+        (fp)(Some(command_buffer), p_subpass_begin_info, p_subpass_end_info);
+    }
     pub unsafe fn cmd_next_subpass2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_subpass_begin_info: &vk::SubpassBeginInfoKHR,
-        p_subpass_end_info: &vk::SubpassEndInfoKHR,
+        p_subpass_begin_info: &vk::SubpassBeginInfo,
+        p_subpass_end_info: &vk::SubpassEndInfo,
     ) {
         let fp = self
             .fp_cmd_next_subpass2_khr
             .expect("vkCmdNextSubpass2KHR is not loaded");
         (fp)(Some(command_buffer), p_subpass_begin_info, p_subpass_end_info);
     }
+    pub unsafe fn cmd_end_render_pass2(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_subpass_end_info: &vk::SubpassEndInfo,
+    ) {
+        let fp = self.fp_cmd_end_render_pass2.expect("vkCmdEndRenderPass2 is not loaded");
+        (fp)(Some(command_buffer), p_subpass_end_info);
+    }
     pub unsafe fn cmd_end_render_pass2_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_subpass_end_info: &vk::SubpassEndInfoKHR,
+        p_subpass_end_info: &vk::SubpassEndInfo,
     ) {
         let fp = self
             .fp_cmd_end_render_pass2_khr
             .expect("vkCmdEndRenderPass2KHR is not loaded");
         (fp)(Some(command_buffer), p_subpass_end_info);
+    }
+    pub unsafe fn get_semaphore_counter_value(&self, semaphore: vk::Semaphore) -> Result<u64> {
+        let fp = self
+            .fp_get_semaphore_counter_value
+            .expect("vkGetSemaphoreCounterValue is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(semaphore), res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn get_semaphore_counter_value_khr(&self, semaphore: vk::Semaphore) -> Result<u64> {
         let fp = self
@@ -9201,11 +9400,15 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn wait_semaphores_khr(
-        &self,
-        p_wait_info: &vk::SemaphoreWaitInfoKHR,
-        timeout: u64,
-    ) -> Result<vk::Result> {
+    pub unsafe fn wait_semaphores(&self, p_wait_info: &vk::SemaphoreWaitInfo, timeout: u64) -> Result<vk::Result> {
+        let fp = self.fp_wait_semaphores.expect("vkWaitSemaphores is not loaded");
+        let err = (fp)(Some(self.handle), p_wait_info, timeout);
+        match err {
+            vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn wait_semaphores_khr(&self, p_wait_info: &vk::SemaphoreWaitInfo, timeout: u64) -> Result<vk::Result> {
         let fp = self.fp_wait_semaphores_khr.expect("vkWaitSemaphoresKHR is not loaded");
         let err = (fp)(Some(self.handle), p_wait_info, timeout);
         match err {
@@ -9213,7 +9416,15 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn signal_semaphore_khr(&self, p_signal_info: &vk::SemaphoreSignalInfoKHR) -> Result<()> {
+    pub unsafe fn signal_semaphore(&self, p_signal_info: &vk::SemaphoreSignalInfo) -> Result<()> {
+        let fp = self.fp_signal_semaphore.expect("vkSignalSemaphore is not loaded");
+        let err = (fp)(Some(self.handle), p_signal_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn signal_semaphore_khr(&self, p_signal_info: &vk::SemaphoreSignalInfo) -> Result<()> {
         let fp = self
             .fp_signal_semaphore_khr
             .expect("vkSignalSemaphoreKHR is not loaded");
@@ -9251,6 +9462,29 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn cmd_draw_indirect_count(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indirect_count
+            .expect("vkCmdDrawIndirectCount is not loaded");
+        (fp)(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
+    }
     pub unsafe fn cmd_draw_indirect_count_khr(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -9287,6 +9521,29 @@ impl Device {
         let fp = self
             .fp_cmd_draw_indirect_count_amd
             .expect("vkCmdDrawIndirectCountAMD is not loaded");
+        (fp)(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
+    }
+    pub unsafe fn cmd_draw_indexed_indirect_count(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_indexed_indirect_count
+            .expect("vkCmdDrawIndexedIndirectCount is not loaded");
         (fp)(
             Some(command_buffer),
             Some(buffer),
@@ -10031,19 +10288,31 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn get_buffer_opaque_capture_address_khr(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> u64 {
+    pub unsafe fn get_buffer_opaque_capture_address(&self, p_info: &vk::BufferDeviceAddressInfo) -> u64 {
+        let fp = self
+            .fp_get_buffer_opaque_capture_address
+            .expect("vkGetBufferOpaqueCaptureAddress is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_buffer_opaque_capture_address_khr(&self, p_info: &vk::BufferDeviceAddressInfo) -> u64 {
         let fp = self
             .fp_get_buffer_opaque_capture_address_khr
             .expect("vkGetBufferOpaqueCaptureAddressKHR is not loaded");
         (fp)(Some(self.handle), p_info)
     }
-    pub unsafe fn get_buffer_device_address_khr(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> vk::DeviceAddress {
+    pub unsafe fn get_buffer_device_address(&self, p_info: &vk::BufferDeviceAddressInfo) -> vk::DeviceAddress {
+        let fp = self
+            .fp_get_buffer_device_address
+            .expect("vkGetBufferDeviceAddress is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_buffer_device_address_khr(&self, p_info: &vk::BufferDeviceAddressInfo) -> vk::DeviceAddress {
         let fp = self
             .fp_get_buffer_device_address_khr
             .expect("vkGetBufferDeviceAddressKHR is not loaded");
         (fp)(Some(self.handle), p_info)
     }
-    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfoKHR) -> vk::DeviceAddress {
+    pub unsafe fn get_buffer_device_address_ext(&self, p_info: &vk::BufferDeviceAddressInfo) -> vk::DeviceAddress {
         let fp = self
             .fp_get_buffer_device_address_ext
             .expect("vkGetBufferDeviceAddressEXT is not loaded");
@@ -10186,9 +10455,18 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_device_memory_opaque_capture_address(
+        &self,
+        p_info: &vk::DeviceMemoryOpaqueCaptureAddressInfo,
+    ) -> u64 {
+        let fp = self
+            .fp_get_device_memory_opaque_capture_address
+            .expect("vkGetDeviceMemoryOpaqueCaptureAddress is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
     pub unsafe fn get_device_memory_opaque_capture_address_khr(
         &self,
-        p_info: &vk::DeviceMemoryOpaqueCaptureAddressInfoKHR,
+        p_info: &vk::DeviceMemoryOpaqueCaptureAddressInfo,
     ) -> u64 {
         let fp = self
             .fp_get_device_memory_opaque_capture_address_khr
