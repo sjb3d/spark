@@ -226,12 +226,7 @@ impl Version {
     }
 
     fn try_from_feature(s: &str) -> Option<Self> {
-        // TODO: parse it
-        match s {
-            "VK_VERSION_1_0" => Some(Version::from_raw_parts(1, 0)),
-            "VK_VERSION_1_1" => Some(Version::from_raw_parts(1, 1)),
-            _ => None,
-        }
+        c_parse_version(s).map(|(major, minor)| Version::from_raw_parts(major, minor))
     }
 }
 

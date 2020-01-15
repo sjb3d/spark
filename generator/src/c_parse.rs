@@ -186,6 +186,18 @@ named!(c_expr<Input, CExpr>, alt!(
     c_expr2
 ));
 
+#[rustfmt::skip]
+named!(c_version<Input, (u16, u16)>, do_parse!(
+            tag!("VK_VERSION_")                             >>
+    major:  flat_map!(call!(nom::digit), parse_to!(u16))    >>
+            tag!("_")                                       >>
+    minor:  flat_map!(call!(nom::digit), parse_to!(u16))    >>
+    ((major, minor))));
+
+pub fn c_parse_version(s: &str) -> Option<(u16, u16)> {
+    c_version(Input(s)).map(|(_remain, version)| version).ok()
+}
+
 pub fn c_parse_int(s: &str) -> Option<i32> {
     if s.starts_with("0x") {
         i32::from_str_radix(&s[2..], 16).ok()
