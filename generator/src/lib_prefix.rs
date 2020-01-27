@@ -1,4 +1,4 @@
-#![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref)]
+#![allow(clippy::too_many_arguments, clippy::trivially_copy_pass_by_ref, clippy::missing_safety_doc)]
 
 pub mod vk;
 pub mod builder;
