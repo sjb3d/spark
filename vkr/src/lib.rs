@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 132
+//! Generated from vk.xml with `VK_HEADER_VERSION` 133
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2766,6 +2766,7 @@ pub struct DeviceExtensions {
     pub ext_shader_demote_to_helper_invocation: bool,
     pub ext_texel_buffer_alignment: bool,
     pub google_user_type: bool,
+    pub khr_shader_non_semantic_info: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3562,6 +3563,9 @@ impl Device {
     pub fn google_user_type_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
     }
+    pub fn khr_shader_non_semantic_info_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3745,6 +3749,7 @@ impl Device {
                     }
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
+                    b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
                     _ => {}
                 }
             }

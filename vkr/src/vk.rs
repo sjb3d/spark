@@ -12862,6 +12862,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT: Self = Self(1000281001);
+    /// Added by extension VK_QCOM_extension_310.
+    pub const RESERVED_QCOM: Self = Self(1000309000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -13272,6 +13274,7 @@ impl fmt::Display for StructureType {
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
+            1000309000 => Some(&"RESERVED_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -15194,6 +15197,8 @@ impl VendorId {
     pub const VSI: Self = Self(65538);
     /// Kazan Software Renderer
     pub const KAZAN: Self = Self(65539);
+    /// Codeplay Software Ltd. vendor ID
+    pub const CODEPLAY: Self = Self(65540);
 }
 impl default::Default for VendorId {
     fn default() -> Self {
@@ -15206,6 +15211,7 @@ impl fmt::Display for VendorId {
             65537 => Some(&"VIV"),
             65538 => Some(&"VSI"),
             65539 => Some(&"KAZAN"),
+            65540 => Some(&"CODEPLAY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -34780,7 +34786,7 @@ pub type FnCmdDrawIndexedIndirectCount = unsafe extern "system" fn(
     stride: u32,
 ) -> c_void;
 pub type FnCmdDrawIndexedIndirectCountKHR = FnCmdDrawIndexedIndirectCount;
-pub type FnCmdDrawIndexedIndirectCountAMD = FnCmdDrawIndexedIndirectCountKHR;
+pub type FnCmdDrawIndexedIndirectCountAMD = FnCmdDrawIndexedIndirectCount;
 pub type FnCmdSetCheckpointNV =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_checkpoint_marker: *const c_void) -> c_void;
 pub type FnGetQueueCheckpointDataNV = unsafe extern "system" fn(
