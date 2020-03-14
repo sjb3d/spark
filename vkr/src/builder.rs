@@ -13701,3 +13701,69 @@ impl<'a> Deref for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::RenderPassTransformBeginInfoQCOM {
+    type Type = RenderPassTransformBeginInfoQCOMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassTransformBeginInfoQCOMBuilder<'a> {
+    inner: vk::RenderPassTransformBeginInfoQCOM,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RenderPassTransformBeginInfoQCOMBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn transform(mut self, transform: vk::SurfaceTransformFlagsKHR) -> Self {
+        self.inner.transform = transform;
+        self
+    }
+}
+impl<'a> Deref for RenderPassTransformBeginInfoQCOMBuilder<'a> {
+    type Target = vk::RenderPassTransformBeginInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {
+    type Type = CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a> {
+    inner: vk::CommandBufferInheritanceRenderPassTransformInfoQCOM,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn transform(mut self, transform: vk::SurfaceTransformFlagsKHR) -> Self {
+        self.inner.transform = transform;
+        self
+    }
+    pub fn render_area(mut self, render_area: vk::Rect2D) -> Self {
+        self.inner.render_area = render_area;
+        self
+    }
+}
+impl<'a> Deref for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a> {
+    type Target = vk::CommandBufferInheritanceRenderPassTransformInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

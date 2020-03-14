@@ -301,8 +301,8 @@ pub struct RenderPassCreateFlags(u32);
 impl RenderPassCreateFlags {
     /// Added by extension VK_KHR_extension_221.
     pub const RESERVED_0_KHR: Self = Self(0x1);
-    /// Added by extension VK_QCOM_extension_283.
-    pub const RESERVED_BIT_1_QCOM: Self = Self(0x2);
+    /// Added by extension VK_QCOM_render_pass_transform.
+    pub const TRANSFORM_QCOM: Self = Self(0x2);
 }
 impl default::Default for RenderPassCreateFlags {
     fn default() -> Self {
@@ -364,7 +364,7 @@ impl ops::BitXorAssign for RenderPassCreateFlags {
 }
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "RESERVED_0_KHR"), (0x2, "RESERVED_BIT_1_QCOM")], f)
+        display_bitmask(self.0, &[(0x1, "RESERVED_0_KHR"), (0x2, "TRANSFORM_QCOM")], f)
     }
 }
 #[repr(transparent)]
@@ -2731,6 +2731,8 @@ impl PipelineCreateFlags {
     pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = Self(0x80);
+    /// Added by extension VK_NV_extension_278.
+    pub const EXTENSION_278_BIT18_NV: Self = Self(0x40000);
     /// Added by extension VK_NV_extension_291.
     pub const EXTENSION_291_BIT0_NV: Self = Self(0x1000);
     /// Added by extension VK_NV_extension_291.
@@ -2752,13 +2754,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3ffff)
+        Self(0x7ffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3ffff
+        self.0 == 0x7ffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2818,6 +2820,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
+                (0x40000, "EXTENSION_278_BIT18_NV"),
                 (0x1000, "EXTENSION_291_BIT0_NV"),
                 (0x2000, "EXTENSION_291_BIT1_NV"),
                 (0x100, "RESERVED_8_EXT"),
@@ -12862,6 +12865,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT: Self = Self(1000281001);
+    /// Added by extension VK_QCOM_render_pass_transform.
+    pub const COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM: Self = Self(1000282000);
+    /// Added by extension VK_QCOM_render_pass_transform.
+    pub const RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM: Self = Self(1000282001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
 }
@@ -13274,6 +13281,8 @@ impl fmt::Display for StructureType {
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
+            1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
+            1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
             1000309000 => Some(&"RESERVED_QCOM"),
             _ => None,
         };
@@ -33209,6 +33218,61 @@ impl fmt::Debug for PhysicalDeviceToolPropertiesEXT {
             .field("purposes", &self.purposes)
             .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
             .field("layer", &unsafe { CStr::from_ptr(self.layer.as_ptr()) })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassTransformBeginInfoQCOM {
+    pub s_type: StructureType,
+    /// Pointer to next structure
+    pub p_next: *mut c_void,
+    pub transform: SurfaceTransformFlagsKHR,
+}
+impl default::Default for RenderPassTransformBeginInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM,
+            p_next: ptr::null_mut(),
+            transform: SurfaceTransformFlagsKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassTransformBeginInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassTransformBeginInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("transform", &self.transform)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CommandBufferInheritanceRenderPassTransformInfoQCOM {
+    pub s_type: StructureType,
+    /// Pointer to next structure
+    pub p_next: *mut c_void,
+    pub transform: SurfaceTransformFlagsKHR,
+    pub render_area: Rect2D,
+}
+impl default::Default for CommandBufferInheritanceRenderPassTransformInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM,
+            p_next: ptr::null_mut(),
+            transform: SurfaceTransformFlagsKHR::default(),
+            render_area: Rect2D::default(),
+        }
+    }
+}
+impl fmt::Debug for CommandBufferInheritanceRenderPassTransformInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CommandBufferInheritanceRenderPassTransformInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("transform", &self.transform)
+            .field("render_area", &self.render_area)
             .finish()
     }
 }

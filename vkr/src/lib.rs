@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 133
+//! Generated from vk.xml with `VK_HEADER_VERSION` 134
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2765,6 +2765,7 @@ pub struct DeviceExtensions {
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub ext_texel_buffer_alignment: bool,
+    pub qcom_render_pass_transform: bool,
     pub google_user_type: bool,
     pub khr_shader_non_semantic_info: bool,
 }
@@ -3560,6 +3561,9 @@ impl Device {
     pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
     }
+    pub fn qcom_render_pass_transform_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") }
+    }
     pub fn google_user_type_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
     }
@@ -3748,6 +3752,7 @@ impl Device {
                         extensions.ext_shader_demote_to_helper_invocation = true
                     }
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
+                    b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
                     b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
                     _ => {}
@@ -10556,19 +10561,25 @@ impl Device {
             .expect("vkCmdSetLineStippleEXT is not loaded");
         (fp)(Some(command_buffer), line_stipple_factor, line_stipple_pattern);
     }
-    pub unsafe fn get_physical_device_tool_properties_ext(
+    pub unsafe fn get_physical_device_tool_properties_ext_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
-        p_tool_count: &mut u32,
-        p_tool_properties: *mut vk::PhysicalDeviceToolPropertiesEXT,
-    ) -> Result<vk::Result> {
+    ) -> Result<Vec<vk::PhysicalDeviceToolPropertiesEXT>> {
         let fp = self
             .fp_get_physical_device_tool_properties_ext
             .expect("vkGetPhysicalDeviceToolPropertiesEXT is not loaded");
-        let err = (fp)(Some(physical_device), p_tool_count, p_tool_properties);
-        match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
 }
