@@ -421,6 +421,18 @@ impl<'a> Generator<'a> {
                         }
                     }
                 }
+                if let vk::TypeSpec::Members(ref members) = ty.spec {
+                    if !members
+                        .iter()
+                        .filter_map(|member| match member {
+                            vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                            _ => None,
+                        })
+                        .all(|member_def| c_parse_is_variable_decl(member_def.code.as_str()))
+                    {
+                        self.type_name_blacklist.insert(name);
+                    }
+                }
             }
         }
         for registry_child in &self.registry.0 {
@@ -1219,12 +1231,14 @@ impl<'a> Generator<'a> {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
         if let Some(ref alias) = ty.alias {
-            writeln!(
-                w,
-                "pub type {} = {};",
-                type_name.skip_prefix(TYPE_PREFIX),
-                alias.skip_prefix(TYPE_PREFIX)
-            )?;
+            if !self.type_name_blacklist.contains(alias.as_str()) {
+                writeln!(
+                    w,
+                    "pub type {} = {};",
+                    type_name.skip_prefix(TYPE_PREFIX),
+                    alias.skip_prefix(TYPE_PREFIX)
+                )?;
+            }
         } else if let vk::TypeSpec::Members(ref members) = ty.spec {
             let agg_name = type_name.skip_prefix(TYPE_PREFIX);
             writeln!(
@@ -1487,62 +1501,61 @@ impl<'a> Generator<'a> {
                         let is_slice_type = (cparam.ty.name != "void"
                             && cparam.ty.decoration == CDecoration::PointerToConst)
                             || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst;
-                        if is_slice_type && !len_name.starts_with("latexmath:") {
-                            let inner_type_name = if cparam.ty.decoration == CDecoration::PointerToConstPointerToConst {
-                                format!("*const {}", inner_type_name)
-                            } else {
-                                inner_type_name
-                            };
+                        if is_slice_type {
                             let is_optional = vparam.optional.as_ref_str() == Some("true");
                             let is_single = vparam.noautovalidity.as_ref_str() == Some("true");
-                            let len_index = decls
-                                .iter()
-                                .position(|decl| decl.name == len_name)
-                                .expect("missing len variable");
-                            let len_cparam = &decls[len_index];
-                            let slice_info = SliceInfo {
-                                name: params[i].name.clone(),
-                                type_name: inner_type_name.clone(),
-                                is_optional,
-                            };
-                            params[i].ty = LibParamType::Slice {
-                                inner_type_name,
-                                is_optional,
-                            };
-                            take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                                LibParamType::SliceLenShared { name, mut slice_infos } => {
-                                    if is_single {
-                                        panic!("unsupported mix of slices")
+                            if let Some(len_index) = decls.iter().position(|decl| decl.name == len_name) {
+                                let len_cparam = &decls[len_index];
+                                let inner_type_name =
+                                    if cparam.ty.decoration == CDecoration::PointerToConstPointerToConst {
+                                        format!("*const {}", inner_type_name)
                                     } else {
-                                        slice_infos.push(slice_info);
-                                        LibParamType::SliceLenShared { name, slice_infos }
-                                    }
-                                }
-                                LibParamType::SliceLenSingle { mut slice_infos } => {
-                                    if is_single {
-                                        slice_infos.push(slice_info);
-                                        LibParamType::SliceLenSingle { slice_infos }
-                                    } else {
-                                        panic!("unsupported mix of slices")
-                                    }
-                                }
-                                LibParamType::CDecl => {
-                                    if is_single {
-                                        LibParamType::SliceLenSingle {
-                                            slice_infos: vec![slice_info; 1],
-                                        }
-                                    } else {
-                                        LibParamType::SliceLenShared {
-                                            name: len_cparam.name.to_snake_case(),
-                                            slice_infos: vec![slice_info; 1],
+                                        inner_type_name
+                                    };
+                                let slice_info = SliceInfo {
+                                    name: params[i].name.clone(),
+                                    type_name: inner_type_name.clone(),
+                                    is_optional,
+                                };
+                                params[i].ty = LibParamType::Slice {
+                                    inner_type_name,
+                                    is_optional,
+                                };
+                                take_mut::take(&mut params[len_index].ty, |ty| match ty {
+                                    LibParamType::SliceLenShared { name, mut slice_infos } => {
+                                        if is_single {
+                                            panic!("unsupported mix of slices")
+                                        } else {
+                                            slice_infos.push(slice_info);
+                                            LibParamType::SliceLenShared { name, slice_infos }
                                         }
                                     }
-                                }
-                                _ => {
-                                    panic!("purpose already found for {:?}", len_cparam);
-                                }
-                            });
-                            continue;
+                                    LibParamType::SliceLenSingle { mut slice_infos } => {
+                                        if is_single {
+                                            slice_infos.push(slice_info);
+                                            LibParamType::SliceLenSingle { slice_infos }
+                                        } else {
+                                            panic!("unsupported mix of slices")
+                                        }
+                                    }
+                                    LibParamType::CDecl => {
+                                        if is_single {
+                                            LibParamType::SliceLenSingle {
+                                                slice_infos: vec![slice_info; 1],
+                                            }
+                                        } else {
+                                            LibParamType::SliceLenShared {
+                                                name: len_cparam.name.to_snake_case(),
+                                                slice_infos: vec![slice_info; 1],
+                                            }
+                                        }
+                                    }
+                                    _ => {
+                                        panic!("purpose already found for {:?}", len_cparam);
+                                    }
+                                });
+                                continue;
+                            }
                         }
                     }
 

@@ -206,6 +206,12 @@ pub fn c_parse_int(s: &str) -> Option<i32> {
     }
 }
 
+pub fn c_parse_is_variable_decl(s: &str) -> bool {
+    c_variable_decl(Input(s))
+        .map(|(remain, _decl)| remain.is_empty())
+        .unwrap_or(false)
+}
+
 pub fn c_parse_variable_decl(s: &str) -> CVariableDecl {
     let (remain, decl) = c_variable_decl(Input(s)).unwrap_or_else(|res| {
         panic!("parse fail: {} -> {:?}", s, res);
