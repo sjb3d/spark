@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 134
+//! Generated from vk.xml with `VK_HEADER_VERSION` 135
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2652,7 +2652,6 @@ pub struct DeviceExtensions {
     pub khr_16bit_storage: bool,
     pub khr_incremental_present: bool,
     pub khr_descriptor_update_template: bool,
-    pub nvx_device_generated_commands: bool,
     pub nv_clip_space_w_scaling: bool,
     pub ext_display_control: bool,
     pub google_display_timing: bool,
@@ -2691,6 +2690,7 @@ pub struct DeviceExtensions {
     pub khr_image_format_list: bool,
     pub ext_blend_operation_advanced: bool,
     pub nv_fragment_coverage_to_color: bool,
+    pub khr_ray_tracing: bool,
     pub nv_framebuffer_mixed_samples: bool,
     pub nv_fill_rectangle: bool,
     pub nv_shader_sm_builtins: bool,
@@ -2762,12 +2762,17 @@ pub struct DeviceExtensions {
     pub ext_line_rasterization: bool,
     pub ext_host_query_reset: bool,
     pub ext_index_type_uint8: bool,
+    pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
+    pub nv_device_generated_commands: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
     pub google_user_type: bool,
+    pub khr_pipeline_library: bool,
     pub khr_shader_non_semantic_info: bool,
+    pub ext_pipeline_creation_cache_control: bool,
+    pub nv_device_diagnostics_config: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -2909,16 +2914,12 @@ pub struct Device {
     pub fp_cmd_debug_marker_end_ext: Option<vk::FnCmdDebugMarkerEndEXT>,
     pub fp_cmd_debug_marker_insert_ext: Option<vk::FnCmdDebugMarkerInsertEXT>,
     pub fp_get_memory_win32_handle_nv: Option<vk::FnGetMemoryWin32HandleNV>,
-    pub fp_cmd_process_commands_nvx: Option<vk::FnCmdProcessCommandsNVX>,
-    pub fp_cmd_reserve_space_for_commands_nvx: Option<vk::FnCmdReserveSpaceForCommandsNVX>,
-    pub fp_create_indirect_commands_layout_nvx: Option<vk::FnCreateIndirectCommandsLayoutNVX>,
-    pub fp_destroy_indirect_commands_layout_nvx: Option<vk::FnDestroyIndirectCommandsLayoutNVX>,
-    pub fp_create_object_table_nvx: Option<vk::FnCreateObjectTableNVX>,
-    pub fp_destroy_object_table_nvx: Option<vk::FnDestroyObjectTableNVX>,
-    pub fp_register_objects_nvx: Option<vk::FnRegisterObjectsNVX>,
-    pub fp_unregister_objects_nvx: Option<vk::FnUnregisterObjectsNVX>,
-    pub fp_get_physical_device_generated_commands_properties_nvx:
-        Option<vk::FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX>,
+    pub fp_cmd_execute_generated_commands_nv: Option<vk::FnCmdExecuteGeneratedCommandsNV>,
+    pub fp_cmd_preprocess_generated_commands_nv: Option<vk::FnCmdPreprocessGeneratedCommandsNV>,
+    pub fp_cmd_bind_pipeline_shader_group_nv: Option<vk::FnCmdBindPipelineShaderGroupNV>,
+    pub fp_get_generated_commands_memory_requirements_nv: Option<vk::FnGetGeneratedCommandsMemoryRequirementsNV>,
+    pub fp_create_indirect_commands_layout_nv: Option<vk::FnCreateIndirectCommandsLayoutNV>,
+    pub fp_destroy_indirect_commands_layout_nv: Option<vk::FnDestroyIndirectCommandsLayoutNV>,
     pub fp_cmd_push_descriptor_set_khr: Option<vk::FnCmdPushDescriptorSetKHR>,
     pub fp_trim_command_pool: Option<vk::FnTrimCommandPool>,
     pub fp_trim_command_pool_khr: Option<vk::FnTrimCommandPoolKHR>,
@@ -3030,19 +3031,39 @@ pub struct Device {
     pub fp_cmd_draw_mesh_tasks_indirect_count_nv: Option<vk::FnCmdDrawMeshTasksIndirectCountNV>,
     pub fp_compile_deferred_nv: Option<vk::FnCompileDeferredNV>,
     pub fp_create_acceleration_structure_nv: Option<vk::FnCreateAccelerationStructureNV>,
+    pub fp_destroy_acceleration_structure_khr: Option<vk::FnDestroyAccelerationStructureKHR>,
     pub fp_destroy_acceleration_structure_nv: Option<vk::FnDestroyAccelerationStructureNV>,
+    pub fp_get_acceleration_structure_memory_requirements_khr:
+        Option<vk::FnGetAccelerationStructureMemoryRequirementsKHR>,
     pub fp_get_acceleration_structure_memory_requirements_nv:
         Option<vk::FnGetAccelerationStructureMemoryRequirementsNV>,
+    pub fp_bind_acceleration_structure_memory_khr: Option<vk::FnBindAccelerationStructureMemoryKHR>,
     pub fp_bind_acceleration_structure_memory_nv: Option<vk::FnBindAccelerationStructureMemoryNV>,
     pub fp_cmd_copy_acceleration_structure_nv: Option<vk::FnCmdCopyAccelerationStructureNV>,
+    pub fp_cmd_copy_acceleration_structure_khr: Option<vk::FnCmdCopyAccelerationStructureKHR>,
+    pub fp_copy_acceleration_structure_khr: Option<vk::FnCopyAccelerationStructureKHR>,
+    pub fp_cmd_copy_acceleration_structure_to_memory_khr: Option<vk::FnCmdCopyAccelerationStructureToMemoryKHR>,
+    pub fp_copy_acceleration_structure_to_memory_khr: Option<vk::FnCopyAccelerationStructureToMemoryKHR>,
+    pub fp_cmd_copy_memory_to_acceleration_structure_khr: Option<vk::FnCmdCopyMemoryToAccelerationStructureKHR>,
+    pub fp_copy_memory_to_acceleration_structure_khr: Option<vk::FnCopyMemoryToAccelerationStructureKHR>,
+    pub fp_cmd_write_acceleration_structures_properties_khr: Option<vk::FnCmdWriteAccelerationStructuresPropertiesKHR>,
     pub fp_cmd_write_acceleration_structures_properties_nv: Option<vk::FnCmdWriteAccelerationStructuresPropertiesNV>,
     pub fp_cmd_build_acceleration_structure_nv: Option<vk::FnCmdBuildAccelerationStructureNV>,
+    pub fp_write_acceleration_structures_properties_khr: Option<vk::FnWriteAccelerationStructuresPropertiesKHR>,
+    pub fp_cmd_trace_rays_khr: Option<vk::FnCmdTraceRaysKHR>,
     pub fp_cmd_trace_rays_nv: Option<vk::FnCmdTraceRaysNV>,
+    pub fp_get_ray_tracing_shader_group_handles_khr: Option<vk::FnGetRayTracingShaderGroupHandlesKHR>,
     pub fp_get_ray_tracing_shader_group_handles_nv: Option<vk::FnGetRayTracingShaderGroupHandlesNV>,
+    pub fp_get_ray_tracing_capture_replay_shader_group_handles_khr:
+        Option<vk::FnGetRayTracingCaptureReplayShaderGroupHandlesKHR>,
     pub fp_get_acceleration_structure_handle_nv: Option<vk::FnGetAccelerationStructureHandleNV>,
     pub fp_create_ray_tracing_pipelines_nv: Option<vk::FnCreateRayTracingPipelinesNV>,
+    pub fp_create_ray_tracing_pipelines_khr: Option<vk::FnCreateRayTracingPipelinesKHR>,
     pub fp_get_physical_device_cooperative_matrix_properties_nv:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesNV>,
+    pub fp_cmd_trace_rays_indirect_khr: Option<vk::FnCmdTraceRaysIndirectKHR>,
+    pub fp_get_device_acceleration_structure_compatibility_khr:
+        Option<vk::FnGetDeviceAccelerationStructureCompatibilityKHR>,
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
     pub fp_get_physical_device_surface_present_modes2_ext: Option<vk::FnGetPhysicalDeviceSurfacePresentModes2EXT>,
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
@@ -3079,6 +3100,16 @@ pub struct Device {
         Option<vk::FnGetPipelineExecutableInternalRepresentationsKHR>,
     pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
     pub fp_get_physical_device_tool_properties_ext: Option<vk::FnGetPhysicalDeviceToolPropertiesEXT>,
+    pub fp_create_acceleration_structure_khr: Option<vk::FnCreateAccelerationStructureKHR>,
+    pub fp_cmd_build_acceleration_structure_khr: Option<vk::FnCmdBuildAccelerationStructureKHR>,
+    pub fp_cmd_build_acceleration_structure_indirect_khr: Option<vk::FnCmdBuildAccelerationStructureIndirectKHR>,
+    pub fp_build_acceleration_structure_khr: Option<vk::FnBuildAccelerationStructureKHR>,
+    pub fp_get_acceleration_structure_device_address_khr: Option<vk::FnGetAccelerationStructureDeviceAddressKHR>,
+    pub fp_create_deferred_operation_khr: Option<vk::FnCreateDeferredOperationKHR>,
+    pub fp_destroy_deferred_operation_khr: Option<vk::FnDestroyDeferredOperationKHR>,
+    pub fp_get_deferred_operation_max_concurrency_khr: Option<vk::FnGetDeferredOperationMaxConcurrencyKHR>,
+    pub fp_get_deferred_operation_result_khr: Option<vk::FnGetDeferredOperationResultKHR>,
+    pub fp_deferred_operation_join_khr: Option<vk::FnDeferredOperationJoinKHR>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3222,9 +3253,6 @@ impl Device {
     pub fn khr_descriptor_update_template_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_descriptor_update_template\0") }
     }
-    pub fn nvx_device_generated_commands_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_device_generated_commands\0") }
-    }
     pub fn nv_clip_space_w_scaling_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_clip_space_w_scaling\0") }
     }
@@ -3338,6 +3366,9 @@ impl Device {
     }
     pub fn nv_fragment_coverage_to_color_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_coverage_to_color\0") }
+    }
+    pub fn khr_ray_tracing_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing\0") }
     }
     pub fn nv_framebuffer_mixed_samples_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_framebuffer_mixed_samples\0") }
@@ -3552,11 +3583,17 @@ impl Device {
     pub fn ext_index_type_uint8_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") }
     }
+    pub fn khr_deferred_host_operations_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_deferred_host_operations\0") }
+    }
     pub fn khr_pipeline_executable_properties_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") }
     }
     pub fn ext_shader_demote_to_helper_invocation_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") }
+    }
+    pub fn nv_device_generated_commands_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands\0") }
     }
     pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
@@ -3567,8 +3604,17 @@ impl Device {
     pub fn google_user_type_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
     }
+    pub fn khr_pipeline_library_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_library\0") }
+    }
     pub fn khr_shader_non_semantic_info_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") }
+    }
+    pub fn ext_pipeline_creation_cache_control_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_cache_control\0") }
+    }
+    pub fn nv_device_diagnostics_config_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostics_config\0") }
     }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
@@ -3633,7 +3679,6 @@ impl Device {
                     b"VK_KHR_16bit_storage" => extensions.khr_16bit_storage = true,
                     b"VK_KHR_incremental_present" => extensions.khr_incremental_present = true,
                     b"VK_KHR_descriptor_update_template" => extensions.khr_descriptor_update_template = true,
-                    b"VK_NVX_device_generated_commands" => extensions.nvx_device_generated_commands = true,
                     b"VK_NV_clip_space_w_scaling" => extensions.nv_clip_space_w_scaling = true,
                     b"VK_EXT_display_control" => extensions.ext_display_control = true,
                     b"VK_GOOGLE_display_timing" => extensions.google_display_timing = true,
@@ -3674,6 +3719,7 @@ impl Device {
                     b"VK_KHR_image_format_list" => extensions.khr_image_format_list = true,
                     b"VK_EXT_blend_operation_advanced" => extensions.ext_blend_operation_advanced = true,
                     b"VK_NV_fragment_coverage_to_color" => extensions.nv_fragment_coverage_to_color = true,
+                    b"VK_KHR_ray_tracing" => extensions.khr_ray_tracing = true,
                     b"VK_NV_framebuffer_mixed_samples" => extensions.nv_framebuffer_mixed_samples = true,
                     b"VK_NV_fill_rectangle" => extensions.nv_fill_rectangle = true,
                     b"VK_NV_shader_sm_builtins" => extensions.nv_shader_sm_builtins = true,
@@ -3747,14 +3793,19 @@ impl Device {
                     b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
+                    b"VK_KHR_deferred_host_operations" => extensions.khr_deferred_host_operations = true,
                     b"VK_KHR_pipeline_executable_properties" => extensions.khr_pipeline_executable_properties = true,
                     b"VK_EXT_shader_demote_to_helper_invocation" => {
                         extensions.ext_shader_demote_to_helper_invocation = true
                     }
+                    b"VK_NV_device_generated_commands" => extensions.nv_device_generated_commands = true,
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
+                    b"VK_KHR_pipeline_library" => extensions.khr_pipeline_library = true,
                     b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
+                    b"VK_EXT_pipeline_creation_cache_control" => extensions.ext_pipeline_creation_cache_control = true,
+                    b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
                     _ => {}
                 }
             }
@@ -4710,63 +4761,47 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_process_commands_nvx: if extensions.nvx_device_generated_commands {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdProcessCommandsNVX\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_cmd_reserve_space_for_commands_nvx: if extensions.nvx_device_generated_commands {
+            fp_cmd_execute_generated_commands_nv: if extensions.nv_device_generated_commands {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkCmdReserveSpaceForCommandsNVX\0",
+                    b"vkCmdExecuteGeneratedCommandsNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_create_indirect_commands_layout_nvx: if extensions.nvx_device_generated_commands {
+            fp_cmd_preprocess_generated_commands_nv: if extensions.nv_device_generated_commands {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkCreateIndirectCommandsLayoutNVX\0",
+                    b"vkCmdPreprocessGeneratedCommandsNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_destroy_indirect_commands_layout_nvx: if extensions.nvx_device_generated_commands {
+            fp_cmd_bind_pipeline_shader_group_nv: if extensions.nv_device_generated_commands {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindPipelineShaderGroupNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_generated_commands_memory_requirements_nv: if extensions.nv_device_generated_commands {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkDestroyIndirectCommandsLayoutNVX\0",
+                    b"vkGetGeneratedCommandsMemoryRequirementsNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_create_object_table_nvx: if extensions.nvx_device_generated_commands {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateObjectTableNVX\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_destroy_object_table_nvx: if extensions.nvx_device_generated_commands {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyObjectTableNVX\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_register_objects_nvx: if extensions.nvx_device_generated_commands {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkRegisterObjectsNVX\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_unregister_objects_nvx: if extensions.nvx_device_generated_commands {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkUnregisterObjectsNVX\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_get_physical_device_generated_commands_properties_nvx: if extensions.nvx_device_generated_commands {
+            fp_create_indirect_commands_layout_nv: if extensions.nv_device_generated_commands {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX\0",
+                    b"vkCreateIndirectCommandsLayoutNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_indirect_commands_layout_nv: if extensions.nv_device_generated_commands {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyIndirectCommandsLayoutNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -5610,6 +5645,14 @@ impl Device {
             } else {
                 None
             },
+            fp_destroy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_destroy_acceleration_structure_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkDestroyAccelerationStructureNV\0",
@@ -5618,9 +5661,25 @@ impl Device {
             } else {
                 None
             },
+            fp_get_acceleration_structure_memory_requirements_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureMemoryRequirementsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_acceleration_structure_memory_requirements_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetAccelerationStructureMemoryRequirementsNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_acceleration_structure_memory_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkBindAccelerationStructureMemoryKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -5642,6 +5701,60 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_copy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdCopyAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyAccelerationStructureKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_acceleration_structure_to_memory_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdCopyAccelerationStructureToMemoryKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_acceleration_structure_to_memory_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCopyAccelerationStructureToMemoryKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_to_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdCopyMemoryToAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_memory_to_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCopyMemoryToAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_acceleration_structures_properties_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdWriteAccelerationStructuresPropertiesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_write_acceleration_structures_properties_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdWriteAccelerationStructuresPropertiesNV\0",
@@ -5658,8 +5771,30 @@ impl Device {
             } else {
                 None
             },
+            fp_write_acceleration_structures_properties_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkWriteAccelerationStructuresPropertiesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_trace_rays_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_trace_rays_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_ray_tracing_shader_group_handles_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRayTracingShaderGroupHandlesKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -5667,6 +5802,14 @@ impl Device {
             fp_get_ray_tracing_shader_group_handles_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetRayTracingShaderGroupHandlesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_ray_tracing_capture_replay_shader_group_handles_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRayTracingCaptureReplayShaderGroupHandlesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -5686,9 +5829,29 @@ impl Device {
             } else {
                 None
             },
+            fp_create_ray_tracing_pipelines_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRayTracingPipelinesKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_physical_device_cooperative_matrix_properties_nv: if extensions.nv_cooperative_matrix {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_trace_rays_indirect_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysIndirectKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_acceleration_structure_compatibility_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceAccelerationStructureCompatibilityKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -5948,6 +6111,80 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceToolPropertiesEXT\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBuildAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_acceleration_structure_indirect_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBuildAccelerationStructureIndirectKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_build_acceleration_structure_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkBuildAccelerationStructureKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_acceleration_structure_device_address_khr: if extensions.khr_ray_tracing {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureDeviceAddressKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_deferred_operation_khr: if extensions.khr_deferred_host_operations {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDeferredOperationKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_deferred_operation_khr: if extensions.khr_deferred_host_operations {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyDeferredOperationKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_deferred_operation_max_concurrency_khr: if extensions.khr_deferred_host_operations {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeferredOperationMaxConcurrencyKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_deferred_operation_result_khr: if extensions.khr_deferred_host_operations {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeferredOperationResultKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_deferred_operation_join_khr: if extensions.khr_deferred_host_operations {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDeferredOperationJoinKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -8059,34 +8296,61 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn cmd_process_commands_nvx(
+    pub unsafe fn cmd_execute_generated_commands_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_process_commands_info: &vk::CmdProcessCommandsInfoNVX,
+        is_preprocessed: bool,
+        p_generated_commands_info: &vk::GeneratedCommandsInfoNV,
     ) {
         let fp = self
-            .fp_cmd_process_commands_nvx
-            .expect("vkCmdProcessCommandsNVX is not loaded");
-        (fp)(Some(command_buffer), p_process_commands_info);
+            .fp_cmd_execute_generated_commands_nv
+            .expect("vkCmdExecuteGeneratedCommandsNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if is_preprocessed { vk::TRUE } else { vk::FALSE },
+            p_generated_commands_info,
+        );
     }
-    pub unsafe fn cmd_reserve_space_for_commands_nvx(
+    pub unsafe fn cmd_preprocess_generated_commands_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_reserve_space_info: &vk::CmdReserveSpaceForCommandsInfoNVX,
+        p_generated_commands_info: &vk::GeneratedCommandsInfoNV,
     ) {
         let fp = self
-            .fp_cmd_reserve_space_for_commands_nvx
-            .expect("vkCmdReserveSpaceForCommandsNVX is not loaded");
-        (fp)(Some(command_buffer), p_reserve_space_info);
+            .fp_cmd_preprocess_generated_commands_nv
+            .expect("vkCmdPreprocessGeneratedCommandsNV is not loaded");
+        (fp)(Some(command_buffer), p_generated_commands_info);
     }
-    pub unsafe fn create_indirect_commands_layout_nvx(
+    pub unsafe fn cmd_bind_pipeline_shader_group_nv(
         &self,
-        p_create_info: &vk::IndirectCommandsLayoutCreateInfoNVX,
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        pipeline: vk::Pipeline,
+        group_index: u32,
+    ) {
+        let fp = self
+            .fp_cmd_bind_pipeline_shader_group_nv
+            .expect("vkCmdBindPipelineShaderGroupNV is not loaded");
+        (fp)(Some(command_buffer), pipeline_bind_point, Some(pipeline), group_index);
+    }
+    pub unsafe fn get_generated_commands_memory_requirements_nv(
+        &self,
+        p_info: &vk::GeneratedCommandsMemoryRequirementsInfoNV,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_generated_commands_memory_requirements_nv
+            .expect("vkGetGeneratedCommandsMemoryRequirementsNV is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn create_indirect_commands_layout_nv(
+        &self,
+        p_create_info: &vk::IndirectCommandsLayoutCreateInfoNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::IndirectCommandsLayoutNVX> {
+    ) -> Result<vk::IndirectCommandsLayoutNV> {
         let fp = self
-            .fp_create_indirect_commands_layout_nvx
-            .expect("vkCreateIndirectCommandsLayoutNVX is not loaded");
+            .fp_create_indirect_commands_layout_nv
+            .expect("vkCreateIndirectCommandsLayoutNV is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         let err = (fp)(
             Some(self.handle),
@@ -8099,109 +8363,19 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn destroy_indirect_commands_layout_nvx(
+    pub unsafe fn destroy_indirect_commands_layout_nv(
         &self,
-        indirect_commands_layout: vk::IndirectCommandsLayoutNVX,
+        indirect_commands_layout: vk::IndirectCommandsLayoutNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
-            .fp_destroy_indirect_commands_layout_nvx
-            .expect("vkDestroyIndirectCommandsLayoutNVX is not loaded");
+            .fp_destroy_indirect_commands_layout_nv
+            .expect("vkDestroyIndirectCommandsLayoutNV is not loaded");
         (fp)(
             Some(self.handle),
             Some(indirect_commands_layout),
             p_allocator.map_or(ptr::null(), |r| r),
         );
-    }
-    pub unsafe fn create_object_table_nvx(
-        &self,
-        p_create_info: &vk::ObjectTableCreateInfoNVX,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::ObjectTableNVX> {
-        let fp = self
-            .fp_create_object_table_nvx
-            .expect("vkCreateObjectTableNVX is not loaded");
-        let mut res = MaybeUninit::<_>::uninit();
-        let err = (fp)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            res.as_mut_ptr(),
-        );
-        match err {
-            vk::Result::SUCCESS => Ok(res.assume_init()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn destroy_object_table_nvx(
-        &self,
-        object_table: vk::ObjectTableNVX,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) {
-        let fp = self
-            .fp_destroy_object_table_nvx
-            .expect("vkDestroyObjectTableNVX is not loaded");
-        (fp)(
-            Some(self.handle),
-            Some(object_table),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
-    }
-    pub unsafe fn register_objects_nvx(
-        &self,
-        object_table: vk::ObjectTableNVX,
-        pp_object_table_entries: *const *const vk::ObjectTableEntryNVX,
-        p_object_indices: &[u32],
-    ) -> Result<()> {
-        let fp = self
-            .fp_register_objects_nvx
-            .expect("vkRegisterObjectsNVX is not loaded");
-        let object_count = p_object_indices.len() as u32;
-        let err = (fp)(
-            Some(self.handle),
-            Some(object_table),
-            object_count,
-            pp_object_table_entries,
-            p_object_indices.as_ptr(),
-        );
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn unregister_objects_nvx(
-        &self,
-        object_table: vk::ObjectTableNVX,
-        p_object_entry_types: &[vk::ObjectEntryTypeNVX],
-        p_object_indices: &[u32],
-    ) -> Result<()> {
-        let fp = self
-            .fp_unregister_objects_nvx
-            .expect("vkUnregisterObjectsNVX is not loaded");
-        let object_count = p_object_entry_types.len() as u32;
-        assert_eq!(object_count, p_object_indices.len() as u32);
-        let err = (fp)(
-            Some(self.handle),
-            Some(object_table),
-            object_count,
-            p_object_entry_types.as_ptr(),
-            p_object_indices.as_ptr(),
-        );
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
-    }
-    pub unsafe fn get_physical_device_generated_commands_properties_nvx(
-        &self,
-        physical_device: vk::PhysicalDevice,
-        p_features: &mut vk::DeviceGeneratedCommandsFeaturesNVX,
-        p_limits: &mut vk::DeviceGeneratedCommandsLimitsNVX,
-    ) {
-        let fp = self
-            .fp_get_physical_device_generated_commands_properties_nvx
-            .expect("vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX is not loaded");
-        (fp)(Some(physical_device), p_features, p_limits);
     }
     pub unsafe fn cmd_push_descriptor_set_khr(
         &self,
@@ -9881,9 +10055,23 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn destroy_acceleration_structure_khr(
+        &self,
+        acceleration_structure: vk::AccelerationStructureKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_acceleration_structure_khr
+            .expect("vkDestroyAccelerationStructureKHR is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(acceleration_structure),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
     pub unsafe fn destroy_acceleration_structure_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureNV,
+        acceleration_structure: vk::AccelerationStructureKHR,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
@@ -9895,6 +10083,16 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
+    pub unsafe fn get_acceleration_structure_memory_requirements_khr(
+        &self,
+        p_info: &vk::AccelerationStructureMemoryRequirementsInfoKHR,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_acceleration_structure_memory_requirements_khr
+            .expect("vkGetAccelerationStructureMemoryRequirementsKHR is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
     pub unsafe fn get_acceleration_structure_memory_requirements_nv(
         &self,
         p_info: &vk::AccelerationStructureMemoryRequirementsInfoNV,
@@ -9905,9 +10103,23 @@ impl Device {
             .expect("vkGetAccelerationStructureMemoryRequirementsNV is not loaded");
         (fp)(Some(self.handle), p_info, p_memory_requirements);
     }
+    pub unsafe fn bind_acceleration_structure_memory_khr(
+        &self,
+        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoKHR],
+    ) -> Result<()> {
+        let fp = self
+            .fp_bind_acceleration_structure_memory_khr
+            .expect("vkBindAccelerationStructureMemoryKHR is not loaded");
+        let bind_info_count = p_bind_infos.len() as u32;
+        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn bind_acceleration_structure_memory_nv(
         &self,
-        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNV],
+        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoKHR],
     ) -> Result<()> {
         let fp = self
             .fp_bind_acceleration_structure_memory_nv
@@ -9922,19 +10134,115 @@ impl Device {
     pub unsafe fn cmd_copy_acceleration_structure_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        dst: vk::AccelerationStructureNV,
-        src: vk::AccelerationStructureNV,
-        mode: vk::CopyAccelerationStructureModeNV,
+        dst: vk::AccelerationStructureKHR,
+        src: vk::AccelerationStructureKHR,
+        mode: vk::CopyAccelerationStructureModeKHR,
     ) {
         let fp = self
             .fp_cmd_copy_acceleration_structure_nv
             .expect("vkCmdCopyAccelerationStructureNV is not loaded");
         (fp)(Some(command_buffer), Some(dst), Some(src), mode);
     }
+    pub unsafe fn cmd_copy_acceleration_structure_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::CopyAccelerationStructureInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_acceleration_structure_khr
+            .expect("vkCmdCopyAccelerationStructureKHR is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_acceleration_structure_khr(
+        &self,
+        p_info: &vk::CopyAccelerationStructureInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_copy_acceleration_structure_khr
+            .expect("vkCopyAccelerationStructureKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_copy_acceleration_structure_to_memory_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::CopyAccelerationStructureToMemoryInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_acceleration_structure_to_memory_khr
+            .expect("vkCmdCopyAccelerationStructureToMemoryKHR is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_acceleration_structure_to_memory_khr(
+        &self,
+        p_info: &vk::CopyAccelerationStructureToMemoryInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_copy_acceleration_structure_to_memory_khr
+            .expect("vkCopyAccelerationStructureToMemoryKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_copy_memory_to_acceleration_structure_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::CopyMemoryToAccelerationStructureInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_to_acceleration_structure_khr
+            .expect("vkCmdCopyMemoryToAccelerationStructureKHR is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_memory_to_acceleration_structure_khr(
+        &self,
+        p_info: &vk::CopyMemoryToAccelerationStructureInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_copy_memory_to_acceleration_structure_khr
+            .expect("vkCopyMemoryToAccelerationStructureKHR is not loaded");
+        let err = (fp)(Some(self.handle), p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_write_acceleration_structures_properties_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_acceleration_structures: &[vk::AccelerationStructureKHR],
+        query_type: vk::QueryType,
+        query_pool: vk::QueryPool,
+        first_query: u32,
+    ) {
+        let fp = self
+            .fp_cmd_write_acceleration_structures_properties_khr
+            .expect("vkCmdWriteAccelerationStructuresPropertiesKHR is not loaded");
+        let acceleration_structure_count = p_acceleration_structures.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            acceleration_structure_count,
+            p_acceleration_structures.as_ptr(),
+            query_type,
+            Some(query_pool),
+            first_query,
+        );
+    }
     pub unsafe fn cmd_write_acceleration_structures_properties_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_acceleration_structures: &[vk::AccelerationStructureNV],
+        p_acceleration_structures: &[vk::AccelerationStructureKHR],
         query_type: vk::QueryType,
         query_pool: vk::QueryPool,
         first_query: u32,
@@ -9959,8 +10267,8 @@ impl Device {
         instance_data: Option<vk::Buffer>,
         instance_offset: vk::DeviceSize,
         update: bool,
-        dst: vk::AccelerationStructureNV,
-        src: Option<vk::AccelerationStructureNV>,
+        dst: vk::AccelerationStructureKHR,
+        src: Option<vk::AccelerationStructureKHR>,
         scratch: vk::Buffer,
         scratch_offset: vk::DeviceSize,
     ) {
@@ -9977,6 +10285,55 @@ impl Device {
             src,
             Some(scratch),
             scratch_offset,
+        );
+    }
+    pub unsafe fn write_acceleration_structures_properties_khr(
+        &self,
+        p_acceleration_structures: &[vk::AccelerationStructureKHR],
+        query_type: vk::QueryType,
+        data_size: usize,
+        p_data: *mut c_void,
+        stride: usize,
+    ) -> Result<()> {
+        let fp = self
+            .fp_write_acceleration_structures_properties_khr
+            .expect("vkWriteAccelerationStructuresPropertiesKHR is not loaded");
+        let acceleration_structure_count = p_acceleration_structures.len() as u32;
+        let err = (fp)(
+            Some(self.handle),
+            acceleration_structure_count,
+            p_acceleration_structures.as_ptr(),
+            query_type,
+            data_size,
+            p_data,
+            stride,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_trace_rays_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_raygen_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_miss_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_hit_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_callable_shader_binding_table: &vk::StridedBufferRegionKHR,
+        width: u32,
+        height: u32,
+        depth: u32,
+    ) {
+        let fp = self.fp_cmd_trace_rays_khr.expect("vkCmdTraceRaysKHR is not loaded");
+        (fp)(
+            Some(command_buffer),
+            p_raygen_shader_binding_table,
+            p_miss_shader_binding_table,
+            p_hit_shader_binding_table,
+            p_callable_shader_binding_table,
+            width,
+            height,
+            depth,
         );
     }
     pub unsafe fn cmd_trace_rays_nv(
@@ -10016,6 +10373,30 @@ impl Device {
             depth,
         );
     }
+    pub unsafe fn get_ray_tracing_shader_group_handles_khr(
+        &self,
+        pipeline: vk::Pipeline,
+        first_group: u32,
+        group_count: u32,
+        data_size: usize,
+        p_data: *mut c_void,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_ray_tracing_shader_group_handles_khr
+            .expect("vkGetRayTracingShaderGroupHandlesKHR is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            Some(pipeline),
+            first_group,
+            group_count,
+            data_size,
+            p_data,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn get_ray_tracing_shader_group_handles_nv(
         &self,
         pipeline: vk::Pipeline,
@@ -10040,9 +10421,33 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_ray_tracing_capture_replay_shader_group_handles_khr(
+        &self,
+        pipeline: vk::Pipeline,
+        first_group: u32,
+        group_count: u32,
+        data_size: usize,
+        p_data: *mut c_void,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_ray_tracing_capture_replay_shader_group_handles_khr
+            .expect("vkGetRayTracingCaptureReplayShaderGroupHandlesKHR is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            Some(pipeline),
+            first_group,
+            group_count,
+            data_size,
+            p_data,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn get_acceleration_structure_handle_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureNV,
+        acceleration_structure: vk::AccelerationStructureKHR,
         data_size: usize,
         p_data: *mut c_void,
     ) -> Result<()> {
@@ -10154,6 +10559,105 @@ impl Device {
             _ => Err(v_err),
         }
     }
+    pub unsafe fn create_ray_tracing_pipelines_khr(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+        p_pipelines: *mut vk::Pipeline,
+    ) -> Result<()> {
+        let fp = self
+            .fp_create_ray_tracing_pipelines_khr
+            .expect("vkCreateRayTracingPipelinesKHR is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.as_ptr(),
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_pipelines,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_ray_tracing_pipelines_khr_to_vec(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<Vec<vk::Pipeline>> {
+        let fp = self
+            .fp_create_ray_tracing_pipelines_khr
+            .expect("vkCreateRayTracingPipelinesKHR is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = Vec::with_capacity(create_info_count as usize);
+        v.set_len(create_info_count as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.as_ptr(),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_ray_tracing_pipelines_khr_array<A: Array<Item = vk::Pipeline>>(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<A> {
+        let fp = self
+            .fp_create_ray_tracing_pipelines_khr
+            .expect("vkCreateRayTracingPipelinesKHR is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, A::len() as u32);
+        let mut v = MaybeUninit::<A>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.as_ptr(),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr() as *mut _,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_ray_tracing_pipelines_khr_single(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::Pipeline> {
+        let fp = self
+            .fp_create_ray_tracing_pipelines_khr
+            .expect("vkCreateRayTracingPipelinesKHR is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, 1);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.as_ptr(),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
     pub unsafe fn get_physical_device_cooperative_matrix_properties_nv_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
@@ -10173,6 +10677,42 @@ impl Device {
         match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
+        }
+    }
+    pub unsafe fn cmd_trace_rays_indirect_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_raygen_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_miss_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_hit_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_callable_shader_binding_table: &vk::StridedBufferRegionKHR,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+    ) {
+        let fp = self
+            .fp_cmd_trace_rays_indirect_khr
+            .expect("vkCmdTraceRaysIndirectKHR is not loaded");
+        (fp)(
+            Some(command_buffer),
+            p_raygen_shader_binding_table,
+            p_miss_shader_binding_table,
+            p_hit_shader_binding_table,
+            p_callable_shader_binding_table,
+            Some(buffer),
+            offset,
+        );
+    }
+    pub unsafe fn get_device_acceleration_structure_compatibility_khr(
+        &self,
+        version: &vk::AccelerationStructureVersionKHR,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_device_acceleration_structure_compatibility_khr
+            .expect("vkGetDeviceAccelerationStructureCompatibilityKHR is not loaded");
+        let err = (fp)(Some(self.handle), version);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
         }
     }
     pub unsafe fn get_image_view_handle_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u32 {
@@ -10580,6 +11120,141 @@ impl Device {
         match v_err {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_acceleration_structure_khr(
+        &self,
+        p_create_info: &vk::AccelerationStructureCreateInfoKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::AccelerationStructureKHR> {
+        let fp = self
+            .fp_create_acceleration_structure_khr
+            .expect("vkCreateAccelerationStructureKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_build_acceleration_structure_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
+        pp_offset_infos: *const *const vk::AccelerationStructureBuildOffsetInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_build_acceleration_structure_khr
+            .expect("vkCmdBuildAccelerationStructureKHR is not loaded");
+        let info_count = p_infos.len() as u32;
+        (fp)(Some(command_buffer), info_count, p_infos.as_ptr(), pp_offset_infos);
+    }
+    pub unsafe fn cmd_build_acceleration_structure_indirect_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::AccelerationStructureBuildGeometryInfoKHR,
+        indirect_buffer: vk::Buffer,
+        indirect_offset: vk::DeviceSize,
+        indirect_stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_build_acceleration_structure_indirect_khr
+            .expect("vkCmdBuildAccelerationStructureIndirectKHR is not loaded");
+        (fp)(
+            Some(command_buffer),
+            p_info,
+            Some(indirect_buffer),
+            indirect_offset,
+            indirect_stride,
+        );
+    }
+    pub unsafe fn build_acceleration_structure_khr(
+        &self,
+        p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
+        pp_offset_infos: *const *const vk::AccelerationStructureBuildOffsetInfoKHR,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_build_acceleration_structure_khr
+            .expect("vkBuildAccelerationStructureKHR is not loaded");
+        let info_count = p_infos.len() as u32;
+        let err = (fp)(Some(self.handle), info_count, p_infos.as_ptr(), pp_offset_infos);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_acceleration_structure_device_address_khr(
+        &self,
+        p_info: &vk::AccelerationStructureDeviceAddressInfoKHR,
+    ) -> vk::DeviceAddress {
+        let fp = self
+            .fp_get_acceleration_structure_device_address_khr
+            .expect("vkGetAccelerationStructureDeviceAddressKHR is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn create_deferred_operation_khr(
+        &self,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::DeferredOperationKHR> {
+        let fp = self
+            .fp_create_deferred_operation_khr
+            .expect("vkCreateDeferredOperationKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_deferred_operation_khr(
+        &self,
+        operation: vk::DeferredOperationKHR,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_deferred_operation_khr
+            .expect("vkDestroyDeferredOperationKHR is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(operation),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_deferred_operation_max_concurrency_khr(&self, operation: vk::DeferredOperationKHR) -> u32 {
+        let fp = self
+            .fp_get_deferred_operation_max_concurrency_khr
+            .expect("vkGetDeferredOperationMaxConcurrencyKHR is not loaded");
+        (fp)(Some(self.handle), Some(operation))
+    }
+    pub unsafe fn get_deferred_operation_result_khr(&self, operation: vk::DeferredOperationKHR) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_deferred_operation_result_khr
+            .expect("vkGetDeferredOperationResultKHR is not loaded");
+        let err = (fp)(Some(self.handle), Some(operation));
+        match err {
+            vk::Result::SUCCESS | vk::Result::NOT_READY => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn deferred_operation_join_khr(&self, operation: vk::DeferredOperationKHR) -> Result<vk::Result> {
+        let fp = self
+            .fp_deferred_operation_join_khr
+            .expect("vkDeferredOperationJoinKHR is not loaded");
+        let err = (fp)(Some(self.handle), Some(operation));
+        match err {
+            vk::Result::SUCCESS | vk::Result::THREAD_DONE_KHR | vk::Result::THREAD_IDLE_KHR => Ok(err),
+            _ => Err(err),
         }
     }
 }

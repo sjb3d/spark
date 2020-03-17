@@ -152,7 +152,8 @@ pub const MAX_DRIVER_NAME_SIZE: usize = 256;
 pub const MAX_DRIVER_NAME_SIZE_KHR: usize = MAX_DRIVER_NAME_SIZE;
 pub const MAX_DRIVER_INFO_SIZE: usize = 256;
 pub const MAX_DRIVER_INFO_SIZE_KHR: usize = MAX_DRIVER_INFO_SIZE;
-pub const SHADER_UNUSED_NV: u32 = 0xffffffff;
+pub const SHADER_UNUSED_KHR: u32 = 0xffffffff;
+pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -513,7 +514,10 @@ impl fmt::Display for PipelineLayoutCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCacheCreateFlags(u32);
-impl PipelineCacheCreateFlags {}
+impl PipelineCacheCreateFlags {
+    /// Added by extension VK_EXT_pipeline_creation_cache_control.
+    pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self(0x1);
+}
 impl default::Default for PipelineCacheCreateFlags {
     fn default() -> Self {
         Self(0)
@@ -524,13 +528,13 @@ impl PipelineCacheCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x0)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -574,7 +578,7 @@ impl ops::BitXorAssign for PipelineCacheCreateFlags {
 }
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0, &[(0x1, "EXTERNALLY_SYNCHRONIZED_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -1938,20 +1942,22 @@ impl AccessFlags {
     /// read access flag for reading conditional rendering predicate
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_READ_NVX: Self = Self(0x20000);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_WRITE_NVX: Self = Self(0x40000);
     /// Added by extension VK_EXT_blend_operation_advanced.
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_READ_KHR: Self = Self(0x200000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_WRITE_KHR: Self = Self(0x400000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_READ_NV: Self = Self(0x800000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_READ_NV: Self = Self(0x200000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self(0x400000);
+    pub const ACCELERATION_STRUCTURE_READ_NV: Self = Self::ACCELERATION_STRUCTURE_READ_KHR;
+    pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::ACCELERATION_STRUCTURE_WRITE_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
 }
 impl default::Default for AccessFlags {
     fn default() -> Self {
@@ -2041,13 +2047,13 @@ impl fmt::Display for AccessFlags {
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
                 (0x100000, "CONDITIONAL_RENDERING_READ_EXT"),
-                (0x20000, "COMMAND_PROCESS_READ_NVX"),
-                (0x40000, "COMMAND_PROCESS_WRITE_NVX"),
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+                (0x200000, "ACCELERATION_STRUCTURE_READ_KHR"),
+                (0x400000, "ACCELERATION_STRUCTURE_WRITE_KHR"),
                 (0x800000, "SHADING_RATE_IMAGE_READ_NV"),
-                (0x200000, "ACCELERATION_STRUCTURE_READ_NV"),
-                (0x400000, "ACCELERATION_STRUCTURE_WRITE_NV"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
+                (0x20000, "COMMAND_PREPROCESS_READ_NV"),
+                (0x40000, "COMMAND_PREPROCESS_WRITE_NV"),
             ],
             f,
         )
@@ -2091,8 +2097,9 @@ impl BufferUsageFlags {
     /// Specifies the buffer can be used as predicate in conditional rendering
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_NV: Self = Self(0x400);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_KHR: Self = Self(0x400);
+    pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
     /// Added by extension VK_QCOM_extension_173.
     pub const RESERVED_18_QCOM: Self = Self(0x40000);
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
@@ -2178,7 +2185,7 @@ impl fmt::Display for BufferUsageFlags {
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
-                (0x400, "RAY_TRACING_NV"),
+                (0x400, "RAY_TRACING_KHR"),
                 (0x40000, "RESERVED_18_QCOM"),
             ],
             f,
@@ -2286,18 +2293,24 @@ impl ShaderStageFlags {
     pub const COMPUTE: Self = Self(0x20);
     pub const ALL_GRAPHICS: Self = Self(0x1f);
     pub const ALL: Self = Self(0x7fffffff);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const RAYGEN_NV: Self = Self(0x100);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ANY_HIT_NV: Self = Self(0x200);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const CLOSEST_HIT_NV: Self = Self(0x400);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const MISS_NV: Self = Self(0x800);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const INTERSECTION_NV: Self = Self(0x1000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const CALLABLE_NV: Self = Self(0x2000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAYGEN_KHR: Self = Self(0x100);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ANY_HIT_KHR: Self = Self(0x200);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const CLOSEST_HIT_KHR: Self = Self(0x400);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const MISS_KHR: Self = Self(0x800);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const INTERSECTION_KHR: Self = Self(0x1000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const CALLABLE_KHR: Self = Self(0x2000);
+    pub const RAYGEN_NV: Self = Self::RAYGEN_KHR;
+    pub const ANY_HIT_NV: Self = Self::ANY_HIT_KHR;
+    pub const CLOSEST_HIT_NV: Self = Self::CLOSEST_HIT_KHR;
+    pub const MISS_NV: Self = Self::MISS_KHR;
+    pub const INTERSECTION_NV: Self = Self::INTERSECTION_KHR;
+    pub const CALLABLE_NV: Self = Self::CALLABLE_KHR;
     /// Added by extension VK_NV_mesh_shader.
     pub const TASK_NV: Self = Self(0x40);
     /// Added by extension VK_NV_mesh_shader.
@@ -2374,12 +2387,12 @@ impl fmt::Display for ShaderStageFlags {
                 (0x20, "COMPUTE"),
                 (0x1f, "ALL_GRAPHICS"),
                 (0x7fffffff, "ALL"),
-                (0x100, "RAYGEN_NV"),
-                (0x200, "ANY_HIT_NV"),
-                (0x400, "CLOSEST_HIT_NV"),
-                (0x800, "MISS_NV"),
-                (0x1000, "INTERSECTION_NV"),
-                (0x2000, "CALLABLE_NV"),
+                (0x100, "RAYGEN_KHR"),
+                (0x200, "ANY_HIT_KHR"),
+                (0x400, "CLOSEST_HIT_KHR"),
+                (0x800, "MISS_KHR"),
+                (0x1000, "INTERSECTION_KHR"),
+                (0x2000, "CALLABLE_KHR"),
                 (0x40, "TASK_NV"),
                 (0x80, "MESH_NV"),
             ],
@@ -2715,34 +2728,32 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE: Self = Self(0x10);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
-    /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_BIT0_NV: Self = Self(0x800);
-    /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_BIT1_NV: Self = Self(0x4000);
-    /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_BIT2_NV: Self = Self(0x8000);
-    /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_BIT3_NV: Self = Self(0x10000);
-    /// Added by extension VK_NV_extension_151.
-    pub const EXTENSION_151_BIT4_NV: Self = Self(0x20000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR: Self = Self(0x4000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR: Self = Self(0x8000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_NO_NULL_MISS_SHADERS_KHR: Self = Self(0x10000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR: Self = Self(0x20000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_SKIP_TRIANGLES_KHR: Self = Self(0x1000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_SKIP_AABBS_KHR: Self = Self(0x2000);
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_INTERNAL_REPRESENTATIONS_KHR: Self = Self(0x80);
-    /// Added by extension VK_NV_extension_278.
-    pub const EXTENSION_278_BIT18_NV: Self = Self(0x40000);
-    /// Added by extension VK_NV_extension_291.
-    pub const EXTENSION_291_BIT0_NV: Self = Self(0x1000);
-    /// Added by extension VK_NV_extension_291.
-    pub const EXTENSION_291_BIT1_NV: Self = Self(0x2000);
-    /// Added by extension VK_EXT_extension_298.
-    pub const RESERVED_8_EXT: Self = Self(0x100);
-    /// Added by extension VK_EXT_extension_298.
-    pub const RESERVED_9_EXT: Self = Self(0x200);
-    /// Added by extension VK_EXT_extension_298.
-    pub const RESERVED_10_EXT: Self = Self(0x400);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const INDIRECT_BINDABLE_NV: Self = Self(0x40000);
+    /// Added by extension VK_KHR_pipeline_library.
+    pub const LIBRARY_KHR: Self = Self(0x800);
+    /// Added by extension VK_EXT_pipeline_creation_cache_control.
+    pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(0x100);
+    /// Added by extension VK_EXT_pipeline_creation_cache_control.
+    pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self(0x200);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2754,13 +2765,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7ffff)
+        Self(0x7fbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7ffff
+        self.0 == 0x7fbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2812,20 +2823,19 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4, "DERIVATIVE"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
-                (0x800, "EXTENSION_151_BIT0_NV"),
-                (0x4000, "EXTENSION_151_BIT1_NV"),
-                (0x8000, "EXTENSION_151_BIT2_NV"),
-                (0x10000, "EXTENSION_151_BIT3_NV"),
-                (0x20000, "EXTENSION_151_BIT4_NV"),
+                (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR"),
+                (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR"),
+                (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS_KHR"),
+                (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR"),
+                (0x1000, "RAY_TRACING_SKIP_TRIANGLES_KHR"),
+                (0x2000, "RAY_TRACING_SKIP_AABBS_KHR"),
                 (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
-                (0x40000, "EXTENSION_278_BIT18_NV"),
-                (0x1000, "EXTENSION_291_BIT0_NV"),
-                (0x2000, "EXTENSION_291_BIT1_NV"),
-                (0x100, "RESERVED_8_EXT"),
-                (0x200, "RESERVED_9_EXT"),
-                (0x400, "RESERVED_10_EXT"),
+                (0x40000, "INDIRECT_BINDABLE_NV"),
+                (0x800, "LIBRARY_KHR"),
+                (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT"),
+                (0x200, "EARLY_RETURN_ON_FAILURE_EXT"),
             ],
             f,
         )
@@ -3101,8 +3111,8 @@ impl FormatFeatureFlags {
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
-    /// Added by extension VK_NV_extension_151.
-    pub const RESERVED_29_NV: Self = Self(0x20000000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR: Self = Self(0x20000000);
     pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER;
@@ -3215,7 +3225,7 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x10000000, "RESERVED_28_KHR"),
                 (0x2000000, "RESERVED_25_KHR"),
                 (0x4000000, "RESERVED_26_KHR"),
-                (0x20000000, "RESERVED_29_NV"),
+                (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
             ],
             f,
@@ -4371,20 +4381,22 @@ impl PipelineStageFlags {
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const COMMAND_PROCESS_NVX: Self = Self(0x20000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_SHADER_KHR: Self = Self(0x200000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_BUILD_KHR: Self = Self(0x2000000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = Self(0x400000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_SHADER_NV: Self = Self(0x200000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self(0x2000000);
+    pub const RAY_TRACING_SHADER_NV: Self = Self::RAY_TRACING_SHADER_KHR;
+    pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::ACCELERATION_STRUCTURE_BUILD_KHR;
     /// Added by extension VK_NV_mesh_shader.
     pub const TASK_SHADER_NV: Self = Self(0x80000);
     /// Added by extension VK_NV_mesh_shader.
     pub const MESH_SHADER_NV: Self = Self(0x100000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
 }
 impl default::Default for PipelineStageFlags {
     fn default() -> Self {
@@ -4470,13 +4482,13 @@ impl fmt::Display for PipelineStageFlags {
                 (0x4000000, "RESERVED_26_KHR"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
-                (0x20000, "COMMAND_PROCESS_NVX"),
+                (0x200000, "RAY_TRACING_SHADER_KHR"),
+                (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
                 (0x400000, "SHADING_RATE_IMAGE_NV"),
-                (0x200000, "RAY_TRACING_SHADER_NV"),
-                (0x2000000, "ACCELERATION_STRUCTURE_BUILD_NV"),
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
+                (0x20000, "COMMAND_PREPROCESS_NV"),
             ],
             f,
         )
@@ -5116,30 +5128,29 @@ impl fmt::Display for SubgroupFeatureFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct IndirectCommandsLayoutUsageFlagsNVX(u32);
-impl IndirectCommandsLayoutUsageFlagsNVX {
-    pub const UNORDERED_SEQUENCES: Self = Self(0x1);
-    pub const SPARSE_SEQUENCES: Self = Self(0x2);
-    pub const EMPTY_EXECUTIONS: Self = Self(0x4);
-    pub const INDEXED_SEQUENCES: Self = Self(0x8);
+pub struct IndirectCommandsLayoutUsageFlagsNV(u32);
+impl IndirectCommandsLayoutUsageFlagsNV {
+    pub const EXPLICIT_PREPROCESS: Self = Self(0x1);
+    pub const INDEXED_SEQUENCES: Self = Self(0x2);
+    pub const UNORDERED_SEQUENCES: Self = Self(0x4);
 }
-impl default::Default for IndirectCommandsLayoutUsageFlagsNVX {
+impl default::Default for IndirectCommandsLayoutUsageFlagsNV {
     fn default() -> Self {
         Self(0)
     }
 }
-impl IndirectCommandsLayoutUsageFlagsNVX {
+impl IndirectCommandsLayoutUsageFlagsNV {
     pub fn empty() -> Self {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xf)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x7
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5148,48 +5159,47 @@ impl IndirectCommandsLayoutUsageFlagsNVX {
         (self.0 & other.0) == other.0
     }
 }
-impl ops::BitOr for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitOr for IndirectCommandsLayoutUsageFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
         Self(self.0 | rhs.0)
     }
 }
-impl ops::BitOrAssign for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitOrAssign for IndirectCommandsLayoutUsageFlagsNV {
     fn bitor_assign(&mut self, rhs: Self) {
         self.0 |= rhs.0;
     }
 }
-impl ops::BitAnd for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitAnd for IndirectCommandsLayoutUsageFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
         Self(self.0 & rhs.0)
     }
 }
-impl ops::BitAndAssign for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitAndAssign for IndirectCommandsLayoutUsageFlagsNV {
     fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
-impl ops::BitXor for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitXor for IndirectCommandsLayoutUsageFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
         Self(self.0 ^ rhs.0)
     }
 }
-impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNVX {
+impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNV {
     fn bitxor_assign(&mut self, rhs: Self) {
         self.0 ^= rhs.0;
     }
 }
-impl fmt::Display for IndirectCommandsLayoutUsageFlagsNVX {
+impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
             &[
-                (0x1, "UNORDERED_SEQUENCES"),
-                (0x2, "SPARSE_SEQUENCES"),
-                (0x4, "EMPTY_EXECUTIONS"),
-                (0x8, "INDEXED_SEQUENCES"),
+                (0x1, "EXPLICIT_PREPROCESS"),
+                (0x2, "INDEXED_SEQUENCES"),
+                (0x4, "UNORDERED_SEQUENCES"),
             ],
             f,
         )
@@ -5197,28 +5207,27 @@ impl fmt::Display for IndirectCommandsLayoutUsageFlagsNVX {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct ObjectEntryUsageFlagsNVX(u32);
-impl ObjectEntryUsageFlagsNVX {
-    pub const GRAPHICS: Self = Self(0x1);
-    pub const COMPUTE: Self = Self(0x2);
+pub struct IndirectStateFlagsNV(u32);
+impl IndirectStateFlagsNV {
+    pub const FRONTFACE: Self = Self(0x1);
 }
-impl default::Default for ObjectEntryUsageFlagsNVX {
+impl default::Default for IndirectStateFlagsNV {
     fn default() -> Self {
         Self(0)
     }
 }
-impl ObjectEntryUsageFlagsNVX {
+impl IndirectStateFlagsNV {
     pub fn empty() -> Self {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5227,57 +5236,59 @@ impl ObjectEntryUsageFlagsNVX {
         (self.0 & other.0) == other.0
     }
 }
-impl ops::BitOr for ObjectEntryUsageFlagsNVX {
+impl ops::BitOr for IndirectStateFlagsNV {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
         Self(self.0 | rhs.0)
     }
 }
-impl ops::BitOrAssign for ObjectEntryUsageFlagsNVX {
+impl ops::BitOrAssign for IndirectStateFlagsNV {
     fn bitor_assign(&mut self, rhs: Self) {
         self.0 |= rhs.0;
     }
 }
-impl ops::BitAnd for ObjectEntryUsageFlagsNVX {
+impl ops::BitAnd for IndirectStateFlagsNV {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
         Self(self.0 & rhs.0)
     }
 }
-impl ops::BitAndAssign for ObjectEntryUsageFlagsNVX {
+impl ops::BitAndAssign for IndirectStateFlagsNV {
     fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
-impl ops::BitXor for ObjectEntryUsageFlagsNVX {
+impl ops::BitXor for IndirectStateFlagsNV {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
         Self(self.0 ^ rhs.0)
     }
 }
-impl ops::BitXorAssign for ObjectEntryUsageFlagsNVX {
+impl ops::BitXorAssign for IndirectStateFlagsNV {
     fn bitxor_assign(&mut self, rhs: Self) {
         self.0 ^= rhs.0;
     }
 }
-impl fmt::Display for ObjectEntryUsageFlagsNVX {
+impl fmt::Display for IndirectStateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "GRAPHICS"), (0x2, "COMPUTE")], f)
+        display_bitmask(self.0, &[(0x1, "FRONTFACE")], f)
     }
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct GeometryFlagsNV(u32);
-impl GeometryFlagsNV {
+pub struct GeometryFlagsKHR(u32);
+impl GeometryFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const NO_DUPLICATE_ANY_HIT_INVOCATION: Self = Self(0x2);
+    pub const OPAQUE_NV: Self = Self::OPAQUE;
+    pub const NO_DUPLICATE_ANY_HIT_INVOCATION_NV: Self = Self::NO_DUPLICATE_ANY_HIT_INVOCATION;
 }
-impl default::Default for GeometryFlagsNV {
+impl default::Default for GeometryFlagsKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl GeometryFlagsNV {
+impl GeometryFlagsKHR {
     pub fn empty() -> Self {
         Self(0)
     }
@@ -5297,59 +5308,64 @@ impl GeometryFlagsNV {
         (self.0 & other.0) == other.0
     }
 }
-impl ops::BitOr for GeometryFlagsNV {
+impl ops::BitOr for GeometryFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
         Self(self.0 | rhs.0)
     }
 }
-impl ops::BitOrAssign for GeometryFlagsNV {
+impl ops::BitOrAssign for GeometryFlagsKHR {
     fn bitor_assign(&mut self, rhs: Self) {
         self.0 |= rhs.0;
     }
 }
-impl ops::BitAnd for GeometryFlagsNV {
+impl ops::BitAnd for GeometryFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
         Self(self.0 & rhs.0)
     }
 }
-impl ops::BitAndAssign for GeometryFlagsNV {
+impl ops::BitAndAssign for GeometryFlagsKHR {
     fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
-impl ops::BitXor for GeometryFlagsNV {
+impl ops::BitXor for GeometryFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
         Self(self.0 ^ rhs.0)
     }
 }
-impl ops::BitXorAssign for GeometryFlagsNV {
+impl ops::BitXorAssign for GeometryFlagsKHR {
     fn bitxor_assign(&mut self, rhs: Self) {
         self.0 ^= rhs.0;
     }
 }
-impl fmt::Display for GeometryFlagsNV {
+impl fmt::Display for GeometryFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0, &[(0x1, "OPAQUE"), (0x2, "NO_DUPLICATE_ANY_HIT_INVOCATION")], f)
     }
 }
+pub type GeometryFlagsNV = GeometryFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct GeometryInstanceFlagsNV(u32);
-impl GeometryInstanceFlagsNV {
-    pub const TRIANGLE_CULL_DISABLE: Self = Self(0x1);
+pub struct GeometryInstanceFlagsKHR(u32);
+impl GeometryInstanceFlagsKHR {
+    pub const TRIANGLE_FACING_CULL_DISABLE: Self = Self(0x1);
     pub const TRIANGLE_FRONT_COUNTERCLOCKWISE: Self = Self(0x2);
     pub const FORCE_OPAQUE: Self = Self(0x4);
     pub const FORCE_NO_OPAQUE: Self = Self(0x8);
+    pub const TRIANGLE_CULL_DISABLE_NV: Self = Self::TRIANGLE_FACING_CULL_DISABLE;
+    pub const TRIANGLE_FRONT_COUNTERCLOCKWISE_NV: Self = Self::TRIANGLE_FRONT_COUNTERCLOCKWISE;
+    pub const FORCE_OPAQUE_NV: Self = Self::FORCE_OPAQUE;
+    pub const FORCE_NO_OPAQUE_NV: Self = Self::FORCE_NO_OPAQUE;
 }
-impl default::Default for GeometryInstanceFlagsNV {
+impl default::Default for GeometryInstanceFlagsKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl GeometryInstanceFlagsNV {
+impl GeometryInstanceFlagsKHR {
     pub fn empty() -> Self {
         Self(0)
     }
@@ -5369,45 +5385,45 @@ impl GeometryInstanceFlagsNV {
         (self.0 & other.0) == other.0
     }
 }
-impl ops::BitOr for GeometryInstanceFlagsNV {
+impl ops::BitOr for GeometryInstanceFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
         Self(self.0 | rhs.0)
     }
 }
-impl ops::BitOrAssign for GeometryInstanceFlagsNV {
+impl ops::BitOrAssign for GeometryInstanceFlagsKHR {
     fn bitor_assign(&mut self, rhs: Self) {
         self.0 |= rhs.0;
     }
 }
-impl ops::BitAnd for GeometryInstanceFlagsNV {
+impl ops::BitAnd for GeometryInstanceFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
         Self(self.0 & rhs.0)
     }
 }
-impl ops::BitAndAssign for GeometryInstanceFlagsNV {
+impl ops::BitAndAssign for GeometryInstanceFlagsKHR {
     fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
-impl ops::BitXor for GeometryInstanceFlagsNV {
+impl ops::BitXor for GeometryInstanceFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
         Self(self.0 ^ rhs.0)
     }
 }
-impl ops::BitXorAssign for GeometryInstanceFlagsNV {
+impl ops::BitXorAssign for GeometryInstanceFlagsKHR {
     fn bitxor_assign(&mut self, rhs: Self) {
         self.0 ^= rhs.0;
     }
 }
-impl fmt::Display for GeometryInstanceFlagsNV {
+impl fmt::Display for GeometryInstanceFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
             &[
-                (0x1, "TRIANGLE_CULL_DISABLE"),
+                (0x1, "TRIANGLE_FACING_CULL_DISABLE"),
                 (0x2, "TRIANGLE_FRONT_COUNTERCLOCKWISE"),
                 (0x4, "FORCE_OPAQUE"),
                 (0x8, "FORCE_NO_OPAQUE"),
@@ -5416,22 +5432,28 @@ impl fmt::Display for GeometryInstanceFlagsNV {
         )
     }
 }
+pub type GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct BuildAccelerationStructureFlagsNV(u32);
-impl BuildAccelerationStructureFlagsNV {
+pub struct BuildAccelerationStructureFlagsKHR(u32);
+impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_UPDATE: Self = Self(0x1);
     pub const ALLOW_COMPACTION: Self = Self(0x2);
     pub const PREFER_FAST_TRACE: Self = Self(0x4);
     pub const PREFER_FAST_BUILD: Self = Self(0x8);
     pub const LOW_MEMORY: Self = Self(0x10);
+    pub const ALLOW_UPDATE_NV: Self = Self::ALLOW_UPDATE;
+    pub const ALLOW_COMPACTION_NV: Self = Self::ALLOW_COMPACTION;
+    pub const PREFER_FAST_TRACE_NV: Self = Self::PREFER_FAST_TRACE;
+    pub const PREFER_FAST_BUILD_NV: Self = Self::PREFER_FAST_BUILD;
+    pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
 }
-impl default::Default for BuildAccelerationStructureFlagsNV {
+impl default::Default for BuildAccelerationStructureFlagsKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl BuildAccelerationStructureFlagsNV {
+impl BuildAccelerationStructureFlagsKHR {
     pub fn empty() -> Self {
         Self(0)
     }
@@ -5451,40 +5473,40 @@ impl BuildAccelerationStructureFlagsNV {
         (self.0 & other.0) == other.0
     }
 }
-impl ops::BitOr for BuildAccelerationStructureFlagsNV {
+impl ops::BitOr for BuildAccelerationStructureFlagsKHR {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self {
         Self(self.0 | rhs.0)
     }
 }
-impl ops::BitOrAssign for BuildAccelerationStructureFlagsNV {
+impl ops::BitOrAssign for BuildAccelerationStructureFlagsKHR {
     fn bitor_assign(&mut self, rhs: Self) {
         self.0 |= rhs.0;
     }
 }
-impl ops::BitAnd for BuildAccelerationStructureFlagsNV {
+impl ops::BitAnd for BuildAccelerationStructureFlagsKHR {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self {
         Self(self.0 & rhs.0)
     }
 }
-impl ops::BitAndAssign for BuildAccelerationStructureFlagsNV {
+impl ops::BitAndAssign for BuildAccelerationStructureFlagsKHR {
     fn bitand_assign(&mut self, rhs: Self) {
         self.0 &= rhs.0;
     }
 }
-impl ops::BitXor for BuildAccelerationStructureFlagsNV {
+impl ops::BitXor for BuildAccelerationStructureFlagsKHR {
     type Output = Self;
     fn bitxor(self, rhs: Self) -> Self {
         Self(self.0 ^ rhs.0)
     }
 }
-impl ops::BitXorAssign for BuildAccelerationStructureFlagsNV {
+impl ops::BitXorAssign for BuildAccelerationStructureFlagsKHR {
     fn bitxor_assign(&mut self, rhs: Self) {
         self.0 ^= rhs.0;
     }
 }
-impl fmt::Display for BuildAccelerationStructureFlagsNV {
+impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
@@ -5499,6 +5521,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsNV {
         )
     }
 }
+pub type BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateCreateFlags(u32);
@@ -5990,6 +6013,85 @@ impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct DeviceDiagnosticsConfigFlagsNV(u32);
+impl DeviceDiagnosticsConfigFlagsNV {
+    pub const ENABLE_SHADER_DEBUG_INFO: Self = Self(0x1);
+    pub const ENABLE_RESOURCE_TRACKING: Self = Self(0x2);
+    pub const ENABLE_AUTOMATIC_CHECKPOINTS: Self = Self(0x4);
+}
+impl default::Default for DeviceDiagnosticsConfigFlagsNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl DeviceDiagnosticsConfigFlagsNV {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x7)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x7
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for DeviceDiagnosticsConfigFlagsNV {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for DeviceDiagnosticsConfigFlagsNV {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for DeviceDiagnosticsConfigFlagsNV {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for DeviceDiagnosticsConfigFlagsNV {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for DeviceDiagnosticsConfigFlagsNV {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for DeviceDiagnosticsConfigFlagsNV {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "ENABLE_SHADER_DEBUG_INFO"),
+                (0x2, "ENABLE_RESOURCE_TRACKING"),
+                (0x4, "ENABLE_AUTOMATIC_CHECKPOINTS"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -9976,16 +10078,8 @@ impl PipelineCache {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct ObjectTableNVX(num::NonZeroU64);
-impl ObjectTableNVX {
-    pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Self)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct IndirectCommandsLayoutNVX(num::NonZeroU64);
-impl IndirectCommandsLayoutNVX {
+pub struct IndirectCommandsLayoutNV(num::NonZeroU64);
+impl IndirectCommandsLayoutNV {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -10018,16 +10112,25 @@ impl ValidationCacheEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureNV(num::NonZeroU64);
-impl AccelerationStructureNV {
+pub struct AccelerationStructureKHR(num::NonZeroU64);
+impl AccelerationStructureKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+pub type AccelerationStructureNV = AccelerationStructureKHR;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
+impl PerformanceConfigurationINTEL {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
-impl PerformanceConfigurationINTEL {
+pub struct DeferredOperationKHR(num::NonZeroU64);
+impl DeferredOperationKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -10452,20 +10555,6 @@ impl fmt::Display for PipelineLayoutCreateFlagBits {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineCacheCreateFlagBits(i32);
-impl PipelineCacheCreateFlagBits {}
-impl default::Default for PipelineCacheCreateFlagBits {
-    fn default() -> Self {
-        Self(0)
-    }
-}
-impl fmt::Display for PipelineCacheCreateFlagBits {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineDepthStencilStateCreateFlagBits(i32);
 impl PipelineDepthStencilStateCreateFlagBits {}
 impl default::Default for PipelineDepthStencilStateCreateFlagBits {
@@ -10735,8 +10824,9 @@ impl DescriptorType {
     pub const INPUT_ATTACHMENT: Self = Self(10);
     /// Added by extension VK_EXT_inline_uniform_block.
     pub const INLINE_UNIFORM_BLOCK_EXT: Self = Self(1000138000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
 }
 impl default::Default for DescriptorType {
     fn default() -> Self {
@@ -10758,7 +10848,7 @@ impl fmt::Display for DescriptorType {
             9 => Some(&"STORAGE_BUFFER_DYNAMIC"),
             10 => Some(&"INPUT_ATTACHMENT"),
             1000138000 => Some(&"INLINE_UNIFORM_BLOCK_EXT"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11664,8 +11754,9 @@ pub struct IndexType(i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
     pub const UINT32: Self = Self(1);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const NONE_NV: Self = Self(1000165000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const NONE_KHR: Self = Self(1000165000);
+    pub const NONE_NV: Self = Self::NONE_KHR;
     /// Added by extension VK_EXT_index_type_uint8.
     pub const UINT8_EXT: Self = Self(1000265000);
 }
@@ -11679,7 +11770,7 @@ impl fmt::Display for IndexType {
         let name = match self.0 {
             0 => Some(&"UINT16"),
             1 => Some(&"UINT32"),
-            1000165000 => Some(&"NONE_NV"),
+            1000165000 => Some(&"NONE_KHR"),
             1000265000 => Some(&"UINT8_EXT"),
             _ => None,
         };
@@ -11782,8 +11873,9 @@ pub struct PipelineBindPoint(i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
     pub const COMPUTE: Self = Self(1);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const RAY_TRACING_NV: Self = Self(1000165000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_KHR: Self = Self(1000165000);
+    pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
 }
 impl default::Default for PipelineBindPoint {
     fn default() -> Self {
@@ -11795,7 +11887,7 @@ impl fmt::Display for PipelineBindPoint {
         let name = match self.0 {
             0 => Some(&"GRAPHICS"),
             1 => Some(&"COMPUTE"),
-            1000165000 => Some(&"RAY_TRACING_NV"),
+            1000165000 => Some(&"RAY_TRACING_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11865,8 +11957,11 @@ impl QueryType {
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = Self(1000028004);
     /// Added by extension VK_KHR_performance_query.
     pub const PERFORMANCE_QUERY_KHR: Self = Self(1000116000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR: Self = Self(1000165000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR: Self = Self(1000150000);
+    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self::ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR;
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
 }
@@ -11885,7 +11980,8 @@ impl fmt::Display for QueryType {
             1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000116000 => Some(&"PERFORMANCE_QUERY_KHR"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             _ => None,
         };
@@ -11984,6 +12080,8 @@ impl Result {
     pub const ERROR_INVALID_SHADER_NV: Self = Self(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ERROR_INCOMPATIBLE_VERSION_KHR: Self = Self(-1000150000);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Self(-1000158000);
     pub const ERROR_FRAGMENTATION_EXT: Self = Self::ERROR_FRAGMENTATION;
@@ -11993,8 +12091,16 @@ impl Result {
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT: Self = Self(-1000255000);
     pub const ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS;
-    /// Added by extension VK_EXT_extension_298.
-    pub const EXT_298_RESERVED_VALUE_0_EXT: Self = Self(1000297000);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const THREAD_IDLE_KHR: Self = Self(1000268000);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const THREAD_DONE_KHR: Self = Self(1000268001);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const OPERATION_DEFERRED_KHR: Self = Self(1000268002);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const OPERATION_NOT_DEFERRED_KHR: Self = Self(1000268003);
+    /// Added by extension VK_EXT_pipeline_creation_cache_control.
+    pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(1000297000);
 }
 impl default::Default for Result {
     fn default() -> Self {
@@ -12034,10 +12140,15 @@ impl fmt::Display for Result {
             -1000003001 => Some(&"ERROR_INCOMPATIBLE_DISPLAY_KHR"),
             -1000011001 => Some(&"ERROR_VALIDATION_FAILED_EXT"),
             -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
+            -1000150000 => Some(&"ERROR_INCOMPATIBLE_VERSION_KHR"),
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
-            1000297000 => Some(&"EXT_298_RESERVED_VALUE_0_EXT"),
+            1000268000 => Some(&"THREAD_IDLE_KHR"),
+            1000268001 => Some(&"THREAD_DONE_KHR"),
+            1000268002 => Some(&"OPERATION_DEFERRED_KHR"),
+            1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
+            1000297000 => Some(&"ERROR_PIPELINE_COMPILE_REQUIRED_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12420,18 +12531,6 @@ impl StructureType {
     /// Added by extension VK_KHR_incremental_present.
     pub const PRESENT_REGIONS_KHR: Self = Self(1000084000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const OBJECT_TABLE_CREATE_INFO_NVX: Self = Self(1000086000);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX: Self = Self(1000086001);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const CMD_PROCESS_COMMANDS_INFO_NVX: Self = Self(1000086002);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX: Self = Self(1000086003);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const DEVICE_GENERATED_COMMANDS_LIMITS_NVX: Self = Self(1000086004);
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const DEVICE_GENERATED_COMMANDS_FEATURES_NVX: Self = Self(1000086005);
     /// Added by extension VK_NV_clip_space_w_scaling.
     pub const PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV: Self = Self(1000087000);
     /// Added by extension VK_EXT_display_surface_counter.
@@ -12593,6 +12692,48 @@ impl StructureType {
     pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = Self(1000148002);
     /// Added by extension VK_NV_fragment_coverage_to_color.
     pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = Self(1000149000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR: Self = Self(1000165006);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR: Self = Self(1000165007);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR: Self = Self(1000150000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR: Self = Self(1000150001);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR: Self = Self(1000150002);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR: Self = Self(1000150003);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR: Self = Self(1000150004);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR: Self = Self(1000150005);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_KHR: Self = Self(1000150006);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150007);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR: Self = Self(1000150008);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_VERSION_KHR: Self = Self(1000150009);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const COPY_ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150010);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR: Self = Self(1000150011);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150012);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR: Self = Self(1000150013);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR: Self = Self(1000150014);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_PIPELINE_CREATE_INFO_KHR: Self = Self(1000150015);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR: Self = Self(1000150016);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_CREATE_INFO_KHR: Self = Self(1000150017);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR: Self = Self(1000150018);
     /// Added by extension VK_NV_framebuffer_mixed_samples.
     pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = Self(1000152000);
     /// Added by extension VK_NV_shader_sm_builtins.
@@ -12653,10 +12794,9 @@ impl StructureType {
     pub const GEOMETRY_TRIANGLES_NV: Self = Self(1000165004);
     /// Added by extension VK_NV_ray_tracing.
     pub const GEOMETRY_AABB_NV: Self = Self(1000165005);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = Self(1000165006);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self = Self(1000165007);
+    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = Self::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR;
+    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self =
+        Self::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR;
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV: Self = Self(1000165008);
     /// Added by extension VK_NV_ray_tracing.
@@ -12847,6 +12987,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES;
     /// Added by extension VK_EXT_index_type_uint8.
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self(1000265000);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const DEFERRED_OPERATION_INFO_KHR: Self = Self(1000268000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR: Self = Self(1000269000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -12861,6 +13003,22 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
     /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = Self(1000276000);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV: Self = Self(1000277000);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const GRAPHICS_SHADER_GROUP_CREATE_INFO_NV: Self = Self(1000277001);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV: Self = Self(1000277002);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_TOKEN_NV: Self = Self(1000277003);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV: Self = Self(1000277004);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const GENERATED_COMMANDS_INFO_NV: Self = Self(1000277005);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV: Self = Self(1000277006);
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV: Self = Self(1000277007);
     /// Added by extension VK_EXT_texel_buffer_alignment.
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
@@ -12869,6 +13027,14 @@ impl StructureType {
     pub const COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM: Self = Self(1000282000);
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM: Self = Self(1000282001);
+    /// Added by extension VK_KHR_pipeline_library.
+    pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
+    /// Added by extension VK_EXT_pipeline_creation_cache_control.
+    pub const PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT: Self = Self(1000297000);
+    /// Added by extension VK_NV_device_diagnostics_config.
+    pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
+    /// Added by extension VK_NV_device_diagnostics_config.
+    pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
 }
@@ -13106,12 +13272,6 @@ impl fmt::Display for StructureType {
             1000081001 => Some(&"PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT"),
             1000081002 => Some(&"CONDITIONAL_RENDERING_BEGIN_INFO_EXT"),
             1000084000 => Some(&"PRESENT_REGIONS_KHR"),
-            1000086000 => Some(&"OBJECT_TABLE_CREATE_INFO_NVX"),
-            1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX"),
-            1000086002 => Some(&"CMD_PROCESS_COMMANDS_INFO_NVX"),
-            1000086003 => Some(&"CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX"),
-            1000086004 => Some(&"DEVICE_GENERATED_COMMANDS_LIMITS_NVX"),
-            1000086005 => Some(&"DEVICE_GENERATED_COMMANDS_FEATURES_NVX"),
             1000087000 => Some(&"PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV"),
             1000090000 => Some(&"SURFACE_CAPABILITIES_2_EXT"),
             1000091000 => Some(&"DISPLAY_POWER_INFO_EXT"),
@@ -13175,6 +13335,27 @@ impl fmt::Display for StructureType {
             1000148001 => Some(&"PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT"),
             1000148002 => Some(&"PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
             1000149000 => Some(&"PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
+            1000165006 => Some(&"BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR"),
+            1000165007 => Some(&"WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR"),
+            1000150001 => Some(&"ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR"),
+            1000150002 => Some(&"ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR"),
+            1000150003 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR"),
+            1000150004 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR"),
+            1000150005 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR"),
+            1000150006 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_KHR"),
+            1000150007 => Some(&"ACCELERATION_STRUCTURE_INFO_KHR"),
+            1000150008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR"),
+            1000150009 => Some(&"ACCELERATION_STRUCTURE_VERSION_KHR"),
+            1000150010 => Some(&"COPY_ACCELERATION_STRUCTURE_INFO_KHR"),
+            1000150011 => Some(&"COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR"),
+            1000150012 => Some(&"COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR"),
+            1000150013 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR"),
+            1000150014 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR"),
+            1000150015 => Some(&"RAY_TRACING_PIPELINE_CREATE_INFO_KHR"),
+            1000150016 => Some(&"RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR"),
+            1000150017 => Some(&"ACCELERATION_STRUCTURE_CREATE_INFO_KHR"),
+            1000150018 => Some(&"RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR"),
             1000152000 => Some(&"PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
             1000154000 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV"),
             1000154001 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV"),
@@ -13195,8 +13376,6 @@ impl fmt::Display for StructureType {
             1000165003 => Some(&"GEOMETRY_NV"),
             1000165004 => Some(&"GEOMETRY_TRIANGLES_NV"),
             1000165005 => Some(&"GEOMETRY_AABB_NV"),
-            1000165006 => Some(&"BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV"),
-            1000165007 => Some(&"WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV"),
             1000165008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV"),
             1000165009 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV"),
             1000165011 => Some(&"RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV"),
@@ -13272,6 +13451,7 @@ impl fmt::Display for StructureType {
             1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT"),
             1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
+            1000268000 => Some(&"DEFERRED_OPERATION_INFO_KHR"),
             1000269000 => Some(&"PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR"),
             1000269001 => Some(&"PIPELINE_INFO_KHR"),
             1000269002 => Some(&"PIPELINE_EXECUTABLE_PROPERTIES_KHR"),
@@ -13279,10 +13459,22 @@ impl fmt::Display for StructureType {
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
+            1000277000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV"),
+            1000277001 => Some(&"GRAPHICS_SHADER_GROUP_CREATE_INFO_NV"),
+            1000277002 => Some(&"GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV"),
+            1000277003 => Some(&"INDIRECT_COMMANDS_LAYOUT_TOKEN_NV"),
+            1000277004 => Some(&"INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV"),
+            1000277005 => Some(&"GENERATED_COMMANDS_INFO_NV"),
+            1000277006 => Some(&"GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV"),
+            1000277007 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
             1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
+            1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
+            1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT"),
+            1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
+            1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000309000 => Some(&"RESERVED_QCOM"),
             _ => None,
         };
@@ -13541,23 +13733,23 @@ impl ObjectType {
     /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_EXT: Self = Self(1000011000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
-    /// VkobjectTableNVX
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const OBJECT_TABLE_NVX: Self = Self(1000086000);
-    /// VkIndirectCommandsLayoutNVX
-    /// Added by extension VK_NVX_device_generated_commands.
-    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = Self(1000086001);
     /// VkDebugUtilsMessengerEXT
     /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// VkValidationCacheEXT
     /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_EXT: Self = Self(1000160000);
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_CONFIGURATION_INTEL: Self = Self(1000210000);
+    /// Added by extension VK_KHR_deferred_host_operations.
+    pub const DEFERRED_OPERATION_KHR: Self = Self(1000268000);
+    /// VkIndirectCommandsLayoutNV
+    /// Added by extension VK_NV_device_generated_commands.
+    pub const INDIRECT_COMMANDS_LAYOUT_NV: Self = Self(1000277000);
 }
 impl default::Default for ObjectType {
     fn default() -> Self {
@@ -13600,12 +13792,12 @@ impl fmt::Display for ObjectType {
             1000002000 => Some(&"DISPLAY_KHR"),
             1000002001 => Some(&"DISPLAY_MODE_KHR"),
             1000011000 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
-            1000086000 => Some(&"OBJECT_TABLE_NVX"),
-            1000086001 => Some(&"INDIRECT_COMMANDS_LAYOUT_NVX"),
             1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000160000 => Some(&"VALIDATION_CACHE_EXT"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             1000210000 => Some(&"PERFORMANCE_CONFIGURATION_INTEL"),
+            1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
+            1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13617,65 +13809,33 @@ impl fmt::Display for ObjectType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct IndirectCommandsTokenTypeNVX(i32);
-impl IndirectCommandsTokenTypeNVX {
-    pub const PIPELINE: Self = Self(0);
-    pub const DESCRIPTOR_SET: Self = Self(1);
+pub struct IndirectCommandsTokenTypeNV(i32);
+impl IndirectCommandsTokenTypeNV {
+    pub const SHADER_GROUP: Self = Self(0);
+    pub const STATE_FLAGS: Self = Self(1);
     pub const INDEX_BUFFER: Self = Self(2);
     pub const VERTEX_BUFFER: Self = Self(3);
     pub const PUSH_CONSTANT: Self = Self(4);
     pub const DRAW_INDEXED: Self = Self(5);
     pub const DRAW: Self = Self(6);
-    pub const DISPATCH: Self = Self(7);
+    pub const DRAW_TASKS: Self = Self(7);
 }
-impl default::Default for IndirectCommandsTokenTypeNVX {
+impl default::Default for IndirectCommandsTokenTypeNV {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for IndirectCommandsTokenTypeNVX {
+impl fmt::Display for IndirectCommandsTokenTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
-            0 => Some(&"PIPELINE"),
-            1 => Some(&"DESCRIPTOR_SET"),
+            0 => Some(&"SHADER_GROUP"),
+            1 => Some(&"STATE_FLAGS"),
             2 => Some(&"INDEX_BUFFER"),
             3 => Some(&"VERTEX_BUFFER"),
             4 => Some(&"PUSH_CONSTANT"),
             5 => Some(&"DRAW_INDEXED"),
             6 => Some(&"DRAW"),
-            7 => Some(&"DISPATCH"),
-            _ => None,
-        };
-        if let Some(name) = name {
-            write!(f, "{}", name)
-        } else {
-            write!(f, "{}", self.0)
-        }
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ObjectEntryTypeNVX(i32);
-impl ObjectEntryTypeNVX {
-    pub const DESCRIPTOR_SET: Self = Self(0);
-    pub const PIPELINE: Self = Self(1);
-    pub const INDEX_BUFFER: Self = Self(2);
-    pub const VERTEX_BUFFER: Self = Self(3);
-    pub const PUSH_CONSTANT: Self = Self(4);
-}
-impl default::Default for ObjectEntryTypeNVX {
-    fn default() -> Self {
-        Self(0)
-    }
-}
-impl fmt::Display for ObjectEntryTypeNVX {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.0 {
-            0 => Some(&"DESCRIPTOR_SET"),
-            1 => Some(&"PIPELINE"),
-            2 => Some(&"INDEX_BUFFER"),
-            3 => Some(&"VERTEX_BUFFER"),
-            4 => Some(&"PUSH_CONSTANT"),
+            7 => Some(&"DRAW_TASKS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14036,21 +14196,27 @@ impl fmt::Display for SemaphoreType {
 pub type SemaphoreTypeKHR = SemaphoreType;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CopyAccelerationStructureModeNV(i32);
-impl CopyAccelerationStructureModeNV {
+pub struct CopyAccelerationStructureModeKHR(i32);
+impl CopyAccelerationStructureModeKHR {
     pub const CLONE: Self = Self(0);
     pub const COMPACT: Self = Self(1);
+    pub const SERIALIZE: Self = Self(2);
+    pub const DESERIALIZE: Self = Self(3);
+    pub const CLONE_NV: Self = Self::CLONE;
+    pub const COMPACT_NV: Self = Self::COMPACT;
 }
-impl default::Default for CopyAccelerationStructureModeNV {
+impl default::Default for CopyAccelerationStructureModeKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for CopyAccelerationStructureModeNV {
+impl fmt::Display for CopyAccelerationStructureModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"CLONE"),
             1 => Some(&"COMPACT"),
+            2 => Some(&"SERIALIZE"),
+            3 => Some(&"DESERIALIZE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14060,19 +14226,22 @@ impl fmt::Display for CopyAccelerationStructureModeNV {
         }
     }
 }
+pub type CopyAccelerationStructureModeNV = CopyAccelerationStructureModeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureTypeNV(i32);
-impl AccelerationStructureTypeNV {
+pub struct AccelerationStructureTypeKHR(i32);
+impl AccelerationStructureTypeKHR {
     pub const TOP_LEVEL: Self = Self(0);
     pub const BOTTOM_LEVEL: Self = Self(1);
+    pub const TOP_LEVEL_NV: Self = Self::TOP_LEVEL;
+    pub const BOTTOM_LEVEL_NV: Self = Self::BOTTOM_LEVEL;
 }
-impl default::Default for AccelerationStructureTypeNV {
+impl default::Default for AccelerationStructureTypeKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for AccelerationStructureTypeNV {
+impl fmt::Display for AccelerationStructureTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"TOP_LEVEL"),
@@ -14086,23 +14255,29 @@ impl fmt::Display for AccelerationStructureTypeNV {
         }
     }
 }
+pub type AccelerationStructureTypeNV = AccelerationStructureTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct GeometryTypeNV(i32);
-impl GeometryTypeNV {
+pub struct GeometryTypeKHR(i32);
+impl GeometryTypeKHR {
     pub const TRIANGLES: Self = Self(0);
     pub const AABBS: Self = Self(1);
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const INSTANCES: Self = Self(1000150000);
+    pub const TRIANGLES_NV: Self = Self::TRIANGLES;
+    pub const AABBS_NV: Self = Self::AABBS;
 }
-impl default::Default for GeometryTypeNV {
+impl default::Default for GeometryTypeKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for GeometryTypeNV {
+impl fmt::Display for GeometryTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"TRIANGLES"),
             1 => Some(&"AABBS"),
+            1000150000 => Some(&"INSTANCES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14112,20 +14287,24 @@ impl fmt::Display for GeometryTypeNV {
         }
     }
 }
+pub type GeometryTypeNV = GeometryTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RayTracingShaderGroupTypeNV(i32);
-impl RayTracingShaderGroupTypeNV {
+pub struct RayTracingShaderGroupTypeKHR(i32);
+impl RayTracingShaderGroupTypeKHR {
     pub const GENERAL: Self = Self(0);
     pub const TRIANGLES_HIT_GROUP: Self = Self(1);
     pub const PROCEDURAL_HIT_GROUP: Self = Self(2);
+    pub const GENERAL_NV: Self = Self::GENERAL;
+    pub const TRIANGLES_HIT_GROUP_NV: Self = Self::TRIANGLES_HIT_GROUP;
+    pub const PROCEDURAL_HIT_GROUP_NV: Self = Self::PROCEDURAL_HIT_GROUP;
 }
-impl default::Default for RayTracingShaderGroupTypeNV {
+impl default::Default for RayTracingShaderGroupTypeKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for RayTracingShaderGroupTypeNV {
+impl fmt::Display for RayTracingShaderGroupTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"GENERAL"),
@@ -14140,25 +14319,58 @@ impl fmt::Display for RayTracingShaderGroupTypeNV {
         }
     }
 }
+pub type RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMemoryRequirementsTypeNV(i32);
-impl AccelerationStructureMemoryRequirementsTypeNV {
+pub struct AccelerationStructureMemoryRequirementsTypeKHR(i32);
+impl AccelerationStructureMemoryRequirementsTypeKHR {
     pub const OBJECT: Self = Self(0);
     pub const BUILD_SCRATCH: Self = Self(1);
     pub const UPDATE_SCRATCH: Self = Self(2);
+    pub const OBJECT_NV: Self = Self::OBJECT;
+    pub const BUILD_SCRATCH_NV: Self = Self::BUILD_SCRATCH;
+    pub const UPDATE_SCRATCH_NV: Self = Self::UPDATE_SCRATCH;
 }
-impl default::Default for AccelerationStructureMemoryRequirementsTypeNV {
+impl default::Default for AccelerationStructureMemoryRequirementsTypeKHR {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
+impl fmt::Display for AccelerationStructureMemoryRequirementsTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"OBJECT"),
             1 => Some(&"BUILD_SCRATCH"),
             2 => Some(&"UPDATE_SCRATCH"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+pub type AccelerationStructureMemoryRequirementsTypeNV = AccelerationStructureMemoryRequirementsTypeKHR;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureBuildTypeKHR(i32);
+impl AccelerationStructureBuildTypeKHR {
+    pub const HOST: Self = Self(0);
+    pub const DEVICE: Self = Self(1);
+    pub const HOST_OR_DEVICE: Self = Self(2);
+}
+impl default::Default for AccelerationStructureBuildTypeKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for AccelerationStructureBuildTypeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"HOST"),
+            1 => Some(&"DEVICE"),
+            2 => Some(&"HOST_OR_DEVICE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14684,8 +14896,6 @@ impl DebugReportObjectTypeEXT {
     pub const DEBUG_REPORT: Self = Self::DEBUG_REPORT_CALLBACK_EXT;
     pub const DISPLAY_KHR: Self = Self(29);
     pub const DISPLAY_MODE_KHR: Self = Self(30);
-    pub const OBJECT_TABLE_NVX: Self = Self(31);
-    pub const INDIRECT_COMMANDS_LAYOUT_NVX: Self = Self(32);
     pub const VALIDATION_CACHE_EXT: Self = Self(33);
     pub const VALIDATION_CACHE: Self = Self::VALIDATION_CACHE_EXT;
     /// Added by extension VK_KHR_sampler_ycbcr_conversion.
@@ -14693,9 +14903,10 @@ impl DebugReportObjectTypeEXT {
     /// Added by extension VK_EXT_debug_report.
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
+    /// Added by extension VK_KHR_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
-    /// Added by extension VK_NV_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
 }
 impl default::Default for DebugReportObjectTypeEXT {
     fn default() -> Self {
@@ -14736,12 +14947,10 @@ impl fmt::Display for DebugReportObjectTypeEXT {
             28 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
             29 => Some(&"DISPLAY_KHR"),
             30 => Some(&"DISPLAY_MODE_KHR"),
-            31 => Some(&"OBJECT_TABLE_NVX"),
-            32 => Some(&"INDIRECT_COMMANDS_LAYOUT_NVX"),
             33 => Some(&"VALIDATION_CACHE_EXT"),
             1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
             1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14810,6 +15019,7 @@ impl ValidationFeatureEnableEXT {
     pub const GPU_ASSISTED: Self = Self(0);
     pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = Self(1);
     pub const BEST_PRACTICES: Self = Self(2);
+    pub const DEBUG_PRINTF: Self = Self(3);
 }
 impl default::Default for ValidationFeatureEnableEXT {
     fn default() -> Self {
@@ -14822,6 +15032,7 @@ impl fmt::Display for ValidationFeatureEnableEXT {
             0 => Some(&"GPU_ASSISTED"),
             1 => Some(&"GPU_ASSISTED_RESERVE_BINDING_SLOT"),
             2 => Some(&"BEST_PRACTICES"),
+            3 => Some(&"DEBUG_PRINTF"),
             _ => None,
         };
         if let Some(name) = name {
@@ -21203,100 +21414,270 @@ impl fmt::Debug for Win32KeyedMutexAcquireReleaseInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct DeviceGeneratedCommandsFeaturesNVX {
+pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub compute_binding_point_support: Bool32,
+    pub p_next: *mut c_void,
+    pub device_generated_commands: Bool32,
 }
-impl default::Default for DeviceGeneratedCommandsFeaturesNVX {
+impl default::Default for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::DEVICE_GENERATED_COMMANDS_FEATURES_NVX,
-            p_next: ptr::null(),
-            compute_binding_point_support: Bool32::default(),
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            device_generated_commands: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for DeviceGeneratedCommandsFeaturesNVX {
+impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceGeneratedCommandsFeaturesNVX")
+        fmt.debug_struct("PhysicalDeviceDeviceGeneratedCommandsFeaturesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("compute_binding_point_support", &self.compute_binding_point_support)
+            .field("device_generated_commands", &self.device_generated_commands)
             .finish()
     }
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct DeviceGeneratedCommandsLimitsNVX {
+pub struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub max_indirect_commands_layout_token_count: u32,
-    pub max_object_entry_counts: u32,
-    pub min_sequence_count_buffer_offset_alignment: u32,
-    pub min_sequence_index_buffer_offset_alignment: u32,
-    pub min_commands_token_buffer_offset_alignment: u32,
+    pub max_graphics_shader_group_count: u32,
+    pub max_indirect_sequence_count: u32,
+    pub max_indirect_commands_token_count: u32,
+    pub max_indirect_commands_stream_count: u32,
+    pub max_indirect_commands_token_offset: u32,
+    pub max_indirect_commands_stream_stride: u32,
+    pub min_sequences_count_buffer_offset_alignment: u32,
+    pub min_sequences_index_buffer_offset_alignment: u32,
+    pub min_indirect_commands_buffer_offset_alignment: u32,
 }
-impl default::Default for DeviceGeneratedCommandsLimitsNVX {
+impl default::Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::DEVICE_GENERATED_COMMANDS_LIMITS_NVX,
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV,
             p_next: ptr::null(),
-            max_indirect_commands_layout_token_count: u32::default(),
-            max_object_entry_counts: u32::default(),
-            min_sequence_count_buffer_offset_alignment: u32::default(),
-            min_sequence_index_buffer_offset_alignment: u32::default(),
-            min_commands_token_buffer_offset_alignment: u32::default(),
+            max_graphics_shader_group_count: u32::default(),
+            max_indirect_sequence_count: u32::default(),
+            max_indirect_commands_token_count: u32::default(),
+            max_indirect_commands_stream_count: u32::default(),
+            max_indirect_commands_token_offset: u32::default(),
+            max_indirect_commands_stream_stride: u32::default(),
+            min_sequences_count_buffer_offset_alignment: u32::default(),
+            min_sequences_index_buffer_offset_alignment: u32::default(),
+            min_indirect_commands_buffer_offset_alignment: u32::default(),
         }
     }
 }
-impl fmt::Debug for DeviceGeneratedCommandsLimitsNVX {
+impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeviceGeneratedCommandsLimitsNVX")
+        fmt.debug_struct("PhysicalDeviceDeviceGeneratedCommandsPropertiesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("max_graphics_shader_group_count", &self.max_graphics_shader_group_count)
+            .field("max_indirect_sequence_count", &self.max_indirect_sequence_count)
             .field(
-                "max_indirect_commands_layout_token_count",
-                &self.max_indirect_commands_layout_token_count,
-            )
-            .field("max_object_entry_counts", &self.max_object_entry_counts)
-            .field(
-                "min_sequence_count_buffer_offset_alignment",
-                &self.min_sequence_count_buffer_offset_alignment,
+                "max_indirect_commands_token_count",
+                &self.max_indirect_commands_token_count,
             )
             .field(
-                "min_sequence_index_buffer_offset_alignment",
-                &self.min_sequence_index_buffer_offset_alignment,
+                "max_indirect_commands_stream_count",
+                &self.max_indirect_commands_stream_count,
             )
             .field(
-                "min_commands_token_buffer_offset_alignment",
-                &self.min_commands_token_buffer_offset_alignment,
+                "max_indirect_commands_token_offset",
+                &self.max_indirect_commands_token_offset,
+            )
+            .field(
+                "max_indirect_commands_stream_stride",
+                &self.max_indirect_commands_stream_stride,
+            )
+            .field(
+                "min_sequences_count_buffer_offset_alignment",
+                &self.min_sequences_count_buffer_offset_alignment,
+            )
+            .field(
+                "min_sequences_index_buffer_offset_alignment",
+                &self.min_sequences_index_buffer_offset_alignment,
+            )
+            .field(
+                "min_indirect_commands_buffer_offset_alignment",
+                &self.min_indirect_commands_buffer_offset_alignment,
             )
             .finish()
     }
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct IndirectCommandsTokenNVX {
-    pub token_type: IndirectCommandsTokenTypeNVX,
-    /// buffer containing tableEntries and additional data for indirectCommands
+pub struct GraphicsShaderGroupCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub stage_count: u32,
+    pub p_stages: *const PipelineShaderStageCreateInfo,
+    pub p_vertex_input_state: *const PipelineVertexInputStateCreateInfo,
+    pub p_tessellation_state: *const PipelineTessellationStateCreateInfo,
+}
+impl default::Default for GraphicsShaderGroupCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GRAPHICS_SHADER_GROUP_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            stage_count: u32::default(),
+            p_stages: ptr::null(),
+            p_vertex_input_state: ptr::null(),
+            p_tessellation_state: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for GraphicsShaderGroupCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GraphicsShaderGroupCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage_count", &self.stage_count)
+            .field("p_stages", &self.p_stages)
+            .field("p_vertex_input_state", &self.p_vertex_input_state)
+            .field("p_tessellation_state", &self.p_tessellation_state)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GraphicsPipelineShaderGroupsCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub group_count: u32,
+    pub p_groups: *const GraphicsShaderGroupCreateInfoNV,
+    pub pipeline_count: u32,
+    pub p_pipelines: *const Pipeline,
+}
+impl default::Default for GraphicsPipelineShaderGroupsCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            group_count: u32::default(),
+            p_groups: ptr::null(),
+            pipeline_count: u32::default(),
+            p_pipelines: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for GraphicsPipelineShaderGroupsCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GraphicsPipelineShaderGroupsCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("group_count", &self.group_count)
+            .field("p_groups", &self.p_groups)
+            .field("pipeline_count", &self.pipeline_count)
+            .field("p_pipelines", &self.p_pipelines)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct BindShaderGroupIndirectCommandNV {
+    pub group_index: u32,
+}
+impl default::Default for BindShaderGroupIndirectCommandNV {
+    fn default() -> Self {
+        Self {
+            group_index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for BindShaderGroupIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindShaderGroupIndirectCommandNV")
+            .field("group_index", &self.group_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BindIndexBufferIndirectCommandNV {
+    pub buffer_address: DeviceAddress,
+    pub size: u32,
+    pub index_type: IndexType,
+}
+impl default::Default for BindIndexBufferIndirectCommandNV {
+    fn default() -> Self {
+        Self {
+            buffer_address: DeviceAddress::default(),
+            size: u32::default(),
+            index_type: IndexType::default(),
+        }
+    }
+}
+impl fmt::Debug for BindIndexBufferIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindIndexBufferIndirectCommandNV")
+            .field("buffer_address", &self.buffer_address)
+            .field("size", &self.size)
+            .field("index_type", &self.index_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct BindVertexBufferIndirectCommandNV {
+    pub buffer_address: DeviceAddress,
+    pub size: u32,
+    pub stride: u32,
+}
+impl default::Default for BindVertexBufferIndirectCommandNV {
+    fn default() -> Self {
+        Self {
+            buffer_address: DeviceAddress::default(),
+            size: u32::default(),
+            stride: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for BindVertexBufferIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindVertexBufferIndirectCommandNV")
+            .field("buffer_address", &self.buffer_address)
+            .field("size", &self.size)
+            .field("stride", &self.stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct SetStateFlagsIndirectCommandNV {
+    pub data: u32,
+}
+impl default::Default for SetStateFlagsIndirectCommandNV {
+    fn default() -> Self {
+        Self { data: u32::default() }
+    }
+}
+impl fmt::Debug for SetStateFlagsIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SetStateFlagsIndirectCommandNV")
+            .field("data", &self.data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct IndirectCommandsStreamNV {
     pub buffer: Option<Buffer>,
-    /// offset from the base address of the buffer
     pub offset: DeviceSize,
 }
-impl default::Default for IndirectCommandsTokenNVX {
+impl default::Default for IndirectCommandsStreamNV {
     fn default() -> Self {
         Self {
-            token_type: IndirectCommandsTokenTypeNVX::default(),
             buffer: None,
             offset: DeviceSize::default(),
         }
     }
 }
-impl fmt::Debug for IndirectCommandsTokenNVX {
+impl fmt::Debug for IndirectCommandsStreamNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("IndirectCommandsTokenNVX")
-            .field("token_type", &self.token_type)
+        fmt.debug_struct("IndirectCommandsStreamNV")
             .field("buffer", &self.buffer)
             .field("offset", &self.offset)
             .finish()
@@ -21304,96 +21685,138 @@ impl fmt::Debug for IndirectCommandsTokenNVX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct IndirectCommandsLayoutTokenNVX {
-    pub token_type: IndirectCommandsTokenTypeNVX,
-    /// Binding unit for vertex attribute / descriptor set, offset for pushconstants
-    pub binding_unit: u32,
-    /// Number of variable dynamic values for descriptor set / push constants
-    pub dynamic_count: u32,
-    /// Rate the which the array is advanced per element (must be power of 2, minimum 1)
-    pub divisor: u32,
+pub struct IndirectCommandsLayoutTokenNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub token_type: IndirectCommandsTokenTypeNV,
+    pub stream: u32,
+    pub offset: u32,
+    pub vertex_binding_unit: u32,
+    pub vertex_dynamic_stride: Bool32,
+    pub pushconstant_pipeline_layout: Option<PipelineLayout>,
+    pub pushconstant_shader_stage_flags: ShaderStageFlags,
+    pub pushconstant_offset: u32,
+    pub pushconstant_size: u32,
+    pub indirect_state_flags: IndirectStateFlagsNV,
+    pub index_type_count: u32,
+    pub p_index_types: *const IndexType,
+    pub p_index_type_values: *const u32,
 }
-impl default::Default for IndirectCommandsLayoutTokenNVX {
+impl default::Default for IndirectCommandsLayoutTokenNV {
     fn default() -> Self {
         Self {
-            token_type: IndirectCommandsTokenTypeNVX::default(),
-            binding_unit: u32::default(),
-            dynamic_count: u32::default(),
-            divisor: u32::default(),
+            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_TOKEN_NV,
+            p_next: ptr::null(),
+            token_type: IndirectCommandsTokenTypeNV::default(),
+            stream: u32::default(),
+            offset: u32::default(),
+            vertex_binding_unit: u32::default(),
+            vertex_dynamic_stride: Bool32::default(),
+            pushconstant_pipeline_layout: None,
+            pushconstant_shader_stage_flags: ShaderStageFlags::default(),
+            pushconstant_offset: u32::default(),
+            pushconstant_size: u32::default(),
+            indirect_state_flags: IndirectStateFlagsNV::default(),
+            index_type_count: u32::default(),
+            p_index_types: ptr::null(),
+            p_index_type_values: ptr::null(),
         }
     }
 }
-impl fmt::Debug for IndirectCommandsLayoutTokenNVX {
+impl fmt::Debug for IndirectCommandsLayoutTokenNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("IndirectCommandsLayoutTokenNVX")
+        fmt.debug_struct("IndirectCommandsLayoutTokenNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
             .field("token_type", &self.token_type)
-            .field("binding_unit", &self.binding_unit)
-            .field("dynamic_count", &self.dynamic_count)
-            .field("divisor", &self.divisor)
+            .field("stream", &self.stream)
+            .field("offset", &self.offset)
+            .field("vertex_binding_unit", &self.vertex_binding_unit)
+            .field("vertex_dynamic_stride", &self.vertex_dynamic_stride)
+            .field("pushconstant_pipeline_layout", &self.pushconstant_pipeline_layout)
+            .field("pushconstant_shader_stage_flags", &self.pushconstant_shader_stage_flags)
+            .field("pushconstant_offset", &self.pushconstant_offset)
+            .field("pushconstant_size", &self.pushconstant_size)
+            .field("indirect_state_flags", &self.indirect_state_flags)
+            .field("index_type_count", &self.index_type_count)
+            .field("p_index_types", &self.p_index_types)
+            .field("p_index_type_values", &self.p_index_type_values)
             .finish()
     }
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct IndirectCommandsLayoutCreateInfoNVX {
+pub struct IndirectCommandsLayoutCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: IndirectCommandsLayoutUsageFlagsNV,
+    pub pipeline_bind_point: PipelineBindPoint,
+    pub token_count: u32,
+    pub p_tokens: *const IndirectCommandsLayoutTokenNV,
+    pub stream_count: u32,
+    pub p_stream_strides: *const u32,
+}
+impl default::Default for IndirectCommandsLayoutCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            flags: IndirectCommandsLayoutUsageFlagsNV::default(),
+            pipeline_bind_point: PipelineBindPoint::default(),
+            token_count: u32::default(),
+            p_tokens: ptr::null(),
+            stream_count: u32::default(),
+            p_stream_strides: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for IndirectCommandsLayoutCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("IndirectCommandsLayoutCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("pipeline_bind_point", &self.pipeline_bind_point)
+            .field("token_count", &self.token_count)
+            .field("p_tokens", &self.p_tokens)
+            .field("stream_count", &self.stream_count)
+            .field("p_stream_strides", &self.p_stream_strides)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GeneratedCommandsInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub pipeline_bind_point: PipelineBindPoint,
-    pub flags: IndirectCommandsLayoutUsageFlagsNVX,
-    pub token_count: u32,
-    pub p_tokens: *const IndirectCommandsLayoutTokenNVX,
-}
-impl default::Default for IndirectCommandsLayoutCreateInfoNVX {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NVX,
-            p_next: ptr::null(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            flags: IndirectCommandsLayoutUsageFlagsNVX::default(),
-            token_count: u32::default(),
-            p_tokens: ptr::null(),
-        }
-    }
-}
-impl fmt::Debug for IndirectCommandsLayoutCreateInfoNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("IndirectCommandsLayoutCreateInfoNVX")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("pipeline_bind_point", &self.pipeline_bind_point)
-            .field("flags", &self.flags)
-            .field("token_count", &self.token_count)
-            .field("p_tokens", &self.p_tokens)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct CmdProcessCommandsInfoNVX {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub object_table: Option<ObjectTableNVX>,
-    pub indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
-    pub indirect_commands_token_count: u32,
-    pub p_indirect_commands_tokens: *const IndirectCommandsTokenNVX,
-    pub max_sequences_count: u32,
-    pub target_command_buffer: Option<CommandBuffer>,
+    pub pipeline: Option<Pipeline>,
+    pub indirect_commands_layout: Option<IndirectCommandsLayoutNV>,
+    pub stream_count: u32,
+    pub p_streams: *const IndirectCommandsStreamNV,
+    pub sequences_count: u32,
+    pub preprocess_buffer: Option<Buffer>,
+    pub preprocess_offset: DeviceSize,
+    pub preprocess_size: DeviceSize,
     pub sequences_count_buffer: Option<Buffer>,
     pub sequences_count_offset: DeviceSize,
     pub sequences_index_buffer: Option<Buffer>,
     pub sequences_index_offset: DeviceSize,
 }
-impl default::Default for CmdProcessCommandsInfoNVX {
+impl default::Default for GeneratedCommandsInfoNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::CMD_PROCESS_COMMANDS_INFO_NVX,
+            s_type: StructureType::GENERATED_COMMANDS_INFO_NV,
             p_next: ptr::null(),
-            object_table: None,
+            pipeline_bind_point: PipelineBindPoint::default(),
+            pipeline: None,
             indirect_commands_layout: None,
-            indirect_commands_token_count: u32::default(),
-            p_indirect_commands_tokens: ptr::null(),
-            max_sequences_count: u32::default(),
-            target_command_buffer: None,
+            stream_count: u32::default(),
+            p_streams: ptr::null(),
+            sequences_count: u32::default(),
+            preprocess_buffer: None,
+            preprocess_offset: DeviceSize::default(),
+            preprocess_size: DeviceSize::default(),
             sequences_count_buffer: None,
             sequences_count_offset: DeviceSize::default(),
             sequences_index_buffer: None,
@@ -21401,17 +21824,20 @@ impl default::Default for CmdProcessCommandsInfoNVX {
         }
     }
 }
-impl fmt::Debug for CmdProcessCommandsInfoNVX {
+impl fmt::Debug for GeneratedCommandsInfoNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CmdProcessCommandsInfoNVX")
+        fmt.debug_struct("GeneratedCommandsInfoNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("object_table", &self.object_table)
+            .field("pipeline_bind_point", &self.pipeline_bind_point)
+            .field("pipeline", &self.pipeline)
             .field("indirect_commands_layout", &self.indirect_commands_layout)
-            .field("indirect_commands_token_count", &self.indirect_commands_token_count)
-            .field("p_indirect_commands_tokens", &self.p_indirect_commands_tokens)
-            .field("max_sequences_count", &self.max_sequences_count)
-            .field("target_command_buffer", &self.target_command_buffer)
+            .field("stream_count", &self.stream_count)
+            .field("p_streams", &self.p_streams)
+            .field("sequences_count", &self.sequences_count)
+            .field("preprocess_buffer", &self.preprocess_buffer)
+            .field("preprocess_offset", &self.preprocess_offset)
+            .field("preprocess_size", &self.preprocess_size)
             .field("sequences_count_buffer", &self.sequences_count_buffer)
             .field("sequences_count_offset", &self.sequences_count_offset)
             .field("sequences_index_buffer", &self.sequences_index_buffer)
@@ -21421,249 +21847,35 @@ impl fmt::Debug for CmdProcessCommandsInfoNVX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct CmdReserveSpaceForCommandsInfoNVX {
+pub struct GeneratedCommandsMemoryRequirementsInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub object_table: Option<ObjectTableNVX>,
-    pub indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
+    pub pipeline_bind_point: PipelineBindPoint,
+    pub pipeline: Option<Pipeline>,
+    pub indirect_commands_layout: Option<IndirectCommandsLayoutNV>,
     pub max_sequences_count: u32,
 }
-impl default::Default for CmdReserveSpaceForCommandsInfoNVX {
+impl default::Default for GeneratedCommandsMemoryRequirementsInfoNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::CMD_RESERVE_SPACE_FOR_COMMANDS_INFO_NVX,
+            s_type: StructureType::GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV,
             p_next: ptr::null(),
-            object_table: None,
+            pipeline_bind_point: PipelineBindPoint::default(),
+            pipeline: None,
             indirect_commands_layout: None,
             max_sequences_count: u32::default(),
         }
     }
 }
-impl fmt::Debug for CmdReserveSpaceForCommandsInfoNVX {
+impl fmt::Debug for GeneratedCommandsMemoryRequirementsInfoNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("CmdReserveSpaceForCommandsInfoNVX")
+        fmt.debug_struct("GeneratedCommandsMemoryRequirementsInfoNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("object_table", &self.object_table)
+            .field("pipeline_bind_point", &self.pipeline_bind_point)
+            .field("pipeline", &self.pipeline)
             .field("indirect_commands_layout", &self.indirect_commands_layout)
             .field("max_sequences_count", &self.max_sequences_count)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTableCreateInfoNVX {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub object_count: u32,
-    pub p_object_entry_types: *const ObjectEntryTypeNVX,
-    pub p_object_entry_counts: *const u32,
-    pub p_object_entry_usage_flags: *const ObjectEntryUsageFlagsNVX,
-    pub max_uniform_buffers_per_descriptor: u32,
-    pub max_storage_buffers_per_descriptor: u32,
-    pub max_storage_images_per_descriptor: u32,
-    pub max_sampled_images_per_descriptor: u32,
-    pub max_pipeline_layouts: u32,
-}
-impl default::Default for ObjectTableCreateInfoNVX {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::OBJECT_TABLE_CREATE_INFO_NVX,
-            p_next: ptr::null(),
-            object_count: u32::default(),
-            p_object_entry_types: ptr::null(),
-            p_object_entry_counts: ptr::null(),
-            p_object_entry_usage_flags: ptr::null(),
-            max_uniform_buffers_per_descriptor: u32::default(),
-            max_storage_buffers_per_descriptor: u32::default(),
-            max_storage_images_per_descriptor: u32::default(),
-            max_sampled_images_per_descriptor: u32::default(),
-            max_pipeline_layouts: u32::default(),
-        }
-    }
-}
-impl fmt::Debug for ObjectTableCreateInfoNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTableCreateInfoNVX")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("object_count", &self.object_count)
-            .field("p_object_entry_types", &self.p_object_entry_types)
-            .field("p_object_entry_counts", &self.p_object_entry_counts)
-            .field("p_object_entry_usage_flags", &self.p_object_entry_usage_flags)
-            .field(
-                "max_uniform_buffers_per_descriptor",
-                &self.max_uniform_buffers_per_descriptor,
-            )
-            .field(
-                "max_storage_buffers_per_descriptor",
-                &self.max_storage_buffers_per_descriptor,
-            )
-            .field(
-                "max_storage_images_per_descriptor",
-                &self.max_storage_images_per_descriptor,
-            )
-            .field(
-                "max_sampled_images_per_descriptor",
-                &self.max_sampled_images_per_descriptor,
-            )
-            .field("max_pipeline_layouts", &self.max_pipeline_layouts)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTableEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-}
-impl default::Default for ObjectTableEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-        }
-    }
-}
-impl fmt::Debug for ObjectTableEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTableEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTablePipelineEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-    pub pipeline: Option<Pipeline>,
-}
-impl default::Default for ObjectTablePipelineEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-            pipeline: None,
-        }
-    }
-}
-impl fmt::Debug for ObjectTablePipelineEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTablePipelineEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("pipeline", &self.pipeline)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTableDescriptorSetEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-    pub pipeline_layout: Option<PipelineLayout>,
-    pub descriptor_set: Option<DescriptorSet>,
-}
-impl default::Default for ObjectTableDescriptorSetEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-            pipeline_layout: None,
-            descriptor_set: None,
-        }
-    }
-}
-impl fmt::Debug for ObjectTableDescriptorSetEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTableDescriptorSetEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("pipeline_layout", &self.pipeline_layout)
-            .field("descriptor_set", &self.descriptor_set)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTableVertexBufferEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-    pub buffer: Option<Buffer>,
-}
-impl default::Default for ObjectTableVertexBufferEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-            buffer: None,
-        }
-    }
-}
-impl fmt::Debug for ObjectTableVertexBufferEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTableVertexBufferEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("buffer", &self.buffer)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTableIndexBufferEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-    pub buffer: Option<Buffer>,
-    pub index_type: IndexType,
-}
-impl default::Default for ObjectTableIndexBufferEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-            buffer: None,
-            index_type: IndexType::default(),
-        }
-    }
-}
-impl fmt::Debug for ObjectTableIndexBufferEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTableIndexBufferEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("buffer", &self.buffer)
-            .field("index_type", &self.index_type)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct ObjectTablePushConstantEntryNVX {
-    pub ty: ObjectEntryTypeNVX,
-    pub flags: ObjectEntryUsageFlagsNVX,
-    pub pipeline_layout: Option<PipelineLayout>,
-    pub stage_flags: ShaderStageFlags,
-}
-impl default::Default for ObjectTablePushConstantEntryNVX {
-    fn default() -> Self {
-        Self {
-            ty: ObjectEntryTypeNVX::default(),
-            flags: ObjectEntryUsageFlagsNVX::default(),
-            pipeline_layout: None,
-            stage_flags: ShaderStageFlags::default(),
-        }
-    }
-}
-impl fmt::Debug for ObjectTablePushConstantEntryNVX {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ObjectTablePushConstantEntryNVX")
-            .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("pipeline_layout", &self.pipeline_layout)
-            .field("stage_flags", &self.stage_flags)
             .finish()
     }
 }
@@ -29452,7 +29664,7 @@ impl fmt::Debug for DrawMeshTasksIndirectCommandNV {
 pub struct RayTracingShaderGroupCreateInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub ty: RayTracingShaderGroupTypeNV,
+    pub ty: RayTracingShaderGroupTypeKHR,
     pub general_shader: u32,
     pub closest_hit_shader: u32,
     pub any_hit_shader: u32,
@@ -29463,7 +29675,7 @@ impl default::Default for RayTracingShaderGroupCreateInfoNV {
         Self {
             s_type: StructureType::RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV,
             p_next: ptr::null(),
-            ty: RayTracingShaderGroupTypeNV::default(),
+            ty: RayTracingShaderGroupTypeKHR::default(),
             general_shader: u32::default(),
             closest_hit_shader: u32::default(),
             any_hit_shader: u32::default(),
@@ -29481,6 +29693,49 @@ impl fmt::Debug for RayTracingShaderGroupCreateInfoNV {
             .field("closest_hit_shader", &self.closest_hit_shader)
             .field("any_hit_shader", &self.any_hit_shader)
             .field("intersection_shader", &self.intersection_shader)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RayTracingShaderGroupCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: RayTracingShaderGroupTypeKHR,
+    pub general_shader: u32,
+    pub closest_hit_shader: u32,
+    pub any_hit_shader: u32,
+    pub intersection_shader: u32,
+    pub p_shader_group_capture_replay_handle: *const c_void,
+}
+impl default::Default for RayTracingShaderGroupCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            ty: RayTracingShaderGroupTypeKHR::default(),
+            general_shader: u32::default(),
+            closest_hit_shader: u32::default(),
+            any_hit_shader: u32::default(),
+            intersection_shader: u32::default(),
+            p_shader_group_capture_replay_handle: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for RayTracingShaderGroupCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RayTracingShaderGroupCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("general_shader", &self.general_shader)
+            .field("closest_hit_shader", &self.closest_hit_shader)
+            .field("any_hit_shader", &self.any_hit_shader)
+            .field("intersection_shader", &self.intersection_shader)
+            .field(
+                "p_shader_group_capture_replay_handle",
+                &self.p_shader_group_capture_replay_handle,
+            )
             .finish()
     }
 }
@@ -29532,6 +29787,66 @@ impl fmt::Debug for RayTracingPipelineCreateInfoNV {
             .field("group_count", &self.group_count)
             .field("p_groups", &self.p_groups)
             .field("max_recursion_depth", &self.max_recursion_depth)
+            .field("layout", &self.layout)
+            .field("base_pipeline_handle", &self.base_pipeline_handle)
+            .field("base_pipeline_index", &self.base_pipeline_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RayTracingPipelineCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Pipeline creation flags
+    pub flags: PipelineCreateFlags,
+    pub stage_count: u32,
+    /// One entry for each active shader stage
+    pub p_stages: *const PipelineShaderStageCreateInfo,
+    pub group_count: u32,
+    pub p_groups: *const RayTracingShaderGroupCreateInfoKHR,
+    pub max_recursion_depth: u32,
+    pub libraries: PipelineLibraryCreateInfoKHR,
+    pub p_library_interface: *const RayTracingPipelineInterfaceCreateInfoKHR,
+    /// Interface layout of the pipeline
+    pub layout: Option<PipelineLayout>,
+    /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is nonzero, it specifies the handle of the base pipeline this is a derivative of
+    pub base_pipeline_handle: Option<Pipeline>,
+    /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is not -1, it specifies an index into pCreateInfos of the base pipeline this is a derivative of
+    pub base_pipeline_index: i32,
+}
+impl default::Default for RayTracingPipelineCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RAY_TRACING_PIPELINE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            flags: PipelineCreateFlags::default(),
+            stage_count: u32::default(),
+            p_stages: ptr::null(),
+            group_count: u32::default(),
+            p_groups: ptr::null(),
+            max_recursion_depth: u32::default(),
+            libraries: PipelineLibraryCreateInfoKHR::default(),
+            p_library_interface: ptr::null(),
+            layout: None,
+            base_pipeline_handle: None,
+            base_pipeline_index: i32::default(),
+        }
+    }
+}
+impl fmt::Debug for RayTracingPipelineCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RayTracingPipelineCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("stage_count", &self.stage_count)
+            .field("p_stages", &self.p_stages)
+            .field("group_count", &self.group_count)
+            .field("p_groups", &self.p_groups)
+            .field("max_recursion_depth", &self.max_recursion_depth)
+            .field("libraries", &self.libraries)
+            .field("p_library_interface", &self.p_library_interface)
             .field("layout", &self.layout)
             .field("base_pipeline_handle", &self.base_pipeline_handle)
             .field("base_pipeline_index", &self.base_pipeline_index)
@@ -29657,18 +29972,18 @@ impl fmt::Debug for GeometryDataNV {
 pub struct GeometryNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub geometry_type: GeometryTypeNV,
+    pub geometry_type: GeometryTypeKHR,
     pub geometry: GeometryDataNV,
-    pub flags: GeometryFlagsNV,
+    pub flags: GeometryFlagsKHR,
 }
 impl default::Default for GeometryNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GEOMETRY_NV,
             p_next: ptr::null(),
-            geometry_type: GeometryTypeNV::default(),
+            geometry_type: GeometryTypeKHR::default(),
             geometry: GeometryDataNV::default(),
-            flags: GeometryFlagsNV::default(),
+            flags: GeometryFlagsKHR::default(),
         }
     }
 }
@@ -29750,19 +30065,19 @@ impl fmt::Debug for AccelerationStructureCreateInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BindAccelerationStructureMemoryInfoNV {
+pub struct BindAccelerationStructureMemoryInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub acceleration_structure: Option<AccelerationStructureNV>,
+    pub acceleration_structure: Option<AccelerationStructureKHR>,
     pub memory: Option<DeviceMemory>,
     pub memory_offset: DeviceSize,
     pub device_index_count: u32,
     pub p_device_indices: *const u32,
 }
-impl default::Default for BindAccelerationStructureMemoryInfoNV {
+impl default::Default for BindAccelerationStructureMemoryInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV,
+            s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR,
             p_next: ptr::null(),
             acceleration_structure: None,
             memory: None,
@@ -29772,9 +30087,9 @@ impl default::Default for BindAccelerationStructureMemoryInfoNV {
         }
     }
 }
-impl fmt::Debug for BindAccelerationStructureMemoryInfoNV {
+impl fmt::Debug for BindAccelerationStructureMemoryInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BindAccelerationStructureMemoryInfoNV")
+        fmt.debug_struct("BindAccelerationStructureMemoryInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("acceleration_structure", &self.acceleration_structure)
@@ -29785,31 +30100,64 @@ impl fmt::Debug for BindAccelerationStructureMemoryInfoNV {
             .finish()
     }
 }
+pub type BindAccelerationStructureMemoryInfoNV = BindAccelerationStructureMemoryInfoKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct WriteDescriptorSetAccelerationStructureNV {
+pub struct WriteDescriptorSetAccelerationStructureKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub acceleration_structure_count: u32,
-    pub p_acceleration_structures: *const AccelerationStructureNV,
+    pub p_acceleration_structures: *const AccelerationStructureKHR,
 }
-impl default::Default for WriteDescriptorSetAccelerationStructureNV {
+impl default::Default for WriteDescriptorSetAccelerationStructureKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV,
+            s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR,
             p_next: ptr::null(),
             acceleration_structure_count: u32::default(),
             p_acceleration_structures: ptr::null(),
         }
     }
 }
-impl fmt::Debug for WriteDescriptorSetAccelerationStructureNV {
+impl fmt::Debug for WriteDescriptorSetAccelerationStructureKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("WriteDescriptorSetAccelerationStructureNV")
+        fmt.debug_struct("WriteDescriptorSetAccelerationStructureKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("acceleration_structure_count", &self.acceleration_structure_count)
             .field("p_acceleration_structures", &self.p_acceleration_structures)
+            .finish()
+    }
+}
+pub type WriteDescriptorSetAccelerationStructureNV = WriteDescriptorSetAccelerationStructureKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureMemoryRequirementsInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: AccelerationStructureMemoryRequirementsTypeKHR,
+    pub build_type: AccelerationStructureBuildTypeKHR,
+    pub acceleration_structure: Option<AccelerationStructureKHR>,
+}
+impl default::Default for AccelerationStructureMemoryRequirementsInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR,
+            p_next: ptr::null(),
+            ty: AccelerationStructureMemoryRequirementsTypeKHR::default(),
+            build_type: AccelerationStructureBuildTypeKHR::default(),
+            acceleration_structure: None,
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureMemoryRequirementsInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureMemoryRequirementsInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("build_type", &self.build_type)
+            .field("acceleration_structure", &self.acceleration_structure)
             .finish()
     }
 }
@@ -29838,6 +30186,125 @@ impl fmt::Debug for AccelerationStructureMemoryRequirementsInfoNV {
             .field("p_next", &self.p_next)
             .field("ty", &self.ty)
             .field("acceleration_structure", &self.acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing: Bool32,
+    pub ray_tracing_shader_group_handle_capture_replay: Bool32,
+    pub ray_tracing_shader_group_handle_capture_replay_mixed: Bool32,
+    pub ray_tracing_acceleration_structure_capture_replay: Bool32,
+    pub ray_tracing_indirect_trace_rays: Bool32,
+    pub ray_tracing_indirect_acceleration_structure_build: Bool32,
+    pub ray_tracing_host_acceleration_structure_commands: Bool32,
+    pub ray_query: Bool32,
+    pub ray_tracing_primitive_culling: Bool32,
+}
+impl default::Default for PhysicalDeviceRayTracingFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            ray_tracing: Bool32::default(),
+            ray_tracing_shader_group_handle_capture_replay: Bool32::default(),
+            ray_tracing_shader_group_handle_capture_replay_mixed: Bool32::default(),
+            ray_tracing_acceleration_structure_capture_replay: Bool32::default(),
+            ray_tracing_indirect_trace_rays: Bool32::default(),
+            ray_tracing_indirect_acceleration_structure_build: Bool32::default(),
+            ray_tracing_host_acceleration_structure_commands: Bool32::default(),
+            ray_query: Bool32::default(),
+            ray_tracing_primitive_culling: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing", &self.ray_tracing)
+            .field(
+                "ray_tracing_shader_group_handle_capture_replay",
+                &self.ray_tracing_shader_group_handle_capture_replay,
+            )
+            .field(
+                "ray_tracing_shader_group_handle_capture_replay_mixed",
+                &self.ray_tracing_shader_group_handle_capture_replay_mixed,
+            )
+            .field(
+                "ray_tracing_acceleration_structure_capture_replay",
+                &self.ray_tracing_acceleration_structure_capture_replay,
+            )
+            .field("ray_tracing_indirect_trace_rays", &self.ray_tracing_indirect_trace_rays)
+            .field(
+                "ray_tracing_indirect_acceleration_structure_build",
+                &self.ray_tracing_indirect_acceleration_structure_build,
+            )
+            .field(
+                "ray_tracing_host_acceleration_structure_commands",
+                &self.ray_tracing_host_acceleration_structure_commands,
+            )
+            .field("ray_query", &self.ray_query)
+            .field("ray_tracing_primitive_culling", &self.ray_tracing_primitive_culling)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_group_handle_size: u32,
+    pub max_recursion_depth: u32,
+    pub max_shader_group_stride: u32,
+    pub shader_group_base_alignment: u32,
+    pub max_geometry_count: u64,
+    pub max_instance_count: u64,
+    pub max_primitive_count: u64,
+    pub max_descriptor_set_acceleration_structures: u32,
+    pub shader_group_handle_capture_replay_size: u32,
+}
+impl default::Default for PhysicalDeviceRayTracingPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            shader_group_handle_size: u32::default(),
+            max_recursion_depth: u32::default(),
+            max_shader_group_stride: u32::default(),
+            shader_group_base_alignment: u32::default(),
+            max_geometry_count: u64::default(),
+            max_instance_count: u64::default(),
+            max_primitive_count: u64::default(),
+            max_descriptor_set_acceleration_structures: u32::default(),
+            shader_group_handle_capture_replay_size: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_group_handle_size", &self.shader_group_handle_size)
+            .field("max_recursion_depth", &self.max_recursion_depth)
+            .field("max_shader_group_stride", &self.max_shader_group_stride)
+            .field("shader_group_base_alignment", &self.shader_group_base_alignment)
+            .field("max_geometry_count", &self.max_geometry_count)
+            .field("max_instance_count", &self.max_instance_count)
+            .field("max_primitive_count", &self.max_primitive_count)
+            .field(
+                "max_descriptor_set_acceleration_structures",
+                &self.max_descriptor_set_acceleration_structures,
+            )
+            .field(
+                "shader_group_handle_capture_replay_size",
+                &self.shader_group_handle_capture_replay_size,
+            )
             .finish()
     }
 }
@@ -29887,6 +30354,59 @@ impl fmt::Debug for PhysicalDeviceRayTracingPropertiesNV {
                 "max_descriptor_set_acceleration_structures",
                 &self.max_descriptor_set_acceleration_structures,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct StridedBufferRegionKHR {
+    pub buffer: Option<Buffer>,
+    pub offset: DeviceSize,
+    pub stride: DeviceSize,
+    pub size: DeviceSize,
+}
+impl default::Default for StridedBufferRegionKHR {
+    fn default() -> Self {
+        Self {
+            buffer: None,
+            offset: DeviceSize::default(),
+            stride: DeviceSize::default(),
+            size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for StridedBufferRegionKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("StridedBufferRegionKHR")
+            .field("buffer", &self.buffer)
+            .field("offset", &self.offset)
+            .field("stride", &self.stride)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct TraceRaysIndirectCommandKHR {
+    pub width: u32,
+    pub height: u32,
+    pub depth: u32,
+}
+impl default::Default for TraceRaysIndirectCommandKHR {
+    fn default() -> Self {
+        Self {
+            width: u32::default(),
+            height: u32::default(),
+            depth: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for TraceRaysIndirectCommandKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TraceRaysIndirectCommandKHR")
+            .field("width", &self.width)
+            .field("height", &self.height)
+            .field("depth", &self.depth)
             .finish()
     }
 }
@@ -31534,12 +32054,12 @@ impl fmt::Debug for InitializePerformanceApiInfoINTEL {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct QueryPoolCreateInfoINTEL {
+pub struct QueryPoolPerformanceQueryCreateInfoINTEL {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub performance_counters_sampling: QueryPoolSamplingModeINTEL,
 }
-impl default::Default for QueryPoolCreateInfoINTEL {
+impl default::Default for QueryPoolPerformanceQueryCreateInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUERY_POOL_CREATE_INFO_INTEL,
@@ -31548,15 +32068,16 @@ impl default::Default for QueryPoolCreateInfoINTEL {
         }
     }
 }
-impl fmt::Debug for QueryPoolCreateInfoINTEL {
+impl fmt::Debug for QueryPoolPerformanceQueryCreateInfoINTEL {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("QueryPoolCreateInfoINTEL")
+        fmt.debug_struct("QueryPoolPerformanceQueryCreateInfoINTEL")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("performance_counters_sampling", &self.performance_counters_sampling)
             .finish()
     }
 }
+pub type QueryPoolCreateInfoINTEL = QueryPoolPerformanceQueryCreateInfoINTEL;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PerformanceMarkerInfoINTEL {
@@ -32437,6 +32958,31 @@ impl fmt::Debug for PipelineRasterizationLineStateCreateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_creation_cache_control: Bool32,
+}
+impl default::Default for PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_creation_cache_control: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineCreationCacheControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_creation_cache_control", &self.pipeline_creation_cache_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceVulkan11Features {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -33223,6 +33769,611 @@ impl fmt::Debug for PhysicalDeviceToolPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub union DeviceOrHostAddressKHR {
+    pub device_address: DeviceAddress,
+    pub host_address: *mut c_void,
+}
+impl default::Default for DeviceOrHostAddressKHR {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for DeviceOrHostAddressKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceOrHostAddressKHR")
+            .field("device_address", unsafe { &self.device_address })
+            .field("host_address", unsafe { &self.host_address })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union DeviceOrHostAddressConstKHR {
+    pub device_address: DeviceAddress,
+    pub host_address: *const c_void,
+}
+impl default::Default for DeviceOrHostAddressConstKHR {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for DeviceOrHostAddressConstKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceOrHostAddressConstKHR")
+            .field("device_address", unsafe { &self.device_address })
+            .field("host_address", unsafe { &self.host_address })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryTrianglesDataKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub vertex_format: Format,
+    pub vertex_data: DeviceOrHostAddressConstKHR,
+    pub vertex_stride: DeviceSize,
+    pub index_type: IndexType,
+    pub index_data: DeviceOrHostAddressConstKHR,
+    pub transform_data: DeviceOrHostAddressConstKHR,
+}
+impl default::Default for AccelerationStructureGeometryTrianglesDataKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR,
+            p_next: ptr::null(),
+            vertex_format: Format::default(),
+            vertex_data: DeviceOrHostAddressConstKHR::default(),
+            vertex_stride: DeviceSize::default(),
+            index_type: IndexType::default(),
+            index_data: DeviceOrHostAddressConstKHR::default(),
+            transform_data: DeviceOrHostAddressConstKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryTrianglesDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryTrianglesDataKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_format", &self.vertex_format)
+            .field("vertex_data", &self.vertex_data)
+            .field("vertex_stride", &self.vertex_stride)
+            .field("index_type", &self.index_type)
+            .field("index_data", &self.index_data)
+            .field("transform_data", &self.transform_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryAabbsDataKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub data: DeviceOrHostAddressConstKHR,
+    pub stride: DeviceSize,
+}
+impl default::Default for AccelerationStructureGeometryAabbsDataKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR,
+            p_next: ptr::null(),
+            data: DeviceOrHostAddressConstKHR::default(),
+            stride: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryAabbsDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryAabbsDataKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data", &self.data)
+            .field("stride", &self.stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryInstancesDataKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub array_of_pointers: Bool32,
+    pub data: DeviceOrHostAddressConstKHR,
+}
+impl default::Default for AccelerationStructureGeometryInstancesDataKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR,
+            p_next: ptr::null(),
+            array_of_pointers: Bool32::default(),
+            data: DeviceOrHostAddressConstKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryInstancesDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryInstancesDataKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("array_of_pointers", &self.array_of_pointers)
+            .field("data", &self.data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union AccelerationStructureGeometryDataKHR {
+    pub triangles: AccelerationStructureGeometryTrianglesDataKHR,
+    pub aabbs: AccelerationStructureGeometryAabbsDataKHR,
+    pub instances: AccelerationStructureGeometryInstancesDataKHR,
+}
+impl default::Default for AccelerationStructureGeometryDataKHR {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryDataKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryDataKHR")
+            .field("triangles", unsafe { &self.triangles })
+            .field("aabbs", unsafe { &self.aabbs })
+            .field("instances", unsafe { &self.instances })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub geometry_type: GeometryTypeKHR,
+    pub geometry: AccelerationStructureGeometryDataKHR,
+    pub flags: GeometryFlagsKHR,
+}
+impl default::Default for AccelerationStructureGeometryKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_KHR,
+            p_next: ptr::null(),
+            geometry_type: GeometryTypeKHR::default(),
+            geometry: AccelerationStructureGeometryDataKHR::default(),
+            flags: GeometryFlagsKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("geometry_type", &self.geometry_type)
+            .field("geometry", &self.geometry)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureBuildGeometryInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: AccelerationStructureTypeKHR,
+    pub flags: BuildAccelerationStructureFlagsKHR,
+    pub update: Bool32,
+    pub src_acceleration_structure: Option<AccelerationStructureKHR>,
+    pub dst_acceleration_structure: Option<AccelerationStructureKHR>,
+    pub geometry_array_of_pointers: Bool32,
+    pub geometry_count: u32,
+    pub pp_geometries: *const *const AccelerationStructureGeometryKHR,
+    pub scratch_data: DeviceOrHostAddressKHR,
+}
+impl default::Default for AccelerationStructureBuildGeometryInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR,
+            p_next: ptr::null(),
+            ty: AccelerationStructureTypeKHR::default(),
+            flags: BuildAccelerationStructureFlagsKHR::default(),
+            update: Bool32::default(),
+            src_acceleration_structure: None,
+            dst_acceleration_structure: None,
+            geometry_array_of_pointers: Bool32::default(),
+            geometry_count: u32::default(),
+            pp_geometries: ptr::null(),
+            scratch_data: DeviceOrHostAddressKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureBuildGeometryInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureBuildGeometryInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("flags", &self.flags)
+            .field("update", &self.update)
+            .field("src_acceleration_structure", &self.src_acceleration_structure)
+            .field("dst_acceleration_structure", &self.dst_acceleration_structure)
+            .field("geometry_array_of_pointers", &self.geometry_array_of_pointers)
+            .field("geometry_count", &self.geometry_count)
+            .field("pp_geometries", &self.pp_geometries)
+            .field("scratch_data", &self.scratch_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureBuildOffsetInfoKHR {
+    pub primitive_count: u32,
+    pub primitive_offset: u32,
+    pub first_vertex: u32,
+    pub transform_offset: u32,
+}
+impl default::Default for AccelerationStructureBuildOffsetInfoKHR {
+    fn default() -> Self {
+        Self {
+            primitive_count: u32::default(),
+            primitive_offset: u32::default(),
+            first_vertex: u32::default(),
+            transform_offset: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureBuildOffsetInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureBuildOffsetInfoKHR")
+            .field("primitive_count", &self.primitive_count)
+            .field("primitive_offset", &self.primitive_offset)
+            .field("first_vertex", &self.first_vertex)
+            .field("transform_offset", &self.transform_offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureCreateGeometryTypeInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub geometry_type: GeometryTypeKHR,
+    pub max_primitive_count: u32,
+    pub index_type: IndexType,
+    pub max_vertex_count: u32,
+    pub vertex_format: Format,
+    pub allows_transforms: Bool32,
+}
+impl default::Default for AccelerationStructureCreateGeometryTypeInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR,
+            p_next: ptr::null(),
+            geometry_type: GeometryTypeKHR::default(),
+            max_primitive_count: u32::default(),
+            index_type: IndexType::default(),
+            max_vertex_count: u32::default(),
+            vertex_format: Format::default(),
+            allows_transforms: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureCreateGeometryTypeInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureCreateGeometryTypeInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("geometry_type", &self.geometry_type)
+            .field("max_primitive_count", &self.max_primitive_count)
+            .field("index_type", &self.index_type)
+            .field("max_vertex_count", &self.max_vertex_count)
+            .field("vertex_format", &self.vertex_format)
+            .field("allows_transforms", &self.allows_transforms)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub compacted_size: DeviceSize,
+    pub ty: AccelerationStructureTypeKHR,
+    pub flags: BuildAccelerationStructureFlagsKHR,
+    pub max_geometry_count: u32,
+    pub p_geometry_infos: *const AccelerationStructureCreateGeometryTypeInfoKHR,
+    pub device_address: DeviceAddress,
+}
+impl default::Default for AccelerationStructureCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            compacted_size: DeviceSize::default(),
+            ty: AccelerationStructureTypeKHR::default(),
+            flags: BuildAccelerationStructureFlagsKHR::default(),
+            max_geometry_count: u32::default(),
+            p_geometry_infos: ptr::null(),
+            device_address: DeviceAddress::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("compacted_size", &self.compacted_size)
+            .field("ty", &self.ty)
+            .field("flags", &self.flags)
+            .field("max_geometry_count", &self.max_geometry_count)
+            .field("p_geometry_infos", &self.p_geometry_infos)
+            .field("device_address", &self.device_address)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AabbPositionsKHR {
+    pub min_x: f32,
+    pub min_y: f32,
+    pub min_z: f32,
+    pub max_x: f32,
+    pub max_y: f32,
+    pub max_z: f32,
+}
+impl default::Default for AabbPositionsKHR {
+    fn default() -> Self {
+        Self {
+            min_x: f32::default(),
+            min_y: f32::default(),
+            min_z: f32::default(),
+            max_x: f32::default(),
+            max_y: f32::default(),
+            max_z: f32::default(),
+        }
+    }
+}
+impl fmt::Debug for AabbPositionsKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AabbPositionsKHR")
+            .field("min_x", &self.min_x)
+            .field("min_y", &self.min_y)
+            .field("min_z", &self.min_z)
+            .field("max_x", &self.max_x)
+            .field("max_y", &self.max_y)
+            .field("max_z", &self.max_z)
+            .finish()
+    }
+}
+pub type AabbPositionsNV = AabbPositionsKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureDeviceAddressInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub acceleration_structure: Option<AccelerationStructureKHR>,
+}
+impl default::Default for AccelerationStructureDeviceAddressInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
+            p_next: ptr::null(),
+            acceleration_structure: None,
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureDeviceAddressInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureDeviceAddressInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("acceleration_structure", &self.acceleration_structure)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureVersionKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub version_data: *const u8,
+}
+impl default::Default for AccelerationStructureVersionKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_VERSION_KHR,
+            p_next: ptr::null(),
+            version_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureVersionKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureVersionKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("version_data", &self.version_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyAccelerationStructureInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: Option<AccelerationStructureKHR>,
+    pub dst: Option<AccelerationStructureKHR>,
+    pub mode: CopyAccelerationStructureModeKHR,
+}
+impl default::Default for CopyAccelerationStructureInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_ACCELERATION_STRUCTURE_INFO_KHR,
+            p_next: ptr::null(),
+            src: None,
+            dst: None,
+            mode: CopyAccelerationStructureModeKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyAccelerationStructureInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyAccelerationStructureInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyAccelerationStructureToMemoryInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: Option<AccelerationStructureKHR>,
+    pub dst: DeviceOrHostAddressKHR,
+    pub mode: CopyAccelerationStructureModeKHR,
+}
+impl default::Default for CopyAccelerationStructureToMemoryInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR,
+            p_next: ptr::null(),
+            src: None,
+            dst: DeviceOrHostAddressKHR::default(),
+            mode: CopyAccelerationStructureModeKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyAccelerationStructureToMemoryInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyAccelerationStructureToMemoryInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMemoryToAccelerationStructureInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: DeviceOrHostAddressConstKHR,
+    pub dst: Option<AccelerationStructureKHR>,
+    pub mode: CopyAccelerationStructureModeKHR,
+}
+impl default::Default for CopyMemoryToAccelerationStructureInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR,
+            p_next: ptr::null(),
+            src: DeviceOrHostAddressConstKHR::default(),
+            dst: None,
+            mode: CopyAccelerationStructureModeKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyMemoryToAccelerationStructureInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryToAccelerationStructureInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RayTracingPipelineInterfaceCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub max_payload_size: u32,
+    pub max_attribute_size: u32,
+    pub max_callable_size: u32,
+}
+impl default::Default for RayTracingPipelineInterfaceCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            max_payload_size: u32::default(),
+            max_attribute_size: u32::default(),
+            max_callable_size: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for RayTracingPipelineInterfaceCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RayTracingPipelineInterfaceCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_payload_size", &self.max_payload_size)
+            .field("max_attribute_size", &self.max_attribute_size)
+            .field("max_callable_size", &self.max_callable_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeferredOperationInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub operation_handle: Option<DeferredOperationKHR>,
+}
+impl default::Default for DeferredOperationInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEFERRED_OPERATION_INFO_KHR,
+            p_next: ptr::null(),
+            operation_handle: None,
+        }
+    }
+}
+impl fmt::Debug for DeferredOperationInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeferredOperationInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("operation_handle", &self.operation_handle)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineLibraryCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub library_count: u32,
+    pub p_libraries: *const Pipeline,
+}
+impl default::Default for PipelineLibraryCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_LIBRARY_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            library_count: u32::default(),
+            p_libraries: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineLibraryCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineLibraryCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("library_count", &self.library_count)
+            .field("p_libraries", &self.p_libraries)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderPassTransformBeginInfoQCOM {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -33273,6 +34424,56 @@ impl fmt::Debug for CommandBufferInheritanceRenderPassTransformInfoQCOM {
             .field("p_next", &self.p_next)
             .field("transform", &self.transform)
             .field("render_area", &self.render_area)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDiagnosticsConfigFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub diagnostics_config: Bool32,
+}
+impl default::Default for PhysicalDeviceDiagnosticsConfigFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            diagnostics_config: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDiagnosticsConfigFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDiagnosticsConfigFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("diagnostics_config", &self.diagnostics_config)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceDiagnosticsConfigCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: DeviceDiagnosticsConfigFlagsNV,
+}
+impl default::Default for DeviceDiagnosticsConfigCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            flags: DeviceDiagnosticsConfigFlagsNV::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceDiagnosticsConfigCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceDiagnosticsConfigCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
             .finish()
     }
 }
@@ -34256,54 +35457,36 @@ pub type FnGetMemoryWin32HandleNV = unsafe extern "system" fn(
     handle_type: ExternalMemoryHandleTypeFlagsNV,
     p_handle: *mut HANDLE,
 ) -> Result;
-pub type FnCmdProcessCommandsNVX = unsafe extern "system" fn(
+pub type FnCmdExecuteGeneratedCommandsNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_process_commands_info: *const CmdProcessCommandsInfoNVX,
+    is_preprocessed: Bool32,
+    p_generated_commands_info: *const GeneratedCommandsInfoNV,
 ) -> c_void;
-pub type FnCmdReserveSpaceForCommandsNVX = unsafe extern "system" fn(
+pub type FnCmdPreprocessGeneratedCommandsNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_reserve_space_info: *const CmdReserveSpaceForCommandsInfoNVX,
+    p_generated_commands_info: *const GeneratedCommandsInfoNV,
 ) -> c_void;
-pub type FnCreateIndirectCommandsLayoutNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const IndirectCommandsLayoutCreateInfoNVX,
-    p_allocator: *const AllocationCallbacks,
-    p_indirect_commands_layout: *mut IndirectCommandsLayoutNVX,
-) -> Result;
-pub type FnDestroyIndirectCommandsLayoutNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    indirect_commands_layout: Option<IndirectCommandsLayoutNVX>,
-    p_allocator: *const AllocationCallbacks,
+pub type FnCmdBindPipelineShaderGroupNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    pipeline: Option<Pipeline>,
+    group_index: u32,
 ) -> c_void;
-pub type FnCreateObjectTableNVX = unsafe extern "system" fn(
+pub type FnGetGeneratedCommandsMemoryRequirementsNV = unsafe extern "system" fn(
     device: Option<Device>,
-    p_create_info: *const ObjectTableCreateInfoNVX,
-    p_allocator: *const AllocationCallbacks,
-    p_object_table: *mut ObjectTableNVX,
-) -> Result;
-pub type FnDestroyObjectTableNVX = unsafe extern "system" fn(
-    device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    p_allocator: *const AllocationCallbacks,
+    p_info: *const GeneratedCommandsMemoryRequirementsInfoNV,
+    p_memory_requirements: *mut MemoryRequirements2,
 ) -> c_void;
-pub type FnRegisterObjectsNVX = unsafe extern "system" fn(
+pub type FnCreateIndirectCommandsLayoutNV = unsafe extern "system" fn(
     device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    object_count: u32,
-    pp_object_table_entries: *const *const ObjectTableEntryNVX,
-    p_object_indices: *const u32,
+    p_create_info: *const IndirectCommandsLayoutCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_indirect_commands_layout: *mut IndirectCommandsLayoutNV,
 ) -> Result;
-pub type FnUnregisterObjectsNVX = unsafe extern "system" fn(
+pub type FnDestroyIndirectCommandsLayoutNV = unsafe extern "system" fn(
     device: Option<Device>,
-    object_table: Option<ObjectTableNVX>,
-    object_count: u32,
-    p_object_entry_types: *const ObjectEntryTypeNVX,
-    p_object_indices: *const u32,
-) -> Result;
-pub type FnGetPhysicalDeviceGeneratedCommandsPropertiesNVX = unsafe extern "system" fn(
-    physical_device: Option<PhysicalDevice>,
-    p_features: *mut DeviceGeneratedCommandsFeaturesNVX,
-    p_limits: *mut DeviceGeneratedCommandsLimitsNVX,
+    indirect_commands_layout: Option<IndirectCommandsLayoutNV>,
+    p_allocator: *const AllocationCallbacks,
 ) -> c_void;
 pub type FnGetPhysicalDeviceFeatures2 = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
@@ -34951,45 +36134,94 @@ pub type FnCreateAccelerationStructureNV = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_acceleration_structure: *mut AccelerationStructureNV,
 ) -> Result;
-pub type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
+pub type FnDestroyAccelerationStructureKHR = unsafe extern "system" fn(
     device: Option<Device>,
-    acceleration_structure: Option<AccelerationStructureNV>,
+    acceleration_structure: Option<AccelerationStructureKHR>,
     p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnDestroyAccelerationStructureNV = FnDestroyAccelerationStructureKHR;
+pub type FnGetAccelerationStructureMemoryRequirementsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const AccelerationStructureMemoryRequirementsInfoKHR,
+    p_memory_requirements: *mut MemoryRequirements2,
 ) -> c_void;
 pub type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
     device: Option<Device>,
     p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
     p_memory_requirements: *mut MemoryRequirements2KHR,
 ) -> c_void;
-pub type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
+pub type FnBindAccelerationStructureMemoryKHR = unsafe extern "system" fn(
     device: Option<Device>,
     bind_info_count: u32,
-    p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
+    p_bind_infos: *const BindAccelerationStructureMemoryInfoKHR,
 ) -> Result;
+pub type FnBindAccelerationStructureMemoryNV = FnBindAccelerationStructureMemoryKHR;
 pub type FnCmdCopyAccelerationStructureNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    dst: Option<AccelerationStructureNV>,
-    src: Option<AccelerationStructureNV>,
-    mode: CopyAccelerationStructureModeNV,
+    dst: Option<AccelerationStructureKHR>,
+    src: Option<AccelerationStructureKHR>,
+    mode: CopyAccelerationStructureModeKHR,
 ) -> c_void;
-pub type FnCmdWriteAccelerationStructuresPropertiesNV = unsafe extern "system" fn(
+pub type FnCmdCopyAccelerationStructureKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_info: *const CopyAccelerationStructureInfoKHR,
+) -> c_void;
+pub type FnCopyAccelerationStructureKHR =
+    unsafe extern "system" fn(device: Option<Device>, p_info: *const CopyAccelerationStructureInfoKHR) -> Result;
+pub type FnCmdCopyAccelerationStructureToMemoryKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_info: *const CopyAccelerationStructureToMemoryInfoKHR,
+) -> c_void;
+pub type FnCopyAccelerationStructureToMemoryKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const CopyAccelerationStructureToMemoryInfoKHR,
+) -> Result;
+pub type FnCmdCopyMemoryToAccelerationStructureKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_info: *const CopyMemoryToAccelerationStructureInfoKHR,
+) -> c_void;
+pub type FnCopyMemoryToAccelerationStructureKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const CopyMemoryToAccelerationStructureInfoKHR,
+) -> Result;
+pub type FnCmdWriteAccelerationStructuresPropertiesKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     acceleration_structure_count: u32,
-    p_acceleration_structures: *const AccelerationStructureNV,
+    p_acceleration_structures: *const AccelerationStructureKHR,
     query_type: QueryType,
     query_pool: Option<QueryPool>,
     first_query: u32,
 ) -> c_void;
+pub type FnCmdWriteAccelerationStructuresPropertiesNV = FnCmdWriteAccelerationStructuresPropertiesKHR;
 pub type FnCmdBuildAccelerationStructureNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_info: *const AccelerationStructureInfoNV,
     instance_data: Option<Buffer>,
     instance_offset: DeviceSize,
     update: Bool32,
-    dst: Option<AccelerationStructureNV>,
-    src: Option<AccelerationStructureNV>,
+    dst: Option<AccelerationStructureKHR>,
+    src: Option<AccelerationStructureKHR>,
     scratch: Option<Buffer>,
     scratch_offset: DeviceSize,
+) -> c_void;
+pub type FnWriteAccelerationStructuresPropertiesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    acceleration_structure_count: u32,
+    p_acceleration_structures: *const AccelerationStructureKHR,
+    query_type: QueryType,
+    data_size: usize,
+    p_data: *mut c_void,
+    stride: usize,
+) -> Result;
+pub type FnCmdTraceRaysKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_raygen_shader_binding_table: *const StridedBufferRegionKHR,
+    p_miss_shader_binding_table: *const StridedBufferRegionKHR,
+    p_hit_shader_binding_table: *const StridedBufferRegionKHR,
+    p_callable_shader_binding_table: *const StridedBufferRegionKHR,
+    width: u32,
+    height: u32,
+    depth: u32,
 ) -> c_void;
 pub type FnCmdTraceRaysNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
@@ -35008,7 +36240,16 @@ pub type FnCmdTraceRaysNV = unsafe extern "system" fn(
     height: u32,
     depth: u32,
 ) -> c_void;
-pub type FnGetRayTracingShaderGroupHandlesNV = unsafe extern "system" fn(
+pub type FnGetRayTracingShaderGroupHandlesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline: Option<Pipeline>,
+    first_group: u32,
+    group_count: u32,
+    data_size: usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetRayTracingShaderGroupHandlesNV = FnGetRayTracingShaderGroupHandlesKHR;
+pub type FnGetRayTracingCaptureReplayShaderGroupHandlesKHR = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
     first_group: u32,
@@ -35018,7 +36259,7 @@ pub type FnGetRayTracingShaderGroupHandlesNV = unsafe extern "system" fn(
 ) -> Result;
 pub type FnGetAccelerationStructureHandleNV = unsafe extern "system" fn(
     device: Option<Device>,
-    acceleration_structure: Option<AccelerationStructureNV>,
+    acceleration_structure: Option<AccelerationStructureKHR>,
     data_size: usize,
     p_data: *mut c_void,
 ) -> Result;
@@ -35030,11 +36271,30 @@ pub type FnCreateRayTracingPipelinesNV = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_pipelines: *mut Pipeline,
 ) -> Result;
+pub type FnCreateRayTracingPipelinesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const RayTracingPipelineCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
 pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_property_count: *mut u32,
     p_properties: *mut CooperativeMatrixPropertiesNV,
 ) -> Result;
+pub type FnCmdTraceRaysIndirectKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_raygen_shader_binding_table: *const StridedBufferRegionKHR,
+    p_miss_shader_binding_table: *const StridedBufferRegionKHR,
+    p_hit_shader_binding_table: *const StridedBufferRegionKHR,
+    p_callable_shader_binding_table: *const StridedBufferRegionKHR,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+) -> c_void;
+pub type FnGetDeviceAccelerationStructureCompatibilityKHR =
+    unsafe extern "system" fn(device: Option<Device>, version: *const AccelerationStructureVersionKHR) -> Result;
 pub type FnGetImageViewHandleNVX =
     unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
 pub type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
@@ -35152,3 +36412,48 @@ pub type FnGetPhysicalDeviceToolPropertiesEXT = unsafe extern "system" fn(
     p_tool_count: *mut u32,
     p_tool_properties: *mut PhysicalDeviceToolPropertiesEXT,
 ) -> Result;
+pub type FnCreateAccelerationStructureKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const AccelerationStructureCreateInfoKHR,
+    p_allocator: *const AllocationCallbacks,
+    p_acceleration_structure: *mut AccelerationStructureKHR,
+) -> Result;
+pub type FnCmdBuildAccelerationStructureKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    info_count: u32,
+    p_infos: *const AccelerationStructureBuildGeometryInfoKHR,
+    pp_offset_infos: *const *const AccelerationStructureBuildOffsetInfoKHR,
+) -> c_void;
+pub type FnCmdBuildAccelerationStructureIndirectKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_info: *const AccelerationStructureBuildGeometryInfoKHR,
+    indirect_buffer: Option<Buffer>,
+    indirect_offset: DeviceSize,
+    indirect_stride: u32,
+) -> c_void;
+pub type FnBuildAccelerationStructureKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    info_count: u32,
+    p_infos: *const AccelerationStructureBuildGeometryInfoKHR,
+    pp_offset_infos: *const *const AccelerationStructureBuildOffsetInfoKHR,
+) -> Result;
+pub type FnGetAccelerationStructureDeviceAddressKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const AccelerationStructureDeviceAddressInfoKHR,
+) -> DeviceAddress;
+pub type FnCreateDeferredOperationKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_allocator: *const AllocationCallbacks,
+    p_deferred_operation: *mut DeferredOperationKHR,
+) -> Result;
+pub type FnDestroyDeferredOperationKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    operation: Option<DeferredOperationKHR>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnGetDeferredOperationMaxConcurrencyKHR =
+    unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> u32;
+pub type FnGetDeferredOperationResultKHR =
+    unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
+pub type FnDeferredOperationJoinKHR =
+    unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;

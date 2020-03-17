@@ -3639,18 +3639,49 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::DeviceGeneratedCommandsFeaturesNVX {
-    type Type = DeviceGeneratedCommandsFeaturesNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
+    type Type = PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
-    inner: vk::DeviceGeneratedCommandsFeaturesNVX,
+pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
+impl<'a> PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_generated_commands(mut self, device_generated_commands: bool) -> Self {
+        self.inner.device_generated_commands = if device_generated_commands { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::GraphicsShaderGroupCreateInfoNV {
+    type Type = GraphicsShaderGroupCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GraphicsShaderGroupCreateInfoNVBuilder<'a> {
+    inner: vk::GraphicsShaderGroupCreateInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> GraphicsShaderGroupCreateInfoNVBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3659,33 +3690,44 @@ impl<'a> DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn compute_binding_point_support(mut self, compute_binding_point_support: bool) -> Self {
-        self.inner.compute_binding_point_support = if compute_binding_point_support {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
+    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
+        self.inner.stage_count = p_stages.len() as u32;
+        self.inner.p_stages = p_stages.as_ptr();
+        self
+    }
+    pub fn p_vertex_input_state(
+        mut self,
+        p_vertex_input_state: Option<&'a vk::PipelineVertexInputStateCreateInfo>,
+    ) -> Self {
+        self.inner.p_vertex_input_state = p_vertex_input_state.map_or(ptr::null(), |p| p);
+        self
+    }
+    pub fn p_tessellation_state(
+        mut self,
+        p_tessellation_state: Option<&'a vk::PipelineTessellationStateCreateInfo>,
+    ) -> Self {
+        self.inner.p_tessellation_state = p_tessellation_state.map_or(ptr::null(), |p| p);
         self
     }
 }
-impl<'a> Deref for DeviceGeneratedCommandsFeaturesNVXBuilder<'a> {
-    type Target = vk::DeviceGeneratedCommandsFeaturesNVX;
+impl<'a> Deref for GraphicsShaderGroupCreateInfoNVBuilder<'a> {
+    type Target = vk::GraphicsShaderGroupCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::DeviceGeneratedCommandsLimitsNVX {
-    type Type = DeviceGeneratedCommandsLimitsNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::GraphicsPipelineShaderGroupsCreateInfoNV {
+    type Type = GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
-    inner: vk::DeviceGeneratedCommandsLimitsNVX,
+pub struct GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
+    inner: vk::GraphicsPipelineShaderGroupsCreateInfoNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
+impl<'a> GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3694,54 +3736,154 @@ impl<'a> DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn max_indirect_commands_layout_token_count(mut self, max_indirect_commands_layout_token_count: u32) -> Self {
-        self.inner.max_indirect_commands_layout_token_count = max_indirect_commands_layout_token_count;
+    pub fn p_groups(mut self, p_groups: &'a [vk::GraphicsShaderGroupCreateInfoNV]) -> Self {
+        self.inner.group_count = p_groups.len() as u32;
+        self.inner.p_groups = p_groups.as_ptr();
         self
     }
-    pub fn max_object_entry_counts(mut self, max_object_entry_counts: u32) -> Self {
-        self.inner.max_object_entry_counts = max_object_entry_counts;
-        self
-    }
-    pub fn min_sequence_count_buffer_offset_alignment(
-        mut self,
-        min_sequence_count_buffer_offset_alignment: u32,
-    ) -> Self {
-        self.inner.min_sequence_count_buffer_offset_alignment = min_sequence_count_buffer_offset_alignment;
-        self
-    }
-    pub fn min_sequence_index_buffer_offset_alignment(
-        mut self,
-        min_sequence_index_buffer_offset_alignment: u32,
-    ) -> Self {
-        self.inner.min_sequence_index_buffer_offset_alignment = min_sequence_index_buffer_offset_alignment;
-        self
-    }
-    pub fn min_commands_token_buffer_offset_alignment(
-        mut self,
-        min_commands_token_buffer_offset_alignment: u32,
-    ) -> Self {
-        self.inner.min_commands_token_buffer_offset_alignment = min_commands_token_buffer_offset_alignment;
+    pub fn p_pipelines(mut self, p_pipelines: &'a [vk::Pipeline]) -> Self {
+        self.inner.pipeline_count = p_pipelines.len() as u32;
+        self.inner.p_pipelines = p_pipelines.as_ptr();
         self
     }
 }
-impl<'a> Deref for DeviceGeneratedCommandsLimitsNVXBuilder<'a> {
-    type Target = vk::DeviceGeneratedCommandsLimitsNVX;
+impl<'a> Deref for GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
+    type Target = vk::GraphicsPipelineShaderGroupsCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::IndirectCommandsLayoutCreateInfoNVX {
-    type Type = IndirectCommandsLayoutCreateInfoNVXBuilder<'a>;
+impl<'a> Builder<'a> for vk::IndirectCommandsLayoutTokenNV {
+    type Type = IndirectCommandsLayoutTokenNVBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
-    inner: vk::IndirectCommandsLayoutCreateInfoNVX,
+pub struct IndirectCommandsLayoutTokenNVBuilder<'a> {
+    inner: vk::IndirectCommandsLayoutTokenNV,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
+impl<'a> IndirectCommandsLayoutTokenNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn token_type(mut self, token_type: vk::IndirectCommandsTokenTypeNV) -> Self {
+        self.inner.token_type = token_type;
+        self
+    }
+    pub fn stream(mut self, stream: u32) -> Self {
+        self.inner.stream = stream;
+        self
+    }
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn vertex_binding_unit(mut self, vertex_binding_unit: u32) -> Self {
+        self.inner.vertex_binding_unit = vertex_binding_unit;
+        self
+    }
+    pub fn vertex_dynamic_stride(mut self, vertex_dynamic_stride: bool) -> Self {
+        self.inner.vertex_dynamic_stride = if vertex_dynamic_stride { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn pushconstant_pipeline_layout(mut self, pushconstant_pipeline_layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.pushconstant_pipeline_layout = pushconstant_pipeline_layout;
+        self
+    }
+    pub fn pushconstant_shader_stage_flags(mut self, pushconstant_shader_stage_flags: vk::ShaderStageFlags) -> Self {
+        self.inner.pushconstant_shader_stage_flags = pushconstant_shader_stage_flags;
+        self
+    }
+    pub fn pushconstant_offset(mut self, pushconstant_offset: u32) -> Self {
+        self.inner.pushconstant_offset = pushconstant_offset;
+        self
+    }
+    pub fn pushconstant_size(mut self, pushconstant_size: u32) -> Self {
+        self.inner.pushconstant_size = pushconstant_size;
+        self
+    }
+    pub fn indirect_state_flags(mut self, indirect_state_flags: vk::IndirectStateFlagsNV) -> Self {
+        self.inner.indirect_state_flags = indirect_state_flags;
+        self
+    }
+    pub fn p_index_types(mut self, p_index_types: &'a [vk::IndexType], p_index_type_values: &'a [u32]) -> Self {
+        self.inner.index_type_count = p_index_types.len() as u32;
+        assert_eq!(self.inner.index_type_count, p_index_type_values.len() as u32);
+        self.inner.p_index_types = p_index_types.as_ptr();
+        self.inner.p_index_type_values = p_index_type_values.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for IndirectCommandsLayoutTokenNVBuilder<'a> {
+    type Target = vk::IndirectCommandsLayoutTokenNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::IndirectCommandsLayoutCreateInfoNV {
+    type Type = IndirectCommandsLayoutCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
+    inner: vk::IndirectCommandsLayoutCreateInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::IndirectCommandsLayoutUsageFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+        self.inner.pipeline_bind_point = pipeline_bind_point;
+        self
+    }
+    pub fn p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenNV]) -> Self {
+        self.inner.token_count = p_tokens.len() as u32;
+        self.inner.p_tokens = p_tokens.as_ptr();
+        self
+    }
+    pub fn p_stream_strides(mut self, p_stream_strides: &'a [u32]) -> Self {
+        self.inner.stream_count = p_stream_strides.len() as u32;
+        self.inner.p_stream_strides = p_stream_strides.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
+    type Target = vk::IndirectCommandsLayoutCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::GeneratedCommandsInfoNV {
+    type Type = GeneratedCommandsInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GeneratedCommandsInfoNVBuilder<'a> {
+    inner: vk::GeneratedCommandsInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> GeneratedCommandsInfoNVBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3754,64 +3896,33 @@ impl<'a> IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn flags(mut self, flags: vk::IndirectCommandsLayoutUsageFlagsNVX) -> Self {
-        self.inner.flags = flags;
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
         self
     }
-    pub fn p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenNVX]) -> Self {
-        self.inner.token_count = p_tokens.len() as u32;
-        self.inner.p_tokens = p_tokens.as_ptr();
-        self
-    }
-}
-impl<'a> Deref for IndirectCommandsLayoutCreateInfoNVXBuilder<'a> {
-    type Target = vk::IndirectCommandsLayoutCreateInfoNVX;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> Builder<'a> for vk::CmdProcessCommandsInfoNVX {
-    type Type = CmdProcessCommandsInfoNVXBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct CmdProcessCommandsInfoNVXBuilder<'a> {
-    inner: vk::CmdProcessCommandsInfoNVX,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
-        self.inner.object_table = Some(object_table);
-        self
-    }
-    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNV) -> Self {
         self.inner.indirect_commands_layout = Some(indirect_commands_layout);
         self
     }
-    pub fn p_indirect_commands_tokens(
-        mut self,
-        p_indirect_commands_tokens: &'a [vk::IndirectCommandsTokenNVX],
-    ) -> Self {
-        self.inner.indirect_commands_token_count = p_indirect_commands_tokens.len() as u32;
-        self.inner.p_indirect_commands_tokens = p_indirect_commands_tokens.as_ptr();
+    pub fn p_streams(mut self, p_streams: &'a [vk::IndirectCommandsStreamNV]) -> Self {
+        self.inner.stream_count = p_streams.len() as u32;
+        self.inner.p_streams = p_streams.as_ptr();
         self
     }
-    pub fn max_sequences_count(mut self, max_sequences_count: u32) -> Self {
-        self.inner.max_sequences_count = max_sequences_count;
+    pub fn sequences_count(mut self, sequences_count: u32) -> Self {
+        self.inner.sequences_count = sequences_count;
         self
     }
-    pub fn target_command_buffer(mut self, target_command_buffer: Option<vk::CommandBuffer>) -> Self {
-        self.inner.target_command_buffer = target_command_buffer;
+    pub fn preprocess_buffer(mut self, preprocess_buffer: vk::Buffer) -> Self {
+        self.inner.preprocess_buffer = Some(preprocess_buffer);
+        self
+    }
+    pub fn preprocess_offset(mut self, preprocess_offset: vk::DeviceSize) -> Self {
+        self.inner.preprocess_offset = preprocess_offset;
+        self
+    }
+    pub fn preprocess_size(mut self, preprocess_size: vk::DeviceSize) -> Self {
+        self.inner.preprocess_size = preprocess_size;
         self
     }
     pub fn sequences_count_buffer(mut self, sequences_count_buffer: Option<vk::Buffer>) -> Self {
@@ -3831,108 +3942,8 @@ impl<'a> CmdProcessCommandsInfoNVXBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for CmdProcessCommandsInfoNVXBuilder<'a> {
-    type Target = vk::CmdProcessCommandsInfoNVX;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> Builder<'a> for vk::CmdReserveSpaceForCommandsInfoNVX {
-    type Type = CmdReserveSpaceForCommandsInfoNVXBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
-    inner: vk::CmdReserveSpaceForCommandsInfoNVX,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn object_table(mut self, object_table: vk::ObjectTableNVX) -> Self {
-        self.inner.object_table = Some(object_table);
-        self
-    }
-    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNVX) -> Self {
-        self.inner.indirect_commands_layout = Some(indirect_commands_layout);
-        self
-    }
-    pub fn max_sequences_count(mut self, max_sequences_count: u32) -> Self {
-        self.inner.max_sequences_count = max_sequences_count;
-        self
-    }
-}
-impl<'a> Deref for CmdReserveSpaceForCommandsInfoNVXBuilder<'a> {
-    type Target = vk::CmdReserveSpaceForCommandsInfoNVX;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> Builder<'a> for vk::ObjectTableCreateInfoNVX {
-    type Type = ObjectTableCreateInfoNVXBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct ObjectTableCreateInfoNVXBuilder<'a> {
-    inner: vk::ObjectTableCreateInfoNVX,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> ObjectTableCreateInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn p_object_entry_types(
-        mut self,
-        p_object_entry_types: &'a [vk::ObjectEntryTypeNVX],
-        p_object_entry_counts: &'a [u32],
-        p_object_entry_usage_flags: &'a [vk::ObjectEntryUsageFlagsNVX],
-    ) -> Self {
-        self.inner.object_count = p_object_entry_types.len() as u32;
-        assert_eq!(self.inner.object_count, p_object_entry_counts.len() as u32);
-        assert_eq!(self.inner.object_count, p_object_entry_usage_flags.len() as u32);
-        self.inner.p_object_entry_types = p_object_entry_types.as_ptr();
-        self.inner.p_object_entry_counts = p_object_entry_counts.as_ptr();
-        self.inner.p_object_entry_usage_flags = p_object_entry_usage_flags.as_ptr();
-        self
-    }
-    pub fn max_uniform_buffers_per_descriptor(mut self, max_uniform_buffers_per_descriptor: u32) -> Self {
-        self.inner.max_uniform_buffers_per_descriptor = max_uniform_buffers_per_descriptor;
-        self
-    }
-    pub fn max_storage_buffers_per_descriptor(mut self, max_storage_buffers_per_descriptor: u32) -> Self {
-        self.inner.max_storage_buffers_per_descriptor = max_storage_buffers_per_descriptor;
-        self
-    }
-    pub fn max_storage_images_per_descriptor(mut self, max_storage_images_per_descriptor: u32) -> Self {
-        self.inner.max_storage_images_per_descriptor = max_storage_images_per_descriptor;
-        self
-    }
-    pub fn max_sampled_images_per_descriptor(mut self, max_sampled_images_per_descriptor: u32) -> Self {
-        self.inner.max_sampled_images_per_descriptor = max_sampled_images_per_descriptor;
-        self
-    }
-    pub fn max_pipeline_layouts(mut self, max_pipeline_layouts: u32) -> Self {
-        self.inner.max_pipeline_layouts = max_pipeline_layouts;
-        self
-    }
-}
-impl<'a> Deref for ObjectTableCreateInfoNVXBuilder<'a> {
-    type Target = vk::ObjectTableCreateInfoNVX;
+impl<'a> Deref for GeneratedCommandsInfoNVBuilder<'a> {
+    type Target = vk::GeneratedCommandsInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -9987,7 +9998,7 @@ impl<'a> RayTracingShaderGroupCreateInfoNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn ty(mut self, ty: vk::RayTracingShaderGroupTypeNV) -> Self {
+    pub fn ty(mut self, ty: vk::RayTracingShaderGroupTypeKHR) -> Self {
         self.inner.ty = ty;
         self
     }
@@ -10010,6 +10021,57 @@ impl<'a> RayTracingShaderGroupCreateInfoNVBuilder<'a> {
 }
 impl<'a> Deref for RayTracingShaderGroupCreateInfoNVBuilder<'a> {
     type Target = vk::RayTracingShaderGroupCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RayTracingShaderGroupCreateInfoKHR {
+    type Type = RayTracingShaderGroupCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RayTracingShaderGroupCreateInfoKHRBuilder<'a> {
+    inner: vk::RayTracingShaderGroupCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RayTracingShaderGroupCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::RayTracingShaderGroupTypeKHR) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn general_shader(mut self, general_shader: u32) -> Self {
+        self.inner.general_shader = general_shader;
+        self
+    }
+    pub fn closest_hit_shader(mut self, closest_hit_shader: u32) -> Self {
+        self.inner.closest_hit_shader = closest_hit_shader;
+        self
+    }
+    pub fn any_hit_shader(mut self, any_hit_shader: u32) -> Self {
+        self.inner.any_hit_shader = any_hit_shader;
+        self
+    }
+    pub fn intersection_shader(mut self, intersection_shader: u32) -> Self {
+        self.inner.intersection_shader = intersection_shader;
+        self
+    }
+    pub fn p_shader_group_capture_replay_handle(mut self, p_shader_group_capture_replay_handle: *const c_void) -> Self {
+        self.inner.p_shader_group_capture_replay_handle = p_shader_group_capture_replay_handle;
+        self
+    }
+}
+impl<'a> Deref for RayTracingShaderGroupCreateInfoKHRBuilder<'a> {
+    type Target = vk::RayTracingShaderGroupCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -10067,6 +10129,74 @@ impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
 }
 impl<'a> Deref for RayTracingPipelineCreateInfoNVBuilder<'a> {
     type Target = vk::RayTracingPipelineCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoKHR {
+    type Type = RayTracingPipelineCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RayTracingPipelineCreateInfoKHRBuilder<'a> {
+    inner: vk::RayTracingPipelineCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RayTracingPipelineCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PipelineCreateFlags) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
+        self.inner.stage_count = p_stages.len() as u32;
+        self.inner.p_stages = p_stages.as_ptr();
+        self
+    }
+    pub fn p_groups(mut self, p_groups: &'a [vk::RayTracingShaderGroupCreateInfoKHR]) -> Self {
+        self.inner.group_count = p_groups.len() as u32;
+        self.inner.p_groups = p_groups.as_ptr();
+        self
+    }
+    pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
+        self.inner.max_recursion_depth = max_recursion_depth;
+        self
+    }
+    pub fn libraries(mut self, libraries: vk::PipelineLibraryCreateInfoKHR) -> Self {
+        self.inner.libraries = libraries;
+        self
+    }
+    pub fn p_library_interface(
+        mut self,
+        p_library_interface: Option<&'a vk::RayTracingPipelineInterfaceCreateInfoKHR>,
+    ) -> Self {
+        self.inner.p_library_interface = p_library_interface.map_or(ptr::null(), |p| p);
+        self
+    }
+    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
+        self.inner.layout = Some(layout);
+        self
+    }
+    pub fn base_pipeline_handle(mut self, base_pipeline_handle: Option<vk::Pipeline>) -> Self {
+        self.inner.base_pipeline_handle = base_pipeline_handle;
+        self
+    }
+    pub fn base_pipeline_index(mut self, base_pipeline_index: i32) -> Self {
+        self.inner.base_pipeline_index = base_pipeline_index;
+        self
+    }
+}
+impl<'a> Deref for RayTracingPipelineCreateInfoKHRBuilder<'a> {
+    type Target = vk::RayTracingPipelineCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -10205,7 +10335,7 @@ impl<'a> GeometryNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeNV) -> Self {
+    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeKHR) -> Self {
         self.inner.geometry_type = geometry_type;
         self
     }
@@ -10213,7 +10343,7 @@ impl<'a> GeometryNVBuilder<'a> {
         self.inner.geometry = geometry;
         self
     }
-    pub fn flags(mut self, flags: vk::GeometryFlagsNV) -> Self {
+    pub fn flags(mut self, flags: vk::GeometryFlagsKHR) -> Self {
         self.inner.flags = flags;
         self
     }
@@ -10303,18 +10433,18 @@ impl<'a> Deref for AccelerationStructureCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::BindAccelerationStructureMemoryInfoNV {
-    type Type = BindAccelerationStructureMemoryInfoNVBuilder<'a>;
+impl<'a> Builder<'a> for vk::BindAccelerationStructureMemoryInfoKHR {
+    type Type = BindAccelerationStructureMemoryInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct BindAccelerationStructureMemoryInfoNVBuilder<'a> {
-    inner: vk::BindAccelerationStructureMemoryInfoNV,
+pub struct BindAccelerationStructureMemoryInfoKHRBuilder<'a> {
+    inner: vk::BindAccelerationStructureMemoryInfoKHR,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
+impl<'a> BindAccelerationStructureMemoryInfoKHRBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10323,7 +10453,7 @@ impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureNV) -> Self {
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureKHR) -> Self {
         self.inner.acceleration_structure = Some(acceleration_structure);
         self
     }
@@ -10341,24 +10471,24 @@ impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for BindAccelerationStructureMemoryInfoNVBuilder<'a> {
-    type Target = vk::BindAccelerationStructureMemoryInfoNV;
+impl<'a> Deref for BindAccelerationStructureMemoryInfoKHRBuilder<'a> {
+    type Target = vk::BindAccelerationStructureMemoryInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::WriteDescriptorSetAccelerationStructureNV {
-    type Type = WriteDescriptorSetAccelerationStructureNVBuilder<'a>;
+impl<'a> Builder<'a> for vk::WriteDescriptorSetAccelerationStructureKHR {
+    type Type = WriteDescriptorSetAccelerationStructureKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
-    inner: vk::WriteDescriptorSetAccelerationStructureNV,
+pub struct WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
+    inner: vk::WriteDescriptorSetAccelerationStructureKHR,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
+impl<'a> WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10367,14 +10497,53 @@ impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureNV]) -> Self {
+    pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureKHR]) -> Self {
         self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
         self.inner.p_acceleration_structures = p_acceleration_structures.as_ptr();
         self
     }
 }
-impl<'a> Deref for WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
-    type Target = vk::WriteDescriptorSetAccelerationStructureNV;
+impl<'a> Deref for WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
+    type Target = vk::WriteDescriptorSetAccelerationStructureKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureMemoryRequirementsInfoKHR {
+    type Type = AccelerationStructureMemoryRequirementsInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureMemoryRequirementsInfoKHRBuilder<'a> {
+    inner: vk::AccelerationStructureMemoryRequirementsInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureMemoryRequirementsInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::AccelerationStructureMemoryRequirementsTypeKHR) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn build_type(mut self, build_type: vk::AccelerationStructureBuildTypeKHR) -> Self {
+        self.inner.build_type = build_type;
+        self
+    }
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureKHR) -> Self {
+        self.inner.acceleration_structure = Some(acceleration_structure);
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureMemoryRequirementsInfoKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureMemoryRequirementsInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -10410,6 +10579,116 @@ impl<'a> AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
 }
 impl<'a> Deref for AccelerationStructureMemoryRequirementsInfoNVBuilder<'a> {
     type Target = vk::AccelerationStructureMemoryRequirementsInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceRayTracingFeaturesKHR {
+    type Type = PhysicalDeviceRayTracingFeaturesKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingFeaturesKHRBuilder<'a> {
+    inner: vk::PhysicalDeviceRayTracingFeaturesKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceRayTracingFeaturesKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing(mut self, ray_tracing: bool) -> Self {
+        self.inner.ray_tracing = if ray_tracing { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn ray_tracing_shader_group_handle_capture_replay(
+        mut self,
+        ray_tracing_shader_group_handle_capture_replay: bool,
+    ) -> Self {
+        self.inner.ray_tracing_shader_group_handle_capture_replay = if ray_tracing_shader_group_handle_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn ray_tracing_shader_group_handle_capture_replay_mixed(
+        mut self,
+        ray_tracing_shader_group_handle_capture_replay_mixed: bool,
+    ) -> Self {
+        self.inner.ray_tracing_shader_group_handle_capture_replay_mixed =
+            if ray_tracing_shader_group_handle_capture_replay_mixed {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn ray_tracing_acceleration_structure_capture_replay(
+        mut self,
+        ray_tracing_acceleration_structure_capture_replay: bool,
+    ) -> Self {
+        self.inner.ray_tracing_acceleration_structure_capture_replay =
+            if ray_tracing_acceleration_structure_capture_replay {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn ray_tracing_indirect_trace_rays(mut self, ray_tracing_indirect_trace_rays: bool) -> Self {
+        self.inner.ray_tracing_indirect_trace_rays = if ray_tracing_indirect_trace_rays {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn ray_tracing_indirect_acceleration_structure_build(
+        mut self,
+        ray_tracing_indirect_acceleration_structure_build: bool,
+    ) -> Self {
+        self.inner.ray_tracing_indirect_acceleration_structure_build =
+            if ray_tracing_indirect_acceleration_structure_build {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn ray_tracing_host_acceleration_structure_commands(
+        mut self,
+        ray_tracing_host_acceleration_structure_commands: bool,
+    ) -> Self {
+        self.inner.ray_tracing_host_acceleration_structure_commands =
+            if ray_tracing_host_acceleration_structure_commands {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn ray_query(mut self, ray_query: bool) -> Self {
+        self.inner.ray_query = if ray_query { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn ray_tracing_primitive_culling(mut self, ray_tracing_primitive_culling: bool) -> Self {
+        self.inner.ray_tracing_primitive_culling = if ray_tracing_primitive_culling {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceRayTracingFeaturesKHRBuilder<'a> {
+    type Target = vk::PhysicalDeviceRayTracingFeaturesKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -11857,18 +12136,18 @@ impl<'a> Deref for InitializePerformanceApiInfoINTELBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::QueryPoolCreateInfoINTEL {
-    type Type = QueryPoolCreateInfoINTELBuilder<'a>;
+impl<'a> Builder<'a> for vk::QueryPoolPerformanceQueryCreateInfoINTEL {
+    type Type = QueryPoolPerformanceQueryCreateInfoINTELBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct QueryPoolCreateInfoINTELBuilder<'a> {
-    inner: vk::QueryPoolCreateInfoINTEL,
+pub struct QueryPoolPerformanceQueryCreateInfoINTELBuilder<'a> {
+    inner: vk::QueryPoolPerformanceQueryCreateInfoINTEL,
     phantom: PhantomData<&'a c_void>,
 }
-impl<'a> QueryPoolCreateInfoINTELBuilder<'a> {
+impl<'a> QueryPoolPerformanceQueryCreateInfoINTELBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -11885,8 +12164,8 @@ impl<'a> QueryPoolCreateInfoINTELBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for QueryPoolCreateInfoINTELBuilder<'a> {
-    type Target = vk::QueryPoolCreateInfoINTEL;
+impl<'a> Deref for QueryPoolPerformanceQueryCreateInfoINTELBuilder<'a> {
+    type Target = vk::QueryPoolPerformanceQueryCreateInfoINTEL;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -12626,6 +12905,41 @@ impl<'a> PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
 }
 impl<'a> Deref for PipelineRasterizationLineStateCreateInfoEXTBuilder<'a> {
     type Target = vk::PipelineRasterizationLineStateCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
+    type Type = PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_creation_cache_control(mut self, pipeline_creation_cache_control: bool) -> Self {
+        self.inner.pipeline_creation_cache_control = if pipeline_creation_cache_control {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -13701,6 +14015,619 @@ impl<'a> Deref for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryTrianglesDataKHR {
+    type Type = AccelerationStructureGeometryTrianglesDataKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
+    inner: vk::AccelerationStructureGeometryTrianglesDataKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
+        self.inner.vertex_format = vertex_format;
+        self
+    }
+    pub fn vertex_data(mut self, vertex_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.vertex_data = vertex_data;
+        self
+    }
+    pub fn vertex_stride(mut self, vertex_stride: vk::DeviceSize) -> Self {
+        self.inner.vertex_stride = vertex_stride;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_data(mut self, index_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.index_data = index_data;
+        self
+    }
+    pub fn transform_data(mut self, transform_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.transform_data = transform_data;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureGeometryTrianglesDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryAabbsDataKHR {
+    type Type = AccelerationStructureGeometryAabbsDataKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryAabbsDataKHRBuilder<'a> {
+    inner: vk::AccelerationStructureGeometryAabbsDataKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureGeometryAabbsDataKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data(mut self, data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.data = data;
+        self
+    }
+    pub fn stride(mut self, stride: vk::DeviceSize) -> Self {
+        self.inner.stride = stride;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureGeometryAabbsDataKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureGeometryAabbsDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryInstancesDataKHR {
+    type Type = AccelerationStructureGeometryInstancesDataKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryInstancesDataKHRBuilder<'a> {
+    inner: vk::AccelerationStructureGeometryInstancesDataKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureGeometryInstancesDataKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn array_of_pointers(mut self, array_of_pointers: bool) -> Self {
+        self.inner.array_of_pointers = if array_of_pointers { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn data(mut self, data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.data = data;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureGeometryInstancesDataKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureGeometryInstancesDataKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryKHR {
+    type Type = AccelerationStructureGeometryKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryKHRBuilder<'a> {
+    inner: vk::AccelerationStructureGeometryKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureGeometryKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeKHR) -> Self {
+        self.inner.geometry_type = geometry_type;
+        self
+    }
+    pub fn geometry(mut self, geometry: vk::AccelerationStructureGeometryDataKHR) -> Self {
+        self.inner.geometry = geometry;
+        self
+    }
+    pub fn flags(mut self, flags: vk::GeometryFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureGeometryKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureGeometryKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureBuildGeometryInfoKHR {
+    type Type = AccelerationStructureBuildGeometryInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
+    inner: vk::AccelerationStructureBuildGeometryInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::AccelerationStructureTypeKHR) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn update(mut self, update: bool) -> Self {
+        self.inner.update = if update { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn src_acceleration_structure(
+        mut self,
+        src_acceleration_structure: Option<vk::AccelerationStructureKHR>,
+    ) -> Self {
+        self.inner.src_acceleration_structure = src_acceleration_structure;
+        self
+    }
+    pub fn dst_acceleration_structure(mut self, dst_acceleration_structure: vk::AccelerationStructureKHR) -> Self {
+        self.inner.dst_acceleration_structure = Some(dst_acceleration_structure);
+        self
+    }
+    pub fn geometry_array_of_pointers(mut self, geometry_array_of_pointers: bool) -> Self {
+        self.inner.geometry_array_of_pointers = if geometry_array_of_pointers {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn geometry_count(mut self, geometry_count: u32) -> Self {
+        self.inner.geometry_count = geometry_count;
+        self
+    }
+    pub fn pp_geometries(mut self, pp_geometries: *const *const vk::AccelerationStructureGeometryKHR) -> Self {
+        self.inner.pp_geometries = pp_geometries;
+        self
+    }
+    pub fn scratch_data(mut self, scratch_data: vk::DeviceOrHostAddressKHR) -> Self {
+        self.inner.scratch_data = scratch_data;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureBuildGeometryInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateGeometryTypeInfoKHR {
+    type Type = AccelerationStructureCreateGeometryTypeInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureCreateGeometryTypeInfoKHRBuilder<'a> {
+    inner: vk::AccelerationStructureCreateGeometryTypeInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureCreateGeometryTypeInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn geometry_type(mut self, geometry_type: vk::GeometryTypeKHR) -> Self {
+        self.inner.geometry_type = geometry_type;
+        self
+    }
+    pub fn max_primitive_count(mut self, max_primitive_count: u32) -> Self {
+        self.inner.max_primitive_count = max_primitive_count;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn max_vertex_count(mut self, max_vertex_count: u32) -> Self {
+        self.inner.max_vertex_count = max_vertex_count;
+        self
+    }
+    pub fn vertex_format(mut self, vertex_format: vk::Format) -> Self {
+        self.inner.vertex_format = vertex_format;
+        self
+    }
+    pub fn allows_transforms(mut self, allows_transforms: bool) -> Self {
+        self.inner.allows_transforms = if allows_transforms { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureCreateGeometryTypeInfoKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureCreateGeometryTypeInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoKHR {
+    type Type = AccelerationStructureCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureCreateInfoKHRBuilder<'a> {
+    inner: vk::AccelerationStructureCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn compacted_size(mut self, compacted_size: vk::DeviceSize) -> Self {
+        self.inner.compacted_size = compacted_size;
+        self
+    }
+    pub fn ty(mut self, ty: vk::AccelerationStructureTypeKHR) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn flags(mut self, flags: vk::BuildAccelerationStructureFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_geometry_infos(
+        mut self,
+        p_geometry_infos: &'a [vk::AccelerationStructureCreateGeometryTypeInfoKHR],
+    ) -> Self {
+        self.inner.max_geometry_count = p_geometry_infos.len() as u32;
+        self.inner.p_geometry_infos = p_geometry_infos.as_ptr();
+        self
+    }
+    pub fn device_address(mut self, device_address: vk::DeviceAddress) -> Self {
+        self.inner.device_address = device_address;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureCreateInfoKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureDeviceAddressInfoKHR {
+    type Type = AccelerationStructureDeviceAddressInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureDeviceAddressInfoKHRBuilder<'a> {
+    inner: vk::AccelerationStructureDeviceAddressInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureDeviceAddressInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn acceleration_structure(mut self, acceleration_structure: vk::AccelerationStructureKHR) -> Self {
+        self.inner.acceleration_structure = Some(acceleration_structure);
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureDeviceAddressInfoKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureDeviceAddressInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::AccelerationStructureVersionKHR {
+    type Type = AccelerationStructureVersionKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureVersionKHRBuilder<'a> {
+    inner: vk::AccelerationStructureVersionKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> AccelerationStructureVersionKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn version_data(mut self, version_data: *const u8) -> Self {
+        self.inner.version_data = version_data;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureVersionKHRBuilder<'a> {
+    type Target = vk::AccelerationStructureVersionKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyAccelerationStructureInfoKHR {
+    type Type = CopyAccelerationStructureInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyAccelerationStructureInfoKHRBuilder<'a> {
+    inner: vk::CopyAccelerationStructureInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CopyAccelerationStructureInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::AccelerationStructureKHR) -> Self {
+        self.inner.src = Some(src);
+        self
+    }
+    pub fn dst(mut self, dst: vk::AccelerationStructureKHR) -> Self {
+        self.inner.dst = Some(dst);
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyAccelerationStructureModeKHR) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl<'a> Deref for CopyAccelerationStructureInfoKHRBuilder<'a> {
+    type Target = vk::CopyAccelerationStructureInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyAccelerationStructureToMemoryInfoKHR {
+    type Type = CopyAccelerationStructureToMemoryInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyAccelerationStructureToMemoryInfoKHRBuilder<'a> {
+    inner: vk::CopyAccelerationStructureToMemoryInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CopyAccelerationStructureToMemoryInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::AccelerationStructureKHR) -> Self {
+        self.inner.src = Some(src);
+        self
+    }
+    pub fn dst(mut self, dst: vk::DeviceOrHostAddressKHR) -> Self {
+        self.inner.dst = dst;
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyAccelerationStructureModeKHR) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl<'a> Deref for CopyAccelerationStructureToMemoryInfoKHRBuilder<'a> {
+    type Target = vk::CopyAccelerationStructureToMemoryInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyMemoryToAccelerationStructureInfoKHR {
+    type Type = CopyMemoryToAccelerationStructureInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyMemoryToAccelerationStructureInfoKHRBuilder<'a> {
+    inner: vk::CopyMemoryToAccelerationStructureInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> CopyMemoryToAccelerationStructureInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.src = src;
+        self
+    }
+    pub fn dst(mut self, dst: vk::AccelerationStructureKHR) -> Self {
+        self.inner.dst = Some(dst);
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyAccelerationStructureModeKHR) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl<'a> Deref for CopyMemoryToAccelerationStructureInfoKHRBuilder<'a> {
+    type Target = vk::CopyMemoryToAccelerationStructureInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RayTracingPipelineInterfaceCreateInfoKHR {
+    type Type = RayTracingPipelineInterfaceCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RayTracingPipelineInterfaceCreateInfoKHRBuilder<'a> {
+    inner: vk::RayTracingPipelineInterfaceCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> RayTracingPipelineInterfaceCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_payload_size(mut self, max_payload_size: u32) -> Self {
+        self.inner.max_payload_size = max_payload_size;
+        self
+    }
+    pub fn max_attribute_size(mut self, max_attribute_size: u32) -> Self {
+        self.inner.max_attribute_size = max_attribute_size;
+        self
+    }
+    pub fn max_callable_size(mut self, max_callable_size: u32) -> Self {
+        self.inner.max_callable_size = max_callable_size;
+        self
+    }
+}
+impl<'a> Deref for RayTracingPipelineInterfaceCreateInfoKHRBuilder<'a> {
+    type Target = vk::RayTracingPipelineInterfaceCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DeferredOperationInfoKHR {
+    type Type = DeferredOperationInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeferredOperationInfoKHRBuilder<'a> {
+    inner: vk::DeferredOperationInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DeferredOperationInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn operation_handle(mut self, operation_handle: vk::DeferredOperationKHR) -> Self {
+        self.inner.operation_handle = Some(operation_handle);
+        self
+    }
+}
+impl<'a> Deref for DeferredOperationInfoKHRBuilder<'a> {
+    type Target = vk::DeferredOperationInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PipelineLibraryCreateInfoKHR {
+    type Type = PipelineLibraryCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineLibraryCreateInfoKHRBuilder<'a> {
+    inner: vk::PipelineLibraryCreateInfoKHR,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PipelineLibraryCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_libraries(mut self, p_libraries: &'a [vk::Pipeline]) -> Self {
+        self.inner.library_count = p_libraries.len() as u32;
+        self.inner.p_libraries = p_libraries.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for PipelineLibraryCreateInfoKHRBuilder<'a> {
+    type Target = vk::PipelineLibraryCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder<'a>;
     fn builder() -> Self::Type {
@@ -13763,6 +14690,68 @@ impl<'a> CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a> {
 }
 impl<'a> Deref for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder<'a> {
     type Target = vk::CommandBufferInheritanceRenderPassTransformInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceDiagnosticsConfigFeaturesNV {
+    type Type = PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder<'a> {
+    inner: vk::PhysicalDeviceDiagnosticsConfigFeaturesNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn diagnostics_config(mut self, diagnostics_config: bool) -> Self {
+        self.inner.diagnostics_config = if diagnostics_config { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder<'a> {
+    type Target = vk::PhysicalDeviceDiagnosticsConfigFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DeviceDiagnosticsConfigCreateInfoNV {
+    type Type = DeviceDiagnosticsConfigCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceDiagnosticsConfigCreateInfoNVBuilder<'a> {
+    inner: vk::DeviceDiagnosticsConfigCreateInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DeviceDiagnosticsConfigCreateInfoNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DeviceDiagnosticsConfigFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for DeviceDiagnosticsConfigCreateInfoNVBuilder<'a> {
+    type Target = vk::DeviceDiagnosticsConfigCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
