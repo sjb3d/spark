@@ -1927,8 +1927,6 @@ impl AccessFlags {
     pub const MEMORY_WRITE: Self = Self(0x10000);
     /// Added by extension VK_AMD_extension_24.
     pub const RESERVED_30_KHR: Self = Self(0x40000000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_31_KHR: Self = Self(0x80000000);
     /// Added by extension VK_AMD_extension_25.
     pub const RESERVED_28_KHR: Self = Self(0x10000000);
     /// Added by extension VK_AMD_extension_25.
@@ -1969,13 +1967,13 @@ impl AccessFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xffffffff)
+        Self(0x7fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xffffffff
+        self.0 == 0x7fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2040,7 +2038,6 @@ impl fmt::Display for AccessFlags {
                 (0x8000, "MEMORY_READ"),
                 (0x10000, "MEMORY_WRITE"),
                 (0x40000000, "RESERVED_30_KHR"),
-                (0x80000000, "RESERVED_31_KHR"),
                 (0x10000000, "RESERVED_28_KHR"),
                 (0x20000000, "RESERVED_29_KHR"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
@@ -12100,7 +12097,8 @@ impl Result {
     /// Added by extension VK_KHR_deferred_host_operations.
     pub const OPERATION_NOT_DEFERRED_KHR: Self = Self(1000268003);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
-    pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(1000297000);
+    pub const PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(1000297000);
+    pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED_EXT;
 }
 impl default::Default for Result {
     fn default() -> Self {
@@ -12148,7 +12146,7 @@ impl fmt::Display for Result {
             1000268001 => Some(&"THREAD_DONE_KHR"),
             1000268002 => Some(&"OPERATION_DEFERRED_KHR"),
             1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
-            1000297000 => Some(&"ERROR_PIPELINE_COMPILE_REQUIRED_EXT"),
+            1000297000 => Some(&"PIPELINE_COMPILE_REQUIRED_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12879,7 +12877,8 @@ impl StructureType {
     /// Added by extension VK_INTEL_shader_integer_functions2.
     pub const PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL: Self = Self(1000209000);
     /// Added by extension VK_INTEL_performance_query.
-    pub const QUERY_POOL_CREATE_INFO_INTEL: Self = Self(1000210000);
+    pub const QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL: Self = Self(1000210000);
+    pub const QUERY_POOL_CREATE_INFO_INTEL: Self = Self::QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL;
     /// Added by extension VK_INTEL_performance_query.
     pub const INITIALIZE_PERFORMANCE_API_INFO_INTEL: Self = Self(1000210001);
     /// Added by extension VK_INTEL_performance_query.
@@ -13407,7 +13406,7 @@ impl fmt::Display for StructureType {
             1000206000 => Some(&"CHECKPOINT_DATA_NV"),
             1000206001 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV"),
             1000209000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL"),
-            1000210000 => Some(&"QUERY_POOL_CREATE_INFO_INTEL"),
+            1000210000 => Some(&"QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL"),
             1000210001 => Some(&"INITIALIZE_PERFORMANCE_API_INFO_INTEL"),
             1000210002 => Some(&"PERFORMANCE_MARKER_INFO_INTEL"),
             1000210003 => Some(&"PERFORMANCE_STREAM_MARKER_INFO_INTEL"),
@@ -21441,7 +21440,7 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub max_graphics_shader_group_count: u32,
     pub max_indirect_sequence_count: u32,
     pub max_indirect_commands_token_count: u32,
@@ -21456,7 +21455,7 @@ impl default::Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             max_graphics_shader_group_count: u32::default(),
             max_indirect_sequence_count: u32::default(),
             max_indirect_commands_token_count: u32::default(),
@@ -32062,7 +32061,7 @@ pub struct QueryPoolPerformanceQueryCreateInfoINTEL {
 impl default::Default for QueryPoolPerformanceQueryCreateInfoINTEL {
     fn default() -> Self {
         Self {
-            s_type: StructureType::QUERY_POOL_CREATE_INFO_INTEL,
+            s_type: StructureType::QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL,
             p_next: ptr::null(),
             performance_counters_sampling: QueryPoolSamplingModeINTEL::default(),
         }
