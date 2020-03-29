@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 vkr = { path = "../vkr" }
-imgui = "0.2.1"
-arrayvec = "0.4.7"
+imgui = "0.3"
+arrayvec = "0.4"
 memoffset = "0.5"
