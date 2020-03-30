@@ -357,13 +357,10 @@ impl<'a> Generator<'a> {
 
     fn collect_extensions(&mut self) {
         for registry_child in &self.registry.0 {
-            match registry_child {
-                vk::RegistryChild::Extensions(extensions) => {
-                    for ext in &extensions.children {
-                        self.extension_by_name.insert(&ext.name, ext);
-                    }
+            if let vk::RegistryChild::Extensions(extensions) = registry_child {
+                for ext in &extensions.children {
+                    self.extension_by_name.insert(&ext.name, ext);
                 }
-                _ => {}
             }
         }
     }
@@ -436,28 +433,22 @@ impl<'a> Generator<'a> {
             }
         }
         for registry_child in &self.registry.0 {
-            match registry_child {
-                vk::RegistryChild::Extensions(extensions) => {
-                    for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
-                        for item in ext
-                            .children
-                            .iter()
-                            .filter_map(|ext_child| match ext_child {
-                                vk::ExtensionChild::Require { items, .. } => Some(items),
-                                _ => None,
-                            })
-                            .flat_map(|items| items.iter())
-                        {
-                            match item {
-                                vk::InterfaceItem::Type { name, .. } => {
-                                    self.type_name_blacklist.insert(name.as_str());
-                                }
-                                _ => {}
-                            }
+            if let vk::RegistryChild::Extensions(extensions) = registry_child {
+                for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
+                    for item in ext
+                        .children
+                        .iter()
+                        .filter_map(|ext_child| match ext_child {
+                            vk::ExtensionChild::Require { items, .. } => Some(items),
+                            _ => None,
+                        })
+                        .flat_map(|items| items.iter())
+                    {
+                        if let vk::InterfaceItem::Type { name, .. } = item {
+                            self.type_name_blacklist.insert(name.as_str());
                         }
                     }
                 }
-                _ => {}
             }
         }
         for name in self.type_name_blacklist.iter() {
@@ -655,9 +646,9 @@ impl<'a> Generator<'a> {
                             } => {
                                 let cmd_ref = feature
                                     .as_ref_str()
-                                    .and_then(|s| Version::try_from_feature(s))
-                                    .map(|v| CommandRef::Feature(v))
-                                    .or(extension.as_ref_str().map(|s| CommandRef::Extension(s)));
+                                    .and_then(Version::try_from_feature)
+                                    .map(CommandRef::Feature)
+                                    .or_else(|| extension.as_ref_str().map(|s| CommandRef::Extension(s)));
                                 Some((cmd_ref, items))
                             }
                             _ => None,
