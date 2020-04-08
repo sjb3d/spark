@@ -880,7 +880,7 @@ impl<'a> Generator<'a> {
     fn get_enum_entry_value(&self, type_name: &str, enum_type: EnumType, en: &'a vk::Enum) -> EnumEntryValue {
         match en.spec {
             vk::EnumSpec::Value { ref value, .. } => EnumEntryValue::Number {
-                value: c_parse_int(value).expect("failed to parse enum value"),
+                value: c_parse_int(value),
                 comment: en.comment.clone(),
             },
             vk::EnumSpec::Bitpos { ref bitpos, .. } => EnumEntryValue::Number {
