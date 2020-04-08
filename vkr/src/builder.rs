@@ -3948,6 +3948,49 @@ impl<'a> Deref for GeneratedCommandsInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::GeneratedCommandsMemoryRequirementsInfoNV {
+    type Type = GeneratedCommandsMemoryRequirementsInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GeneratedCommandsMemoryRequirementsInfoNVBuilder<'a> {
+    inner: vk::GeneratedCommandsMemoryRequirementsInfoNV,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> GeneratedCommandsMemoryRequirementsInfoNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+        self.inner.pipeline_bind_point = pipeline_bind_point;
+        self
+    }
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
+        self
+    }
+    pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNV) -> Self {
+        self.inner.indirect_commands_layout = Some(indirect_commands_layout);
+        self
+    }
+    pub fn max_sequences_count(mut self, max_sequences_count: u32) -> Self {
+        self.inner.max_sequences_count = max_sequences_count;
+        self
+    }
+}
+impl<'a> Deref for GeneratedCommandsMemoryRequirementsInfoNVBuilder<'a> {
+    type Target = vk::GeneratedCommandsMemoryRequirementsInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PhysicalDeviceFeatures2 {
     type Type = PhysicalDeviceFeatures2Builder<'a>;
     fn builder() -> Self::Type {
@@ -13035,85 +13078,6 @@ impl<'a> Deref for PhysicalDeviceVulkan11FeaturesBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::PhysicalDeviceVulkan11Properties {
-    type Type = PhysicalDeviceVulkan11PropertiesBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceVulkan11PropertiesBuilder<'a> {
-    inner: vk::PhysicalDeviceVulkan11Properties,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> PhysicalDeviceVulkan11PropertiesBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn device_node_mask(mut self, device_node_mask: u32) -> Self {
-        self.inner.device_node_mask = device_node_mask;
-        self
-    }
-    pub fn device_luid_valid(mut self, device_luid_valid: bool) -> Self {
-        self.inner.device_luid_valid = if device_luid_valid { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn subgroup_size(mut self, subgroup_size: u32) -> Self {
-        self.inner.subgroup_size = subgroup_size;
-        self
-    }
-    pub fn subgroup_supported_stages(mut self, subgroup_supported_stages: vk::ShaderStageFlags) -> Self {
-        self.inner.subgroup_supported_stages = subgroup_supported_stages;
-        self
-    }
-    pub fn subgroup_supported_operations(mut self, subgroup_supported_operations: vk::SubgroupFeatureFlags) -> Self {
-        self.inner.subgroup_supported_operations = subgroup_supported_operations;
-        self
-    }
-    pub fn subgroup_quad_operations_in_all_stages(mut self, subgroup_quad_operations_in_all_stages: bool) -> Self {
-        self.inner.subgroup_quad_operations_in_all_stages = if subgroup_quad_operations_in_all_stages {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn point_clipping_behavior(mut self, point_clipping_behavior: vk::PointClippingBehavior) -> Self {
-        self.inner.point_clipping_behavior = point_clipping_behavior;
-        self
-    }
-    pub fn max_multiview_view_count(mut self, max_multiview_view_count: u32) -> Self {
-        self.inner.max_multiview_view_count = max_multiview_view_count;
-        self
-    }
-    pub fn max_multiview_instance_index(mut self, max_multiview_instance_index: u32) -> Self {
-        self.inner.max_multiview_instance_index = max_multiview_instance_index;
-        self
-    }
-    pub fn protected_no_fault(mut self, protected_no_fault: bool) -> Self {
-        self.inner.protected_no_fault = if protected_no_fault { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn max_per_set_descriptors(mut self, max_per_set_descriptors: u32) -> Self {
-        self.inner.max_per_set_descriptors = max_per_set_descriptors;
-        self
-    }
-    pub fn max_memory_allocation_size(mut self, max_memory_allocation_size: vk::DeviceSize) -> Self {
-        self.inner.max_memory_allocation_size = max_memory_allocation_size;
-        self
-    }
-}
-impl<'a> Deref for PhysicalDeviceVulkan11PropertiesBuilder<'a> {
-    type Target = vk::PhysicalDeviceVulkan11Properties;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
 impl<'a> Builder<'a> for vk::PhysicalDeviceVulkan12Features {
     type Type = PhysicalDeviceVulkan12FeaturesBuilder<'a>;
     fn builder() -> Self::Type {
@@ -13530,425 +13494,6 @@ impl<'a> PhysicalDeviceVulkan12FeaturesBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceVulkan12FeaturesBuilder<'a> {
     type Target = vk::PhysicalDeviceVulkan12Features;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl<'a> Builder<'a> for vk::PhysicalDeviceVulkan12Properties {
-    type Type = PhysicalDeviceVulkan12PropertiesBuilder<'a>;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceVulkan12PropertiesBuilder<'a> {
-    inner: vk::PhysicalDeviceVulkan12Properties,
-    phantom: PhantomData<&'a c_void>,
-}
-impl<'a> PhysicalDeviceVulkan12PropertiesBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn driver_id(mut self, driver_id: vk::DriverId) -> Self {
-        self.inner.driver_id = driver_id;
-        self
-    }
-    pub fn conformance_version(mut self, conformance_version: vk::ConformanceVersion) -> Self {
-        self.inner.conformance_version = conformance_version;
-        self
-    }
-    pub fn denorm_behavior_independence(
-        mut self,
-        denorm_behavior_independence: vk::ShaderFloatControlsIndependence,
-    ) -> Self {
-        self.inner.denorm_behavior_independence = denorm_behavior_independence;
-        self
-    }
-    pub fn rounding_mode_independence(
-        mut self,
-        rounding_mode_independence: vk::ShaderFloatControlsIndependence,
-    ) -> Self {
-        self.inner.rounding_mode_independence = rounding_mode_independence;
-        self
-    }
-    pub fn shader_signed_zero_inf_nan_preserve_float16(
-        mut self,
-        shader_signed_zero_inf_nan_preserve_float16: bool,
-    ) -> Self {
-        self.inner.shader_signed_zero_inf_nan_preserve_float16 = if shader_signed_zero_inf_nan_preserve_float16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_signed_zero_inf_nan_preserve_float32(
-        mut self,
-        shader_signed_zero_inf_nan_preserve_float32: bool,
-    ) -> Self {
-        self.inner.shader_signed_zero_inf_nan_preserve_float32 = if shader_signed_zero_inf_nan_preserve_float32 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_signed_zero_inf_nan_preserve_float64(
-        mut self,
-        shader_signed_zero_inf_nan_preserve_float64: bool,
-    ) -> Self {
-        self.inner.shader_signed_zero_inf_nan_preserve_float64 = if shader_signed_zero_inf_nan_preserve_float64 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_preserve_float16(mut self, shader_denorm_preserve_float16: bool) -> Self {
-        self.inner.shader_denorm_preserve_float16 = if shader_denorm_preserve_float16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_preserve_float32(mut self, shader_denorm_preserve_float32: bool) -> Self {
-        self.inner.shader_denorm_preserve_float32 = if shader_denorm_preserve_float32 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_preserve_float64(mut self, shader_denorm_preserve_float64: bool) -> Self {
-        self.inner.shader_denorm_preserve_float64 = if shader_denorm_preserve_float64 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_flush_to_zero_float16(mut self, shader_denorm_flush_to_zero_float16: bool) -> Self {
-        self.inner.shader_denorm_flush_to_zero_float16 = if shader_denorm_flush_to_zero_float16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_flush_to_zero_float32(mut self, shader_denorm_flush_to_zero_float32: bool) -> Self {
-        self.inner.shader_denorm_flush_to_zero_float32 = if shader_denorm_flush_to_zero_float32 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_denorm_flush_to_zero_float64(mut self, shader_denorm_flush_to_zero_float64: bool) -> Self {
-        self.inner.shader_denorm_flush_to_zero_float64 = if shader_denorm_flush_to_zero_float64 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rte_float16(mut self, shader_rounding_mode_rte_float16: bool) -> Self {
-        self.inner.shader_rounding_mode_rte_float16 = if shader_rounding_mode_rte_float16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rte_float32(mut self, shader_rounding_mode_rte_float32: bool) -> Self {
-        self.inner.shader_rounding_mode_rte_float32 = if shader_rounding_mode_rte_float32 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rte_float64(mut self, shader_rounding_mode_rte_float64: bool) -> Self {
-        self.inner.shader_rounding_mode_rte_float64 = if shader_rounding_mode_rte_float64 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rtz_float16(mut self, shader_rounding_mode_rtz_float16: bool) -> Self {
-        self.inner.shader_rounding_mode_rtz_float16 = if shader_rounding_mode_rtz_float16 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rtz_float32(mut self, shader_rounding_mode_rtz_float32: bool) -> Self {
-        self.inner.shader_rounding_mode_rtz_float32 = if shader_rounding_mode_rtz_float32 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn shader_rounding_mode_rtz_float64(mut self, shader_rounding_mode_rtz_float64: bool) -> Self {
-        self.inner.shader_rounding_mode_rtz_float64 = if shader_rounding_mode_rtz_float64 {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn max_update_after_bind_descriptors_in_all_pools(
-        mut self,
-        max_update_after_bind_descriptors_in_all_pools: u32,
-    ) -> Self {
-        self.inner.max_update_after_bind_descriptors_in_all_pools = max_update_after_bind_descriptors_in_all_pools;
-        self
-    }
-    pub fn shader_uniform_buffer_array_non_uniform_indexing_native(
-        mut self,
-        shader_uniform_buffer_array_non_uniform_indexing_native: bool,
-    ) -> Self {
-        self.inner.shader_uniform_buffer_array_non_uniform_indexing_native =
-            if shader_uniform_buffer_array_non_uniform_indexing_native {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn shader_sampled_image_array_non_uniform_indexing_native(
-        mut self,
-        shader_sampled_image_array_non_uniform_indexing_native: bool,
-    ) -> Self {
-        self.inner.shader_sampled_image_array_non_uniform_indexing_native =
-            if shader_sampled_image_array_non_uniform_indexing_native {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn shader_storage_buffer_array_non_uniform_indexing_native(
-        mut self,
-        shader_storage_buffer_array_non_uniform_indexing_native: bool,
-    ) -> Self {
-        self.inner.shader_storage_buffer_array_non_uniform_indexing_native =
-            if shader_storage_buffer_array_non_uniform_indexing_native {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn shader_storage_image_array_non_uniform_indexing_native(
-        mut self,
-        shader_storage_image_array_non_uniform_indexing_native: bool,
-    ) -> Self {
-        self.inner.shader_storage_image_array_non_uniform_indexing_native =
-            if shader_storage_image_array_non_uniform_indexing_native {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn shader_input_attachment_array_non_uniform_indexing_native(
-        mut self,
-        shader_input_attachment_array_non_uniform_indexing_native: bool,
-    ) -> Self {
-        self.inner.shader_input_attachment_array_non_uniform_indexing_native =
-            if shader_input_attachment_array_non_uniform_indexing_native {
-                vk::TRUE
-            } else {
-                vk::FALSE
-            };
-        self
-    }
-    pub fn robust_buffer_access_update_after_bind(mut self, robust_buffer_access_update_after_bind: bool) -> Self {
-        self.inner.robust_buffer_access_update_after_bind = if robust_buffer_access_update_after_bind {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn quad_divergent_implicit_lod(mut self, quad_divergent_implicit_lod: bool) -> Self {
-        self.inner.quad_divergent_implicit_lod = if quad_divergent_implicit_lod {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_samplers(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_samplers: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_samplers =
-            max_per_stage_descriptor_update_after_bind_samplers;
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_uniform_buffers(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_uniform_buffers: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_uniform_buffers =
-            max_per_stage_descriptor_update_after_bind_uniform_buffers;
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_storage_buffers(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_storage_buffers: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_storage_buffers =
-            max_per_stage_descriptor_update_after_bind_storage_buffers;
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_sampled_images(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_sampled_images: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_sampled_images =
-            max_per_stage_descriptor_update_after_bind_sampled_images;
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_storage_images(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_storage_images: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_storage_images =
-            max_per_stage_descriptor_update_after_bind_storage_images;
-        self
-    }
-    pub fn max_per_stage_descriptor_update_after_bind_input_attachments(
-        mut self,
-        max_per_stage_descriptor_update_after_bind_input_attachments: u32,
-    ) -> Self {
-        self.inner.max_per_stage_descriptor_update_after_bind_input_attachments =
-            max_per_stage_descriptor_update_after_bind_input_attachments;
-        self
-    }
-    pub fn max_per_stage_update_after_bind_resources(mut self, max_per_stage_update_after_bind_resources: u32) -> Self {
-        self.inner.max_per_stage_update_after_bind_resources = max_per_stage_update_after_bind_resources;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_samplers(
-        mut self,
-        max_descriptor_set_update_after_bind_samplers: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_samplers = max_descriptor_set_update_after_bind_samplers;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_uniform_buffers(
-        mut self,
-        max_descriptor_set_update_after_bind_uniform_buffers: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_uniform_buffers =
-            max_descriptor_set_update_after_bind_uniform_buffers;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_uniform_buffers_dynamic(
-        mut self,
-        max_descriptor_set_update_after_bind_uniform_buffers_dynamic: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_uniform_buffers_dynamic =
-            max_descriptor_set_update_after_bind_uniform_buffers_dynamic;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_storage_buffers(
-        mut self,
-        max_descriptor_set_update_after_bind_storage_buffers: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_storage_buffers =
-            max_descriptor_set_update_after_bind_storage_buffers;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_storage_buffers_dynamic(
-        mut self,
-        max_descriptor_set_update_after_bind_storage_buffers_dynamic: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_storage_buffers_dynamic =
-            max_descriptor_set_update_after_bind_storage_buffers_dynamic;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_sampled_images(
-        mut self,
-        max_descriptor_set_update_after_bind_sampled_images: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_sampled_images =
-            max_descriptor_set_update_after_bind_sampled_images;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_storage_images(
-        mut self,
-        max_descriptor_set_update_after_bind_storage_images: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_storage_images =
-            max_descriptor_set_update_after_bind_storage_images;
-        self
-    }
-    pub fn max_descriptor_set_update_after_bind_input_attachments(
-        mut self,
-        max_descriptor_set_update_after_bind_input_attachments: u32,
-    ) -> Self {
-        self.inner.max_descriptor_set_update_after_bind_input_attachments =
-            max_descriptor_set_update_after_bind_input_attachments;
-        self
-    }
-    pub fn supported_depth_resolve_modes(mut self, supported_depth_resolve_modes: vk::ResolveModeFlags) -> Self {
-        self.inner.supported_depth_resolve_modes = supported_depth_resolve_modes;
-        self
-    }
-    pub fn supported_stencil_resolve_modes(mut self, supported_stencil_resolve_modes: vk::ResolveModeFlags) -> Self {
-        self.inner.supported_stencil_resolve_modes = supported_stencil_resolve_modes;
-        self
-    }
-    pub fn independent_resolve_none(mut self, independent_resolve_none: bool) -> Self {
-        self.inner.independent_resolve_none = if independent_resolve_none { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn independent_resolve(mut self, independent_resolve: bool) -> Self {
-        self.inner.independent_resolve = if independent_resolve { vk::TRUE } else { vk::FALSE };
-        self
-    }
-    pub fn filter_minmax_single_component_formats(mut self, filter_minmax_single_component_formats: bool) -> Self {
-        self.inner.filter_minmax_single_component_formats = if filter_minmax_single_component_formats {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn filter_minmax_image_component_mapping(mut self, filter_minmax_image_component_mapping: bool) -> Self {
-        self.inner.filter_minmax_image_component_mapping = if filter_minmax_image_component_mapping {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-    pub fn max_timeline_semaphore_value_difference(mut self, max_timeline_semaphore_value_difference: u64) -> Self {
-        self.inner.max_timeline_semaphore_value_difference = max_timeline_semaphore_value_difference;
-        self
-    }
-    pub fn framebuffer_integer_color_sample_counts(
-        mut self,
-        framebuffer_integer_color_sample_counts: vk::SampleCountFlags,
-    ) -> Self {
-        self.inner.framebuffer_integer_color_sample_counts = framebuffer_integer_color_sample_counts;
-        self
-    }
-}
-impl<'a> Deref for PhysicalDeviceVulkan12PropertiesBuilder<'a> {
-    type Target = vk::PhysicalDeviceVulkan12Properties;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

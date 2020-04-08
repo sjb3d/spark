@@ -10214,6 +10214,8 @@ pub struct AttachmentStoreOp(i32);
 impl AttachmentStoreOp {
     pub const STORE: Self = Self(0);
     pub const DONT_CARE: Self = Self(1);
+    /// Added by extension VK_QCOM_render_pass_store_ops.
+    pub const NONE_QCOM: Self = Self(1000301000);
 }
 impl default::Default for AttachmentStoreOp {
     fn default() -> Self {
@@ -10225,6 +10227,7 @@ impl fmt::Display for AttachmentStoreOp {
         let name = match self.0 {
             0 => Some(&"STORE"),
             1 => Some(&"DONT_CARE"),
+            1000301000 => Some(&"NONE_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12430,6 +12433,8 @@ impl StructureType {
     pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = Self(1000028002);
     /// Added by extension VK_NVX_image_view_handle.
     pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = Self(1000030000);
+    /// Added by extension VK_NVX_image_view_handle.
+    pub const IMAGE_VIEW_ADDRESS_PROPERTIES_NVX: Self = Self(1000030001);
     /// Added by extension VK_AMD_texture_gather_bias_lod.
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = Self(1000041000);
     /// Added by extension VK_NV_corner_sampled_image.
@@ -12708,8 +12713,6 @@ impl StructureType {
     pub const ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR: Self = Self(1000150005);
     /// Added by extension VK_KHR_ray_tracing.
     pub const ACCELERATION_STRUCTURE_GEOMETRY_KHR: Self = Self(1000150006);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150007);
     /// Added by extension VK_KHR_ray_tracing.
     pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR: Self = Self(1000150008);
     /// Added by extension VK_KHR_ray_tracing.
@@ -13240,6 +13243,7 @@ impl fmt::Display for StructureType {
             1000028001 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT"),
             1000028002 => Some(&"PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT"),
             1000030000 => Some(&"IMAGE_VIEW_HANDLE_INFO_NVX"),
+            1000030001 => Some(&"IMAGE_VIEW_ADDRESS_PROPERTIES_NVX"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
             1000050000 => Some(&"PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
             1000056000 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
@@ -13343,7 +13347,6 @@ impl fmt::Display for StructureType {
             1000150004 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR"),
             1000150005 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR"),
             1000150006 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_KHR"),
-            1000150007 => Some(&"ACCELERATION_STRUCTURE_INFO_KHR"),
             1000150008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR"),
             1000150009 => Some(&"ACCELERATION_STRUCTURE_VERSION_KHR"),
             1000150010 => Some(&"COPY_ACCELERATION_STRUCTURE_INFO_KHR"),
@@ -19592,7 +19595,7 @@ pub struct PhysicalDeviceLimits {
     pub framebuffer_depth_sample_counts: SampleCountFlags,
     /// supported stencil sample counts for a framebuffer
     pub framebuffer_stencil_sample_counts: SampleCountFlags,
-    /// supported sample counts for a framebuffer with no attachments
+    /// supported sample counts for a subpass which uses no attachments
     pub framebuffer_no_attachments_sample_counts: SampleCountFlags,
     /// max number of color attachments per subpass
     pub max_color_attachments: u32,
@@ -31463,6 +31466,34 @@ impl fmt::Debug for ImageViewHandleInfoNVX {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewAddressPropertiesNVX {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_address: DeviceAddress,
+    pub size: DeviceSize,
+}
+impl default::Default for ImageViewAddressPropertiesNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_ADDRESS_PROPERTIES_NVX,
+            p_next: ptr::null_mut(),
+            device_address: DeviceAddress::default(),
+            size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewAddressPropertiesNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewAddressPropertiesNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_address", &self.device_address)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCreationFeedbackEXT {
     pub flags: PipelineCreationFeedbackFlagsEXT,
@@ -36296,6 +36327,11 @@ pub type FnGetDeviceAccelerationStructureCompatibilityKHR =
     unsafe extern "system" fn(device: Option<Device>, version: *const AccelerationStructureVersionKHR) -> Result;
 pub type FnGetImageViewHandleNVX =
     unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
+pub type FnGetImageViewAddressNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    image_view: Option<ImageView>,
+    p_properties: *mut ImageViewAddressPropertiesNVX,
+) -> Result;
 pub type FnGetPhysicalDeviceSurfacePresentModes2EXT = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_surface_info: *const PhysicalDeviceSurfaceInfo2KHR,

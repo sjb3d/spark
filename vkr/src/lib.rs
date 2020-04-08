@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 136
+//! Generated from vk.xml with `VK_HEADER_VERSION` 137
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2773,6 +2773,7 @@ pub struct DeviceExtensions {
     pub khr_shader_non_semantic_info: bool,
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
+    pub qcom_render_pass_store_ops: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3065,6 +3066,7 @@ pub struct Device {
     pub fp_get_device_acceleration_structure_compatibility_khr:
         Option<vk::FnGetDeviceAccelerationStructureCompatibilityKHR>,
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
+    pub fp_get_image_view_address_nvx: Option<vk::FnGetImageViewAddressNVX>,
     pub fp_get_physical_device_surface_present_modes2_ext: Option<vk::FnGetPhysicalDeviceSurfacePresentModes2EXT>,
     pub fp_get_device_group_surface_present_modes2_ext: Option<vk::FnGetDeviceGroupSurfacePresentModes2EXT>,
     pub fp_acquire_full_screen_exclusive_mode_ext: Option<vk::FnAcquireFullScreenExclusiveModeEXT>,
@@ -3616,6 +3618,9 @@ impl Device {
     pub fn nv_device_diagnostics_config_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostics_config\0") }
     }
+    pub fn qcom_render_pass_store_ops_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3806,6 +3811,7 @@ impl Device {
                     b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
                     b"VK_EXT_pipeline_creation_cache_control" => extensions.ext_pipeline_creation_cache_control = true,
                     b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
+                    b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
                     _ => {}
                 }
             }
@@ -5859,6 +5865,12 @@ impl Device {
             },
             fp_get_image_view_handle_nvx: if extensions.nvx_image_view_handle {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewHandleNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_view_address_nvx: if extensions.nvx_image_view_handle {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetImageViewAddressNVX\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -10720,6 +10732,20 @@ impl Device {
             .fp_get_image_view_handle_nvx
             .expect("vkGetImageViewHandleNVX is not loaded");
         (fp)(Some(self.handle), p_info)
+    }
+    pub unsafe fn get_image_view_address_nvx(
+        &self,
+        image_view: vk::ImageView,
+        p_properties: &mut vk::ImageViewAddressPropertiesNVX,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_image_view_address_nvx
+            .expect("vkGetImageViewAddressNVX is not loaded");
+        let err = (fp)(Some(self.handle), Some(image_view), p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn get_physical_device_surface_present_modes2_ext_to_vec(
         &self,
