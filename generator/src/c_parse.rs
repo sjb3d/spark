@@ -52,11 +52,11 @@ fn ignore_remainder<T>((_i, o): (&str, T)) -> T {
 
 type Res<'a, T> = IResult<&'a str, T, VerboseError<&'a str>>;
 
-fn version_num<'a>(i: &'a str) -> Res<'a, u16> {
+fn version_num(i: &str) -> Res<u16> {
     map_res(digit1, str::parse::<u16>)(i)
 }
 
-fn version<'a>(i: &'a str) -> Res<(u16, u16)> {
+fn version(i: &str) -> Res<(u16, u16)> {
     tuple((
         preceded(tag("VK_VERSION_"), version_num),
         preceded(tag("_"), version_num),
@@ -67,7 +67,7 @@ pub fn c_parse_version(i: &str) -> Option<(u16, u16)> {
     all_consuming(version)(i).map(ignore_remainder).ok()
 }
 
-fn parse_i32<'a>(i: &'a str) -> Res<'a, i32> {
+fn parse_i32(i: &str) -> Res<i32> {
     alt((
         preceded(tag("0x"), map_res(hex_digit1, |s: &str| i32::from_str_radix(s, 16))),
         preceded(char('-'), map(map_res(digit1, str::parse::<i32>), |n| -n)),
@@ -88,11 +88,11 @@ fn is_ident(c: char) -> bool {
     }
 }
 
-fn ident<'a>(i: &'a str) -> Res<'a, &'a str> {
+fn ident(i: &str) -> Res<&str> {
     preceded(multispace0, take_while1(is_ident))(i)
 }
 
-fn keyword<'a>(k: &'static str) -> impl Fn(&'a str) -> Res<'a, &'a str> {
+fn keyword<'a>(k: &'static str) -> impl Fn(&'a str) -> Res<'a, &str> {
     delimited(multispace0, tag(k), not(peek(take_while1(is_ident))))
 }
 
@@ -100,7 +100,7 @@ fn op<'a>(c: char) -> impl Fn(&'a str) -> Res<'a, char> {
     preceded(multispace0, char(c))
 }
 
-fn variable_decl<'a>(i: &'a str) -> Res<'a, CVariableDecl> {
+fn variable_decl(i: &str) -> Res<CVariableDecl> {
     let (i, const0) = opt(keyword("const"))(i)?;
     let (i, _) = opt(keyword("struct"))(i)?;
     let (i, type_name) = ident(i)?;
@@ -141,7 +141,7 @@ pub fn c_parse_variable_decl(i: &str) -> CVariableDecl {
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }
 
-fn function_decl<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
+fn function_decl(i: &str) -> Res<CFunctionDecl> {
     let (i, ret_type_name) = ident(i)?;
     let (i, ret_ptr) = opt(op('*'))(i)?;
     let (i, func_name) = ident(i)?;
@@ -217,7 +217,7 @@ pub fn c_parse_func_pointer_typedef(i: &str) -> CFunctionDecl {
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }
 
-fn typedef<'a>(i: &'a str) -> Res<'a, CVariableDecl> {
+fn typedef(i: &str) -> Res<CVariableDecl> {
     let (i, type_name) = preceded(keyword("typedef"), ident)(i)?;
     let (i, var_name) = terminated(ident, op(';'))(i)?;
     Ok((
@@ -239,7 +239,7 @@ pub fn c_parse_typedef(i: &str) -> CVariableDecl {
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }
 
-fn expr_inner<'a>(i: &'a str) -> Res<'a, CExpr> {
+fn expr_inner(i: &str) -> Res<CExpr> {
     alt((
         map(terminated(float, char('f')), CExpr::Float),
         map(
@@ -257,7 +257,7 @@ fn expr_inner<'a>(i: &'a str) -> Res<'a, CExpr> {
     ))(i)
 }
 
-fn expr<'a>(i: &'a str) -> Res<'a, CExpr> {
+fn expr(i: &str) -> Res<CExpr> {
     alt((
         map(separated_pair(expr_inner, char('-'), expr_inner), |(a, b)| match a {
             CExpr::Uint32(x) => match b {
