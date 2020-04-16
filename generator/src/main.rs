@@ -1878,7 +1878,7 @@ impl<'a> Generator<'a> {
                     && vparam.optional.is_none()
                     && vparam.len.is_some()
                 {
-                    let len_names: Vec<&str> = len_name.split("::").collect();
+                    let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
                     let len_expr = if len_names.len() == 1 {
                         let len_index = decl
                             .parameters
