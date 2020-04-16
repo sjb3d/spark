@@ -2650,6 +2650,8 @@ pub struct ImageViewCreateFlags(u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
+    /// Added by extension VK_EXT_extension_333.
+    pub const RESERVED_1_EXT: Self = Self(0x2);
 }
 impl default::Default for ImageViewCreateFlags {
     fn default() -> Self {
@@ -2661,13 +2663,13 @@ impl ImageViewCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x3
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2711,7 +2713,11 @@ impl ops::BitXorAssign for ImageViewCreateFlags {
 }
 impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT")], f)
+        display_bitmask(
+            self.0,
+            &[(0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT"), (0x2, "RESERVED_1_EXT")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
