@@ -4260,10 +4260,10 @@ impl SubpassDescriptionFlags {
     pub const PER_VIEW_ATTRIBUTES_NVX: Self = Self(0x1);
     /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PER_VIEW_POSITION_X_ONLY_NVX: Self = Self(0x2);
-    /// Added by extension VK_QCOM_extension_172.
-    pub const RESERVED_2_QCOM: Self = Self(0x4);
-    /// Added by extension VK_QCOM_extension_172.
-    pub const RESERVED_3_QCOM: Self = Self(0x8);
+    /// Added by extension VK_QCOM_render_pass_shader_resolve.
+    pub const FRAGMENT_REGION_QCOM: Self = Self(0x4);
+    /// Added by extension VK_QCOM_render_pass_shader_resolve.
+    pub const SHADER_RESOLVE_QCOM: Self = Self(0x8);
 }
 impl default::Default for SubpassDescriptionFlags {
     fn default() -> Self {
@@ -4330,8 +4330,8 @@ impl fmt::Display for SubpassDescriptionFlags {
             &[
                 (0x1, "PER_VIEW_ATTRIBUTES_NVX"),
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
-                (0x4, "RESERVED_2_QCOM"),
-                (0x8, "RESERVED_3_QCOM"),
+                (0x4, "FRAGMENT_REGION_QCOM"),
+                (0x8, "SHADER_RESOLVE_QCOM"),
             ],
             f,
         )
@@ -13035,6 +13035,10 @@ impl StructureType {
     pub const COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM: Self = Self(1000282000);
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM: Self = Self(1000282001);
+    /// Added by extension VK_EXT_robustness2.
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT: Self = Self(1000286000);
+    /// Added by extension VK_EXT_robustness2.
+    pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT: Self = Self(1000286001);
     /// Added by extension VK_KHR_pipeline_library.
     pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
@@ -13479,6 +13483,8 @@ impl fmt::Display for StructureType {
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
             1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
+            1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT"),
+            1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT"),
             1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
             1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
@@ -34510,6 +34516,71 @@ impl fmt::Debug for DeviceDiagnosticsConfigCreateInfoNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRobustness2FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub robust_buffer_access2: Bool32,
+    pub robust_image_access2: Bool32,
+    pub null_descriptor: Bool32,
+}
+impl default::Default for PhysicalDeviceRobustness2FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            robust_buffer_access2: Bool32::default(),
+            robust_image_access2: Bool32::default(),
+            null_descriptor: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRobustness2FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRobustness2FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("robust_buffer_access2", &self.robust_buffer_access2)
+            .field("robust_image_access2", &self.robust_image_access2)
+            .field("null_descriptor", &self.null_descriptor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRobustness2PropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub robust_storage_buffer_access_size_alignment: DeviceSize,
+    pub robust_uniform_buffer_access_size_alignment: DeviceSize,
+}
+impl default::Default for PhysicalDeviceRobustness2PropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            robust_storage_buffer_access_size_alignment: DeviceSize::default(),
+            robust_uniform_buffer_access_size_alignment: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRobustness2PropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRobustness2PropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "robust_storage_buffer_access_size_alignment",
+                &self.robust_storage_buffer_access_size_alignment,
+            )
+            .field(
+                "robust_uniform_buffer_access_size_alignment",
+                &self.robust_uniform_buffer_access_size_alignment,
+            )
             .finish()
     }
 }

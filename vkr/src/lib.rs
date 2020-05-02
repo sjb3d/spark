@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 138
+//! Generated from vk.xml with `VK_HEADER_VERSION` 139
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2707,6 +2707,7 @@ pub struct DeviceExtensions {
     pub khr_maintenance3: bool,
     pub khr_draw_indirect_count: bool,
     pub ext_filter_cubic: bool,
+    pub qcom_render_pass_shader_resolve: bool,
     pub ext_global_priority: bool,
     pub khr_shader_subgroup_extended_types: bool,
     pub khr_8bit_storage: bool,
@@ -2768,6 +2769,7 @@ pub struct DeviceExtensions {
     pub nv_device_generated_commands: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
+    pub ext_robustness2: bool,
     pub google_user_type: bool,
     pub khr_pipeline_library: bool,
     pub khr_shader_non_semantic_info: bool,
@@ -3420,6 +3422,9 @@ impl Device {
     pub fn ext_filter_cubic_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_filter_cubic\0") }
     }
+    pub fn qcom_render_pass_shader_resolve_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_shader_resolve\0") }
+    }
     pub fn ext_global_priority_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority\0") }
     }
@@ -3603,6 +3608,9 @@ impl Device {
     pub fn qcom_render_pass_transform_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") }
     }
+    pub fn ext_robustness2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_robustness2\0") }
+    }
     pub fn google_user_type_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
     }
@@ -3741,6 +3749,7 @@ impl Device {
                     b"VK_KHR_maintenance3" => extensions.khr_maintenance3 = true,
                     b"VK_KHR_draw_indirect_count" => extensions.khr_draw_indirect_count = true,
                     b"VK_EXT_filter_cubic" => extensions.ext_filter_cubic = true,
+                    b"VK_QCOM_render_pass_shader_resolve" => extensions.qcom_render_pass_shader_resolve = true,
                     b"VK_EXT_global_priority" => extensions.ext_global_priority = true,
                     b"VK_KHR_shader_subgroup_extended_types" => extensions.khr_shader_subgroup_extended_types = true,
                     b"VK_KHR_8bit_storage" => extensions.khr_8bit_storage = true,
@@ -3806,6 +3815,7 @@ impl Device {
                     b"VK_NV_device_generated_commands" => extensions.nv_device_generated_commands = true,
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
+                    b"VK_EXT_robustness2" => extensions.ext_robustness2 = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
                     b"VK_KHR_pipeline_library" => extensions.khr_pipeline_library = true,
                     b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,

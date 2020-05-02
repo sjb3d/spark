@@ -14301,3 +14301,42 @@ impl<'a> Deref for DeviceDiagnosticsConfigCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::PhysicalDeviceRobustness2FeaturesEXT {
+    type Type = PhysicalDeviceRobustness2FeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRobustness2FeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceRobustness2FeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceRobustness2FeaturesEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn robust_buffer_access2(mut self, robust_buffer_access2: bool) -> Self {
+        self.inner.robust_buffer_access2 = if robust_buffer_access2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn robust_image_access2(mut self, robust_image_access2: bool) -> Self {
+        self.inner.robust_image_access2 = if robust_image_access2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn null_descriptor(mut self, null_descriptor: bool) -> Self {
+        self.inner.null_descriptor = if null_descriptor { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceRobustness2FeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceRobustness2FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
