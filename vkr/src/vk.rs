@@ -2745,6 +2745,8 @@ impl PipelineCreateFlags {
     pub const RAY_TRACING_SKIP_AABBS_KHR: Self = Self(0x2000);
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
+    /// Added by extension VK_NV_extension_168.
+    pub const RESERVED_19_KHR: Self = Self(0x80000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -2768,13 +2770,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7fbff)
+        Self(0xffbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7fbff
+        self.0 == 0xffbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2833,6 +2835,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x1000, "RAY_TRACING_SKIP_TRIANGLES_KHR"),
                 (0x2000, "RAY_TRACING_SKIP_AABBS_KHR"),
                 (0x20, "DEFER_COMPILE_NV"),
+                (0x80000, "RESERVED_19_KHR"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
                 (0x40000, "INDIRECT_BINDABLE_NV"),
@@ -3130,6 +3133,8 @@ impl FormatFeatureFlags {
     pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_IMG;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_AMD_extension_227.
+    pub const AMD_RESERVED_30: Self = Self(0x40000000);
 }
 impl default::Default for FormatFeatureFlags {
     fn default() -> Self {
@@ -3141,13 +3146,13 @@ impl FormatFeatureFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3fffffff)
+        Self(0x7fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3fffffff
+        self.0 == 0x7fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3230,6 +3235,7 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x4000000, "RESERVED_26_KHR"),
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
+                (0x40000000, "AMD_RESERVED_30"),
             ],
             f,
         )
@@ -5525,6 +5531,73 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     }
 }
 pub type BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PrivateDataSlotCreateFlagsEXT(u32);
+impl PrivateDataSlotCreateFlagsEXT {}
+impl default::Default for PrivateDataSlotCreateFlagsEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl PrivateDataSlotCreateFlagsEXT {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PrivateDataSlotCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PrivateDataSlotCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PrivateDataSlotCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PrivateDataSlotCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PrivateDataSlotCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PrivateDataSlotCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateCreateFlags(u32);
@@ -10140,6 +10213,14 @@ impl DeferredOperationKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PrivateDataSlotEXT(num::NonZeroU64);
+impl PrivateDataSlotEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayKHR(num::NonZeroU64);
 impl DisplayKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
@@ -10483,6 +10564,10 @@ impl BorderColor {
     pub const INT_OPAQUE_BLACK: Self = Self(3);
     pub const FLOAT_OPAQUE_WHITE: Self = Self(4);
     pub const INT_OPAQUE_WHITE: Self = Self(5);
+    /// Added by extension VK_EXT_custom_border_color.
+    pub const FLOAT_CUSTOM_EXT: Self = Self(1000287003);
+    /// Added by extension VK_EXT_custom_border_color.
+    pub const INT_CUSTOM_EXT: Self = Self(1000287004);
 }
 impl default::Default for BorderColor {
     fn default() -> Self {
@@ -10498,6 +10583,8 @@ impl fmt::Display for BorderColor {
             3 => Some(&"INT_OPAQUE_BLACK"),
             4 => Some(&"FLOAT_OPAQUE_WHITE"),
             5 => Some(&"INT_OPAQUE_WHITE"),
+            1000287003 => Some(&"FLOAT_CUSTOM_EXT"),
+            1000287004 => Some(&"INT_CUSTOM_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12430,8 +12517,9 @@ impl StructureType {
     pub const SURFACE_CAPABILITIES_2_KHR: Self = Self(1000119001);
     /// Added by extension VK_KHR_get_surface_capabilities2.
     pub const SURFACE_FORMAT_2_KHR: Self = Self(1000119002);
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
-    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES;
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES;
+    pub const PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES_KHR: Self =
+        Self::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES_KHR;
     /// Added by extension VK_KHR_get_display_properties2.
     pub const DISPLAY_PROPERTIES_2_KHR: Self = Self(1000121000);
     /// Added by extension VK_KHR_get_display_properties2.
@@ -12843,8 +12931,20 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT: Self = Self(1000286000);
     /// Added by extension VK_EXT_robustness2.
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT: Self = Self(1000286001);
+    /// Added by extension VK_EXT_custom_border_color.
+    pub const SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT: Self = Self(1000287000);
+    /// Added by extension VK_EXT_custom_border_color.
+    pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT: Self = Self(1000287001);
+    /// Added by extension VK_EXT_custom_border_color.
+    pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT: Self = Self(1000287002);
     /// Added by extension VK_KHR_pipeline_library.
     pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
+    /// Added by extension VK_EXT_private_data.
+    pub const PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT: Self = Self(1000295000);
+    /// Added by extension VK_EXT_private_data.
+    pub const DEVICE_PRIVATE_DATA_CREATE_INFO_EXT: Self = Self(1000295001);
+    /// Added by extension VK_EXT_private_data.
+    pub const PRIVATE_DATA_SLOT_CREATE_INFO_EXT: Self = Self(1000295002);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT: Self = Self(1000297000);
     /// Added by extension VK_NV_device_diagnostics_config.
@@ -13289,7 +13389,13 @@ impl fmt::Display for StructureType {
             1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
             1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT"),
             1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT"),
+            1000287000 => Some(&"SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT"),
+            1000287001 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT"),
+            1000287002 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT"),
             1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
+            1000295000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT"),
+            1000295001 => Some(&"DEVICE_PRIVATE_DATA_CREATE_INFO_EXT"),
+            1000295002 => Some(&"PRIVATE_DATA_SLOT_CREATE_INFO_EXT"),
             1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
@@ -13568,6 +13674,8 @@ impl ObjectType {
     /// VkIndirectCommandsLayoutNV
     /// Added by extension VK_NV_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_NV: Self = Self(1000277000);
+    /// Added by extension VK_EXT_private_data.
+    pub const PRIVATE_DATA_SLOT_EXT: Self = Self(1000295000);
 }
 impl default::Default for ObjectType {
     fn default() -> Self {
@@ -13616,6 +13724,7 @@ impl fmt::Display for ObjectType {
             1000210000 => Some(&"PERFORMANCE_CONFIGURATION_INTEL"),
             1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
             1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
+            1000295000 => Some(&"PRIVATE_DATA_SLOT_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -21252,6 +21361,81 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("device_generated_commands", &self.device_generated_commands)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DevicePrivateDataCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub private_data_slot_request_count: u32,
+}
+impl default::Default for DevicePrivateDataCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_PRIVATE_DATA_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            private_data_slot_request_count: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for DevicePrivateDataCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DevicePrivateDataCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("private_data_slot_request_count", &self.private_data_slot_request_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PrivateDataSlotCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PrivateDataSlotCreateFlagsEXT,
+}
+impl default::Default for PrivateDataSlotCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRIVATE_DATA_SLOT_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: PrivateDataSlotCreateFlagsEXT::default(),
+        }
+    }
+}
+impl fmt::Debug for PrivateDataSlotCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PrivateDataSlotCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePrivateDataFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub private_data: Bool32,
+}
+impl default::Default for PhysicalDevicePrivateDataFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            private_data: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePrivateDataFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePrivateDataFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("private_data", &self.private_data)
             .finish()
     }
 }
@@ -33615,6 +33799,93 @@ impl fmt::Debug for PhysicalDeviceToolPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SamplerCustomBorderColorCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub custom_border_color: ClearColorValue,
+    pub format: Format,
+}
+impl default::Default for SamplerCustomBorderColorCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            custom_border_color: ClearColorValue::default(),
+            format: Format::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerCustomBorderColorCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerCustomBorderColorCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("custom_border_color", &self.custom_border_color)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCustomBorderColorPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_custom_border_color_samplers: u32,
+}
+impl default::Default for PhysicalDeviceCustomBorderColorPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_custom_border_color_samplers: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCustomBorderColorPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCustomBorderColorPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_custom_border_color_samplers",
+                &self.max_custom_border_color_samplers,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCustomBorderColorFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub custom_border_colors: Bool32,
+    pub custom_border_color_without_format: Bool32,
+}
+impl default::Default for PhysicalDeviceCustomBorderColorFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            custom_border_colors: Bool32::default(),
+            custom_border_color_without_format: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCustomBorderColorFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCustomBorderColorFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("custom_border_colors", &self.custom_border_colors)
+            .field(
+                "custom_border_color_without_format",
+                &self.custom_border_color_without_format,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub union DeviceOrHostAddressKHR {
     pub device_address: DeviceAddress,
     pub host_address: *mut c_void,
@@ -36373,3 +36644,28 @@ pub type FnGetDeferredOperationResultKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
 pub type FnDeferredOperationJoinKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
+pub type FnCreatePrivateDataSlotEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PrivateDataSlotCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_private_data_slot: *mut PrivateDataSlotEXT,
+) -> Result;
+pub type FnDestroyPrivateDataSlotEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    private_data_slot: Option<PrivateDataSlotEXT>,
+    p_allocator: *const AllocationCallbacks,
+) -> c_void;
+pub type FnSetPrivateDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_type: ObjectType,
+    object_handle: u64,
+    private_data_slot: Option<PrivateDataSlotEXT>,
+    data: u64,
+) -> Result;
+pub type FnGetPrivateDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    object_type: ObjectType,
+    object_handle: u64,
+    private_data_slot: Option<PrivateDataSlotEXT>,
+    p_data: *mut u64,
+) -> c_void;

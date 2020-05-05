@@ -3670,6 +3670,99 @@ impl<'a> Deref for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::DevicePrivateDataCreateInfoEXT {
+    type Type = DevicePrivateDataCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DevicePrivateDataCreateInfoEXTBuilder<'a> {
+    inner: vk::DevicePrivateDataCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> DevicePrivateDataCreateInfoEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn private_data_slot_request_count(mut self, private_data_slot_request_count: u32) -> Self {
+        self.inner.private_data_slot_request_count = private_data_slot_request_count;
+        self
+    }
+}
+impl<'a> Deref for DevicePrivateDataCreateInfoEXTBuilder<'a> {
+    type Target = vk::DevicePrivateDataCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PrivateDataSlotCreateInfoEXT {
+    type Type = PrivateDataSlotCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PrivateDataSlotCreateInfoEXTBuilder<'a> {
+    inner: vk::PrivateDataSlotCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PrivateDataSlotCreateInfoEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::PrivateDataSlotCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for PrivateDataSlotCreateInfoEXTBuilder<'a> {
+    type Target = vk::PrivateDataSlotCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDevicePrivateDataFeaturesEXT {
+    type Type = PhysicalDevicePrivateDataFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePrivateDataFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDevicePrivateDataFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDevicePrivateDataFeaturesEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn private_data(mut self, private_data: bool) -> Self {
+        self.inner.private_data = if private_data { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDevicePrivateDataFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDevicePrivateDataFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::GraphicsShaderGroupCreateInfoNV {
     type Type = GraphicsShaderGroupCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -13556,6 +13649,80 @@ impl<'a> PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
 }
 impl<'a> Deref for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder<'a> {
     type Target = vk::PhysicalDeviceCoherentMemoryFeaturesAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SamplerCustomBorderColorCreateInfoEXT {
+    type Type = SamplerCustomBorderColorCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerCustomBorderColorCreateInfoEXTBuilder<'a> {
+    inner: vk::SamplerCustomBorderColorCreateInfoEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> SamplerCustomBorderColorCreateInfoEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn custom_border_color(mut self, custom_border_color: vk::ClearColorValue) -> Self {
+        self.inner.custom_border_color = custom_border_color;
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+}
+impl<'a> Deref for SamplerCustomBorderColorCreateInfoEXTBuilder<'a> {
+    type Target = vk::SamplerCustomBorderColorCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {
+    type Type = PhysicalDeviceCustomBorderColorFeaturesEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCustomBorderColorFeaturesEXTBuilder<'a> {
+    inner: vk::PhysicalDeviceCustomBorderColorFeaturesEXT,
+    phantom: PhantomData<&'a c_void>,
+}
+impl<'a> PhysicalDeviceCustomBorderColorFeaturesEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn custom_border_colors(mut self, custom_border_colors: bool) -> Self {
+        self.inner.custom_border_colors = if custom_border_colors { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn custom_border_color_without_format(mut self, custom_border_color_without_format: bool) -> Self {
+        self.inner.custom_border_color_without_format = if custom_border_color_without_format {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder<'a> {
+    type Target = vk::PhysicalDeviceCustomBorderColorFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

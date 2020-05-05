@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 139
+//! Generated from vk.xml with `VK_HEADER_VERSION` 140
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1866,17 +1866,13 @@ impl Instance {
     }
     pub unsafe fn destroy_debug_report_callback_ext(
         &self,
-        callback: vk::DebugReportCallbackEXT,
+        callback: Option<vk::DebugReportCallbackEXT>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
             .fp_destroy_debug_report_callback_ext
             .expect("vkDestroyDebugReportCallbackEXT is not loaded");
-        (fp)(
-            Some(self.handle),
-            Some(callback),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
+        (fp)(Some(self.handle), callback, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn debug_report_message_ext(
         &self,
@@ -2559,17 +2555,13 @@ impl Instance {
     }
     pub unsafe fn destroy_debug_utils_messenger_ext(
         &self,
-        messenger: vk::DebugUtilsMessengerEXT,
+        messenger: Option<vk::DebugUtilsMessengerEXT>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
             .fp_destroy_debug_utils_messenger_ext
             .expect("vkDestroyDebugUtilsMessengerEXT is not loaded");
-        (fp)(
-            Some(self.handle),
-            Some(messenger),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
+        (fp)(Some(self.handle), messenger, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn submit_debug_utils_message_ext(
         &self,
@@ -2770,9 +2762,11 @@ pub struct DeviceExtensions {
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
     pub ext_robustness2: bool,
+    pub ext_custom_border_color: bool,
     pub google_user_type: bool,
     pub khr_pipeline_library: bool,
     pub khr_shader_non_semantic_info: bool,
+    pub ext_private_data: bool,
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
@@ -3114,6 +3108,10 @@ pub struct Device {
     pub fp_get_deferred_operation_max_concurrency_khr: Option<vk::FnGetDeferredOperationMaxConcurrencyKHR>,
     pub fp_get_deferred_operation_result_khr: Option<vk::FnGetDeferredOperationResultKHR>,
     pub fp_deferred_operation_join_khr: Option<vk::FnDeferredOperationJoinKHR>,
+    pub fp_create_private_data_slot_ext: Option<vk::FnCreatePrivateDataSlotEXT>,
+    pub fp_destroy_private_data_slot_ext: Option<vk::FnDestroyPrivateDataSlotEXT>,
+    pub fp_set_private_data_ext: Option<vk::FnSetPrivateDataEXT>,
+    pub fp_get_private_data_ext: Option<vk::FnGetPrivateDataEXT>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3611,6 +3609,9 @@ impl Device {
     pub fn ext_robustness2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_robustness2\0") }
     }
+    pub fn ext_custom_border_color_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_custom_border_color\0") }
+    }
     pub fn google_user_type_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
     }
@@ -3619,6 +3620,9 @@ impl Device {
     }
     pub fn khr_shader_non_semantic_info_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") }
+    }
+    pub fn ext_private_data_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_private_data\0") }
     }
     pub fn ext_pipeline_creation_cache_control_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_cache_control\0") }
@@ -3816,9 +3820,11 @@ impl Device {
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
                     b"VK_EXT_robustness2" => extensions.ext_robustness2 = true,
+                    b"VK_EXT_custom_border_color" => extensions.ext_custom_border_color = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
                     b"VK_KHR_pipeline_library" => extensions.khr_pipeline_library = true,
                     b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
+                    b"VK_EXT_private_data" => extensions.ext_private_data = true,
                     b"VK_EXT_pipeline_creation_cache_control" => extensions.ext_pipeline_creation_cache_control = true,
                     b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
                     b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
@@ -5131,6 +5137,7 @@ impl Device {
             },
             fp_cmd_push_descriptor_set_with_template_khr: if extensions.khr_push_descriptor
                 && version >= vk::Version::from_raw_parts(1, 1, 0)
+                || extensions.khr_push_descriptor && extensions.khr_descriptor_update_template
                 || extensions.khr_descriptor_update_template && extensions.khr_push_descriptor
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
@@ -6207,6 +6214,30 @@ impl Device {
             },
             fp_deferred_operation_join_khr: if extensions.khr_deferred_host_operations {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDeferredOperationJoinKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_private_data_slot_ext: if extensions.ext_private_data {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePrivateDataSlotEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_private_data_slot_ext: if extensions.ext_private_data {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPrivateDataSlotEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_private_data_ext: if extensions.ext_private_data {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSetPrivateDataEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_private_data_ext: if extensions.ext_private_data {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPrivateDataEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -8387,7 +8418,7 @@ impl Device {
     }
     pub unsafe fn destroy_indirect_commands_layout_nv(
         &self,
-        indirect_commands_layout: vk::IndirectCommandsLayoutNV,
+        indirect_commands_layout: Option<vk::IndirectCommandsLayoutNV>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
@@ -8395,7 +8426,7 @@ impl Device {
             .expect("vkDestroyIndirectCommandsLayoutNV is not loaded");
         (fp)(
             Some(self.handle),
-            Some(indirect_commands_layout),
+            indirect_commands_layout,
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
@@ -10079,7 +10110,7 @@ impl Device {
     }
     pub unsafe fn destroy_acceleration_structure_khr(
         &self,
-        acceleration_structure: vk::AccelerationStructureKHR,
+        acceleration_structure: Option<vk::AccelerationStructureKHR>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
@@ -10087,13 +10118,13 @@ impl Device {
             .expect("vkDestroyAccelerationStructureKHR is not loaded");
         (fp)(
             Some(self.handle),
-            Some(acceleration_structure),
+            acceleration_structure,
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
     pub unsafe fn destroy_acceleration_structure_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureKHR,
+        acceleration_structure: Option<vk::AccelerationStructureKHR>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
@@ -10101,7 +10132,7 @@ impl Device {
             .expect("vkDestroyAccelerationStructureNV is not loaded");
         (fp)(
             Some(self.handle),
-            Some(acceleration_structure),
+            acceleration_structure,
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
@@ -11255,17 +11286,13 @@ impl Device {
     }
     pub unsafe fn destroy_deferred_operation_khr(
         &self,
-        operation: vk::DeferredOperationKHR,
+        operation: Option<vk::DeferredOperationKHR>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
             .fp_destroy_deferred_operation_khr
             .expect("vkDestroyDeferredOperationKHR is not loaded");
-        (fp)(
-            Some(self.handle),
-            Some(operation),
-            p_allocator.map_or(ptr::null(), |r| r),
-        );
+        (fp)(Some(self.handle), operation, p_allocator.map_or(ptr::null(), |r| r));
     }
     pub unsafe fn get_deferred_operation_max_concurrency_khr(&self, operation: vk::DeferredOperationKHR) -> u32 {
         let fp = self
@@ -11292,6 +11319,77 @@ impl Device {
             vk::Result::SUCCESS | vk::Result::THREAD_DONE_KHR | vk::Result::THREAD_IDLE_KHR => Ok(err),
             _ => Err(err),
         }
+    }
+    pub unsafe fn create_private_data_slot_ext(
+        &self,
+        p_create_info: &vk::PrivateDataSlotCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::PrivateDataSlotEXT> {
+        let fp = self
+            .fp_create_private_data_slot_ext
+            .expect("vkCreatePrivateDataSlotEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_private_data_slot_ext(
+        &self,
+        private_data_slot: Option<vk::PrivateDataSlotEXT>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_private_data_slot_ext
+            .expect("vkDestroyPrivateDataSlotEXT is not loaded");
+        (fp)(
+            Some(self.handle),
+            private_data_slot,
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn set_private_data_ext(
+        &self,
+        object_type: vk::ObjectType,
+        object_handle: u64,
+        private_data_slot: vk::PrivateDataSlotEXT,
+        data: u64,
+    ) -> Result<()> {
+        let fp = self.fp_set_private_data_ext.expect("vkSetPrivateDataEXT is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            object_type,
+            object_handle,
+            Some(private_data_slot),
+            data,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_private_data_ext(
+        &self,
+        object_type: vk::ObjectType,
+        object_handle: u64,
+        private_data_slot: vk::PrivateDataSlotEXT,
+    ) -> u64 {
+        let fp = self.fp_get_private_data_ext.expect("vkGetPrivateDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(
+            Some(self.handle),
+            object_type,
+            object_handle,
+            Some(private_data_slot),
+            res.as_mut_ptr(),
+        );
+        res.assume_init()
     }
 }
 
