@@ -1,3 +1,4 @@
+use std::env;
 use std::ffi::CStr;
 use std::mem;
 use std::slice;
@@ -20,12 +21,19 @@ fn get_memory_type_index(
 fn main() -> Result<(), vkr::LoaderError> {
     // this example only requires Vulkan 1.0.0
     let version = Default::default();
+    let is_debug = env::args().any(|x| x == "-d");
 
     // load the Vulkan lib
     let instance = {
         let loader = Loader::new()?;
-        let layer_names_raw =
-            [unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LAYER_LUNARG_standard_validation\0") }.as_ptr()];
+        let mut layer_names_raw = Vec::new();
+        if is_debug {
+            layer_names_raw.push(
+                CStr::from_bytes_with_nul(b"VK_LAYER_KHRONOS_validation\0")
+                    .unwrap()
+                    .as_ptr(),
+            );
+        }
         let app_info = vk::ApplicationInfo::builder()
             .p_application_name(CStr::from_bytes_with_nul(b"compute\0").unwrap())
             .api_version(version);
