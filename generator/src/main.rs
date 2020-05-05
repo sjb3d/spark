@@ -226,7 +226,7 @@ impl Version {
     }
 
     fn try_from_feature(s: &str) -> Option<Self> {
-        c_parse_version(s).map(|(major, minor)| Version::from_raw_parts(major, minor))
+        c_try_parse_version(s).map(|(major, minor)| Version::from_raw_parts(major, minor))
     }
 }
 
@@ -329,6 +329,7 @@ struct Generator<'a> {
     registry: &'a vk::Registry,
     extension_by_name: HashMap<&'a str, &'a vk::Extension>,
     type_by_name: HashMap<&'a str, &'a vk::Type>,
+    used_type_names: HashSet<&'a str>,
     type_name_blacklist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
     bitmask_from_value: HashMap<&'a str, &'a str>,
@@ -411,23 +412,34 @@ impl<'a> Generator<'a> {
                 if self.type_by_name.insert(name, ty).is_some() {
                     panic!("duplicate type name from {:?}", ty)
                 }
-                if category == Some("bitmask") {
+                if let Some("bitmask") = category {
                     if let Some(requires) = ty.requires.as_ref_str() {
                         if self.bitmask_from_value.insert(requires, name).is_some() {
                             panic!("duplicate value for bitmask {}", requires);
                         }
                     }
                 }
-                if let vk::TypeSpec::Members(ref members) = ty.spec {
-                    if !members
-                        .iter()
-                        .filter_map(|member| match member {
+                if let Some("funcpointer") = category {
+                    if let vk::TypeSpec::Code(ref code) = ty.spec {
+                        let decl = c_parse_func_pointer_typedef(code.code.as_str());
+                        self.used_type_names.insert(decl.proto.ty.name);
+                        for param in decl.parameters.iter() {
+                            self.used_type_names.insert(param.ty.name);
+                        }
+                    }
+                }
+                if let Some("struct") | Some("union") = category {
+                    if let vk::TypeSpec::Members(ref members) = ty.spec {
+                        for member_def in members.iter().filter_map(|member| match member {
                             vk::TypeMember::Definition(ref member_def) => Some(member_def),
                             _ => None,
-                        })
-                        .all(|member_def| c_parse_is_variable_decl(member_def.code.as_str()))
-                    {
-                        self.type_name_blacklist.insert(name);
+                        }) {
+                            if let Some(decl) = c_try_parse_variable_decl(member_def.code.as_str()) {
+                                self.used_type_names.insert(decl.ty.name);
+                            } else {
+                                self.type_name_blacklist.insert(name);
+                            }
+                        }
                     }
                 }
             }
@@ -518,7 +530,7 @@ impl<'a> Generator<'a> {
                     }
                 },
                 vk::RegistryChild::Feature(feature) => {
-                    for en in feature
+                    for item in feature
                         .children
                         .iter()
                         .filter_map(|ext_child| match ext_child {
@@ -526,17 +538,21 @@ impl<'a> Generator<'a> {
                             _ => None,
                         })
                         .flat_map(|items| items.iter())
-                        .filter_map(|item| match item {
-                            vk::InterfaceItem::Enum(en) => Some(en),
-                            _ => None,
-                        })
                     {
-                        self.collect_extension_enum(en);
+                        match item {
+                            vk::InterfaceItem::Type { name, .. } => {
+                                self.used_type_names.insert(name.as_str());
+                            }
+                            vk::InterfaceItem::Enum(en) => {
+                                self.collect_extension_enum(en);
+                            }
+                            _ => {}
+                        }
                     }
                 }
                 vk::RegistryChild::Extensions(extensions) => {
                     for ext in extensions.children.iter().filter(|ext| !ext.is_blacklisted()) {
-                        for en in ext
+                        for item in ext
                             .children
                             .iter()
                             .filter_map(|ext_child| match ext_child {
@@ -544,13 +560,17 @@ impl<'a> Generator<'a> {
                                 _ => None,
                             })
                             .flat_map(|items| items.iter())
-                            .filter_map(|item| match item {
-                                vk::InterfaceItem::Enum(en) => Some(en),
-                                _ => None,
-                            })
                         {
-                            self.collect_extension_enum(en);
-                            self.extension_by_enum_name.insert(en.name.as_str(), ext);
+                            match item {
+                                vk::InterfaceItem::Type { name, .. } => {
+                                    self.used_type_names.insert(name.as_str());
+                                }
+                                vk::InterfaceItem::Enum(en) => {
+                                    self.collect_extension_enum(en);
+                                    self.extension_by_enum_name.insert(en.name.as_str(), ext);
+                                }
+                                _ => {}
+                            }
                         }
                     }
                 }
@@ -580,6 +600,11 @@ impl<'a> Generator<'a> {
                                     refs: Vec::new(),
                                 },
                             );
+                            let decl = c_parse_function_decl(cmd_def.code.as_str());
+                            self.used_type_names.insert(decl.proto.ty.name);
+                            for param in decl.parameters.iter() {
+                                self.used_type_names.insert(param.ty.name);
+                            }
                         }
                     }
                 }
@@ -680,6 +705,7 @@ impl<'a> Generator<'a> {
             registry,
             extension_by_name: HashMap::new(),
             type_by_name: HashMap::new(),
+            used_type_names: HashSet::new(),
             type_name_blacklist: HashSet::new(),
             tag_names: HashSet::new(),
             bitmask_from_value: HashMap::new(),
@@ -828,7 +854,7 @@ impl<'a> Generator<'a> {
 
     fn write_base_type(&self, w: &mut impl IoWrite, ty: &vk::Type) -> WriteResult {
         if let vk::TypeSpec::Code(ref code) = ty.spec {
-            if let Some(decl) = c_parse_typedef(code.code.as_str()) {
+            if let Some(decl) = c_try_parse_typedef(code.code.as_str()) {
                 writeln!(
                     w,
                     "pub type {} = {};",
@@ -843,8 +869,8 @@ impl<'a> Generator<'a> {
     }
 
     fn is_enum_value_type_used(&self, type_name: &'a str) -> bool {
-        // TODO: if we are not replaced by a bitmask, check usage in structs/functions (and skip if not used) to avoid unused FlagBits
-        self.bitmask_from_value.get(type_name).is_none()
+        // not replaced by a bitmask and used as a parameter or member
+        self.bitmask_from_value.get(type_name).is_none() && self.used_type_names.get(type_name).is_some()
     }
 
     fn get_enum_entry_name(&self, type_name: &str, enum_type: EnumType, enum_name: &str) -> String {

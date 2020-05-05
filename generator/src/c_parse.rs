@@ -63,7 +63,7 @@ fn version(i: &str) -> Res<(u16, u16)> {
     ))(i)
 }
 
-pub fn c_parse_version(i: &str) -> Option<(u16, u16)> {
+pub fn c_try_parse_version(i: &str) -> Option<(u16, u16)> {
     all_consuming(version)(i).map(ignore_remainder).ok()
 }
 
@@ -129,10 +129,10 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
     ))
 }
 
-pub fn c_parse_is_variable_decl(i: &str) -> bool {
+pub fn c_try_parse_variable_decl(i: &str) -> Option<CVariableDecl> {
     all_consuming(terminated(variable_decl, multispace0))(i)
         .map(ignore_remainder)
-        .is_ok()
+        .ok()
 }
 
 pub fn c_parse_variable_decl(i: &str) -> CVariableDecl {
@@ -233,7 +233,7 @@ fn typedef(i: &str) -> Res<CVariableDecl> {
     ))
 }
 
-pub fn c_parse_typedef(i: &str) -> Option<CVariableDecl> {
+pub fn c_try_parse_typedef(i: &str) -> Option<CVariableDecl> {
     all_consuming(terminated(typedef, multispace0))(i)
         .map(ignore_remainder)
         .ok()
