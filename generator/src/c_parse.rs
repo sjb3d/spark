@@ -233,10 +233,10 @@ fn typedef(i: &str) -> Res<CVariableDecl> {
     ))
 }
 
-pub fn c_parse_typedef(i: &str) -> CVariableDecl {
+pub fn c_parse_typedef(i: &str) -> Option<CVariableDecl> {
     all_consuming(terminated(typedef, multispace0))(i)
         .map(ignore_remainder)
-        .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
+        .ok()
 }
 
 fn expr_inner(i: &str) -> Res<CExpr> {

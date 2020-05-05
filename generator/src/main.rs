@@ -828,13 +828,14 @@ impl<'a> Generator<'a> {
 
     fn write_base_type(&self, w: &mut impl IoWrite, ty: &vk::Type) -> WriteResult {
         if let vk::TypeSpec::Code(ref code) = ty.spec {
-            let decl = c_parse_typedef(code.code.as_str());
-            writeln!(
-                w,
-                "pub type {} = {};",
-                decl.name.skip_prefix(TYPE_PREFIX),
-                self.get_rust_type_name(decl.ty.name, true, None)
-            )?;
+            if let Some(decl) = c_parse_typedef(code.code.as_str()) {
+                writeln!(
+                    w,
+                    "pub type {} = {};",
+                    decl.name.skip_prefix(TYPE_PREFIX),
+                    self.get_rust_type_name(decl.ty.name, true, None)
+                )?;
+            }
         } else {
             panic!("missing code for {:?}", ty);
         }
