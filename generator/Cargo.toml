@@ -9,4 +9,4 @@ publish = false
 heck = "0.3"
 nom = "5"
 take_mut = "0.2"
-vk-parse = "0.4"
+vk-parse = "0.5"

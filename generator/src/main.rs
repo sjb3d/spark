@@ -18,6 +18,7 @@ use vk_parse as vk;
 enum Error {
     Io(io::Error),
     Fmt(fmt::Error),
+    Parse(vk::FatalError),
 }
 
 impl From<io::Error> for Error {
@@ -28,6 +29,11 @@ impl From<io::Error> for Error {
 impl From<fmt::Error> for Error {
     fn from(err: fmt::Error) -> Self {
         Error::Fmt(err)
+    }
+}
+impl From<vk::FatalError> for Error {
+    fn from(err: vk::FatalError) -> Self {
+        Error::Parse(err)
     }
 }
 
@@ -2758,18 +2764,17 @@ fn main() -> WriteResult {
         .get(1)
         .map(|s| s.as_str())
         .unwrap_or("/usr/share/vulkan/registry/vk.xml");
-    let registry = vk::parse_file(Path::new(xml_file_name));
+    let (registry, errors) = vk::parse_file(Path::new(xml_file_name))?;
+    for error in &errors {
+        println!("Parser error: {:?}", error);
+    }
 
     let generator = Generator::new(&registry);
     generator.write_vk(Path::new("../vkr/src/vk.rs"))?;
     generator.write_builder(Path::new("../vkr/src/builder.rs"))?;
     generator.write_lib(Path::new("../vkr/src/lib.rs"))?;
 
-    Spawn::new("cargo")
-        .arg("fmt")
-        .current_dir("../vkr")
-        .output()
-        .expect("failed to run cargo fmt");
+    Spawn::new("cargo").arg("fmt").current_dir("../vkr").output()?;
 
     Ok(())
 }
