@@ -15346,6 +15346,8 @@ impl VendorId {
     pub const KAZAN: Self = Self(65539);
     /// Codeplay Software Ltd. vendor ID
     pub const CODEPLAY: Self = Self(65540);
+    /// Mesa vendor ID
+    pub const MESA: Self = Self(65541);
 }
 impl default::Default for VendorId {
     fn default() -> Self {
@@ -15359,6 +15361,7 @@ impl fmt::Display for VendorId {
             65538 => Some(&"VSI"),
             65539 => Some(&"KAZAN"),
             65540 => Some(&"CODEPLAY"),
+            65541 => Some(&"MESA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -15396,6 +15399,8 @@ impl DriverId {
     pub const GGP_PROPRIETARY: Self = Self(11);
     /// Broadcom Inc.
     pub const BROADCOM_PROPRIETARY: Self = Self(12);
+    /// Mesa
+    pub const MESA_LLVMPIPE: Self = Self(13);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -15429,6 +15434,7 @@ impl fmt::Display for DriverId {
             10 => Some(&"GOOGLE_SWIFTSHADER"),
             11 => Some(&"GGP_PROPRIETARY"),
             12 => Some(&"BROADCOM_PROPRIETARY"),
+            13 => Some(&"MESA_LLVMPIPE"),
             _ => None,
         };
         if let Some(name) = name {
