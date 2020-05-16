@@ -35,7 +35,7 @@ fn main() -> Result<(), vkr::LoaderError> {
             );
         }
         let app_info = vk::ApplicationInfo::builder()
-            .p_application_name(CStr::from_bytes_with_nul(b"compute\0").unwrap())
+            .p_application_name(Some(CStr::from_bytes_with_nul(b"compute\0").unwrap()))
             .api_version(version);
         let instance_create_info = vk::InstanceCreateInfo::builder()
             .p_application_info(Some(&app_info))

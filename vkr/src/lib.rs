@@ -200,19 +200,27 @@ impl Loader {
     }
     pub unsafe fn enumerate_instance_extension_properties_to_vec(
         &self,
-        p_layer_name: &CStr,
+        p_layer_name: Option<&CStr>,
     ) -> Result<Vec<vk::ExtensionProperties>> {
         let fp = self
             .fp_enumerate_instance_extension_properties
             .expect("vkEnumerateInstanceExtensionProperties is not loaded");
         let mut len = MaybeUninit::<_>::uninit();
-        let len_err = (fp)(p_layer_name.as_ptr(), len.as_mut_ptr(), ptr::null_mut());
+        let len_err = (fp)(
+            p_layer_name.map_or(ptr::null(), |s| s.as_ptr()),
+            len.as_mut_ptr(),
+            ptr::null_mut(),
+        );
         if len_err != vk::Result::SUCCESS {
             return Err(len_err);
         }
         let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (fp)(p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
+        let v_err = (fp)(
+            p_layer_name.map_or(ptr::null(), |s| s.as_ptr()),
+            &mut len,
+            v.as_mut_ptr(),
+        );
         v.set_len(len as usize);
         match v_err {
             vk::Result::SUCCESS => Ok(v),
@@ -1365,7 +1373,7 @@ impl Instance {
     pub unsafe fn enumerate_device_extension_properties_to_vec(
         &self,
         physical_device: vk::PhysicalDevice,
-        p_layer_name: &CStr,
+        p_layer_name: Option<&CStr>,
     ) -> Result<Vec<vk::ExtensionProperties>> {
         let fp = self
             .fp_enumerate_device_extension_properties
@@ -1373,7 +1381,7 @@ impl Instance {
         let mut len = MaybeUninit::<_>::uninit();
         let len_err = (fp)(
             Some(physical_device),
-            p_layer_name.as_ptr(),
+            p_layer_name.map_or(ptr::null(), |s| s.as_ptr()),
             len.as_mut_ptr(),
             ptr::null_mut(),
         );
@@ -1382,7 +1390,12 @@ impl Instance {
         }
         let mut len = len.assume_init();
         let mut v = Vec::with_capacity(len as usize);
-        let v_err = (fp)(Some(physical_device), p_layer_name.as_ptr(), &mut len, v.as_mut_ptr());
+        let v_err = (fp)(
+            Some(physical_device),
+            p_layer_name.map_or(ptr::null(), |s| s.as_ptr()),
+            &mut len,
+            v.as_mut_ptr(),
+        );
         v.set_len(len as usize);
         match v_err {
             vk::Result::SUCCESS => Ok(v),

@@ -86,16 +86,16 @@ impl<'a> ApplicationInfoBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn p_application_name(mut self, p_application_name: &'a CStr) -> Self {
-        self.inner.p_application_name = p_application_name.as_ptr();
+    pub fn p_application_name(mut self, p_application_name: Option<&'a CStr>) -> Self {
+        self.inner.p_application_name = p_application_name.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
     pub fn application_version(mut self, application_version: u32) -> Self {
         self.inner.application_version = application_version;
         self
     }
-    pub fn p_engine_name(mut self, p_engine_name: &'a CStr) -> Self {
-        self.inner.p_engine_name = p_engine_name.as_ptr();
+    pub fn p_engine_name(mut self, p_engine_name: Option<&'a CStr>) -> Self {
+        self.inner.p_engine_name = p_engine_name.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
     pub fn engine_version(mut self, engine_version: u32) -> Self {
@@ -7901,8 +7901,8 @@ impl<'a> DebugUtilsObjectNameInfoEXTBuilder<'a> {
         self.inner.object_handle = object_handle;
         self
     }
-    pub fn p_object_name(mut self, p_object_name: &'a CStr) -> Self {
-        self.inner.p_object_name = p_object_name.as_ptr();
+    pub fn p_object_name(mut self, p_object_name: Option<&'a CStr>) -> Self {
+        self.inner.p_object_name = p_object_name.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
 }
@@ -8061,8 +8061,8 @@ impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn p_message_id_name(mut self, p_message_id_name: &'a CStr) -> Self {
-        self.inner.p_message_id_name = p_message_id_name.as_ptr();
+    pub fn p_message_id_name(mut self, p_message_id_name: Option<&'a CStr>) -> Self {
+        self.inner.p_message_id_name = p_message_id_name.map_or(ptr::null(), |s| s.as_ptr());
         self
     }
     pub fn message_id_number(mut self, message_id_number: i32) -> Self {

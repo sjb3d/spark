@@ -280,7 +280,7 @@ enum LibParamType {
     CDecl,
     Bool,
     MemberHandle,
-    CStr,
+    CStr { is_optional: bool },
     NonOptional { inner_type_name: String },
     SliceLenShared { name: String, slice_infos: Vec<SliceInfo> },
     SliceLenSingle { slice_infos: Vec<SliceInfo> },
@@ -1505,7 +1505,8 @@ impl<'a> Generator<'a> {
                         && cparam.ty.decoration == CDecoration::PointerToConst
                         && vparam.len.as_ref_str() == Some("null-terminated")
                     {
-                        params[i].ty = LibParamType::CStr;
+                        let is_optional = vparam.optional.as_ref_str() == Some("true");
+                        params[i].ty = LibParamType::CStr { is_optional };
                         continue;
                     }
 
@@ -1643,13 +1644,22 @@ impl<'a> Generator<'a> {
                                     rparam.name
                                 )?;
                             }
-                            LibParamType::CStr => {
-                                writeln!(
-                                    w,
-                                    "pub fn {0}(mut self, {0}: &'a CStr) -> Self {{\
-                                     self.inner.{0} = {0}.as_ptr(); self }}",
-                                    rparam.name
-                                )?;
+                            LibParamType::CStr { is_optional } => {
+                                if is_optional {
+                                    writeln!(
+                                        w,
+                                        "pub fn {0}(mut self, {0}: Option<&'a CStr>) -> Self {{\
+                                         self.inner.{0} = {0}.map_or(ptr::null(), |s| s.as_ptr()); self }}",
+                                        rparam.name
+                                    )?;
+                                } else {
+                                    writeln!(
+                                        w,
+                                        "pub fn {0}(mut self, {0}: &'a CStr) -> Self {{\
+                                         self.inner.{0} = {0}.as_ptr(); self }}",
+                                        rparam.name
+                                    )?;
+                                }
                             }
                             LibParamType::NonOptional { ref inner_type_name } => {
                                 writeln!(
@@ -1816,7 +1826,8 @@ impl<'a> Generator<'a> {
                 && cparam.ty.decoration == CDecoration::PointerToConst
                 && vparam.len.as_ref_str() == Some("null-terminated")
             {
-                params[i].ty = LibParamType::CStr;
+                let is_optional = vparam.optional.as_ref_str() == Some("true");
+                params[i].ty = LibParamType::CStr { is_optional };
                 continue;
             }
 
@@ -2143,8 +2154,12 @@ impl<'a> Generator<'a> {
                     LibParamType::Bool => {
                         write!(w, "{}: bool,", rparam.name)?;
                     }
-                    LibParamType::CStr => {
-                        write!(w, "{}: &CStr,", rparam.name)?;
+                    LibParamType::CStr { is_optional } => {
+                        if is_optional {
+                            write!(w, "{}: Option<&CStr>,", rparam.name)?;
+                        } else {
+                            write!(w, "{}: &CStr,", rparam.name)?;
+                        }
                     }
                     LibParamType::NonOptional { ref inner_type_name } => {
                         write!(w, "{}: {},", rparam.name, inner_type_name)?;
@@ -2356,8 +2371,12 @@ impl<'a> Generator<'a> {
                         LibParamType::Bool => {
                             write!(w, "if {} {{ vk::TRUE }} else {{ vk::FALSE }}", rparam.name)?;
                         }
-                        LibParamType::CStr => {
-                            write!(w, "{}.as_ptr()", rparam.name)?;
+                        LibParamType::CStr { is_optional } => {
+                            if is_optional {
+                                write!(w, "{}.map_or(ptr::null(), |s| s.as_ptr())", rparam.name)?;
+                            } else {
+                                write!(w, "{}.as_ptr()", rparam.name)?;
+                            }
                         }
                         LibParamType::NonOptional { .. } => {
                             write!(w, "Some({})", rparam.name)?;
