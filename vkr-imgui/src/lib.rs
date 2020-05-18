@@ -585,14 +585,14 @@ impl Renderer {
             }
 
             let dims_rcp = [1.0 / width, 1.0 / height];
+            assert_eq!(mem::size_of_val(&dims_rcp), Renderer::PUSH_CONSTANT_SIZE);
             unsafe {
                 device.cmd_push_constants(
                     command_buffer,
                     self.pipeline_layout,
                     vk::ShaderStageFlags::VERTEX,
                     0,
-                    Renderer::PUSH_CONSTANT_SIZE as u32,
-                    dims_rcp.as_ptr() as *const _,
+                    &dims_rcp,
                 )
             };
 

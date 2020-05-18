@@ -7824,16 +7824,22 @@ impl Device {
             p_regions.as_ptr(),
         );
     }
-    pub unsafe fn cmd_update_buffer(
+    pub unsafe fn cmd_update_buffer<T>(
         &self,
         command_buffer: vk::CommandBuffer,
         dst_buffer: vk::Buffer,
         dst_offset: vk::DeviceSize,
-        data_size: vk::DeviceSize,
-        p_data: *const c_void,
+        p_data: &[T],
     ) {
         let fp = self.fp_cmd_update_buffer.expect("vkCmdUpdateBuffer is not loaded");
-        (fp)(Some(command_buffer), Some(dst_buffer), dst_offset, data_size, p_data);
+        let data_size = mem::size_of_val(p_data) as vk::DeviceSize;
+        (fp)(
+            Some(command_buffer),
+            Some(dst_buffer),
+            dst_offset,
+            data_size,
+            p_data.as_ptr() as *const _,
+        );
     }
     pub unsafe fn cmd_fill_buffer(
         &self,
@@ -8079,17 +8085,24 @@ impl Device {
             flags,
         );
     }
-    pub unsafe fn cmd_push_constants(
+    pub unsafe fn cmd_push_constants<T>(
         &self,
         command_buffer: vk::CommandBuffer,
         layout: vk::PipelineLayout,
         stage_flags: vk::ShaderStageFlags,
         offset: u32,
-        size: u32,
-        p_values: *const c_void,
+        p_values: &[T],
     ) {
         let fp = self.fp_cmd_push_constants.expect("vkCmdPushConstants is not loaded");
-        (fp)(Some(command_buffer), Some(layout), stage_flags, offset, size, p_values);
+        let size = mem::size_of_val(p_values) as u32;
+        (fp)(
+            Some(command_buffer),
+            Some(layout),
+            stage_flags,
+            offset,
+            size,
+            p_values.as_ptr() as *const _,
+        );
     }
     pub unsafe fn cmd_begin_render_pass(
         &self,
@@ -11226,13 +11239,19 @@ impl Device {
         &self,
         command_buffer: vk::CommandBuffer,
         p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
-        pp_offset_infos: *const *const vk::AccelerationStructureBuildOffsetInfoKHR,
+        pp_offset_infos: &[*const vk::AccelerationStructureBuildOffsetInfoKHR],
     ) {
         let fp = self
             .fp_cmd_build_acceleration_structure_khr
             .expect("vkCmdBuildAccelerationStructureKHR is not loaded");
         let info_count = p_infos.len() as u32;
-        (fp)(Some(command_buffer), info_count, p_infos.as_ptr(), pp_offset_infos);
+        assert_eq!(info_count, pp_offset_infos.len() as u32);
+        (fp)(
+            Some(command_buffer),
+            info_count,
+            p_infos.as_ptr(),
+            pp_offset_infos.as_ptr(),
+        );
     }
     pub unsafe fn cmd_build_acceleration_structure_indirect_khr(
         &self,
@@ -11256,13 +11275,19 @@ impl Device {
     pub unsafe fn build_acceleration_structure_khr(
         &self,
         p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
-        pp_offset_infos: *const *const vk::AccelerationStructureBuildOffsetInfoKHR,
+        pp_offset_infos: &[*const vk::AccelerationStructureBuildOffsetInfoKHR],
     ) -> Result<vk::Result> {
         let fp = self
             .fp_build_acceleration_structure_khr
             .expect("vkBuildAccelerationStructureKHR is not loaded");
         let info_count = p_infos.len() as u32;
-        let err = (fp)(Some(self.handle), info_count, p_infos.as_ptr(), pp_offset_infos);
+        assert_eq!(info_count, pp_offset_infos.len() as u32);
+        let err = (fp)(
+            Some(self.handle),
+            info_count,
+            p_infos.as_ptr(),
+            pp_offset_infos.as_ptr(),
+        );
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
                 Ok(err)

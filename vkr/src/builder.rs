@@ -3,6 +3,7 @@
 use super::vk;
 use std::ffi::CStr;
 use std::marker::PhantomData;
+use std::mem;
 use std::ops::Deref;
 use std::os::raw::{c_char, c_int, c_void};
 use std::ptr;
@@ -1196,12 +1197,9 @@ impl<'a> SpecializationInfoBuilder<'a> {
         self.inner.p_map_entries = p_map_entries.as_ptr();
         self
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
+        self.inner.data_size = mem::size_of_val(p_data) as usize;
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -1885,12 +1883,9 @@ impl<'a> PipelineCacheCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
-        self.inner.initial_data_size = initial_data_size;
-        self
-    }
-    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
-        self.inner.p_initial_data = p_initial_data;
+    pub fn p_initial_data<T>(mut self, p_initial_data: &'a [T]) -> Self {
+        self.inner.initial_data_size = mem::size_of_val(p_initial_data) as usize;
+        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
         self
     }
 }
@@ -3316,12 +3311,9 @@ impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag<T>(mut self, p_tag: &'a [T]) -> Self {
+        self.inner.tag_size = mem::size_of_val(p_tag) as usize;
+        self.inner.p_tag = p_tag.as_ptr() as *const _;
         self
     }
 }
@@ -7436,12 +7428,9 @@ impl<'a> WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn data_size(mut self, data_size: u32) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
+        self.inner.data_size = mem::size_of_val(p_data) as u32;
+        self.inner.p_data = p_data.as_ptr() as *const _;
         self
     }
 }
@@ -7590,12 +7579,9 @@ impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
         self.inner.flags = flags;
         self
     }
-    pub fn initial_data_size(mut self, initial_data_size: usize) -> Self {
-        self.inner.initial_data_size = initial_data_size;
-        self
-    }
-    pub fn p_initial_data(mut self, p_initial_data: *const c_void) -> Self {
-        self.inner.p_initial_data = p_initial_data;
+    pub fn p_initial_data<T>(mut self, p_initial_data: &'a [T]) -> Self {
+        self.inner.initial_data_size = mem::size_of_val(p_initial_data) as usize;
+        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
         self
     }
 }
@@ -7944,12 +7930,9 @@ impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag<T>(mut self, p_tag: &'a [T]) -> Self {
+        self.inner.tag_size = mem::size_of_val(p_tag) as usize;
+        self.inner.p_tag = p_tag.as_ptr() as *const _;
         self
     }
 }
