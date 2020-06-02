@@ -6386,10 +6386,6 @@ impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
         self.inner.discard_rectangle_mode = discard_rectangle_mode;
         self
     }
-    pub fn discard_rectangle_count(mut self, discard_rectangle_count: u32) -> Self {
-        self.inner.discard_rectangle_count = discard_rectangle_count;
-        self
-    }
     pub fn p_discard_rectangles(mut self, p_discard_rectangles: &'a [vk::Rect2D]) -> Self {
         self.inner.discard_rectangle_count = p_discard_rectangles.len() as u32;
         self.inner.p_discard_rectangles = p_discard_rectangles.as_ptr();
