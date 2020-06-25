@@ -1642,32 +1642,42 @@ impl<'a> Generator<'a> {
                         continue;
                     }
                 }
-                if let Some(phantom_decl) = decls.iter().find(|decl| decl.ty.decoration != CDecoration::None) {
+                let needs_lifetime = params.iter().any(|rparam| match rparam.ty {
+                    LibParamType::CStr { .. }
+                    | LibParamType::SliceLenShared { .. }
+                    | LibParamType::SliceLenSingle { .. }
+                    | LibParamType::Ref { .. } => true,
+                    _ => false,
+                });
+                if decls.iter().any(|decl| decl.ty.decoration != CDecoration::None) {
+                    let generics_decl = if needs_lifetime { "<'a>" } else { "" };
+
                     // implement trait on vk type
                     writeln!(
                         w,
-                        "impl<'a> Builder<'a> for vk::{0} {{\
-                         type Type = {0}Builder<'a>;\
+                        "impl{0} Builder<'{2}> for vk::{1} {{\
+                         type Type = {1}Builder{0};\
                          fn builder() -> Self::Type {{ Default::default() }} }}",
-                        agg_name
+                        generics_decl,
+                        agg_name,
+                        if needs_lifetime { "a" } else { "_" }
                     )?;
 
                     // declare builder in lib
-                    let phantom_type_name = self.get_rust_type_name(
-                        phantom_decl.ty.name,
-                        phantom_decl.ty.decoration != CDecoration::None,
-                        Some("vk::"),
-                    );
                     writeln!(w, "#[derive(Default)]")?;
                     writeln!(
                         w,
-                        "pub struct {0}Builder<'a> {{\
-                         inner: vk::{0}, phantom: PhantomData<&'a {1}> }}",
-                        agg_name, phantom_type_name,
+                        "pub struct {1}Builder{0} {{\
+                         inner: vk::{1},",
+                        generics_decl, agg_name
                     )?;
+                    if needs_lifetime {
+                        writeln!(w, "phantom: PhantomData<&'a vk::Never>,")?;
+                    }
+                    writeln!(w, "}}")?;
 
                     // setters
-                    writeln!(w, "impl<'a> {}Builder<'a> {{", agg_name)?;
+                    writeln!(w, "impl{0} {1}Builder{0} {{", generics_decl, agg_name)?;
                     for (cparam, rparam) in decls.iter().zip(params.iter()) {
                         match rparam.ty {
                             LibParamType::CDecl => {
@@ -1828,10 +1838,10 @@ impl<'a> Generator<'a> {
                     // allow deref to vk type
                     writeln!(
                         w,
-                        "impl<'a> Deref for {0}Builder<'a> {{\
-                         type Target = vk::{0};\
+                        "impl{0} Deref for {1}Builder{0} {{\
+                         type Target = vk::{1};\
                          fn deref(&self) -> &Self::Target {{ &self.inner }} }}",
-                        agg_name
+                        generics_decl, agg_name
                     )?;
                 }
             } else {
