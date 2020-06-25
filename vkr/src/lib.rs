@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 142
+//! Generated from vk.xml with `VK_HEADER_VERSION` 145
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2768,6 +2768,7 @@ pub struct DeviceExtensions {
     pub ext_line_rasterization: bool,
     pub ext_host_query_reset: bool,
     pub ext_index_type_uint8: bool,
+    pub ext_extended_dynamic_state: bool,
     pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
@@ -3121,6 +3122,18 @@ pub struct Device {
     pub fp_get_deferred_operation_max_concurrency_khr: Option<vk::FnGetDeferredOperationMaxConcurrencyKHR>,
     pub fp_get_deferred_operation_result_khr: Option<vk::FnGetDeferredOperationResultKHR>,
     pub fp_deferred_operation_join_khr: Option<vk::FnDeferredOperationJoinKHR>,
+    pub fp_cmd_set_cull_mode_ext: Option<vk::FnCmdSetCullModeEXT>,
+    pub fp_cmd_set_front_face_ext: Option<vk::FnCmdSetFrontFaceEXT>,
+    pub fp_cmd_set_primitive_topology_ext: Option<vk::FnCmdSetPrimitiveTopologyEXT>,
+    pub fp_cmd_set_viewport_with_count_ext: Option<vk::FnCmdSetViewportWithCountEXT>,
+    pub fp_cmd_set_scissor_with_count_ext: Option<vk::FnCmdSetScissorWithCountEXT>,
+    pub fp_cmd_bind_vertex_buffers2_ext: Option<vk::FnCmdBindVertexBuffers2EXT>,
+    pub fp_cmd_set_depth_test_enable_ext: Option<vk::FnCmdSetDepthTestEnableEXT>,
+    pub fp_cmd_set_depth_write_enable_ext: Option<vk::FnCmdSetDepthWriteEnableEXT>,
+    pub fp_cmd_set_depth_compare_op_ext: Option<vk::FnCmdSetDepthCompareOpEXT>,
+    pub fp_cmd_set_depth_bounds_test_enable_ext: Option<vk::FnCmdSetDepthBoundsTestEnableEXT>,
+    pub fp_cmd_set_stencil_test_enable_ext: Option<vk::FnCmdSetStencilTestEnableEXT>,
+    pub fp_cmd_set_stencil_op_ext: Option<vk::FnCmdSetStencilOpEXT>,
     pub fp_create_private_data_slot_ext: Option<vk::FnCreatePrivateDataSlotEXT>,
     pub fp_destroy_private_data_slot_ext: Option<vk::FnDestroyPrivateDataSlotEXT>,
     pub fp_set_private_data_ext: Option<vk::FnSetPrivateDataEXT>,
@@ -3601,6 +3614,9 @@ impl Device {
     pub fn ext_index_type_uint8_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") }
     }
+    pub fn ext_extended_dynamic_state_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state\0") }
+    }
     pub fn khr_deferred_host_operations_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_deferred_host_operations\0") }
     }
@@ -3824,6 +3840,7 @@ impl Device {
                     b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
+                    b"VK_EXT_extended_dynamic_state" => extensions.ext_extended_dynamic_state = true,
                     b"VK_KHR_deferred_host_operations" => extensions.khr_deferred_host_operations = true,
                     b"VK_KHR_pipeline_executable_properties" => extensions.khr_pipeline_executable_properties = true,
                     b"VK_EXT_shader_demote_to_helper_invocation" => {
@@ -6227,6 +6244,80 @@ impl Device {
             },
             fp_deferred_operation_join_khr: if extensions.khr_deferred_host_operations {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDeferredOperationJoinKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_cull_mode_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCullModeEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_front_face_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetFrontFaceEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_primitive_topology_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPrimitiveTopologyEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_viewport_with_count_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportWithCountEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_scissor_with_count_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetScissorWithCountEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_vertex_buffers2_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindVertexBuffers2EXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_test_enable_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthTestEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_write_enable_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthWriteEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_compare_op_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthCompareOpEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_bounds_test_enable_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetDepthBoundsTestEnableEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_stencil_test_enable_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilTestEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_stencil_op_ext: if extensions.ext_extended_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilOpEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11357,6 +11448,147 @@ impl Device {
             vk::Result::SUCCESS | vk::Result::THREAD_DONE_KHR | vk::Result::THREAD_IDLE_KHR => Ok(err),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_set_cull_mode_ext(&self, command_buffer: vk::CommandBuffer, cull_mode: vk::CullModeFlags) {
+        let fp = self
+            .fp_cmd_set_cull_mode_ext
+            .expect("vkCmdSetCullModeEXT is not loaded");
+        (fp)(Some(command_buffer), cull_mode);
+    }
+    pub unsafe fn cmd_set_front_face_ext(&self, command_buffer: vk::CommandBuffer, front_face: vk::FrontFace) {
+        let fp = self
+            .fp_cmd_set_front_face_ext
+            .expect("vkCmdSetFrontFaceEXT is not loaded");
+        (fp)(Some(command_buffer), front_face);
+    }
+    pub unsafe fn cmd_set_primitive_topology_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        primitive_topology: vk::PrimitiveTopology,
+    ) {
+        let fp = self
+            .fp_cmd_set_primitive_topology_ext
+            .expect("vkCmdSetPrimitiveTopologyEXT is not loaded");
+        (fp)(Some(command_buffer), primitive_topology);
+    }
+    pub unsafe fn cmd_set_viewport_with_count_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_viewports: &[vk::Viewport],
+    ) {
+        let fp = self
+            .fp_cmd_set_viewport_with_count_ext
+            .expect("vkCmdSetViewportWithCountEXT is not loaded");
+        let viewport_count = p_viewports.len() as u32;
+        (fp)(Some(command_buffer), viewport_count, p_viewports.as_ptr());
+    }
+    pub unsafe fn cmd_set_scissor_with_count_ext(&self, command_buffer: vk::CommandBuffer, p_scissors: &[vk::Rect2D]) {
+        let fp = self
+            .fp_cmd_set_scissor_with_count_ext
+            .expect("vkCmdSetScissorWithCountEXT is not loaded");
+        let scissor_count = p_scissors.len() as u32;
+        (fp)(Some(command_buffer), scissor_count, p_scissors.as_ptr());
+    }
+    pub unsafe fn cmd_bind_vertex_buffers2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_binding: u32,
+        p_buffers: &[vk::Buffer],
+        p_offsets: &[vk::DeviceSize],
+        p_sizes: Option<&[vk::DeviceSize]>,
+        p_strides: Option<&[vk::DeviceSize]>,
+    ) {
+        let fp = self
+            .fp_cmd_bind_vertex_buffers2_ext
+            .expect("vkCmdBindVertexBuffers2EXT is not loaded");
+        let binding_count = p_buffers.len() as u32;
+        assert_eq!(binding_count, p_offsets.len() as u32);
+        if let Some(s) = p_sizes {
+            assert_eq!(binding_count, s.len() as u32);
+        }
+        if let Some(s) = p_strides {
+            assert_eq!(binding_count, s.len() as u32);
+        }
+        (fp)(
+            Some(command_buffer),
+            first_binding,
+            binding_count,
+            p_buffers.as_ptr(),
+            p_offsets.as_ptr(),
+            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
+            p_strides.map_or(ptr::null(), |r| r.as_ptr()),
+        );
+    }
+    pub unsafe fn cmd_set_depth_test_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_test_enable: bool) {
+        let fp = self
+            .fp_cmd_set_depth_test_enable_ext
+            .expect("vkCmdSetDepthTestEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_test_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_depth_write_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_write_enable: bool) {
+        let fp = self
+            .fp_cmd_set_depth_write_enable_ext
+            .expect("vkCmdSetDepthWriteEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_write_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_depth_compare_op_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        depth_compare_op: vk::CompareOp,
+    ) {
+        let fp = self
+            .fp_cmd_set_depth_compare_op_ext
+            .expect("vkCmdSetDepthCompareOpEXT is not loaded");
+        (fp)(Some(command_buffer), depth_compare_op);
+    }
+    pub unsafe fn cmd_set_depth_bounds_test_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        depth_bounds_test_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_depth_bounds_test_enable_ext
+            .expect("vkCmdSetDepthBoundsTestEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_bounds_test_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_stencil_test_enable_ext(&self, command_buffer: vk::CommandBuffer, stencil_test_enable: bool) {
+        let fp = self
+            .fp_cmd_set_stencil_test_enable_ext
+            .expect("vkCmdSetStencilTestEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if stencil_test_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_stencil_op_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        face_mask: vk::StencilFaceFlags,
+        fail_op: vk::StencilOp,
+        pass_op: vk::StencilOp,
+        depth_fail_op: vk::StencilOp,
+        compare_op: vk::CompareOp,
+    ) {
+        let fp = self
+            .fp_cmd_set_stencil_op_ext
+            .expect("vkCmdSetStencilOpEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            face_mask,
+            fail_op,
+            pass_op,
+            depth_fail_op,
+            compare_op,
+        );
     }
     pub unsafe fn create_private_data_slot_ext(
         &self,

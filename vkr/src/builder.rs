@@ -14073,6 +14073,36 @@ impl<'a> Deref for PipelineLibraryCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {
+    type Type = PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT,
+}
+impl PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn extended_dynamic_state(mut self, extended_dynamic_state: bool) -> Self {
+        self.inner.extended_dynamic_state = if extended_dynamic_state { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder;
     fn builder() -> Self::Type {

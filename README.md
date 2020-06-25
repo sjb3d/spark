@@ -2,7 +2,7 @@
 
 This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) with convenient syntax.
 
-Supports Vulkan 1.2.142 and all extensions (apart from `GGP` extensions that use unknown data types).
+Supports Vulkan 1.2.145 and all extensions (apart from `GGP` extensions that use unknown data types).
 
 ## Design
 

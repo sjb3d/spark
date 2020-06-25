@@ -10796,6 +10796,30 @@ impl DynamicState {
     pub const EXCLUSIVE_SCISSOR_NV: Self = Self(1000205001);
     /// Added by extension VK_EXT_line_rasterization.
     pub const LINE_STIPPLE_EXT: Self = Self(1000259000);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const CULL_MODE_EXT: Self = Self(1000267000);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const FRONT_FACE_EXT: Self = Self(1000267001);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const PRIMITIVE_TOPOLOGY_EXT: Self = Self(1000267002);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const VIEWPORT_WITH_COUNT_EXT: Self = Self(1000267003);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const SCISSOR_WITH_COUNT_EXT: Self = Self(1000267004);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const VERTEX_INPUT_BINDING_STRIDE_EXT: Self = Self(1000267005);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const DEPTH_TEST_ENABLE_EXT: Self = Self(1000267006);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const DEPTH_WRITE_ENABLE_EXT: Self = Self(1000267007);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const DEPTH_COMPARE_OP_EXT: Self = Self(1000267008);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const DEPTH_BOUNDS_TEST_ENABLE_EXT: Self = Self(1000267009);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const STENCIL_TEST_ENABLE_EXT: Self = Self(1000267010);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const STENCIL_OP_EXT: Self = Self(1000267011);
 }
 impl default::Default for DynamicState {
     fn default() -> Self {
@@ -10821,6 +10845,18 @@ impl fmt::Display for DynamicState {
             1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
             1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
             1000259000 => Some(&"LINE_STIPPLE_EXT"),
+            1000267000 => Some(&"CULL_MODE_EXT"),
+            1000267001 => Some(&"FRONT_FACE_EXT"),
+            1000267002 => Some(&"PRIMITIVE_TOPOLOGY_EXT"),
+            1000267003 => Some(&"VIEWPORT_WITH_COUNT_EXT"),
+            1000267004 => Some(&"SCISSOR_WITH_COUNT_EXT"),
+            1000267005 => Some(&"VERTEX_INPUT_BINDING_STRIDE_EXT"),
+            1000267006 => Some(&"DEPTH_TEST_ENABLE_EXT"),
+            1000267007 => Some(&"DEPTH_WRITE_ENABLE_EXT"),
+            1000267008 => Some(&"DEPTH_COMPARE_OP_EXT"),
+            1000267009 => Some(&"DEPTH_BOUNDS_TEST_ENABLE_EXT"),
+            1000267010 => Some(&"STENCIL_TEST_ENABLE_EXT"),
+            1000267011 => Some(&"STENCIL_OP_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11162,6 +11198,66 @@ impl Format {
     pub const G16_B16_R16_3PLANE_422_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_422_UNORM;
     pub const G16_B16R16_2PLANE_422_UNORM_KHR: Self = Self::G16_B16R16_2PLANE_422_UNORM;
     pub const G16_B16_R16_3PLANE_444_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_444_UNORM;
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_3X3X3_UNORM_BLOCK_EXT: Self = Self(1000288000);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_3X3X3_SRGB_BLOCK_EXT: Self = Self(1000288001);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_3X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288002);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X3X3_UNORM_BLOCK_EXT: Self = Self(1000288003);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X3X3_SRGB_BLOCK_EXT: Self = Self(1000288004);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288005);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X3_UNORM_BLOCK_EXT: Self = Self(1000288006);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X3_SRGB_BLOCK_EXT: Self = Self(1000288007);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X3_SFLOAT_BLOCK_EXT: Self = Self(1000288008);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X4_UNORM_BLOCK_EXT: Self = Self(1000288009);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X4_SRGB_BLOCK_EXT: Self = Self(1000288010);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_4X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288011);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X4X4_UNORM_BLOCK_EXT: Self = Self(1000288012);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X4X4_SRGB_BLOCK_EXT: Self = Self(1000288013);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288014);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X4_UNORM_BLOCK_EXT: Self = Self(1000288015);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X4_SRGB_BLOCK_EXT: Self = Self(1000288016);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X4_SFLOAT_BLOCK_EXT: Self = Self(1000288017);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X5_UNORM_BLOCK_EXT: Self = Self(1000288018);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X5_SRGB_BLOCK_EXT: Self = Self(1000288019);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_5X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288020);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X5X5_UNORM_BLOCK_EXT: Self = Self(1000288021);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X5X5_SRGB_BLOCK_EXT: Self = Self(1000288022);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288023);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X5_UNORM_BLOCK_EXT: Self = Self(1000288024);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X5_SRGB_BLOCK_EXT: Self = Self(1000288025);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X5_SFLOAT_BLOCK_EXT: Self = Self(1000288026);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X6_UNORM_BLOCK_EXT: Self = Self(1000288027);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X6_SRGB_BLOCK_EXT: Self = Self(1000288028);
+    /// Added by extension VK_EXT_extension_289.
+    pub const ASTC_6X6X6_SFLOAT_BLOCK_EXT: Self = Self(1000288029);
 }
 impl default::Default for Format {
     fn default() -> Self {
@@ -11412,6 +11508,36 @@ impl fmt::Display for Format {
             1000066011 => Some(&"ASTC_10X10_SFLOAT_BLOCK_EXT"),
             1000066012 => Some(&"ASTC_12X10_SFLOAT_BLOCK_EXT"),
             1000066013 => Some(&"ASTC_12X12_SFLOAT_BLOCK_EXT"),
+            1000288000 => Some(&"ASTC_3X3X3_UNORM_BLOCK_EXT"),
+            1000288001 => Some(&"ASTC_3X3X3_SRGB_BLOCK_EXT"),
+            1000288002 => Some(&"ASTC_3X3X3_SFLOAT_BLOCK_EXT"),
+            1000288003 => Some(&"ASTC_4X3X3_UNORM_BLOCK_EXT"),
+            1000288004 => Some(&"ASTC_4X3X3_SRGB_BLOCK_EXT"),
+            1000288005 => Some(&"ASTC_4X3X3_SFLOAT_BLOCK_EXT"),
+            1000288006 => Some(&"ASTC_4X4X3_UNORM_BLOCK_EXT"),
+            1000288007 => Some(&"ASTC_4X4X3_SRGB_BLOCK_EXT"),
+            1000288008 => Some(&"ASTC_4X4X3_SFLOAT_BLOCK_EXT"),
+            1000288009 => Some(&"ASTC_4X4X4_UNORM_BLOCK_EXT"),
+            1000288010 => Some(&"ASTC_4X4X4_SRGB_BLOCK_EXT"),
+            1000288011 => Some(&"ASTC_4X4X4_SFLOAT_BLOCK_EXT"),
+            1000288012 => Some(&"ASTC_5X4X4_UNORM_BLOCK_EXT"),
+            1000288013 => Some(&"ASTC_5X4X4_SRGB_BLOCK_EXT"),
+            1000288014 => Some(&"ASTC_5X4X4_SFLOAT_BLOCK_EXT"),
+            1000288015 => Some(&"ASTC_5X5X4_UNORM_BLOCK_EXT"),
+            1000288016 => Some(&"ASTC_5X5X4_SRGB_BLOCK_EXT"),
+            1000288017 => Some(&"ASTC_5X5X4_SFLOAT_BLOCK_EXT"),
+            1000288018 => Some(&"ASTC_5X5X5_UNORM_BLOCK_EXT"),
+            1000288019 => Some(&"ASTC_5X5X5_SRGB_BLOCK_EXT"),
+            1000288020 => Some(&"ASTC_5X5X5_SFLOAT_BLOCK_EXT"),
+            1000288021 => Some(&"ASTC_6X5X5_UNORM_BLOCK_EXT"),
+            1000288022 => Some(&"ASTC_6X5X5_SRGB_BLOCK_EXT"),
+            1000288023 => Some(&"ASTC_6X5X5_SFLOAT_BLOCK_EXT"),
+            1000288024 => Some(&"ASTC_6X6X5_UNORM_BLOCK_EXT"),
+            1000288025 => Some(&"ASTC_6X6X5_SRGB_BLOCK_EXT"),
+            1000288026 => Some(&"ASTC_6X6X5_SFLOAT_BLOCK_EXT"),
+            1000288027 => Some(&"ASTC_6X6X6_UNORM_BLOCK_EXT"),
+            1000288028 => Some(&"ASTC_6X6X6_SRGB_BLOCK_EXT"),
+            1000288029 => Some(&"ASTC_6X6X6_SFLOAT_BLOCK_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12887,6 +13013,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES;
     /// Added by extension VK_EXT_index_type_uint8.
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self(1000265000);
+    /// Added by extension VK_EXT_extended_dynamic_state.
+    pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000267000);
     /// Added by extension VK_KHR_deferred_host_operations.
     pub const DEFERRED_OPERATION_INFO_KHR: Self = Self(1000268000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -13367,6 +13495,7 @@ impl fmt::Display for StructureType {
             1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT"),
             1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
+            1000267000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT"),
             1000268000 => Some(&"DEFERRED_OPERATION_INFO_KHR"),
             1000269000 => Some(&"PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR"),
             1000269001 => Some(&"PIPELINE_INFO_KHR"),
@@ -34497,6 +34626,31 @@ impl fmt::Debug for PipelineLibraryCreateInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedDynamicStateFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub extended_dynamic_state: Bool32,
+}
+impl default::Default for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            extended_dynamic_state: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedDynamicStateFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("extended_dynamic_state", &self.extended_dynamic_state)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderPassTransformBeginInfoQCOM {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -36650,6 +36804,49 @@ pub type FnGetDeferredOperationResultKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
 pub type FnDeferredOperationJoinKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
+pub type FnCmdSetCullModeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, cull_mode: CullModeFlags) -> c_void;
+pub type FnCmdSetFrontFaceEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, front_face: FrontFace) -> c_void;
+pub type FnCmdSetPrimitiveTopologyEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, primitive_topology: PrimitiveTopology) -> c_void;
+pub type FnCmdSetViewportWithCountEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    viewport_count: u32,
+    p_viewports: *const Viewport,
+) -> c_void;
+pub type FnCmdSetScissorWithCountEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    scissor_count: u32,
+    p_scissors: *const Rect2D,
+) -> c_void;
+pub type FnCmdBindVertexBuffers2EXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_binding: u32,
+    binding_count: u32,
+    p_buffers: *const Buffer,
+    p_offsets: *const DeviceSize,
+    p_sizes: *const DeviceSize,
+    p_strides: *const DeviceSize,
+) -> c_void;
+pub type FnCmdSetDepthTestEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_test_enable: Bool32) -> c_void;
+pub type FnCmdSetDepthWriteEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_write_enable: Bool32) -> c_void;
+pub type FnCmdSetDepthCompareOpEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_compare_op: CompareOp) -> c_void;
+pub type FnCmdSetDepthBoundsTestEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_bounds_test_enable: Bool32) -> c_void;
+pub type FnCmdSetStencilTestEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, stencil_test_enable: Bool32) -> c_void;
+pub type FnCmdSetStencilOpEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    face_mask: StencilFaceFlags,
+    fail_op: StencilOp,
+    pass_op: StencilOp,
+    depth_fail_op: StencilOp,
+    compare_op: CompareOp,
+) -> c_void;
 pub type FnCreatePrivateDataSlotEXT = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const PrivateDataSlotCreateInfoEXT,
