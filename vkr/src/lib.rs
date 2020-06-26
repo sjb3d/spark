@@ -7009,7 +7009,6 @@ impl Device {
             .fp_create_graphics_pipelines
             .expect("vkCreateGraphicsPipelines is not loaded");
         let create_info_count = 1;
-        assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
@@ -7108,7 +7107,6 @@ impl Device {
             .fp_create_compute_pipelines
             .expect("vkCreateComputePipelines is not loaded");
         let create_info_count = 1;
-        assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
@@ -8302,7 +8300,6 @@ impl Device {
             .fp_create_shared_swapchains_khr
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
         let swapchain_count = 1;
-        assert_eq!(swapchain_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
@@ -9585,7 +9582,6 @@ impl Device {
             .fp_get_calibrated_timestamps_ext
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = 1;
-        assert_eq!(timestamp_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
@@ -10714,7 +10710,6 @@ impl Device {
             .fp_create_ray_tracing_pipelines_nv
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
         let create_info_count = 1;
-        assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
@@ -10813,7 +10808,6 @@ impl Device {
             .fp_create_ray_tracing_pipelines_khr
             .expect("vkCreateRayTracingPipelinesKHR is not loaded");
         let create_info_count = 1;
-        assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),

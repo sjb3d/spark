@@ -2461,11 +2461,16 @@ impl<'a> Generator<'a> {
                             )?;
                         }
                         LibCommandStyle::Single => {
-                            write!(
-                                w,
-                                "assert_eq!({}, 1); let mut v = MaybeUninit::<_>::uninit(); let v_err = ",
-                                len_expr
-                            )?;
+                            if !params.iter().any(|rparam| {
+                                if let LibParamType::SliceLenShared { .. } = rparam.ty {
+                                    true
+                                } else {
+                                    false
+                                }
+                            }) {
+                                write!(w, "assert_eq!({}, 1);", len_expr)?;
+                            }
+                            write!(w, "let mut v = MaybeUninit::<_>::uninit(); let v_err = ")?;
                         }
                     },
                 }
