@@ -116,7 +116,7 @@ impl Device {
     pub unsafe fn create_compute_pipelines_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::ComputePipelineCreateInfo],
+        p_create_infos: &vk::ComputePipelineCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         /* ... */

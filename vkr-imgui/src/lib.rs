@@ -541,14 +541,8 @@ impl Renderer {
                 .layout(self.pipeline_layout)
                 .render_pass(render_pass);
 
-            unsafe {
-                device.create_graphics_pipelines_single(
-                    None,
-                    slice::from_ref(&pipeline_create_info),
-                    None,
-                )
-            }
-            .unwrap()
+            unsafe { device.create_graphics_pipelines_single(None, &pipeline_create_info, None) }
+                .unwrap()
         };
         self.pipeline.replace(pipeline)
     }

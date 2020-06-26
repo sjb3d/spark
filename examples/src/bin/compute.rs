@@ -154,8 +154,7 @@ fn main() -> Result<(), vkr::LoaderError> {
         layout: Some(pipeline_layout),
         ..Default::default()
     };
-    let pipeline =
-        unsafe { device.create_compute_pipelines_single(None, slice::from_ref(&pipeline_create_info), None) }?;
+    let pipeline = unsafe { device.create_compute_pipelines_single(None, &pipeline_create_info, None) }?;
 
     // create a pool for the descriptor we need
     let descriptor_pool = {

@@ -7002,20 +7002,20 @@ impl Device {
     pub unsafe fn create_graphics_pipelines_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::GraphicsPipelineCreateInfo],
+        p_create_infos: &vk::GraphicsPipelineCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         let fp = self
             .fp_create_graphics_pipelines
             .expect("vkCreateGraphicsPipelines is not loaded");
-        let create_info_count = p_create_infos.len() as u32;
+        let create_info_count = 1;
         assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos,
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -7101,20 +7101,20 @@ impl Device {
     pub unsafe fn create_compute_pipelines_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::ComputePipelineCreateInfo],
+        p_create_infos: &vk::ComputePipelineCreateInfo,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         let fp = self
             .fp_create_compute_pipelines
             .expect("vkCreateComputePipelines is not loaded");
-        let create_info_count = p_create_infos.len() as u32;
+        let create_info_count = 1;
         assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos,
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -8295,19 +8295,19 @@ impl Device {
     }
     pub unsafe fn create_shared_swapchains_khr_single(
         &self,
-        p_create_infos: &[vk::SwapchainCreateInfoKHR],
+        p_create_infos: &vk::SwapchainCreateInfoKHR,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::SwapchainKHR> {
         let fp = self
             .fp_create_shared_swapchains_khr
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
-        let swapchain_count = p_create_infos.len() as u32;
+        let swapchain_count = 1;
         assert_eq!(swapchain_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
-            p_create_infos.as_ptr(),
+            p_create_infos,
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -9578,19 +9578,19 @@ impl Device {
     }
     pub unsafe fn get_calibrated_timestamps_ext_single(
         &self,
-        p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
+        p_timestamp_infos: &vk::CalibratedTimestampInfoEXT,
         p_max_deviation: &mut u64,
     ) -> Result<u64> {
         let fp = self
             .fp_get_calibrated_timestamps_ext
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
-        let timestamp_count = p_timestamp_infos.len() as u32;
+        let timestamp_count = 1;
         assert_eq!(timestamp_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
-            p_timestamp_infos.as_ptr(),
+            p_timestamp_infos,
             v.as_mut_ptr(),
             p_max_deviation,
         );
@@ -10707,20 +10707,20 @@ impl Device {
     pub unsafe fn create_ray_tracing_pipelines_nv_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
+        p_create_infos: &vk::RayTracingPipelineCreateInfoNV,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         let fp = self
             .fp_create_ray_tracing_pipelines_nv
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
-        let create_info_count = p_create_infos.len() as u32;
+        let create_info_count = 1;
         assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos,
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -10806,20 +10806,20 @@ impl Device {
     pub unsafe fn create_ray_tracing_pipelines_khr_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
-        p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
+        p_create_infos: &vk::RayTracingPipelineCreateInfoKHR,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) -> Result<vk::Pipeline> {
         let fp = self
             .fp_create_ray_tracing_pipelines_khr
             .expect("vkCreateRayTracingPipelinesKHR is not loaded");
-        let create_info_count = p_create_infos.len() as u32;
+        let create_info_count = 1;
         assert_eq!(create_info_count, 1);
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos,
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );

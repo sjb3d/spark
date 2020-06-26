@@ -2277,10 +2277,19 @@ impl<'a> Generator<'a> {
                         is_optional,
                     } => {
                         let type_name = slice_type_name(inner_type_name);
-                        if is_optional {
-                            write!(w, "{}: Option<&[{}]>,", rparam.name, type_name)?;
+                        if let LibCommandStyle::Single = style {
+                            // bit of a hack: assume all slices share this length, so can be references
+                            if is_optional {
+                                write!(w, "{}: Option<&{}>,", rparam.name, type_name)?;
+                            } else {
+                                write!(w, "{}: &{},", rparam.name, type_name)?;
+                            }
                         } else {
-                            write!(w, "{}: &[{}],", rparam.name, type_name)?;
+                            if is_optional {
+                                write!(w, "{}: Option<&[{}]>,", rparam.name, type_name)?;
+                            } else {
+                                write!(w, "{}: &[{}],", rparam.name, type_name)?;
+                            }
                         }
                     }
                     LibParamType::Ref {
@@ -2372,28 +2381,29 @@ impl<'a> Generator<'a> {
                     ref slice_infos,
                 } = rparam.ty
                 {
-                    let type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
-                    let first_non_optional = slice_infos.iter().find(|slice_info| !slice_info.is_optional);
-                    if let Some(first_non_optional) = first_non_optional {
+                    if let LibCommandStyle::Single = style {
+                        // bit of a hack: assume this is the result vector length, so set to 1
+                        writeln!(w, "let {} = 1;", name)?;
+                    } else {
+                        let type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
+                        let first_non_optional = slice_infos.iter().find(|slice_info| !slice_info.is_optional).unwrap();
                         writeln!(w, "let {} = {} as {};", name, first_non_optional.get_len(), type_name)?;
-                    }
-                    for slice_info in slice_infos {
-                        if let Some(first_non_optional) = first_non_optional {
+                        for slice_info in slice_infos {
                             if slice_info.name == first_non_optional.name {
                                 continue;
                             }
-                        }
-                        if slice_info.is_optional {
-                            writeln!(
-                                w,
-                                "if let Some(s) = {} {{ assert_eq!({}, {} as {}); }}",
-                                slice_info.name,
-                                name,
-                                slice_len("s", &slice_info.type_name),
-                                type_name
-                            )?;
-                        } else {
-                            writeln!(w, "assert_eq!({}, {} as {});", name, slice_info.get_len(), type_name)?;
+                            if slice_info.is_optional {
+                                writeln!(
+                                    w,
+                                    "if let Some(s) = {} {{ assert_eq!({}, {} as {}); }}",
+                                    slice_info.name,
+                                    name,
+                                    slice_len("s", &slice_info.type_name),
+                                    type_name
+                                )?;
+                            } else {
+                                writeln!(w, "assert_eq!({}, {} as {});", name, slice_info.get_len(), type_name)?;
+                            }
                         }
                     }
                 }
@@ -2493,15 +2503,23 @@ impl<'a> Generator<'a> {
                             is_optional,
                             ref inner_type_name,
                         } => {
-                            if is_optional {
-                                write!(
-                                    w,
-                                    "{}.map_or(ptr::null(), |r| {})",
-                                    rparam.name,
-                                    slice_as_ptr("r", inner_type_name)
-                                )?;
+                            if let LibCommandStyle::Single = style {
+                                if is_optional {
+                                    write!(w, "{}.map_or(ptr::null(), |r| r)", rparam.name)?;
+                                } else {
+                                    write!(w, "{}", rparam.name)?;
+                                }
                             } else {
-                                write!(w, "{}", slice_as_ptr(&rparam.name, inner_type_name))?;
+                                if is_optional {
+                                    write!(
+                                        w,
+                                        "{}.map_or(ptr::null(), |r| {})",
+                                        rparam.name,
+                                        slice_as_ptr("r", inner_type_name)
+                                    )?;
+                                } else {
+                                    write!(w, "{}", slice_as_ptr(&rparam.name, inner_type_name))?;
+                                }
                             }
                         }
                         LibParamType::Ref { is_optional, .. } => {
