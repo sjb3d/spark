@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 145
+//! Generated from vk.xml with `VK_HEADER_VERSION` 146
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -260,6 +260,7 @@ pub struct InstanceExtensions {
     pub khr_surface_protected_capabilities: bool,
     pub ext_validation_features: bool,
     pub ext_headless_surface: bool,
+    pub ext_directfb_surface: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Instance {
@@ -303,6 +304,9 @@ pub struct Instance {
     pub fp_get_physical_device_xlib_presentation_support_khr: Option<vk::FnGetPhysicalDeviceXlibPresentationSupportKHR>,
     pub fp_create_xcb_surface_khr: Option<vk::FnCreateXcbSurfaceKHR>,
     pub fp_get_physical_device_xcb_presentation_support_khr: Option<vk::FnGetPhysicalDeviceXcbPresentationSupportKHR>,
+    pub fp_create_direct_fb_surface_ext: Option<vk::FnCreateDirectFBSurfaceEXT>,
+    pub fp_get_physical_device_direct_fb_presentation_support_ext:
+        Option<vk::FnGetPhysicalDeviceDirectFBPresentationSupportEXT>,
     pub fp_create_image_pipe_surface_fuchsia: Option<vk::FnCreateImagePipeSurfaceFUCHSIA>,
     pub fp_create_debug_report_callback_ext: Option<vk::FnCreateDebugReportCallbackEXT>,
     pub fp_destroy_debug_report_callback_ext: Option<vk::FnDestroyDebugReportCallbackEXT>,
@@ -453,6 +457,9 @@ impl Instance {
     pub fn ext_headless_surface_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
     }
+    pub fn ext_directfb_surface_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_directfb_surface\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         loader: &Loader,
@@ -501,6 +508,7 @@ impl Instance {
                     b"VK_KHR_surface_protected_capabilities" => extensions.khr_surface_protected_capabilities = true,
                     b"VK_EXT_validation_features" => extensions.ext_validation_features = true,
                     b"VK_EXT_headless_surface" => extensions.ext_headless_surface = true,
+                    b"VK_EXT_directfb_surface" => extensions.ext_directfb_surface = true,
                     _ => {}
                 }
             }
@@ -779,6 +787,20 @@ impl Instance {
             fp_get_physical_device_xcb_presentation_support_khr: if extensions.khr_xcb_surface {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceXcbPresentationSupportKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_direct_fb_surface_ext: if extensions.ext_directfb_surface {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateDirectFBSurfaceEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_direct_fb_presentation_support_ext: if extensions.ext_directfb_surface {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceDirectFBPresentationSupportEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -1837,6 +1859,37 @@ impl Instance {
             .expect("vkGetPhysicalDeviceXcbPresentationSupportKHR is not loaded");
         (fp)(Some(physical_device), queue_family_index, connection, visual_id)
     }
+    pub unsafe fn create_direct_fb_surface_ext(
+        &self,
+        p_create_info: &vk::DirectFBSurfaceCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::SurfaceKHR> {
+        let fp = self
+            .fp_create_direct_fb_surface_ext
+            .expect("vkCreateDirectFBSurfaceEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_direct_fb_presentation_support_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        queue_family_index: u32,
+        dfb: &mut vk::IDirectFB,
+    ) -> vk::Bool32 {
+        let fp = self
+            .fp_get_physical_device_direct_fb_presentation_support_ext
+            .expect("vkGetPhysicalDeviceDirectFBPresentationSupportEXT is not loaded");
+        (fp)(Some(physical_device), queue_family_index, dfb)
+    }
     pub unsafe fn create_image_pipe_surface_fuchsia(
         &self,
         p_create_info: &vk::ImagePipeSurfaceCreateInfoFUCHSIA,
@@ -2784,6 +2837,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub ext_fragment_density_map2: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3662,6 +3716,9 @@ impl Device {
     pub fn qcom_render_pass_store_ops_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") }
     }
+    pub fn ext_fragment_density_map2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3858,6 +3915,7 @@ impl Device {
                     b"VK_EXT_pipeline_creation_cache_control" => extensions.ext_pipeline_creation_cache_control = true,
                     b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
                     b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
+                    b"VK_EXT_fragment_density_map2" => extensions.ext_fragment_density_map2 = true,
                     _ => {}
                 }
             }

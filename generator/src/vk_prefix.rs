@@ -90,6 +90,9 @@ pub type xcb_window_t = u32;
 #[allow(non_camel_case_types)]
 pub type xcb_visualid_t = Never;
 
+pub type IDirectFB = Never;
+pub type IDirectFBSurface = Never;
+
 // Android
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;

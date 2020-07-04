@@ -2895,6 +2895,44 @@ impl Deref for XcbSurfaceCreateInfoKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::DirectFBSurfaceCreateInfoEXT {
+    type Type = DirectFBSurfaceCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DirectFBSurfaceCreateInfoEXTBuilder {
+    inner: vk::DirectFBSurfaceCreateInfoEXT,
+}
+impl DirectFBSurfaceCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DirectFBSurfaceCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn dfb(mut self, dfb: *mut vk::IDirectFB) -> Self {
+        self.inner.dfb = dfb;
+        self
+    }
+    pub fn surface(mut self, surface: *mut vk::IDirectFBSurface) -> Self {
+        self.inner.surface = surface;
+        self
+    }
+}
+impl Deref for DirectFBSurfaceCreateInfoEXTBuilder {
+    type Target = vk::DirectFBSurfaceCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::ImagePipeSurfaceCreateInfoFUCHSIA {
     type Type = ImagePipeSurfaceCreateInfoFUCHSIABuilder;
     fn builder() -> Self::Type {
@@ -10802,6 +10840,89 @@ impl DeviceMemoryOverallocationCreateInfoAMDBuilder {
 }
 impl Deref for DeviceMemoryOverallocationCreateInfoAMDBuilder {
     type Target = vk::DeviceMemoryOverallocationCreateInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMapFeaturesEXT {
+    type Type = PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceFragmentDensityMapFeaturesEXT,
+}
+impl PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_density_map(mut self, fragment_density_map: bool) -> Self {
+        self.inner.fragment_density_map = if fragment_density_map { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn fragment_density_map_dynamic(mut self, fragment_density_map_dynamic: bool) -> Self {
+        self.inner.fragment_density_map_dynamic = if fragment_density_map_dynamic {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn fragment_density_map_non_subsampled_images(
+        mut self,
+        fragment_density_map_non_subsampled_images: bool,
+    ) -> Self {
+        self.inner.fragment_density_map_non_subsampled_images = if fragment_density_map_non_subsampled_images {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceFragmentDensityMapFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {
+    type Type = PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT,
+}
+impl PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_density_map_deferred(mut self, fragment_density_map_deferred: bool) -> Self {
+        self.inner.fragment_density_map_deferred = if fragment_density_map_deferred {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

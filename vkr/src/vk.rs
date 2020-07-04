@@ -90,6 +90,9 @@ pub type xcb_window_t = u32;
 #[allow(non_camel_case_types)]
 pub type xcb_visualid_t = Never;
 
+pub type IDirectFB = Never;
+pub type IDirectFBSurface = Never;
+
 // Android
 pub type ANativeWindow = Never;
 pub type AHardwareBuffer = Never;
@@ -2097,6 +2100,10 @@ impl BufferUsageFlags {
     /// Added by extension VK_KHR_ray_tracing.
     pub const RAY_TRACING_KHR: Self = Self(0x400);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
+    /// Added by extension VK_NV_extension_168.
+    pub const RESERVED_19_KHR: Self = Self(0x80000);
+    /// Added by extension VK_NV_extension_168.
+    pub const RESERVED_20_KHR: Self = Self(0x100000);
     /// Added by extension VK_QCOM_extension_173.
     pub const RESERVED_18_QCOM: Self = Self(0x40000);
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
@@ -2112,13 +2119,13 @@ impl BufferUsageFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7ffff)
+        Self(0x1fffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7ffff
+        self.0 == 0x1fffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2183,6 +2190,8 @@ impl fmt::Display for BufferUsageFlags {
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "RAY_TRACING_KHR"),
+                (0x80000, "RESERVED_19_KHR"),
+                (0x100000, "RESERVED_20_KHR"),
                 (0x40000, "RESERVED_18_QCOM"),
             ],
             f,
@@ -2650,8 +2659,8 @@ pub struct ImageViewCreateFlags(u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
-    /// Added by extension VK_EXT_extension_333.
-    pub const RESERVED_1_EXT: Self = Self(0x2);
+    /// Added by extension VK_EXT_fragment_density_map2.
+    pub const FRAGMENT_DENSITY_MAP_DEFERRED_EXT: Self = Self(0x2);
 }
 impl default::Default for ImageViewCreateFlags {
     fn default() -> Self {
@@ -2715,7 +2724,10 @@ impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
-            &[(0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT"), (0x2, "RESERVED_1_EXT")],
+            &[
+                (0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT"),
+                (0x2, "FRAGMENT_DENSITY_MAP_DEFERRED_EXT"),
+            ],
             f,
         )
     }
@@ -7039,6 +7051,73 @@ impl ops::BitXorAssign for XcbSurfaceCreateFlagsKHR {
     }
 }
 impl fmt::Display for XcbSurfaceCreateFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct DirectFBSurfaceCreateFlagsEXT(u32);
+impl DirectFBSurfaceCreateFlagsEXT {}
+impl default::Default for DirectFBSurfaceCreateFlagsEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl DirectFBSurfaceCreateFlagsEXT {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for DirectFBSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for DirectFBSurfaceCreateFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for DirectFBSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for DirectFBSurfaceCreateFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for DirectFBSurfaceCreateFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for DirectFBSurfaceCreateFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("0")
     }
@@ -13081,6 +13160,12 @@ impl StructureType {
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
+    /// Added by extension VK_EXT_fragment_density_map2.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT: Self = Self(1000332000);
+    /// Added by extension VK_EXT_fragment_density_map2.
+    pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT: Self = Self(1000332001);
+    /// Added by extension VK_EXT_directfb_surface.
+    pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -13529,6 +13614,9 @@ impl fmt::Display for StructureType {
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000309000 => Some(&"RESERVED_QCOM"),
+            1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
+            1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
+            1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -20781,6 +20869,37 @@ impl fmt::Debug for XcbSurfaceCreateInfoKHR {
             .field("flags", &self.flags)
             .field("connection", &self.connection)
             .field("window", &self.window)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DirectFBSurfaceCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: DirectFBSurfaceCreateFlagsEXT,
+    pub dfb: *mut IDirectFB,
+    pub surface: *mut IDirectFBSurface,
+}
+impl default::Default for DirectFBSurfaceCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DIRECTFB_SURFACE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: DirectFBSurfaceCreateFlagsEXT::default(),
+            dfb: ptr::null_mut(),
+            surface: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DirectFBSurfaceCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DirectFBSurfaceCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("dfb", &self.dfb)
+            .field("surface", &self.surface)
             .finish()
     }
 }
@@ -30811,6 +30930,31 @@ impl fmt::Debug for PhysicalDeviceFragmentDensityMapFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMap2FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub fragment_density_map_deferred: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            fragment_density_map_deferred: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMap2FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_density_map_deferred", &self.fragment_density_map_deferred)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -30837,6 +30981,46 @@ impl fmt::Debug for PhysicalDeviceFragmentDensityMapPropertiesEXT {
             .field("min_fragment_density_texel_size", &self.min_fragment_density_texel_size)
             .field("max_fragment_density_texel_size", &self.max_fragment_density_texel_size)
             .field("fragment_density_invocations", &self.fragment_density_invocations)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentDensityMap2PropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub subsampled_loads: Bool32,
+    pub subsampled_coarse_reconstruction_early_access: Bool32,
+    pub max_subsampled_array_layers: u32,
+    pub max_descriptor_set_subsampled_samplers: u32,
+}
+impl default::Default for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            subsampled_loads: Bool32::default(),
+            subsampled_coarse_reconstruction_early_access: Bool32::default(),
+            max_subsampled_array_layers: u32::default(),
+            max_descriptor_set_subsampled_samplers: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentDensityMap2PropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subsampled_loads", &self.subsampled_loads)
+            .field(
+                "subsampled_coarse_reconstruction_early_access",
+                &self.subsampled_coarse_reconstruction_early_access,
+            )
+            .field("max_subsampled_array_layers", &self.max_subsampled_array_layers)
+            .field(
+                "max_descriptor_set_subsampled_samplers",
+                &self.max_descriptor_set_subsampled_samplers,
+            )
             .finish()
     }
 }
@@ -35742,6 +35926,17 @@ pub type FnGetPhysicalDeviceXcbPresentationSupportKHR = unsafe extern "system" f
     queue_family_index: u32,
     connection: *mut xcb_connection_t,
     visual_id: xcb_visualid_t,
+) -> Bool32;
+pub type FnCreateDirectFBSurfaceEXT = unsafe extern "system" fn(
+    instance: Option<Instance>,
+    p_create_info: *const DirectFBSurfaceCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_surface: *mut SurfaceKHR,
+) -> Result;
+pub type FnGetPhysicalDeviceDirectFBPresentationSupportEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    queue_family_index: u32,
+    dfb: *mut IDirectFB,
 ) -> Bool32;
 pub type FnCreateImagePipeSurfaceFUCHSIA = unsafe extern "system" fn(
     instance: Option<Instance>,
