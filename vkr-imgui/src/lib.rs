@@ -40,9 +40,11 @@ fn align_up(x: u32, alignment: u32) -> u32 {
 }
 
 pub struct Renderer {
+    descriptor_set_layout: vk::DescriptorSetLayout,
     pipeline_layout: vk::PipelineLayout,
     vertex_shader: vk::ShaderModule,
     fragment_shader: vk::ShaderModule,
+    linear_sampler: vk::Sampler,
     pipeline: Option<vk::Pipeline>,
     vertex_buffers: [vk::Buffer; Renderer::FRAME_COUNT],
     vertex_mem_offsets: [usize; Renderer::FRAME_COUNT],
@@ -54,7 +56,9 @@ pub struct Renderer {
     image_width: u32,
     image_height: u32,
     image: vk::Image,
-    _local_mem: vk::DeviceMemory,
+    image_view: vk::ImageView,
+    local_mem: vk::DeviceMemory,
+    descriptor_pool: vk::DescriptorPool,
     descriptor_set: vk::DescriptorSet,
     atom_size: u32,
     frame_index: usize,
@@ -77,7 +81,7 @@ impl Renderer {
         let vertex_shader = load_shader_module(device, include_bytes!("imgui.vert.spv"));
         let fragment_shader = load_shader_module(device, include_bytes!("imgui.frag.spv"));
 
-        let sampler = {
+        let linear_sampler = {
             let sampler_create_info = vk::SamplerCreateInfo {
                 mag_filter: vk::Filter::LINEAR,
                 min_filter: vk::Filter::LINEAR,
@@ -91,7 +95,7 @@ impl Renderer {
                 .descriptor_type(vk::DescriptorType::COMBINED_IMAGE_SAMPLER)
                 .descriptor_count(1)
                 .stage_flags(vk::ShaderStageFlags::FRAGMENT)
-                .p_immutable_samplers(slice::from_ref(&sampler));
+                .p_immutable_samplers(slice::from_ref(&linear_sampler));
             let descriptor_set_layout_create_info =
                 vk::DescriptorSetLayoutCreateInfo::builder().p_bindings(slice::from_ref(&binding));
             unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }
@@ -293,7 +297,7 @@ impl Renderer {
 
         {
             let image_info = vk::DescriptorImageInfo {
-                sampler: Some(sampler),
+                sampler: Some(linear_sampler),
                 image_view: Some(image_view),
                 image_layout: vk::ImageLayout::SHADER_READ_ONLY_OPTIMAL,
             };
@@ -326,9 +330,11 @@ impl Renderer {
         }
 
         Self {
+            descriptor_set_layout,
             pipeline_layout,
             vertex_shader,
             fragment_shader,
+            linear_sampler,
             pipeline: None,
             vertex_buffers,
             vertex_mem_offsets,
@@ -340,11 +346,42 @@ impl Renderer {
             image_width: texture.width,
             image_height: texture.height,
             image,
-            _local_mem: local_mem,
+            image_view,
+            local_mem,
+            descriptor_pool,
             descriptor_set,
             atom_size,
             frame_index: 0,
             image_needs_copy: true,
+        }
+    }
+
+    pub fn delete(self, device: &Device) {
+        unsafe {
+            device.destroy_descriptor_pool(Some(self.descriptor_pool), None);
+
+            device.destroy_image_view(Some(self.image_view), None);
+            device.destroy_image(Some(self.image), None);
+            device.free_memory(Some(self.local_mem), None);
+
+            for buffer in self
+                .index_buffers
+                .iter()
+                .chain(self.vertex_buffers.iter())
+                .chain(slice::from_ref(&self.image_buffer).iter())
+            {
+                device.destroy_buffer(Some(*buffer), None);
+            }
+            device.unmap_memory(self.host_mem);
+            device.free_memory(Some(self.host_mem), None);
+
+            device.destroy_pipeline(self.pipeline, None);
+            device.destroy_pipeline_layout(Some(self.pipeline_layout), None);
+            device.destroy_descriptor_set_layout(Some(self.descriptor_set_layout), None);
+
+            device.destroy_sampler(Some(self.linear_sampler), None);
+            device.destroy_shader_module(Some(self.vertex_shader), None);
+            device.destroy_shader_module(Some(self.fragment_shader), None);
         }
     }
 
