@@ -252,6 +252,11 @@ impl<'a> CommandRefPair<'a> {
     fn is_core_vulkan_1_0(&self) -> bool {
         self.primary == CommandRef::Feature(Version::from_raw_parts(1, 0)) && self.secondary.is_none()
     }
+
+    fn matches(&self, other: &CommandRefPair<'a>) -> bool {
+        (self.primary == other.primary && self.secondary == other.secondary)
+            || (Some(self.primary) == other.secondary && self.secondary == Some(other.primary))
+    }
 }
 
 #[derive(Debug)]
@@ -739,10 +744,13 @@ impl<'a> Generator<'a> {
                                 info.category = info.category.or(ext_category);
                                 assert_eq!(info.category, ext_category);
 
-                                info.refs.push(CommandRefPair {
+                                let ref_pair = CommandRefPair {
                                     primary: CommandRef::Extension(ext.name.as_str()),
                                     secondary: cmd_ref,
-                                });
+                                };
+                                if !info.refs.iter().any(|p| p.matches(&ref_pair)) {
+                                    info.refs.push(ref_pair);
+                                }
                             }
                         }
                     }
@@ -2826,10 +2834,14 @@ impl<'a> Generator<'a> {
                     writeln!(w, "if ")?;
                     let mut is_first = true;
                     for cmd_ref_pair in info.refs.iter() {
+                        let want_brackets = (info.refs.len() > 1) && cmd_ref_pair.secondary.is_some();
                         if is_first {
                             is_first = false;
                         } else {
                             write!(w, " || ")?;
+                        }
+                        if want_brackets {
+                            write!(w, "(")?;
                         }
                         self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
                         if let CommandRef::Extension(_) = cmd_ref_pair.primary {
@@ -2838,6 +2850,9 @@ impl<'a> Generator<'a> {
                         if let Some(secondary) = cmd_ref_pair.secondary {
                             write!(w, " && ")?;
                             self.write_command_ref_condition(category, secondary, w)?;
+                        }
+                        if want_brackets {
+                            write!(w, ")")?;
                         }
                     }
                 }

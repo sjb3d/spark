@@ -5104,9 +5104,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_group_present_capabilities_khr: if extensions.khr_swapchain
-                && version >= vk::Version::from_raw_parts(1, 1, 0)
-                || extensions.khr_device_group && instance.extensions.khr_surface
+            fp_get_device_group_present_capabilities_khr: if (extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0))
+                || (extensions.khr_device_group && instance.extensions.khr_surface)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceGroupPresentCapabilitiesKHR\0",
@@ -5115,9 +5115,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_group_surface_present_modes_khr: if extensions.khr_swapchain
-                && version >= vk::Version::from_raw_parts(1, 1, 0)
-                || extensions.khr_device_group && instance.extensions.khr_surface
+            fp_get_device_group_surface_present_modes_khr: if (extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0))
+                || (extensions.khr_device_group && instance.extensions.khr_surface)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceGroupSurfacePresentModesKHR\0",
@@ -5126,8 +5126,8 @@ impl Device {
             } else {
                 None
             },
-            fp_acquire_next_image2_khr: if extensions.khr_swapchain && version >= vk::Version::from_raw_parts(1, 1, 0)
-                || extensions.khr_device_group && extensions.khr_swapchain
+            fp_acquire_next_image2_khr: if (extensions.khr_swapchain && version >= vk::Version::from_raw_parts(1, 1, 0))
+                || (extensions.khr_device_group && extensions.khr_swapchain)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireNextImage2KHR\0"));
                 fp.map(|f| mem::transmute(f))
@@ -5149,9 +5149,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_physical_device_present_rectangles_khr: if extensions.khr_swapchain
-                && version >= vk::Version::from_raw_parts(1, 1, 0)
-                || extensions.khr_device_group && instance.extensions.khr_surface
+            fp_get_physical_device_present_rectangles_khr: if (extensions.khr_swapchain
+                && version >= vk::Version::from_raw_parts(1, 1, 0))
+                || (extensions.khr_device_group && instance.extensions.khr_surface)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDevicePresentRectanglesKHR\0",
@@ -5223,10 +5223,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_push_descriptor_set_with_template_khr: if extensions.khr_push_descriptor
-                && version >= vk::Version::from_raw_parts(1, 1, 0)
-                || extensions.khr_push_descriptor && extensions.khr_descriptor_update_template
-                || extensions.khr_descriptor_update_template && extensions.khr_push_descriptor
+            fp_cmd_push_descriptor_set_with_template_khr: if (extensions.khr_push_descriptor
+                && version >= vk::Version::from_raw_parts(1, 1, 0))
+                || (extensions.khr_push_descriptor && extensions.khr_descriptor_update_template)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdPushDescriptorSetWithTemplateKHR\0",
@@ -5988,9 +5987,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_device_group_surface_present_modes2_ext: if extensions.ext_full_screen_exclusive
-                && extensions.khr_device_group
-                || extensions.ext_full_screen_exclusive && version >= vk::Version::from_raw_parts(1, 1, 0)
+            fp_get_device_group_surface_present_modes2_ext: if (extensions.ext_full_screen_exclusive
+                && extensions.khr_device_group)
+                || (extensions.ext_full_screen_exclusive && version >= vk::Version::from_raw_parts(1, 1, 0))
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceGroupSurfacePresentModes2EXT\0",
