@@ -8217,6 +8217,7 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub const OPAQUE_WIN32: Self = Self(0x2);
     pub const OPAQUE_WIN32_KMT: Self = Self(0x4);
     pub const D3D12_FENCE: Self = Self(0x8);
+    pub const D3D11_FENCE: Self = Self::D3D12_FENCE;
     pub const SYNC_FD: Self = Self(0x10);
     pub const OPAQUE_FD_KHR: Self = Self::OPAQUE_FD;
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
@@ -13089,6 +13090,8 @@ impl StructureType {
     pub const PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT: Self = Self(1000259001);
     /// Added by extension VK_EXT_line_rasterization.
     pub const PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT: Self = Self(1000259002);
+    /// Added by extension VK_EXT_shader_atomic_float.
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT: Self = Self(1000260000);
     pub const PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES_EXT: Self = Self::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES;
     /// Added by extension VK_EXT_index_type_uint8.
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self(1000265000);
@@ -13164,6 +13167,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT: Self = Self(1000332000);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT: Self = Self(1000332001);
+    /// Added by extension VK_EXT_image_robustness.
+    pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000335000);
     /// Added by extension VK_EXT_directfb_surface.
     pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
 }
@@ -13579,6 +13584,7 @@ impl fmt::Display for StructureType {
             1000259000 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT"),
             1000259001 => Some(&"PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT"),
             1000259002 => Some(&"PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT"),
+            1000260000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
             1000267000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT"),
             1000268000 => Some(&"DEFERRED_OPERATION_INFO_KHR"),
@@ -13616,6 +13622,7 @@ impl fmt::Display for StructureType {
             1000309000 => Some(&"RESERVED_QCOM"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
+            1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             _ => None,
         };
@@ -15618,6 +15625,8 @@ impl DriverId {
     pub const BROADCOM_PROPRIETARY: Self = Self(12);
     /// Mesa
     pub const MESA_LLVMPIPE: Self = Self(13);
+    /// MoltenVK
+    pub const MOLTENVK: Self = Self(14);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -15652,6 +15661,7 @@ impl fmt::Display for DriverId {
             11 => Some(&"GGP_PROPRIETARY"),
             12 => Some(&"BROADCOM_PROPRIETARY"),
             13 => Some(&"MESA_LLVMPIPE"),
+            14 => Some(&"MOLTENVK"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29021,6 +29031,76 @@ impl fmt::Debug for PhysicalDeviceShaderAtomicInt64Features {
 pub type PhysicalDeviceShaderAtomicInt64FeaturesKHR = PhysicalDeviceShaderAtomicInt64Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAtomicFloatFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_buffer_float32_atomics: Bool32,
+    pub shader_buffer_float32_atomic_add: Bool32,
+    pub shader_buffer_float64_atomics: Bool32,
+    pub shader_buffer_float64_atomic_add: Bool32,
+    pub shader_shared_float32_atomics: Bool32,
+    pub shader_shared_float32_atomic_add: Bool32,
+    pub shader_shared_float64_atomics: Bool32,
+    pub shader_shared_float64_atomic_add: Bool32,
+    pub shader_image_float32_atomics: Bool32,
+    pub shader_image_float32_atomic_add: Bool32,
+    pub sparse_image_float32_atomics: Bool32,
+    pub sparse_image_float32_atomic_add: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_buffer_float32_atomics: Bool32::default(),
+            shader_buffer_float32_atomic_add: Bool32::default(),
+            shader_buffer_float64_atomics: Bool32::default(),
+            shader_buffer_float64_atomic_add: Bool32::default(),
+            shader_shared_float32_atomics: Bool32::default(),
+            shader_shared_float32_atomic_add: Bool32::default(),
+            shader_shared_float64_atomics: Bool32::default(),
+            shader_shared_float64_atomic_add: Bool32::default(),
+            shader_image_float32_atomics: Bool32::default(),
+            shader_image_float32_atomic_add: Bool32::default(),
+            sparse_image_float32_atomics: Bool32::default(),
+            sparse_image_float32_atomic_add: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAtomicFloatFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_buffer_float32_atomics", &self.shader_buffer_float32_atomics)
+            .field(
+                "shader_buffer_float32_atomic_add",
+                &self.shader_buffer_float32_atomic_add,
+            )
+            .field("shader_buffer_float64_atomics", &self.shader_buffer_float64_atomics)
+            .field(
+                "shader_buffer_float64_atomic_add",
+                &self.shader_buffer_float64_atomic_add,
+            )
+            .field("shader_shared_float32_atomics", &self.shader_shared_float32_atomics)
+            .field(
+                "shader_shared_float32_atomic_add",
+                &self.shader_shared_float32_atomic_add,
+            )
+            .field("shader_shared_float64_atomics", &self.shader_shared_float64_atomics)
+            .field(
+                "shader_shared_float64_atomic_add",
+                &self.shader_shared_float64_atomic_add,
+            )
+            .field("shader_image_float32_atomics", &self.shader_image_float32_atomics)
+            .field("shader_image_float32_atomic_add", &self.shader_image_float32_atomic_add)
+            .field("sparse_image_float32_atomics", &self.sparse_image_float32_atomics)
+            .field("sparse_image_float32_atomic_add", &self.sparse_image_float32_atomic_add)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -35000,6 +35080,31 @@ impl fmt::Debug for PhysicalDeviceRobustness2PropertiesEXT {
                 "robust_uniform_buffer_access_size_alignment",
                 &self.robust_uniform_buffer_access_size_alignment,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageRobustnessFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub robust_image_access: Bool32,
+}
+impl default::Default for PhysicalDeviceImageRobustnessFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            robust_image_access: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageRobustnessFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageRobustnessFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("robust_image_access", &self.robust_image_access)
             .finish()
     }
 }

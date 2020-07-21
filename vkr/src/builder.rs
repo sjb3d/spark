@@ -9248,6 +9248,128 @@ impl Deref for PhysicalDeviceShaderAtomicInt64FeaturesBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {
+    type Type = PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT,
+}
+impl PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_buffer_float32_atomics(mut self, shader_buffer_float32_atomics: bool) -> Self {
+        self.inner.shader_buffer_float32_atomics = if shader_buffer_float32_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float32_atomic_add(mut self, shader_buffer_float32_atomic_add: bool) -> Self {
+        self.inner.shader_buffer_float32_atomic_add = if shader_buffer_float32_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float64_atomics(mut self, shader_buffer_float64_atomics: bool) -> Self {
+        self.inner.shader_buffer_float64_atomics = if shader_buffer_float64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float64_atomic_add(mut self, shader_buffer_float64_atomic_add: bool) -> Self {
+        self.inner.shader_buffer_float64_atomic_add = if shader_buffer_float64_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float32_atomics(mut self, shader_shared_float32_atomics: bool) -> Self {
+        self.inner.shader_shared_float32_atomics = if shader_shared_float32_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float32_atomic_add(mut self, shader_shared_float32_atomic_add: bool) -> Self {
+        self.inner.shader_shared_float32_atomic_add = if shader_shared_float32_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float64_atomics(mut self, shader_shared_float64_atomics: bool) -> Self {
+        self.inner.shader_shared_float64_atomics = if shader_shared_float64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float64_atomic_add(mut self, shader_shared_float64_atomic_add: bool) -> Self {
+        self.inner.shader_shared_float64_atomic_add = if shader_shared_float64_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_image_float32_atomics(mut self, shader_image_float32_atomics: bool) -> Self {
+        self.inner.shader_image_float32_atomics = if shader_image_float32_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_image_float32_atomic_add(mut self, shader_image_float32_atomic_add: bool) -> Self {
+        self.inner.shader_image_float32_atomic_add = if shader_image_float32_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sparse_image_float32_atomics(mut self, sparse_image_float32_atomics: bool) -> Self {
+        self.inner.sparse_image_float32_atomics = if sparse_image_float32_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sparse_image_float32_atomic_add(mut self, sparse_image_float32_atomic_add: bool) -> Self {
+        self.inner.sparse_image_float32_atomic_add = if sparse_image_float32_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -14382,6 +14504,36 @@ impl PhysicalDeviceRobustness2FeaturesEXTBuilder {
 }
 impl Deref for PhysicalDeviceRobustness2FeaturesEXTBuilder {
     type Target = vk::PhysicalDeviceRobustness2FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceImageRobustnessFeaturesEXT {
+    type Type = PhysicalDeviceImageRobustnessFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageRobustnessFeaturesEXT,
+}
+impl PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn robust_image_access(mut self, robust_image_access: bool) -> Self {
+        self.inner.robust_image_access = if robust_image_access { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageRobustnessFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

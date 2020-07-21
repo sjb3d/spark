@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 146
+//! Generated from vk.xml with `VK_HEADER_VERSION` 148
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2819,6 +2819,7 @@ pub struct DeviceExtensions {
     pub ext_full_screen_exclusive: bool,
     pub khr_buffer_device_address: bool,
     pub ext_line_rasterization: bool,
+    pub ext_shader_atomic_float: bool,
     pub ext_host_query_reset: bool,
     pub ext_index_type_uint8: bool,
     pub ext_extended_dynamic_state: bool,
@@ -2838,6 +2839,7 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub ext_fragment_density_map2: bool,
+    pub ext_image_robustness: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3662,6 +3664,9 @@ impl Device {
     pub fn ext_line_rasterization_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_line_rasterization\0") }
     }
+    pub fn ext_shader_atomic_float_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float\0") }
+    }
     pub fn ext_host_query_reset_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
     }
@@ -3718,6 +3723,9 @@ impl Device {
     }
     pub fn ext_fragment_density_map2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") }
+    }
+    pub fn ext_image_robustness_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") }
     }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
@@ -3895,6 +3903,7 @@ impl Device {
                     b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
                     b"VK_KHR_buffer_device_address" => extensions.khr_buffer_device_address = true,
                     b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
+                    b"VK_EXT_shader_atomic_float" => extensions.ext_shader_atomic_float = true,
                     b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
                     b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
                     b"VK_EXT_extended_dynamic_state" => extensions.ext_extended_dynamic_state = true,
@@ -3916,6 +3925,7 @@ impl Device {
                     b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
                     b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
                     b"VK_EXT_fragment_density_map2" => extensions.ext_fragment_density_map2 = true,
+                    b"VK_EXT_image_robustness" => extensions.ext_image_robustness = true,
                     _ => {}
                 }
             }
