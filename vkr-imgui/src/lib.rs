@@ -39,6 +39,11 @@ fn align_up(x: u32, alignment: u32) -> u32 {
     (x + alignment - 1) & !(alignment - 1)
 }
 
+#[repr(C)]
+struct BatchData {
+    dims_rcp: (f32, f32),
+}
+
 pub struct Renderer {
     descriptor_set_layout: vk::DescriptorSetLayout,
     pipeline_layout: vk::PipelineLayout,
@@ -69,7 +74,6 @@ impl Renderer {
     const QUAD_COUNT_PER_FRAME: usize = 64 * 1024;
     const VERTEX_COUNT_PER_FRAME: usize = 4 * Renderer::QUAD_COUNT_PER_FRAME;
     const INDEX_COUNT_PER_FRAME: usize = 6 * Renderer::QUAD_COUNT_PER_FRAME;
-    const PUSH_CONSTANT_SIZE: usize = 8;
     const FRAME_COUNT: usize = 2;
 
     pub fn new(
@@ -106,7 +110,7 @@ impl Renderer {
             let push_constant_range = vk::PushConstantRange {
                 stage_flags: vk::ShaderStageFlags::VERTEX,
                 offset: 0,
-                size: Renderer::PUSH_CONSTANT_SIZE as u32,
+                size: mem::size_of::<BatchData>() as u32,
             };
             let pipeline_layout_create_info = vk::PipelineLayoutCreateInfo::builder()
                 .p_set_layouts(slice::from_ref(&descriptor_set_layout))
@@ -615,15 +619,16 @@ impl Renderer {
                 );
             }
 
-            let dims_rcp = [1.0 / width, 1.0 / height];
-            assert_eq!(mem::size_of_val(&dims_rcp), Renderer::PUSH_CONSTANT_SIZE);
+            let batch_data = BatchData {
+                dims_rcp: (1.0 / width, 1.0 / height),
+            };
             unsafe {
                 device.cmd_push_constants(
                     command_buffer,
                     self.pipeline_layout,
                     vk::ShaderStageFlags::VERTEX,
                     0,
-                    &dims_rcp,
+                    slice::from_ref(&batch_data),
                 )
             };
 
