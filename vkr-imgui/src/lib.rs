@@ -342,7 +342,7 @@ impl Renderer {
         }
     }
 
-    pub fn delete(self, device: &Device) {
+    pub fn delete(&mut self, device: &Device) {
         unsafe {
             device.destroy_descriptor_pool(Some(self.descriptor_pool), None);
 
