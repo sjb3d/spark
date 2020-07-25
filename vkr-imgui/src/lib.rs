@@ -482,6 +482,7 @@ impl Renderer {
         &mut self,
         device: &Device,
         render_pass: vk::RenderPass,
+        samples: vk::SampleCountFlags,
     ) -> Option<vk::Pipeline> {
         let pipeline = {
             let shader_entry_name = CStr::from_bytes_with_nul(b"main\0").unwrap();
@@ -549,7 +550,7 @@ impl Renderer {
                 ..Default::default()
             };
             let multisample_state_create_info = vk::PipelineMultisampleStateCreateInfo {
-                rasterization_samples: vk::SampleCountFlags::N1,
+                rasterization_samples: samples,
                 ..Default::default()
             };
 
