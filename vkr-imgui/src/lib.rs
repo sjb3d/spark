@@ -51,10 +51,10 @@ pub struct Renderer {
     fragment_shader: vk::ShaderModule,
     linear_sampler: vk::Sampler,
     pipeline: Option<vk::Pipeline>,
-    vertex_buffers: [vk::Buffer; Renderer::FRAME_COUNT],
-    vertex_mem_offsets: [usize; Renderer::FRAME_COUNT],
-    index_buffers: [vk::Buffer; Renderer::FRAME_COUNT],
-    index_mem_offsets: [usize; Renderer::FRAME_COUNT],
+    vertex_buffers: [vk::Buffer; Self::FRAME_COUNT],
+    vertex_mem_offsets: [usize; Self::FRAME_COUNT],
+    index_buffers: [vk::Buffer; Self::FRAME_COUNT],
+    index_mem_offsets: [usize; Self::FRAME_COUNT],
     image_buffer: vk::Buffer,
     host_mem: vk::DeviceMemory,
     host_mapping: *mut c_void,
@@ -72,8 +72,8 @@ pub struct Renderer {
 
 impl Renderer {
     const QUAD_COUNT_PER_FRAME: usize = 64 * 1024;
-    const VERTEX_COUNT_PER_FRAME: usize = 4 * Renderer::QUAD_COUNT_PER_FRAME;
-    const INDEX_COUNT_PER_FRAME: usize = 6 * Renderer::QUAD_COUNT_PER_FRAME;
+    const VERTEX_COUNT_PER_FRAME: usize = 4 * Self::QUAD_COUNT_PER_FRAME;
+    const INDEX_COUNT_PER_FRAME: usize = 6 * Self::QUAD_COUNT_PER_FRAME;
     const FRAME_COUNT: usize = 2;
 
     pub fn new(
@@ -123,14 +123,14 @@ impl Renderer {
 
         let (vertex_buffers, vertex_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Renderer::VERTEX_COUNT_PER_FRAME * mem::size_of::<DrawVert>())
+                size: (Self::VERTEX_COUNT_PER_FRAME * mem::size_of::<DrawVert>())
                     as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::VERTEX_BUFFER,
                 ..Default::default()
             };
-            let mut buffers = ArrayVec::<[vk::Buffer; Renderer::FRAME_COUNT]>::new();
-            let mut mem_offsets = ArrayVec::<[usize; Renderer::FRAME_COUNT]>::new();
-            for _i in 0..Renderer::FRAME_COUNT {
+            let mut buffers = ArrayVec::<[vk::Buffer; Self::FRAME_COUNT]>::new();
+            let mut mem_offsets = ArrayVec::<[usize; Self::FRAME_COUNT]>::new();
+            for _i in 0..Self::FRAME_COUNT {
                 let buffer = unsafe { device.create_buffer(&buffer_create_info, None) }.unwrap();
                 let mem_req = unsafe { device.get_buffer_memory_requirements(buffer) };
                 assert_eq!(mem_req.size, buffer_create_info.size);
@@ -148,14 +148,14 @@ impl Renderer {
 
         let (index_buffers, index_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Renderer::INDEX_COUNT_PER_FRAME * mem::size_of::<DrawIdx>())
+                size: (Self::INDEX_COUNT_PER_FRAME * mem::size_of::<DrawIdx>())
                     as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::INDEX_BUFFER,
                 ..Default::default()
             };
-            let mut buffers = ArrayVec::<[vk::Buffer; Renderer::FRAME_COUNT]>::new();
-            let mut mem_offsets = ArrayVec::<[usize; Renderer::FRAME_COUNT]>::new();
-            for _i in 0..Renderer::FRAME_COUNT {
+            let mut buffers = ArrayVec::<[vk::Buffer; Self::FRAME_COUNT]>::new();
+            let mut mem_offsets = ArrayVec::<[usize; Self::FRAME_COUNT]>::new();
+            for _i in 0..Self::FRAME_COUNT {
                 let buffer = unsafe { device.create_buffer(&buffer_create_info, None) }.unwrap();
                 let mem_req = unsafe { device.get_buffer_memory_requirements(buffer) };
                 assert_eq!(mem_req.size, buffer_create_info.size);
@@ -390,7 +390,7 @@ impl Renderer {
     }
 
     pub fn begin_frame(&mut self, device: &Device, command_buffer: vk::CommandBuffer) {
-        self.frame_index = (1 + self.frame_index) % Renderer::FRAME_COUNT;
+        self.frame_index = (1 + self.frame_index) % Self::FRAME_COUNT;
 
         if self.image_needs_copy {
             let transfer_from_undef = vk::ImageMemoryBarrier {
@@ -668,8 +668,8 @@ impl Renderer {
                 let idx_buffer = draw_list.idx_buffer();
                 let next_vertex_offset = vertex_offset + vtx_buffer.len();
                 let next_index_offset = index_offset + idx_buffer.len();
-                if next_vertex_offset > Renderer::VERTEX_COUNT_PER_FRAME
-                    || next_index_offset > Renderer::INDEX_COUNT_PER_FRAME
+                if next_vertex_offset > Self::VERTEX_COUNT_PER_FRAME
+                    || next_index_offset > Self::INDEX_COUNT_PER_FRAME
                 {
                     break;
                 }
