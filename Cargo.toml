@@ -3,5 +3,6 @@ members = [
     "generator",
     "vkr",
     "vkr-imgui",
-    "examples",
+    "examples/compute",
+    "examples/graphics",
 ]

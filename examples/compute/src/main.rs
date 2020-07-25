@@ -84,7 +84,7 @@ fn main() -> Result<(), vkr::LoaderError> {
 
     // load the compute shader
     let shader_module = {
-        let shader_bytes = include_bytes!("compute_fill.comp.spv");
+        let shader_bytes = include_bytes!("fill.comp.spv");
         let shader_module_create_info = vk::ShaderModuleCreateInfo {
             code_size: shader_bytes.len(),
             p_code: shader_bytes.as_ptr() as _,

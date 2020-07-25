@@ -1,0 +1,12 @@
+[package]
+name = "graphics"
+version = "0.1.0"
+authors = ["Simon Brown <si@sjbrown.co.uk>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+vkr = { path = "../../vkr" }
+vkr-imgui = { path = "../../vkr-imgui" }
+winit = "0.22"
+imgui = "0.4"

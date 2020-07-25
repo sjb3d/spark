@@ -131,10 +131,12 @@ The `_array` version is implemented using a trait up to arrays of length 8, but 
 
 Examples can be found in the `examples` folder.
 
-### [`compute`](https://github.com/sjb3d/vkr/blob/master/examples/src/bin/compute.rs)
+### [`compute`](https://github.com/sjb3d/vkr/blob/master/examples/compute)
 
 A minimal console application that runs a compute shader to fill some memory.  Shows basic usage of a Vulkan device.
 
-### `imgui` (soon)
+### [`graphics`](https://github.com/sjb3d/vkr/blob/master/examples/graphics)
 
-A renderer implementation for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)) can be found in [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) now.  An example that demonstrates this will be added soon.
+A minimal windowed application that draws a triangle and some UI.
+* Uses [`winit`](https://github.com/rust-windowing/winit) for windowing
+* Demonstrates [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) as a renderer for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)).
