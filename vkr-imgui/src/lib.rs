@@ -102,8 +102,7 @@ impl Renderer {
                 .p_immutable_samplers(slice::from_ref(&linear_sampler));
             let descriptor_set_layout_create_info =
                 vk::DescriptorSetLayoutCreateInfo::builder().p_bindings(slice::from_ref(&binding));
-            unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }
-                .unwrap()
+            unsafe { device.create_descriptor_set_layout(&descriptor_set_layout_create_info, None) }.unwrap()
         };
 
         let pipeline_layout = {
@@ -123,8 +122,7 @@ impl Renderer {
 
         let (vertex_buffers, vertex_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Self::VERTEX_COUNT_PER_FRAME * mem::size_of::<DrawVert>())
-                    as vk::DeviceSize,
+                size: (Self::VERTEX_COUNT_PER_FRAME * mem::size_of::<DrawVert>()) as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::VERTEX_BUFFER,
                 ..Default::default()
             };
@@ -140,16 +138,12 @@ impl Renderer {
                 mem_offsets.push(mem_offset);
                 host_memory_type_filter &= mem_req.memory_type_bits;
             }
-            (
-                buffers.into_inner().unwrap(),
-                mem_offsets.into_inner().unwrap(),
-            )
+            (buffers.into_inner().unwrap(), mem_offsets.into_inner().unwrap())
         };
 
         let (index_buffers, index_mem_offsets) = {
             let buffer_create_info = vk::BufferCreateInfo {
-                size: (Self::INDEX_COUNT_PER_FRAME * mem::size_of::<DrawIdx>())
-                    as vk::DeviceSize,
+                size: (Self::INDEX_COUNT_PER_FRAME * mem::size_of::<DrawIdx>()) as vk::DeviceSize,
                 usage: vk::BufferUsageFlags::INDEX_BUFFER,
                 ..Default::default()
             };
@@ -165,10 +159,7 @@ impl Renderer {
                 mem_offsets.push(mem_offset);
                 host_memory_type_filter &= mem_req.memory_type_bits;
             }
-            (
-                buffers.into_inner().unwrap(),
-                mem_offsets.into_inner().unwrap(),
-            )
+            (buffers.into_inner().unwrap(), mem_offsets.into_inner().unwrap())
         };
 
         let mut fonts = imgui.fonts();
@@ -210,13 +201,9 @@ impl Renderer {
         for (&buf, &ofs) in index_buffers.iter().zip(index_mem_offsets.iter()) {
             unsafe { device.bind_buffer_memory(buf, host_mem, ofs as vk::DeviceSize) }.unwrap();
         }
-        unsafe {
-            device.bind_buffer_memory(image_buffer, host_mem, image_mem_offset as vk::DeviceSize)
-        }
-        .unwrap();
+        unsafe { device.bind_buffer_memory(image_buffer, host_mem, image_mem_offset as vk::DeviceSize) }.unwrap();
 
-        let host_mapping =
-            unsafe { device.map_memory(host_mem, 0, vk::WHOLE_SIZE, Default::default()) }.unwrap();
+        let host_mapping = unsafe { device.map_memory(host_mem, 0, vk::WHOLE_SIZE, Default::default()) }.unwrap();
 
         let image = {
             let image_create_info = vk::ImageCreateInfo {
@@ -273,8 +260,7 @@ impl Renderer {
             let descriptor_set_allocate_info = vk::DescriptorSetAllocateInfo::builder()
                 .descriptor_pool(descriptor_pool)
                 .p_set_layouts(slice::from_ref(&descriptor_set_layout));
-            unsafe { device.allocate_descriptor_sets_single(&descriptor_set_allocate_info) }
-                .unwrap()
+            unsafe { device.allocate_descriptor_sets_single(&descriptor_set_allocate_info) }.unwrap()
         };
 
         let image_view = {
@@ -315,13 +301,10 @@ impl Renderer {
         let atom_size = physical_device_properties.limits.non_coherent_atom_size as u32;
 
         {
-            let image_base =
-                unsafe { (host_mapping as *mut u8).add(image_mem_offset) } as *mut c_uchar;
+            let image_base = unsafe { (host_mapping as *mut u8).add(image_mem_offset) } as *mut c_uchar;
 
             assert_eq!(texture.data.len() as u32, texture.width * texture.height);
-            unsafe {
-                image_base.copy_from_nonoverlapping(texture.data.as_ptr(), texture.data.len())
-            };
+            unsafe { image_base.copy_from_nonoverlapping(texture.data.as_ptr(), texture.data.len()) };
 
             let mapped_memory_range = vk::MappedMemoryRange {
                 memory: Some(host_mem),
@@ -329,8 +312,7 @@ impl Renderer {
                 size: vk::DeviceSize::from(align_up(texture.data.len() as u32, atom_size)),
                 ..Default::default()
             };
-            unsafe { device.flush_mapped_memory_ranges(slice::from_ref(&mapped_memory_range)) }
-                .unwrap();
+            unsafe { device.flush_mapped_memory_ranges(slice::from_ref(&mapped_memory_range)) }.unwrap();
         }
 
         Self {
@@ -583,18 +565,12 @@ impl Renderer {
                 .layout(self.pipeline_layout)
                 .render_pass(render_pass);
 
-            unsafe { device.create_graphics_pipelines_single(None, &pipeline_create_info, None) }
-                .unwrap()
+            unsafe { device.create_graphics_pipelines_single(None, &pipeline_create_info, None) }.unwrap()
         };
         self.pipeline.replace(pipeline)
     }
 
-    pub fn render(
-        &mut self,
-        draw_data: &DrawData,
-        device: &Device,
-        command_buffer: vk::CommandBuffer,
-    ) {
+    pub fn render(&mut self, draw_data: &DrawData, device: &Device, command_buffer: vk::CommandBuffer) {
         let width = draw_data.display_size[0] * draw_data.framebuffer_scale[0];
         let height = draw_data.display_size[1] * draw_data.framebuffer_scale[1];
 
@@ -605,11 +581,7 @@ impl Renderer {
             let index_mem_offset = self.index_mem_offsets[self.frame_index];
 
             unsafe {
-                device.cmd_bind_pipeline(
-                    command_buffer,
-                    vk::PipelineBindPoint::GRAPHICS,
-                    self.pipeline.unwrap(),
-                );
+                device.cmd_bind_pipeline(command_buffer, vk::PipelineBindPoint::GRAPHICS, self.pipeline.unwrap());
                 device.cmd_bind_descriptor_sets(
                     command_buffer,
                     vk::PipelineBindPoint::GRAPHICS,
@@ -642,26 +614,14 @@ impl Renderer {
             unsafe { device.cmd_set_viewport(command_buffer, 0, slice::from_ref(&viewport)) };
 
             unsafe {
-                device.cmd_bind_vertex_buffers(
-                    command_buffer,
-                    0,
-                    slice::from_ref(&vertex_buffer),
-                    &[0],
-                );
-                device.cmd_bind_index_buffer(
-                    command_buffer,
-                    index_buffer,
-                    0,
-                    vk::IndexType::UINT16,
-                );
+                device.cmd_bind_vertex_buffers(command_buffer, 0, slice::from_ref(&vertex_buffer), &[0]);
+                device.cmd_bind_index_buffer(command_buffer, index_buffer, 0, vk::IndexType::UINT16);
             }
 
             let clip_off = draw_data.display_pos;
             let clip_scale = draw_data.framebuffer_scale;
-            let vertex_base =
-                unsafe { (self.host_mapping as *mut u8).add(vertex_mem_offset) } as *mut DrawVert;
-            let index_base =
-                unsafe { (self.host_mapping as *mut u8).add(index_mem_offset) } as *mut DrawIdx;
+            let vertex_base = unsafe { (self.host_mapping as *mut u8).add(vertex_mem_offset) } as *mut DrawVert;
+            let index_base = unsafe { (self.host_mapping as *mut u8).add(index_mem_offset) } as *mut DrawIdx;
             let mut vertex_offset = 0;
             let mut index_offset = 0;
             for draw_list in draw_data.draw_lists() {
@@ -669,8 +629,7 @@ impl Renderer {
                 let idx_buffer = draw_list.idx_buffer();
                 let next_vertex_offset = vertex_offset + vtx_buffer.len();
                 let next_index_offset = index_offset + idx_buffer.len();
-                if next_vertex_offset > Self::VERTEX_COUNT_PER_FRAME
-                    || next_index_offset > Self::INDEX_COUNT_PER_FRAME
+                if next_vertex_offset > Self::VERTEX_COUNT_PER_FRAME || next_index_offset > Self::INDEX_COUNT_PER_FRAME
                 {
                     break;
                 }
@@ -708,11 +667,7 @@ impl Renderer {
                             };
                             let count = count as u32;
                             unsafe {
-                                device.cmd_set_scissor(
-                                    command_buffer,
-                                    0,
-                                    slice::from_ref(&scissor),
-                                );
+                                device.cmd_set_scissor(command_buffer, 0, slice::from_ref(&scissor));
                                 device.cmd_draw_indexed(
                                     command_buffer,
                                     count,
@@ -725,9 +680,7 @@ impl Renderer {
                             index_offset += count as usize;
                         }
                         DrawCmd::ResetRenderState => {}
-                        DrawCmd::RawCallback { callback, raw_cmd } => unsafe {
-                            callback(draw_list.raw(), raw_cmd)
-                        },
+                        DrawCmd::RawCallback { callback, raw_cmd } => unsafe { callback(draw_list.raw(), raw_cmd) },
                     }
                 }
 
