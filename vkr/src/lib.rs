@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 148
+//! Generated from vk.xml with `VK_HEADER_VERSION` 149
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2840,6 +2840,7 @@ pub struct DeviceExtensions {
     pub qcom_render_pass_store_ops: bool,
     pub ext_fragment_density_map2: bool,
     pub ext_image_robustness: bool,
+    pub ext_4444_formats: bool,
 }
 #[derive(Copy, Clone)]
 pub struct Device {
@@ -3727,6 +3728,9 @@ impl Device {
     pub fn ext_image_robustness_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") }
     }
+    pub fn ext_4444_formats_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") }
+    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3926,6 +3930,7 @@ impl Device {
                     b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
                     b"VK_EXT_fragment_density_map2" => extensions.ext_fragment_density_map2 = true,
                     b"VK_EXT_image_robustness" => extensions.ext_image_robustness = true,
+                    b"VK_EXT_4444_formats" => extensions.ext_4444_formats = true,
                     _ => {}
                 }
             }

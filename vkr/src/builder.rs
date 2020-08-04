@@ -14538,3 +14538,37 @@ impl Deref for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDevice4444FormatsFeaturesEXT {
+    type Type = PhysicalDevice4444FormatsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevice4444FormatsFeaturesEXTBuilder {
+    inner: vk::PhysicalDevice4444FormatsFeaturesEXT,
+}
+impl PhysicalDevice4444FormatsFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn format_a4r4g4b4(mut self, format_a4r4g4b4: bool) -> Self {
+        self.inner.format_a4r4g4b4 = if format_a4r4g4b4 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn format_a4b4g4r4(mut self, format_a4b4g4r4: bool) -> Self {
+        self.inner.format_a4b4g4r4 = if format_a4b4g4r4 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevice4444FormatsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevice4444FormatsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

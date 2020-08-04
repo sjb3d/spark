@@ -11338,6 +11338,10 @@ impl Format {
     pub const ASTC_6X6X6_SRGB_BLOCK_EXT: Self = Self(1000288028);
     /// Added by extension VK_EXT_extension_289.
     pub const ASTC_6X6X6_SFLOAT_BLOCK_EXT: Self = Self(1000288029);
+    /// Added by extension VK_EXT_4444_formats.
+    pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self(1000340000);
+    /// Added by extension VK_EXT_4444_formats.
+    pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self(1000340001);
 }
 impl default::Default for Format {
     fn default() -> Self {
@@ -11618,6 +11622,8 @@ impl fmt::Display for Format {
             1000288027 => Some(&"ASTC_6X6X6_UNORM_BLOCK_EXT"),
             1000288028 => Some(&"ASTC_6X6X6_SRGB_BLOCK_EXT"),
             1000288029 => Some(&"ASTC_6X6X6_SFLOAT_BLOCK_EXT"),
+            1000340000 => Some(&"A4R4G4B4_UNORM_PACK16_EXT"),
+            1000340001 => Some(&"A4B4G4R4_UNORM_PACK16_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13169,6 +13175,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT: Self = Self(1000332001);
     /// Added by extension VK_EXT_image_robustness.
     pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000335000);
+    /// Added by extension VK_EXT_4444_formats.
+    pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
     /// Added by extension VK_EXT_directfb_surface.
     pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
 }
@@ -13623,6 +13631,7 @@ impl fmt::Display for StructureType {
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT"),
+            1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             _ => None,
         };
@@ -35105,6 +35114,34 @@ impl fmt::Debug for PhysicalDeviceImageRobustnessFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("robust_image_access", &self.robust_image_access)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevice4444FormatsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format_a4r4g4b4: Bool32,
+    pub format_a4b4g4r4: Bool32,
+}
+impl default::Default for PhysicalDevice4444FormatsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            format_a4r4g4b4: Bool32::default(),
+            format_a4b4g4r4: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevice4444FormatsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevice4444FormatsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format_a4r4g4b4", &self.format_a4r4g4b4)
+            .field("format_a4b4g4r4", &self.format_a4b4g4r4)
             .finish()
     }
 }
