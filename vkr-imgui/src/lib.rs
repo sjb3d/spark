@@ -571,9 +571,6 @@ impl Renderer {
     }
 
     pub fn render(&mut self, draw_data: &DrawData, device: &Device, command_buffer: vk::CommandBuffer) {
-        let width = draw_data.display_size[0] * draw_data.framebuffer_scale[0];
-        let height = draw_data.display_size[1] * draw_data.framebuffer_scale[1];
-
         {
             let vertex_buffer = self.vertex_buffers[self.frame_index];
             let vertex_mem_offset = self.vertex_mem_offsets[self.frame_index];
@@ -593,7 +590,7 @@ impl Renderer {
             }
 
             let batch_data = BatchData {
-                dims_rcp: (1.0 / width, 1.0 / height),
+                dims_rcp: (1.0 / draw_data.display_size[0], 1.0 / draw_data.display_size[1]),
             };
             unsafe {
                 device.cmd_push_constants(
@@ -606,8 +603,8 @@ impl Renderer {
             };
 
             let viewport = vk::Viewport {
-                width,
-                height,
+                width: draw_data.display_size[0] * draw_data.framebuffer_scale[0],
+                height: draw_data.display_size[1] * draw_data.framebuffer_scale[1],
                 max_depth: 1.0,
                 ..Default::default()
             };
