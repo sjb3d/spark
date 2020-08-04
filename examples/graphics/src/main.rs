@@ -1,25 +1,27 @@
 mod command_buffer;
 mod context;
 mod swapchain;
-mod ui_state;
 mod window_surface;
 
 use command_buffer::*;
 use context::*;
 use imgui::im_str;
+use imgui::Key;
+use imgui_winit_support::{HiDpiMode, WinitPlatform};
 use std::collections::HashMap;
 use std::env;
+use std::f32::consts::PI;
 use std::ffi::CStr;
 use std::mem;
 use std::slice;
 use std::sync::Arc;
+use std::time::Instant;
 use swapchain::*;
-use ui_state::*;
 use vkr::{vk, Builder};
 use vkr_imgui;
 use winit::{
     dpi::{LogicalSize, Size},
-    event::{Event, VirtualKeyCode, WindowEvent},
+    event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop, EventLoopWindowTarget},
     window::{Fullscreen, Window, WindowBuilder},
 };
@@ -83,8 +85,10 @@ struct App {
     exit_requested: bool,
 
     context: Arc<Context>,
-    ui_state: UiState,
+    ui_context: imgui::Context,
+    ui_platform: WinitPlatform,
     ui_renderer: vkr_imgui::Renderer,
+    last_instant: Instant,
 
     swapchain: Swapchain,
     recreate_swapchain: bool,
@@ -100,6 +104,7 @@ struct App {
     old_swap_targets: Vec<SwapTarget>,
 
     frame_index: u32,
+    angle: f32,
 }
 
 enum AppEventResult {
@@ -126,12 +131,22 @@ impl App {
             unsafe { CStr::from_ptr(context.physical_device_properties.device_name.as_ptr()) }
         );
 
-        let mut ui_state = UiState::new();
+        let mut ui_context = imgui::Context::create();
+        ui_context.fonts().add_font(&[imgui::FontSource::DefaultFontData {
+            config: Some(imgui::FontConfig {
+                size_pixels: 13.0,
+                ..Default::default()
+            }),
+        }]);
+
+        let mut ui_platform = WinitPlatform::init(&mut ui_context);
+        ui_platform.attach_window(ui_context.io_mut(), &window, HiDpiMode::Default);
+
         let mut ui_renderer = vkr_imgui::Renderer::new(
             &context.device,
             &context.physical_device_properties,
             &context.physical_device_memory_properties,
-            &mut ui_state.context,
+            &mut ui_context,
         );
 
         let swapchain = Swapchain::new(&context, Self::SWAPCHAIN_USAGE);
@@ -275,8 +290,10 @@ impl App {
             exit_requested: false,
 
             context,
-            ui_state,
+            ui_context,
+            ui_platform,
             ui_renderer,
+            last_instant: Instant::now(),
 
             swapchain,
             recreate_swapchain: false,
@@ -292,6 +309,7 @@ impl App {
             old_swap_targets: Vec::new(),
 
             frame_index: 0,
+            angle: 0.0,
         }
     }
 
@@ -303,21 +321,19 @@ impl App {
     ) -> AppEventResult {
         let mut result = AppEventResult::None;
         match event {
-            Event::WindowEvent { event, .. } => {
-                self.ui_state.process_window_event(&event);
-                match event {
-                    WindowEvent::CloseRequested => {
-                        self.exit_requested = true;
-                    }
-                    WindowEvent::KeyboardInput { input, .. } => {
-                        if input.virtual_keycode == Some(VirtualKeyCode::Escape) {
-                            self.exit_requested = true;
-                        }
-                    }
-                    _ => {}
-                }
+            Event::NewEvents(_) => {
+                self.last_instant = self.ui_context.io_mut().update_delta_time(self.last_instant);
+            }
+            Event::WindowEvent {
+                event: WindowEvent::CloseRequested,
+                ..
+            } => {
+                self.exit_requested = true;
             }
             Event::MainEventsCleared => {
+                self.ui_platform
+                    .prepare_frame(self.ui_context.io_mut(), &self.window)
+                    .expect("failed to prepare frame");
                 self.window.request_redraw();
             }
             Event::RedrawRequested(_) => {
@@ -326,7 +342,10 @@ impl App {
             Event::LoopDestroyed => {
                 result = AppEventResult::Destroy;
             }
-            _ => {}
+            event => {
+                self.ui_platform
+                    .handle_event(self.ui_context.io_mut(), &self.window, &event);
+            }
         }
 
         *control_flow = if self.exit_requested {
@@ -340,11 +359,10 @@ impl App {
 
     fn render(&mut self) {
         // start creating UI for this frame
-        let ui = {
-            let extent = self.swapchain.get_extent();
-            self.ui_state.start_ui(extent.width, extent.height)
-        };
+        let ui = self.ui_context.frame();
+
         {
+            // show some test UI
             let frame_index = self.frame_index;
             let exit_requested = &mut self.exit_requested;
             imgui::Window::new(im_str!("Debug"))
@@ -355,6 +373,11 @@ impl App {
                     }
                     ui.text(format!("Frame: {}", frame_index));
                 });
+
+            // also exit if ESC is pressed
+            if ui.is_key_pressed(ui.key_index(Key::Escape)) {
+                self.exit_requested = true;
+            }
         }
 
         // acquire a command buffer from the pool, blocks on a fence
@@ -448,7 +471,7 @@ impl App {
             };
 
             let test_data = TestData {
-                angle: (self.frame_index as f32) * 0.1f32,
+                angle: self.angle,
                 x_scale: (extent.height as f32) / (extent.width as f32),
             };
 
@@ -469,6 +492,7 @@ impl App {
         }
 
         // draw imgui in the same render pass
+        self.ui_platform.prepare_render(&ui, &self.window);
         self.ui_renderer.render(ui.render(), &self.context.device, cmd);
 
         // end the render pass to the swapchain
@@ -479,6 +503,7 @@ impl App {
         self.swapchain.present(swap_image_index, rendering_finished_semaphore);
 
         self.frame_index += 1;
+        self.angle += PI * self.ui_context.io().delta_time;
     }
 }
 
