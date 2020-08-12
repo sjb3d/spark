@@ -15180,6 +15180,7 @@ impl ValidationFeatureEnableEXT {
     pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = Self(1);
     pub const BEST_PRACTICES: Self = Self(2);
     pub const DEBUG_PRINTF: Self = Self(3);
+    pub const SYNCHRONIZATION_VALIDATION: Self = Self(4);
 }
 impl default::Default for ValidationFeatureEnableEXT {
     fn default() -> Self {
@@ -15193,6 +15194,7 @@ impl fmt::Display for ValidationFeatureEnableEXT {
             1 => Some(&"GPU_ASSISTED_RESERVE_BINDING_SLOT"),
             2 => Some(&"BEST_PRACTICES"),
             3 => Some(&"DEBUG_PRINTF"),
+            4 => Some(&"SYNCHRONIZATION_VALIDATION"),
             _ => None,
         };
         if let Some(name) = name {
