@@ -518,6 +518,8 @@ impl fmt::Display for PipelineLayoutCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCacheCreateFlags(u32);
 impl PipelineCacheCreateFlags {
+    /// Added by extension VK_GOOGLE_extension_196.
+    pub const RESERVED_1_EXT: Self = Self(0x2);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self(0x1);
 }
@@ -531,13 +533,13 @@ impl PipelineCacheCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x3
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -581,7 +583,11 @@ impl ops::BitXorAssign for PipelineCacheCreateFlags {
 }
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "EXTERNALLY_SYNCHRONIZED_EXT")], f)
+        display_bitmask(
+            self.0,
+            &[(0x2, "RESERVED_1_EXT"), (0x1, "EXTERNALLY_SYNCHRONIZED_EXT")],
+            f,
+        )
     }
 }
 #[repr(transparent)]

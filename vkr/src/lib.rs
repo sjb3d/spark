@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 150
+//! Generated from vk.xml with `VK_HEADER_VERSION` 152
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -11220,12 +11220,12 @@ impl Device {
     }
     pub unsafe fn release_performance_configuration_intel(
         &self,
-        configuration: vk::PerformanceConfigurationINTEL,
+        configuration: Option<vk::PerformanceConfigurationINTEL>,
     ) -> Result<()> {
         let fp = self
             .fp_release_performance_configuration_intel
             .expect("vkReleasePerformanceConfigurationINTEL is not loaded");
-        let err = (fp)(Some(self.handle), Some(configuration));
+        let err = (fp)(Some(self.handle), configuration);
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
