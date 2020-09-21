@@ -14538,6 +14538,145 @@ impl Deref for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {
+    type Type = PhysicalDevicePortabilitySubsetFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePortabilitySubsetFeaturesKHR,
+}
+impl PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn constant_alpha_color_blend_factors(mut self, constant_alpha_color_blend_factors: bool) -> Self {
+        self.inner.constant_alpha_color_blend_factors = if constant_alpha_color_blend_factors {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn events(mut self, events: bool) -> Self {
+        self.inner.events = if events { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn image_view_format_reinterpretation(mut self, image_view_format_reinterpretation: bool) -> Self {
+        self.inner.image_view_format_reinterpretation = if image_view_format_reinterpretation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn image_view_format_swizzle(mut self, image_view_format_swizzle: bool) -> Self {
+        self.inner.image_view_format_swizzle = if image_view_format_swizzle { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn image_view2_d_on3_d_image(mut self, image_view2_d_on3_d_image: bool) -> Self {
+        self.inner.image_view2_d_on3_d_image = if image_view2_d_on3_d_image { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn multisample_array_image(mut self, multisample_array_image: bool) -> Self {
+        self.inner.multisample_array_image = if multisample_array_image { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn mutable_comparison_samplers(mut self, mutable_comparison_samplers: bool) -> Self {
+        self.inner.mutable_comparison_samplers = if mutable_comparison_samplers {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn point_polygons(mut self, point_polygons: bool) -> Self {
+        self.inner.point_polygons = if point_polygons { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn sampler_mip_lod_bias(mut self, sampler_mip_lod_bias: bool) -> Self {
+        self.inner.sampler_mip_lod_bias = if sampler_mip_lod_bias { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn separate_stencil_mask_ref(mut self, separate_stencil_mask_ref: bool) -> Self {
+        self.inner.separate_stencil_mask_ref = if separate_stencil_mask_ref { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn shader_sample_rate_interpolation_functions(
+        mut self,
+        shader_sample_rate_interpolation_functions: bool,
+    ) -> Self {
+        self.inner.shader_sample_rate_interpolation_functions = if shader_sample_rate_interpolation_functions {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn tessellation_isolines(mut self, tessellation_isolines: bool) -> Self {
+        self.inner.tessellation_isolines = if tessellation_isolines { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn tessellation_point_mode(mut self, tessellation_point_mode: bool) -> Self {
+        self.inner.tessellation_point_mode = if tessellation_point_mode { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn triangle_fans(mut self, triangle_fans: bool) -> Self {
+        self.inner.triangle_fans = if triangle_fans { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn vertex_attribute_access_beyond_stride(mut self, vertex_attribute_access_beyond_stride: bool) -> Self {
+        self.inner.vertex_attribute_access_beyond_stride = if vertex_attribute_access_beyond_stride {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePortabilitySubsetFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetPropertiesKHR {
+    type Type = PhysicalDevicePortabilitySubsetPropertiesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
+    inner: vk::PhysicalDevicePortabilitySubsetPropertiesKHR,
+}
+impl PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn min_vertex_input_binding_stride_alignment(mut self, min_vertex_input_binding_stride_alignment: u32) -> Self {
+        self.inner.min_vertex_input_binding_stride_alignment = min_vertex_input_binding_stride_alignment;
+        self
+    }
+}
+impl Deref for PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
+    type Target = vk::PhysicalDevicePortabilitySubsetPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDevice4444FormatsFeaturesEXT {
     type Type = PhysicalDevice4444FormatsFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -14568,6 +14707,496 @@ impl PhysicalDevice4444FormatsFeaturesEXTBuilder {
 }
 impl Deref for PhysicalDevice4444FormatsFeaturesEXTBuilder {
     type Target = vk::PhysicalDevice4444FormatsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferCopy2KHR {
+    type Type = BufferCopy2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCopy2KHRBuilder {
+    inner: vk::BufferCopy2KHR,
+}
+impl BufferCopy2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_offset(mut self, src_offset: vk::DeviceSize) -> Self {
+        self.inner.src_offset = src_offset;
+        self
+    }
+    pub fn dst_offset(mut self, dst_offset: vk::DeviceSize) -> Self {
+        self.inner.dst_offset = dst_offset;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for BufferCopy2KHRBuilder {
+    type Target = vk::BufferCopy2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageCopy2KHR {
+    type Type = ImageCopy2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageCopy2KHRBuilder {
+    inner: vk::ImageCopy2KHR,
+}
+impl ImageCopy2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_subresource(mut self, src_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.src_subresource = src_subresource;
+        self
+    }
+    pub fn src_offset(mut self, src_offset: vk::Offset3D) -> Self {
+        self.inner.src_offset = src_offset;
+        self
+    }
+    pub fn dst_subresource(mut self, dst_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.dst_subresource = dst_subresource;
+        self
+    }
+    pub fn dst_offset(mut self, dst_offset: vk::Offset3D) -> Self {
+        self.inner.dst_offset = dst_offset;
+        self
+    }
+    pub fn extent(mut self, extent: vk::Extent3D) -> Self {
+        self.inner.extent = extent;
+        self
+    }
+}
+impl Deref for ImageCopy2KHRBuilder {
+    type Target = vk::ImageCopy2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageBlit2KHR {
+    type Type = ImageBlit2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageBlit2KHRBuilder {
+    inner: vk::ImageBlit2KHR,
+}
+impl ImageBlit2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_subresource(mut self, src_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.src_subresource = src_subresource;
+        self
+    }
+    pub fn dst_subresource(mut self, dst_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.dst_subresource = dst_subresource;
+        self
+    }
+}
+impl Deref for ImageBlit2KHRBuilder {
+    type Target = vk::ImageBlit2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferImageCopy2KHR {
+    type Type = BufferImageCopy2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferImageCopy2KHRBuilder {
+    inner: vk::BufferImageCopy2KHR,
+}
+impl BufferImageCopy2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer_offset(mut self, buffer_offset: vk::DeviceSize) -> Self {
+        self.inner.buffer_offset = buffer_offset;
+        self
+    }
+    pub fn buffer_row_length(mut self, buffer_row_length: u32) -> Self {
+        self.inner.buffer_row_length = buffer_row_length;
+        self
+    }
+    pub fn buffer_image_height(mut self, buffer_image_height: u32) -> Self {
+        self.inner.buffer_image_height = buffer_image_height;
+        self
+    }
+    pub fn image_subresource(mut self, image_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.image_subresource = image_subresource;
+        self
+    }
+    pub fn image_offset(mut self, image_offset: vk::Offset3D) -> Self {
+        self.inner.image_offset = image_offset;
+        self
+    }
+    pub fn image_extent(mut self, image_extent: vk::Extent3D) -> Self {
+        self.inner.image_extent = image_extent;
+        self
+    }
+}
+impl Deref for BufferImageCopy2KHRBuilder {
+    type Target = vk::BufferImageCopy2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageResolve2KHR {
+    type Type = ImageResolve2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageResolve2KHRBuilder {
+    inner: vk::ImageResolve2KHR,
+}
+impl ImageResolve2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_subresource(mut self, src_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.src_subresource = src_subresource;
+        self
+    }
+    pub fn src_offset(mut self, src_offset: vk::Offset3D) -> Self {
+        self.inner.src_offset = src_offset;
+        self
+    }
+    pub fn dst_subresource(mut self, dst_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.dst_subresource = dst_subresource;
+        self
+    }
+    pub fn dst_offset(mut self, dst_offset: vk::Offset3D) -> Self {
+        self.inner.dst_offset = dst_offset;
+        self
+    }
+    pub fn extent(mut self, extent: vk::Extent3D) -> Self {
+        self.inner.extent = extent;
+        self
+    }
+}
+impl Deref for ImageResolve2KHRBuilder {
+    type Target = vk::ImageResolve2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyBufferInfo2KHR {
+    type Type = CopyBufferInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyBufferInfo2KHRBuilder<'a> {
+    inner: vk::CopyBufferInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyBufferInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_buffer(mut self, src_buffer: vk::Buffer) -> Self {
+        self.inner.src_buffer = Some(src_buffer);
+        self
+    }
+    pub fn dst_buffer(mut self, dst_buffer: vk::Buffer) -> Self {
+        self.inner.dst_buffer = Some(dst_buffer);
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::BufferCopy2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyBufferInfo2KHRBuilder<'a> {
+    type Target = vk::CopyBufferInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyImageInfo2KHR {
+    type Type = CopyImageInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyImageInfo2KHRBuilder<'a> {
+    inner: vk::CopyImageInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyImageInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::ImageCopy2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyImageInfo2KHRBuilder<'a> {
+    type Target = vk::CopyImageInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::BlitImageInfo2KHR {
+    type Type = BlitImageInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BlitImageInfo2KHRBuilder<'a> {
+    inner: vk::BlitImageInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> BlitImageInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::ImageBlit2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+    pub fn filter(mut self, filter: vk::Filter) -> Self {
+        self.inner.filter = filter;
+        self
+    }
+}
+impl<'a> Deref for BlitImageInfo2KHRBuilder<'a> {
+    type Target = vk::BlitImageInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyBufferToImageInfo2KHR {
+    type Type = CopyBufferToImageInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyBufferToImageInfo2KHRBuilder<'a> {
+    inner: vk::CopyBufferToImageInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyBufferToImageInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_buffer(mut self, src_buffer: vk::Buffer) -> Self {
+        self.inner.src_buffer = Some(src_buffer);
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::BufferImageCopy2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyBufferToImageInfo2KHRBuilder<'a> {
+    type Target = vk::CopyBufferToImageInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyImageToBufferInfo2KHR {
+    type Type = CopyImageToBufferInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyImageToBufferInfo2KHRBuilder<'a> {
+    inner: vk::CopyImageToBufferInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyImageToBufferInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn dst_buffer(mut self, dst_buffer: vk::Buffer) -> Self {
+        self.inner.dst_buffer = Some(dst_buffer);
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::BufferImageCopy2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for CopyImageToBufferInfo2KHRBuilder<'a> {
+    type Target = vk::CopyImageToBufferInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ResolveImageInfo2KHR {
+    type Type = ResolveImageInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ResolveImageInfo2KHRBuilder<'a> {
+    inner: vk::ResolveImageInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ResolveImageInfo2KHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::ImageResolve2KHR]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for ResolveImageInfo2KHRBuilder<'a> {
+    type Target = vk::ResolveImageInfo2KHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

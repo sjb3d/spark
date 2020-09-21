@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 152
+//! Generated from vk.xml with `VK_HEADER_VERSION` 154
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2759,6 +2759,7 @@ pub struct DeviceExtensions {
     pub ext_validation_cache: bool,
     pub ext_descriptor_indexing: bool,
     pub ext_shader_viewport_index_layer: bool,
+    pub khr_portability_subset: bool,
     pub nv_shading_rate_image: bool,
     pub nv_ray_tracing: bool,
     pub nv_representative_fragment_test: bool,
@@ -2840,6 +2841,7 @@ pub struct DeviceExtensions {
     pub qcom_render_pass_store_ops: bool,
     pub ext_fragment_density_map2: bool,
     pub ext_image_robustness: bool,
+    pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
 }
 #[derive(Copy, Clone)]
@@ -3195,6 +3197,12 @@ pub struct Device {
     pub fp_destroy_private_data_slot_ext: Option<vk::FnDestroyPrivateDataSlotEXT>,
     pub fp_set_private_data_ext: Option<vk::FnSetPrivateDataEXT>,
     pub fp_get_private_data_ext: Option<vk::FnGetPrivateDataEXT>,
+    pub fp_cmd_copy_buffer2_khr: Option<vk::FnCmdCopyBuffer2KHR>,
+    pub fp_cmd_copy_image2_khr: Option<vk::FnCmdCopyImage2KHR>,
+    pub fp_cmd_blit_image2_khr: Option<vk::FnCmdBlitImage2KHR>,
+    pub fp_cmd_copy_buffer_to_image2_khr: Option<vk::FnCmdCopyBufferToImage2KHR>,
+    pub fp_cmd_copy_image_to_buffer2_khr: Option<vk::FnCmdCopyImageToBuffer2KHR>,
+    pub fp_cmd_resolve_image2_khr: Option<vk::FnCmdResolveImage2KHR>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3485,6 +3493,9 @@ impl Device {
     pub fn ext_shader_viewport_index_layer_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_viewport_index_layer\0") }
     }
+    pub fn khr_portability_subset_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_portability_subset\0") }
+    }
     pub fn nv_shading_rate_image_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shading_rate_image\0") }
     }
@@ -3728,6 +3739,9 @@ impl Device {
     pub fn ext_image_robustness_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") }
     }
+    pub fn khr_copy_commands2_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_copy_commands2\0") }
+    }
     pub fn ext_4444_formats_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") }
     }
@@ -3845,6 +3859,7 @@ impl Device {
                     b"VK_EXT_validation_cache" => extensions.ext_validation_cache = true,
                     b"VK_EXT_descriptor_indexing" => extensions.ext_descriptor_indexing = true,
                     b"VK_EXT_shader_viewport_index_layer" => extensions.ext_shader_viewport_index_layer = true,
+                    b"VK_KHR_portability_subset" => extensions.khr_portability_subset = true,
                     b"VK_NV_shading_rate_image" => extensions.nv_shading_rate_image = true,
                     b"VK_NV_ray_tracing" => extensions.nv_ray_tracing = true,
                     b"VK_NV_representative_fragment_test" => extensions.nv_representative_fragment_test = true,
@@ -3930,6 +3945,7 @@ impl Device {
                     b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
                     b"VK_EXT_fragment_density_map2" => extensions.ext_fragment_density_map2 = true,
                     b"VK_EXT_image_robustness" => extensions.ext_image_robustness = true,
+                    b"VK_KHR_copy_commands2" => extensions.khr_copy_commands2 = true,
                     b"VK_EXT_4444_formats" => extensions.ext_4444_formats = true,
                     _ => {}
                 }
@@ -6414,6 +6430,42 @@ impl Device {
             },
             fp_get_private_data_ext: if extensions.ext_private_data {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPrivateDataEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_buffer2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyBuffer2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_image2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyImage2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_blit_image2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBlitImage2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_buffer_to_image2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyBufferToImage2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_image_to_buffer2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyImageToBuffer2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_resolve_image2_khr: if extensions.khr_copy_commands2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResolveImage2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11726,6 +11778,60 @@ impl Device {
             res.as_mut_ptr(),
         );
         res.assume_init()
+    }
+    pub unsafe fn cmd_copy_buffer2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_buffer_info: &vk::CopyBufferInfo2KHR,
+    ) {
+        let fp = self.fp_cmd_copy_buffer2_khr.expect("vkCmdCopyBuffer2KHR is not loaded");
+        (fp)(Some(command_buffer), p_copy_buffer_info);
+    }
+    pub unsafe fn cmd_copy_image2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_image_info: &vk::CopyImageInfo2KHR,
+    ) {
+        let fp = self.fp_cmd_copy_image2_khr.expect("vkCmdCopyImage2KHR is not loaded");
+        (fp)(Some(command_buffer), p_copy_image_info);
+    }
+    pub unsafe fn cmd_blit_image2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_blit_image_info: &vk::BlitImageInfo2KHR,
+    ) {
+        let fp = self.fp_cmd_blit_image2_khr.expect("vkCmdBlitImage2KHR is not loaded");
+        (fp)(Some(command_buffer), p_blit_image_info);
+    }
+    pub unsafe fn cmd_copy_buffer_to_image2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_buffer_to_image_info: &vk::CopyBufferToImageInfo2KHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_buffer_to_image2_khr
+            .expect("vkCmdCopyBufferToImage2KHR is not loaded");
+        (fp)(Some(command_buffer), p_copy_buffer_to_image_info);
+    }
+    pub unsafe fn cmd_copy_image_to_buffer2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_copy_image_to_buffer_info: &vk::CopyImageToBufferInfo2KHR,
+    ) {
+        let fp = self
+            .fp_cmd_copy_image_to_buffer2_khr
+            .expect("vkCmdCopyImageToBuffer2KHR is not loaded");
+        (fp)(Some(command_buffer), p_copy_image_to_buffer_info);
+    }
+    pub unsafe fn cmd_resolve_image2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_resolve_image_info: &vk::ResolveImageInfo2KHR,
+    ) {
+        let fp = self
+            .fp_cmd_resolve_image2_khr
+            .expect("vkCmdResolveImage2KHR is not loaded");
+        (fp)(Some(command_buffer), p_resolve_image_info);
     }
 }
 

@@ -522,6 +522,8 @@ impl PipelineCacheCreateFlags {
     pub const RESERVED_1_EXT: Self = Self(0x2);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self(0x1);
+    /// Added by extension VK_KHR_extension_350.
+    pub const RESERVED_2_EXT: Self = Self(0x4);
 }
 impl default::Default for PipelineCacheCreateFlags {
     fn default() -> Self {
@@ -533,13 +535,13 @@ impl PipelineCacheCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x7
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -585,7 +587,11 @@ impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
-            &[(0x2, "RESERVED_1_EXT"), (0x1, "EXTERNALLY_SYNCHRONIZED_EXT")],
+            &[
+                (0x2, "RESERVED_1_EXT"),
+                (0x1, "EXTERNALLY_SYNCHRONIZED_EXT"),
+                (0x4, "RESERVED_2_EXT"),
+            ],
             f,
         )
     }
@@ -12893,6 +12899,10 @@ impl StructureType {
         Self::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO;
     pub const DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT_EXT: Self =
         Self::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT;
+    /// Added by extension VK_KHR_portability_subset.
+    pub const PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR: Self = Self(1000163000);
+    /// Added by extension VK_KHR_portability_subset.
+    pub const PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR: Self = Self(1000163001);
     /// Added by extension VK_NV_shading_rate_image.
     pub const PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV: Self = Self(1000164000);
     /// Added by extension VK_NV_shading_rate_image.
@@ -13181,6 +13191,28 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT: Self = Self(1000332001);
     /// Added by extension VK_EXT_image_robustness.
     pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000335000);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const COPY_BUFFER_INFO_2_KHR: Self = Self(1000337000);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const COPY_IMAGE_INFO_2_KHR: Self = Self(1000337001);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const COPY_BUFFER_TO_IMAGE_INFO_2_KHR: Self = Self(1000337002);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const COPY_IMAGE_TO_BUFFER_INFO_2_KHR: Self = Self(1000337003);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const BLIT_IMAGE_INFO_2_KHR: Self = Self(1000337004);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const RESOLVE_IMAGE_INFO_2_KHR: Self = Self(1000337005);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const BUFFER_COPY_2_KHR: Self = Self(1000337006);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const IMAGE_COPY_2_KHR: Self = Self(1000337007);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const IMAGE_BLIT_2_KHR: Self = Self(1000337008);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const BUFFER_IMAGE_COPY_2_KHR: Self = Self(1000337009);
+    /// Added by extension VK_KHR_copy_commands2.
+    pub const IMAGE_RESOLVE_2_KHR: Self = Self(1000337010);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
     /// Added by extension VK_EXT_directfb_surface.
@@ -13515,6 +13547,8 @@ impl fmt::Display for StructureType {
             1000158005 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000160000 => Some(&"VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000160001 => Some(&"SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
+            1000163000 => Some(&"PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR"),
+            1000163001 => Some(&"PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR"),
             1000164000 => Some(&"PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV"),
             1000164001 => Some(&"PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV"),
             1000164002 => Some(&"PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV"),
@@ -13637,6 +13671,17 @@ impl fmt::Display for StructureType {
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT"),
+            1000337000 => Some(&"COPY_BUFFER_INFO_2_KHR"),
+            1000337001 => Some(&"COPY_IMAGE_INFO_2_KHR"),
+            1000337002 => Some(&"COPY_BUFFER_TO_IMAGE_INFO_2_KHR"),
+            1000337003 => Some(&"COPY_IMAGE_TO_BUFFER_INFO_2_KHR"),
+            1000337004 => Some(&"BLIT_IMAGE_INFO_2_KHR"),
+            1000337005 => Some(&"RESOLVE_IMAGE_INFO_2_KHR"),
+            1000337006 => Some(&"BUFFER_COPY_2_KHR"),
+            1000337007 => Some(&"IMAGE_COPY_2_KHR"),
+            1000337008 => Some(&"IMAGE_BLIT_2_KHR"),
+            1000337009 => Some(&"BUFFER_IMAGE_COPY_2_KHR"),
+            1000337010 => Some(&"IMAGE_RESOLVE_2_KHR"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             _ => None,
@@ -35127,6 +35172,113 @@ impl fmt::Debug for PhysicalDeviceImageRobustnessFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePortabilitySubsetFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub constant_alpha_color_blend_factors: Bool32,
+    pub events: Bool32,
+    pub image_view_format_reinterpretation: Bool32,
+    pub image_view_format_swizzle: Bool32,
+    pub image_view2_d_on3_d_image: Bool32,
+    pub multisample_array_image: Bool32,
+    pub mutable_comparison_samplers: Bool32,
+    pub point_polygons: Bool32,
+    pub sampler_mip_lod_bias: Bool32,
+    pub separate_stencil_mask_ref: Bool32,
+    pub shader_sample_rate_interpolation_functions: Bool32,
+    pub tessellation_isolines: Bool32,
+    pub tessellation_point_mode: Bool32,
+    pub triangle_fans: Bool32,
+    pub vertex_attribute_access_beyond_stride: Bool32,
+}
+impl default::Default for PhysicalDevicePortabilitySubsetFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            constant_alpha_color_blend_factors: Bool32::default(),
+            events: Bool32::default(),
+            image_view_format_reinterpretation: Bool32::default(),
+            image_view_format_swizzle: Bool32::default(),
+            image_view2_d_on3_d_image: Bool32::default(),
+            multisample_array_image: Bool32::default(),
+            mutable_comparison_samplers: Bool32::default(),
+            point_polygons: Bool32::default(),
+            sampler_mip_lod_bias: Bool32::default(),
+            separate_stencil_mask_ref: Bool32::default(),
+            shader_sample_rate_interpolation_functions: Bool32::default(),
+            tessellation_isolines: Bool32::default(),
+            tessellation_point_mode: Bool32::default(),
+            triangle_fans: Bool32::default(),
+            vertex_attribute_access_beyond_stride: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePortabilitySubsetFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePortabilitySubsetFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "constant_alpha_color_blend_factors",
+                &self.constant_alpha_color_blend_factors,
+            )
+            .field("events", &self.events)
+            .field(
+                "image_view_format_reinterpretation",
+                &self.image_view_format_reinterpretation,
+            )
+            .field("image_view_format_swizzle", &self.image_view_format_swizzle)
+            .field("image_view2_d_on3_d_image", &self.image_view2_d_on3_d_image)
+            .field("multisample_array_image", &self.multisample_array_image)
+            .field("mutable_comparison_samplers", &self.mutable_comparison_samplers)
+            .field("point_polygons", &self.point_polygons)
+            .field("sampler_mip_lod_bias", &self.sampler_mip_lod_bias)
+            .field("separate_stencil_mask_ref", &self.separate_stencil_mask_ref)
+            .field(
+                "shader_sample_rate_interpolation_functions",
+                &self.shader_sample_rate_interpolation_functions,
+            )
+            .field("tessellation_isolines", &self.tessellation_isolines)
+            .field("tessellation_point_mode", &self.tessellation_point_mode)
+            .field("triangle_fans", &self.triangle_fans)
+            .field(
+                "vertex_attribute_access_beyond_stride",
+                &self.vertex_attribute_access_beyond_stride,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePortabilitySubsetPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub min_vertex_input_binding_stride_alignment: u32,
+}
+impl default::Default for PhysicalDevicePortabilitySubsetPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            min_vertex_input_binding_stride_alignment: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePortabilitySubsetPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePortabilitySubsetPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "min_vertex_input_binding_stride_alignment",
+                &self.min_vertex_input_binding_stride_alignment,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevice4444FormatsFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -35150,6 +35302,428 @@ impl fmt::Debug for PhysicalDevice4444FormatsFeaturesEXT {
             .field("p_next", &self.p_next)
             .field("format_a4r4g4b4", &self.format_a4r4g4b4)
             .field("format_a4b4g4r4", &self.format_a4b4g4r4)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCopy2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Specified in bytes
+    pub src_offset: DeviceSize,
+    /// Specified in bytes
+    pub dst_offset: DeviceSize,
+    /// Specified in bytes
+    pub size: DeviceSize,
+}
+impl default::Default for BufferCopy2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COPY_2_KHR,
+            p_next: ptr::null(),
+            src_offset: DeviceSize::default(),
+            dst_offset: DeviceSize::default(),
+            size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCopy2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCopy2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_offset", &self.src_offset)
+            .field("dst_offset", &self.dst_offset)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageCopy2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub src_offset: Offset3D,
+    pub dst_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub dst_offset: Offset3D,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub extent: Extent3D,
+}
+impl default::Default for ImageCopy2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_COPY_2_KHR,
+            p_next: ptr::null(),
+            src_subresource: ImageSubresourceLayers::default(),
+            src_offset: Offset3D::default(),
+            dst_subresource: ImageSubresourceLayers::default(),
+            dst_offset: Offset3D::default(),
+            extent: Extent3D::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageCopy2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageCopy2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_subresource", &self.src_subresource)
+            .field("src_offset", &self.src_offset)
+            .field("dst_subresource", &self.dst_subresource)
+            .field("dst_offset", &self.dst_offset)
+            .field("extent", &self.extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageBlit2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub src_offsets: [Offset3D; 2],
+    pub dst_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub dst_offsets: [Offset3D; 2],
+}
+impl default::Default for ImageBlit2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_BLIT_2_KHR,
+            p_next: ptr::null(),
+            src_subresource: ImageSubresourceLayers::default(),
+            src_offsets: [Offset3D::default(); 2],
+            dst_subresource: ImageSubresourceLayers::default(),
+            dst_offsets: [Offset3D::default(); 2],
+        }
+    }
+}
+impl fmt::Debug for ImageBlit2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageBlit2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_subresource", &self.src_subresource)
+            .field("src_offsets", &self.src_offsets)
+            .field("dst_subresource", &self.dst_subresource)
+            .field("dst_offsets", &self.dst_offsets)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferImageCopy2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Specified in bytes
+    pub buffer_offset: DeviceSize,
+    /// Specified in texels
+    pub buffer_row_length: u32,
+    pub buffer_image_height: u32,
+    pub image_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub image_offset: Offset3D,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub image_extent: Extent3D,
+}
+impl default::Default for BufferImageCopy2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_IMAGE_COPY_2_KHR,
+            p_next: ptr::null(),
+            buffer_offset: DeviceSize::default(),
+            buffer_row_length: u32::default(),
+            buffer_image_height: u32::default(),
+            image_subresource: ImageSubresourceLayers::default(),
+            image_offset: Offset3D::default(),
+            image_extent: Extent3D::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferImageCopy2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferImageCopy2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer_offset", &self.buffer_offset)
+            .field("buffer_row_length", &self.buffer_row_length)
+            .field("buffer_image_height", &self.buffer_image_height)
+            .field("image_subresource", &self.image_subresource)
+            .field("image_offset", &self.image_offset)
+            .field("image_extent", &self.image_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageResolve2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_subresource: ImageSubresourceLayers,
+    pub src_offset: Offset3D,
+    pub dst_subresource: ImageSubresourceLayers,
+    pub dst_offset: Offset3D,
+    pub extent: Extent3D,
+}
+impl default::Default for ImageResolve2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_RESOLVE_2_KHR,
+            p_next: ptr::null(),
+            src_subresource: ImageSubresourceLayers::default(),
+            src_offset: Offset3D::default(),
+            dst_subresource: ImageSubresourceLayers::default(),
+            dst_offset: Offset3D::default(),
+            extent: Extent3D::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageResolve2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageResolve2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_subresource", &self.src_subresource)
+            .field("src_offset", &self.src_offset)
+            .field("dst_subresource", &self.dst_subresource)
+            .field("dst_offset", &self.dst_offset)
+            .field("extent", &self.extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyBufferInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_buffer: Option<Buffer>,
+    pub dst_buffer: Option<Buffer>,
+    pub region_count: u32,
+    pub p_regions: *const BufferCopy2KHR,
+}
+impl default::Default for CopyBufferInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_BUFFER_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_buffer: None,
+            dst_buffer: None,
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyBufferInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyBufferInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_buffer", &self.src_buffer)
+            .field("dst_buffer", &self.dst_buffer)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyImageInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const ImageCopy2KHR,
+}
+impl default::Default for CopyImageInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_IMAGE_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_image: None,
+            src_image_layout: ImageLayout::default(),
+            dst_image: None,
+            dst_image_layout: ImageLayout::default(),
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyImageInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyImageInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BlitImageInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const ImageBlit2KHR,
+    pub filter: Filter,
+}
+impl default::Default for BlitImageInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BLIT_IMAGE_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_image: None,
+            src_image_layout: ImageLayout::default(),
+            dst_image: None,
+            dst_image_layout: ImageLayout::default(),
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+            filter: Filter::default(),
+        }
+    }
+}
+impl fmt::Debug for BlitImageInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BlitImageInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .field("filter", &self.filter)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyBufferToImageInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_buffer: Option<Buffer>,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const BufferImageCopy2KHR,
+}
+impl default::Default for CopyBufferToImageInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_BUFFER_TO_IMAGE_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_buffer: None,
+            dst_image: None,
+            dst_image_layout: ImageLayout::default(),
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyBufferToImageInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyBufferToImageInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_buffer", &self.src_buffer)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyImageToBufferInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub dst_buffer: Option<Buffer>,
+    pub region_count: u32,
+    pub p_regions: *const BufferImageCopy2KHR,
+}
+impl default::Default for CopyImageToBufferInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_IMAGE_TO_BUFFER_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_image: None,
+            src_image_layout: ImageLayout::default(),
+            dst_buffer: None,
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyImageToBufferInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyImageToBufferInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("dst_buffer", &self.dst_buffer)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ResolveImageInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const ImageResolve2KHR,
+}
+impl default::Default for ResolveImageInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RESOLVE_IMAGE_INFO_2_KHR,
+            p_next: ptr::null(),
+            src_image: None,
+            src_image_layout: ImageLayout::default(),
+            dst_image: None,
+            dst_image_layout: ImageLayout::default(),
+            region_count: u32::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ResolveImageInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ResolveImageInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
             .finish()
     }
 }
@@ -37216,4 +37790,28 @@ pub type FnGetPrivateDataEXT = unsafe extern "system" fn(
     object_handle: u64,
     private_data_slot: Option<PrivateDataSlotEXT>,
     p_data: *mut u64,
+) -> c_void;
+pub type FnCmdCopyBuffer2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_copy_buffer_info: *const CopyBufferInfo2KHR,
+) -> c_void;
+pub type FnCmdCopyImage2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_copy_image_info: *const CopyImageInfo2KHR,
+) -> c_void;
+pub type FnCmdBlitImage2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_blit_image_info: *const BlitImageInfo2KHR,
+) -> c_void;
+pub type FnCmdCopyBufferToImage2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_copy_buffer_to_image_info: *const CopyBufferToImageInfo2KHR,
+) -> c_void;
+pub type FnCmdCopyImageToBuffer2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_copy_image_to_buffer_info: *const CopyImageToBufferInfo2KHR,
+) -> c_void;
+pub type FnCmdResolveImage2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_resolve_image_info: *const ResolveImageInfo2KHR,
 ) -> c_void;
