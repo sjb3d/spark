@@ -1,37 +1,41 @@
+use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 use std::ffi::CStr;
 use vkr::{vk, Instance, Result};
 use winit::window::Window;
 
-#[cfg(unix)]
-pub fn extension_names() -> Vec<&'static CStr> {
-    vec![Instance::khr_surface_name(), Instance::khr_xlib_surface_name()]
+pub fn extension_names(window: &Window) -> Vec<&'static CStr> {
+    match window.raw_window_handle() {
+        #[cfg(target_os = "linux")]
+        RawWindowHandle::Xlib(..) => vec![Instance::khr_surface_name(), Instance::khr_xlib_surface_name()],
+
+        #[cfg(target_os = "windows")]
+        RawWindowHandle::Windows(..) => vec![Instance::khr_surface_name(), Instance::khr_win32_surface_name()],
+
+        _ => unimplemented!(),
+    }
 }
 
-#[cfg(windows)]
-pub fn extension_names() -> Vec<&'static CStr> {
-    vec![Instance::khr_surface_name(), Instance::khr_win32_surface_name()]
-}
-
-#[cfg(unix)]
 pub fn create(instance: &Instance, window: &Window) -> Result<vk::SurfaceKHR> {
-    use winit::platform::unix::WindowExtUnix;
-    let x11_display = window.xlib_display().unwrap();
-    let x11_window = window.xlib_window().unwrap();
-    let create_info = vk::XlibSurfaceCreateInfoKHR {
-        dpy: x11_display as _,
-        window: x11_window,
-        ..Default::default()
-    };
-    unsafe { instance.create_xlib_surface_khr(&create_info, None) }
-}
+    match window.raw_window_handle() {
+        #[cfg(target_os = "linux")]
+        RawWindowHandle::Xlib(handle) => {
+            let create_info = vk::XlibSurfaceCreateInfoKHR {
+                dpy: handle.display as _,
+                window: handle.window,
+                ..Default::default()
+            };
+            unsafe { instance.create_xlib_surface_khr(&create_info, None) }
+        }
 
-#[cfg(windows)]
-pub fn create(instance: &Instance, window: &Window) -> Result<vk::SurfaceKHR> {
-    use winit::platform::windows::WindowExtWindows;
-    let hwnd = window.hwnd();
-    let create_info = vk::Win32SurfaceCreateInfoKHR {
-        hwnd: hwnd as _,
-        ..Default::default()
-    };
-    unsafe { instance.create_win32_surface_khr(&create_info, None) }
+        #[cfg(target_os = "windows")]
+        RawWindowHandle::Windows(handle) => {
+            let create_info = vk::Win32SurfaceCreateInfoKHR {
+                hwnd: handle.hwnd,
+                ..Default::default()
+            };
+            unsafe { instance.create_win32_surface_khr(&create_info, None) }
+        }
+
+        _ => unimplemented!(),
+    }
 }

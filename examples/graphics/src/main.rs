@@ -34,9 +34,9 @@ struct SwapTarget {
 
 impl SwapTarget {
     fn new(context: &Arc<Context>, render_pass: vk::RenderPass, swapchain: &Swapchain, image_index: u32) -> Self {
-        let image = swapchain.get_image(image_index);
-        let format = Swapchain::FORMAT;
-        let extent = swapchain.get_extent();
+        let image = swapchain.image(image_index);
+        let format = swapchain.format();
+        let extent = swapchain.extent();
 
         let image_view_create_info = vk::ImageViewCreateInfo {
             image: Some(image),
@@ -155,7 +155,7 @@ impl App {
         let render_pass = {
             let attachments = [vk::AttachmentDescription {
                 flags: vk::AttachmentDescriptionFlags::empty(),
-                format: Swapchain::FORMAT,
+                format: swapchain.format(),
                 samples: vk::SampleCountFlags::N1,
                 load_op: vk::AttachmentLoadOp::CLEAR,
                 store_op: vk::AttachmentStoreOp::STORE,
@@ -444,7 +444,7 @@ impl App {
                 .framebuffer(target.framebuffer)
                 .render_area(vk::Rect2D {
                     offset: Default::default(),
-                    extent: self.swapchain.get_extent(),
+                    extent: self.swapchain.extent(),
                 })
                 .p_clear_values(slice::from_ref(&clear_value));
             unsafe {
@@ -458,7 +458,7 @@ impl App {
         {
             let device = &self.context.device;
 
-            let extent = self.swapchain.get_extent();
+            let extent = self.swapchain.extent();
             let viewport = vk::Viewport {
                 width: extent.width as f32,
                 height: extent.height as f32,

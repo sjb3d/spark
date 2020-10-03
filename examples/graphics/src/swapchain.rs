@@ -8,6 +8,7 @@ use vkr::{vk, Builder};
 pub struct Swapchain {
     context: Arc<Context>,
     swapchain: vk::SwapchainKHR,
+    surface_format: vk::SurfaceFormatKHR,
     extent: vk::Extent2D,
     images: Vec<vk::Image>,
 }
@@ -19,16 +20,13 @@ pub enum SwapchainAcquireResult {
 }
 
 impl Swapchain {
-    pub const FORMAT: vk::Format = vk::Format::B8G8R8A8_SRGB;
-    pub const COLOR_SPACE: vk::ColorSpaceKHR = vk::ColorSpaceKHR::SRGB_NONLINEAR;
-
     const MIN_IMAGE_COUNT: u32 = 2;
 
     fn create(
         context: &Context,
         usage: vk::ImageUsageFlags,
         old_swapchain: Option<vk::SwapchainKHR>,
-    ) -> (vk::SwapchainKHR, vk::Extent2D) {
+    ) -> (vk::SwapchainKHR, vk::SurfaceFormatKHR, vk::Extent2D) {
         let surface_capabilities = unsafe {
             context
                 .instance
@@ -48,26 +46,31 @@ impl Swapchain {
             panic!("swapchain surface not supported");
         }
 
-        let formats = unsafe {
+        let surface_formats = unsafe {
             context
                 .instance
                 .get_physical_device_surface_formats_khr_to_vec(context.physical_device, context.surface)
         }
         .unwrap();
-        let format_supported = formats
+
+        let surface_format = surface_formats
             .iter()
-            .any(|f| f.format == Self::FORMAT && f.color_space == Self::COLOR_SPACE);
-        if !format_supported {
-            panic!("swapchain format not supported");
-        }
+            .filter(|sf| match (sf.format, sf.color_space) {
+                (vk::Format::R8G8B8A8_SRGB, vk::ColorSpaceKHR::SRGB_NONLINEAR) => true,
+                (vk::Format::B8G8R8A8_SRGB, vk::ColorSpaceKHR::SRGB_NONLINEAR) => true,
+                _ => false,
+            })
+            .next()
+            .cloned()
+            .expect("no supported swapchain format found");
 
         let min_image_count = cmp::max(Self::MIN_IMAGE_COUNT, surface_capabilities.min_image_count);
 
         let swapchain_create_info = vk::SwapchainCreateInfoKHR::builder()
             .surface(context.surface)
             .min_image_count(min_image_count)
-            .image_format(Self::FORMAT)
-            .image_color_space(Self::COLOR_SPACE)
+            .image_format(surface_format.format)
+            .image_color_space(surface_format.color_space)
             .image_extent(extent)
             .image_array_layers(1)
             .image_usage(usage)
@@ -79,27 +82,29 @@ impl Swapchain {
             .old_swapchain(old_swapchain);
         let swapchain = unsafe { context.device.create_swapchain_khr(&swapchain_create_info, None) }.unwrap();
 
-        (swapchain, extent)
+        (swapchain, surface_format, extent)
     }
 
     pub fn new(context: &Arc<Context>, usage: vk::ImageUsageFlags) -> Self {
-        let (swapchain, extent) = Swapchain::create(context, usage, None);
+        let (swapchain, surface_format, extent) = Swapchain::create(context, usage, None);
 
         let images = unsafe { context.device.get_swapchain_images_khr_to_vec(swapchain) }.unwrap();
 
         Swapchain {
             context: Arc::clone(&context),
             swapchain,
+            surface_format,
             extent,
             images,
         }
     }
 
     pub fn recreate(&mut self, usage: vk::ImageUsageFlags) {
-        let (swapchain, extent) = Swapchain::create(&self.context, usage, Some(self.swapchain));
+        let (swapchain, surface_format, extent) = Swapchain::create(&self.context, usage, Some(self.swapchain));
         unsafe { self.context.device.destroy_swapchain_khr(Some(self.swapchain), None) };
 
         self.swapchain = swapchain;
+        self.surface_format = surface_format;
         self.extent = extent;
         self.images = unsafe { self.context.device.get_swapchain_images_khr_to_vec(swapchain) }.unwrap();
     }
@@ -119,11 +124,15 @@ impl Swapchain {
         }
     }
 
-    pub fn get_image(&self, image_index: u32) -> vk::Image {
+    pub fn image(&self, image_index: u32) -> vk::Image {
         self.images[image_index as usize]
     }
 
-    pub fn get_extent(&self) -> vk::Extent2D {
+    pub fn format(&self) -> vk::Format {
+        self.surface_format.format
+    }
+
+    pub fn extent(&self) -> vk::Extent2D {
         self.extent
     }
 

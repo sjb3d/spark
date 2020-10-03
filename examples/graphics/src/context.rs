@@ -71,7 +71,7 @@ impl Context {
             let mut layer_names_raw = Vec::new();
 
             let mut extension_names = Vec::new();
-            extension_names.append(&mut window_surface::extension_names());
+            extension_names.append(&mut window_surface::extension_names(window));
             if is_debug {
                 layer_names_raw.push(
                     CStr::from_bytes_with_nul(b"VK_LAYER_KHRONOS_validation\0")
