@@ -68,16 +68,9 @@ impl Context {
         let instance = {
             let loader = Loader::new().unwrap();
 
-            let mut layer_names_raw = Vec::new();
-
             let mut extension_names = Vec::new();
             extension_names.append(&mut window_surface::extension_names(window));
             if is_debug {
-                layer_names_raw.push(
-                    CStr::from_bytes_with_nul(b"VK_LAYER_KHRONOS_validation\0")
-                        .unwrap()
-                        .as_ptr(),
-                );
                 extension_names.push(Instance::ext_debug_utils_name());
             }
             let extension_names_raw: Vec<_> = extension_names.iter().map(|n| n.as_ptr()).collect();
@@ -88,7 +81,6 @@ impl Context {
 
             let instance_create_info = vk::InstanceCreateInfo::builder()
                 .p_application_info(Some(&app_info))
-                .pp_enabled_layer_names(&layer_names_raw)
                 .pp_enabled_extension_names(&extension_names_raw);
             unsafe { loader.create_instance(&instance_create_info, None) }.unwrap()
         };
