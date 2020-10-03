@@ -10,5 +10,5 @@ vkr = { path = "../../vkr" }
 vkr-imgui = { path = "../../vkr-imgui" }
 winit = "0.22"
 raw-window-handle = "0.3"
-imgui = "0.4"
-imgui-winit-support = "0.4"
+imgui = "0.5"
+imgui-winit-support = "0.5"

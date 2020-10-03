@@ -301,19 +301,16 @@ impl App {
         }
     }
 
-    fn handle_event<T>(
-        self: &mut Self,
-        event: &Event<'_, T>,
-        window: &Window,
-    ) {
+    fn handle_event<T>(self: &mut Self, event: &Event<'_, T>, window: &Window) {
         match event {
             Event::NewEvents(_) => {
-                self.last_instant = self.ui_context.io_mut().update_delta_time(self.last_instant);
-            },
+                let now = Instant::now();
+                self.ui_context.io_mut().update_delta_time(now - self.last_instant);
+                self.last_instant = now;
+            }
             _ => {}
         }
-        self.ui_platform
-            .handle_event(self.ui_context.io_mut(), &window, &event);
+        self.ui_platform.handle_event(self.ui_context.io_mut(), &window, &event);
     }
 
     fn render(&mut self, window: &Window, exit_requested: &mut bool) {
@@ -515,7 +512,7 @@ fn main() {
                 if app.is_none() {
                     app = Some(App::new(&window, version, is_debug));
                 }
-            },
+            }
             Event::Suspended | Event::LoopDestroyed => {
                 app.take();
             }
