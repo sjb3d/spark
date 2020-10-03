@@ -22,7 +22,7 @@ use vkr_imgui;
 use winit::{
     dpi::{LogicalSize, Size},
     event::{Event, WindowEvent},
-    event_loop::{ControlFlow, EventLoop, EventLoopWindowTarget},
+    event_loop::{ControlFlow, EventLoop},
     window::{Fullscreen, Window, WindowBuilder},
 };
 
@@ -81,9 +81,6 @@ impl Drop for SwapTarget {
 }
 
 struct App {
-    window: Window,
-    exit_requested: bool,
-
     context: Arc<Context>,
     ui_context: imgui::Context,
     ui_platform: WinitPlatform,
@@ -107,12 +104,6 @@ struct App {
     angle: f32,
 }
 
-enum AppEventResult {
-    None,
-    Redraw,
-    Destroy,
-}
-
 #[repr(C)]
 struct TestData {
     angle: f32,
@@ -122,7 +113,7 @@ struct TestData {
 impl App {
     const SWAPCHAIN_USAGE: vk::ImageUsageFlags = vk::ImageUsageFlags::COLOR_ATTACHMENT;
 
-    fn new(window: Window, version: vk::Version, is_debug: bool) -> Self {
+    fn new(window: &Window, version: vk::Version, is_debug: bool) -> Self {
         let context = Arc::new(Context::new(&window, version, is_debug));
 
         println!(
@@ -286,9 +277,6 @@ impl App {
         ui_renderer.create_pipeline(&context.device, render_pass, vk::SampleCountFlags::N1);
 
         Self {
-            window,
-            exit_requested: false,
-
             context,
             ui_context,
             ui_platform,
@@ -313,58 +301,31 @@ impl App {
         }
     }
 
-    fn process_event<T>(
+    fn handle_event<T>(
         self: &mut Self,
         event: &Event<'_, T>,
-        _target: &EventLoopWindowTarget<T>,
-        control_flow: &mut ControlFlow,
-    ) -> AppEventResult {
-        let mut result = AppEventResult::None;
+        window: &Window,
+    ) {
         match event {
             Event::NewEvents(_) => {
                 self.last_instant = self.ui_context.io_mut().update_delta_time(self.last_instant);
-            }
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                ..
-            } => {
-                self.exit_requested = true;
-            }
-            Event::MainEventsCleared => {
-                self.ui_platform
-                    .prepare_frame(self.ui_context.io_mut(), &self.window)
-                    .expect("failed to prepare frame");
-                self.window.request_redraw();
-            }
-            Event::RedrawRequested(_) => {
-                result = AppEventResult::Redraw;
-            }
-            Event::LoopDestroyed => {
-                result = AppEventResult::Destroy;
-            }
-            event => {
-                self.ui_platform
-                    .handle_event(self.ui_context.io_mut(), &self.window, &event);
-            }
+            },
+            _ => {}
         }
-
-        *control_flow = if self.exit_requested {
-            ControlFlow::Exit
-        } else {
-            ControlFlow::Poll
-        };
-
-        result
+        self.ui_platform
+            .handle_event(self.ui_context.io_mut(), &window, &event);
     }
 
-    fn render(&mut self) {
+    fn render(&mut self, window: &Window, exit_requested: &mut bool) {
         // start creating UI for this frame
+        self.ui_platform
+            .prepare_frame(self.ui_context.io_mut(), &window)
+            .expect("failed to prepare frame");
         let ui = self.ui_context.frame();
 
         {
             // show some test UI
             let frame_index = self.frame_index;
-            let exit_requested = &mut self.exit_requested;
             imgui::Window::new(im_str!("Debug"))
                 .size([300.0, 100.0], imgui::Condition::FirstUseEver)
                 .build(&ui, || {
@@ -376,7 +337,7 @@ impl App {
 
             // also exit if ESC is pressed
             if ui.is_key_pressed(ui.key_index(Key::Escape)) {
-                self.exit_requested = true;
+                *exit_requested = true;
             }
         }
 
@@ -492,7 +453,7 @@ impl App {
         }
 
         // draw imgui in the same render pass
-        self.ui_platform.prepare_render(&ui, &self.window);
+        self.ui_platform.prepare_render(&ui, &window);
         self.ui_renderer.render(ui.render(), &self.context.device, cmd);
 
         // end the render pass to the swapchain
@@ -546,16 +507,40 @@ fn main() {
     };
     let window = window_builder.build(&event_loop).unwrap();
 
-    let mut app = Some(App::new(window, version, is_debug));
-    event_loop.run(move |event, target, control_flow| {
-        match app.as_mut().unwrap().process_event(&event, target, control_flow) {
-            AppEventResult::None => {}
-            AppEventResult::Redraw => {
-                app.as_mut().unwrap().render();
-            }
-            AppEventResult::Destroy => {
+    let mut app = Some(App::new(&window, version, is_debug));
+    let mut exit_requested = false;
+    event_loop.run(move |event, _target, control_flow| {
+        match event {
+            Event::Resumed => {
+                if app.is_none() {
+                    app = Some(App::new(&window, version, is_debug));
+                }
+            },
+            Event::Suspended | Event::LoopDestroyed => {
                 app.take();
             }
+            Event::WindowEvent {
+                event: WindowEvent::CloseRequested,
+                ..
+            } => {
+                exit_requested = true;
+            }
+            Event::MainEventsCleared => {
+                if let Some(app) = app.as_mut() {
+                    app.render(&window, &mut exit_requested);
+                }
+            }
+            event => {
+                if let Some(app) = app.as_mut() {
+                    app.handle_event(&event, &window);
+                }
+            }
         }
+
+        *control_flow = if exit_requested {
+            ControlFlow::Exit
+        } else {
+            ControlFlow::Poll
+        };
     });
 }
