@@ -65,10 +65,10 @@ impl From<vk::Result> for LoaderError {
 
 pub type LoaderResult<T> = result::Result<T, LoaderError>;
 
-#[cfg(unix)]
+#[cfg(target_os = "linux")]
 const DL_PATH: &str = "libvulkan.so.1";
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 const DL_PATH: &str = "vulkan-1.dll";
 
 impl Lib {

@@ -137,6 +137,8 @@ A minimal console application that runs a compute shader to fill some memory.  S
 
 ### [`graphics`](https://github.com/sjb3d/vkr/blob/master/examples/graphics)
 
-A minimal windowed application that draws a triangle and some UI.
+A minimal windowed application that draws a spinning triangle and some UI.
 * Uses [`winit`](https://github.com/rust-windowing/winit) for windowing
 * Demonstrates [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) as a renderer for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)).
+
+![graphics](https://raw.githubusercontent.com/sjb3d/vkr/master/docs/graphics.png)
