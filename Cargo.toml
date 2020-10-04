@@ -4,5 +4,5 @@ members = [
     "vkr",
     "vkr-imgui",
     "examples/compute",
-    "examples/graphics",
+    "examples/graphics"
 ]

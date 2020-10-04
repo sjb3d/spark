@@ -11,6 +11,9 @@ pub fn extension_names(window: &Window) -> Vec<&'static CStr> {
         #[cfg(target_os = "windows")]
         RawWindowHandle::Windows(..) => vec![Instance::khr_surface_name(), Instance::khr_win32_surface_name()],
 
+        #[cfg(target_os = "android")]
+        RawWindowHandle::Android(..) => vec![Instance::khr_surface_name(), Instance::khr_android_surface_name()],
+
         _ => unimplemented!(),
     }
 }
@@ -34,6 +37,15 @@ pub fn create(instance: &Instance, window: &Window) -> Result<vk::SurfaceKHR> {
                 ..Default::default()
             };
             unsafe { instance.create_win32_surface_khr(&create_info, None) }
+        }
+
+        #[cfg(target_os = "android")]
+        RawWindowHandle::Android(handle) => {
+            let create_info = vk::AndroidSurfaceCreateInfoKHR {
+                window: handle.a_native_window as _,
+                ..Default::default()
+            };
+            unsafe { instance.create_android_surface_khr(&create_info, None) }
         }
 
         _ => unimplemented!(),

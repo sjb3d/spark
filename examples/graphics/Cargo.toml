@@ -5,6 +5,9 @@ authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
 publish = false
 
+[lib]
+crate-type = [ "lib", "cdylib" ]
+
 [dependencies]
 vkr = { path = "../../vkr" }
 vkr-imgui = { path = "../../vkr-imgui" }
@@ -12,3 +15,6 @@ winit = "0.22"
 raw-window-handle = "0.3"
 imgui = "0.5"
 imgui-winit-support = "0.5"
+
+[target.'cfg(target_os = "android")'.dependencies]
+ndk-glue = "0.2"

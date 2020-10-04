@@ -482,7 +482,8 @@ impl Drop for App {
     }
 }
 
-fn main() {
+#[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "on"))]
+pub fn main() {
     let version = Default::default();
     let mut is_debug = false;
     let mut is_fullscreen = false;
@@ -497,14 +498,23 @@ fn main() {
     let event_loop = EventLoop::new();
 
     let mut window_builder = WindowBuilder::new().with_title("graphics example");
-    window_builder = if is_fullscreen {
-        window_builder.with_fullscreen(Some(Fullscreen::Borderless(event_loop.primary_monitor())))
+    if cfg!(target_os = "android") {
+        // use window_builder defaults
     } else {
-        window_builder.with_inner_size(Size::Logical(LogicalSize::new(480.0, 360.0)))
-    };
+        window_builder = if is_fullscreen {
+            window_builder.with_fullscreen(Some(Fullscreen::Borderless(event_loop.primary_monitor())))
+        } else {
+            window_builder.with_inner_size(Size::Logical(LogicalSize::new(480.0, 360.0)))
+        };
+    }
     let window = window_builder.build(&event_loop).unwrap();
 
-    let mut app = Some(App::new(&window, version, is_debug));
+    let mut app = if cfg!(target_os = "android") {
+        None
+    } else {
+        Some(App::new(&window, version, is_debug))
+    };
+
     let mut exit_requested = false;
     event_loop.run(move |event, _target, control_flow| {
         match event {

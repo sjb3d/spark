@@ -80,6 +80,9 @@ const DL_PATH: &str = "libvulkan.so.1";
 #[cfg(target_os = "windows")]
 const DL_PATH: &str = "vulkan-1.dll";
 
+#[cfg(target_os = "android")]
+const DL_PATH: &str = "libvulkan.so";
+
 impl Lib {
     pub fn new() -> LoaderResult<Self> {
         match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
