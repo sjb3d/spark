@@ -9443,6 +9443,73 @@ impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct DeviceMemoryReportFlagsEXT(u32);
+impl DeviceMemoryReportFlagsEXT {}
+impl default::Default for DeviceMemoryReportFlagsEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl DeviceMemoryReportFlagsEXT {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for DeviceMemoryReportFlagsEXT {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for DeviceMemoryReportFlagsEXT {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for DeviceMemoryReportFlagsEXT {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for DeviceMemoryReportFlagsEXT {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for DeviceMemoryReportFlagsEXT {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for DeviceMemoryReportFlagsEXT {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for DeviceMemoryReportFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationConservativeStateCreateFlagsEXT(u32);
 impl PipelineRasterizationConservativeStateCreateFlagsEXT {}
 impl default::Default for PipelineRasterizationConservativeStateCreateFlagsEXT {
@@ -13048,6 +13115,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
     /// Added by extension VK_AMD_device_coherent_memory.
     pub const PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD: Self = Self(1000229000);
+    /// Added by extension VK_EXT_shader_image_atomic_int64.
+    pub const PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT: Self = Self(1000234000);
     /// Added by extension VK_EXT_memory_budget.
     pub const PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT: Self = Self(1000237000);
     /// Added by extension VK_EXT_memory_priority.
@@ -13159,6 +13228,12 @@ impl StructureType {
     pub const COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM: Self = Self(1000282000);
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM: Self = Self(1000282001);
+    /// Added by extension VK_EXT_device_memory_report.
+    pub const PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT: Self = Self(1000284000);
+    /// Added by extension VK_EXT_device_memory_report.
+    pub const DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT: Self = Self(1000284001);
+    /// Added by extension VK_EXT_device_memory_report.
+    pub const DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT: Self = Self(1000284002);
     /// Added by extension VK_EXT_robustness2.
     pub const PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT: Self = Self(1000286000);
     /// Added by extension VK_EXT_robustness2.
@@ -13608,6 +13683,7 @@ impl fmt::Display for StructureType {
             1000225002 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT"),
             1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
             1000229000 => Some(&"PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD"),
+            1000234000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT"),
             1000237000 => Some(&"PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT"),
             1000238000 => Some(&"PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT"),
             1000238001 => Some(&"MEMORY_PRIORITY_ALLOCATE_INFO_EXT"),
@@ -13655,6 +13731,9 @@ impl fmt::Display for StructureType {
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
             1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
+            1000284000 => Some(&"PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT"),
+            1000284001 => Some(&"DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT"),
+            1000284002 => Some(&"DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT"),
             1000286000 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT"),
             1000286001 => Some(&"PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT"),
             1000287000 => Some(&"SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT"),
@@ -15173,6 +15252,38 @@ impl fmt::Display for DebugReportObjectTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DeviceMemoryReportEventTypeEXT(i32);
+impl DeviceMemoryReportEventTypeEXT {
+    pub const ALLOCATE: Self = Self(0);
+    pub const FREE: Self = Self(1);
+    pub const IMPORT: Self = Self(2);
+    pub const UNIMPORT: Self = Self(3);
+    pub const ALLOCATION_FAILED: Self = Self(4);
+}
+impl default::Default for DeviceMemoryReportEventTypeEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for DeviceMemoryReportEventTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"ALLOCATE"),
+            1 => Some(&"FREE"),
+            2 => Some(&"IMPORT"),
+            3 => Some(&"UNIMPORT"),
+            4 => Some(&"ALLOCATION_FAILED"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RasterizationOrderAMD(i32);
 impl RasterizationOrderAMD {
     pub const STRICT: Self = Self(0);
@@ -15883,6 +15994,10 @@ pub type FnDebugUtilsMessengerCallbackEXT = unsafe extern "system" fn(
     p_callback_data: *const DebugUtilsMessengerCallbackDataEXT,
     p_user_data: *mut c_void,
 ) -> Bool32;
+pub type FnDeviceMemoryReportCallbackEXT = unsafe extern "system" fn(
+    p_callback_data: *const DeviceMemoryReportCallbackDataEXT,
+    p_user_data: *mut c_void,
+) -> c_void;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BaseOutStructure {
@@ -27469,6 +27584,112 @@ impl fmt::Debug for DebugUtilsMessengerCallbackDataEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDeviceMemoryReportFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_memory_report: Bool32,
+}
+impl default::Default for PhysicalDeviceDeviceMemoryReportFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            device_memory_report: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDeviceMemoryReportFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDeviceMemoryReportFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_memory_report", &self.device_memory_report)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceDeviceMemoryReportCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: DeviceMemoryReportFlagsEXT,
+    pub pfn_user_callback: Option<FnDeviceMemoryReportCallbackEXT>,
+    pub p_user_data: *mut c_void,
+}
+impl default::Default for DeviceDeviceMemoryReportCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: DeviceMemoryReportFlagsEXT::default(),
+            pfn_user_callback: None,
+            p_user_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DeviceDeviceMemoryReportCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceDeviceMemoryReportCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field(
+                "pfn_user_callback",
+                if self.pfn_user_callback.is_some() {
+                    &"Some"
+                } else {
+                    &"None"
+                },
+            )
+            .field("p_user_data", &self.p_user_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceMemoryReportCallbackDataEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: DeviceMemoryReportFlagsEXT,
+    pub ty: DeviceMemoryReportEventTypeEXT,
+    pub memory_object_id: u64,
+    pub size: DeviceSize,
+    pub object_type: ObjectType,
+    pub object_handle: u64,
+    pub heap_index: u32,
+}
+impl default::Default for DeviceMemoryReportCallbackDataEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT,
+            p_next: ptr::null(),
+            flags: DeviceMemoryReportFlagsEXT::default(),
+            ty: DeviceMemoryReportEventTypeEXT::default(),
+            memory_object_id: u64::default(),
+            size: DeviceSize::default(),
+            object_type: ObjectType::default(),
+            object_handle: u64::default(),
+            heap_index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceMemoryReportCallbackDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceMemoryReportCallbackDataEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("ty", &self.ty)
+            .field("memory_object_id", &self.memory_object_id)
+            .field("size", &self.size)
+            .field("object_type", &self.object_type)
+            .field("object_handle", &self.object_handle)
+            .field("heap_index", &self.heap_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ImportMemoryHostPointerInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -35724,6 +35945,34 @@ impl fmt::Debug for ResolveImageInfo2KHR {
             .field("dst_image_layout", &self.dst_image_layout)
             .field("region_count", &self.region_count)
             .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_image_int64_atomics: Bool32,
+    pub sparse_image_int64_atomics: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_image_int64_atomics: Bool32::default(),
+            sparse_image_int64_atomics: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderImageAtomicInt64FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_image_int64_atomics", &self.shader_image_int64_atomics)
+            .field("sparse_image_int64_atomics", &self.sparse_image_int64_atomics)
             .finish()
     }
 }

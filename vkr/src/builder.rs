@@ -7986,6 +7986,74 @@ impl<'a> Deref for DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT {
+    type Type = PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT,
+}
+impl PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_memory_report(mut self, device_memory_report: bool) -> Self {
+        self.inner.device_memory_report = if device_memory_report { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DeviceDeviceMemoryReportCreateInfoEXT {
+    type Type = DeviceDeviceMemoryReportCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceDeviceMemoryReportCreateInfoEXTBuilder {
+    inner: vk::DeviceDeviceMemoryReportCreateInfoEXT,
+}
+impl DeviceDeviceMemoryReportCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DeviceMemoryReportFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn pfn_user_callback(mut self, pfn_user_callback: vk::FnDeviceMemoryReportCallbackEXT) -> Self {
+        self.inner.pfn_user_callback = Some(pfn_user_callback);
+        self
+    }
+    pub fn p_user_data(mut self, p_user_data: *mut c_void) -> Self {
+        self.inner.p_user_data = p_user_data;
+        self
+    }
+}
+impl Deref for DeviceDeviceMemoryReportCreateInfoEXTBuilder {
+    type Target = vk::DeviceDeviceMemoryReportCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::ImportMemoryHostPointerInfoEXT {
     type Type = ImportMemoryHostPointerInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -15197,6 +15265,48 @@ impl<'a> ResolveImageInfo2KHRBuilder<'a> {
 }
 impl<'a> Deref for ResolveImageInfo2KHRBuilder<'a> {
     type Target = vk::ResolveImageInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
+    type Type = PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT,
+}
+impl PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_image_int64_atomics(mut self, shader_image_int64_atomics: bool) -> Self {
+        self.inner.shader_image_int64_atomics = if shader_image_int64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sparse_image_int64_atomics(mut self, sparse_image_int64_atomics: bool) -> Self {
+        self.inner.sparse_image_int64_atomics = if sparse_image_int64_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

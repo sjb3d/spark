@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 154
+//! Generated from vk.xml with `VK_HEADER_VERSION` 156
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2807,6 +2807,7 @@ pub struct DeviceExtensions {
     pub ext_subgroup_size_control: bool,
     pub amd_shader_core_properties2: bool,
     pub amd_device_coherent_memory: bool,
+    pub ext_shader_image_atomic_int64: bool,
     pub khr_spirv_1_4: bool,
     pub ext_memory_budget: bool,
     pub ext_memory_priority: bool,
@@ -2833,6 +2834,7 @@ pub struct DeviceExtensions {
     pub nv_device_generated_commands: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
+    pub ext_device_memory_report: bool,
     pub ext_robustness2: bool,
     pub ext_custom_border_color: bool,
     pub google_user_type: bool,
@@ -3631,6 +3633,9 @@ impl Device {
     pub fn amd_device_coherent_memory_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_device_coherent_memory\0") }
     }
+    pub fn ext_shader_image_atomic_int64_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_image_atomic_int64\0") }
+    }
     pub fn khr_spirv_1_4_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_spirv_1_4\0") }
     }
@@ -3708,6 +3713,9 @@ impl Device {
     }
     pub fn qcom_render_pass_transform_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") }
+    }
+    pub fn ext_device_memory_report_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_memory_report\0") }
     }
     pub fn ext_robustness2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_robustness2\0") }
@@ -3907,6 +3915,7 @@ impl Device {
                     b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
                     b"VK_AMD_shader_core_properties2" => extensions.amd_shader_core_properties2 = true,
                     b"VK_AMD_device_coherent_memory" => extensions.amd_device_coherent_memory = true,
+                    b"VK_EXT_shader_image_atomic_int64" => extensions.ext_shader_image_atomic_int64 = true,
                     b"VK_KHR_spirv_1_4" => extensions.khr_spirv_1_4 = true,
                     b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
                     b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
@@ -3937,6 +3946,7 @@ impl Device {
                     b"VK_NV_device_generated_commands" => extensions.nv_device_generated_commands = true,
                     b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
                     b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
+                    b"VK_EXT_device_memory_report" => extensions.ext_device_memory_report = true,
                     b"VK_EXT_robustness2" => extensions.ext_robustness2 = true,
                     b"VK_EXT_custom_border_color" => extensions.ext_custom_border_color = true,
                     b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
