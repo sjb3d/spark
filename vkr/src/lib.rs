@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 156
+//! Generated from vk.xml with `VK_HEADER_VERSION` 158
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2800,11 +2800,13 @@ pub struct DeviceExtensions {
     pub khr_vulkan_memory_model: bool,
     pub ext_pci_bus_info: bool,
     pub amd_display_native_hdr: bool,
+    pub khr_shader_terminate_invocation: bool,
     pub ext_fragment_density_map: bool,
     pub ext_scalar_block_layout: bool,
     pub google_hlsl_functionality1: bool,
     pub google_decorate_string: bool,
     pub ext_subgroup_size_control: bool,
+    pub khr_fragment_shading_rate: bool,
     pub amd_shader_core_properties2: bool,
     pub amd_device_coherent_memory: bool,
     pub ext_shader_image_atomic_int64: bool,
@@ -3208,6 +3210,8 @@ pub struct Device {
     pub fp_cmd_copy_buffer_to_image2_khr: Option<vk::FnCmdCopyBufferToImage2KHR>,
     pub fp_cmd_copy_image_to_buffer2_khr: Option<vk::FnCmdCopyImageToBuffer2KHR>,
     pub fp_cmd_resolve_image2_khr: Option<vk::FnCmdResolveImage2KHR>,
+    pub fp_cmd_set_fragment_shading_rate_khr: Option<vk::FnCmdSetFragmentShadingRateKHR>,
+    pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
 }
 impl Device {
     pub fn khr_swapchain_name() -> &'static CStr {
@@ -3612,6 +3616,9 @@ impl Device {
     pub fn amd_display_native_hdr_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_display_native_hdr\0") }
     }
+    pub fn khr_shader_terminate_invocation_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_terminate_invocation\0") }
+    }
     pub fn ext_fragment_density_map_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map\0") }
     }
@@ -3626,6 +3633,9 @@ impl Device {
     }
     pub fn ext_subgroup_size_control_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subgroup_size_control\0") }
+    }
+    pub fn khr_fragment_shading_rate_name() -> &'static CStr {
+        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_fragment_shading_rate\0") }
     }
     pub fn amd_shader_core_properties2_name() -> &'static CStr {
         unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties2\0") }
@@ -3908,11 +3918,13 @@ impl Device {
                     b"VK_KHR_vulkan_memory_model" => extensions.khr_vulkan_memory_model = true,
                     b"VK_EXT_pci_bus_info" => extensions.ext_pci_bus_info = true,
                     b"VK_AMD_display_native_hdr" => extensions.amd_display_native_hdr = true,
+                    b"VK_KHR_shader_terminate_invocation" => extensions.khr_shader_terminate_invocation = true,
                     b"VK_EXT_fragment_density_map" => extensions.ext_fragment_density_map = true,
                     b"VK_EXT_scalar_block_layout" => extensions.ext_scalar_block_layout = true,
                     b"VK_GOOGLE_hlsl_functionality1" => extensions.google_hlsl_functionality1 = true,
                     b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
                     b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
+                    b"VK_KHR_fragment_shading_rate" => extensions.khr_fragment_shading_rate = true,
                     b"VK_AMD_shader_core_properties2" => extensions.amd_shader_core_properties2 = true,
                     b"VK_AMD_device_coherent_memory" => extensions.amd_device_coherent_memory = true,
                     b"VK_EXT_shader_image_atomic_int64" => extensions.ext_shader_image_atomic_int64 = true,
@@ -6479,6 +6491,20 @@ impl Device {
             },
             fp_cmd_resolve_image2_khr: if extensions.khr_copy_commands2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResolveImage2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_fragment_shading_rate_khr: if extensions.khr_fragment_shading_rate {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetFragmentShadingRateKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_fragment_shading_rates_khr: if extensions.khr_fragment_shading_rate {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceFragmentShadingRatesKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11845,6 +11871,38 @@ impl Device {
             .fp_cmd_resolve_image2_khr
             .expect("vkCmdResolveImage2KHR is not loaded");
         (fp)(Some(command_buffer), p_resolve_image_info);
+    }
+    pub unsafe fn cmd_set_fragment_shading_rate_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_fragment_size: &vk::Extent2D,
+        combiner_ops: [vk::FragmentShadingRateCombinerOpKHR; 2],
+    ) {
+        let fp = self
+            .fp_cmd_set_fragment_shading_rate_khr
+            .expect("vkCmdSetFragmentShadingRateKHR is not loaded");
+        (fp)(Some(command_buffer), p_fragment_size, combiner_ops.as_ptr());
+    }
+    pub unsafe fn get_physical_device_fragment_shading_rates_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::PhysicalDeviceFragmentShadingRateKHR>> {
+        let fp = self
+            .fp_get_physical_device_fragment_shading_rates_khr
+            .expect("vkGetPhysicalDeviceFragmentShadingRatesKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
     }
 }
 

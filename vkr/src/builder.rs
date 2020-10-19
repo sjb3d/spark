@@ -15311,3 +15311,155 @@ impl Deref for PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::FragmentShadingRateAttachmentInfoKHR {
+    type Type = FragmentShadingRateAttachmentInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
+    inner: vk::FragmentShadingRateAttachmentInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_fragment_shading_rate_attachment(
+        mut self,
+        p_fragment_shading_rate_attachment: &'a vk::AttachmentReference2,
+    ) -> Self {
+        self.inner.p_fragment_shading_rate_attachment = p_fragment_shading_rate_attachment;
+        self
+    }
+    pub fn shading_rate_attachment_texel_size(mut self, shading_rate_attachment_texel_size: vk::Extent2D) -> Self {
+        self.inner.shading_rate_attachment_texel_size = shading_rate_attachment_texel_size;
+        self
+    }
+}
+impl<'a> Deref for FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
+    type Target = vk::FragmentShadingRateAttachmentInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineFragmentShadingRateStateCreateInfoKHR {
+    type Type = PipelineFragmentShadingRateStateCreateInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
+    inner: vk::PipelineFragmentShadingRateStateCreateInfoKHR,
+}
+impl PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_size(mut self, fragment_size: vk::Extent2D) -> Self {
+        self.inner.fragment_size = fragment_size;
+        self
+    }
+}
+impl Deref for PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
+    type Target = vk::PipelineFragmentShadingRateStateCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateFeaturesKHR {
+    type Type = PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceFragmentShadingRateFeaturesKHR,
+}
+impl PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_fragment_shading_rate(mut self, pipeline_fragment_shading_rate: bool) -> Self {
+        self.inner.pipeline_fragment_shading_rate = if pipeline_fragment_shading_rate {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn primitive_fragment_shading_rate(mut self, primitive_fragment_shading_rate: bool) -> Self {
+        self.inner.primitive_fragment_shading_rate = if primitive_fragment_shading_rate {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn attachment_fragment_shading_rate(mut self, attachment_fragment_shading_rate: bool) -> Self {
+        self.inner.attachment_fragment_shading_rate = if attachment_fragment_shading_rate {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceFragmentShadingRateFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
+    type Type = PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR,
+}
+impl PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_terminate_invocation(mut self, shader_terminate_invocation: bool) -> Self {
+        self.inner.shader_terminate_invocation = if shader_terminate_invocation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

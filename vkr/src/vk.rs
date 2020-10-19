@@ -1967,6 +1967,7 @@ impl AccessFlags {
     pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::ACCELERATION_STRUCTURE_WRITE_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self::SHADING_RATE_IMAGE_READ_NV;
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
     /// Added by extension VK_NV_device_generated_commands.
@@ -2458,6 +2459,7 @@ impl ImageUsageFlags {
     pub const RESERVED_17_QCOM: Self = Self(0x20000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
 }
 impl default::Default for ImageUsageFlags {
     fn default() -> Self {
@@ -3157,8 +3159,8 @@ impl FormatFeatureFlags {
     pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_IMG;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
-    /// Added by extension VK_AMD_extension_227.
-    pub const AMD_RESERVED_30: Self = Self(0x40000000);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x40000000);
 }
 impl default::Default for FormatFeatureFlags {
     fn default() -> Self {
@@ -3259,7 +3261,7 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x4000000, "RESERVED_26_KHR"),
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
-                (0x40000000, "AMD_RESERVED_30"),
+                (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
             ],
             f,
         )
@@ -4428,6 +4430,7 @@ impl PipelineStageFlags {
     pub const MESH_SHADER_NV: Self = Self(0x100000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
 }
@@ -10953,6 +10956,8 @@ impl DynamicState {
     pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = Self(1000164006);
     /// Added by extension VK_NV_scissor_exclusive.
     pub const EXCLUSIVE_SCISSOR_NV: Self = Self(1000205001);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_KHR: Self = Self(1000226000);
     /// Added by extension VK_EXT_line_rasterization.
     pub const LINE_STIPPLE_EXT: Self = Self(1000259000);
     /// Added by extension VK_EXT_extended_dynamic_state.
@@ -11003,6 +11008,7 @@ impl fmt::Display for DynamicState {
             1000164004 => Some(&"VIEWPORT_SHADING_RATE_PALETTE_NV"),
             1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
             1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
+            1000226000 => Some(&"FRAGMENT_SHADING_RATE_KHR"),
             1000259000 => Some(&"LINE_STIPPLE_EXT"),
             1000267000 => Some(&"CULL_MODE_EXT"),
             1000267001 => Some(&"FRONT_FACE_EXT"),
@@ -11776,6 +11782,7 @@ impl ImageLayout {
     pub const SHADING_RATE_OPTIMAL_NV: Self = Self(1000164003);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR: Self = Self::SHADING_RATE_OPTIMAL_NV;
     pub const DEPTH_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_OPTIMAL;
     pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_OPTIMAL;
     pub const STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::STENCIL_ATTACHMENT_OPTIMAL;
@@ -12943,8 +12950,6 @@ impl StructureType {
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT: Self = Self(1000158000);
     /// Added by extension VK_EXT_image_drm_format_modifier.
-    pub const DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = Self(1000158001);
-    /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT: Self = Self(1000158002);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT: Self = Self(1000158003);
@@ -13095,6 +13100,8 @@ impl StructureType {
     pub const SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD: Self = Self(1000213001);
     /// Added by extension VK_FUCHSIA_imagepipe_surface.
     pub const IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA: Self = Self(1000214000);
+    /// Added by extension VK_KHR_shader_terminate_invocation.
+    pub const PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES_KHR: Self = Self(1000215000);
     /// Added by extension VK_EXT_metal_surface.
     pub const METAL_SURFACE_CREATE_INFO_EXT: Self = Self(1000217000);
     /// Added by extension VK_EXT_fragment_density_map.
@@ -13111,6 +13118,16 @@ impl StructureType {
     pub const PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self = Self(1000225001);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT: Self = Self(1000225002);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR: Self = Self(1000226000);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR: Self = Self(1000226001);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR: Self = Self(1000226002);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR: Self = Self(1000226003);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR: Self = Self(1000226004);
     /// Added by extension VK_AMD_shader_core_properties2.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD: Self = Self(1000227000);
     /// Added by extension VK_AMD_device_coherent_memory.
@@ -13615,7 +13632,6 @@ impl fmt::Display for StructureType {
             1000154000 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV"),
             1000154001 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV"),
             1000158000 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT"),
-            1000158001 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
             1000158002 => Some(&"PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT"),
             1000158003 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
             1000158004 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT"),
@@ -13674,6 +13690,7 @@ impl fmt::Display for StructureType {
             1000213000 => Some(&"DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD"),
             1000213001 => Some(&"SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD"),
             1000214000 => Some(&"IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA"),
+            1000215000 => Some(&"PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES_KHR"),
             1000217000 => Some(&"METAL_SURFACE_CREATE_INFO_EXT"),
             1000218000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT"),
             1000218001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT"),
@@ -13681,6 +13698,11 @@ impl fmt::Display for StructureType {
             1000225000 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES_EXT"),
             1000225001 => Some(&"PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT"),
             1000225002 => Some(&"PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES_EXT"),
+            1000226000 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR"),
+            1000226001 => Some(&"PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR"),
+            1000226002 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR"),
+            1000226003 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR"),
+            1000226004 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR"),
             1000227000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD"),
             1000229000 => Some(&"PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD"),
             1000234000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT"),
@@ -15731,6 +15753,38 @@ impl fmt::Display for ShaderFloatControlsIndependence {
     }
 }
 pub type ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct FragmentShadingRateCombinerOpKHR(i32);
+impl FragmentShadingRateCombinerOpKHR {
+    pub const KEEP: Self = Self(0);
+    pub const REPLACE: Self = Self(1);
+    pub const MIN: Self = Self(2);
+    pub const MAX: Self = Self(3);
+    pub const MUL: Self = Self(4);
+}
+impl default::Default for FragmentShadingRateCombinerOpKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for FragmentShadingRateCombinerOpKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"KEEP"),
+            1 => Some(&"REPLACE"),
+            2 => Some(&"MIN"),
+            3 => Some(&"MAX"),
+            4 => Some(&"MUL"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VendorId(i32);
@@ -35976,6 +36030,273 @@ impl fmt::Debug for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FragmentShadingRateAttachmentInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_fragment_shading_rate_attachment: *const AttachmentReference2,
+    pub shading_rate_attachment_texel_size: Extent2D,
+}
+impl default::Default for FragmentShadingRateAttachmentInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
+            p_next: ptr::null(),
+            p_fragment_shading_rate_attachment: ptr::null(),
+            shading_rate_attachment_texel_size: Extent2D::default(),
+        }
+    }
+}
+impl fmt::Debug for FragmentShadingRateAttachmentInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FragmentShadingRateAttachmentInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "p_fragment_shading_rate_attachment",
+                &self.p_fragment_shading_rate_attachment,
+            )
+            .field(
+                "shading_rate_attachment_texel_size",
+                &self.shading_rate_attachment_texel_size,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineFragmentShadingRateStateCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub fragment_size: Extent2D,
+    pub combiner_ops: [FragmentShadingRateCombinerOpKHR; 2],
+}
+impl default::Default for PipelineFragmentShadingRateStateCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            fragment_size: Extent2D::default(),
+            combiner_ops: [FragmentShadingRateCombinerOpKHR::default(); 2],
+        }
+    }
+}
+impl fmt::Debug for PipelineFragmentShadingRateStateCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineFragmentShadingRateStateCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_size", &self.fragment_size)
+            .field("combiner_ops", &self.combiner_ops)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShadingRateFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_fragment_shading_rate: Bool32,
+    pub primitive_fragment_shading_rate: Bool32,
+    pub attachment_fragment_shading_rate: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentShadingRateFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            pipeline_fragment_shading_rate: Bool32::default(),
+            primitive_fragment_shading_rate: Bool32::default(),
+            attachment_fragment_shading_rate: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShadingRateFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShadingRateFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_fragment_shading_rate", &self.pipeline_fragment_shading_rate)
+            .field("primitive_fragment_shading_rate", &self.primitive_fragment_shading_rate)
+            .field(
+                "attachment_fragment_shading_rate",
+                &self.attachment_fragment_shading_rate,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShadingRatePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub min_fragment_shading_rate_attachment_texel_size: Extent2D,
+    pub max_fragment_shading_rate_attachment_texel_size: Extent2D,
+    pub max_fragment_shading_rate_attachment_texel_size_aspect_ratio: u32,
+    pub primitive_fragment_shading_rate_with_multiple_viewports: Bool32,
+    pub layered_shading_rate_attachments: Bool32,
+    pub fragment_shading_rate_non_trivial_combiner_ops: Bool32,
+    pub max_fragment_size: Extent2D,
+    pub max_fragment_size_aspect_ratio: u32,
+    pub max_fragment_shading_rate_coverage_samples: u32,
+    pub max_fragment_shading_rate_rasterization_samples: SampleCountFlags,
+    pub fragment_shading_rate_with_shader_depth_stencil_writes: Bool32,
+    pub fragment_shading_rate_with_sample_mask: Bool32,
+    pub fragment_shading_rate_with_shader_sample_mask: Bool32,
+    pub fragment_shading_rate_with_conservative_rasterization: Bool32,
+    pub fragment_shading_rate_with_fragment_shader_interlock: Bool32,
+    pub fragment_shading_rate_with_custom_sample_locations: Bool32,
+    pub fragment_shading_rate_strict_multiply_combiner: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentShadingRatePropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            min_fragment_shading_rate_attachment_texel_size: Extent2D::default(),
+            max_fragment_shading_rate_attachment_texel_size: Extent2D::default(),
+            max_fragment_shading_rate_attachment_texel_size_aspect_ratio: u32::default(),
+            primitive_fragment_shading_rate_with_multiple_viewports: Bool32::default(),
+            layered_shading_rate_attachments: Bool32::default(),
+            fragment_shading_rate_non_trivial_combiner_ops: Bool32::default(),
+            max_fragment_size: Extent2D::default(),
+            max_fragment_size_aspect_ratio: u32::default(),
+            max_fragment_shading_rate_coverage_samples: u32::default(),
+            max_fragment_shading_rate_rasterization_samples: SampleCountFlags::default(),
+            fragment_shading_rate_with_shader_depth_stencil_writes: Bool32::default(),
+            fragment_shading_rate_with_sample_mask: Bool32::default(),
+            fragment_shading_rate_with_shader_sample_mask: Bool32::default(),
+            fragment_shading_rate_with_conservative_rasterization: Bool32::default(),
+            fragment_shading_rate_with_fragment_shader_interlock: Bool32::default(),
+            fragment_shading_rate_with_custom_sample_locations: Bool32::default(),
+            fragment_shading_rate_strict_multiply_combiner: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShadingRatePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShadingRatePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "min_fragment_shading_rate_attachment_texel_size",
+                &self.min_fragment_shading_rate_attachment_texel_size,
+            )
+            .field(
+                "max_fragment_shading_rate_attachment_texel_size",
+                &self.max_fragment_shading_rate_attachment_texel_size,
+            )
+            .field(
+                "max_fragment_shading_rate_attachment_texel_size_aspect_ratio",
+                &self.max_fragment_shading_rate_attachment_texel_size_aspect_ratio,
+            )
+            .field(
+                "primitive_fragment_shading_rate_with_multiple_viewports",
+                &self.primitive_fragment_shading_rate_with_multiple_viewports,
+            )
+            .field(
+                "layered_shading_rate_attachments",
+                &self.layered_shading_rate_attachments,
+            )
+            .field(
+                "fragment_shading_rate_non_trivial_combiner_ops",
+                &self.fragment_shading_rate_non_trivial_combiner_ops,
+            )
+            .field("max_fragment_size", &self.max_fragment_size)
+            .field("max_fragment_size_aspect_ratio", &self.max_fragment_size_aspect_ratio)
+            .field(
+                "max_fragment_shading_rate_coverage_samples",
+                &self.max_fragment_shading_rate_coverage_samples,
+            )
+            .field(
+                "max_fragment_shading_rate_rasterization_samples",
+                &self.max_fragment_shading_rate_rasterization_samples,
+            )
+            .field(
+                "fragment_shading_rate_with_shader_depth_stencil_writes",
+                &self.fragment_shading_rate_with_shader_depth_stencil_writes,
+            )
+            .field(
+                "fragment_shading_rate_with_sample_mask",
+                &self.fragment_shading_rate_with_sample_mask,
+            )
+            .field(
+                "fragment_shading_rate_with_shader_sample_mask",
+                &self.fragment_shading_rate_with_shader_sample_mask,
+            )
+            .field(
+                "fragment_shading_rate_with_conservative_rasterization",
+                &self.fragment_shading_rate_with_conservative_rasterization,
+            )
+            .field(
+                "fragment_shading_rate_with_fragment_shader_interlock",
+                &self.fragment_shading_rate_with_fragment_shader_interlock,
+            )
+            .field(
+                "fragment_shading_rate_with_custom_sample_locations",
+                &self.fragment_shading_rate_with_custom_sample_locations,
+            )
+            .field(
+                "fragment_shading_rate_strict_multiply_combiner",
+                &self.fragment_shading_rate_strict_multiply_combiner,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShadingRateKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub sample_counts: SampleCountFlags,
+    pub fragment_size: Extent2D,
+}
+impl default::Default for PhysicalDeviceFragmentShadingRateKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR,
+            p_next: ptr::null_mut(),
+            sample_counts: SampleCountFlags::default(),
+            fragment_size: Extent2D::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShadingRateKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShadingRateKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("sample_counts", &self.sample_counts)
+            .field("fragment_size", &self.fragment_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_terminate_invocation: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_terminate_invocation: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderTerminateInvocationFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_terminate_invocation", &self.shader_terminate_invocation)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -38064,3 +38385,13 @@ pub type FnCmdResolveImage2KHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_resolve_image_info: *const ResolveImageInfo2KHR,
 ) -> c_void;
+pub type FnCmdSetFragmentShadingRateKHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    p_fragment_size: *const Extent2D,
+    combiner_ops: *const FragmentShadingRateCombinerOpKHR,
+) -> c_void;
+pub type FnGetPhysicalDeviceFragmentShadingRatesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_fragment_shading_rate_count: *mut u32,
+    p_fragment_shading_rates: *mut PhysicalDeviceFragmentShadingRateKHR,
+) -> Result;
