@@ -7765,7 +7765,7 @@ impl Device {
         let fp = self
             .fp_cmd_set_blend_constants
             .expect("vkCmdSetBlendConstants is not loaded");
-        (fp)(Some(command_buffer), blend_constants);
+        (fp)(Some(command_buffer), blend_constants.as_ptr());
     }
     pub unsafe fn cmd_set_depth_bounds(
         &self,

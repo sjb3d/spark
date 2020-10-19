@@ -36476,7 +36476,7 @@ pub type FnCmdSetDepthBias = unsafe extern "system" fn(
     depth_bias_slope_factor: f32,
 ) -> c_void;
 pub type FnCmdSetBlendConstants =
-    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: [f32; 4]) -> c_void;
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, blend_constants: *const f32) -> c_void;
 pub type FnCmdSetDepthBounds = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     min_depth_bounds: f32,

@@ -1242,7 +1242,7 @@ impl<'a> Generator<'a> {
             "{}{}{}",
             if ty.array_size.is_some() { "[" } else { "" },
             match ty.decoration {
-                CDecoration::None => "",
+                CDecoration::None | CDecoration::Const => "",
                 CDecoration::Pointer => "* mut ",
                 CDecoration::PointerToConst => "* const ",
                 CDecoration::PointerToPointer => "* mut *mut ",
@@ -1273,7 +1273,7 @@ impl<'a> Generator<'a> {
                     w,
                     "{}: {},",
                     get_rust_variable_name(&decl.name),
-                    self.get_rust_parameter_type(&decl.ty, None),
+                    self.get_rust_parameter_type(&decl.ty.strip_array(), None),
                 )?;
             }
             writeln!(
@@ -1377,7 +1377,9 @@ impl<'a> Generator<'a> {
                                 CDecoration::PointerToConst | CDecoration::PointerToConstPointerToConst => {
                                     "ptr::null()".to_owned()
                                 }
-                                CDecoration::None => self.get_rust_default(decl.ty.name).to_owned(),
+                                CDecoration::None | CDecoration::Const => {
+                                    self.get_rust_default(decl.ty.name).to_owned()
+                                }
                             };
 
                             // write single or array
@@ -1492,7 +1494,7 @@ impl<'a> Generator<'a> {
                         w,
                         "{}: {},",
                         get_rust_variable_name(param.name.to_snake_case().as_str()),
-                        self.get_rust_parameter_type(&param.ty, None),
+                        self.get_rust_parameter_type(&param.ty.strip_array(), None),
                     )?;
                 }
                 writeln!(w, ") -> {};", self.get_rust_parameter_type(&decl.proto.ty, None))?;
@@ -2486,7 +2488,14 @@ impl<'a> Generator<'a> {
                 write!(w, "(fp)(")?;
                 for (cparam, rparam) in decl.parameters.iter().zip(params.iter()) {
                     match rparam.ty {
-                        LibParamType::CDecl | LibParamType::MutRef { .. } | LibParamType::ReturnVecLenShared => {
+                        LibParamType::CDecl => {
+                            if cparam.ty.array_size.is_some() {
+                                write!(w, "{}.as_ptr()", rparam.name)?;
+                            } else {
+                                write!(w, "{}", rparam.name)?;
+                            }
+                        }
+                        LibParamType::MutRef { .. } | LibParamType::ReturnVecLenShared => {
                             write!(w, "{}", rparam.name)?;
                         }
                         LibParamType::MemberHandle => {

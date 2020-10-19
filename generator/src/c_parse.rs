@@ -10,20 +10,40 @@ use nom::{
     IResult,
 };
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CDecoration {
     None,
+    Const,
     Pointer,
     PointerToConst,
     PointerToPointer,
     PointerToConstPointerToConst,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct CType<'a> {
     pub name: &'a str,
     pub decoration: CDecoration,
     pub array_size: Option<&'a str>,
+}
+
+impl<'a> CType<'a> {
+    pub fn strip_array(&self) -> CType<'a> {
+        if self.array_size.is_some() {
+            let decoration = match self.decoration {
+                CDecoration::None => CDecoration::Pointer,
+                CDecoration::Const => CDecoration::PointerToConst,
+                _ => panic!("cannot convert array to pointer type"),
+            };
+            CType {
+                name: self.name,
+                decoration,
+                array_size: None,
+            }
+        } else {
+            Clone::clone(self)
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -116,7 +136,8 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
             ty: CType {
                 name: type_name,
                 decoration: match (const0.is_some(), ptr0.is_some(), const1.is_some(), ptr1.is_some()) {
-                    (false, false, false, false) | (true, false, false, false) => CDecoration::None,
+                    (false, false, false, false) => CDecoration::None,
+                    (true, false, false, false) => CDecoration::Const,
                     (false, true, false, false) => CDecoration::Pointer,
                     (true, true, false, false) => CDecoration::PointerToConst,
                     (false, true, false, true) => CDecoration::PointerToPointer,
