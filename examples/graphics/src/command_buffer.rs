@@ -1,9 +1,10 @@
 use crate::context::*;
 use std::slice;
 use std::sync::Arc;
-use vkr::{vk, Builder, Device};
+use vkr::{vk, Builder};
 
 struct CommandBufferSet {
+    pool: vk::CommandPool,
     command_buffer: vk::CommandBuffer,
     fence: vk::Fence,
     image_available_semaphore: vk::Semaphore,
@@ -11,7 +12,18 @@ struct CommandBufferSet {
 }
 
 impl CommandBufferSet {
-    fn new(device: &Device, pool: vk::CommandPool) -> Self {
+    fn new(context: &Context) -> Self {
+        let device = &context.device;
+
+        let pool = {
+            let command_pool_create_info = vk::CommandPoolCreateInfo {
+                flags: vk::CommandPoolCreateFlags::empty(),
+                queue_family_index: context.queue_family_index,
+                ..Default::default()
+            };
+            unsafe { device.create_command_pool(&command_pool_create_info, None) }.unwrap()
+        };
+
         let command_buffer = {
             let command_buffer_allocate_info = vk::CommandBufferAllocateInfo {
                 command_pool: Some(pool),
@@ -35,6 +47,7 @@ impl CommandBufferSet {
         let rendering_finished_semaphore = unsafe { device.create_semaphore(&Default::default(), None) }.unwrap();
 
         Self {
+            pool,
             command_buffer,
             fence,
             image_available_semaphore,
@@ -45,7 +58,6 @@ impl CommandBufferSet {
 
 pub struct CommandBufferPool {
     context: Arc<Context>,
-    pool: vk::CommandPool,
     sets: [CommandBufferSet; Self::COUNT],
     index: usize,
 }
@@ -54,21 +66,9 @@ impl CommandBufferPool {
     pub const COUNT: usize = 2;
 
     pub fn new(context: &Arc<Context>) -> Self {
-        let device = &context.device;
-
-        let pool = {
-            let command_pool_create_info = vk::CommandPoolCreateInfo {
-                flags: vk::CommandPoolCreateFlags::RESET_COMMAND_BUFFER,
-                queue_family_index: context.queue_family_index,
-                ..Default::default()
-            };
-            unsafe { device.create_command_pool(&command_pool_create_info, None) }.unwrap()
-        };
-
         Self {
             context: Arc::clone(&context),
-            pool,
-            sets: [CommandBufferSet::new(device, pool), CommandBufferSet::new(device, pool)],
+            sets: [CommandBufferSet::new(context), CommandBufferSet::new(context)],
             index: 0,
         }
     }
@@ -93,6 +93,10 @@ impl CommandBufferPool {
         }
 
         unsafe { self.context.device.reset_fences(slice::from_ref(&set.fence)) }.unwrap();
+
+        unsafe {
+            self.context.device.reset_command_pool(set.pool, vk::CommandPoolResetFlags::empty())
+        }.unwrap();
 
         let command_buffer_begin_info = vk::CommandBufferBeginInfo {
             flags: vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT,
@@ -140,11 +144,9 @@ impl Drop for CommandBufferPool {
                 device.destroy_semaphore(Some(set.rendering_finished_semaphore), None);
                 device.destroy_semaphore(Some(set.image_available_semaphore), None);
                 device.destroy_fence(Some(set.fence), None);
-                device.free_command_buffers(self.pool, slice::from_ref(&set.command_buffer));
+                device.free_command_buffers(set.pool, slice::from_ref(&set.command_buffer));
+                device.destroy_command_pool(Some(set.pool), None);
             }
-        }
-        unsafe {
-            device.destroy_command_pool(Some(self.pool), None);
         }
     }
 }
