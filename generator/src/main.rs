@@ -205,10 +205,7 @@ impl GetCommandCategory for vk::CommandDefinition {
                     .params
                     .get(0)
                     .and_then(|param| param.definition.type_name.as_ref())
-                    .map(|type_name| match type_name.as_str() {
-                        "VkDevice" | "VkCommandBuffer" | "VkQueue" => true,
-                        _ => false,
-                    })
+                    .map(|type_name| matches!(type_name.as_str(), "VkDevice" | "VkCommandBuffer" | "VkQueue"))
                     .unwrap_or(false);
                 if is_first_param_from_device {
                     Category::Device
@@ -1652,12 +1649,12 @@ impl<'a> Generator<'a> {
                         continue;
                     }
                 }
-                let needs_lifetime = params.iter().any(|rparam| match rparam.ty {
+                let needs_lifetime = params.iter().any(|rparam| {
+                    matches!(rparam.ty,
                     LibParamType::CStr { .. }
                     | LibParamType::SliceLenShared { .. }
                     | LibParamType::SliceLenSingle { .. }
-                    | LibParamType::Ref { .. } => true,
-                    _ => false,
+                    | LibParamType::Ref { .. })
                 });
                 if decls.iter().any(|decl| decl.ty.decoration != CDecoration::None) {
                     let generics_decl = if needs_lifetime { "<'a>" } else { "" };
@@ -2471,13 +2468,10 @@ impl<'a> Generator<'a> {
                             )?;
                         }
                         LibCommandStyle::Single => {
-                            if !params.iter().any(|rparam| {
-                                if let LibParamType::SliceLenShared { .. } = rparam.ty {
-                                    true
-                                } else {
-                                    false
-                                }
-                            }) {
+                            if !params
+                                .iter()
+                                .any(|rparam| matches!(rparam.ty, LibParamType::SliceLenShared { .. }))
+                            {
                                 write!(w, "assert_eq!({}, 1);", len_expr)?;
                             }
                             write!(w, "let mut v = MaybeUninit::<_>::uninit(); let v_err = ")?;

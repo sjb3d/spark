@@ -102,10 +102,7 @@ pub fn c_parse_int(i: &str) -> i32 {
 }
 
 fn is_ident(c: char) -> bool {
-    match c {
-        'a'..='z' | 'A'..='Z' | '_' | '0'..='9' => true,
-        _ => false,
-    }
+    matches!(c, 'a'..='z' | 'A'..='Z' | '_' | '0'..='9')
 }
 
 fn ident(i: &str) -> Res<&str> {
