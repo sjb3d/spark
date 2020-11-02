@@ -95,8 +95,11 @@ impl CommandBufferPool {
         unsafe { self.context.device.reset_fences(slice::from_ref(&set.fence)) }.unwrap();
 
         unsafe {
-            self.context.device.reset_command_pool(set.pool, vk::CommandPoolResetFlags::empty())
-        }.unwrap();
+            self.context
+                .device
+                .reset_command_pool(set.pool, vk::CommandPoolResetFlags::empty())
+        }
+        .unwrap();
 
         let command_buffer_begin_info = vk::CommandBufferBeginInfo {
             flags: vk::CommandBufferUsageFlags::ONE_TIME_SUBMIT,
