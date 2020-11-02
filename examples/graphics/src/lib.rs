@@ -18,7 +18,6 @@ use std::sync::Arc;
 use std::time::Instant;
 use swapchain::*;
 use vkr::{vk, Builder};
-use vkr_imgui;
 use winit::{
     dpi::{LogicalSize, Size},
     event::{Event, WindowEvent},
@@ -301,7 +300,7 @@ impl App {
         }
     }
 
-    fn handle_event<T>(self: &mut Self, event: &Event<'_, T>, window: &Window) {
+    fn handle_event<T>(&mut self, event: &Event<'_, T>, window: &Window) {
         match event {
             Event::NewEvents(_) => {
                 let now = Instant::now();
