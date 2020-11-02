@@ -1,18 +1,17 @@
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
-use std::ffi::CStr;
-use vkr::{vk, Instance, Result};
+use vkr::{vk, Instance, InstanceExtensions, Result};
 use winit::window::Window;
 
-pub fn extension_names(window: &Window) -> Vec<&'static CStr> {
+pub fn enable_extensions(window: &Window, extensions: &mut InstanceExtensions) {
     match window.raw_window_handle() {
         #[cfg(target_os = "linux")]
-        RawWindowHandle::Xlib(..) => vec![Instance::khr_surface_name(), Instance::khr_xlib_surface_name()],
+        RawWindowHandle::Xlib(..) => extensions.enable_khr_xlib_surface(),
 
         #[cfg(target_os = "windows")]
-        RawWindowHandle::Windows(..) => vec![Instance::khr_surface_name(), Instance::khr_win32_surface_name()],
+        RawWindowHandle::Windows(..) => extensions.enable_khr_win32_surface(),
 
         #[cfg(target_os = "android")]
-        RawWindowHandle::Android(..) => vec![Instance::khr_surface_name(), Instance::khr_android_surface_name()],
+        RawWindowHandle::Android(..) => extensions.enable_khr_android_surface(),
 
         _ => unimplemented!(),
     }

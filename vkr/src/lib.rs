@@ -13,7 +13,7 @@ use shared_library::dynamic_library::DynamicLibrary;
 use std::ffi::CStr;
 use std::mem;
 use std::mem::MaybeUninit;
-use std::os::raw::{c_int, c_void};
+use std::os::raw::{c_char, c_int, c_void};
 use std::path::Path;
 use std::ptr;
 use std::result;
@@ -265,6 +265,816 @@ pub struct InstanceExtensions {
     pub ext_headless_surface: bool,
     pub ext_directfb_surface: bool,
 }
+impl InstanceExtensions {
+    pub fn enable_named(&mut self, name: &CStr) {
+        match name.to_bytes() {
+            b"VK_KHR_surface" => self.khr_surface = true,
+            b"VK_KHR_display" => self.khr_display = true,
+            b"VK_KHR_xlib_surface" => self.khr_xlib_surface = true,
+            b"VK_KHR_xcb_surface" => self.khr_xcb_surface = true,
+            b"VK_KHR_wayland_surface" => self.khr_wayland_surface = true,
+            b"VK_KHR_android_surface" => self.khr_android_surface = true,
+            b"VK_KHR_win32_surface" => self.khr_win32_surface = true,
+            b"VK_EXT_debug_report" => self.ext_debug_report = true,
+            b"VK_NV_external_memory_capabilities" => self.nv_external_memory_capabilities = true,
+            b"VK_KHR_get_physical_device_properties2" => self.khr_get_physical_device_properties2 = true,
+            b"VK_EXT_validation_flags" => self.ext_validation_flags = true,
+            b"VK_NN_vi_surface" => self.nn_vi_surface = true,
+            b"VK_KHR_device_group_creation" => self.khr_device_group_creation = true,
+            b"VK_KHR_external_memory_capabilities" => self.khr_external_memory_capabilities = true,
+            b"VK_KHR_external_semaphore_capabilities" => self.khr_external_semaphore_capabilities = true,
+            b"VK_EXT_direct_mode_display" => self.ext_direct_mode_display = true,
+            b"VK_EXT_acquire_xlib_display" => self.ext_acquire_xlib_display = true,
+            b"VK_EXT_display_surface_counter" => self.ext_display_surface_counter = true,
+            b"VK_EXT_swapchain_colorspace" => self.ext_swapchain_colorspace = true,
+            b"VK_KHR_external_fence_capabilities" => self.khr_external_fence_capabilities = true,
+            b"VK_KHR_get_surface_capabilities2" => self.khr_get_surface_capabilities2 = true,
+            b"VK_KHR_get_display_properties2" => self.khr_get_display_properties2 = true,
+            b"VK_MVK_ios_surface" => self.mvk_ios_surface = true,
+            b"VK_MVK_macos_surface" => self.mvk_macos_surface = true,
+            b"VK_EXT_debug_utils" => self.ext_debug_utils = true,
+            b"VK_FUCHSIA_imagepipe_surface" => self.fuchsia_imagepipe_surface = true,
+            b"VK_EXT_metal_surface" => self.ext_metal_surface = true,
+            b"VK_KHR_surface_protected_capabilities" => self.khr_surface_protected_capabilities = true,
+            b"VK_EXT_validation_features" => self.ext_validation_features = true,
+            b"VK_EXT_headless_surface" => self.ext_headless_surface = true,
+            b"VK_EXT_directfb_surface" => self.ext_directfb_surface = true,
+            _ => {}
+        }
+    }
+    pub fn supports_khr_surface(&self) -> bool {
+        self.khr_surface
+    }
+    pub fn enable_khr_surface(&mut self) {
+        self.khr_surface = true;
+    }
+    pub fn supports_khr_swapchain(&self) -> bool {
+        self.khr_surface
+    }
+    pub fn enable_khr_swapchain(&mut self) {
+        self.khr_surface = true;
+    }
+    pub fn supports_khr_display(&self) -> bool {
+        self.khr_surface && self.khr_display
+    }
+    pub fn enable_khr_display(&mut self) {
+        self.khr_surface = true;
+        self.khr_display = true;
+    }
+    pub fn supports_khr_display_swapchain(&self) -> bool {
+        self.khr_display
+    }
+    pub fn enable_khr_display_swapchain(&mut self) {
+        self.khr_display = true;
+    }
+    pub fn supports_khr_xlib_surface(&self) -> bool {
+        self.khr_surface && self.khr_xlib_surface
+    }
+    pub fn enable_khr_xlib_surface(&mut self) {
+        self.khr_surface = true;
+        self.khr_xlib_surface = true;
+    }
+    pub fn supports_khr_xcb_surface(&self) -> bool {
+        self.khr_surface && self.khr_xcb_surface
+    }
+    pub fn enable_khr_xcb_surface(&mut self) {
+        self.khr_surface = true;
+        self.khr_xcb_surface = true;
+    }
+    pub fn supports_khr_wayland_surface(&self) -> bool {
+        self.khr_surface && self.khr_wayland_surface
+    }
+    pub fn enable_khr_wayland_surface(&mut self) {
+        self.khr_surface = true;
+        self.khr_wayland_surface = true;
+    }
+    pub fn supports_khr_android_surface(&self) -> bool {
+        self.khr_surface && self.khr_android_surface
+    }
+    pub fn enable_khr_android_surface(&mut self) {
+        self.khr_surface = true;
+        self.khr_android_surface = true;
+    }
+    pub fn supports_khr_win32_surface(&self) -> bool {
+        self.khr_surface && self.khr_win32_surface
+    }
+    pub fn enable_khr_win32_surface(&mut self) {
+        self.khr_surface = true;
+        self.khr_win32_surface = true;
+    }
+    pub fn supports_ext_debug_report(&self) -> bool {
+        self.ext_debug_report
+    }
+    pub fn enable_ext_debug_report(&mut self) {
+        self.ext_debug_report = true;
+    }
+    pub fn supports_ext_debug_marker(&self) -> bool {
+        self.ext_debug_report
+    }
+    pub fn enable_ext_debug_marker(&mut self) {
+        self.ext_debug_report = true;
+    }
+    pub fn supports_ext_transform_feedback(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_transform_feedback(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_amd_texture_gather_bias_lod(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_amd_texture_gather_bias_lod(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_corner_sampled_image(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_corner_sampled_image(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_multiview(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_multiview(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_external_memory_capabilities(&self) -> bool {
+        self.nv_external_memory_capabilities
+    }
+    pub fn enable_nv_external_memory_capabilities(&mut self) {
+        self.nv_external_memory_capabilities = true;
+    }
+    pub fn supports_nv_external_memory(&self) -> bool {
+        self.nv_external_memory_capabilities
+    }
+    pub fn enable_nv_external_memory(&mut self) {
+        self.nv_external_memory_capabilities = true;
+    }
+    pub fn supports_khr_get_physical_device_properties2(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_get_physical_device_properties2(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_device_group(&self) -> bool {
+        self.khr_device_group_creation
+    }
+    pub fn enable_khr_device_group(&mut self) {
+        self.khr_device_group_creation = true;
+    }
+    pub fn supports_ext_validation_flags(&self) -> bool {
+        self.ext_validation_flags
+    }
+    pub fn enable_ext_validation_flags(&mut self) {
+        self.ext_validation_flags = true;
+    }
+    pub fn supports_nn_vi_surface(&self) -> bool {
+        self.khr_surface && self.nn_vi_surface
+    }
+    pub fn enable_nn_vi_surface(&mut self) {
+        self.khr_surface = true;
+        self.nn_vi_surface = true;
+    }
+    pub fn supports_ext_texture_compression_astc_hdr(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_texture_compression_astc_hdr(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_astc_decode_mode(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_astc_decode_mode(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_device_group_creation(&self) -> bool {
+        self.khr_device_group_creation
+    }
+    pub fn enable_khr_device_group_creation(&mut self) {
+        self.khr_device_group_creation = true;
+    }
+    pub fn supports_khr_external_memory_capabilities(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_external_memory_capabilities
+    }
+    pub fn enable_khr_external_memory_capabilities(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_external_memory_capabilities = true;
+    }
+    pub fn supports_khr_external_memory(&self) -> bool {
+        self.khr_external_memory_capabilities
+    }
+    pub fn enable_khr_external_memory(&mut self) {
+        self.khr_external_memory_capabilities = true;
+    }
+    pub fn supports_khr_external_semaphore_capabilities(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_external_semaphore_capabilities
+    }
+    pub fn enable_khr_external_semaphore_capabilities(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_external_semaphore_capabilities = true;
+    }
+    pub fn supports_khr_external_semaphore(&self) -> bool {
+        self.khr_external_semaphore_capabilities
+    }
+    pub fn enable_khr_external_semaphore(&mut self) {
+        self.khr_external_semaphore_capabilities = true;
+    }
+    pub fn supports_khr_push_descriptor(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_push_descriptor(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_shader_float16_int8(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_shader_float16_int8(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_16bit_storage(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_16bit_storage(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_direct_mode_display(&self) -> bool {
+        self.khr_display && self.ext_direct_mode_display
+    }
+    pub fn enable_ext_direct_mode_display(&mut self) {
+        self.khr_display = true;
+        self.ext_direct_mode_display = true;
+    }
+    pub fn supports_ext_acquire_xlib_display(&self) -> bool {
+        self.ext_direct_mode_display && self.ext_acquire_xlib_display
+    }
+    pub fn enable_ext_acquire_xlib_display(&mut self) {
+        self.ext_direct_mode_display = true;
+        self.ext_acquire_xlib_display = true;
+    }
+    pub fn supports_ext_display_surface_counter(&self) -> bool {
+        self.khr_display && self.ext_display_surface_counter
+    }
+    pub fn enable_ext_display_surface_counter(&mut self) {
+        self.khr_display = true;
+        self.ext_display_surface_counter = true;
+    }
+    pub fn supports_ext_display_control(&self) -> bool {
+        self.ext_display_surface_counter
+    }
+    pub fn enable_ext_display_control(&mut self) {
+        self.ext_display_surface_counter = true;
+    }
+    pub fn supports_ext_discard_rectangles(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_discard_rectangles(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_conservative_rasterization(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_conservative_rasterization(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_swapchain_colorspace(&self) -> bool {
+        self.khr_surface && self.ext_swapchain_colorspace
+    }
+    pub fn enable_ext_swapchain_colorspace(&mut self) {
+        self.khr_surface = true;
+        self.ext_swapchain_colorspace = true;
+    }
+    pub fn supports_khr_shared_presentable_image(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_get_surface_capabilities2
+    }
+    pub fn enable_khr_shared_presentable_image(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_get_surface_capabilities2 = true;
+    }
+    pub fn supports_khr_external_fence_capabilities(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_external_fence_capabilities
+    }
+    pub fn enable_khr_external_fence_capabilities(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_external_fence_capabilities = true;
+    }
+    pub fn supports_khr_external_fence(&self) -> bool {
+        self.khr_external_fence_capabilities
+    }
+    pub fn enable_khr_external_fence(&mut self) {
+        self.khr_external_fence_capabilities = true;
+    }
+    pub fn supports_khr_performance_query(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_performance_query(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_get_surface_capabilities2(&self) -> bool {
+        self.khr_surface && self.khr_get_surface_capabilities2
+    }
+    pub fn enable_khr_get_surface_capabilities2(&mut self) {
+        self.khr_surface = true;
+        self.khr_get_surface_capabilities2 = true;
+    }
+    pub fn supports_khr_variable_pointers(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_variable_pointers(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_get_display_properties2(&self) -> bool {
+        self.khr_display && self.khr_get_display_properties2
+    }
+    pub fn enable_khr_get_display_properties2(&mut self) {
+        self.khr_display = true;
+        self.khr_get_display_properties2 = true;
+    }
+    pub fn supports_mvk_ios_surface(&self) -> bool {
+        self.khr_surface && self.mvk_ios_surface
+    }
+    pub fn enable_mvk_ios_surface(&mut self) {
+        self.khr_surface = true;
+        self.mvk_ios_surface = true;
+    }
+    pub fn supports_mvk_macos_surface(&self) -> bool {
+        self.khr_surface && self.mvk_macos_surface
+    }
+    pub fn enable_mvk_macos_surface(&mut self) {
+        self.khr_surface = true;
+        self.mvk_macos_surface = true;
+    }
+    pub fn supports_ext_debug_utils(&self) -> bool {
+        self.ext_debug_utils
+    }
+    pub fn enable_ext_debug_utils(&mut self) {
+        self.ext_debug_utils = true;
+    }
+    pub fn supports_ext_sampler_filter_minmax(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_sampler_filter_minmax(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_inline_uniform_block(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_inline_uniform_block(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_sample_locations(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_sample_locations(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_ray_tracing(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_ray_tracing(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_sampler_ycbcr_conversion(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_image_drm_format_modifier(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_descriptor_indexing(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_descriptor_indexing(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_portability_subset(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_portability_subset(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_shading_rate_image(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_shading_rate_image(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_ray_tracing(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_ray_tracing(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_maintenance3(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_maintenance3(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_8bit_storage(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_8bit_storage(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_shader_atomic_int64(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_shader_atomic_int64(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_shader_clock(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_shader_clock(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_amd_shader_core_properties(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_amd_shader_core_properties(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_vertex_attribute_divisor(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_vertex_attribute_divisor(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_driver_properties(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_driver_properties(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_shader_float_controls(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_shader_float_controls(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_compute_shader_derivatives(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_compute_shader_derivatives(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_mesh_shader(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_mesh_shader(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_fragment_shader_barycentric(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_fragment_shader_barycentric(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_shader_image_footprint(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_shader_image_footprint(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_scissor_exclusive(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_scissor_exclusive(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_device_diagnostic_checkpoints(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_device_diagnostic_checkpoints(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_timeline_semaphore(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_timeline_semaphore(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_intel_shader_integer_functions2(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_intel_shader_integer_functions2(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_pci_bus_info(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_pci_bus_info(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_amd_display_native_hdr(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_get_surface_capabilities2
+    }
+    pub fn enable_amd_display_native_hdr(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_get_surface_capabilities2 = true;
+    }
+    pub fn supports_fuchsia_imagepipe_surface(&self) -> bool {
+        self.khr_surface && self.fuchsia_imagepipe_surface
+    }
+    pub fn enable_fuchsia_imagepipe_surface(&mut self) {
+        self.khr_surface = true;
+        self.fuchsia_imagepipe_surface = true;
+    }
+    pub fn supports_khr_shader_terminate_invocation(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_shader_terminate_invocation(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_metal_surface(&self) -> bool {
+        self.khr_surface && self.ext_metal_surface
+    }
+    pub fn enable_ext_metal_surface(&mut self) {
+        self.khr_surface = true;
+        self.ext_metal_surface = true;
+    }
+    pub fn supports_ext_fragment_density_map(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_fragment_density_map(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_scalar_block_layout(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_scalar_block_layout(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_fragment_shading_rate(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_fragment_shading_rate(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_shader_image_atomic_int64(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_memory_budget(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_memory_budget(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_memory_priority(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_memory_priority(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_surface_protected_capabilities(&self) -> bool {
+        self.khr_get_surface_capabilities2 && self.khr_surface_protected_capabilities
+    }
+    pub fn enable_khr_surface_protected_capabilities(&mut self) {
+        self.khr_get_surface_capabilities2 = true;
+        self.khr_surface_protected_capabilities = true;
+    }
+    pub fn supports_khr_separate_depth_stencil_layouts(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_separate_depth_stencil_layouts(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_buffer_device_address(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_buffer_device_address(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_validation_features(&self) -> bool {
+        self.ext_validation_features
+    }
+    pub fn enable_ext_validation_features(&mut self) {
+        self.ext_validation_features = true;
+    }
+    pub fn supports_nv_cooperative_matrix(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_cooperative_matrix(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_fragment_shader_interlock(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_fragment_shader_interlock(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_uniform_buffer_standard_layout(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_full_screen_exclusive(&self) -> bool {
+        self.khr_get_physical_device_properties2 && self.khr_surface && self.khr_get_surface_capabilities2
+    }
+    pub fn enable_ext_full_screen_exclusive(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+        self.khr_surface = true;
+        self.khr_get_surface_capabilities2 = true;
+    }
+    pub fn supports_ext_headless_surface(&self) -> bool {
+        self.khr_surface && self.ext_headless_surface
+    }
+    pub fn enable_ext_headless_surface(&mut self) {
+        self.khr_surface = true;
+        self.ext_headless_surface = true;
+    }
+    pub fn supports_khr_buffer_device_address(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_buffer_device_address(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_line_rasterization(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_line_rasterization(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_shader_atomic_float(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_shader_atomic_float(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_host_query_reset(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_host_query_reset(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_extended_dynamic_state(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_extended_dynamic_state(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_pipeline_executable_properties(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_pipeline_executable_properties(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_texel_buffer_alignment(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_qcom_render_pass_transform(&self) -> bool {
+        self.khr_surface
+    }
+    pub fn enable_qcom_render_pass_transform(&mut self) {
+        self.khr_surface = true;
+    }
+    pub fn supports_ext_device_memory_report(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_device_memory_report(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_device_diagnostics_config(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_device_diagnostics_config(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_image_robustness(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_image_robustness(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_4444_formats(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_ext_4444_formats(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_ext_directfb_surface(&self) -> bool {
+        self.khr_surface && self.ext_directfb_surface
+    }
+    pub fn enable_ext_directfb_surface(&mut self) {
+        self.khr_surface = true;
+        self.ext_directfb_surface = true;
+    }
+    pub fn to_name_vec(&self) -> Vec<*const c_char> {
+        let mut v = Vec::new();
+        if self.khr_surface {
+            v.push(b"VK_KHR_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_display {
+            v.push(b"VK_KHR_display\0".as_ptr() as *const c_char)
+        }
+        if self.khr_xlib_surface {
+            v.push(b"VK_KHR_xlib_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_xcb_surface {
+            v.push(b"VK_KHR_xcb_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_wayland_surface {
+            v.push(b"VK_KHR_wayland_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_android_surface {
+            v.push(b"VK_KHR_android_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_win32_surface {
+            v.push(b"VK_KHR_win32_surface\0".as_ptr() as *const c_char)
+        }
+        if self.ext_debug_report {
+            v.push(b"VK_EXT_debug_report\0".as_ptr() as *const c_char)
+        }
+        if self.nv_external_memory_capabilities {
+            v.push(b"VK_NV_external_memory_capabilities\0".as_ptr() as *const c_char)
+        }
+        if self.khr_get_physical_device_properties2 {
+            v.push(b"VK_KHR_get_physical_device_properties2\0".as_ptr() as *const c_char)
+        }
+        if self.ext_validation_flags {
+            v.push(b"VK_EXT_validation_flags\0".as_ptr() as *const c_char)
+        }
+        if self.nn_vi_surface {
+            v.push(b"VK_NN_vi_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_device_group_creation {
+            v.push(b"VK_KHR_device_group_creation\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_memory_capabilities {
+            v.push(b"VK_KHR_external_memory_capabilities\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_semaphore_capabilities {
+            v.push(b"VK_KHR_external_semaphore_capabilities\0".as_ptr() as *const c_char)
+        }
+        if self.ext_direct_mode_display {
+            v.push(b"VK_EXT_direct_mode_display\0".as_ptr() as *const c_char)
+        }
+        if self.ext_acquire_xlib_display {
+            v.push(b"VK_EXT_acquire_xlib_display\0".as_ptr() as *const c_char)
+        }
+        if self.ext_display_surface_counter {
+            v.push(b"VK_EXT_display_surface_counter\0".as_ptr() as *const c_char)
+        }
+        if self.ext_swapchain_colorspace {
+            v.push(b"VK_EXT_swapchain_colorspace\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_fence_capabilities {
+            v.push(b"VK_KHR_external_fence_capabilities\0".as_ptr() as *const c_char)
+        }
+        if self.khr_get_surface_capabilities2 {
+            v.push(b"VK_KHR_get_surface_capabilities2\0".as_ptr() as *const c_char)
+        }
+        if self.khr_get_display_properties2 {
+            v.push(b"VK_KHR_get_display_properties2\0".as_ptr() as *const c_char)
+        }
+        if self.mvk_ios_surface {
+            v.push(b"VK_MVK_ios_surface\0".as_ptr() as *const c_char)
+        }
+        if self.mvk_macos_surface {
+            v.push(b"VK_MVK_macos_surface\0".as_ptr() as *const c_char)
+        }
+        if self.ext_debug_utils {
+            v.push(b"VK_EXT_debug_utils\0".as_ptr() as *const c_char)
+        }
+        if self.fuchsia_imagepipe_surface {
+            v.push(b"VK_FUCHSIA_imagepipe_surface\0".as_ptr() as *const c_char)
+        }
+        if self.ext_metal_surface {
+            v.push(b"VK_EXT_metal_surface\0".as_ptr() as *const c_char)
+        }
+        if self.khr_surface_protected_capabilities {
+            v.push(b"VK_KHR_surface_protected_capabilities\0".as_ptr() as *const c_char)
+        }
+        if self.ext_validation_features {
+            v.push(b"VK_EXT_validation_features\0".as_ptr() as *const c_char)
+        }
+        if self.ext_headless_surface {
+            v.push(b"VK_EXT_headless_surface\0".as_ptr() as *const c_char)
+        }
+        if self.ext_directfb_surface {
+            v.push(b"VK_EXT_directfb_surface\0".as_ptr() as *const c_char)
+        }
+        v
+    }
+}
 #[derive(Copy, Clone)]
 pub struct Instance {
     pub handle: vk::Instance,
@@ -370,99 +1180,6 @@ pub struct Instance {
     pub fp_create_headless_surface_ext: Option<vk::FnCreateHeadlessSurfaceEXT>,
 }
 impl Instance {
-    pub fn khr_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface\0") }
-    }
-    pub fn khr_display_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display\0") }
-    }
-    pub fn khr_xlib_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xlib_surface\0") }
-    }
-    pub fn khr_xcb_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xcb_surface\0") }
-    }
-    pub fn khr_wayland_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_wayland_surface\0") }
-    }
-    pub fn khr_android_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_android_surface\0") }
-    }
-    pub fn khr_win32_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_surface\0") }
-    }
-    pub fn ext_debug_report_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_report\0") }
-    }
-    pub fn nv_external_memory_capabilities_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_capabilities\0") }
-    }
-    pub fn khr_get_physical_device_properties2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_physical_device_properties2\0") }
-    }
-    pub fn ext_validation_flags_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_flags\0") }
-    }
-    pub fn nn_vi_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NN_vi_surface\0") }
-    }
-    pub fn khr_device_group_creation_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group_creation\0") }
-    }
-    pub fn khr_external_memory_capabilities_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_capabilities\0") }
-    }
-    pub fn khr_external_semaphore_capabilities_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_capabilities\0") }
-    }
-    pub fn ext_direct_mode_display_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_direct_mode_display\0") }
-    }
-    pub fn ext_acquire_xlib_display_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_acquire_xlib_display\0") }
-    }
-    pub fn ext_display_surface_counter_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_surface_counter\0") }
-    }
-    pub fn ext_swapchain_colorspace_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_swapchain_colorspace\0") }
-    }
-    pub fn khr_external_fence_capabilities_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_capabilities\0") }
-    }
-    pub fn khr_get_surface_capabilities2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_surface_capabilities2\0") }
-    }
-    pub fn khr_get_display_properties2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_display_properties2\0") }
-    }
-    pub fn mvk_ios_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_ios_surface\0") }
-    }
-    pub fn mvk_macos_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_macos_surface\0") }
-    }
-    pub fn ext_debug_utils_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_utils\0") }
-    }
-    pub fn fuchsia_imagepipe_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_imagepipe_surface\0") }
-    }
-    pub fn ext_metal_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_metal_surface\0") }
-    }
-    pub fn khr_surface_protected_capabilities_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface_protected_capabilities\0") }
-    }
-    pub fn ext_validation_features_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_features\0") }
-    }
-    pub fn ext_headless_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") }
-    }
-    pub fn ext_directfb_surface_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_directfb_surface\0") }
-    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         loader: &Loader,
@@ -480,40 +1197,7 @@ impl Instance {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                match CStr::from_ptr(name_ptr).to_bytes() {
-                    b"VK_KHR_surface" => extensions.khr_surface = true,
-                    b"VK_KHR_display" => extensions.khr_display = true,
-                    b"VK_KHR_xlib_surface" => extensions.khr_xlib_surface = true,
-                    b"VK_KHR_xcb_surface" => extensions.khr_xcb_surface = true,
-                    b"VK_KHR_wayland_surface" => extensions.khr_wayland_surface = true,
-                    b"VK_KHR_android_surface" => extensions.khr_android_surface = true,
-                    b"VK_KHR_win32_surface" => extensions.khr_win32_surface = true,
-                    b"VK_EXT_debug_report" => extensions.ext_debug_report = true,
-                    b"VK_NV_external_memory_capabilities" => extensions.nv_external_memory_capabilities = true,
-                    b"VK_KHR_get_physical_device_properties2" => extensions.khr_get_physical_device_properties2 = true,
-                    b"VK_EXT_validation_flags" => extensions.ext_validation_flags = true,
-                    b"VK_NN_vi_surface" => extensions.nn_vi_surface = true,
-                    b"VK_KHR_device_group_creation" => extensions.khr_device_group_creation = true,
-                    b"VK_KHR_external_memory_capabilities" => extensions.khr_external_memory_capabilities = true,
-                    b"VK_KHR_external_semaphore_capabilities" => extensions.khr_external_semaphore_capabilities = true,
-                    b"VK_EXT_direct_mode_display" => extensions.ext_direct_mode_display = true,
-                    b"VK_EXT_acquire_xlib_display" => extensions.ext_acquire_xlib_display = true,
-                    b"VK_EXT_display_surface_counter" => extensions.ext_display_surface_counter = true,
-                    b"VK_EXT_swapchain_colorspace" => extensions.ext_swapchain_colorspace = true,
-                    b"VK_KHR_external_fence_capabilities" => extensions.khr_external_fence_capabilities = true,
-                    b"VK_KHR_get_surface_capabilities2" => extensions.khr_get_surface_capabilities2 = true,
-                    b"VK_KHR_get_display_properties2" => extensions.khr_get_display_properties2 = true,
-                    b"VK_MVK_ios_surface" => extensions.mvk_ios_surface = true,
-                    b"VK_MVK_macos_surface" => extensions.mvk_macos_surface = true,
-                    b"VK_EXT_debug_utils" => extensions.ext_debug_utils = true,
-                    b"VK_FUCHSIA_imagepipe_surface" => extensions.fuchsia_imagepipe_surface = true,
-                    b"VK_EXT_metal_surface" => extensions.ext_metal_surface = true,
-                    b"VK_KHR_surface_protected_capabilities" => extensions.khr_surface_protected_capabilities = true,
-                    b"VK_EXT_validation_features" => extensions.ext_validation_features = true,
-                    b"VK_EXT_headless_surface" => extensions.ext_headless_surface = true,
-                    b"VK_EXT_directfb_surface" => extensions.ext_directfb_surface = true,
-                    _ => {}
-                }
+                extensions.enable_named(&CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);
@@ -2851,6 +3535,1934 @@ pub struct DeviceExtensions {
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
 }
+impl DeviceExtensions {
+    pub fn enable_named(&mut self, name: &CStr) {
+        match name.to_bytes() {
+            b"VK_KHR_swapchain" => self.khr_swapchain = true,
+            b"VK_KHR_display_swapchain" => self.khr_display_swapchain = true,
+            b"VK_NV_glsl_shader" => self.nv_glsl_shader = true,
+            b"VK_EXT_depth_range_unrestricted" => self.ext_depth_range_unrestricted = true,
+            b"VK_KHR_sampler_mirror_clamp_to_edge" => self.khr_sampler_mirror_clamp_to_edge = true,
+            b"VK_IMG_filter_cubic" => self.img_filter_cubic = true,
+            b"VK_AMD_rasterization_order" => self.amd_rasterization_order = true,
+            b"VK_AMD_shader_trinary_minmax" => self.amd_shader_trinary_minmax = true,
+            b"VK_AMD_shader_explicit_vertex_parameter" => self.amd_shader_explicit_vertex_parameter = true,
+            b"VK_EXT_debug_marker" => self.ext_debug_marker = true,
+            b"VK_AMD_gcn_shader" => self.amd_gcn_shader = true,
+            b"VK_NV_dedicated_allocation" => self.nv_dedicated_allocation = true,
+            b"VK_EXT_transform_feedback" => self.ext_transform_feedback = true,
+            b"VK_NVX_image_view_handle" => self.nvx_image_view_handle = true,
+            b"VK_AMD_draw_indirect_count" => self.amd_draw_indirect_count = true,
+            b"VK_AMD_negative_viewport_height" => self.amd_negative_viewport_height = true,
+            b"VK_AMD_gpu_shader_half_float" => self.amd_gpu_shader_half_float = true,
+            b"VK_AMD_shader_ballot" => self.amd_shader_ballot = true,
+            b"VK_AMD_texture_gather_bias_lod" => self.amd_texture_gather_bias_lod = true,
+            b"VK_AMD_shader_info" => self.amd_shader_info = true,
+            b"VK_AMD_shader_image_load_store_lod" => self.amd_shader_image_load_store_lod = true,
+            b"VK_NV_corner_sampled_image" => self.nv_corner_sampled_image = true,
+            b"VK_KHR_multiview" => self.khr_multiview = true,
+            b"VK_IMG_format_pvrtc" => self.img_format_pvrtc = true,
+            b"VK_NV_external_memory" => self.nv_external_memory = true,
+            b"VK_NV_external_memory_win32" => self.nv_external_memory_win32 = true,
+            b"VK_NV_win32_keyed_mutex" => self.nv_win32_keyed_mutex = true,
+            b"VK_KHR_device_group" => self.khr_device_group = true,
+            b"VK_KHR_shader_draw_parameters" => self.khr_shader_draw_parameters = true,
+            b"VK_EXT_shader_subgroup_ballot" => self.ext_shader_subgroup_ballot = true,
+            b"VK_EXT_shader_subgroup_vote" => self.ext_shader_subgroup_vote = true,
+            b"VK_EXT_texture_compression_astc_hdr" => self.ext_texture_compression_astc_hdr = true,
+            b"VK_EXT_astc_decode_mode" => self.ext_astc_decode_mode = true,
+            b"VK_KHR_maintenance1" => self.khr_maintenance1 = true,
+            b"VK_KHR_external_memory" => self.khr_external_memory = true,
+            b"VK_KHR_external_memory_win32" => self.khr_external_memory_win32 = true,
+            b"VK_KHR_external_memory_fd" => self.khr_external_memory_fd = true,
+            b"VK_KHR_win32_keyed_mutex" => self.khr_win32_keyed_mutex = true,
+            b"VK_KHR_external_semaphore" => self.khr_external_semaphore = true,
+            b"VK_KHR_external_semaphore_win32" => self.khr_external_semaphore_win32 = true,
+            b"VK_KHR_external_semaphore_fd" => self.khr_external_semaphore_fd = true,
+            b"VK_KHR_push_descriptor" => self.khr_push_descriptor = true,
+            b"VK_EXT_conditional_rendering" => self.ext_conditional_rendering = true,
+            b"VK_KHR_shader_float16_int8" => self.khr_shader_float16_int8 = true,
+            b"VK_KHR_16bit_storage" => self.khr_16bit_storage = true,
+            b"VK_KHR_incremental_present" => self.khr_incremental_present = true,
+            b"VK_KHR_descriptor_update_template" => self.khr_descriptor_update_template = true,
+            b"VK_NV_clip_space_w_scaling" => self.nv_clip_space_w_scaling = true,
+            b"VK_EXT_display_control" => self.ext_display_control = true,
+            b"VK_GOOGLE_display_timing" => self.google_display_timing = true,
+            b"VK_NV_sample_mask_override_coverage" => self.nv_sample_mask_override_coverage = true,
+            b"VK_NV_geometry_shader_passthrough" => self.nv_geometry_shader_passthrough = true,
+            b"VK_NV_viewport_array2" => self.nv_viewport_array2 = true,
+            b"VK_NVX_multiview_per_view_attributes" => self.nvx_multiview_per_view_attributes = true,
+            b"VK_NV_viewport_swizzle" => self.nv_viewport_swizzle = true,
+            b"VK_EXT_discard_rectangles" => self.ext_discard_rectangles = true,
+            b"VK_EXT_conservative_rasterization" => self.ext_conservative_rasterization = true,
+            b"VK_EXT_depth_clip_enable" => self.ext_depth_clip_enable = true,
+            b"VK_EXT_hdr_metadata" => self.ext_hdr_metadata = true,
+            b"VK_KHR_imageless_framebuffer" => self.khr_imageless_framebuffer = true,
+            b"VK_KHR_create_renderpass2" => self.khr_create_renderpass2 = true,
+            b"VK_KHR_shared_presentable_image" => self.khr_shared_presentable_image = true,
+            b"VK_KHR_external_fence" => self.khr_external_fence = true,
+            b"VK_KHR_external_fence_win32" => self.khr_external_fence_win32 = true,
+            b"VK_KHR_external_fence_fd" => self.khr_external_fence_fd = true,
+            b"VK_KHR_performance_query" => self.khr_performance_query = true,
+            b"VK_KHR_maintenance2" => self.khr_maintenance2 = true,
+            b"VK_KHR_variable_pointers" => self.khr_variable_pointers = true,
+            b"VK_EXT_external_memory_dma_buf" => self.ext_external_memory_dma_buf = true,
+            b"VK_EXT_queue_family_foreign" => self.ext_queue_family_foreign = true,
+            b"VK_KHR_dedicated_allocation" => self.khr_dedicated_allocation = true,
+            b"VK_ANDROID_external_memory_android_hardware_buffer" => {
+                self.android_external_memory_android_hardware_buffer = true
+            }
+            b"VK_EXT_sampler_filter_minmax" => self.ext_sampler_filter_minmax = true,
+            b"VK_KHR_storage_buffer_storage_class" => self.khr_storage_buffer_storage_class = true,
+            b"VK_AMD_gpu_shader_int16" => self.amd_gpu_shader_int16 = true,
+            b"VK_AMD_mixed_attachment_samples" => self.amd_mixed_attachment_samples = true,
+            b"VK_AMD_shader_fragment_mask" => self.amd_shader_fragment_mask = true,
+            b"VK_EXT_inline_uniform_block" => self.ext_inline_uniform_block = true,
+            b"VK_EXT_shader_stencil_export" => self.ext_shader_stencil_export = true,
+            b"VK_EXT_sample_locations" => self.ext_sample_locations = true,
+            b"VK_KHR_relaxed_block_layout" => self.khr_relaxed_block_layout = true,
+            b"VK_KHR_get_memory_requirements2" => self.khr_get_memory_requirements2 = true,
+            b"VK_KHR_image_format_list" => self.khr_image_format_list = true,
+            b"VK_EXT_blend_operation_advanced" => self.ext_blend_operation_advanced = true,
+            b"VK_NV_fragment_coverage_to_color" => self.nv_fragment_coverage_to_color = true,
+            b"VK_KHR_ray_tracing" => self.khr_ray_tracing = true,
+            b"VK_NV_framebuffer_mixed_samples" => self.nv_framebuffer_mixed_samples = true,
+            b"VK_NV_fill_rectangle" => self.nv_fill_rectangle = true,
+            b"VK_NV_shader_sm_builtins" => self.nv_shader_sm_builtins = true,
+            b"VK_EXT_post_depth_coverage" => self.ext_post_depth_coverage = true,
+            b"VK_KHR_sampler_ycbcr_conversion" => self.khr_sampler_ycbcr_conversion = true,
+            b"VK_KHR_bind_memory2" => self.khr_bind_memory2 = true,
+            b"VK_EXT_image_drm_format_modifier" => self.ext_image_drm_format_modifier = true,
+            b"VK_EXT_validation_cache" => self.ext_validation_cache = true,
+            b"VK_EXT_descriptor_indexing" => self.ext_descriptor_indexing = true,
+            b"VK_EXT_shader_viewport_index_layer" => self.ext_shader_viewport_index_layer = true,
+            b"VK_KHR_portability_subset" => self.khr_portability_subset = true,
+            b"VK_NV_shading_rate_image" => self.nv_shading_rate_image = true,
+            b"VK_NV_ray_tracing" => self.nv_ray_tracing = true,
+            b"VK_NV_representative_fragment_test" => self.nv_representative_fragment_test = true,
+            b"VK_KHR_maintenance3" => self.khr_maintenance3 = true,
+            b"VK_KHR_draw_indirect_count" => self.khr_draw_indirect_count = true,
+            b"VK_EXT_filter_cubic" => self.ext_filter_cubic = true,
+            b"VK_QCOM_render_pass_shader_resolve" => self.qcom_render_pass_shader_resolve = true,
+            b"VK_EXT_global_priority" => self.ext_global_priority = true,
+            b"VK_KHR_shader_subgroup_extended_types" => self.khr_shader_subgroup_extended_types = true,
+            b"VK_KHR_8bit_storage" => self.khr_8bit_storage = true,
+            b"VK_EXT_external_memory_host" => self.ext_external_memory_host = true,
+            b"VK_AMD_buffer_marker" => self.amd_buffer_marker = true,
+            b"VK_KHR_shader_atomic_int64" => self.khr_shader_atomic_int64 = true,
+            b"VK_KHR_shader_clock" => self.khr_shader_clock = true,
+            b"VK_AMD_pipeline_compiler_control" => self.amd_pipeline_compiler_control = true,
+            b"VK_EXT_calibrated_timestamps" => self.ext_calibrated_timestamps = true,
+            b"VK_AMD_shader_core_properties" => self.amd_shader_core_properties = true,
+            b"VK_AMD_memory_overallocation_behavior" => self.amd_memory_overallocation_behavior = true,
+            b"VK_EXT_vertex_attribute_divisor" => self.ext_vertex_attribute_divisor = true,
+            b"VK_EXT_pipeline_creation_feedback" => self.ext_pipeline_creation_feedback = true,
+            b"VK_KHR_driver_properties" => self.khr_driver_properties = true,
+            b"VK_KHR_shader_float_controls" => self.khr_shader_float_controls = true,
+            b"VK_NV_shader_subgroup_partitioned" => self.nv_shader_subgroup_partitioned = true,
+            b"VK_KHR_depth_stencil_resolve" => self.khr_depth_stencil_resolve = true,
+            b"VK_KHR_swapchain_mutable_format" => self.khr_swapchain_mutable_format = true,
+            b"VK_NV_compute_shader_derivatives" => self.nv_compute_shader_derivatives = true,
+            b"VK_NV_mesh_shader" => self.nv_mesh_shader = true,
+            b"VK_NV_fragment_shader_barycentric" => self.nv_fragment_shader_barycentric = true,
+            b"VK_NV_shader_image_footprint" => self.nv_shader_image_footprint = true,
+            b"VK_NV_scissor_exclusive" => self.nv_scissor_exclusive = true,
+            b"VK_NV_device_diagnostic_checkpoints" => self.nv_device_diagnostic_checkpoints = true,
+            b"VK_KHR_timeline_semaphore" => self.khr_timeline_semaphore = true,
+            b"VK_INTEL_shader_integer_functions2" => self.intel_shader_integer_functions2 = true,
+            b"VK_INTEL_performance_query" => self.intel_performance_query = true,
+            b"VK_KHR_vulkan_memory_model" => self.khr_vulkan_memory_model = true,
+            b"VK_EXT_pci_bus_info" => self.ext_pci_bus_info = true,
+            b"VK_AMD_display_native_hdr" => self.amd_display_native_hdr = true,
+            b"VK_KHR_shader_terminate_invocation" => self.khr_shader_terminate_invocation = true,
+            b"VK_EXT_fragment_density_map" => self.ext_fragment_density_map = true,
+            b"VK_EXT_scalar_block_layout" => self.ext_scalar_block_layout = true,
+            b"VK_GOOGLE_hlsl_functionality1" => self.google_hlsl_functionality1 = true,
+            b"VK_GOOGLE_decorate_string" => self.google_decorate_string = true,
+            b"VK_EXT_subgroup_size_control" => self.ext_subgroup_size_control = true,
+            b"VK_KHR_fragment_shading_rate" => self.khr_fragment_shading_rate = true,
+            b"VK_AMD_shader_core_properties2" => self.amd_shader_core_properties2 = true,
+            b"VK_AMD_device_coherent_memory" => self.amd_device_coherent_memory = true,
+            b"VK_EXT_shader_image_atomic_int64" => self.ext_shader_image_atomic_int64 = true,
+            b"VK_KHR_spirv_1_4" => self.khr_spirv_1_4 = true,
+            b"VK_EXT_memory_budget" => self.ext_memory_budget = true,
+            b"VK_EXT_memory_priority" => self.ext_memory_priority = true,
+            b"VK_NV_dedicated_allocation_image_aliasing" => self.nv_dedicated_allocation_image_aliasing = true,
+            b"VK_KHR_separate_depth_stencil_layouts" => self.khr_separate_depth_stencil_layouts = true,
+            b"VK_EXT_buffer_device_address" => self.ext_buffer_device_address = true,
+            b"VK_EXT_tooling_info" => self.ext_tooling_info = true,
+            b"VK_EXT_separate_stencil_usage" => self.ext_separate_stencil_usage = true,
+            b"VK_NV_cooperative_matrix" => self.nv_cooperative_matrix = true,
+            b"VK_NV_coverage_reduction_mode" => self.nv_coverage_reduction_mode = true,
+            b"VK_EXT_fragment_shader_interlock" => self.ext_fragment_shader_interlock = true,
+            b"VK_EXT_ycbcr_image_arrays" => self.ext_ycbcr_image_arrays = true,
+            b"VK_KHR_uniform_buffer_standard_layout" => self.khr_uniform_buffer_standard_layout = true,
+            b"VK_EXT_full_screen_exclusive" => self.ext_full_screen_exclusive = true,
+            b"VK_KHR_buffer_device_address" => self.khr_buffer_device_address = true,
+            b"VK_EXT_line_rasterization" => self.ext_line_rasterization = true,
+            b"VK_EXT_shader_atomic_float" => self.ext_shader_atomic_float = true,
+            b"VK_EXT_host_query_reset" => self.ext_host_query_reset = true,
+            b"VK_EXT_index_type_uint8" => self.ext_index_type_uint8 = true,
+            b"VK_EXT_extended_dynamic_state" => self.ext_extended_dynamic_state = true,
+            b"VK_KHR_deferred_host_operations" => self.khr_deferred_host_operations = true,
+            b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
+            b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
+            b"VK_NV_device_generated_commands" => self.nv_device_generated_commands = true,
+            b"VK_EXT_texel_buffer_alignment" => self.ext_texel_buffer_alignment = true,
+            b"VK_QCOM_render_pass_transform" => self.qcom_render_pass_transform = true,
+            b"VK_EXT_device_memory_report" => self.ext_device_memory_report = true,
+            b"VK_EXT_robustness2" => self.ext_robustness2 = true,
+            b"VK_EXT_custom_border_color" => self.ext_custom_border_color = true,
+            b"VK_GOOGLE_user_type" => self.google_user_type = true,
+            b"VK_KHR_pipeline_library" => self.khr_pipeline_library = true,
+            b"VK_KHR_shader_non_semantic_info" => self.khr_shader_non_semantic_info = true,
+            b"VK_EXT_private_data" => self.ext_private_data = true,
+            b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
+            b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
+            b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
+            b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
+            b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
+            b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
+            _ => {}
+        }
+    }
+    pub fn supports_khr_swapchain(&self) -> bool {
+        self.khr_swapchain
+    }
+    pub fn enable_khr_swapchain(&mut self) {
+        self.khr_swapchain = true;
+    }
+    pub fn supports_khr_display_swapchain(&self) -> bool {
+        self.khr_swapchain && self.khr_display_swapchain
+    }
+    pub fn enable_khr_display_swapchain(&mut self) {
+        self.khr_swapchain = true;
+        self.khr_display_swapchain = true;
+    }
+    pub fn supports_nv_glsl_shader(&self) -> bool {
+        self.nv_glsl_shader
+    }
+    pub fn enable_nv_glsl_shader(&mut self) {
+        self.nv_glsl_shader = true;
+    }
+    pub fn supports_ext_depth_range_unrestricted(&self) -> bool {
+        self.ext_depth_range_unrestricted
+    }
+    pub fn enable_ext_depth_range_unrestricted(&mut self) {
+        self.ext_depth_range_unrestricted = true;
+    }
+    pub fn supports_khr_sampler_mirror_clamp_to_edge(&self) -> bool {
+        self.khr_sampler_mirror_clamp_to_edge
+    }
+    pub fn enable_khr_sampler_mirror_clamp_to_edge(&mut self) {
+        self.khr_sampler_mirror_clamp_to_edge = true;
+    }
+    pub fn supports_img_filter_cubic(&self) -> bool {
+        self.img_filter_cubic
+    }
+    pub fn enable_img_filter_cubic(&mut self) {
+        self.img_filter_cubic = true;
+    }
+    pub fn supports_amd_rasterization_order(&self) -> bool {
+        self.amd_rasterization_order
+    }
+    pub fn enable_amd_rasterization_order(&mut self) {
+        self.amd_rasterization_order = true;
+    }
+    pub fn supports_amd_shader_trinary_minmax(&self) -> bool {
+        self.amd_shader_trinary_minmax
+    }
+    pub fn enable_amd_shader_trinary_minmax(&mut self) {
+        self.amd_shader_trinary_minmax = true;
+    }
+    pub fn supports_amd_shader_explicit_vertex_parameter(&self) -> bool {
+        self.amd_shader_explicit_vertex_parameter
+    }
+    pub fn enable_amd_shader_explicit_vertex_parameter(&mut self) {
+        self.amd_shader_explicit_vertex_parameter = true;
+    }
+    pub fn supports_ext_debug_marker(&self) -> bool {
+        self.ext_debug_marker
+    }
+    pub fn enable_ext_debug_marker(&mut self) {
+        self.ext_debug_marker = true;
+    }
+    pub fn supports_amd_gcn_shader(&self) -> bool {
+        self.amd_gcn_shader
+    }
+    pub fn enable_amd_gcn_shader(&mut self) {
+        self.amd_gcn_shader = true;
+    }
+    pub fn supports_nv_dedicated_allocation(&self) -> bool {
+        self.nv_dedicated_allocation
+    }
+    pub fn enable_nv_dedicated_allocation(&mut self) {
+        self.nv_dedicated_allocation = true;
+    }
+    pub fn supports_ext_transform_feedback(&self) -> bool {
+        self.ext_transform_feedback
+    }
+    pub fn enable_ext_transform_feedback(&mut self) {
+        self.ext_transform_feedback = true;
+    }
+    pub fn supports_nvx_image_view_handle(&self) -> bool {
+        self.nvx_image_view_handle
+    }
+    pub fn enable_nvx_image_view_handle(&mut self) {
+        self.nvx_image_view_handle = true;
+    }
+    pub fn supports_amd_draw_indirect_count(&self) -> bool {
+        self.amd_draw_indirect_count
+    }
+    pub fn enable_amd_draw_indirect_count(&mut self) {
+        self.amd_draw_indirect_count = true;
+    }
+    pub fn supports_amd_negative_viewport_height(&self) -> bool {
+        self.amd_negative_viewport_height
+    }
+    pub fn enable_amd_negative_viewport_height(&mut self) {
+        self.amd_negative_viewport_height = true;
+    }
+    pub fn supports_amd_gpu_shader_half_float(&self) -> bool {
+        self.amd_gpu_shader_half_float
+    }
+    pub fn enable_amd_gpu_shader_half_float(&mut self) {
+        self.amd_gpu_shader_half_float = true;
+    }
+    pub fn supports_amd_shader_ballot(&self) -> bool {
+        self.amd_shader_ballot
+    }
+    pub fn enable_amd_shader_ballot(&mut self) {
+        self.amd_shader_ballot = true;
+    }
+    pub fn supports_amd_texture_gather_bias_lod(&self) -> bool {
+        self.amd_texture_gather_bias_lod
+    }
+    pub fn enable_amd_texture_gather_bias_lod(&mut self) {
+        self.amd_texture_gather_bias_lod = true;
+    }
+    pub fn supports_amd_shader_info(&self) -> bool {
+        self.amd_shader_info
+    }
+    pub fn enable_amd_shader_info(&mut self) {
+        self.amd_shader_info = true;
+    }
+    pub fn supports_amd_shader_image_load_store_lod(&self) -> bool {
+        self.amd_shader_image_load_store_lod
+    }
+    pub fn enable_amd_shader_image_load_store_lod(&mut self) {
+        self.amd_shader_image_load_store_lod = true;
+    }
+    pub fn supports_nv_corner_sampled_image(&self) -> bool {
+        self.nv_corner_sampled_image
+    }
+    pub fn enable_nv_corner_sampled_image(&mut self) {
+        self.nv_corner_sampled_image = true;
+    }
+    pub fn supports_khr_multiview(&self) -> bool {
+        self.khr_multiview
+    }
+    pub fn enable_khr_multiview(&mut self) {
+        self.khr_multiview = true;
+    }
+    pub fn supports_img_format_pvrtc(&self) -> bool {
+        self.img_format_pvrtc
+    }
+    pub fn enable_img_format_pvrtc(&mut self) {
+        self.img_format_pvrtc = true;
+    }
+    pub fn supports_nv_external_memory(&self) -> bool {
+        self.nv_external_memory
+    }
+    pub fn enable_nv_external_memory(&mut self) {
+        self.nv_external_memory = true;
+    }
+    pub fn supports_nv_external_memory_win32(&self) -> bool {
+        self.nv_external_memory && self.nv_external_memory_win32
+    }
+    pub fn enable_nv_external_memory_win32(&mut self) {
+        self.nv_external_memory = true;
+        self.nv_external_memory_win32 = true;
+    }
+    pub fn supports_nv_win32_keyed_mutex(&self) -> bool {
+        self.nv_external_memory_win32 && self.nv_win32_keyed_mutex
+    }
+    pub fn enable_nv_win32_keyed_mutex(&mut self) {
+        self.nv_external_memory_win32 = true;
+        self.nv_win32_keyed_mutex = true;
+    }
+    pub fn supports_khr_device_group(&self) -> bool {
+        self.khr_device_group
+    }
+    pub fn enable_khr_device_group(&mut self) {
+        self.khr_device_group = true;
+    }
+    pub fn supports_khr_shader_draw_parameters(&self) -> bool {
+        self.khr_shader_draw_parameters
+    }
+    pub fn enable_khr_shader_draw_parameters(&mut self) {
+        self.khr_shader_draw_parameters = true;
+    }
+    pub fn supports_ext_shader_subgroup_ballot(&self) -> bool {
+        self.ext_shader_subgroup_ballot
+    }
+    pub fn enable_ext_shader_subgroup_ballot(&mut self) {
+        self.ext_shader_subgroup_ballot = true;
+    }
+    pub fn supports_ext_shader_subgroup_vote(&self) -> bool {
+        self.ext_shader_subgroup_vote
+    }
+    pub fn enable_ext_shader_subgroup_vote(&mut self) {
+        self.ext_shader_subgroup_vote = true;
+    }
+    pub fn supports_ext_texture_compression_astc_hdr(&self) -> bool {
+        self.ext_texture_compression_astc_hdr
+    }
+    pub fn enable_ext_texture_compression_astc_hdr(&mut self) {
+        self.ext_texture_compression_astc_hdr = true;
+    }
+    pub fn supports_ext_astc_decode_mode(&self) -> bool {
+        self.ext_astc_decode_mode
+    }
+    pub fn enable_ext_astc_decode_mode(&mut self) {
+        self.ext_astc_decode_mode = true;
+    }
+    pub fn supports_khr_maintenance1(&self) -> bool {
+        self.khr_maintenance1
+    }
+    pub fn enable_khr_maintenance1(&mut self) {
+        self.khr_maintenance1 = true;
+    }
+    pub fn supports_khr_external_memory(&self) -> bool {
+        self.khr_external_memory
+    }
+    pub fn enable_khr_external_memory(&mut self) {
+        self.khr_external_memory = true;
+    }
+    pub fn supports_khr_external_memory_win32(&self) -> bool {
+        self.khr_external_memory && self.khr_external_memory_win32
+    }
+    pub fn enable_khr_external_memory_win32(&mut self) {
+        self.khr_external_memory = true;
+        self.khr_external_memory_win32 = true;
+    }
+    pub fn supports_khr_external_memory_fd(&self) -> bool {
+        self.khr_external_memory && self.khr_external_memory_fd
+    }
+    pub fn enable_khr_external_memory_fd(&mut self) {
+        self.khr_external_memory = true;
+        self.khr_external_memory_fd = true;
+    }
+    pub fn supports_khr_win32_keyed_mutex(&self) -> bool {
+        self.khr_external_memory_win32 && self.khr_win32_keyed_mutex
+    }
+    pub fn enable_khr_win32_keyed_mutex(&mut self) {
+        self.khr_external_memory_win32 = true;
+        self.khr_win32_keyed_mutex = true;
+    }
+    pub fn supports_khr_external_semaphore(&self) -> bool {
+        self.khr_external_semaphore
+    }
+    pub fn enable_khr_external_semaphore(&mut self) {
+        self.khr_external_semaphore = true;
+    }
+    pub fn supports_khr_external_semaphore_win32(&self) -> bool {
+        self.khr_external_semaphore && self.khr_external_semaphore_win32
+    }
+    pub fn enable_khr_external_semaphore_win32(&mut self) {
+        self.khr_external_semaphore = true;
+        self.khr_external_semaphore_win32 = true;
+    }
+    pub fn supports_khr_external_semaphore_fd(&self) -> bool {
+        self.khr_external_semaphore && self.khr_external_semaphore_fd
+    }
+    pub fn enable_khr_external_semaphore_fd(&mut self) {
+        self.khr_external_semaphore = true;
+        self.khr_external_semaphore_fd = true;
+    }
+    pub fn supports_khr_push_descriptor(&self) -> bool {
+        self.khr_push_descriptor
+    }
+    pub fn enable_khr_push_descriptor(&mut self) {
+        self.khr_push_descriptor = true;
+    }
+    pub fn supports_ext_conditional_rendering(&self) -> bool {
+        self.ext_conditional_rendering
+    }
+    pub fn enable_ext_conditional_rendering(&mut self) {
+        self.ext_conditional_rendering = true;
+    }
+    pub fn supports_khr_shader_float16_int8(&self) -> bool {
+        self.khr_shader_float16_int8
+    }
+    pub fn enable_khr_shader_float16_int8(&mut self) {
+        self.khr_shader_float16_int8 = true;
+    }
+    pub fn supports_khr_16bit_storage(&self) -> bool {
+        self.khr_storage_buffer_storage_class && self.khr_16bit_storage
+    }
+    pub fn enable_khr_16bit_storage(&mut self) {
+        self.khr_storage_buffer_storage_class = true;
+        self.khr_16bit_storage = true;
+    }
+    pub fn supports_khr_incremental_present(&self) -> bool {
+        self.khr_swapchain && self.khr_incremental_present
+    }
+    pub fn enable_khr_incremental_present(&mut self) {
+        self.khr_swapchain = true;
+        self.khr_incremental_present = true;
+    }
+    pub fn supports_khr_descriptor_update_template(&self) -> bool {
+        self.khr_descriptor_update_template
+    }
+    pub fn enable_khr_descriptor_update_template(&mut self) {
+        self.khr_descriptor_update_template = true;
+    }
+    pub fn supports_nv_clip_space_w_scaling(&self) -> bool {
+        self.nv_clip_space_w_scaling
+    }
+    pub fn enable_nv_clip_space_w_scaling(&mut self) {
+        self.nv_clip_space_w_scaling = true;
+    }
+    pub fn supports_ext_display_control(&self) -> bool {
+        self.khr_swapchain && self.ext_display_control
+    }
+    pub fn enable_ext_display_control(&mut self) {
+        self.khr_swapchain = true;
+        self.ext_display_control = true;
+    }
+    pub fn supports_google_display_timing(&self) -> bool {
+        self.khr_swapchain && self.google_display_timing
+    }
+    pub fn enable_google_display_timing(&mut self) {
+        self.khr_swapchain = true;
+        self.google_display_timing = true;
+    }
+    pub fn supports_nv_sample_mask_override_coverage(&self) -> bool {
+        self.nv_sample_mask_override_coverage
+    }
+    pub fn enable_nv_sample_mask_override_coverage(&mut self) {
+        self.nv_sample_mask_override_coverage = true;
+    }
+    pub fn supports_nv_geometry_shader_passthrough(&self) -> bool {
+        self.nv_geometry_shader_passthrough
+    }
+    pub fn enable_nv_geometry_shader_passthrough(&mut self) {
+        self.nv_geometry_shader_passthrough = true;
+    }
+    pub fn supports_nv_viewport_array2(&self) -> bool {
+        self.nv_viewport_array2
+    }
+    pub fn enable_nv_viewport_array2(&mut self) {
+        self.nv_viewport_array2 = true;
+    }
+    pub fn supports_nvx_multiview_per_view_attributes(&self) -> bool {
+        self.khr_multiview && self.nvx_multiview_per_view_attributes
+    }
+    pub fn enable_nvx_multiview_per_view_attributes(&mut self) {
+        self.khr_multiview = true;
+        self.nvx_multiview_per_view_attributes = true;
+    }
+    pub fn supports_nv_viewport_swizzle(&self) -> bool {
+        self.nv_viewport_swizzle
+    }
+    pub fn enable_nv_viewport_swizzle(&mut self) {
+        self.nv_viewport_swizzle = true;
+    }
+    pub fn supports_ext_discard_rectangles(&self) -> bool {
+        self.ext_discard_rectangles
+    }
+    pub fn enable_ext_discard_rectangles(&mut self) {
+        self.ext_discard_rectangles = true;
+    }
+    pub fn supports_ext_conservative_rasterization(&self) -> bool {
+        self.ext_conservative_rasterization
+    }
+    pub fn enable_ext_conservative_rasterization(&mut self) {
+        self.ext_conservative_rasterization = true;
+    }
+    pub fn supports_ext_depth_clip_enable(&self) -> bool {
+        self.ext_depth_clip_enable
+    }
+    pub fn enable_ext_depth_clip_enable(&mut self) {
+        self.ext_depth_clip_enable = true;
+    }
+    pub fn supports_ext_hdr_metadata(&self) -> bool {
+        self.khr_swapchain && self.ext_hdr_metadata
+    }
+    pub fn enable_ext_hdr_metadata(&mut self) {
+        self.khr_swapchain = true;
+        self.ext_hdr_metadata = true;
+    }
+    pub fn supports_khr_imageless_framebuffer(&self) -> bool {
+        self.khr_maintenance2 && self.khr_image_format_list && self.khr_imageless_framebuffer
+    }
+    pub fn enable_khr_imageless_framebuffer(&mut self) {
+        self.khr_maintenance2 = true;
+        self.khr_image_format_list = true;
+        self.khr_imageless_framebuffer = true;
+    }
+    pub fn supports_khr_create_renderpass2(&self) -> bool {
+        self.khr_multiview && self.khr_maintenance2 && self.khr_create_renderpass2
+    }
+    pub fn enable_khr_create_renderpass2(&mut self) {
+        self.khr_multiview = true;
+        self.khr_maintenance2 = true;
+        self.khr_create_renderpass2 = true;
+    }
+    pub fn supports_khr_shared_presentable_image(&self) -> bool {
+        self.khr_swapchain && self.khr_shared_presentable_image
+    }
+    pub fn enable_khr_shared_presentable_image(&mut self) {
+        self.khr_swapchain = true;
+        self.khr_shared_presentable_image = true;
+    }
+    pub fn supports_khr_external_fence(&self) -> bool {
+        self.khr_external_fence
+    }
+    pub fn enable_khr_external_fence(&mut self) {
+        self.khr_external_fence = true;
+    }
+    pub fn supports_khr_external_fence_win32(&self) -> bool {
+        self.khr_external_fence && self.khr_external_fence_win32
+    }
+    pub fn enable_khr_external_fence_win32(&mut self) {
+        self.khr_external_fence = true;
+        self.khr_external_fence_win32 = true;
+    }
+    pub fn supports_khr_external_fence_fd(&self) -> bool {
+        self.khr_external_fence && self.khr_external_fence_fd
+    }
+    pub fn enable_khr_external_fence_fd(&mut self) {
+        self.khr_external_fence = true;
+        self.khr_external_fence_fd = true;
+    }
+    pub fn supports_khr_performance_query(&self) -> bool {
+        self.khr_performance_query
+    }
+    pub fn enable_khr_performance_query(&mut self) {
+        self.khr_performance_query = true;
+    }
+    pub fn supports_khr_maintenance2(&self) -> bool {
+        self.khr_maintenance2
+    }
+    pub fn enable_khr_maintenance2(&mut self) {
+        self.khr_maintenance2 = true;
+    }
+    pub fn supports_khr_variable_pointers(&self) -> bool {
+        self.khr_storage_buffer_storage_class && self.khr_variable_pointers
+    }
+    pub fn enable_khr_variable_pointers(&mut self) {
+        self.khr_storage_buffer_storage_class = true;
+        self.khr_variable_pointers = true;
+    }
+    pub fn supports_ext_external_memory_dma_buf(&self) -> bool {
+        self.khr_external_memory_fd && self.ext_external_memory_dma_buf
+    }
+    pub fn enable_ext_external_memory_dma_buf(&mut self) {
+        self.khr_external_memory_fd = true;
+        self.ext_external_memory_dma_buf = true;
+    }
+    pub fn supports_ext_queue_family_foreign(&self) -> bool {
+        self.khr_external_memory && self.ext_queue_family_foreign
+    }
+    pub fn enable_ext_queue_family_foreign(&mut self) {
+        self.khr_external_memory = true;
+        self.ext_queue_family_foreign = true;
+    }
+    pub fn supports_khr_dedicated_allocation(&self) -> bool {
+        self.khr_get_memory_requirements2 && self.khr_dedicated_allocation
+    }
+    pub fn enable_khr_dedicated_allocation(&mut self) {
+        self.khr_get_memory_requirements2 = true;
+        self.khr_dedicated_allocation = true;
+    }
+    pub fn supports_android_external_memory_android_hardware_buffer(&self) -> bool {
+        self.khr_sampler_ycbcr_conversion
+            && self.khr_external_memory
+            && self.ext_queue_family_foreign
+            && self.khr_dedicated_allocation
+            && self.android_external_memory_android_hardware_buffer
+    }
+    pub fn enable_android_external_memory_android_hardware_buffer(&mut self) {
+        self.khr_sampler_ycbcr_conversion = true;
+        self.khr_external_memory = true;
+        self.ext_queue_family_foreign = true;
+        self.khr_dedicated_allocation = true;
+        self.android_external_memory_android_hardware_buffer = true;
+    }
+    pub fn supports_ext_sampler_filter_minmax(&self) -> bool {
+        self.ext_sampler_filter_minmax
+    }
+    pub fn enable_ext_sampler_filter_minmax(&mut self) {
+        self.ext_sampler_filter_minmax = true;
+    }
+    pub fn supports_khr_storage_buffer_storage_class(&self) -> bool {
+        self.khr_storage_buffer_storage_class
+    }
+    pub fn enable_khr_storage_buffer_storage_class(&mut self) {
+        self.khr_storage_buffer_storage_class = true;
+    }
+    pub fn supports_amd_gpu_shader_int16(&self) -> bool {
+        self.amd_gpu_shader_int16
+    }
+    pub fn enable_amd_gpu_shader_int16(&mut self) {
+        self.amd_gpu_shader_int16 = true;
+    }
+    pub fn supports_amd_mixed_attachment_samples(&self) -> bool {
+        self.amd_mixed_attachment_samples
+    }
+    pub fn enable_amd_mixed_attachment_samples(&mut self) {
+        self.amd_mixed_attachment_samples = true;
+    }
+    pub fn supports_amd_shader_fragment_mask(&self) -> bool {
+        self.amd_shader_fragment_mask
+    }
+    pub fn enable_amd_shader_fragment_mask(&mut self) {
+        self.amd_shader_fragment_mask = true;
+    }
+    pub fn supports_ext_inline_uniform_block(&self) -> bool {
+        self.khr_maintenance1 && self.ext_inline_uniform_block
+    }
+    pub fn enable_ext_inline_uniform_block(&mut self) {
+        self.khr_maintenance1 = true;
+        self.ext_inline_uniform_block = true;
+    }
+    pub fn supports_ext_shader_stencil_export(&self) -> bool {
+        self.ext_shader_stencil_export
+    }
+    pub fn enable_ext_shader_stencil_export(&mut self) {
+        self.ext_shader_stencil_export = true;
+    }
+    pub fn supports_ext_sample_locations(&self) -> bool {
+        self.ext_sample_locations
+    }
+    pub fn enable_ext_sample_locations(&mut self) {
+        self.ext_sample_locations = true;
+    }
+    pub fn supports_khr_relaxed_block_layout(&self) -> bool {
+        self.khr_relaxed_block_layout
+    }
+    pub fn enable_khr_relaxed_block_layout(&mut self) {
+        self.khr_relaxed_block_layout = true;
+    }
+    pub fn supports_khr_get_memory_requirements2(&self) -> bool {
+        self.khr_get_memory_requirements2
+    }
+    pub fn enable_khr_get_memory_requirements2(&mut self) {
+        self.khr_get_memory_requirements2 = true;
+    }
+    pub fn supports_khr_image_format_list(&self) -> bool {
+        self.khr_image_format_list
+    }
+    pub fn enable_khr_image_format_list(&mut self) {
+        self.khr_image_format_list = true;
+    }
+    pub fn supports_ext_blend_operation_advanced(&self) -> bool {
+        self.ext_blend_operation_advanced
+    }
+    pub fn enable_ext_blend_operation_advanced(&mut self) {
+        self.ext_blend_operation_advanced = true;
+    }
+    pub fn supports_nv_fragment_coverage_to_color(&self) -> bool {
+        self.nv_fragment_coverage_to_color
+    }
+    pub fn enable_nv_fragment_coverage_to_color(&mut self) {
+        self.nv_fragment_coverage_to_color = true;
+    }
+    pub fn supports_khr_ray_tracing(&self) -> bool {
+        self.khr_get_memory_requirements2
+            && self.ext_descriptor_indexing
+            && self.khr_buffer_device_address
+            && self.khr_deferred_host_operations
+            && self.khr_pipeline_library
+            && self.khr_ray_tracing
+    }
+    pub fn enable_khr_ray_tracing(&mut self) {
+        self.khr_get_memory_requirements2 = true;
+        self.ext_descriptor_indexing = true;
+        self.khr_buffer_device_address = true;
+        self.khr_deferred_host_operations = true;
+        self.khr_pipeline_library = true;
+        self.khr_ray_tracing = true;
+    }
+    pub fn supports_nv_framebuffer_mixed_samples(&self) -> bool {
+        self.nv_framebuffer_mixed_samples
+    }
+    pub fn enable_nv_framebuffer_mixed_samples(&mut self) {
+        self.nv_framebuffer_mixed_samples = true;
+    }
+    pub fn supports_nv_fill_rectangle(&self) -> bool {
+        self.nv_fill_rectangle
+    }
+    pub fn enable_nv_fill_rectangle(&mut self) {
+        self.nv_fill_rectangle = true;
+    }
+    pub fn supports_nv_shader_sm_builtins(&self) -> bool {
+        self.nv_shader_sm_builtins
+    }
+    pub fn enable_nv_shader_sm_builtins(&mut self) {
+        self.nv_shader_sm_builtins = true;
+    }
+    pub fn supports_ext_post_depth_coverage(&self) -> bool {
+        self.ext_post_depth_coverage
+    }
+    pub fn enable_ext_post_depth_coverage(&mut self) {
+        self.ext_post_depth_coverage = true;
+    }
+    pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
+        self.khr_maintenance1
+            && self.khr_bind_memory2
+            && self.khr_get_memory_requirements2
+            && self.khr_sampler_ycbcr_conversion
+    }
+    pub fn enable_khr_sampler_ycbcr_conversion(&mut self) {
+        self.khr_maintenance1 = true;
+        self.khr_bind_memory2 = true;
+        self.khr_get_memory_requirements2 = true;
+        self.khr_sampler_ycbcr_conversion = true;
+    }
+    pub fn supports_khr_bind_memory2(&self) -> bool {
+        self.khr_bind_memory2
+    }
+    pub fn enable_khr_bind_memory2(&mut self) {
+        self.khr_bind_memory2 = true;
+    }
+    pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
+        self.khr_bind_memory2
+            && self.khr_image_format_list
+            && self.khr_sampler_ycbcr_conversion
+            && self.ext_image_drm_format_modifier
+    }
+    pub fn enable_ext_image_drm_format_modifier(&mut self) {
+        self.khr_bind_memory2 = true;
+        self.khr_image_format_list = true;
+        self.khr_sampler_ycbcr_conversion = true;
+        self.ext_image_drm_format_modifier = true;
+    }
+    pub fn supports_ext_validation_cache(&self) -> bool {
+        self.ext_validation_cache
+    }
+    pub fn enable_ext_validation_cache(&mut self) {
+        self.ext_validation_cache = true;
+    }
+    pub fn supports_ext_descriptor_indexing(&self) -> bool {
+        self.khr_maintenance3 && self.ext_descriptor_indexing
+    }
+    pub fn enable_ext_descriptor_indexing(&mut self) {
+        self.khr_maintenance3 = true;
+        self.ext_descriptor_indexing = true;
+    }
+    pub fn supports_ext_shader_viewport_index_layer(&self) -> bool {
+        self.ext_shader_viewport_index_layer
+    }
+    pub fn enable_ext_shader_viewport_index_layer(&mut self) {
+        self.ext_shader_viewport_index_layer = true;
+    }
+    pub fn supports_khr_portability_subset(&self) -> bool {
+        self.khr_portability_subset
+    }
+    pub fn enable_khr_portability_subset(&mut self) {
+        self.khr_portability_subset = true;
+    }
+    pub fn supports_nv_shading_rate_image(&self) -> bool {
+        self.nv_shading_rate_image
+    }
+    pub fn enable_nv_shading_rate_image(&mut self) {
+        self.nv_shading_rate_image = true;
+    }
+    pub fn supports_nv_ray_tracing(&self) -> bool {
+        self.khr_get_memory_requirements2 && self.nv_ray_tracing
+    }
+    pub fn enable_nv_ray_tracing(&mut self) {
+        self.khr_get_memory_requirements2 = true;
+        self.nv_ray_tracing = true;
+    }
+    pub fn supports_nv_representative_fragment_test(&self) -> bool {
+        self.nv_representative_fragment_test
+    }
+    pub fn enable_nv_representative_fragment_test(&mut self) {
+        self.nv_representative_fragment_test = true;
+    }
+    pub fn supports_khr_maintenance3(&self) -> bool {
+        self.khr_maintenance3
+    }
+    pub fn enable_khr_maintenance3(&mut self) {
+        self.khr_maintenance3 = true;
+    }
+    pub fn supports_khr_draw_indirect_count(&self) -> bool {
+        self.khr_draw_indirect_count
+    }
+    pub fn enable_khr_draw_indirect_count(&mut self) {
+        self.khr_draw_indirect_count = true;
+    }
+    pub fn supports_ext_filter_cubic(&self) -> bool {
+        self.ext_filter_cubic
+    }
+    pub fn enable_ext_filter_cubic(&mut self) {
+        self.ext_filter_cubic = true;
+    }
+    pub fn supports_qcom_render_pass_shader_resolve(&self) -> bool {
+        self.qcom_render_pass_shader_resolve
+    }
+    pub fn enable_qcom_render_pass_shader_resolve(&mut self) {
+        self.qcom_render_pass_shader_resolve = true;
+    }
+    pub fn supports_ext_global_priority(&self) -> bool {
+        self.ext_global_priority
+    }
+    pub fn enable_ext_global_priority(&mut self) {
+        self.ext_global_priority = true;
+    }
+    pub fn supports_khr_shader_subgroup_extended_types(&self) -> bool {
+        self.khr_shader_subgroup_extended_types
+    }
+    pub fn enable_khr_shader_subgroup_extended_types(&mut self) {
+        self.khr_shader_subgroup_extended_types = true;
+    }
+    pub fn supports_khr_8bit_storage(&self) -> bool {
+        self.khr_storage_buffer_storage_class && self.khr_8bit_storage
+    }
+    pub fn enable_khr_8bit_storage(&mut self) {
+        self.khr_storage_buffer_storage_class = true;
+        self.khr_8bit_storage = true;
+    }
+    pub fn supports_ext_external_memory_host(&self) -> bool {
+        self.khr_external_memory && self.ext_external_memory_host
+    }
+    pub fn enable_ext_external_memory_host(&mut self) {
+        self.khr_external_memory = true;
+        self.ext_external_memory_host = true;
+    }
+    pub fn supports_amd_buffer_marker(&self) -> bool {
+        self.amd_buffer_marker
+    }
+    pub fn enable_amd_buffer_marker(&mut self) {
+        self.amd_buffer_marker = true;
+    }
+    pub fn supports_khr_shader_atomic_int64(&self) -> bool {
+        self.khr_shader_atomic_int64
+    }
+    pub fn enable_khr_shader_atomic_int64(&mut self) {
+        self.khr_shader_atomic_int64 = true;
+    }
+    pub fn supports_khr_shader_clock(&self) -> bool {
+        self.khr_shader_clock
+    }
+    pub fn enable_khr_shader_clock(&mut self) {
+        self.khr_shader_clock = true;
+    }
+    pub fn supports_amd_pipeline_compiler_control(&self) -> bool {
+        self.amd_pipeline_compiler_control
+    }
+    pub fn enable_amd_pipeline_compiler_control(&mut self) {
+        self.amd_pipeline_compiler_control = true;
+    }
+    pub fn supports_ext_calibrated_timestamps(&self) -> bool {
+        self.ext_calibrated_timestamps
+    }
+    pub fn enable_ext_calibrated_timestamps(&mut self) {
+        self.ext_calibrated_timestamps = true;
+    }
+    pub fn supports_amd_shader_core_properties(&self) -> bool {
+        self.amd_shader_core_properties
+    }
+    pub fn enable_amd_shader_core_properties(&mut self) {
+        self.amd_shader_core_properties = true;
+    }
+    pub fn supports_amd_memory_overallocation_behavior(&self) -> bool {
+        self.amd_memory_overallocation_behavior
+    }
+    pub fn enable_amd_memory_overallocation_behavior(&mut self) {
+        self.amd_memory_overallocation_behavior = true;
+    }
+    pub fn supports_ext_vertex_attribute_divisor(&self) -> bool {
+        self.ext_vertex_attribute_divisor
+    }
+    pub fn enable_ext_vertex_attribute_divisor(&mut self) {
+        self.ext_vertex_attribute_divisor = true;
+    }
+    pub fn supports_ext_pipeline_creation_feedback(&self) -> bool {
+        self.ext_pipeline_creation_feedback
+    }
+    pub fn enable_ext_pipeline_creation_feedback(&mut self) {
+        self.ext_pipeline_creation_feedback = true;
+    }
+    pub fn supports_khr_driver_properties(&self) -> bool {
+        self.khr_driver_properties
+    }
+    pub fn enable_khr_driver_properties(&mut self) {
+        self.khr_driver_properties = true;
+    }
+    pub fn supports_khr_shader_float_controls(&self) -> bool {
+        self.khr_shader_float_controls
+    }
+    pub fn enable_khr_shader_float_controls(&mut self) {
+        self.khr_shader_float_controls = true;
+    }
+    pub fn supports_nv_shader_subgroup_partitioned(&self) -> bool {
+        self.nv_shader_subgroup_partitioned
+    }
+    pub fn enable_nv_shader_subgroup_partitioned(&mut self) {
+        self.nv_shader_subgroup_partitioned = true;
+    }
+    pub fn supports_khr_depth_stencil_resolve(&self) -> bool {
+        self.khr_create_renderpass2 && self.khr_depth_stencil_resolve
+    }
+    pub fn enable_khr_depth_stencil_resolve(&mut self) {
+        self.khr_create_renderpass2 = true;
+        self.khr_depth_stencil_resolve = true;
+    }
+    pub fn supports_khr_swapchain_mutable_format(&self) -> bool {
+        self.khr_swapchain && self.khr_maintenance2 && self.khr_image_format_list && self.khr_swapchain_mutable_format
+    }
+    pub fn enable_khr_swapchain_mutable_format(&mut self) {
+        self.khr_swapchain = true;
+        self.khr_maintenance2 = true;
+        self.khr_image_format_list = true;
+        self.khr_swapchain_mutable_format = true;
+    }
+    pub fn supports_nv_compute_shader_derivatives(&self) -> bool {
+        self.nv_compute_shader_derivatives
+    }
+    pub fn enable_nv_compute_shader_derivatives(&mut self) {
+        self.nv_compute_shader_derivatives = true;
+    }
+    pub fn supports_nv_mesh_shader(&self) -> bool {
+        self.nv_mesh_shader
+    }
+    pub fn enable_nv_mesh_shader(&mut self) {
+        self.nv_mesh_shader = true;
+    }
+    pub fn supports_nv_fragment_shader_barycentric(&self) -> bool {
+        self.nv_fragment_shader_barycentric
+    }
+    pub fn enable_nv_fragment_shader_barycentric(&mut self) {
+        self.nv_fragment_shader_barycentric = true;
+    }
+    pub fn supports_nv_shader_image_footprint(&self) -> bool {
+        self.nv_shader_image_footprint
+    }
+    pub fn enable_nv_shader_image_footprint(&mut self) {
+        self.nv_shader_image_footprint = true;
+    }
+    pub fn supports_nv_scissor_exclusive(&self) -> bool {
+        self.nv_scissor_exclusive
+    }
+    pub fn enable_nv_scissor_exclusive(&mut self) {
+        self.nv_scissor_exclusive = true;
+    }
+    pub fn supports_nv_device_diagnostic_checkpoints(&self) -> bool {
+        self.nv_device_diagnostic_checkpoints
+    }
+    pub fn enable_nv_device_diagnostic_checkpoints(&mut self) {
+        self.nv_device_diagnostic_checkpoints = true;
+    }
+    pub fn supports_khr_timeline_semaphore(&self) -> bool {
+        self.khr_timeline_semaphore
+    }
+    pub fn enable_khr_timeline_semaphore(&mut self) {
+        self.khr_timeline_semaphore = true;
+    }
+    pub fn supports_intel_shader_integer_functions2(&self) -> bool {
+        self.intel_shader_integer_functions2
+    }
+    pub fn enable_intel_shader_integer_functions2(&mut self) {
+        self.intel_shader_integer_functions2 = true;
+    }
+    pub fn supports_intel_performance_query(&self) -> bool {
+        self.intel_performance_query
+    }
+    pub fn enable_intel_performance_query(&mut self) {
+        self.intel_performance_query = true;
+    }
+    pub fn supports_khr_vulkan_memory_model(&self) -> bool {
+        self.khr_vulkan_memory_model
+    }
+    pub fn enable_khr_vulkan_memory_model(&mut self) {
+        self.khr_vulkan_memory_model = true;
+    }
+    pub fn supports_ext_pci_bus_info(&self) -> bool {
+        self.ext_pci_bus_info
+    }
+    pub fn enable_ext_pci_bus_info(&mut self) {
+        self.ext_pci_bus_info = true;
+    }
+    pub fn supports_amd_display_native_hdr(&self) -> bool {
+        self.khr_swapchain && self.amd_display_native_hdr
+    }
+    pub fn enable_amd_display_native_hdr(&mut self) {
+        self.khr_swapchain = true;
+        self.amd_display_native_hdr = true;
+    }
+    pub fn supports_khr_shader_terminate_invocation(&self) -> bool {
+        self.khr_shader_terminate_invocation
+    }
+    pub fn enable_khr_shader_terminate_invocation(&mut self) {
+        self.khr_shader_terminate_invocation = true;
+    }
+    pub fn supports_ext_fragment_density_map(&self) -> bool {
+        self.ext_fragment_density_map
+    }
+    pub fn enable_ext_fragment_density_map(&mut self) {
+        self.ext_fragment_density_map = true;
+    }
+    pub fn supports_ext_scalar_block_layout(&self) -> bool {
+        self.ext_scalar_block_layout
+    }
+    pub fn enable_ext_scalar_block_layout(&mut self) {
+        self.ext_scalar_block_layout = true;
+    }
+    pub fn supports_google_hlsl_functionality1(&self) -> bool {
+        self.google_hlsl_functionality1
+    }
+    pub fn enable_google_hlsl_functionality1(&mut self) {
+        self.google_hlsl_functionality1 = true;
+    }
+    pub fn supports_google_decorate_string(&self) -> bool {
+        self.google_decorate_string
+    }
+    pub fn enable_google_decorate_string(&mut self) {
+        self.google_decorate_string = true;
+    }
+    pub fn supports_ext_subgroup_size_control(&self) -> bool {
+        self.ext_subgroup_size_control
+    }
+    pub fn enable_ext_subgroup_size_control(&mut self) {
+        self.ext_subgroup_size_control = true;
+    }
+    pub fn supports_khr_fragment_shading_rate(&self) -> bool {
+        self.khr_create_renderpass2 && self.khr_fragment_shading_rate
+    }
+    pub fn enable_khr_fragment_shading_rate(&mut self) {
+        self.khr_create_renderpass2 = true;
+        self.khr_fragment_shading_rate = true;
+    }
+    pub fn supports_amd_shader_core_properties2(&self) -> bool {
+        self.amd_shader_core_properties && self.amd_shader_core_properties2
+    }
+    pub fn enable_amd_shader_core_properties2(&mut self) {
+        self.amd_shader_core_properties = true;
+        self.amd_shader_core_properties2 = true;
+    }
+    pub fn supports_amd_device_coherent_memory(&self) -> bool {
+        self.amd_device_coherent_memory
+    }
+    pub fn enable_amd_device_coherent_memory(&mut self) {
+        self.amd_device_coherent_memory = true;
+    }
+    pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
+        self.ext_shader_image_atomic_int64
+    }
+    pub fn enable_ext_shader_image_atomic_int64(&mut self) {
+        self.ext_shader_image_atomic_int64 = true;
+    }
+    pub fn supports_khr_spirv_1_4(&self) -> bool {
+        self.khr_shader_float_controls && self.khr_spirv_1_4
+    }
+    pub fn enable_khr_spirv_1_4(&mut self) {
+        self.khr_shader_float_controls = true;
+        self.khr_spirv_1_4 = true;
+    }
+    pub fn supports_ext_memory_budget(&self) -> bool {
+        self.ext_memory_budget
+    }
+    pub fn enable_ext_memory_budget(&mut self) {
+        self.ext_memory_budget = true;
+    }
+    pub fn supports_ext_memory_priority(&self) -> bool {
+        self.ext_memory_priority
+    }
+    pub fn enable_ext_memory_priority(&mut self) {
+        self.ext_memory_priority = true;
+    }
+    pub fn supports_nv_dedicated_allocation_image_aliasing(&self) -> bool {
+        self.khr_dedicated_allocation && self.nv_dedicated_allocation_image_aliasing
+    }
+    pub fn enable_nv_dedicated_allocation_image_aliasing(&mut self) {
+        self.khr_dedicated_allocation = true;
+        self.nv_dedicated_allocation_image_aliasing = true;
+    }
+    pub fn supports_khr_separate_depth_stencil_layouts(&self) -> bool {
+        self.khr_create_renderpass2 && self.khr_separate_depth_stencil_layouts
+    }
+    pub fn enable_khr_separate_depth_stencil_layouts(&mut self) {
+        self.khr_create_renderpass2 = true;
+        self.khr_separate_depth_stencil_layouts = true;
+    }
+    pub fn supports_ext_buffer_device_address(&self) -> bool {
+        self.ext_buffer_device_address
+    }
+    pub fn enable_ext_buffer_device_address(&mut self) {
+        self.ext_buffer_device_address = true;
+    }
+    pub fn supports_ext_tooling_info(&self) -> bool {
+        self.ext_tooling_info
+    }
+    pub fn enable_ext_tooling_info(&mut self) {
+        self.ext_tooling_info = true;
+    }
+    pub fn supports_ext_separate_stencil_usage(&self) -> bool {
+        self.ext_separate_stencil_usage
+    }
+    pub fn enable_ext_separate_stencil_usage(&mut self) {
+        self.ext_separate_stencil_usage = true;
+    }
+    pub fn supports_nv_cooperative_matrix(&self) -> bool {
+        self.nv_cooperative_matrix
+    }
+    pub fn enable_nv_cooperative_matrix(&mut self) {
+        self.nv_cooperative_matrix = true;
+    }
+    pub fn supports_nv_coverage_reduction_mode(&self) -> bool {
+        self.nv_framebuffer_mixed_samples && self.nv_coverage_reduction_mode
+    }
+    pub fn enable_nv_coverage_reduction_mode(&mut self) {
+        self.nv_framebuffer_mixed_samples = true;
+        self.nv_coverage_reduction_mode = true;
+    }
+    pub fn supports_ext_fragment_shader_interlock(&self) -> bool {
+        self.ext_fragment_shader_interlock
+    }
+    pub fn enable_ext_fragment_shader_interlock(&mut self) {
+        self.ext_fragment_shader_interlock = true;
+    }
+    pub fn supports_ext_ycbcr_image_arrays(&self) -> bool {
+        self.khr_sampler_ycbcr_conversion && self.ext_ycbcr_image_arrays
+    }
+    pub fn enable_ext_ycbcr_image_arrays(&mut self) {
+        self.khr_sampler_ycbcr_conversion = true;
+        self.ext_ycbcr_image_arrays = true;
+    }
+    pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
+        self.khr_uniform_buffer_standard_layout
+    }
+    pub fn enable_khr_uniform_buffer_standard_layout(&mut self) {
+        self.khr_uniform_buffer_standard_layout = true;
+    }
+    pub fn supports_ext_full_screen_exclusive(&self) -> bool {
+        self.khr_swapchain && self.ext_full_screen_exclusive
+    }
+    pub fn enable_ext_full_screen_exclusive(&mut self) {
+        self.khr_swapchain = true;
+        self.ext_full_screen_exclusive = true;
+    }
+    pub fn supports_khr_buffer_device_address(&self) -> bool {
+        self.khr_buffer_device_address
+    }
+    pub fn enable_khr_buffer_device_address(&mut self) {
+        self.khr_buffer_device_address = true;
+    }
+    pub fn supports_ext_line_rasterization(&self) -> bool {
+        self.ext_line_rasterization
+    }
+    pub fn enable_ext_line_rasterization(&mut self) {
+        self.ext_line_rasterization = true;
+    }
+    pub fn supports_ext_shader_atomic_float(&self) -> bool {
+        self.ext_shader_atomic_float
+    }
+    pub fn enable_ext_shader_atomic_float(&mut self) {
+        self.ext_shader_atomic_float = true;
+    }
+    pub fn supports_ext_host_query_reset(&self) -> bool {
+        self.ext_host_query_reset
+    }
+    pub fn enable_ext_host_query_reset(&mut self) {
+        self.ext_host_query_reset = true;
+    }
+    pub fn supports_ext_index_type_uint8(&self) -> bool {
+        self.ext_index_type_uint8
+    }
+    pub fn enable_ext_index_type_uint8(&mut self) {
+        self.ext_index_type_uint8 = true;
+    }
+    pub fn supports_ext_extended_dynamic_state(&self) -> bool {
+        self.ext_extended_dynamic_state
+    }
+    pub fn enable_ext_extended_dynamic_state(&mut self) {
+        self.ext_extended_dynamic_state = true;
+    }
+    pub fn supports_khr_deferred_host_operations(&self) -> bool {
+        self.khr_deferred_host_operations
+    }
+    pub fn enable_khr_deferred_host_operations(&mut self) {
+        self.khr_deferred_host_operations = true;
+    }
+    pub fn supports_khr_pipeline_executable_properties(&self) -> bool {
+        self.khr_pipeline_executable_properties
+    }
+    pub fn enable_khr_pipeline_executable_properties(&mut self) {
+        self.khr_pipeline_executable_properties = true;
+    }
+    pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
+        self.ext_shader_demote_to_helper_invocation
+    }
+    pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
+        self.ext_shader_demote_to_helper_invocation = true;
+    }
+    pub fn supports_nv_device_generated_commands(&self) -> bool {
+        self.nv_device_generated_commands
+    }
+    pub fn enable_nv_device_generated_commands(&mut self) {
+        self.nv_device_generated_commands = true;
+    }
+    pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
+        self.ext_texel_buffer_alignment
+    }
+    pub fn enable_ext_texel_buffer_alignment(&mut self) {
+        self.ext_texel_buffer_alignment = true;
+    }
+    pub fn supports_qcom_render_pass_transform(&self) -> bool {
+        self.khr_swapchain && self.qcom_render_pass_transform
+    }
+    pub fn enable_qcom_render_pass_transform(&mut self) {
+        self.khr_swapchain = true;
+        self.qcom_render_pass_transform = true;
+    }
+    pub fn supports_ext_device_memory_report(&self) -> bool {
+        self.ext_device_memory_report
+    }
+    pub fn enable_ext_device_memory_report(&mut self) {
+        self.ext_device_memory_report = true;
+    }
+    pub fn supports_ext_robustness2(&self) -> bool {
+        self.ext_robustness2
+    }
+    pub fn enable_ext_robustness2(&mut self) {
+        self.ext_robustness2 = true;
+    }
+    pub fn supports_ext_custom_border_color(&self) -> bool {
+        self.ext_custom_border_color
+    }
+    pub fn enable_ext_custom_border_color(&mut self) {
+        self.ext_custom_border_color = true;
+    }
+    pub fn supports_google_user_type(&self) -> bool {
+        self.google_user_type
+    }
+    pub fn enable_google_user_type(&mut self) {
+        self.google_user_type = true;
+    }
+    pub fn supports_khr_pipeline_library(&self) -> bool {
+        self.khr_pipeline_library
+    }
+    pub fn enable_khr_pipeline_library(&mut self) {
+        self.khr_pipeline_library = true;
+    }
+    pub fn supports_khr_shader_non_semantic_info(&self) -> bool {
+        self.khr_shader_non_semantic_info
+    }
+    pub fn enable_khr_shader_non_semantic_info(&mut self) {
+        self.khr_shader_non_semantic_info = true;
+    }
+    pub fn supports_ext_private_data(&self) -> bool {
+        self.ext_private_data
+    }
+    pub fn enable_ext_private_data(&mut self) {
+        self.ext_private_data = true;
+    }
+    pub fn supports_ext_pipeline_creation_cache_control(&self) -> bool {
+        self.ext_pipeline_creation_cache_control
+    }
+    pub fn enable_ext_pipeline_creation_cache_control(&mut self) {
+        self.ext_pipeline_creation_cache_control = true;
+    }
+    pub fn supports_nv_device_diagnostics_config(&self) -> bool {
+        self.nv_device_diagnostics_config
+    }
+    pub fn enable_nv_device_diagnostics_config(&mut self) {
+        self.nv_device_diagnostics_config = true;
+    }
+    pub fn supports_qcom_render_pass_store_ops(&self) -> bool {
+        self.qcom_render_pass_store_ops
+    }
+    pub fn enable_qcom_render_pass_store_ops(&mut self) {
+        self.qcom_render_pass_store_ops = true;
+    }
+    pub fn supports_ext_fragment_density_map2(&self) -> bool {
+        self.ext_fragment_density_map && self.ext_fragment_density_map2
+    }
+    pub fn enable_ext_fragment_density_map2(&mut self) {
+        self.ext_fragment_density_map = true;
+        self.ext_fragment_density_map2 = true;
+    }
+    pub fn supports_ext_image_robustness(&self) -> bool {
+        self.ext_image_robustness
+    }
+    pub fn enable_ext_image_robustness(&mut self) {
+        self.ext_image_robustness = true;
+    }
+    pub fn supports_khr_copy_commands2(&self) -> bool {
+        self.khr_copy_commands2
+    }
+    pub fn enable_khr_copy_commands2(&mut self) {
+        self.khr_copy_commands2 = true;
+    }
+    pub fn supports_ext_4444_formats(&self) -> bool {
+        self.ext_4444_formats
+    }
+    pub fn enable_ext_4444_formats(&mut self) {
+        self.ext_4444_formats = true;
+    }
+    pub fn to_name_vec(&self) -> Vec<*const c_char> {
+        let mut v = Vec::new();
+        if self.khr_swapchain {
+            v.push(b"VK_KHR_swapchain\0".as_ptr() as *const c_char)
+        }
+        if self.khr_display_swapchain {
+            v.push(b"VK_KHR_display_swapchain\0".as_ptr() as *const c_char)
+        }
+        if self.nv_glsl_shader {
+            v.push(b"VK_NV_glsl_shader\0".as_ptr() as *const c_char)
+        }
+        if self.ext_depth_range_unrestricted {
+            v.push(b"VK_EXT_depth_range_unrestricted\0".as_ptr() as *const c_char)
+        }
+        if self.khr_sampler_mirror_clamp_to_edge {
+            v.push(b"VK_KHR_sampler_mirror_clamp_to_edge\0".as_ptr() as *const c_char)
+        }
+        if self.img_filter_cubic {
+            v.push(b"VK_IMG_filter_cubic\0".as_ptr() as *const c_char)
+        }
+        if self.amd_rasterization_order {
+            v.push(b"VK_AMD_rasterization_order\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_trinary_minmax {
+            v.push(b"VK_AMD_shader_trinary_minmax\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_explicit_vertex_parameter {
+            v.push(b"VK_AMD_shader_explicit_vertex_parameter\0".as_ptr() as *const c_char)
+        }
+        if self.ext_debug_marker {
+            v.push(b"VK_EXT_debug_marker\0".as_ptr() as *const c_char)
+        }
+        if self.amd_gcn_shader {
+            v.push(b"VK_AMD_gcn_shader\0".as_ptr() as *const c_char)
+        }
+        if self.nv_dedicated_allocation {
+            v.push(b"VK_NV_dedicated_allocation\0".as_ptr() as *const c_char)
+        }
+        if self.ext_transform_feedback {
+            v.push(b"VK_EXT_transform_feedback\0".as_ptr() as *const c_char)
+        }
+        if self.nvx_image_view_handle {
+            v.push(b"VK_NVX_image_view_handle\0".as_ptr() as *const c_char)
+        }
+        if self.amd_draw_indirect_count {
+            v.push(b"VK_AMD_draw_indirect_count\0".as_ptr() as *const c_char)
+        }
+        if self.amd_negative_viewport_height {
+            v.push(b"VK_AMD_negative_viewport_height\0".as_ptr() as *const c_char)
+        }
+        if self.amd_gpu_shader_half_float {
+            v.push(b"VK_AMD_gpu_shader_half_float\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_ballot {
+            v.push(b"VK_AMD_shader_ballot\0".as_ptr() as *const c_char)
+        }
+        if self.amd_texture_gather_bias_lod {
+            v.push(b"VK_AMD_texture_gather_bias_lod\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_info {
+            v.push(b"VK_AMD_shader_info\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_image_load_store_lod {
+            v.push(b"VK_AMD_shader_image_load_store_lod\0".as_ptr() as *const c_char)
+        }
+        if self.nv_corner_sampled_image {
+            v.push(b"VK_NV_corner_sampled_image\0".as_ptr() as *const c_char)
+        }
+        if self.khr_multiview {
+            v.push(b"VK_KHR_multiview\0".as_ptr() as *const c_char)
+        }
+        if self.img_format_pvrtc {
+            v.push(b"VK_IMG_format_pvrtc\0".as_ptr() as *const c_char)
+        }
+        if self.nv_external_memory {
+            v.push(b"VK_NV_external_memory\0".as_ptr() as *const c_char)
+        }
+        if self.nv_external_memory_win32 {
+            v.push(b"VK_NV_external_memory_win32\0".as_ptr() as *const c_char)
+        }
+        if self.nv_win32_keyed_mutex {
+            v.push(b"VK_NV_win32_keyed_mutex\0".as_ptr() as *const c_char)
+        }
+        if self.khr_device_group {
+            v.push(b"VK_KHR_device_group\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_draw_parameters {
+            v.push(b"VK_KHR_shader_draw_parameters\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_subgroup_ballot {
+            v.push(b"VK_EXT_shader_subgroup_ballot\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_subgroup_vote {
+            v.push(b"VK_EXT_shader_subgroup_vote\0".as_ptr() as *const c_char)
+        }
+        if self.ext_texture_compression_astc_hdr {
+            v.push(b"VK_EXT_texture_compression_astc_hdr\0".as_ptr() as *const c_char)
+        }
+        if self.ext_astc_decode_mode {
+            v.push(b"VK_EXT_astc_decode_mode\0".as_ptr() as *const c_char)
+        }
+        if self.khr_maintenance1 {
+            v.push(b"VK_KHR_maintenance1\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_memory {
+            v.push(b"VK_KHR_external_memory\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_memory_win32 {
+            v.push(b"VK_KHR_external_memory_win32\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_memory_fd {
+            v.push(b"VK_KHR_external_memory_fd\0".as_ptr() as *const c_char)
+        }
+        if self.khr_win32_keyed_mutex {
+            v.push(b"VK_KHR_win32_keyed_mutex\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_semaphore {
+            v.push(b"VK_KHR_external_semaphore\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_semaphore_win32 {
+            v.push(b"VK_KHR_external_semaphore_win32\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_semaphore_fd {
+            v.push(b"VK_KHR_external_semaphore_fd\0".as_ptr() as *const c_char)
+        }
+        if self.khr_push_descriptor {
+            v.push(b"VK_KHR_push_descriptor\0".as_ptr() as *const c_char)
+        }
+        if self.ext_conditional_rendering {
+            v.push(b"VK_EXT_conditional_rendering\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_float16_int8 {
+            v.push(b"VK_KHR_shader_float16_int8\0".as_ptr() as *const c_char)
+        }
+        if self.khr_16bit_storage {
+            v.push(b"VK_KHR_16bit_storage\0".as_ptr() as *const c_char)
+        }
+        if self.khr_incremental_present {
+            v.push(b"VK_KHR_incremental_present\0".as_ptr() as *const c_char)
+        }
+        if self.khr_descriptor_update_template {
+            v.push(b"VK_KHR_descriptor_update_template\0".as_ptr() as *const c_char)
+        }
+        if self.nv_clip_space_w_scaling {
+            v.push(b"VK_NV_clip_space_w_scaling\0".as_ptr() as *const c_char)
+        }
+        if self.ext_display_control {
+            v.push(b"VK_EXT_display_control\0".as_ptr() as *const c_char)
+        }
+        if self.google_display_timing {
+            v.push(b"VK_GOOGLE_display_timing\0".as_ptr() as *const c_char)
+        }
+        if self.nv_sample_mask_override_coverage {
+            v.push(b"VK_NV_sample_mask_override_coverage\0".as_ptr() as *const c_char)
+        }
+        if self.nv_geometry_shader_passthrough {
+            v.push(b"VK_NV_geometry_shader_passthrough\0".as_ptr() as *const c_char)
+        }
+        if self.nv_viewport_array2 {
+            v.push(b"VK_NV_viewport_array2\0".as_ptr() as *const c_char)
+        }
+        if self.nvx_multiview_per_view_attributes {
+            v.push(b"VK_NVX_multiview_per_view_attributes\0".as_ptr() as *const c_char)
+        }
+        if self.nv_viewport_swizzle {
+            v.push(b"VK_NV_viewport_swizzle\0".as_ptr() as *const c_char)
+        }
+        if self.ext_discard_rectangles {
+            v.push(b"VK_EXT_discard_rectangles\0".as_ptr() as *const c_char)
+        }
+        if self.ext_conservative_rasterization {
+            v.push(b"VK_EXT_conservative_rasterization\0".as_ptr() as *const c_char)
+        }
+        if self.ext_depth_clip_enable {
+            v.push(b"VK_EXT_depth_clip_enable\0".as_ptr() as *const c_char)
+        }
+        if self.ext_hdr_metadata {
+            v.push(b"VK_EXT_hdr_metadata\0".as_ptr() as *const c_char)
+        }
+        if self.khr_imageless_framebuffer {
+            v.push(b"VK_KHR_imageless_framebuffer\0".as_ptr() as *const c_char)
+        }
+        if self.khr_create_renderpass2 {
+            v.push(b"VK_KHR_create_renderpass2\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shared_presentable_image {
+            v.push(b"VK_KHR_shared_presentable_image\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_fence {
+            v.push(b"VK_KHR_external_fence\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_fence_win32 {
+            v.push(b"VK_KHR_external_fence_win32\0".as_ptr() as *const c_char)
+        }
+        if self.khr_external_fence_fd {
+            v.push(b"VK_KHR_external_fence_fd\0".as_ptr() as *const c_char)
+        }
+        if self.khr_performance_query {
+            v.push(b"VK_KHR_performance_query\0".as_ptr() as *const c_char)
+        }
+        if self.khr_maintenance2 {
+            v.push(b"VK_KHR_maintenance2\0".as_ptr() as *const c_char)
+        }
+        if self.khr_variable_pointers {
+            v.push(b"VK_KHR_variable_pointers\0".as_ptr() as *const c_char)
+        }
+        if self.ext_external_memory_dma_buf {
+            v.push(b"VK_EXT_external_memory_dma_buf\0".as_ptr() as *const c_char)
+        }
+        if self.ext_queue_family_foreign {
+            v.push(b"VK_EXT_queue_family_foreign\0".as_ptr() as *const c_char)
+        }
+        if self.khr_dedicated_allocation {
+            v.push(b"VK_KHR_dedicated_allocation\0".as_ptr() as *const c_char)
+        }
+        if self.android_external_memory_android_hardware_buffer {
+            v.push(b"VK_ANDROID_external_memory_android_hardware_buffer\0".as_ptr() as *const c_char)
+        }
+        if self.ext_sampler_filter_minmax {
+            v.push(b"VK_EXT_sampler_filter_minmax\0".as_ptr() as *const c_char)
+        }
+        if self.khr_storage_buffer_storage_class {
+            v.push(b"VK_KHR_storage_buffer_storage_class\0".as_ptr() as *const c_char)
+        }
+        if self.amd_gpu_shader_int16 {
+            v.push(b"VK_AMD_gpu_shader_int16\0".as_ptr() as *const c_char)
+        }
+        if self.amd_mixed_attachment_samples {
+            v.push(b"VK_AMD_mixed_attachment_samples\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_fragment_mask {
+            v.push(b"VK_AMD_shader_fragment_mask\0".as_ptr() as *const c_char)
+        }
+        if self.ext_inline_uniform_block {
+            v.push(b"VK_EXT_inline_uniform_block\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_stencil_export {
+            v.push(b"VK_EXT_shader_stencil_export\0".as_ptr() as *const c_char)
+        }
+        if self.ext_sample_locations {
+            v.push(b"VK_EXT_sample_locations\0".as_ptr() as *const c_char)
+        }
+        if self.khr_relaxed_block_layout {
+            v.push(b"VK_KHR_relaxed_block_layout\0".as_ptr() as *const c_char)
+        }
+        if self.khr_get_memory_requirements2 {
+            v.push(b"VK_KHR_get_memory_requirements2\0".as_ptr() as *const c_char)
+        }
+        if self.khr_image_format_list {
+            v.push(b"VK_KHR_image_format_list\0".as_ptr() as *const c_char)
+        }
+        if self.ext_blend_operation_advanced {
+            v.push(b"VK_EXT_blend_operation_advanced\0".as_ptr() as *const c_char)
+        }
+        if self.nv_fragment_coverage_to_color {
+            v.push(b"VK_NV_fragment_coverage_to_color\0".as_ptr() as *const c_char)
+        }
+        if self.khr_ray_tracing {
+            v.push(b"VK_KHR_ray_tracing\0".as_ptr() as *const c_char)
+        }
+        if self.nv_framebuffer_mixed_samples {
+            v.push(b"VK_NV_framebuffer_mixed_samples\0".as_ptr() as *const c_char)
+        }
+        if self.nv_fill_rectangle {
+            v.push(b"VK_NV_fill_rectangle\0".as_ptr() as *const c_char)
+        }
+        if self.nv_shader_sm_builtins {
+            v.push(b"VK_NV_shader_sm_builtins\0".as_ptr() as *const c_char)
+        }
+        if self.ext_post_depth_coverage {
+            v.push(b"VK_EXT_post_depth_coverage\0".as_ptr() as *const c_char)
+        }
+        if self.khr_sampler_ycbcr_conversion {
+            v.push(b"VK_KHR_sampler_ycbcr_conversion\0".as_ptr() as *const c_char)
+        }
+        if self.khr_bind_memory2 {
+            v.push(b"VK_KHR_bind_memory2\0".as_ptr() as *const c_char)
+        }
+        if self.ext_image_drm_format_modifier {
+            v.push(b"VK_EXT_image_drm_format_modifier\0".as_ptr() as *const c_char)
+        }
+        if self.ext_validation_cache {
+            v.push(b"VK_EXT_validation_cache\0".as_ptr() as *const c_char)
+        }
+        if self.ext_descriptor_indexing {
+            v.push(b"VK_EXT_descriptor_indexing\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_viewport_index_layer {
+            v.push(b"VK_EXT_shader_viewport_index_layer\0".as_ptr() as *const c_char)
+        }
+        if self.khr_portability_subset {
+            v.push(b"VK_KHR_portability_subset\0".as_ptr() as *const c_char)
+        }
+        if self.nv_shading_rate_image {
+            v.push(b"VK_NV_shading_rate_image\0".as_ptr() as *const c_char)
+        }
+        if self.nv_ray_tracing {
+            v.push(b"VK_NV_ray_tracing\0".as_ptr() as *const c_char)
+        }
+        if self.nv_representative_fragment_test {
+            v.push(b"VK_NV_representative_fragment_test\0".as_ptr() as *const c_char)
+        }
+        if self.khr_maintenance3 {
+            v.push(b"VK_KHR_maintenance3\0".as_ptr() as *const c_char)
+        }
+        if self.khr_draw_indirect_count {
+            v.push(b"VK_KHR_draw_indirect_count\0".as_ptr() as *const c_char)
+        }
+        if self.ext_filter_cubic {
+            v.push(b"VK_EXT_filter_cubic\0".as_ptr() as *const c_char)
+        }
+        if self.qcom_render_pass_shader_resolve {
+            v.push(b"VK_QCOM_render_pass_shader_resolve\0".as_ptr() as *const c_char)
+        }
+        if self.ext_global_priority {
+            v.push(b"VK_EXT_global_priority\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_subgroup_extended_types {
+            v.push(b"VK_KHR_shader_subgroup_extended_types\0".as_ptr() as *const c_char)
+        }
+        if self.khr_8bit_storage {
+            v.push(b"VK_KHR_8bit_storage\0".as_ptr() as *const c_char)
+        }
+        if self.ext_external_memory_host {
+            v.push(b"VK_EXT_external_memory_host\0".as_ptr() as *const c_char)
+        }
+        if self.amd_buffer_marker {
+            v.push(b"VK_AMD_buffer_marker\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_atomic_int64 {
+            v.push(b"VK_KHR_shader_atomic_int64\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_clock {
+            v.push(b"VK_KHR_shader_clock\0".as_ptr() as *const c_char)
+        }
+        if self.amd_pipeline_compiler_control {
+            v.push(b"VK_AMD_pipeline_compiler_control\0".as_ptr() as *const c_char)
+        }
+        if self.ext_calibrated_timestamps {
+            v.push(b"VK_EXT_calibrated_timestamps\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_core_properties {
+            v.push(b"VK_AMD_shader_core_properties\0".as_ptr() as *const c_char)
+        }
+        if self.amd_memory_overallocation_behavior {
+            v.push(b"VK_AMD_memory_overallocation_behavior\0".as_ptr() as *const c_char)
+        }
+        if self.ext_vertex_attribute_divisor {
+            v.push(b"VK_EXT_vertex_attribute_divisor\0".as_ptr() as *const c_char)
+        }
+        if self.ext_pipeline_creation_feedback {
+            v.push(b"VK_EXT_pipeline_creation_feedback\0".as_ptr() as *const c_char)
+        }
+        if self.khr_driver_properties {
+            v.push(b"VK_KHR_driver_properties\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_float_controls {
+            v.push(b"VK_KHR_shader_float_controls\0".as_ptr() as *const c_char)
+        }
+        if self.nv_shader_subgroup_partitioned {
+            v.push(b"VK_NV_shader_subgroup_partitioned\0".as_ptr() as *const c_char)
+        }
+        if self.khr_depth_stencil_resolve {
+            v.push(b"VK_KHR_depth_stencil_resolve\0".as_ptr() as *const c_char)
+        }
+        if self.khr_swapchain_mutable_format {
+            v.push(b"VK_KHR_swapchain_mutable_format\0".as_ptr() as *const c_char)
+        }
+        if self.nv_compute_shader_derivatives {
+            v.push(b"VK_NV_compute_shader_derivatives\0".as_ptr() as *const c_char)
+        }
+        if self.nv_mesh_shader {
+            v.push(b"VK_NV_mesh_shader\0".as_ptr() as *const c_char)
+        }
+        if self.nv_fragment_shader_barycentric {
+            v.push(b"VK_NV_fragment_shader_barycentric\0".as_ptr() as *const c_char)
+        }
+        if self.nv_shader_image_footprint {
+            v.push(b"VK_NV_shader_image_footprint\0".as_ptr() as *const c_char)
+        }
+        if self.nv_scissor_exclusive {
+            v.push(b"VK_NV_scissor_exclusive\0".as_ptr() as *const c_char)
+        }
+        if self.nv_device_diagnostic_checkpoints {
+            v.push(b"VK_NV_device_diagnostic_checkpoints\0".as_ptr() as *const c_char)
+        }
+        if self.khr_timeline_semaphore {
+            v.push(b"VK_KHR_timeline_semaphore\0".as_ptr() as *const c_char)
+        }
+        if self.intel_shader_integer_functions2 {
+            v.push(b"VK_INTEL_shader_integer_functions2\0".as_ptr() as *const c_char)
+        }
+        if self.intel_performance_query {
+            v.push(b"VK_INTEL_performance_query\0".as_ptr() as *const c_char)
+        }
+        if self.khr_vulkan_memory_model {
+            v.push(b"VK_KHR_vulkan_memory_model\0".as_ptr() as *const c_char)
+        }
+        if self.ext_pci_bus_info {
+            v.push(b"VK_EXT_pci_bus_info\0".as_ptr() as *const c_char)
+        }
+        if self.amd_display_native_hdr {
+            v.push(b"VK_AMD_display_native_hdr\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_terminate_invocation {
+            v.push(b"VK_KHR_shader_terminate_invocation\0".as_ptr() as *const c_char)
+        }
+        if self.ext_fragment_density_map {
+            v.push(b"VK_EXT_fragment_density_map\0".as_ptr() as *const c_char)
+        }
+        if self.ext_scalar_block_layout {
+            v.push(b"VK_EXT_scalar_block_layout\0".as_ptr() as *const c_char)
+        }
+        if self.google_hlsl_functionality1 {
+            v.push(b"VK_GOOGLE_hlsl_functionality1\0".as_ptr() as *const c_char)
+        }
+        if self.google_decorate_string {
+            v.push(b"VK_GOOGLE_decorate_string\0".as_ptr() as *const c_char)
+        }
+        if self.ext_subgroup_size_control {
+            v.push(b"VK_EXT_subgroup_size_control\0".as_ptr() as *const c_char)
+        }
+        if self.khr_fragment_shading_rate {
+            v.push(b"VK_KHR_fragment_shading_rate\0".as_ptr() as *const c_char)
+        }
+        if self.amd_shader_core_properties2 {
+            v.push(b"VK_AMD_shader_core_properties2\0".as_ptr() as *const c_char)
+        }
+        if self.amd_device_coherent_memory {
+            v.push(b"VK_AMD_device_coherent_memory\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_image_atomic_int64 {
+            v.push(b"VK_EXT_shader_image_atomic_int64\0".as_ptr() as *const c_char)
+        }
+        if self.khr_spirv_1_4 {
+            v.push(b"VK_KHR_spirv_1_4\0".as_ptr() as *const c_char)
+        }
+        if self.ext_memory_budget {
+            v.push(b"VK_EXT_memory_budget\0".as_ptr() as *const c_char)
+        }
+        if self.ext_memory_priority {
+            v.push(b"VK_EXT_memory_priority\0".as_ptr() as *const c_char)
+        }
+        if self.nv_dedicated_allocation_image_aliasing {
+            v.push(b"VK_NV_dedicated_allocation_image_aliasing\0".as_ptr() as *const c_char)
+        }
+        if self.khr_separate_depth_stencil_layouts {
+            v.push(b"VK_KHR_separate_depth_stencil_layouts\0".as_ptr() as *const c_char)
+        }
+        if self.ext_buffer_device_address {
+            v.push(b"VK_EXT_buffer_device_address\0".as_ptr() as *const c_char)
+        }
+        if self.ext_tooling_info {
+            v.push(b"VK_EXT_tooling_info\0".as_ptr() as *const c_char)
+        }
+        if self.ext_separate_stencil_usage {
+            v.push(b"VK_EXT_separate_stencil_usage\0".as_ptr() as *const c_char)
+        }
+        if self.nv_cooperative_matrix {
+            v.push(b"VK_NV_cooperative_matrix\0".as_ptr() as *const c_char)
+        }
+        if self.nv_coverage_reduction_mode {
+            v.push(b"VK_NV_coverage_reduction_mode\0".as_ptr() as *const c_char)
+        }
+        if self.ext_fragment_shader_interlock {
+            v.push(b"VK_EXT_fragment_shader_interlock\0".as_ptr() as *const c_char)
+        }
+        if self.ext_ycbcr_image_arrays {
+            v.push(b"VK_EXT_ycbcr_image_arrays\0".as_ptr() as *const c_char)
+        }
+        if self.khr_uniform_buffer_standard_layout {
+            v.push(b"VK_KHR_uniform_buffer_standard_layout\0".as_ptr() as *const c_char)
+        }
+        if self.ext_full_screen_exclusive {
+            v.push(b"VK_EXT_full_screen_exclusive\0".as_ptr() as *const c_char)
+        }
+        if self.khr_buffer_device_address {
+            v.push(b"VK_KHR_buffer_device_address\0".as_ptr() as *const c_char)
+        }
+        if self.ext_line_rasterization {
+            v.push(b"VK_EXT_line_rasterization\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_atomic_float {
+            v.push(b"VK_EXT_shader_atomic_float\0".as_ptr() as *const c_char)
+        }
+        if self.ext_host_query_reset {
+            v.push(b"VK_EXT_host_query_reset\0".as_ptr() as *const c_char)
+        }
+        if self.ext_index_type_uint8 {
+            v.push(b"VK_EXT_index_type_uint8\0".as_ptr() as *const c_char)
+        }
+        if self.ext_extended_dynamic_state {
+            v.push(b"VK_EXT_extended_dynamic_state\0".as_ptr() as *const c_char)
+        }
+        if self.khr_deferred_host_operations {
+            v.push(b"VK_KHR_deferred_host_operations\0".as_ptr() as *const c_char)
+        }
+        if self.khr_pipeline_executable_properties {
+            v.push(b"VK_KHR_pipeline_executable_properties\0".as_ptr() as *const c_char)
+        }
+        if self.ext_shader_demote_to_helper_invocation {
+            v.push(b"VK_EXT_shader_demote_to_helper_invocation\0".as_ptr() as *const c_char)
+        }
+        if self.nv_device_generated_commands {
+            v.push(b"VK_NV_device_generated_commands\0".as_ptr() as *const c_char)
+        }
+        if self.ext_texel_buffer_alignment {
+            v.push(b"VK_EXT_texel_buffer_alignment\0".as_ptr() as *const c_char)
+        }
+        if self.qcom_render_pass_transform {
+            v.push(b"VK_QCOM_render_pass_transform\0".as_ptr() as *const c_char)
+        }
+        if self.ext_device_memory_report {
+            v.push(b"VK_EXT_device_memory_report\0".as_ptr() as *const c_char)
+        }
+        if self.ext_robustness2 {
+            v.push(b"VK_EXT_robustness2\0".as_ptr() as *const c_char)
+        }
+        if self.ext_custom_border_color {
+            v.push(b"VK_EXT_custom_border_color\0".as_ptr() as *const c_char)
+        }
+        if self.google_user_type {
+            v.push(b"VK_GOOGLE_user_type\0".as_ptr() as *const c_char)
+        }
+        if self.khr_pipeline_library {
+            v.push(b"VK_KHR_pipeline_library\0".as_ptr() as *const c_char)
+        }
+        if self.khr_shader_non_semantic_info {
+            v.push(b"VK_KHR_shader_non_semantic_info\0".as_ptr() as *const c_char)
+        }
+        if self.ext_private_data {
+            v.push(b"VK_EXT_private_data\0".as_ptr() as *const c_char)
+        }
+        if self.ext_pipeline_creation_cache_control {
+            v.push(b"VK_EXT_pipeline_creation_cache_control\0".as_ptr() as *const c_char)
+        }
+        if self.nv_device_diagnostics_config {
+            v.push(b"VK_NV_device_diagnostics_config\0".as_ptr() as *const c_char)
+        }
+        if self.qcom_render_pass_store_ops {
+            v.push(b"VK_QCOM_render_pass_store_ops\0".as_ptr() as *const c_char)
+        }
+        if self.ext_fragment_density_map2 {
+            v.push(b"VK_EXT_fragment_density_map2\0".as_ptr() as *const c_char)
+        }
+        if self.ext_image_robustness {
+            v.push(b"VK_EXT_image_robustness\0".as_ptr() as *const c_char)
+        }
+        if self.khr_copy_commands2 {
+            v.push(b"VK_KHR_copy_commands2\0".as_ptr() as *const c_char)
+        }
+        if self.ext_4444_formats {
+            v.push(b"VK_EXT_4444_formats\0".as_ptr() as *const c_char)
+        }
+        v
+    }
+}
 #[derive(Copy, Clone)]
 pub struct Device {
     pub handle: vk::Device,
@@ -3214,558 +5826,6 @@ pub struct Device {
     pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
 }
 impl Device {
-    pub fn khr_swapchain_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain\0") }
-    }
-    pub fn khr_display_swapchain_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display_swapchain\0") }
-    }
-    pub fn nv_glsl_shader_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_glsl_shader\0") }
-    }
-    pub fn ext_depth_range_unrestricted_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_range_unrestricted\0") }
-    }
-    pub fn khr_sampler_mirror_clamp_to_edge_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_mirror_clamp_to_edge\0") }
-    }
-    pub fn img_filter_cubic_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_filter_cubic\0") }
-    }
-    pub fn amd_rasterization_order_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_rasterization_order\0") }
-    }
-    pub fn amd_shader_trinary_minmax_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_trinary_minmax\0") }
-    }
-    pub fn amd_shader_explicit_vertex_parameter_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_explicit_vertex_parameter\0") }
-    }
-    pub fn ext_debug_marker_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_marker\0") }
-    }
-    pub fn amd_gcn_shader_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gcn_shader\0") }
-    }
-    pub fn nv_dedicated_allocation_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation\0") }
-    }
-    pub fn ext_transform_feedback_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_transform_feedback\0") }
-    }
-    pub fn nvx_image_view_handle_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_image_view_handle\0") }
-    }
-    pub fn amd_draw_indirect_count_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_draw_indirect_count\0") }
-    }
-    pub fn amd_negative_viewport_height_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_negative_viewport_height\0") }
-    }
-    pub fn amd_gpu_shader_half_float_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_half_float\0") }
-    }
-    pub fn amd_shader_ballot_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_ballot\0") }
-    }
-    pub fn amd_texture_gather_bias_lod_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_texture_gather_bias_lod\0") }
-    }
-    pub fn amd_shader_info_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_info\0") }
-    }
-    pub fn amd_shader_image_load_store_lod_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_image_load_store_lod\0") }
-    }
-    pub fn nv_corner_sampled_image_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_corner_sampled_image\0") }
-    }
-    pub fn khr_multiview_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_multiview\0") }
-    }
-    pub fn img_format_pvrtc_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_format_pvrtc\0") }
-    }
-    pub fn nv_external_memory_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory\0") }
-    }
-    pub fn nv_external_memory_win32_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_win32\0") }
-    }
-    pub fn nv_win32_keyed_mutex_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_win32_keyed_mutex\0") }
-    }
-    pub fn khr_device_group_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group\0") }
-    }
-    pub fn khr_shader_draw_parameters_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_draw_parameters\0") }
-    }
-    pub fn ext_shader_subgroup_ballot_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_ballot\0") }
-    }
-    pub fn ext_shader_subgroup_vote_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_vote\0") }
-    }
-    pub fn ext_texture_compression_astc_hdr_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texture_compression_astc_hdr\0") }
-    }
-    pub fn ext_astc_decode_mode_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_astc_decode_mode\0") }
-    }
-    pub fn khr_maintenance1_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance1\0") }
-    }
-    pub fn khr_external_memory_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory\0") }
-    }
-    pub fn khr_external_memory_win32_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_win32\0") }
-    }
-    pub fn khr_external_memory_fd_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_fd\0") }
-    }
-    pub fn khr_win32_keyed_mutex_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_keyed_mutex\0") }
-    }
-    pub fn khr_external_semaphore_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore\0") }
-    }
-    pub fn khr_external_semaphore_win32_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_win32\0") }
-    }
-    pub fn khr_external_semaphore_fd_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_fd\0") }
-    }
-    pub fn khr_push_descriptor_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_push_descriptor\0") }
-    }
-    pub fn ext_conditional_rendering_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conditional_rendering\0") }
-    }
-    pub fn khr_shader_float16_int8_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float16_int8\0") }
-    }
-    pub fn khr_16bit_storage_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_16bit_storage\0") }
-    }
-    pub fn khr_incremental_present_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_incremental_present\0") }
-    }
-    pub fn khr_descriptor_update_template_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_descriptor_update_template\0") }
-    }
-    pub fn nv_clip_space_w_scaling_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_clip_space_w_scaling\0") }
-    }
-    pub fn ext_display_control_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_control\0") }
-    }
-    pub fn google_display_timing_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_display_timing\0") }
-    }
-    pub fn nv_sample_mask_override_coverage_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_sample_mask_override_coverage\0") }
-    }
-    pub fn nv_geometry_shader_passthrough_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_geometry_shader_passthrough\0") }
-    }
-    pub fn nv_viewport_array2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_array2\0") }
-    }
-    pub fn nvx_multiview_per_view_attributes_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_multiview_per_view_attributes\0") }
-    }
-    pub fn nv_viewport_swizzle_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_swizzle\0") }
-    }
-    pub fn ext_discard_rectangles_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_discard_rectangles\0") }
-    }
-    pub fn ext_conservative_rasterization_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conservative_rasterization\0") }
-    }
-    pub fn ext_depth_clip_enable_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clip_enable\0") }
-    }
-    pub fn ext_hdr_metadata_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_hdr_metadata\0") }
-    }
-    pub fn khr_imageless_framebuffer_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_imageless_framebuffer\0") }
-    }
-    pub fn khr_create_renderpass2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_create_renderpass2\0") }
-    }
-    pub fn khr_shared_presentable_image_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shared_presentable_image\0") }
-    }
-    pub fn khr_external_fence_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence\0") }
-    }
-    pub fn khr_external_fence_win32_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_win32\0") }
-    }
-    pub fn khr_external_fence_fd_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_fd\0") }
-    }
-    pub fn khr_performance_query_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_performance_query\0") }
-    }
-    pub fn khr_maintenance2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance2\0") }
-    }
-    pub fn khr_variable_pointers_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_variable_pointers\0") }
-    }
-    pub fn ext_external_memory_dma_buf_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_dma_buf\0") }
-    }
-    pub fn ext_queue_family_foreign_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_queue_family_foreign\0") }
-    }
-    pub fn khr_dedicated_allocation_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_dedicated_allocation\0") }
-    }
-    pub fn android_external_memory_android_hardware_buffer_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ANDROID_external_memory_android_hardware_buffer\0") }
-    }
-    pub fn ext_sampler_filter_minmax_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sampler_filter_minmax\0") }
-    }
-    pub fn khr_storage_buffer_storage_class_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_storage_buffer_storage_class\0") }
-    }
-    pub fn amd_gpu_shader_int16_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_int16\0") }
-    }
-    pub fn amd_mixed_attachment_samples_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_mixed_attachment_samples\0") }
-    }
-    pub fn amd_shader_fragment_mask_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_fragment_mask\0") }
-    }
-    pub fn ext_inline_uniform_block_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_inline_uniform_block\0") }
-    }
-    pub fn ext_shader_stencil_export_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_stencil_export\0") }
-    }
-    pub fn ext_sample_locations_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sample_locations\0") }
-    }
-    pub fn khr_relaxed_block_layout_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_relaxed_block_layout\0") }
-    }
-    pub fn khr_get_memory_requirements2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_memory_requirements2\0") }
-    }
-    pub fn khr_image_format_list_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_image_format_list\0") }
-    }
-    pub fn ext_blend_operation_advanced_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_blend_operation_advanced\0") }
-    }
-    pub fn nv_fragment_coverage_to_color_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_coverage_to_color\0") }
-    }
-    pub fn khr_ray_tracing_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing\0") }
-    }
-    pub fn nv_framebuffer_mixed_samples_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_framebuffer_mixed_samples\0") }
-    }
-    pub fn nv_fill_rectangle_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fill_rectangle\0") }
-    }
-    pub fn nv_shader_sm_builtins_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_sm_builtins\0") }
-    }
-    pub fn ext_post_depth_coverage_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_post_depth_coverage\0") }
-    }
-    pub fn khr_sampler_ycbcr_conversion_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_ycbcr_conversion\0") }
-    }
-    pub fn khr_bind_memory2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_bind_memory2\0") }
-    }
-    pub fn ext_image_drm_format_modifier_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_drm_format_modifier\0") }
-    }
-    pub fn ext_validation_cache_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_cache\0") }
-    }
-    pub fn ext_descriptor_indexing_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_descriptor_indexing\0") }
-    }
-    pub fn ext_shader_viewport_index_layer_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_viewport_index_layer\0") }
-    }
-    pub fn khr_portability_subset_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_portability_subset\0") }
-    }
-    pub fn nv_shading_rate_image_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shading_rate_image\0") }
-    }
-    pub fn nv_ray_tracing_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing\0") }
-    }
-    pub fn nv_representative_fragment_test_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_representative_fragment_test\0") }
-    }
-    pub fn khr_maintenance3_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance3\0") }
-    }
-    pub fn khr_draw_indirect_count_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_draw_indirect_count\0") }
-    }
-    pub fn ext_filter_cubic_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_filter_cubic\0") }
-    }
-    pub fn qcom_render_pass_shader_resolve_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_shader_resolve\0") }
-    }
-    pub fn ext_global_priority_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority\0") }
-    }
-    pub fn khr_shader_subgroup_extended_types_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_extended_types\0") }
-    }
-    pub fn khr_8bit_storage_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_8bit_storage\0") }
-    }
-    pub fn ext_external_memory_host_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_host\0") }
-    }
-    pub fn amd_buffer_marker_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_buffer_marker\0") }
-    }
-    pub fn khr_shader_atomic_int64_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_atomic_int64\0") }
-    }
-    pub fn khr_shader_clock_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_clock\0") }
-    }
-    pub fn amd_pipeline_compiler_control_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_pipeline_compiler_control\0") }
-    }
-    pub fn ext_calibrated_timestamps_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_calibrated_timestamps\0") }
-    }
-    pub fn amd_shader_core_properties_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties\0") }
-    }
-    pub fn amd_memory_overallocation_behavior_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_memory_overallocation_behavior\0") }
-    }
-    pub fn ext_vertex_attribute_divisor_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_divisor\0") }
-    }
-    pub fn ext_pipeline_creation_feedback_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_feedback\0") }
-    }
-    pub fn khr_driver_properties_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_driver_properties\0") }
-    }
-    pub fn khr_shader_float_controls_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float_controls\0") }
-    }
-    pub fn nv_shader_subgroup_partitioned_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_subgroup_partitioned\0") }
-    }
-    pub fn khr_depth_stencil_resolve_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_depth_stencil_resolve\0") }
-    }
-    pub fn khr_swapchain_mutable_format_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain_mutable_format\0") }
-    }
-    pub fn nv_compute_shader_derivatives_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_compute_shader_derivatives\0") }
-    }
-    pub fn nv_mesh_shader_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_mesh_shader\0") }
-    }
-    pub fn nv_fragment_shader_barycentric_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shader_barycentric\0") }
-    }
-    pub fn nv_shader_image_footprint_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_image_footprint\0") }
-    }
-    pub fn nv_scissor_exclusive_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_scissor_exclusive\0") }
-    }
-    pub fn nv_device_diagnostic_checkpoints_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostic_checkpoints\0") }
-    }
-    pub fn khr_timeline_semaphore_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_timeline_semaphore\0") }
-    }
-    pub fn intel_shader_integer_functions2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_shader_integer_functions2\0") }
-    }
-    pub fn intel_performance_query_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_performance_query\0") }
-    }
-    pub fn khr_vulkan_memory_model_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vulkan_memory_model\0") }
-    }
-    pub fn ext_pci_bus_info_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pci_bus_info\0") }
-    }
-    pub fn amd_display_native_hdr_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_display_native_hdr\0") }
-    }
-    pub fn khr_shader_terminate_invocation_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_terminate_invocation\0") }
-    }
-    pub fn ext_fragment_density_map_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map\0") }
-    }
-    pub fn ext_scalar_block_layout_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_scalar_block_layout\0") }
-    }
-    pub fn google_hlsl_functionality1_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_hlsl_functionality1\0") }
-    }
-    pub fn google_decorate_string_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_decorate_string\0") }
-    }
-    pub fn ext_subgroup_size_control_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subgroup_size_control\0") }
-    }
-    pub fn khr_fragment_shading_rate_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_fragment_shading_rate\0") }
-    }
-    pub fn amd_shader_core_properties2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties2\0") }
-    }
-    pub fn amd_device_coherent_memory_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_device_coherent_memory\0") }
-    }
-    pub fn ext_shader_image_atomic_int64_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_image_atomic_int64\0") }
-    }
-    pub fn khr_spirv_1_4_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_spirv_1_4\0") }
-    }
-    pub fn ext_memory_budget_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") }
-    }
-    pub fn ext_memory_priority_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_priority\0") }
-    }
-    pub fn nv_dedicated_allocation_image_aliasing_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation_image_aliasing\0") }
-    }
-    pub fn khr_separate_depth_stencil_layouts_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_separate_depth_stencil_layouts\0") }
-    }
-    pub fn ext_buffer_device_address_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_buffer_device_address\0") }
-    }
-    pub fn ext_tooling_info_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_tooling_info\0") }
-    }
-    pub fn ext_separate_stencil_usage_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_separate_stencil_usage\0") }
-    }
-    pub fn nv_cooperative_matrix_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix\0") }
-    }
-    pub fn nv_coverage_reduction_mode_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_coverage_reduction_mode\0") }
-    }
-    pub fn ext_fragment_shader_interlock_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_shader_interlock\0") }
-    }
-    pub fn ext_ycbcr_image_arrays_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_image_arrays\0") }
-    }
-    pub fn khr_uniform_buffer_standard_layout_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_uniform_buffer_standard_layout\0") }
-    }
-    pub fn ext_full_screen_exclusive_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") }
-    }
-    pub fn khr_buffer_device_address_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_buffer_device_address\0") }
-    }
-    pub fn ext_line_rasterization_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_line_rasterization\0") }
-    }
-    pub fn ext_shader_atomic_float_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float\0") }
-    }
-    pub fn ext_host_query_reset_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") }
-    }
-    pub fn ext_index_type_uint8_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") }
-    }
-    pub fn ext_extended_dynamic_state_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state\0") }
-    }
-    pub fn khr_deferred_host_operations_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_deferred_host_operations\0") }
-    }
-    pub fn khr_pipeline_executable_properties_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") }
-    }
-    pub fn ext_shader_demote_to_helper_invocation_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") }
-    }
-    pub fn nv_device_generated_commands_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands\0") }
-    }
-    pub fn ext_texel_buffer_alignment_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") }
-    }
-    pub fn qcom_render_pass_transform_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") }
-    }
-    pub fn ext_device_memory_report_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_memory_report\0") }
-    }
-    pub fn ext_robustness2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_robustness2\0") }
-    }
-    pub fn ext_custom_border_color_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_custom_border_color\0") }
-    }
-    pub fn google_user_type_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") }
-    }
-    pub fn khr_pipeline_library_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_library\0") }
-    }
-    pub fn khr_shader_non_semantic_info_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") }
-    }
-    pub fn ext_private_data_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_private_data\0") }
-    }
-    pub fn ext_pipeline_creation_cache_control_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_cache_control\0") }
-    }
-    pub fn nv_device_diagnostics_config_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostics_config\0") }
-    }
-    pub fn qcom_render_pass_store_ops_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") }
-    }
-    pub fn ext_fragment_density_map2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") }
-    }
-    pub fn ext_image_robustness_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") }
-    }
-    pub fn khr_copy_commands2_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_copy_commands2\0") }
-    }
-    pub fn ext_4444_formats_name() -> &'static CStr {
-        unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") }
-    }
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
     pub unsafe fn load(
         instance: &Instance,
@@ -3779,201 +5839,7 @@ impl Device {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                match CStr::from_ptr(name_ptr).to_bytes() {
-                    b"VK_KHR_swapchain" => extensions.khr_swapchain = true,
-                    b"VK_KHR_display_swapchain" => extensions.khr_display_swapchain = true,
-                    b"VK_NV_glsl_shader" => extensions.nv_glsl_shader = true,
-                    b"VK_EXT_depth_range_unrestricted" => extensions.ext_depth_range_unrestricted = true,
-                    b"VK_KHR_sampler_mirror_clamp_to_edge" => extensions.khr_sampler_mirror_clamp_to_edge = true,
-                    b"VK_IMG_filter_cubic" => extensions.img_filter_cubic = true,
-                    b"VK_AMD_rasterization_order" => extensions.amd_rasterization_order = true,
-                    b"VK_AMD_shader_trinary_minmax" => extensions.amd_shader_trinary_minmax = true,
-                    b"VK_AMD_shader_explicit_vertex_parameter" => {
-                        extensions.amd_shader_explicit_vertex_parameter = true
-                    }
-                    b"VK_EXT_debug_marker" => extensions.ext_debug_marker = true,
-                    b"VK_AMD_gcn_shader" => extensions.amd_gcn_shader = true,
-                    b"VK_NV_dedicated_allocation" => extensions.nv_dedicated_allocation = true,
-                    b"VK_EXT_transform_feedback" => extensions.ext_transform_feedback = true,
-                    b"VK_NVX_image_view_handle" => extensions.nvx_image_view_handle = true,
-                    b"VK_AMD_draw_indirect_count" => extensions.amd_draw_indirect_count = true,
-                    b"VK_AMD_negative_viewport_height" => extensions.amd_negative_viewport_height = true,
-                    b"VK_AMD_gpu_shader_half_float" => extensions.amd_gpu_shader_half_float = true,
-                    b"VK_AMD_shader_ballot" => extensions.amd_shader_ballot = true,
-                    b"VK_AMD_texture_gather_bias_lod" => extensions.amd_texture_gather_bias_lod = true,
-                    b"VK_AMD_shader_info" => extensions.amd_shader_info = true,
-                    b"VK_AMD_shader_image_load_store_lod" => extensions.amd_shader_image_load_store_lod = true,
-                    b"VK_NV_corner_sampled_image" => extensions.nv_corner_sampled_image = true,
-                    b"VK_KHR_multiview" => extensions.khr_multiview = true,
-                    b"VK_IMG_format_pvrtc" => extensions.img_format_pvrtc = true,
-                    b"VK_NV_external_memory" => extensions.nv_external_memory = true,
-                    b"VK_NV_external_memory_win32" => extensions.nv_external_memory_win32 = true,
-                    b"VK_NV_win32_keyed_mutex" => extensions.nv_win32_keyed_mutex = true,
-                    b"VK_KHR_device_group" => extensions.khr_device_group = true,
-                    b"VK_KHR_shader_draw_parameters" => extensions.khr_shader_draw_parameters = true,
-                    b"VK_EXT_shader_subgroup_ballot" => extensions.ext_shader_subgroup_ballot = true,
-                    b"VK_EXT_shader_subgroup_vote" => extensions.ext_shader_subgroup_vote = true,
-                    b"VK_EXT_texture_compression_astc_hdr" => extensions.ext_texture_compression_astc_hdr = true,
-                    b"VK_EXT_astc_decode_mode" => extensions.ext_astc_decode_mode = true,
-                    b"VK_KHR_maintenance1" => extensions.khr_maintenance1 = true,
-                    b"VK_KHR_external_memory" => extensions.khr_external_memory = true,
-                    b"VK_KHR_external_memory_win32" => extensions.khr_external_memory_win32 = true,
-                    b"VK_KHR_external_memory_fd" => extensions.khr_external_memory_fd = true,
-                    b"VK_KHR_win32_keyed_mutex" => extensions.khr_win32_keyed_mutex = true,
-                    b"VK_KHR_external_semaphore" => extensions.khr_external_semaphore = true,
-                    b"VK_KHR_external_semaphore_win32" => extensions.khr_external_semaphore_win32 = true,
-                    b"VK_KHR_external_semaphore_fd" => extensions.khr_external_semaphore_fd = true,
-                    b"VK_KHR_push_descriptor" => extensions.khr_push_descriptor = true,
-                    b"VK_EXT_conditional_rendering" => extensions.ext_conditional_rendering = true,
-                    b"VK_KHR_shader_float16_int8" => extensions.khr_shader_float16_int8 = true,
-                    b"VK_KHR_16bit_storage" => extensions.khr_16bit_storage = true,
-                    b"VK_KHR_incremental_present" => extensions.khr_incremental_present = true,
-                    b"VK_KHR_descriptor_update_template" => extensions.khr_descriptor_update_template = true,
-                    b"VK_NV_clip_space_w_scaling" => extensions.nv_clip_space_w_scaling = true,
-                    b"VK_EXT_display_control" => extensions.ext_display_control = true,
-                    b"VK_GOOGLE_display_timing" => extensions.google_display_timing = true,
-                    b"VK_NV_sample_mask_override_coverage" => extensions.nv_sample_mask_override_coverage = true,
-                    b"VK_NV_geometry_shader_passthrough" => extensions.nv_geometry_shader_passthrough = true,
-                    b"VK_NV_viewport_array2" => extensions.nv_viewport_array2 = true,
-                    b"VK_NVX_multiview_per_view_attributes" => extensions.nvx_multiview_per_view_attributes = true,
-                    b"VK_NV_viewport_swizzle" => extensions.nv_viewport_swizzle = true,
-                    b"VK_EXT_discard_rectangles" => extensions.ext_discard_rectangles = true,
-                    b"VK_EXT_conservative_rasterization" => extensions.ext_conservative_rasterization = true,
-                    b"VK_EXT_depth_clip_enable" => extensions.ext_depth_clip_enable = true,
-                    b"VK_EXT_hdr_metadata" => extensions.ext_hdr_metadata = true,
-                    b"VK_KHR_imageless_framebuffer" => extensions.khr_imageless_framebuffer = true,
-                    b"VK_KHR_create_renderpass2" => extensions.khr_create_renderpass2 = true,
-                    b"VK_KHR_shared_presentable_image" => extensions.khr_shared_presentable_image = true,
-                    b"VK_KHR_external_fence" => extensions.khr_external_fence = true,
-                    b"VK_KHR_external_fence_win32" => extensions.khr_external_fence_win32 = true,
-                    b"VK_KHR_external_fence_fd" => extensions.khr_external_fence_fd = true,
-                    b"VK_KHR_performance_query" => extensions.khr_performance_query = true,
-                    b"VK_KHR_maintenance2" => extensions.khr_maintenance2 = true,
-                    b"VK_KHR_variable_pointers" => extensions.khr_variable_pointers = true,
-                    b"VK_EXT_external_memory_dma_buf" => extensions.ext_external_memory_dma_buf = true,
-                    b"VK_EXT_queue_family_foreign" => extensions.ext_queue_family_foreign = true,
-                    b"VK_KHR_dedicated_allocation" => extensions.khr_dedicated_allocation = true,
-                    b"VK_ANDROID_external_memory_android_hardware_buffer" => {
-                        extensions.android_external_memory_android_hardware_buffer = true
-                    }
-                    b"VK_EXT_sampler_filter_minmax" => extensions.ext_sampler_filter_minmax = true,
-                    b"VK_KHR_storage_buffer_storage_class" => extensions.khr_storage_buffer_storage_class = true,
-                    b"VK_AMD_gpu_shader_int16" => extensions.amd_gpu_shader_int16 = true,
-                    b"VK_AMD_mixed_attachment_samples" => extensions.amd_mixed_attachment_samples = true,
-                    b"VK_AMD_shader_fragment_mask" => extensions.amd_shader_fragment_mask = true,
-                    b"VK_EXT_inline_uniform_block" => extensions.ext_inline_uniform_block = true,
-                    b"VK_EXT_shader_stencil_export" => extensions.ext_shader_stencil_export = true,
-                    b"VK_EXT_sample_locations" => extensions.ext_sample_locations = true,
-                    b"VK_KHR_relaxed_block_layout" => extensions.khr_relaxed_block_layout = true,
-                    b"VK_KHR_get_memory_requirements2" => extensions.khr_get_memory_requirements2 = true,
-                    b"VK_KHR_image_format_list" => extensions.khr_image_format_list = true,
-                    b"VK_EXT_blend_operation_advanced" => extensions.ext_blend_operation_advanced = true,
-                    b"VK_NV_fragment_coverage_to_color" => extensions.nv_fragment_coverage_to_color = true,
-                    b"VK_KHR_ray_tracing" => extensions.khr_ray_tracing = true,
-                    b"VK_NV_framebuffer_mixed_samples" => extensions.nv_framebuffer_mixed_samples = true,
-                    b"VK_NV_fill_rectangle" => extensions.nv_fill_rectangle = true,
-                    b"VK_NV_shader_sm_builtins" => extensions.nv_shader_sm_builtins = true,
-                    b"VK_EXT_post_depth_coverage" => extensions.ext_post_depth_coverage = true,
-                    b"VK_KHR_sampler_ycbcr_conversion" => extensions.khr_sampler_ycbcr_conversion = true,
-                    b"VK_KHR_bind_memory2" => extensions.khr_bind_memory2 = true,
-                    b"VK_EXT_image_drm_format_modifier" => extensions.ext_image_drm_format_modifier = true,
-                    b"VK_EXT_validation_cache" => extensions.ext_validation_cache = true,
-                    b"VK_EXT_descriptor_indexing" => extensions.ext_descriptor_indexing = true,
-                    b"VK_EXT_shader_viewport_index_layer" => extensions.ext_shader_viewport_index_layer = true,
-                    b"VK_KHR_portability_subset" => extensions.khr_portability_subset = true,
-                    b"VK_NV_shading_rate_image" => extensions.nv_shading_rate_image = true,
-                    b"VK_NV_ray_tracing" => extensions.nv_ray_tracing = true,
-                    b"VK_NV_representative_fragment_test" => extensions.nv_representative_fragment_test = true,
-                    b"VK_KHR_maintenance3" => extensions.khr_maintenance3 = true,
-                    b"VK_KHR_draw_indirect_count" => extensions.khr_draw_indirect_count = true,
-                    b"VK_EXT_filter_cubic" => extensions.ext_filter_cubic = true,
-                    b"VK_QCOM_render_pass_shader_resolve" => extensions.qcom_render_pass_shader_resolve = true,
-                    b"VK_EXT_global_priority" => extensions.ext_global_priority = true,
-                    b"VK_KHR_shader_subgroup_extended_types" => extensions.khr_shader_subgroup_extended_types = true,
-                    b"VK_KHR_8bit_storage" => extensions.khr_8bit_storage = true,
-                    b"VK_EXT_external_memory_host" => extensions.ext_external_memory_host = true,
-                    b"VK_AMD_buffer_marker" => extensions.amd_buffer_marker = true,
-                    b"VK_KHR_shader_atomic_int64" => extensions.khr_shader_atomic_int64 = true,
-                    b"VK_KHR_shader_clock" => extensions.khr_shader_clock = true,
-                    b"VK_AMD_pipeline_compiler_control" => extensions.amd_pipeline_compiler_control = true,
-                    b"VK_EXT_calibrated_timestamps" => extensions.ext_calibrated_timestamps = true,
-                    b"VK_AMD_shader_core_properties" => extensions.amd_shader_core_properties = true,
-                    b"VK_AMD_memory_overallocation_behavior" => extensions.amd_memory_overallocation_behavior = true,
-                    b"VK_EXT_vertex_attribute_divisor" => extensions.ext_vertex_attribute_divisor = true,
-                    b"VK_EXT_pipeline_creation_feedback" => extensions.ext_pipeline_creation_feedback = true,
-                    b"VK_KHR_driver_properties" => extensions.khr_driver_properties = true,
-                    b"VK_KHR_shader_float_controls" => extensions.khr_shader_float_controls = true,
-                    b"VK_NV_shader_subgroup_partitioned" => extensions.nv_shader_subgroup_partitioned = true,
-                    b"VK_KHR_depth_stencil_resolve" => extensions.khr_depth_stencil_resolve = true,
-                    b"VK_KHR_swapchain_mutable_format" => extensions.khr_swapchain_mutable_format = true,
-                    b"VK_NV_compute_shader_derivatives" => extensions.nv_compute_shader_derivatives = true,
-                    b"VK_NV_mesh_shader" => extensions.nv_mesh_shader = true,
-                    b"VK_NV_fragment_shader_barycentric" => extensions.nv_fragment_shader_barycentric = true,
-                    b"VK_NV_shader_image_footprint" => extensions.nv_shader_image_footprint = true,
-                    b"VK_NV_scissor_exclusive" => extensions.nv_scissor_exclusive = true,
-                    b"VK_NV_device_diagnostic_checkpoints" => extensions.nv_device_diagnostic_checkpoints = true,
-                    b"VK_KHR_timeline_semaphore" => extensions.khr_timeline_semaphore = true,
-                    b"VK_INTEL_shader_integer_functions2" => extensions.intel_shader_integer_functions2 = true,
-                    b"VK_INTEL_performance_query" => extensions.intel_performance_query = true,
-                    b"VK_KHR_vulkan_memory_model" => extensions.khr_vulkan_memory_model = true,
-                    b"VK_EXT_pci_bus_info" => extensions.ext_pci_bus_info = true,
-                    b"VK_AMD_display_native_hdr" => extensions.amd_display_native_hdr = true,
-                    b"VK_KHR_shader_terminate_invocation" => extensions.khr_shader_terminate_invocation = true,
-                    b"VK_EXT_fragment_density_map" => extensions.ext_fragment_density_map = true,
-                    b"VK_EXT_scalar_block_layout" => extensions.ext_scalar_block_layout = true,
-                    b"VK_GOOGLE_hlsl_functionality1" => extensions.google_hlsl_functionality1 = true,
-                    b"VK_GOOGLE_decorate_string" => extensions.google_decorate_string = true,
-                    b"VK_EXT_subgroup_size_control" => extensions.ext_subgroup_size_control = true,
-                    b"VK_KHR_fragment_shading_rate" => extensions.khr_fragment_shading_rate = true,
-                    b"VK_AMD_shader_core_properties2" => extensions.amd_shader_core_properties2 = true,
-                    b"VK_AMD_device_coherent_memory" => extensions.amd_device_coherent_memory = true,
-                    b"VK_EXT_shader_image_atomic_int64" => extensions.ext_shader_image_atomic_int64 = true,
-                    b"VK_KHR_spirv_1_4" => extensions.khr_spirv_1_4 = true,
-                    b"VK_EXT_memory_budget" => extensions.ext_memory_budget = true,
-                    b"VK_EXT_memory_priority" => extensions.ext_memory_priority = true,
-                    b"VK_NV_dedicated_allocation_image_aliasing" => {
-                        extensions.nv_dedicated_allocation_image_aliasing = true
-                    }
-                    b"VK_KHR_separate_depth_stencil_layouts" => extensions.khr_separate_depth_stencil_layouts = true,
-                    b"VK_EXT_buffer_device_address" => extensions.ext_buffer_device_address = true,
-                    b"VK_EXT_tooling_info" => extensions.ext_tooling_info = true,
-                    b"VK_EXT_separate_stencil_usage" => extensions.ext_separate_stencil_usage = true,
-                    b"VK_NV_cooperative_matrix" => extensions.nv_cooperative_matrix = true,
-                    b"VK_NV_coverage_reduction_mode" => extensions.nv_coverage_reduction_mode = true,
-                    b"VK_EXT_fragment_shader_interlock" => extensions.ext_fragment_shader_interlock = true,
-                    b"VK_EXT_ycbcr_image_arrays" => extensions.ext_ycbcr_image_arrays = true,
-                    b"VK_KHR_uniform_buffer_standard_layout" => extensions.khr_uniform_buffer_standard_layout = true,
-                    b"VK_EXT_full_screen_exclusive" => extensions.ext_full_screen_exclusive = true,
-                    b"VK_KHR_buffer_device_address" => extensions.khr_buffer_device_address = true,
-                    b"VK_EXT_line_rasterization" => extensions.ext_line_rasterization = true,
-                    b"VK_EXT_shader_atomic_float" => extensions.ext_shader_atomic_float = true,
-                    b"VK_EXT_host_query_reset" => extensions.ext_host_query_reset = true,
-                    b"VK_EXT_index_type_uint8" => extensions.ext_index_type_uint8 = true,
-                    b"VK_EXT_extended_dynamic_state" => extensions.ext_extended_dynamic_state = true,
-                    b"VK_KHR_deferred_host_operations" => extensions.khr_deferred_host_operations = true,
-                    b"VK_KHR_pipeline_executable_properties" => extensions.khr_pipeline_executable_properties = true,
-                    b"VK_EXT_shader_demote_to_helper_invocation" => {
-                        extensions.ext_shader_demote_to_helper_invocation = true
-                    }
-                    b"VK_NV_device_generated_commands" => extensions.nv_device_generated_commands = true,
-                    b"VK_EXT_texel_buffer_alignment" => extensions.ext_texel_buffer_alignment = true,
-                    b"VK_QCOM_render_pass_transform" => extensions.qcom_render_pass_transform = true,
-                    b"VK_EXT_device_memory_report" => extensions.ext_device_memory_report = true,
-                    b"VK_EXT_robustness2" => extensions.ext_robustness2 = true,
-                    b"VK_EXT_custom_border_color" => extensions.ext_custom_border_color = true,
-                    b"VK_GOOGLE_user_type" => extensions.google_user_type = true,
-                    b"VK_KHR_pipeline_library" => extensions.khr_pipeline_library = true,
-                    b"VK_KHR_shader_non_semantic_info" => extensions.khr_shader_non_semantic_info = true,
-                    b"VK_EXT_private_data" => extensions.ext_private_data = true,
-                    b"VK_EXT_pipeline_creation_cache_control" => extensions.ext_pipeline_creation_cache_control = true,
-                    b"VK_NV_device_diagnostics_config" => extensions.nv_device_diagnostics_config = true,
-                    b"VK_QCOM_render_pass_store_ops" => extensions.qcom_render_pass_store_ops = true,
-                    b"VK_EXT_fragment_density_map2" => extensions.ext_fragment_density_map2 = true,
-                    b"VK_EXT_image_robustness" => extensions.ext_image_robustness = true,
-                    b"VK_KHR_copy_commands2" => extensions.khr_copy_commands2 = true,
-                    b"VK_EXT_4444_formats" => extensions.ext_4444_formats = true,
-                    _ => {}
-                }
+                extensions.enable_named(&CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);

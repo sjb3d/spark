@@ -2713,7 +2713,7 @@ impl<'a> Generator<'a> {
     }
 
     fn write_struct(&self, category: Category, w: &mut impl IoWrite) -> WriteResult {
-        let extensions: Vec<&vk::Extension> = self
+        let all_supported_extensions: Vec<&vk::Extension> = self
             .registry
             .0
             .iter()
@@ -2722,10 +2722,21 @@ impl<'a> Generator<'a> {
                 _ => None,
             })
             .flat_map(|extensions| extensions.children.iter())
-            .filter(|ext| {
-                ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted() && ext.get_category() == category
-            })
+            .filter(|ext| ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted())
             .collect();
+
+        let extensions: Vec<&vk::Extension> = all_supported_extensions
+            .iter()
+            .cloned()
+            .filter(|ext| ext.get_category() == category)
+            .collect();
+        let extension_names = {
+            let mut names = HashSet::new();
+            for ext in extensions.iter() {
+                names.insert(ext.name.as_str());
+            }
+            names
+        };
 
         if !extensions.is_empty() {
             writeln!(w, "#[derive(Debug, Copy, Clone, Default)]")?;
@@ -2734,6 +2745,58 @@ impl<'a> Generator<'a> {
                 let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                 writeln!(w, "pub {}: bool,", var_name)?;
             }
+            writeln!(w, "}}")?;
+
+            writeln!(w, "impl {}Extensions {{", category)?;
+
+            writeln!(w, "pub fn enable_named(&mut self, name: &CStr) {{")?;
+            writeln!(w, "match name.to_bytes() {{")?;
+            for ext in extensions.iter() {
+                let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                writeln!(w, r#"b"{}" => self.{} = true,"#, ext.name, var_name)?;
+            }
+            writeln!(w, "_ => {{}}, }} }}")?;
+
+            for ext in all_supported_extensions.iter() {
+                let check_names: Vec<String> = ext
+                    .requires
+                    .as_ref_str()
+                    .iter()
+                    .flat_map(|s| s.split(','))
+                    .chain(Some(ext.name.as_str()))
+                    .filter(|name| extension_names.contains(name))
+                    .map(|s| format!("self.{}", s.skip_prefix(CONST_PREFIX).to_snake_case()))
+                    .collect();
+                if !check_names.is_empty() {
+                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                    writeln!(
+                        w,
+                        "pub fn supports_{}(&self) -> bool {{ {} }}",
+                        var_name,
+                        check_names.join("&&")
+                    )?;
+                    writeln!(w, "pub fn enable_{}(&mut self) {{", var_name)?;
+                    for name in check_names.iter() {
+                        writeln!(w, "{} = true;", name)?;
+                    }
+                    writeln!(w, "}}")?;
+                }
+            }
+
+            writeln!(
+                w,
+                "pub fn to_name_vec(&self) -> Vec<*const c_char> {{ let mut v = Vec::new();"
+            )?;
+            for ext in extensions.iter() {
+                let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                writeln!(
+                    w,
+                    r#"if self.{} {{ v.push(b"{}\0".as_ptr() as *const c_char) }}"#,
+                    var_name, ext.name
+                )?;
+            }
+            writeln!(w, "v }}")?;
+
             writeln!(w, "}}")?;
         }
 
@@ -2758,16 +2821,6 @@ impl<'a> Generator<'a> {
         writeln!(w, "}}")?;
 
         writeln!(w, "impl {} {{", category)?;
-        for ext in extensions.iter() {
-            // TODO: replace with const when stable
-            let fn_prefix = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-            writeln!(
-                w,
-                r#"pub fn {}_name() -> &'static CStr {{ unsafe {{ CStr::from_bytes_with_nul_unchecked(b"{}\0") }} }}"#,
-                fn_prefix, ext.name
-            )?;
-        }
-
         match category {
             Category::Loader => {
                 writeln!(
@@ -2789,15 +2842,10 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     match CStr::from_ptr(name_ptr).to_bytes() {{")?;
-                for ext in extensions.iter() {
-                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                    writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
-                }
+                     extensions.enable_named(&CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
-                    "_ => {{}}, }} }} }}\
-                     let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
+                    "let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
                      Ok(Self {{ handle: instance, extensions,"
                 )?;
             }
@@ -2810,15 +2858,10 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     match CStr::from_ptr(name_ptr).to_bytes() {{")?;
-                for ext in extensions.iter() {
-                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                    writeln!(w, r#"b"{}" => extensions.{} = true,"#, ext.name, var_name)?;
-                }
+                     extensions.enable_named(&CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
-                    "_ => {{}}, }} }} }}\
-                     let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
+                    "let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
                      Ok(Self {{ handle: device, extensions,"
                 )?;
             }

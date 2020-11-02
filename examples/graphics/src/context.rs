@@ -2,7 +2,7 @@ use crate::window_surface;
 use std::ffi::CStr;
 use std::os::raw::c_void;
 use std::slice;
-use vkr::{vk, Builder, Device, Instance, Loader};
+use vkr::{vk, Builder, Device, DeviceExtensions, Instance, InstanceExtensions, Loader};
 use winit::window::Window;
 
 unsafe extern "system" fn debug_messenger(
@@ -68,12 +68,12 @@ impl Context {
         let instance = {
             let loader = Loader::new().unwrap();
 
-            let mut extension_names = Vec::new();
-            extension_names.append(&mut window_surface::extension_names(window));
+            let mut extensions = InstanceExtensions::default();
+            window_surface::enable_extensions(window, &mut extensions);
             if is_debug {
-                extension_names.push(Instance::ext_debug_utils_name());
+                extensions.enable_ext_debug_utils();
             }
-            let extension_names_raw: Vec<_> = extension_names.iter().map(|n| n.as_ptr()).collect();
+            let extension_names = extensions.to_name_vec();
 
             let app_info = vk::ApplicationInfo::builder()
                 .p_application_name(Some(CStr::from_bytes_with_nul(b"graphics\0").unwrap()))
@@ -81,7 +81,7 @@ impl Context {
 
             let instance_create_info = vk::InstanceCreateInfo::builder()
                 .p_application_info(Some(&app_info))
-                .pp_enabled_extension_names(&extension_names_raw);
+                .pp_enabled_extension_names(&extension_names);
             unsafe { loader.create_instance(&instance_create_info, None) }.unwrap()
         };
 
@@ -120,12 +120,13 @@ impl Context {
                 .queue_family_index(queue_family_index)
                 .p_queue_priorities(&queue_priorities);
 
-            let extension_names = vec![Device::khr_swapchain_name()];
-            let extension_names_raw: Vec<_> = extension_names.iter().map(|n| n.as_ptr()).collect();
+            let mut extensions = DeviceExtensions::default();
+            extensions.enable_khr_swapchain();
+            let extension_names = extensions.to_name_vec();
 
             let device_create_info = vk::DeviceCreateInfo::builder()
                 .p_queue_create_infos(slice::from_ref(&device_queue_create_info))
-                .pp_enabled_extension_names(&extension_names_raw);
+                .pp_enabled_extension_names(&extension_names);
             unsafe { instance.create_device(physical_device, &device_create_info, None, version) }.unwrap()
         };
 
