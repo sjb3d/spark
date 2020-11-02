@@ -2,7 +2,7 @@ mod c_parse;
 
 use crate::c_parse::*;
 use heck::{ShoutySnakeCase, SnakeCase};
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::env;
 use std::fmt;
 use std::fmt::Write as FmtWrite;
@@ -139,6 +139,7 @@ impl fmt::Display for Category {
 
 trait ExtensionExtra {
     fn get_category(&self) -> Category;
+    fn is_supported(&self) -> bool;
     fn is_blacklisted(&self) -> bool;
 }
 
@@ -149,6 +150,9 @@ impl ExtensionExtra for vk::Extension {
             Some("device") => Category::Device,
             _ => panic!("unknown extension type {:?}", self),
         }
+    }
+    fn is_supported(&self) -> bool {
+        self.supported.as_ref_str() == Some("vulkan")
     }
     fn is_blacklisted(&self) -> bool {
         self.author.as_ref_str() == Some("GGP")
@@ -712,7 +716,7 @@ impl<'a> Generator<'a> {
                     for ext in extensions
                         .children
                         .iter()
-                        .filter(|ext| ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted())
+                        .filter(|ext| ext.is_supported() && !ext.is_blacklisted())
                     {
                         let ext_category = Some(ext.get_category());
 
@@ -2716,7 +2720,7 @@ impl<'a> Generator<'a> {
                 _ => None,
             })
             .flat_map(|extensions| extensions.children.iter())
-            .filter(|ext| ext.supported.as_ref_str() == Some("vulkan") && !ext.is_blacklisted())
+            .filter(|ext| ext.is_supported() && !ext.is_blacklisted())
             .collect();
 
         let extensions: Vec<&vk::Extension> = all_supported_extensions
@@ -2724,13 +2728,6 @@ impl<'a> Generator<'a> {
             .cloned()
             .filter(|ext| ext.get_category() == category)
             .collect();
-        let extension_names = {
-            let mut names = HashSet::new();
-            for ext in extensions.iter() {
-                names.insert(ext.name.as_str());
-            }
-            names
-        };
 
         if !extensions.is_empty() {
             writeln!(w, "#[derive(Debug, Copy, Clone, Default)]")?;
@@ -2765,14 +2762,31 @@ impl<'a> Generator<'a> {
             )?;
 
             for ext in all_supported_extensions.iter() {
-                let check_names: Vec<String> = ext
-                    .requires
-                    .as_ref_str()
+                let mut queue: VecDeque<&'a vk::Extension> = VecDeque::new();
+                let mut queued_names: HashSet<&'a str> = HashSet::new();
+                queue.push_back(ext);
+                queued_names.insert(ext.name.as_str());
+
+                let mut dependencies: Vec<&'a vk::Extension> = Vec::new();
+                while let Some(ext) = queue.pop_front() {
+                    dependencies.push(ext);
+                    for req in ext
+                        .requires
+                        .as_ref_str()
+                        .iter()
+                        .flat_map(|s| s.split(','))
+                        .filter_map(|s| self.extension_by_name.get(s))
+                    {
+                        if queued_names.insert(req.name.as_ref()) {
+                            queue.push_back(req);
+                        }
+                    }
+                }
+
+                let check_names: Vec<String> = dependencies
                     .iter()
-                    .flat_map(|s| s.split(','))
-                    .chain(Some(ext.name.as_str()))
-                    .filter(|name| extension_names.contains(name))
-                    .map(|s| format!("self.{}", s.skip_prefix(CONST_PREFIX).to_snake_case()))
+                    .filter(|ext| ext.is_supported() && !ext.is_blacklisted() && ext.get_category() == category)
+                    .map(|ext| format!("self.{}", ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()))
                     .collect();
                 if !check_names.is_empty() {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
