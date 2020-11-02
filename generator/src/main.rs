@@ -2743,13 +2743,26 @@ impl<'a> Generator<'a> {
 
             writeln!(w, "impl {}Extensions {{", category)?;
 
-            writeln!(w, "pub fn enable_named(&mut self, name: &CStr) {{")?;
+            writeln!(w, "fn enable_by_name(&mut self, name: &CStr) {{")?;
             writeln!(w, "match name.to_bytes() {{")?;
             for ext in extensions.iter() {
                 let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                 writeln!(w, r#"b"{}" => self.{} = true,"#, ext.name, var_name)?;
             }
             writeln!(w, "_ => {{}}, }} }}")?;
+
+            writeln!(
+                w,
+                "pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {{\
+                 let mut ext = Self::default();\
+                 for ep in properties.iter() {{\
+                    if ep.extension_name.iter().any(|&c| c == 0) {{\
+                        let name = unsafe {{ CStr::from_ptr(ep.extension_name.as_ptr()) }};\
+                        ext.enable_by_name(name);\
+                    }}\
+                 }}\
+                 ext }}"
+            )?;
 
             for ext in all_supported_extensions.iter() {
                 let check_names: Vec<String> = ext
@@ -2836,7 +2849,7 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     extensions.enable_named(&CStr::from_ptr(name_ptr)); }} }}")?;
+                     extensions.enable_by_name(&CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
                     "let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
@@ -2852,7 +2865,7 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     extensions.enable_named(&CStr::from_ptr(name_ptr)); }} }}")?;
+                     extensions.enable_by_name(&CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
                     "let f = |name: &CStr| instance.get_device_proc_addr(device, name);\

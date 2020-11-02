@@ -266,7 +266,7 @@ pub struct InstanceExtensions {
     pub ext_directfb_surface: bool,
 }
 impl InstanceExtensions {
-    pub fn enable_named(&mut self, name: &CStr) {
+    fn enable_by_name(&mut self, name: &CStr) {
         match name.to_bytes() {
             b"VK_KHR_surface" => self.khr_surface = true,
             b"VK_KHR_display" => self.khr_display = true,
@@ -301,6 +301,16 @@ impl InstanceExtensions {
             b"VK_EXT_directfb_surface" => self.ext_directfb_surface = true,
             _ => {}
         }
+    }
+    pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {
+        let mut ext = Self::default();
+        for ep in properties.iter() {
+            if ep.extension_name.iter().any(|&c| c == 0) {
+                let name = unsafe { CStr::from_ptr(ep.extension_name.as_ptr()) };
+                ext.enable_by_name(name);
+            }
+        }
+        ext
     }
     pub fn supports_khr_surface(&self) -> bool {
         self.khr_surface
@@ -1197,7 +1207,7 @@ impl Instance {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                extensions.enable_named(&CStr::from_ptr(name_ptr));
+                extensions.enable_by_name(&CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);
@@ -3536,7 +3546,7 @@ pub struct DeviceExtensions {
     pub ext_4444_formats: bool,
 }
 impl DeviceExtensions {
-    pub fn enable_named(&mut self, name: &CStr) {
+    fn enable_by_name(&mut self, name: &CStr) {
         match name.to_bytes() {
             b"VK_KHR_swapchain" => self.khr_swapchain = true,
             b"VK_KHR_display_swapchain" => self.khr_display_swapchain = true,
@@ -3726,6 +3736,16 @@ impl DeviceExtensions {
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             _ => {}
         }
+    }
+    pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {
+        let mut ext = Self::default();
+        for ep in properties.iter() {
+            if ep.extension_name.iter().any(|&c| c == 0) {
+                let name = unsafe { CStr::from_ptr(ep.extension_name.as_ptr()) };
+                ext.enable_by_name(name);
+            }
+        }
+        ext
     }
     pub fn supports_khr_swapchain(&self) -> bool {
         self.khr_swapchain
@@ -5839,7 +5859,7 @@ impl Device {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                extensions.enable_named(&CStr::from_ptr(name_ptr));
+                extensions.enable_by_name(&CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);
