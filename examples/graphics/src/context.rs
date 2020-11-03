@@ -79,9 +79,10 @@ impl Context {
                 .p_application_name(Some(CStr::from_bytes_with_nul(b"graphics\0").unwrap()))
                 .api_version(version);
 
+            let extension_name_ptrs: Vec<_> = extension_names.iter().map(|s| s.as_ptr()).collect();
             let instance_create_info = vk::InstanceCreateInfo::builder()
                 .p_application_info(Some(&app_info))
-                .pp_enabled_extension_names(&extension_names);
+                .pp_enabled_extension_names(&extension_name_ptrs);
             unsafe { loader.create_instance(&instance_create_info, None) }.unwrap()
         };
 
@@ -124,9 +125,10 @@ impl Context {
             extensions.enable_khr_swapchain();
             let extension_names = extensions.to_name_vec();
 
+            let extension_name_ptrs: Vec<_> = extension_names.iter().map(|s| s.as_ptr()).collect();
             let device_create_info = vk::DeviceCreateInfo::builder()
                 .p_queue_create_infos(slice::from_ref(&device_queue_create_info))
-                .pp_enabled_extension_names(&extension_names);
+                .pp_enabled_extension_names(&extension_name_ptrs);
             unsafe { instance.create_device(physical_device, &device_create_info, None, version) }.unwrap()
         };
 

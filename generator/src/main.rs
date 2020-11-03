@@ -2806,13 +2806,13 @@ impl<'a> Generator<'a> {
 
             writeln!(
                 w,
-                "pub fn to_name_vec(&self) -> Vec<*const c_char> {{ let mut v = Vec::new();"
+                "pub fn to_name_vec(&self) -> Vec<&'static CStr> {{ let mut v = Vec::new();"
             )?;
             for ext in extensions.iter() {
                 let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                 writeln!(
                     w,
-                    r#"if self.{} {{ v.push(b"{}\0".as_ptr() as *const c_char) }}"#,
+                    r#"if self.{} {{ v.push(unsafe {{ CStr::from_bytes_with_nul_unchecked(b"{}\0") }}) }}"#,
                     var_name, ext.name
                 )?;
             }

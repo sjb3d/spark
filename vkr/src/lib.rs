@@ -13,7 +13,7 @@ use shared_library::dynamic_library::DynamicLibrary;
 use std::ffi::CStr;
 use std::mem;
 use std::mem::MaybeUninit;
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_int, c_void};
 use std::path::Path;
 use std::ptr;
 use std::result;
@@ -1156,100 +1156,100 @@ impl InstanceExtensions {
         self.ext_directfb_surface = true;
         self.khr_surface = true;
     }
-    pub fn to_name_vec(&self) -> Vec<*const c_char> {
+    pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_surface {
-            v.push(b"VK_KHR_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface\0") })
         }
         if self.khr_display {
-            v.push(b"VK_KHR_display\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display\0") })
         }
         if self.khr_xlib_surface {
-            v.push(b"VK_KHR_xlib_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xlib_surface\0") })
         }
         if self.khr_xcb_surface {
-            v.push(b"VK_KHR_xcb_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_xcb_surface\0") })
         }
         if self.khr_wayland_surface {
-            v.push(b"VK_KHR_wayland_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_wayland_surface\0") })
         }
         if self.khr_android_surface {
-            v.push(b"VK_KHR_android_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_android_surface\0") })
         }
         if self.khr_win32_surface {
-            v.push(b"VK_KHR_win32_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_surface\0") })
         }
         if self.ext_debug_report {
-            v.push(b"VK_EXT_debug_report\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_report\0") })
         }
         if self.nv_external_memory_capabilities {
-            v.push(b"VK_NV_external_memory_capabilities\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_capabilities\0") })
         }
         if self.khr_get_physical_device_properties2 {
-            v.push(b"VK_KHR_get_physical_device_properties2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_physical_device_properties2\0") })
         }
         if self.ext_validation_flags {
-            v.push(b"VK_EXT_validation_flags\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_flags\0") })
         }
         if self.nn_vi_surface {
-            v.push(b"VK_NN_vi_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NN_vi_surface\0") })
         }
         if self.khr_device_group_creation {
-            v.push(b"VK_KHR_device_group_creation\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group_creation\0") })
         }
         if self.khr_external_memory_capabilities {
-            v.push(b"VK_KHR_external_memory_capabilities\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_capabilities\0") })
         }
         if self.khr_external_semaphore_capabilities {
-            v.push(b"VK_KHR_external_semaphore_capabilities\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_capabilities\0") })
         }
         if self.ext_direct_mode_display {
-            v.push(b"VK_EXT_direct_mode_display\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_direct_mode_display\0") })
         }
         if self.ext_acquire_xlib_display {
-            v.push(b"VK_EXT_acquire_xlib_display\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_acquire_xlib_display\0") })
         }
         if self.ext_display_surface_counter {
-            v.push(b"VK_EXT_display_surface_counter\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_surface_counter\0") })
         }
         if self.ext_swapchain_colorspace {
-            v.push(b"VK_EXT_swapchain_colorspace\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_swapchain_colorspace\0") })
         }
         if self.khr_external_fence_capabilities {
-            v.push(b"VK_KHR_external_fence_capabilities\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_capabilities\0") })
         }
         if self.khr_get_surface_capabilities2 {
-            v.push(b"VK_KHR_get_surface_capabilities2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_surface_capabilities2\0") })
         }
         if self.khr_get_display_properties2 {
-            v.push(b"VK_KHR_get_display_properties2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_display_properties2\0") })
         }
         if self.mvk_ios_surface {
-            v.push(b"VK_MVK_ios_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_ios_surface\0") })
         }
         if self.mvk_macos_surface {
-            v.push(b"VK_MVK_macos_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MVK_macos_surface\0") })
         }
         if self.ext_debug_utils {
-            v.push(b"VK_EXT_debug_utils\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_utils\0") })
         }
         if self.fuchsia_imagepipe_surface {
-            v.push(b"VK_FUCHSIA_imagepipe_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_imagepipe_surface\0") })
         }
         if self.ext_metal_surface {
-            v.push(b"VK_EXT_metal_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_metal_surface\0") })
         }
         if self.khr_surface_protected_capabilities {
-            v.push(b"VK_KHR_surface_protected_capabilities\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_surface_protected_capabilities\0") })
         }
         if self.ext_validation_features {
-            v.push(b"VK_EXT_validation_features\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_features\0") })
         }
         if self.ext_headless_surface {
-            v.push(b"VK_EXT_headless_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") })
         }
         if self.ext_directfb_surface {
-            v.push(b"VK_EXT_directfb_surface\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_directfb_surface\0") })
         }
         v
     }
@@ -5129,559 +5129,561 @@ impl DeviceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.ext_4444_formats = true;
     }
-    pub fn to_name_vec(&self) -> Vec<*const c_char> {
+    pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
-            v.push(b"VK_KHR_swapchain\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain\0") })
         }
         if self.khr_display_swapchain {
-            v.push(b"VK_KHR_display_swapchain\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_display_swapchain\0") })
         }
         if self.nv_glsl_shader {
-            v.push(b"VK_NV_glsl_shader\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_glsl_shader\0") })
         }
         if self.ext_depth_range_unrestricted {
-            v.push(b"VK_EXT_depth_range_unrestricted\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_range_unrestricted\0") })
         }
         if self.khr_sampler_mirror_clamp_to_edge {
-            v.push(b"VK_KHR_sampler_mirror_clamp_to_edge\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_mirror_clamp_to_edge\0") })
         }
         if self.img_filter_cubic {
-            v.push(b"VK_IMG_filter_cubic\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_filter_cubic\0") })
         }
         if self.amd_rasterization_order {
-            v.push(b"VK_AMD_rasterization_order\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_rasterization_order\0") })
         }
         if self.amd_shader_trinary_minmax {
-            v.push(b"VK_AMD_shader_trinary_minmax\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_trinary_minmax\0") })
         }
         if self.amd_shader_explicit_vertex_parameter {
-            v.push(b"VK_AMD_shader_explicit_vertex_parameter\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_explicit_vertex_parameter\0") })
         }
         if self.ext_debug_marker {
-            v.push(b"VK_EXT_debug_marker\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_debug_marker\0") })
         }
         if self.amd_gcn_shader {
-            v.push(b"VK_AMD_gcn_shader\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gcn_shader\0") })
         }
         if self.nv_dedicated_allocation {
-            v.push(b"VK_NV_dedicated_allocation\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation\0") })
         }
         if self.ext_transform_feedback {
-            v.push(b"VK_EXT_transform_feedback\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_transform_feedback\0") })
         }
         if self.nvx_image_view_handle {
-            v.push(b"VK_NVX_image_view_handle\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_image_view_handle\0") })
         }
         if self.amd_draw_indirect_count {
-            v.push(b"VK_AMD_draw_indirect_count\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_draw_indirect_count\0") })
         }
         if self.amd_negative_viewport_height {
-            v.push(b"VK_AMD_negative_viewport_height\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_negative_viewport_height\0") })
         }
         if self.amd_gpu_shader_half_float {
-            v.push(b"VK_AMD_gpu_shader_half_float\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_half_float\0") })
         }
         if self.amd_shader_ballot {
-            v.push(b"VK_AMD_shader_ballot\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_ballot\0") })
         }
         if self.amd_texture_gather_bias_lod {
-            v.push(b"VK_AMD_texture_gather_bias_lod\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_texture_gather_bias_lod\0") })
         }
         if self.amd_shader_info {
-            v.push(b"VK_AMD_shader_info\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_info\0") })
         }
         if self.amd_shader_image_load_store_lod {
-            v.push(b"VK_AMD_shader_image_load_store_lod\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_image_load_store_lod\0") })
         }
         if self.nv_corner_sampled_image {
-            v.push(b"VK_NV_corner_sampled_image\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_corner_sampled_image\0") })
         }
         if self.khr_multiview {
-            v.push(b"VK_KHR_multiview\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_multiview\0") })
         }
         if self.img_format_pvrtc {
-            v.push(b"VK_IMG_format_pvrtc\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_IMG_format_pvrtc\0") })
         }
         if self.nv_external_memory {
-            v.push(b"VK_NV_external_memory\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory\0") })
         }
         if self.nv_external_memory_win32 {
-            v.push(b"VK_NV_external_memory_win32\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_win32\0") })
         }
         if self.nv_win32_keyed_mutex {
-            v.push(b"VK_NV_win32_keyed_mutex\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_win32_keyed_mutex\0") })
         }
         if self.khr_device_group {
-            v.push(b"VK_KHR_device_group\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_device_group\0") })
         }
         if self.khr_shader_draw_parameters {
-            v.push(b"VK_KHR_shader_draw_parameters\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_draw_parameters\0") })
         }
         if self.ext_shader_subgroup_ballot {
-            v.push(b"VK_EXT_shader_subgroup_ballot\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_ballot\0") })
         }
         if self.ext_shader_subgroup_vote {
-            v.push(b"VK_EXT_shader_subgroup_vote\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_subgroup_vote\0") })
         }
         if self.ext_texture_compression_astc_hdr {
-            v.push(b"VK_EXT_texture_compression_astc_hdr\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texture_compression_astc_hdr\0") })
         }
         if self.ext_astc_decode_mode {
-            v.push(b"VK_EXT_astc_decode_mode\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_astc_decode_mode\0") })
         }
         if self.khr_maintenance1 {
-            v.push(b"VK_KHR_maintenance1\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance1\0") })
         }
         if self.khr_external_memory {
-            v.push(b"VK_KHR_external_memory\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory\0") })
         }
         if self.khr_external_memory_win32 {
-            v.push(b"VK_KHR_external_memory_win32\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_win32\0") })
         }
         if self.khr_external_memory_fd {
-            v.push(b"VK_KHR_external_memory_fd\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_memory_fd\0") })
         }
         if self.khr_win32_keyed_mutex {
-            v.push(b"VK_KHR_win32_keyed_mutex\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_win32_keyed_mutex\0") })
         }
         if self.khr_external_semaphore {
-            v.push(b"VK_KHR_external_semaphore\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore\0") })
         }
         if self.khr_external_semaphore_win32 {
-            v.push(b"VK_KHR_external_semaphore_win32\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_win32\0") })
         }
         if self.khr_external_semaphore_fd {
-            v.push(b"VK_KHR_external_semaphore_fd\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_semaphore_fd\0") })
         }
         if self.khr_push_descriptor {
-            v.push(b"VK_KHR_push_descriptor\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_push_descriptor\0") })
         }
         if self.ext_conditional_rendering {
-            v.push(b"VK_EXT_conditional_rendering\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conditional_rendering\0") })
         }
         if self.khr_shader_float16_int8 {
-            v.push(b"VK_KHR_shader_float16_int8\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float16_int8\0") })
         }
         if self.khr_16bit_storage {
-            v.push(b"VK_KHR_16bit_storage\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_16bit_storage\0") })
         }
         if self.khr_incremental_present {
-            v.push(b"VK_KHR_incremental_present\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_incremental_present\0") })
         }
         if self.khr_descriptor_update_template {
-            v.push(b"VK_KHR_descriptor_update_template\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_descriptor_update_template\0") })
         }
         if self.nv_clip_space_w_scaling {
-            v.push(b"VK_NV_clip_space_w_scaling\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_clip_space_w_scaling\0") })
         }
         if self.ext_display_control {
-            v.push(b"VK_EXT_display_control\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_display_control\0") })
         }
         if self.google_display_timing {
-            v.push(b"VK_GOOGLE_display_timing\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_display_timing\0") })
         }
         if self.nv_sample_mask_override_coverage {
-            v.push(b"VK_NV_sample_mask_override_coverage\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_sample_mask_override_coverage\0") })
         }
         if self.nv_geometry_shader_passthrough {
-            v.push(b"VK_NV_geometry_shader_passthrough\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_geometry_shader_passthrough\0") })
         }
         if self.nv_viewport_array2 {
-            v.push(b"VK_NV_viewport_array2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_array2\0") })
         }
         if self.nvx_multiview_per_view_attributes {
-            v.push(b"VK_NVX_multiview_per_view_attributes\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_multiview_per_view_attributes\0") })
         }
         if self.nv_viewport_swizzle {
-            v.push(b"VK_NV_viewport_swizzle\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_viewport_swizzle\0") })
         }
         if self.ext_discard_rectangles {
-            v.push(b"VK_EXT_discard_rectangles\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_discard_rectangles\0") })
         }
         if self.ext_conservative_rasterization {
-            v.push(b"VK_EXT_conservative_rasterization\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_conservative_rasterization\0") })
         }
         if self.ext_depth_clip_enable {
-            v.push(b"VK_EXT_depth_clip_enable\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clip_enable\0") })
         }
         if self.ext_hdr_metadata {
-            v.push(b"VK_EXT_hdr_metadata\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_hdr_metadata\0") })
         }
         if self.khr_imageless_framebuffer {
-            v.push(b"VK_KHR_imageless_framebuffer\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_imageless_framebuffer\0") })
         }
         if self.khr_create_renderpass2 {
-            v.push(b"VK_KHR_create_renderpass2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_create_renderpass2\0") })
         }
         if self.khr_shared_presentable_image {
-            v.push(b"VK_KHR_shared_presentable_image\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shared_presentable_image\0") })
         }
         if self.khr_external_fence {
-            v.push(b"VK_KHR_external_fence\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence\0") })
         }
         if self.khr_external_fence_win32 {
-            v.push(b"VK_KHR_external_fence_win32\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_win32\0") })
         }
         if self.khr_external_fence_fd {
-            v.push(b"VK_KHR_external_fence_fd\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_external_fence_fd\0") })
         }
         if self.khr_performance_query {
-            v.push(b"VK_KHR_performance_query\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_performance_query\0") })
         }
         if self.khr_maintenance2 {
-            v.push(b"VK_KHR_maintenance2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance2\0") })
         }
         if self.khr_variable_pointers {
-            v.push(b"VK_KHR_variable_pointers\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_variable_pointers\0") })
         }
         if self.ext_external_memory_dma_buf {
-            v.push(b"VK_EXT_external_memory_dma_buf\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_dma_buf\0") })
         }
         if self.ext_queue_family_foreign {
-            v.push(b"VK_EXT_queue_family_foreign\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_queue_family_foreign\0") })
         }
         if self.khr_dedicated_allocation {
-            v.push(b"VK_KHR_dedicated_allocation\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_dedicated_allocation\0") })
         }
         if self.android_external_memory_android_hardware_buffer {
-            v.push(b"VK_ANDROID_external_memory_android_hardware_buffer\0".as_ptr() as *const c_char)
+            v.push(unsafe {
+                CStr::from_bytes_with_nul_unchecked(b"VK_ANDROID_external_memory_android_hardware_buffer\0")
+            })
         }
         if self.ext_sampler_filter_minmax {
-            v.push(b"VK_EXT_sampler_filter_minmax\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sampler_filter_minmax\0") })
         }
         if self.khr_storage_buffer_storage_class {
-            v.push(b"VK_KHR_storage_buffer_storage_class\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_storage_buffer_storage_class\0") })
         }
         if self.amd_gpu_shader_int16 {
-            v.push(b"VK_AMD_gpu_shader_int16\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_int16\0") })
         }
         if self.amd_mixed_attachment_samples {
-            v.push(b"VK_AMD_mixed_attachment_samples\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_mixed_attachment_samples\0") })
         }
         if self.amd_shader_fragment_mask {
-            v.push(b"VK_AMD_shader_fragment_mask\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_fragment_mask\0") })
         }
         if self.ext_inline_uniform_block {
-            v.push(b"VK_EXT_inline_uniform_block\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_inline_uniform_block\0") })
         }
         if self.ext_shader_stencil_export {
-            v.push(b"VK_EXT_shader_stencil_export\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_stencil_export\0") })
         }
         if self.ext_sample_locations {
-            v.push(b"VK_EXT_sample_locations\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_sample_locations\0") })
         }
         if self.khr_relaxed_block_layout {
-            v.push(b"VK_KHR_relaxed_block_layout\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_relaxed_block_layout\0") })
         }
         if self.khr_get_memory_requirements2 {
-            v.push(b"VK_KHR_get_memory_requirements2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_get_memory_requirements2\0") })
         }
         if self.khr_image_format_list {
-            v.push(b"VK_KHR_image_format_list\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_image_format_list\0") })
         }
         if self.ext_blend_operation_advanced {
-            v.push(b"VK_EXT_blend_operation_advanced\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_blend_operation_advanced\0") })
         }
         if self.nv_fragment_coverage_to_color {
-            v.push(b"VK_NV_fragment_coverage_to_color\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_coverage_to_color\0") })
         }
         if self.khr_ray_tracing {
-            v.push(b"VK_KHR_ray_tracing\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing\0") })
         }
         if self.nv_framebuffer_mixed_samples {
-            v.push(b"VK_NV_framebuffer_mixed_samples\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_framebuffer_mixed_samples\0") })
         }
         if self.nv_fill_rectangle {
-            v.push(b"VK_NV_fill_rectangle\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fill_rectangle\0") })
         }
         if self.nv_shader_sm_builtins {
-            v.push(b"VK_NV_shader_sm_builtins\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_sm_builtins\0") })
         }
         if self.ext_post_depth_coverage {
-            v.push(b"VK_EXT_post_depth_coverage\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_post_depth_coverage\0") })
         }
         if self.khr_sampler_ycbcr_conversion {
-            v.push(b"VK_KHR_sampler_ycbcr_conversion\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_sampler_ycbcr_conversion\0") })
         }
         if self.khr_bind_memory2 {
-            v.push(b"VK_KHR_bind_memory2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_bind_memory2\0") })
         }
         if self.ext_image_drm_format_modifier {
-            v.push(b"VK_EXT_image_drm_format_modifier\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_drm_format_modifier\0") })
         }
         if self.ext_validation_cache {
-            v.push(b"VK_EXT_validation_cache\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_validation_cache\0") })
         }
         if self.ext_descriptor_indexing {
-            v.push(b"VK_EXT_descriptor_indexing\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_descriptor_indexing\0") })
         }
         if self.ext_shader_viewport_index_layer {
-            v.push(b"VK_EXT_shader_viewport_index_layer\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_viewport_index_layer\0") })
         }
         if self.khr_portability_subset {
-            v.push(b"VK_KHR_portability_subset\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_portability_subset\0") })
         }
         if self.nv_shading_rate_image {
-            v.push(b"VK_NV_shading_rate_image\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shading_rate_image\0") })
         }
         if self.nv_ray_tracing {
-            v.push(b"VK_NV_ray_tracing\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing\0") })
         }
         if self.nv_representative_fragment_test {
-            v.push(b"VK_NV_representative_fragment_test\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_representative_fragment_test\0") })
         }
         if self.khr_maintenance3 {
-            v.push(b"VK_KHR_maintenance3\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance3\0") })
         }
         if self.khr_draw_indirect_count {
-            v.push(b"VK_KHR_draw_indirect_count\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_draw_indirect_count\0") })
         }
         if self.ext_filter_cubic {
-            v.push(b"VK_EXT_filter_cubic\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_filter_cubic\0") })
         }
         if self.qcom_render_pass_shader_resolve {
-            v.push(b"VK_QCOM_render_pass_shader_resolve\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_shader_resolve\0") })
         }
         if self.ext_global_priority {
-            v.push(b"VK_EXT_global_priority\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority\0") })
         }
         if self.khr_shader_subgroup_extended_types {
-            v.push(b"VK_KHR_shader_subgroup_extended_types\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_extended_types\0") })
         }
         if self.khr_8bit_storage {
-            v.push(b"VK_KHR_8bit_storage\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_8bit_storage\0") })
         }
         if self.ext_external_memory_host {
-            v.push(b"VK_EXT_external_memory_host\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_host\0") })
         }
         if self.amd_buffer_marker {
-            v.push(b"VK_AMD_buffer_marker\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_buffer_marker\0") })
         }
         if self.khr_shader_atomic_int64 {
-            v.push(b"VK_KHR_shader_atomic_int64\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_atomic_int64\0") })
         }
         if self.khr_shader_clock {
-            v.push(b"VK_KHR_shader_clock\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_clock\0") })
         }
         if self.amd_pipeline_compiler_control {
-            v.push(b"VK_AMD_pipeline_compiler_control\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_pipeline_compiler_control\0") })
         }
         if self.ext_calibrated_timestamps {
-            v.push(b"VK_EXT_calibrated_timestamps\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_calibrated_timestamps\0") })
         }
         if self.amd_shader_core_properties {
-            v.push(b"VK_AMD_shader_core_properties\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties\0") })
         }
         if self.amd_memory_overallocation_behavior {
-            v.push(b"VK_AMD_memory_overallocation_behavior\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_memory_overallocation_behavior\0") })
         }
         if self.ext_vertex_attribute_divisor {
-            v.push(b"VK_EXT_vertex_attribute_divisor\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_attribute_divisor\0") })
         }
         if self.ext_pipeline_creation_feedback {
-            v.push(b"VK_EXT_pipeline_creation_feedback\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_feedback\0") })
         }
         if self.khr_driver_properties {
-            v.push(b"VK_KHR_driver_properties\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_driver_properties\0") })
         }
         if self.khr_shader_float_controls {
-            v.push(b"VK_KHR_shader_float_controls\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_float_controls\0") })
         }
         if self.nv_shader_subgroup_partitioned {
-            v.push(b"VK_NV_shader_subgroup_partitioned\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_subgroup_partitioned\0") })
         }
         if self.khr_depth_stencil_resolve {
-            v.push(b"VK_KHR_depth_stencil_resolve\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_depth_stencil_resolve\0") })
         }
         if self.khr_swapchain_mutable_format {
-            v.push(b"VK_KHR_swapchain_mutable_format\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_swapchain_mutable_format\0") })
         }
         if self.nv_compute_shader_derivatives {
-            v.push(b"VK_NV_compute_shader_derivatives\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_compute_shader_derivatives\0") })
         }
         if self.nv_mesh_shader {
-            v.push(b"VK_NV_mesh_shader\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_mesh_shader\0") })
         }
         if self.nv_fragment_shader_barycentric {
-            v.push(b"VK_NV_fragment_shader_barycentric\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shader_barycentric\0") })
         }
         if self.nv_shader_image_footprint {
-            v.push(b"VK_NV_shader_image_footprint\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_shader_image_footprint\0") })
         }
         if self.nv_scissor_exclusive {
-            v.push(b"VK_NV_scissor_exclusive\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_scissor_exclusive\0") })
         }
         if self.nv_device_diagnostic_checkpoints {
-            v.push(b"VK_NV_device_diagnostic_checkpoints\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostic_checkpoints\0") })
         }
         if self.khr_timeline_semaphore {
-            v.push(b"VK_KHR_timeline_semaphore\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_timeline_semaphore\0") })
         }
         if self.intel_shader_integer_functions2 {
-            v.push(b"VK_INTEL_shader_integer_functions2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_shader_integer_functions2\0") })
         }
         if self.intel_performance_query {
-            v.push(b"VK_INTEL_performance_query\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_INTEL_performance_query\0") })
         }
         if self.khr_vulkan_memory_model {
-            v.push(b"VK_KHR_vulkan_memory_model\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_vulkan_memory_model\0") })
         }
         if self.ext_pci_bus_info {
-            v.push(b"VK_EXT_pci_bus_info\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pci_bus_info\0") })
         }
         if self.amd_display_native_hdr {
-            v.push(b"VK_AMD_display_native_hdr\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_display_native_hdr\0") })
         }
         if self.khr_shader_terminate_invocation {
-            v.push(b"VK_KHR_shader_terminate_invocation\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_terminate_invocation\0") })
         }
         if self.ext_fragment_density_map {
-            v.push(b"VK_EXT_fragment_density_map\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map\0") })
         }
         if self.ext_scalar_block_layout {
-            v.push(b"VK_EXT_scalar_block_layout\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_scalar_block_layout\0") })
         }
         if self.google_hlsl_functionality1 {
-            v.push(b"VK_GOOGLE_hlsl_functionality1\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_hlsl_functionality1\0") })
         }
         if self.google_decorate_string {
-            v.push(b"VK_GOOGLE_decorate_string\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_decorate_string\0") })
         }
         if self.ext_subgroup_size_control {
-            v.push(b"VK_EXT_subgroup_size_control\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subgroup_size_control\0") })
         }
         if self.khr_fragment_shading_rate {
-            v.push(b"VK_KHR_fragment_shading_rate\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_fragment_shading_rate\0") })
         }
         if self.amd_shader_core_properties2 {
-            v.push(b"VK_AMD_shader_core_properties2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_core_properties2\0") })
         }
         if self.amd_device_coherent_memory {
-            v.push(b"VK_AMD_device_coherent_memory\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_device_coherent_memory\0") })
         }
         if self.ext_shader_image_atomic_int64 {
-            v.push(b"VK_EXT_shader_image_atomic_int64\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_image_atomic_int64\0") })
         }
         if self.khr_spirv_1_4 {
-            v.push(b"VK_KHR_spirv_1_4\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_spirv_1_4\0") })
         }
         if self.ext_memory_budget {
-            v.push(b"VK_EXT_memory_budget\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_budget\0") })
         }
         if self.ext_memory_priority {
-            v.push(b"VK_EXT_memory_priority\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_memory_priority\0") })
         }
         if self.nv_dedicated_allocation_image_aliasing {
-            v.push(b"VK_NV_dedicated_allocation_image_aliasing\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_dedicated_allocation_image_aliasing\0") })
         }
         if self.khr_separate_depth_stencil_layouts {
-            v.push(b"VK_KHR_separate_depth_stencil_layouts\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_separate_depth_stencil_layouts\0") })
         }
         if self.ext_buffer_device_address {
-            v.push(b"VK_EXT_buffer_device_address\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_buffer_device_address\0") })
         }
         if self.ext_tooling_info {
-            v.push(b"VK_EXT_tooling_info\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_tooling_info\0") })
         }
         if self.ext_separate_stencil_usage {
-            v.push(b"VK_EXT_separate_stencil_usage\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_separate_stencil_usage\0") })
         }
         if self.nv_cooperative_matrix {
-            v.push(b"VK_NV_cooperative_matrix\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix\0") })
         }
         if self.nv_coverage_reduction_mode {
-            v.push(b"VK_NV_coverage_reduction_mode\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_coverage_reduction_mode\0") })
         }
         if self.ext_fragment_shader_interlock {
-            v.push(b"VK_EXT_fragment_shader_interlock\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_shader_interlock\0") })
         }
         if self.ext_ycbcr_image_arrays {
-            v.push(b"VK_EXT_ycbcr_image_arrays\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_image_arrays\0") })
         }
         if self.khr_uniform_buffer_standard_layout {
-            v.push(b"VK_KHR_uniform_buffer_standard_layout\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_uniform_buffer_standard_layout\0") })
         }
         if self.ext_full_screen_exclusive {
-            v.push(b"VK_EXT_full_screen_exclusive\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") })
         }
         if self.khr_buffer_device_address {
-            v.push(b"VK_KHR_buffer_device_address\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_buffer_device_address\0") })
         }
         if self.ext_line_rasterization {
-            v.push(b"VK_EXT_line_rasterization\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_line_rasterization\0") })
         }
         if self.ext_shader_atomic_float {
-            v.push(b"VK_EXT_shader_atomic_float\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float\0") })
         }
         if self.ext_host_query_reset {
-            v.push(b"VK_EXT_host_query_reset\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_query_reset\0") })
         }
         if self.ext_index_type_uint8 {
-            v.push(b"VK_EXT_index_type_uint8\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_index_type_uint8\0") })
         }
         if self.ext_extended_dynamic_state {
-            v.push(b"VK_EXT_extended_dynamic_state\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state\0") })
         }
         if self.khr_deferred_host_operations {
-            v.push(b"VK_KHR_deferred_host_operations\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_deferred_host_operations\0") })
         }
         if self.khr_pipeline_executable_properties {
-            v.push(b"VK_KHR_pipeline_executable_properties\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") })
         }
         if self.ext_shader_demote_to_helper_invocation {
-            v.push(b"VK_EXT_shader_demote_to_helper_invocation\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") })
         }
         if self.nv_device_generated_commands {
-            v.push(b"VK_NV_device_generated_commands\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands\0") })
         }
         if self.ext_texel_buffer_alignment {
-            v.push(b"VK_EXT_texel_buffer_alignment\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") })
         }
         if self.qcom_render_pass_transform {
-            v.push(b"VK_QCOM_render_pass_transform\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") })
         }
         if self.ext_device_memory_report {
-            v.push(b"VK_EXT_device_memory_report\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_memory_report\0") })
         }
         if self.ext_robustness2 {
-            v.push(b"VK_EXT_robustness2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_robustness2\0") })
         }
         if self.ext_custom_border_color {
-            v.push(b"VK_EXT_custom_border_color\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_custom_border_color\0") })
         }
         if self.google_user_type {
-            v.push(b"VK_GOOGLE_user_type\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_user_type\0") })
         }
         if self.khr_pipeline_library {
-            v.push(b"VK_KHR_pipeline_library\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_library\0") })
         }
         if self.khr_shader_non_semantic_info {
-            v.push(b"VK_KHR_shader_non_semantic_info\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") })
         }
         if self.ext_private_data {
-            v.push(b"VK_EXT_private_data\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_private_data\0") })
         }
         if self.ext_pipeline_creation_cache_control {
-            v.push(b"VK_EXT_pipeline_creation_cache_control\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_creation_cache_control\0") })
         }
         if self.nv_device_diagnostics_config {
-            v.push(b"VK_NV_device_diagnostics_config\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_diagnostics_config\0") })
         }
         if self.qcom_render_pass_store_ops {
-            v.push(b"VK_QCOM_render_pass_store_ops\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
         if self.ext_fragment_density_map2 {
-            v.push(b"VK_EXT_fragment_density_map2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") })
         }
         if self.ext_image_robustness {
-            v.push(b"VK_EXT_image_robustness\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") })
         }
         if self.khr_copy_commands2 {
-            v.push(b"VK_KHR_copy_commands2\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_copy_commands2\0") })
         }
         if self.ext_4444_formats {
-            v.push(b"VK_EXT_4444_formats\0".as_ptr() as *const c_char)
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
         v
     }
