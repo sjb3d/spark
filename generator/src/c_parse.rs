@@ -4,7 +4,7 @@ use nom::{
     character::complete::{char, digit1, hex_digit1, multispace0},
     combinator::{all_consuming, map, map_res, not, opt, peek},
     error::VerboseError,
-    multi::separated_nonempty_list,
+    multi::separated_list1,
     number::complete::float,
     sequence::{delimited, preceded, separated_pair, terminated, tuple},
     IResult,
@@ -109,11 +109,11 @@ fn ident(i: &str) -> Res<&str> {
     preceded(multispace0, take_while1(is_ident))(i)
 }
 
-fn keyword<'a>(k: &'static str) -> impl Fn(&'a str) -> Res<'a, &str> {
+fn keyword<'a>(k: &'static str) -> impl FnMut(&'a str) -> Res<'a, &str> {
     delimited(multispace0, tag(k), not(peek(take_while1(is_ident))))
 }
 
-fn op<'a>(c: char) -> impl Fn(&'a str) -> Res<'a, char> {
+fn op<'a>(c: char) -> impl FnMut(&'a str) -> Res<'a, char> {
     preceded(multispace0, char(c))
 }
 
@@ -166,7 +166,7 @@ fn function_decl(i: &str) -> Res<CFunctionDecl> {
     let (i, parameters) = delimited(
         op('('),
         alt((
-            separated_nonempty_list(op(','), variable_decl),
+            separated_list1(op(','), variable_decl),
             map(keyword("void"), |_| Vec::new()),
         )),
         tuple((op(')'), op(';'))),
@@ -204,7 +204,7 @@ fn function_ptr_typedef<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
     let (i, parameters) = delimited(
         op('('),
         alt((
-            separated_nonempty_list(op(','), variable_decl),
+            separated_list1(op(','), variable_decl),
             map(keyword("void"), |_| Vec::new()),
         )),
         tuple((op(')'), op(';'))),

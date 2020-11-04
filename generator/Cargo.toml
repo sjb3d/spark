@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 heck = "0.3"
-nom = "5"
+nom = "6"
 take_mut = "0.2"
 vk-parse = "0.5"
