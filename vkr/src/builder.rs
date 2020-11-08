@@ -14444,6 +14444,36 @@ impl Deref for RenderPassTransformBeginInfoQCOMBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::CopyCommandTransformInfoQCOM {
+    type Type = CopyCommandTransformInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyCommandTransformInfoQCOMBuilder {
+    inner: vk::CopyCommandTransformInfoQCOM,
+}
+impl CopyCommandTransformInfoQCOMBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn transform(mut self, transform: vk::SurfaceTransformFlagsKHR) -> Self {
+        self.inner.transform = transform;
+        self
+    }
+}
+impl Deref for CopyCommandTransformInfoQCOMBuilder {
+    type Target = vk::CopyCommandTransformInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {
     type Type = CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder;
     fn builder() -> Self::Type {

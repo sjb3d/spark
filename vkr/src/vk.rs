@@ -13281,6 +13281,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT: Self = Self(1000332000);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT: Self = Self(1000332001);
+    /// Added by extension VK_QCOM_rotated_copy_commands.
+    pub const COPY_COMMAND_TRANSFORM_INFO_QCOM: Self = Self(1000333000);
     /// Added by extension VK_EXT_image_robustness.
     pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000335000);
     /// Added by extension VK_KHR_copy_commands2.
@@ -13771,6 +13773,7 @@ impl fmt::Display for StructureType {
             1000309000 => Some(&"RESERVED_QCOM"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
+            1000333000 => Some(&"COPY_COMMAND_TRANSFORM_INFO_QCOM"),
             1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT"),
             1000337000 => Some(&"COPY_BUFFER_INFO_2_KHR"),
             1000337001 => Some(&"COPY_IMAGE_INFO_2_KHR"),
@@ -35270,6 +35273,31 @@ impl default::Default for RenderPassTransformBeginInfoQCOM {
 impl fmt::Debug for RenderPassTransformBeginInfoQCOM {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("RenderPassTransformBeginInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("transform", &self.transform)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyCommandTransformInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub transform: SurfaceTransformFlagsKHR,
+}
+impl default::Default for CopyCommandTransformInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_COMMAND_TRANSFORM_INFO_QCOM,
+            p_next: ptr::null(),
+            transform: SurfaceTransformFlagsKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyCommandTransformInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyCommandTransformInfoQCOM")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("transform", &self.transform)

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 158
+//! Generated from vk.xml with `VK_HEADER_VERSION` 159
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1136,6 +1136,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_fragment_density_map2(&mut self) {
         self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
+        self.khr_surface
+    }
+    pub fn enable_qcom_rotated_copy_commands(&mut self) {
+        self.khr_surface = true;
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
         self.khr_get_physical_device_properties2
@@ -3710,6 +3716,7 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub ext_fragment_density_map2: bool,
+    pub qcom_rotated_copy_commands: bool,
     pub ext_image_robustness: bool,
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
@@ -3900,6 +3907,7 @@ impl DeviceExtensions {
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
+            b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
@@ -5111,6 +5119,14 @@ impl DeviceExtensions {
         self.ext_fragment_density_map2 = true;
         self.ext_fragment_density_map = true;
     }
+    pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
+        self.qcom_rotated_copy_commands && self.khr_swapchain && self.khr_copy_commands2
+    }
+    pub fn enable_qcom_rotated_copy_commands(&mut self) {
+        self.qcom_rotated_copy_commands = true;
+        self.khr_swapchain = true;
+        self.khr_copy_commands2 = true;
+    }
     pub fn supports_ext_image_robustness(&self) -> bool {
         self.ext_image_robustness
     }
@@ -5675,6 +5691,9 @@ impl DeviceExtensions {
         }
         if self.ext_fragment_density_map2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") })
+        }
+        if self.qcom_rotated_copy_commands {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_rotated_copy_commands\0") })
         }
         if self.ext_image_robustness {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") })
