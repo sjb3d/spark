@@ -8,6 +8,7 @@ use context::*;
 use imgui::im_str;
 use imgui::Key;
 use imgui_winit_support::{HiDpiMode, WinitPlatform};
+use spark::{vk, Builder};
 use std::collections::HashMap;
 use std::env;
 use std::f32::consts::PI;
@@ -17,7 +18,6 @@ use std::slice;
 use std::sync::Arc;
 use std::time::Instant;
 use swapchain::*;
-use spark::{vk, Builder};
 use winit::{
     dpi::{LogicalSize, Size},
     event::{Event, WindowEvent},

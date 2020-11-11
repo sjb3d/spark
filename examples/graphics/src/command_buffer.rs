@@ -1,7 +1,7 @@
 use crate::context::*;
+use spark::{vk, Builder};
 use std::slice;
 use std::sync::Arc;
-use spark::{vk, Builder};
 
 struct CommandBufferSet {
     pool: vk::CommandPool,

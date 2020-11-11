@@ -1,7 +1,7 @@
+use spark::{vk, Builder, Loader};
 use std::ffi::CStr;
 use std::mem;
 use std::slice;
-use spark::{vk, Builder, Loader};
 
 fn get_memory_type_index(
     memory_properties: &vk::PhysicalDeviceMemoryProperties,

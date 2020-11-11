@@ -1,8 +1,8 @@
 use crate::window_surface;
+use spark::{vk, Builder, Device, DeviceExtensions, Instance, InstanceExtensions, Loader};
 use std::ffi::CStr;
 use std::os::raw::c_void;
 use std::slice;
-use spark::{vk, Builder, Device, DeviceExtensions, Instance, InstanceExtensions, Loader};
 use winit::window::Window;
 
 unsafe extern "system" fn debug_messenger(
