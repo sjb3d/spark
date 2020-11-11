@@ -15493,3 +15493,120 @@ impl Deref for PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
+    type Type = PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV,
+}
+impl PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_shading_rate_enums(mut self, fragment_shading_rate_enums: bool) -> Self {
+        self.inner.fragment_shading_rate_enums = if fragment_shading_rate_enums {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn supersample_fragment_shading_rates(mut self, supersample_fragment_shading_rates: bool) -> Self {
+        self.inner.supersample_fragment_shading_rates = if supersample_fragment_shading_rates {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn no_invocation_fragment_shading_rates(mut self, no_invocation_fragment_shading_rates: bool) -> Self {
+        self.inner.no_invocation_fragment_shading_rates = if no_invocation_fragment_shading_rates {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
+    type Type = PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
+    inner: vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV,
+}
+impl PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_fragment_shading_rate_invocation_count(
+        mut self,
+        max_fragment_shading_rate_invocation_count: vk::SampleCountFlags,
+    ) -> Self {
+        self.inner.max_fragment_shading_rate_invocation_count = max_fragment_shading_rate_invocation_count;
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
+    type Target = vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineFragmentShadingRateEnumStateCreateInfoNV {
+    type Type = PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
+    inner: vk::PipelineFragmentShadingRateEnumStateCreateInfoNV,
+}
+impl PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shading_rate_type(mut self, shading_rate_type: vk::FragmentShadingRateTypeNV) -> Self {
+        self.inner.shading_rate_type = shading_rate_type;
+        self
+    }
+    pub fn shading_rate(mut self, shading_rate: vk::FragmentShadingRateNV) -> Self {
+        self.inner.shading_rate = shading_rate;
+        self
+    }
+}
+impl Deref for PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
+    type Target = vk::PipelineFragmentShadingRateEnumStateCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

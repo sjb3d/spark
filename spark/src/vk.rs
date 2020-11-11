@@ -13277,6 +13277,12 @@ impl StructureType {
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
+    /// Added by extension VK_NV_fragment_shading_rate_enums.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV: Self = Self(1000326000);
+    /// Added by extension VK_NV_fragment_shading_rate_enums.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV: Self = Self(1000326001);
+    /// Added by extension VK_NV_fragment_shading_rate_enums.
+    pub const PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV: Self = Self(1000326002);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT: Self = Self(1000332000);
     /// Added by extension VK_EXT_fragment_density_map2.
@@ -13771,6 +13777,9 @@ impl fmt::Display for StructureType {
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000309000 => Some(&"RESERVED_QCOM"),
+            1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
+            1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
+            1000326002 => Some(&"PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000333000 => Some(&"COPY_COMMAND_TRANSFORM_INFO_QCOM"),
@@ -15059,6 +15068,78 @@ impl fmt::Display for LineRasterizationModeEXT {
             1 => Some(&"RECTANGULAR"),
             2 => Some(&"BRESENHAM"),
             3 => Some(&"RECTANGULAR_SMOOTH"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct FragmentShadingRateNV(i32);
+impl FragmentShadingRateNV {
+    pub const N1_INVOCATION_PER_PIXEL: Self = Self(0);
+    pub const N1_INVOCATION_PER_1X2_PIXELS: Self = Self(1);
+    pub const N1_INVOCATION_PER_2X1_PIXELS: Self = Self(4);
+    pub const N1_INVOCATION_PER_2X2_PIXELS: Self = Self(5);
+    pub const N1_INVOCATION_PER_2X4_PIXELS: Self = Self(6);
+    pub const N1_INVOCATION_PER_4X2_PIXELS: Self = Self(9);
+    pub const N1_INVOCATION_PER_4X4_PIXELS: Self = Self(10);
+    pub const N2_INVOCATIONS_PER_PIXEL: Self = Self(11);
+    pub const N4_INVOCATIONS_PER_PIXEL: Self = Self(12);
+    pub const N8_INVOCATIONS_PER_PIXEL: Self = Self(13);
+    pub const N16_INVOCATIONS_PER_PIXEL: Self = Self(14);
+    pub const NO_INVOCATIONS: Self = Self(15);
+}
+impl default::Default for FragmentShadingRateNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for FragmentShadingRateNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"N1_INVOCATION_PER_PIXEL"),
+            1 => Some(&"N1_INVOCATION_PER_1X2_PIXELS"),
+            4 => Some(&"N1_INVOCATION_PER_2X1_PIXELS"),
+            5 => Some(&"N1_INVOCATION_PER_2X2_PIXELS"),
+            6 => Some(&"N1_INVOCATION_PER_2X4_PIXELS"),
+            9 => Some(&"N1_INVOCATION_PER_4X2_PIXELS"),
+            10 => Some(&"N1_INVOCATION_PER_4X4_PIXELS"),
+            11 => Some(&"N2_INVOCATIONS_PER_PIXEL"),
+            12 => Some(&"N4_INVOCATIONS_PER_PIXEL"),
+            13 => Some(&"N8_INVOCATIONS_PER_PIXEL"),
+            14 => Some(&"N16_INVOCATIONS_PER_PIXEL"),
+            15 => Some(&"NO_INVOCATIONS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct FragmentShadingRateTypeNV(i32);
+impl FragmentShadingRateTypeNV {
+    pub const FRAGMENT_SIZE: Self = Self(0);
+    pub const ENUMS: Self = Self(1);
+}
+impl default::Default for FragmentShadingRateTypeNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for FragmentShadingRateTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"FRAGMENT_SIZE"),
+            1 => Some(&"ENUMS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -36325,6 +36406,102 @@ impl fmt::Debug for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub fragment_shading_rate_enums: Bool32,
+    pub supersample_fragment_shading_rates: Bool32,
+    pub no_invocation_fragment_shading_rates: Bool32,
+}
+impl default::Default for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            fragment_shading_rate_enums: Bool32::default(),
+            supersample_fragment_shading_rates: Bool32::default(),
+            no_invocation_fragment_shading_rates: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShadingRateEnumsFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_shading_rate_enums", &self.fragment_shading_rate_enums)
+            .field(
+                "supersample_fragment_shading_rates",
+                &self.supersample_fragment_shading_rates,
+            )
+            .field(
+                "no_invocation_fragment_shading_rates",
+                &self.no_invocation_fragment_shading_rates,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_fragment_shading_rate_invocation_count: SampleCountFlags,
+}
+impl default::Default for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            max_fragment_shading_rate_invocation_count: SampleCountFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShadingRateEnumsPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_fragment_shading_rate_invocation_count",
+                &self.max_fragment_shading_rate_invocation_count,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineFragmentShadingRateEnumStateCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub shading_rate_type: FragmentShadingRateTypeNV,
+    pub shading_rate: FragmentShadingRateNV,
+    pub combiner_ops: [FragmentShadingRateCombinerOpKHR; 2],
+}
+impl default::Default for PipelineFragmentShadingRateEnumStateCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            shading_rate_type: FragmentShadingRateTypeNV::default(),
+            shading_rate: FragmentShadingRateNV::default(),
+            combiner_ops: [FragmentShadingRateCombinerOpKHR::default(); 2],
+        }
+    }
+}
+impl fmt::Debug for PipelineFragmentShadingRateEnumStateCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineFragmentShadingRateEnumStateCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shading_rate_type", &self.shading_rate_type)
+            .field("shading_rate", &self.shading_rate)
+            .field("combiner_ops", &self.combiner_ops)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -38423,3 +38600,8 @@ pub type FnGetPhysicalDeviceFragmentShadingRatesKHR = unsafe extern "system" fn(
     p_fragment_shading_rate_count: *mut u32,
     p_fragment_shading_rates: *mut PhysicalDeviceFragmentShadingRateKHR,
 ) -> Result;
+pub type FnCmdSetFragmentShadingRateEnumNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    shading_rate: FragmentShadingRateNV,
+    combiner_ops: *const FragmentShadingRateCombinerOpKHR,
+) -> c_void;

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 159
+//! Generated from vk.xml with `VK_HEADER_VERSION` 160
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1129,6 +1129,12 @@ impl InstanceExtensions {
         self.khr_get_physical_device_properties2
     }
     pub fn enable_nv_device_diagnostics_config(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
         self.khr_get_physical_device_properties2 = true;
     }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
@@ -3715,6 +3721,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub nv_fragment_shading_rate_enums: bool,
     pub ext_fragment_density_map2: bool,
     pub qcom_rotated_copy_commands: bool,
     pub ext_image_robustness: bool,
@@ -3906,6 +3913,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
             b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
@@ -5112,6 +5120,20 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
+        self.nv_fragment_shading_rate_enums
+            && self.khr_fragment_shading_rate
+            && self.khr_create_renderpass2
+            && self.khr_multiview
+            && self.khr_maintenance2
+    }
+    pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
+        self.nv_fragment_shading_rate_enums = true;
+        self.khr_fragment_shading_rate = true;
+        self.khr_create_renderpass2 = true;
+        self.khr_multiview = true;
+        self.khr_maintenance2 = true;
+    }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
         self.ext_fragment_density_map2 && self.ext_fragment_density_map
     }
@@ -5689,6 +5711,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
+        if self.nv_fragment_shading_rate_enums {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shading_rate_enums\0") })
+        }
         if self.ext_fragment_density_map2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") })
         }
@@ -6068,6 +6093,7 @@ pub struct Device {
     pub fp_cmd_resolve_image2_khr: Option<vk::FnCmdResolveImage2KHR>,
     pub fp_cmd_set_fragment_shading_rate_khr: Option<vk::FnCmdSetFragmentShadingRateKHR>,
     pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
+    pub fp_cmd_set_fragment_shading_rate_enum_nv: Option<vk::FnCmdSetFragmentShadingRateEnumNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -8614,6 +8640,14 @@ impl Device {
             fp_get_physical_device_fragment_shading_rates_khr: if extensions.khr_fragment_shading_rate {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceFragmentShadingRatesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_fragment_shading_rate_enum_nv: if extensions.nv_fragment_shading_rate_enums {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetFragmentShadingRateEnumNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -14013,6 +14047,17 @@ impl Device {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         }
+    }
+    pub unsafe fn cmd_set_fragment_shading_rate_enum_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        shading_rate: vk::FragmentShadingRateNV,
+        combiner_ops: [vk::FragmentShadingRateCombinerOpKHR; 2],
+    ) {
+        let fp = self
+            .fp_cmd_set_fragment_shading_rate_enum_nv
+            .expect("vkCmdSetFragmentShadingRateEnumNV is not loaded");
+        (fp)(Some(command_buffer), shading_rate, combiner_ops.as_ptr());
     }
 }
 
