@@ -9,8 +9,8 @@ use std::ffi::CStr;
 use std::mem;
 use std::os::raw::{c_uchar, c_void};
 use std::slice;
-use vkr::vk;
-use vkr::{Builder, Device};
+use spark::vk;
+use spark::{Builder, Device};
 
 fn load_shader_module(device: &Device, bytes: &[u8]) -> vk::ShaderModule {
     let shader_module_create_info = vk::ShaderModuleCreateInfo {

@@ -1,10 +1,10 @@
 [package]
-name = "vkr"
+name = "spark"
 version = "0.1.0"
 authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
 description = "Convenience wrapper for Vulkan in Rust"
-repository = "https://github.com/sjb3d/vkr"
+repository = "https://github.com/sjb3d/spark"
 readme = "../README.md"
 keywords = ["vulkan", "graphics"]
 license = "MIT"

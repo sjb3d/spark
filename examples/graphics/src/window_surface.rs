@@ -1,5 +1,5 @@
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
-use vkr::{vk, Instance, InstanceExtensions, Result};
+use spark::{vk, Instance, InstanceExtensions, Result};
 use winit::window::Window;
 
 pub fn enable_extensions(window: &Window, extensions: &mut InstanceExtensions) {

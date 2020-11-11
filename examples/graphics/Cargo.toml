@@ -9,8 +9,8 @@ publish = false
 crate-type = [ "lib", "cdylib" ]
 
 [dependencies]
-vkr = { path = "../../vkr" }
-vkr-imgui = { path = "../../vkr-imgui" }
+spark = { path = "../../spark" }
+spark-imgui = { path = "../../spark-imgui" }
 winit = "0.22"
 raw-window-handle = "0.3"
 imgui = "0.5"

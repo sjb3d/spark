@@ -9,7 +9,7 @@ publish = false
 crate-type = [ "lib", "cdylib" ]
 
 [dependencies]
-vkr = { path = "../../vkr" }
+spark = { path = "../../spark" }
 
 [target.'cfg(target_os = "android")'.dependencies]
 ndk-glue = "0.2"

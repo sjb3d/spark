@@ -1,8 +1,8 @@
 [workspace]
 members = [
     "generator",
-    "vkr",
-    "vkr-imgui",
+    "spark",
+    "spark-imgui",
     "examples/compute",
     "examples/graphics"
 ]

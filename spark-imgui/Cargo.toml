@@ -1,12 +1,12 @@
 [package]
-name = "vkr-imgui"
+name = "spark-imgui"
 version = "0.1.0"
 authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
 publish = false
 
 [dependencies]
-vkr = { path = "../vkr" }
+spark = { path = "../spark" }
 imgui = "0.5"
 arrayvec = "0.5"
 memoffset = "0.5"

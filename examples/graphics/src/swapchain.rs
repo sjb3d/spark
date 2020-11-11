@@ -3,7 +3,7 @@ use std::cmp;
 use std::slice;
 use std::sync::Arc;
 use std::u64;
-use vkr::{vk, Builder};
+use spark::{vk, Builder};
 
 pub struct Swapchain {
     context: Arc<Context>,

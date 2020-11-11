@@ -17,7 +17,7 @@ use std::slice;
 use std::sync::Arc;
 use std::time::Instant;
 use swapchain::*;
-use vkr::{vk, Builder};
+use spark::{vk, Builder};
 use winit::{
     dpi::{LogicalSize, Size},
     event::{Event, WindowEvent},
@@ -83,7 +83,7 @@ struct App {
     context: Arc<Context>,
     ui_context: imgui::Context,
     ui_platform: WinitPlatform,
-    ui_renderer: vkr_imgui::Renderer,
+    ui_renderer: spark_imgui::Renderer,
     last_instant: Instant,
 
     swapchain: Swapchain,
@@ -132,7 +132,7 @@ impl App {
         let mut ui_platform = WinitPlatform::init(&mut ui_context);
         ui_platform.attach_window(ui_context.io_mut(), &window, HiDpiMode::Default);
 
-        let mut ui_renderer = vkr_imgui::Renderer::new(
+        let mut ui_renderer = spark_imgui::Renderer::new(
             &context.device,
             &context.physical_device_properties,
             &context.physical_device_memory_properties,

@@ -3010,11 +3010,11 @@ fn main() -> WriteResult {
     }
 
     let generator = Generator::new(&registry);
-    generator.write_vk(Path::new("../vkr/src/vk.rs"))?;
-    generator.write_builder(Path::new("../vkr/src/builder.rs"))?;
-    generator.write_lib(Path::new("../vkr/src/lib.rs"))?;
+    generator.write_vk(Path::new("../spark/src/vk.rs"))?;
+    generator.write_builder(Path::new("../spark/src/builder.rs"))?;
+    generator.write_lib(Path::new("../spark/src/lib.rs"))?;
 
-    Spawn::new("cargo").arg("fmt").current_dir("../vkr").output()?;
+    Spawn::new("cargo").arg("fmt").current_dir("../spark").output()?;
 
     Ok(())
 }

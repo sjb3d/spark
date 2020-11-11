@@ -1,4 +1,4 @@
-# vkr
+# spark
 
 This library aims to expose [Vulkan](https://www.khronos.org/registry/vulkan/) in [Rust](https://www.rust-lang.org/) with convenient syntax.
 
@@ -131,14 +131,14 @@ The `_array` version is implemented using a trait up to arrays of length 8, but 
 
 Examples can be found in the `examples` folder.
 
-### [`compute`](https://github.com/sjb3d/vkr/blob/master/examples/compute)
+### [`compute`](https://github.com/sjb3d/spark/blob/master/examples/compute)
 
 A minimal console application that runs a compute shader to fill some memory.  Shows basic usage of a Vulkan device.
 
-### [`graphics`](https://github.com/sjb3d/vkr/blob/master/examples/graphics)
+### [`graphics`](https://github.com/sjb3d/spark/blob/master/examples/graphics)
 
 A minimal windowed application that draws a spinning triangle and some UI.
 * Uses [`winit`](https://github.com/rust-windowing/winit) for windowing
-* Demonstrates [`vkr-imgui`](https://github.com/sjb3d/vkr/tree/master/vkr-imgui) as a renderer for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)).
+* Demonstrates [`spark-imgui`](https://github.com/sjb3d/spark/tree/master/spark-imgui) as a renderer for [`imgui-rs`](https://github.com/Gekkio/imgui-rs) (which wraps the amazing [Dear ImGui](https://github.com/ocornut/imgui)).
 
-![graphics](https://raw.githubusercontent.com/sjb3d/vkr/master/docs/graphics.png)
+![graphics](https://raw.githubusercontent.com/sjb3d/spark/master/docs/graphics.png)

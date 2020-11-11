@@ -17,7 +17,7 @@ impl Version {
     /// Forms a version number from major, minor and patch numbers
     ///
     /// ```
-    /// # use vkr::vk;
+    /// # use spark::vk;
     /// let v = vk::Version::from_raw_parts(1, 2, 0);
     /// assert_eq!(v.to_raw(), (1 << 22) | (2 << 12));
     /// ```
