@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 spark = { path = "../spark" }
-imgui = "0.5"
+imgui = "0.6"
 arrayvec = "0.5"
 memoffset = "0.5"
