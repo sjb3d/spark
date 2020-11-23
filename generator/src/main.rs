@@ -332,17 +332,41 @@ enum LibParamType {
     CDecl,
     Bool,
     MemberHandle,
-    CStr { is_optional: bool },
-    NonOptional { inner_type_name: String },
-    SliceLenShared { name: String, slice_infos: Vec<SliceInfo> },
-    SliceLenSingle { slice_infos: Vec<SliceInfo> },
-    Slice { inner_type_name: String, is_optional: bool },
-    Ref { inner_type_name: String, is_optional: bool },
-    MutRef { inner_type_name: String },
-    ReturnObject { inner_type_name: String },
+    CStr {
+        is_optional: bool,
+    },
+    NonOptional {
+        inner_type_name: String,
+    },
+    SliceLenShared {
+        name: String,
+        slice_infos: Vec<SliceInfo>,
+    },
+    SliceLenSingle {
+        slice_infos: Vec<SliceInfo>,
+    },
+    Slice {
+        inner_type_name: String,
+        is_optional: bool,
+        len_expr: Option<String>,
+    },
+    Ref {
+        inner_type_name: String,
+        is_optional: bool,
+    },
+    MutRef {
+        inner_type_name: String,
+    },
+    ReturnObject {
+        inner_type_name: String,
+    },
     ReturnVecLenShared,
-    ReturnVecLenSingle { slice_name: String },
-    ReturnVec { inner_type_name: String },
+    ReturnVecLenSingle {
+        slice_name: String,
+    },
+    ReturnVec {
+        inner_type_name: String,
+    },
 }
 
 #[derive(Debug)]
@@ -1601,6 +1625,7 @@ impl<'a> Generator<'a> {
                                 params[i].ty = LibParamType::Slice {
                                     inner_type_name,
                                     is_optional,
+                                    len_expr: None,
                                 };
                                 take_mut::take(&mut params[len_index].ty, |ty| match ty {
                                     LibParamType::SliceLenShared { name, mut slice_infos } => {
@@ -1934,40 +1959,47 @@ impl<'a> Generator<'a> {
                 if cparam.ty.decoration == CDecoration::PointerToConst
                     || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst
                 {
-                    let len_index = decl
-                        .parameters
-                        .iter()
-                        .position(|cparam| cparam.name == len_name)
-                        .expect("missing len variable");
-                    let len_cparam = &decl.parameters[len_index];
                     let is_optional = vparam.optional.as_ref_str() == Some("true");
                     let inner_type_name = if cparam.ty.decoration == CDecoration::PointerToConstPointerToConst {
                         format!("*const {}", inner_type_name)
                     } else {
                         inner_type_name
                     };
-                    let slice_info = SliceInfo {
-                        name: params[i].name.clone(),
-                        type_name: inner_type_name.clone(),
-                        is_optional,
-                    };
+                    let len_expr =
+                        if let Some(len_index) = decl.parameters.iter().position(|cparam| cparam.name == len_name) {
+                            let len_cparam = &decl.parameters[len_index];
+                            let slice_info = SliceInfo {
+                                name: params[i].name.clone(),
+                                type_name: inner_type_name.clone(),
+                                is_optional,
+                            };
+                            take_mut::take(&mut params[len_index].ty, |ty| match ty {
+                                LibParamType::SliceLenShared { name, mut slice_infos } => {
+                                    slice_infos.push(slice_info);
+                                    LibParamType::SliceLenShared { name, slice_infos }
+                                }
+                                LibParamType::CDecl => LibParamType::SliceLenShared {
+                                    name: len_cparam.name.to_snake_case(),
+                                    slice_infos: vec![slice_info; 1],
+                                },
+                                _ => {
+                                    panic!("purpose already found for {:?}", len_cparam);
+                                }
+                            });
+                            None
+                        } else {
+                            let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
+                            let len_names: Vec<String> = len_names
+                                .iter()
+                                .map(|s| get_rust_variable_name(s.to_snake_case().as_str()))
+                                .collect();
+                            Some(len_names.join("."))
+                        };
                     params[i].ty = LibParamType::Slice {
-                        inner_type_name,
+                        inner_type_name: inner_type_name.clone(),
                         is_optional,
+                        len_expr,
                     };
-                    take_mut::take(&mut params[len_index].ty, |ty| match ty {
-                        LibParamType::SliceLenShared { name, mut slice_infos } => {
-                            slice_infos.push(slice_info);
-                            LibParamType::SliceLenShared { name, slice_infos }
-                        }
-                        LibParamType::CDecl => LibParamType::SliceLenShared {
-                            name: len_cparam.name.to_snake_case(),
-                            slice_infos: vec![slice_info; 1],
-                        },
-                        _ => {
-                            panic!("purpose already found for {:?}", len_cparam);
-                        }
-                    });
                     continue;
                 }
                 if cparam.ty.name != "void"
@@ -2286,6 +2318,7 @@ impl<'a> Generator<'a> {
                     LibParamType::Slice {
                         ref inner_type_name,
                         is_optional,
+                        ..
                     } => {
                         let type_name = slice_type_name(inner_type_name);
                         if let LibCommandStyle::Single = style {
@@ -2387,36 +2420,45 @@ impl<'a> Generator<'a> {
             }
 
             for (cparam, rparam) in decl.parameters.iter().zip(params.iter()) {
-                if let LibParamType::SliceLenShared {
-                    ref name,
-                    ref slice_infos,
-                } = rparam.ty
-                {
-                    if let LibCommandStyle::Single = style {
-                        // bit of a hack: assume this is the result vector length, so set to 1
-                        writeln!(w, "let {} = 1;", name)?;
-                    } else {
-                        let type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
-                        let first_non_optional = slice_infos.iter().find(|slice_info| !slice_info.is_optional).unwrap();
-                        writeln!(w, "let {} = {} as {};", name, first_non_optional.get_len(), type_name)?;
-                        for slice_info in slice_infos {
-                            if slice_info.name == first_non_optional.name {
-                                continue;
-                            }
-                            if slice_info.is_optional {
-                                writeln!(
-                                    w,
-                                    "if let Some(s) = {} {{ assert_eq!({}, {} as {}); }}",
-                                    slice_info.name,
-                                    name,
-                                    slice_len("s", &slice_info.type_name),
-                                    type_name
-                                )?;
-                            } else {
-                                writeln!(w, "assert_eq!({}, {} as {});", name, slice_info.get_len(), type_name)?;
+                match rparam.ty {
+                    LibParamType::SliceLenShared {
+                        ref name,
+                        ref slice_infos,
+                    } => {
+                        if let LibCommandStyle::Single = style {
+                            // bit of a hack: assume this is the result vector length, so set to 1
+                            writeln!(w, "let {} = 1;", name)?;
+                        } else {
+                            let type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
+                            let first_non_optional =
+                                slice_infos.iter().find(|slice_info| !slice_info.is_optional).unwrap();
+                            writeln!(w, "let {} = {} as {};", name, first_non_optional.get_len(), type_name)?;
+                            for slice_info in slice_infos {
+                                if slice_info.name == first_non_optional.name {
+                                    continue;
+                                }
+                                if slice_info.is_optional {
+                                    writeln!(
+                                        w,
+                                        "if let Some(s) = {} {{ assert_eq!({}, {} as {}); }}",
+                                        slice_info.name,
+                                        name,
+                                        slice_len("s", &slice_info.type_name),
+                                        type_name
+                                    )?;
+                                } else {
+                                    writeln!(w, "assert_eq!({}, {} as {});", name, slice_info.get_len(), type_name)?;
+                                }
                             }
                         }
                     }
+                    LibParamType::Slice { ref len_expr, .. } => {
+                        if let Some(len_expr) = len_expr {
+                            // bit of a hack, assume expression result is u32
+                            writeln!(w, "assert_eq!({}.len() as u32, {});", rparam.name, len_expr)?;
+                        }
+                    }
+                    _ => {}
                 }
             }
 
@@ -2522,6 +2564,7 @@ impl<'a> Generator<'a> {
                         LibParamType::Slice {
                             is_optional,
                             ref inner_type_name,
+                            ..
                         } => {
                             if let LibCommandStyle::Single = style {
                                 if is_optional {
