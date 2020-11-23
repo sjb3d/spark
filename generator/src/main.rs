@@ -1608,7 +1608,9 @@ impl<'a> Generator<'a> {
                             || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst;
                         if is_slice_type {
                             let is_optional = vparam.optional.as_ref_str() == Some("true");
-                            let is_single = vparam.noautovalidity.as_ref_str() == Some("true");
+                            let is_single = vparam.noautovalidity.as_ref_str() == Some("true")
+                                || vparam.optional.as_ref_str() == Some("true,false")
+                                || vparam.optional.as_ref_str() == Some("true,false,false");
                             if let Some(len_index) = decls.iter().position(|decl| decl.name == len_name) {
                                 let len_cparam = &decls[len_index];
                                 let inner_type_name =
