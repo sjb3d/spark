@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 160
+//! Generated from vk.xml with `VK_HEADER_VERSION` 162
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -761,10 +761,22 @@ impl InstanceExtensions {
     pub fn enable_ext_sample_locations(&mut self) {
         self.khr_get_physical_device_properties2 = true;
     }
-    pub fn supports_khr_ray_tracing(&self) -> bool {
+    pub fn supports_khr_acceleration_structure(&self) -> bool {
         self.khr_get_physical_device_properties2
     }
-    pub fn enable_khr_ray_tracing(&mut self) {
+    pub fn enable_khr_acceleration_structure(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_ray_tracing_pipeline(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
+    }
+    pub fn supports_khr_ray_query(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_khr_ray_query(&mut self) {
         self.khr_get_physical_device_properties2 = true;
     }
     pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
@@ -3626,7 +3638,9 @@ pub struct DeviceExtensions {
     pub khr_image_format_list: bool,
     pub ext_blend_operation_advanced: bool,
     pub nv_fragment_coverage_to_color: bool,
-    pub khr_ray_tracing: bool,
+    pub khr_acceleration_structure: bool,
+    pub khr_ray_tracing_pipeline: bool,
+    pub khr_ray_query: bool,
     pub nv_framebuffer_mixed_samples: bool,
     pub nv_fill_rectangle: bool,
     pub nv_shader_sm_builtins: bool,
@@ -3818,7 +3832,9 @@ impl DeviceExtensions {
             b"VK_KHR_image_format_list" => self.khr_image_format_list = true,
             b"VK_EXT_blend_operation_advanced" => self.ext_blend_operation_advanced = true,
             b"VK_NV_fragment_coverage_to_color" => self.nv_fragment_coverage_to_color = true,
-            b"VK_KHR_ray_tracing" => self.khr_ray_tracing = true,
+            b"VK_KHR_acceleration_structure" => self.khr_acceleration_structure = true,
+            b"VK_KHR_ray_tracing_pipeline" => self.khr_ray_tracing_pipeline = true,
+            b"VK_KHR_ray_query" => self.khr_ray_query = true,
             b"VK_NV_framebuffer_mixed_samples" => self.nv_framebuffer_mixed_samples = true,
             b"VK_NV_fill_rectangle" => self.nv_fill_rectangle = true,
             b"VK_NV_shader_sm_builtins" => self.nv_shader_sm_builtins = true,
@@ -4485,22 +4501,58 @@ impl DeviceExtensions {
     pub fn enable_nv_fragment_coverage_to_color(&mut self) {
         self.nv_fragment_coverage_to_color = true;
     }
-    pub fn supports_khr_ray_tracing(&self) -> bool {
-        self.khr_ray_tracing
-            && self.khr_get_memory_requirements2
+    pub fn supports_khr_acceleration_structure(&self) -> bool {
+        self.khr_acceleration_structure
             && self.ext_descriptor_indexing
             && self.khr_buffer_device_address
             && self.khr_deferred_host_operations
-            && self.khr_pipeline_library
             && self.khr_maintenance3
     }
-    pub fn enable_khr_ray_tracing(&mut self) {
-        self.khr_ray_tracing = true;
-        self.khr_get_memory_requirements2 = true;
+    pub fn enable_khr_acceleration_structure(&mut self) {
+        self.khr_acceleration_structure = true;
         self.ext_descriptor_indexing = true;
         self.khr_buffer_device_address = true;
         self.khr_deferred_host_operations = true;
-        self.khr_pipeline_library = true;
+        self.khr_maintenance3 = true;
+    }
+    pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
+        self.khr_ray_tracing_pipeline
+            && self.khr_spirv_1_4
+            && self.khr_acceleration_structure
+            && self.khr_shader_float_controls
+            && self.ext_descriptor_indexing
+            && self.khr_buffer_device_address
+            && self.khr_deferred_host_operations
+            && self.khr_maintenance3
+    }
+    pub fn enable_khr_ray_tracing_pipeline(&mut self) {
+        self.khr_ray_tracing_pipeline = true;
+        self.khr_spirv_1_4 = true;
+        self.khr_acceleration_structure = true;
+        self.khr_shader_float_controls = true;
+        self.ext_descriptor_indexing = true;
+        self.khr_buffer_device_address = true;
+        self.khr_deferred_host_operations = true;
+        self.khr_maintenance3 = true;
+    }
+    pub fn supports_khr_ray_query(&self) -> bool {
+        self.khr_ray_query
+            && self.khr_spirv_1_4
+            && self.khr_acceleration_structure
+            && self.khr_shader_float_controls
+            && self.ext_descriptor_indexing
+            && self.khr_buffer_device_address
+            && self.khr_deferred_host_operations
+            && self.khr_maintenance3
+    }
+    pub fn enable_khr_ray_query(&mut self) {
+        self.khr_ray_query = true;
+        self.khr_spirv_1_4 = true;
+        self.khr_acceleration_structure = true;
+        self.khr_shader_float_controls = true;
+        self.ext_descriptor_indexing = true;
+        self.khr_buffer_device_address = true;
+        self.khr_deferred_host_operations = true;
         self.khr_maintenance3 = true;
     }
     pub fn supports_nv_framebuffer_mixed_samples(&self) -> bool {
@@ -5426,8 +5478,14 @@ impl DeviceExtensions {
         if self.nv_fragment_coverage_to_color {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_coverage_to_color\0") })
         }
-        if self.khr_ray_tracing {
-            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing\0") })
+        if self.khr_acceleration_structure {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_acceleration_structure\0") })
+        }
+        if self.khr_ray_tracing_pipeline {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_pipeline\0") })
+        }
+        if self.khr_ray_query {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_query\0") })
         }
         if self.nv_framebuffer_mixed_samples {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_framebuffer_mixed_samples\0") })
@@ -5991,11 +6049,8 @@ pub struct Device {
     pub fp_create_acceleration_structure_nv: Option<vk::FnCreateAccelerationStructureNV>,
     pub fp_destroy_acceleration_structure_khr: Option<vk::FnDestroyAccelerationStructureKHR>,
     pub fp_destroy_acceleration_structure_nv: Option<vk::FnDestroyAccelerationStructureNV>,
-    pub fp_get_acceleration_structure_memory_requirements_khr:
-        Option<vk::FnGetAccelerationStructureMemoryRequirementsKHR>,
     pub fp_get_acceleration_structure_memory_requirements_nv:
         Option<vk::FnGetAccelerationStructureMemoryRequirementsNV>,
-    pub fp_bind_acceleration_structure_memory_khr: Option<vk::FnBindAccelerationStructureMemoryKHR>,
     pub fp_bind_acceleration_structure_memory_nv: Option<vk::FnBindAccelerationStructureMemoryNV>,
     pub fp_cmd_copy_acceleration_structure_nv: Option<vk::FnCmdCopyAccelerationStructureNV>,
     pub fp_cmd_copy_acceleration_structure_khr: Option<vk::FnCmdCopyAccelerationStructureKHR>,
@@ -6022,6 +6077,8 @@ pub struct Device {
     pub fp_cmd_trace_rays_indirect_khr: Option<vk::FnCmdTraceRaysIndirectKHR>,
     pub fp_get_device_acceleration_structure_compatibility_khr:
         Option<vk::FnGetDeviceAccelerationStructureCompatibilityKHR>,
+    pub fp_get_ray_tracing_shader_group_stack_size_khr: Option<vk::FnGetRayTracingShaderGroupStackSizeKHR>,
+    pub fp_cmd_set_ray_tracing_pipeline_stack_size_khr: Option<vk::FnCmdSetRayTracingPipelineStackSizeKHR>,
     pub fp_get_image_view_handle_nvx: Option<vk::FnGetImageViewHandleNVX>,
     pub fp_get_image_view_address_nvx: Option<vk::FnGetImageViewAddressNVX>,
     pub fp_get_physical_device_surface_present_modes2_ext: Option<vk::FnGetPhysicalDeviceSurfacePresentModes2EXT>,
@@ -6060,9 +6117,9 @@ pub struct Device {
     pub fp_cmd_set_line_stipple_ext: Option<vk::FnCmdSetLineStippleEXT>,
     pub fp_get_physical_device_tool_properties_ext: Option<vk::FnGetPhysicalDeviceToolPropertiesEXT>,
     pub fp_create_acceleration_structure_khr: Option<vk::FnCreateAccelerationStructureKHR>,
-    pub fp_cmd_build_acceleration_structure_khr: Option<vk::FnCmdBuildAccelerationStructureKHR>,
-    pub fp_cmd_build_acceleration_structure_indirect_khr: Option<vk::FnCmdBuildAccelerationStructureIndirectKHR>,
-    pub fp_build_acceleration_structure_khr: Option<vk::FnBuildAccelerationStructureKHR>,
+    pub fp_cmd_build_acceleration_structures_khr: Option<vk::FnCmdBuildAccelerationStructuresKHR>,
+    pub fp_cmd_build_acceleration_structures_indirect_khr: Option<vk::FnCmdBuildAccelerationStructuresIndirectKHR>,
+    pub fp_build_acceleration_structures_khr: Option<vk::FnBuildAccelerationStructuresKHR>,
     pub fp_get_acceleration_structure_device_address_khr: Option<vk::FnGetAccelerationStructureDeviceAddressKHR>,
     pub fp_create_deferred_operation_khr: Option<vk::FnCreateDeferredOperationKHR>,
     pub fp_destroy_deferred_operation_khr: Option<vk::FnDestroyDeferredOperationKHR>,
@@ -6094,6 +6151,7 @@ pub struct Device {
     pub fp_cmd_set_fragment_shading_rate_khr: Option<vk::FnCmdSetFragmentShadingRateKHR>,
     pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
     pub fp_cmd_set_fragment_shading_rate_enum_nv: Option<vk::FnCmdSetFragmentShadingRateEnumNV>,
+    pub fp_get_acceleration_structure_build_sizes_khr: Option<vk::FnGetAccelerationStructureBuildSizesKHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -7947,7 +8005,7 @@ impl Device {
             } else {
                 None
             },
-            fp_destroy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_destroy_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkDestroyAccelerationStructureKHR\0",
                 ));
@@ -7963,25 +8021,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_acceleration_structure_memory_requirements_khr: if extensions.khr_ray_tracing {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetAccelerationStructureMemoryRequirementsKHR\0",
-                ));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
             fp_get_acceleration_structure_memory_requirements_nv: if extensions.nv_ray_tracing {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetAccelerationStructureMemoryRequirementsNV\0",
-                ));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
-            fp_bind_acceleration_structure_memory_khr: if extensions.khr_ray_tracing {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkBindAccelerationStructureMemoryKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -8003,7 +8045,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_copy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_cmd_copy_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdCopyAccelerationStructureKHR\0",
                 ));
@@ -8011,13 +8053,13 @@ impl Device {
             } else {
                 None
             },
-            fp_copy_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_copy_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyAccelerationStructureKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_copy_acceleration_structure_to_memory_khr: if extensions.khr_ray_tracing {
+            fp_cmd_copy_acceleration_structure_to_memory_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdCopyAccelerationStructureToMemoryKHR\0",
                 ));
@@ -8025,7 +8067,7 @@ impl Device {
             } else {
                 None
             },
-            fp_copy_acceleration_structure_to_memory_khr: if extensions.khr_ray_tracing {
+            fp_copy_acceleration_structure_to_memory_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCopyAccelerationStructureToMemoryKHR\0",
                 ));
@@ -8033,7 +8075,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_copy_memory_to_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_cmd_copy_memory_to_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdCopyMemoryToAccelerationStructureKHR\0",
                 ));
@@ -8041,7 +8083,7 @@ impl Device {
             } else {
                 None
             },
-            fp_copy_memory_to_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_copy_memory_to_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCopyMemoryToAccelerationStructureKHR\0",
                 ));
@@ -8049,7 +8091,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_write_acceleration_structures_properties_khr: if extensions.khr_ray_tracing {
+            fp_cmd_write_acceleration_structures_properties_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdWriteAccelerationStructuresPropertiesKHR\0",
                 ));
@@ -8073,7 +8115,7 @@ impl Device {
             } else {
                 None
             },
-            fp_write_acceleration_structures_properties_khr: if extensions.khr_ray_tracing {
+            fp_write_acceleration_structures_properties_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkWriteAccelerationStructuresPropertiesKHR\0",
                 ));
@@ -8081,7 +8123,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_trace_rays_khr: if extensions.khr_ray_tracing {
+            fp_cmd_trace_rays_khr: if extensions.khr_ray_tracing_pipeline {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -8093,7 +8135,7 @@ impl Device {
             } else {
                 None
             },
-            fp_get_ray_tracing_shader_group_handles_khr: if extensions.khr_ray_tracing {
+            fp_get_ray_tracing_shader_group_handles_khr: if extensions.khr_ray_tracing_pipeline {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetRayTracingShaderGroupHandlesKHR\0",
                 ));
@@ -8109,7 +8151,7 @@ impl Device {
             } else {
                 None
             },
-            fp_get_ray_tracing_capture_replay_shader_group_handles_khr: if extensions.khr_ray_tracing {
+            fp_get_ray_tracing_capture_replay_shader_group_handles_khr: if extensions.khr_ray_tracing_pipeline {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetRayTracingCaptureReplayShaderGroupHandlesKHR\0",
                 ));
@@ -8131,7 +8173,7 @@ impl Device {
             } else {
                 None
             },
-            fp_create_ray_tracing_pipelines_khr: if extensions.khr_ray_tracing {
+            fp_create_ray_tracing_pipelines_khr: if extensions.khr_ray_tracing_pipeline {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateRayTracingPipelinesKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -8145,15 +8187,31 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_trace_rays_indirect_khr: if extensions.khr_ray_tracing {
+            fp_cmd_trace_rays_indirect_khr: if extensions.khr_ray_tracing_pipeline {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysIndirectKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_get_device_acceleration_structure_compatibility_khr: if extensions.khr_ray_tracing {
+            fp_get_device_acceleration_structure_compatibility_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceAccelerationStructureCompatibilityKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_ray_tracing_shader_group_stack_size_khr: if extensions.khr_ray_tracing_pipeline {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRayTracingShaderGroupStackSizeKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_ray_tracing_pipeline_stack_size_khr: if extensions.khr_ray_tracing_pipeline {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRayTracingPipelineStackSizeKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -8423,7 +8481,7 @@ impl Device {
             } else {
                 None
             },
-            fp_create_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_create_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCreateAccelerationStructureKHR\0",
                 ));
@@ -8431,31 +8489,31 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_build_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_cmd_build_acceleration_structures_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkCmdBuildAccelerationStructureKHR\0",
+                    b"vkCmdBuildAccelerationStructuresKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_build_acceleration_structure_indirect_khr: if extensions.khr_ray_tracing {
+            fp_cmd_build_acceleration_structures_indirect_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkCmdBuildAccelerationStructureIndirectKHR\0",
+                    b"vkCmdBuildAccelerationStructuresIndirectKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_build_acceleration_structure_khr: if extensions.khr_ray_tracing {
+            fp_build_acceleration_structures_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkBuildAccelerationStructureKHR\0",
+                    b"vkBuildAccelerationStructuresKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_get_acceleration_structure_device_address_khr: if extensions.khr_ray_tracing {
+            fp_get_acceleration_structure_device_address_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetAccelerationStructureDeviceAddressKHR\0",
                 ));
@@ -8648,6 +8706,14 @@ impl Device {
             fp_cmd_set_fragment_shading_rate_enum_nv: if extensions.nv_fragment_shading_rate_enums {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetFragmentShadingRateEnumNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_acceleration_structure_build_sizes_khr: if extensions.khr_acceleration_structure {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureBuildSizesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -12544,7 +12610,7 @@ impl Device {
     }
     pub unsafe fn destroy_acceleration_structure_nv(
         &self,
-        acceleration_structure: Option<vk::AccelerationStructureKHR>,
+        acceleration_structure: Option<vk::AccelerationStructureNV>,
         p_allocator: Option<&vk::AllocationCallbacks>,
     ) {
         let fp = self
@@ -12556,16 +12622,6 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
-    pub unsafe fn get_acceleration_structure_memory_requirements_khr(
-        &self,
-        p_info: &vk::AccelerationStructureMemoryRequirementsInfoKHR,
-        p_memory_requirements: &mut vk::MemoryRequirements2,
-    ) {
-        let fp = self
-            .fp_get_acceleration_structure_memory_requirements_khr
-            .expect("vkGetAccelerationStructureMemoryRequirementsKHR is not loaded");
-        (fp)(Some(self.handle), p_info, p_memory_requirements);
-    }
     pub unsafe fn get_acceleration_structure_memory_requirements_nv(
         &self,
         p_info: &vk::AccelerationStructureMemoryRequirementsInfoNV,
@@ -12576,23 +12632,9 @@ impl Device {
             .expect("vkGetAccelerationStructureMemoryRequirementsNV is not loaded");
         (fp)(Some(self.handle), p_info, p_memory_requirements);
     }
-    pub unsafe fn bind_acceleration_structure_memory_khr(
-        &self,
-        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoKHR],
-    ) -> Result<()> {
-        let fp = self
-            .fp_bind_acceleration_structure_memory_khr
-            .expect("vkBindAccelerationStructureMemoryKHR is not loaded");
-        let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
-    }
     pub unsafe fn bind_acceleration_structure_memory_nv(
         &self,
-        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoKHR],
+        p_bind_infos: &[vk::BindAccelerationStructureMemoryInfoNV],
     ) -> Result<()> {
         let fp = self
             .fp_bind_acceleration_structure_memory_nv
@@ -12607,8 +12649,8 @@ impl Device {
     pub unsafe fn cmd_copy_acceleration_structure_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        dst: vk::AccelerationStructureKHR,
-        src: vk::AccelerationStructureKHR,
+        dst: vk::AccelerationStructureNV,
+        src: vk::AccelerationStructureNV,
         mode: vk::CopyAccelerationStructureModeKHR,
     ) {
         let fp = self
@@ -12628,12 +12670,13 @@ impl Device {
     }
     pub unsafe fn copy_acceleration_structure_khr(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         p_info: &vk::CopyAccelerationStructureInfoKHR,
     ) -> Result<vk::Result> {
         let fp = self
             .fp_copy_acceleration_structure_khr
             .expect("vkCopyAccelerationStructureKHR is not loaded");
-        let err = (fp)(Some(self.handle), p_info);
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
                 Ok(err)
@@ -12653,12 +12696,13 @@ impl Device {
     }
     pub unsafe fn copy_acceleration_structure_to_memory_khr(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         p_info: &vk::CopyAccelerationStructureToMemoryInfoKHR,
     ) -> Result<vk::Result> {
         let fp = self
             .fp_copy_acceleration_structure_to_memory_khr
             .expect("vkCopyAccelerationStructureToMemoryKHR is not loaded");
-        let err = (fp)(Some(self.handle), p_info);
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
                 Ok(err)
@@ -12678,12 +12722,13 @@ impl Device {
     }
     pub unsafe fn copy_memory_to_acceleration_structure_khr(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         p_info: &vk::CopyMemoryToAccelerationStructureInfoKHR,
     ) -> Result<vk::Result> {
         let fp = self
             .fp_copy_memory_to_acceleration_structure_khr
             .expect("vkCopyMemoryToAccelerationStructureKHR is not loaded");
-        let err = (fp)(Some(self.handle), p_info);
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
                 Ok(err)
@@ -12715,7 +12760,7 @@ impl Device {
     pub unsafe fn cmd_write_acceleration_structures_properties_nv(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_acceleration_structures: &[vk::AccelerationStructureKHR],
+        p_acceleration_structures: &[vk::AccelerationStructureNV],
         query_type: vk::QueryType,
         query_pool: vk::QueryPool,
         first_query: u32,
@@ -12740,8 +12785,8 @@ impl Device {
         instance_data: Option<vk::Buffer>,
         instance_offset: vk::DeviceSize,
         update: bool,
-        dst: vk::AccelerationStructureKHR,
-        src: Option<vk::AccelerationStructureKHR>,
+        dst: vk::AccelerationStructureNV,
+        src: Option<vk::AccelerationStructureNV>,
         scratch: vk::Buffer,
         scratch_offset: vk::DeviceSize,
     ) {
@@ -12789,10 +12834,10 @@ impl Device {
     pub unsafe fn cmd_trace_rays_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_raygen_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_miss_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_hit_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_callable_shader_binding_table: &vk::StridedBufferRegionKHR,
+        p_raygen_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_miss_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_hit_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_callable_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
         width: u32,
         height: u32,
         depth: u32,
@@ -12920,7 +12965,7 @@ impl Device {
     }
     pub unsafe fn get_acceleration_structure_handle_nv(
         &self,
-        acceleration_structure: vk::AccelerationStructureKHR,
+        acceleration_structure: vk::AccelerationStructureNV,
         data_size: usize,
         p_data: *mut c_void,
     ) -> Result<()> {
@@ -13033,6 +13078,7 @@ impl Device {
     }
     pub unsafe fn create_ray_tracing_pipelines_khr(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
@@ -13044,6 +13090,7 @@ impl Device {
         let create_info_count = p_create_infos.len() as u32;
         let v_err = (fp)(
             Some(self.handle),
+            deferred_operation,
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
@@ -13057,6 +13104,7 @@ impl Device {
     }
     pub unsafe fn create_ray_tracing_pipelines_khr_to_vec(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
@@ -13069,6 +13117,7 @@ impl Device {
         v.set_len(create_info_count as usize);
         let v_err = (fp)(
             Some(self.handle),
+            deferred_operation,
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
@@ -13082,6 +13131,7 @@ impl Device {
     }
     pub unsafe fn create_ray_tracing_pipelines_khr_array<A: Array<Item = vk::Pipeline>>(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
@@ -13094,6 +13144,7 @@ impl Device {
         let mut v = MaybeUninit::<A>::uninit();
         let v_err = (fp)(
             Some(self.handle),
+            deferred_operation,
             pipeline_cache,
             create_info_count,
             p_create_infos.as_ptr(),
@@ -13107,6 +13158,7 @@ impl Device {
     }
     pub unsafe fn create_ray_tracing_pipelines_khr_single(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &vk::RayTracingPipelineCreateInfoKHR,
         p_allocator: Option<&vk::AllocationCallbacks>,
@@ -13118,6 +13170,7 @@ impl Device {
         let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
+            deferred_operation,
             pipeline_cache,
             create_info_count,
             p_create_infos,
@@ -13153,12 +13206,11 @@ impl Device {
     pub unsafe fn cmd_trace_rays_indirect_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_raygen_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_miss_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_hit_shader_binding_table: &vk::StridedBufferRegionKHR,
-        p_callable_shader_binding_table: &vk::StridedBufferRegionKHR,
-        buffer: vk::Buffer,
-        offset: vk::DeviceSize,
+        p_raygen_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_miss_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_hit_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        p_callable_shader_binding_table: &vk::StridedDeviceAddressRegionKHR,
+        indirect_device_address: vk::DeviceAddress,
     ) {
         let fp = self
             .fp_cmd_trace_rays_indirect_khr
@@ -13169,22 +13221,40 @@ impl Device {
             p_miss_shader_binding_table,
             p_hit_shader_binding_table,
             p_callable_shader_binding_table,
-            Some(buffer),
-            offset,
+            indirect_device_address,
         );
     }
     pub unsafe fn get_device_acceleration_structure_compatibility_khr(
         &self,
-        version: &vk::AccelerationStructureVersionKHR,
-    ) -> Result<()> {
+        p_version_info: &vk::AccelerationStructureVersionInfoKHR,
+    ) -> vk::AccelerationStructureCompatibilityKHR {
         let fp = self
             .fp_get_device_acceleration_structure_compatibility_khr
             .expect("vkGetDeviceAccelerationStructureCompatibilityKHR is not loaded");
-        let err = (fp)(Some(self.handle), version);
-        match err {
-            vk::Result::SUCCESS => Ok(()),
-            _ => Err(err),
-        }
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_version_info, res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn get_ray_tracing_shader_group_stack_size_khr(
+        &self,
+        pipeline: vk::Pipeline,
+        group: u32,
+        group_shader: vk::ShaderGroupShaderKHR,
+    ) -> vk::DeviceSize {
+        let fp = self
+            .fp_get_ray_tracing_shader_group_stack_size_khr
+            .expect("vkGetRayTracingShaderGroupStackSizeKHR is not loaded");
+        (fp)(Some(self.handle), Some(pipeline), group, group_shader)
+    }
+    pub unsafe fn cmd_set_ray_tracing_pipeline_stack_size_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_stack_size: u32,
+    ) {
+        let fp = self
+            .fp_cmd_set_ray_tracing_pipeline_stack_size_khr
+            .expect("vkCmdSetRayTracingPipelineStackSizeKHR is not loaded");
+        (fp)(Some(command_buffer), pipeline_stack_size);
     }
     pub unsafe fn get_image_view_handle_nvx(&self, p_info: &vk::ImageViewHandleInfoNVX) -> u32 {
         let fp = self
@@ -13627,58 +13697,65 @@ impl Device {
             _ => Err(err),
         }
     }
-    pub unsafe fn cmd_build_acceleration_structure_khr(
+    pub unsafe fn cmd_build_acceleration_structures_khr(
         &self,
         command_buffer: vk::CommandBuffer,
         p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
-        pp_offset_infos: &[*const vk::AccelerationStructureBuildOffsetInfoKHR],
+        pp_build_range_infos: &[*const vk::AccelerationStructureBuildRangeInfoKHR],
     ) {
         let fp = self
-            .fp_cmd_build_acceleration_structure_khr
-            .expect("vkCmdBuildAccelerationStructureKHR is not loaded");
+            .fp_cmd_build_acceleration_structures_khr
+            .expect("vkCmdBuildAccelerationStructuresKHR is not loaded");
         let info_count = p_infos.len() as u32;
-        assert_eq!(info_count, pp_offset_infos.len() as u32);
+        assert_eq!(info_count, pp_build_range_infos.len() as u32);
         (fp)(
             Some(command_buffer),
             info_count,
             p_infos.as_ptr(),
-            pp_offset_infos.as_ptr(),
+            pp_build_range_infos.as_ptr(),
         );
     }
-    pub unsafe fn cmd_build_acceleration_structure_indirect_khr(
+    pub unsafe fn cmd_build_acceleration_structures_indirect_khr(
         &self,
         command_buffer: vk::CommandBuffer,
-        p_info: &vk::AccelerationStructureBuildGeometryInfoKHR,
-        indirect_buffer: vk::Buffer,
-        indirect_offset: vk::DeviceSize,
-        indirect_stride: u32,
+        p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
+        p_indirect_device_addresses: &[vk::DeviceAddress],
+        p_indirect_strides: &[u32],
+        pp_max_primitive_counts: &[*const u32],
     ) {
         let fp = self
-            .fp_cmd_build_acceleration_structure_indirect_khr
-            .expect("vkCmdBuildAccelerationStructureIndirectKHR is not loaded");
+            .fp_cmd_build_acceleration_structures_indirect_khr
+            .expect("vkCmdBuildAccelerationStructuresIndirectKHR is not loaded");
+        let info_count = p_infos.len() as u32;
+        assert_eq!(info_count, p_indirect_device_addresses.len() as u32);
+        assert_eq!(info_count, p_indirect_strides.len() as u32);
+        assert_eq!(info_count, pp_max_primitive_counts.len() as u32);
         (fp)(
             Some(command_buffer),
-            p_info,
-            Some(indirect_buffer),
-            indirect_offset,
-            indirect_stride,
+            info_count,
+            p_infos.as_ptr(),
+            p_indirect_device_addresses.as_ptr(),
+            p_indirect_strides.as_ptr(),
+            pp_max_primitive_counts.as_ptr(),
         );
     }
-    pub unsafe fn build_acceleration_structure_khr(
+    pub unsafe fn build_acceleration_structures_khr(
         &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
         p_infos: &[vk::AccelerationStructureBuildGeometryInfoKHR],
-        pp_offset_infos: &[*const vk::AccelerationStructureBuildOffsetInfoKHR],
+        pp_build_range_infos: &[*const vk::AccelerationStructureBuildRangeInfoKHR],
     ) -> Result<vk::Result> {
         let fp = self
-            .fp_build_acceleration_structure_khr
-            .expect("vkBuildAccelerationStructureKHR is not loaded");
+            .fp_build_acceleration_structures_khr
+            .expect("vkBuildAccelerationStructuresKHR is not loaded");
         let info_count = p_infos.len() as u32;
-        assert_eq!(info_count, pp_offset_infos.len() as u32);
+        assert_eq!(info_count, pp_build_range_infos.len() as u32);
         let err = (fp)(
             Some(self.handle),
+            deferred_operation,
             info_count,
             p_infos.as_ptr(),
-            pp_offset_infos.as_ptr(),
+            pp_build_range_infos.as_ptr(),
         );
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
@@ -14058,6 +14135,25 @@ impl Device {
             .fp_cmd_set_fragment_shading_rate_enum_nv
             .expect("vkCmdSetFragmentShadingRateEnumNV is not loaded");
         (fp)(Some(command_buffer), shading_rate, combiner_ops.as_ptr());
+    }
+    pub unsafe fn get_acceleration_structure_build_sizes_khr(
+        &self,
+        build_type: vk::AccelerationStructureBuildTypeKHR,
+        p_build_info: &vk::AccelerationStructureBuildGeometryInfoKHR,
+        p_max_primitive_counts: &[u32],
+        p_size_info: &mut vk::AccelerationStructureBuildSizesInfoKHR,
+    ) {
+        let fp = self
+            .fp_get_acceleration_structure_build_sizes_khr
+            .expect("vkGetAccelerationStructureBuildSizesKHR is not loaded");
+        assert_eq!(p_max_primitive_counts.len() as u32, p_build_info.geometry_count);
+        (fp)(
+            Some(self.handle),
+            build_type,
+            p_build_info,
+            p_max_primitive_counts.as_ptr(),
+            p_size_info,
+        );
     }
 }
 

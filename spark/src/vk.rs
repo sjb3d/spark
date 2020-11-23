@@ -1957,9 +1957,9 @@ impl AccessFlags {
     pub const CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
     /// Added by extension VK_EXT_blend_operation_advanced.
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_READ_KHR: Self = Self(0x200000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_WRITE_KHR: Self = Self(0x400000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_READ_NV: Self = Self(0x800000);
@@ -2110,13 +2110,13 @@ impl BufferUsageFlags {
     /// Specifies the buffer can be used as predicate in conditional rendering
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const RAY_TRACING_KHR: Self = Self(0x400);
-    pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
-    /// Added by extension VK_NV_extension_168.
-    pub const RESERVED_19_KHR: Self = Self(0x80000);
-    /// Added by extension VK_NV_extension_168.
-    pub const RESERVED_20_KHR: Self = Self(0x100000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR: Self = Self(0x80000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_STORAGE_KHR: Self = Self(0x100000);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const SHADER_BINDING_TABLE_KHR: Self = Self(0x400);
+    pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE_KHR;
     /// Added by extension VK_QCOM_extension_173.
     pub const RESERVED_18_QCOM: Self = Self(0x40000);
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
@@ -2202,9 +2202,9 @@ impl fmt::Display for BufferUsageFlags {
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
-                (0x400, "RAY_TRACING_KHR"),
-                (0x80000, "RESERVED_19_KHR"),
-                (0x100000, "RESERVED_20_KHR"),
+                (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
+                (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
+                (0x400, "SHADER_BINDING_TABLE_KHR"),
                 (0x40000, "RESERVED_18_QCOM"),
             ],
             f,
@@ -2226,6 +2226,8 @@ impl BufferCreateFlags {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x10);
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
+    /// Added by extension VK_NV_extension_372.
+    pub const RESERVED_5_NV: Self = Self(0x20);
 }
 impl default::Default for BufferCreateFlags {
     fn default() -> Self {
@@ -2237,13 +2239,13 @@ impl BufferCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1f)
+        Self(0x3f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0x3f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2295,6 +2297,7 @@ impl fmt::Display for BufferCreateFlags {
                 (0x4, "SPARSE_ALIASED"),
                 (0x8, "PROTECTED"),
                 (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY"),
+                (0x20, "RESERVED_5_NV"),
             ],
             f,
         )
@@ -2312,17 +2315,17 @@ impl ShaderStageFlags {
     pub const COMPUTE: Self = Self(0x20);
     pub const ALL_GRAPHICS: Self = Self(0x1f);
     pub const ALL: Self = Self(0x7fffffff);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAYGEN_KHR: Self = Self(0x100);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const ANY_HIT_KHR: Self = Self(0x200);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const CLOSEST_HIT_KHR: Self = Self(0x400);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const MISS_KHR: Self = Self(0x800);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const INTERSECTION_KHR: Self = Self(0x1000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const CALLABLE_KHR: Self = Self(0x2000);
     pub const RAYGEN_NV: Self = Self::RAYGEN_KHR;
     pub const ANY_HIT_NV: Self = Self::ANY_HIT_KHR;
@@ -2583,6 +2586,8 @@ impl ImageCreateFlags {
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
+    /// Added by extension VK_NV_extension_372.
+    pub const RESERVED_15_NV: Self = Self(0x8000);
 }
 impl default::Default for ImageCreateFlags {
     fn default() -> Self {
@@ -2594,13 +2599,13 @@ impl ImageCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7fff)
+        Self(0xffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7fff
+        self.0 == 0xffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2662,6 +2667,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
+                (0x8000, "RESERVED_15_NV"),
             ],
             f,
         )
@@ -2757,22 +2763,22 @@ impl PipelineCreateFlags {
     pub const DISPATCH_BASE: Self = Self(0x10);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR: Self = Self(0x4000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR: Self = Self(0x8000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_NO_NULL_MISS_SHADERS_KHR: Self = Self(0x10000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR: Self = Self(0x20000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_SKIP_TRIANGLES_KHR: Self = Self(0x1000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_SKIP_AABBS_KHR: Self = Self(0x2000);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_KHR: Self = Self(0x80000);
     /// Added by extension VK_NV_ray_tracing.
     pub const DEFER_COMPILE_NV: Self = Self(0x20);
-    /// Added by extension VK_NV_extension_168.
-    pub const RESERVED_19_KHR: Self = Self(0x80000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const CAPTURE_STATISTICS_KHR: Self = Self(0x40);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -2860,8 +2866,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_KHR"),
                 (0x1000, "RAY_TRACING_SKIP_TRIANGLES_KHR"),
                 (0x2000, "RAY_TRACING_SKIP_AABBS_KHR"),
+                (0x80000, "RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_KHR"),
                 (0x20, "DEFER_COMPILE_NV"),
-                (0x80000, "RESERVED_19_KHR"),
                 (0x40, "CAPTURE_STATISTICS_KHR"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
                 (0x40000, "INDIRECT_BINDABLE_NV"),
@@ -3143,7 +3149,7 @@ impl FormatFeatureFlags {
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR: Self = Self(0x20000000);
     pub const MIDPOINT_CHROMA_SAMPLES_KHR: Self = Self::MIDPOINT_CHROMA_SAMPLES;
     pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_KHR: Self =
@@ -4416,10 +4422,10 @@ impl PipelineStageFlags {
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const RAY_TRACING_SHADER_KHR: Self = Self(0x200000);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_BUILD_KHR: Self = Self(0x2000000);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const RAY_TRACING_SHADER_KHR: Self = Self(0x200000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = Self(0x400000);
     pub const RAY_TRACING_SHADER_NV: Self = Self::RAY_TRACING_SHADER_KHR;
@@ -4518,8 +4524,8 @@ impl fmt::Display for PipelineStageFlags {
                 (0x4000000, "RESERVED_26_KHR"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
-                (0x200000, "RAY_TRACING_SHADER_KHR"),
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
+                (0x200000, "RAY_TRACING_SHADER_KHR"),
                 (0x400000, "SHADING_RATE_IMAGE_NV"),
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
@@ -5623,6 +5629,75 @@ impl ops::BitXorAssign for PrivateDataSlotCreateFlagsEXT {
 impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("0")
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureCreateFlagsKHR(u32);
+impl AccelerationStructureCreateFlagsKHR {
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
+}
+impl default::Default for AccelerationStructureCreateFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl AccelerationStructureCreateFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x1)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x1
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for AccelerationStructureCreateFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for AccelerationStructureCreateFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for AccelerationStructureCreateFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for AccelerationStructureCreateFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for AccelerationStructureCreateFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for AccelerationStructureCreateFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0, &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY")], f)
     }
 }
 #[repr(transparent)]
@@ -9590,6 +9665,8 @@ impl DescriptorBindingFlags {
     pub const UPDATE_UNUSED_WHILE_PENDING_EXT: Self = Self::UPDATE_UNUSED_WHILE_PENDING;
     pub const PARTIALLY_BOUND_EXT: Self = Self::PARTIALLY_BOUND;
     pub const VARIABLE_DESCRIPTOR_COUNT_EXT: Self = Self::VARIABLE_DESCRIPTOR_COUNT;
+    /// Added by extension VK_QCOM_extension_369.
+    pub const RESERVED_4_QCOM: Self = Self(0x10);
 }
 impl default::Default for DescriptorBindingFlags {
     fn default() -> Self {
@@ -9601,13 +9678,13 @@ impl DescriptorBindingFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xf)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x1f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -9658,6 +9735,7 @@ impl fmt::Display for DescriptorBindingFlags {
                 (0x2, "UPDATE_UNUSED_WHILE_PENDING"),
                 (0x4, "PARTIALLY_BOUND"),
                 (0x8, "VARIABLE_DESCRIPTOR_COUNT"),
+                (0x10, "RESERVED_4_QCOM"),
             ],
             f,
         )
@@ -10356,7 +10434,14 @@ impl AccelerationStructureKHR {
         num::NonZeroU64::new(x).map(Self)
     }
 }
-pub type AccelerationStructureNV = AccelerationStructureKHR;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureNV(num::NonZeroU64);
+impl AccelerationStructureNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
@@ -10897,9 +10982,10 @@ impl DescriptorType {
     pub const INPUT_ATTACHMENT: Self = Self(10);
     /// Added by extension VK_EXT_inline_uniform_block.
     pub const INLINE_UNIFORM_BLOCK_EXT: Self = Self(1000138000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
+    /// Added by extension VK_NV_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
 }
 impl default::Default for DescriptorType {
     fn default() -> Self {
@@ -10921,7 +11007,8 @@ impl fmt::Display for DescriptorType {
             9 => Some(&"STORAGE_BUFFER_DYNAMIC"),
             10 => Some(&"INPUT_ATTACHMENT"),
             1000138000 => Some(&"INLINE_UNIFORM_BLOCK_EXT"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10950,6 +11037,8 @@ impl DynamicState {
     pub const DISCARD_RECTANGLE_EXT: Self = Self(1000099000);
     /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_EXT: Self = Self(1000143000);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const RAY_TRACING_PIPELINE_STACK_SIZE_KHR: Self = Self(1000347000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const VIEWPORT_SHADING_RATE_PALETTE_NV: Self = Self(1000164004);
     /// Added by extension VK_NV_shading_rate_image.
@@ -11005,6 +11094,7 @@ impl fmt::Display for DynamicState {
             1000087000 => Some(&"VIEWPORT_W_SCALING_NV"),
             1000099000 => Some(&"DISCARD_RECTANGLE_EXT"),
             1000143000 => Some(&"SAMPLE_LOCATIONS_EXT"),
+            1000347000 => Some(&"RAY_TRACING_PIPELINE_STACK_SIZE_KHR"),
             1000164004 => Some(&"VIEWPORT_SHADING_RATE_PALETTE_NV"),
             1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
             1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
@@ -11949,7 +12039,7 @@ pub struct IndexType(i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
     pub const UINT32: Self = Self(1);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const NONE_KHR: Self = Self(1000165000);
     pub const NONE_NV: Self = Self::NONE_KHR;
     /// Added by extension VK_EXT_index_type_uint8.
@@ -12068,7 +12158,7 @@ pub struct PipelineBindPoint(i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
     pub const COMPUTE: Self = Self(1);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_KHR: Self = Self(1000165000);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
 }
@@ -12152,11 +12242,12 @@ impl QueryType {
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = Self(1000028004);
     /// Added by extension VK_KHR_performance_query.
     pub const PERFORMANCE_QUERY_KHR: Self = Self(1000116000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR: Self = Self(1000165000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR: Self = Self(1000150000);
-    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self::ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR;
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR: Self = Self(1000150000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR: Self = Self(1000150001);
+    /// Added by extension VK_NV_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
 }
@@ -12175,8 +12266,9 @@ impl fmt::Display for QueryType {
             1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000116000 => Some(&"PERFORMANCE_QUERY_KHR"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR"),
-            1000150000 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR"),
+            1000150001 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             _ => None,
         };
@@ -12275,8 +12367,6 @@ impl Result {
     pub const ERROR_INVALID_SHADER_NV: Self = Self(-1000012000);
     pub const ERROR_OUT_OF_POOL_MEMORY_KHR: Self = Self::ERROR_OUT_OF_POOL_MEMORY;
     pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: Self = Self::ERROR_INVALID_EXTERNAL_HANDLE;
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ERROR_INCOMPATIBLE_VERSION_KHR: Self = Self(-1000150000);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Self(-1000158000);
     pub const ERROR_FRAGMENTATION_EXT: Self = Self::ERROR_FRAGMENTATION;
@@ -12336,7 +12426,6 @@ impl fmt::Display for Result {
             -1000003001 => Some(&"ERROR_INCOMPATIBLE_DISPLAY_KHR"),
             -1000011001 => Some(&"ERROR_VALIDATION_FAILED_EXT"),
             -1000012000 => Some(&"ERROR_INVALID_SHADER_NV"),
-            -1000150000 => Some(&"ERROR_INCOMPATIBLE_VERSION_KHR"),
             -1000158000 => Some(&"ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT"),
             -1000174001 => Some(&"ERROR_NOT_PERMITTED_EXT"),
             -1000255000 => Some(&"ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT"),
@@ -12891,46 +12980,48 @@ impl StructureType {
     pub const PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT: Self = Self(1000148002);
     /// Added by extension VK_NV_fragment_coverage_to_color.
     pub const PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV: Self = Self(1000149000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR: Self = Self(1000165006);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR: Self = Self(1000165007);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR: Self = Self(1000150007);
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR: Self = Self(1000150000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR: Self = Self(1000150001);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR: Self = Self(1000150002);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR: Self = Self(1000150003);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR: Self = Self(1000150004);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR: Self = Self(1000150005);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_GEOMETRY_KHR: Self = Self(1000150006);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR: Self = Self(1000150008);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_VERSION_KHR: Self = Self(1000150009);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_VERSION_INFO_KHR: Self = Self(1000150009);
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const COPY_ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150010);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR: Self = Self(1000150011);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR: Self = Self(1000150012);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR: Self = Self(1000150013);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR: Self = Self(1000150014);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const RAY_TRACING_PIPELINE_CREATE_INFO_KHR: Self = Self(1000150015);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR: Self = Self(1000150016);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR: Self = Self(1000150013);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR: Self = Self(1000150014);
+    /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_CREATE_INFO_KHR: Self = Self(1000150017);
-    /// Added by extension VK_KHR_ray_tracing.
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR: Self = Self(1000150020);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR: Self = Self(1000347000);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR: Self = Self(1000347001);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const RAY_TRACING_PIPELINE_CREATE_INFO_KHR: Self = Self(1000150015);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
+    pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR: Self = Self(1000150016);
+    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR: Self = Self(1000150018);
+    /// Added by extension VK_KHR_ray_query.
+    pub const PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR: Self = Self(1000348013);
     /// Added by extension VK_NV_framebuffer_mixed_samples.
     pub const PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV: Self = Self(1000152000);
     /// Added by extension VK_NV_shader_sm_builtins.
@@ -12993,9 +13084,10 @@ impl StructureType {
     pub const GEOMETRY_TRIANGLES_NV: Self = Self(1000165004);
     /// Added by extension VK_NV_ray_tracing.
     pub const GEOMETRY_AABB_NV: Self = Self(1000165005);
-    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = Self::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR;
-    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self =
-        Self::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR;
+    /// Added by extension VK_NV_ray_tracing.
+    pub const BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV: Self = Self(1000165006);
+    /// Added by extension VK_NV_ray_tracing.
+    pub const WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV: Self = Self(1000165007);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV: Self = Self(1000165008);
     /// Added by extension VK_NV_ray_tracing.
@@ -13205,8 +13297,6 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT: Self = Self(1000265000);
     /// Added by extension VK_EXT_extended_dynamic_state.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000267000);
-    /// Added by extension VK_KHR_deferred_host_operations.
-    pub const DEFERRED_OPERATION_INFO_KHR: Self = Self(1000268000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR: Self = Self(1000269000);
     /// Added by extension VK_KHR_pipeline_executable_properties.
@@ -13616,26 +13706,27 @@ impl fmt::Display for StructureType {
             1000148001 => Some(&"PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT"),
             1000148002 => Some(&"PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT"),
             1000149000 => Some(&"PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV"),
-            1000165006 => Some(&"BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR"),
-            1000165007 => Some(&"WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR"),
+            1000150007 => Some(&"WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR"),
-            1000150001 => Some(&"ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR"),
             1000150002 => Some(&"ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR"),
             1000150003 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR"),
             1000150004 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR"),
             1000150005 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR"),
             1000150006 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_KHR"),
-            1000150008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR"),
-            1000150009 => Some(&"ACCELERATION_STRUCTURE_VERSION_KHR"),
+            1000150009 => Some(&"ACCELERATION_STRUCTURE_VERSION_INFO_KHR"),
             1000150010 => Some(&"COPY_ACCELERATION_STRUCTURE_INFO_KHR"),
             1000150011 => Some(&"COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR"),
             1000150012 => Some(&"COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR"),
-            1000150013 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR"),
-            1000150014 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR"),
+            1000150013 => Some(&"PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR"),
+            1000150014 => Some(&"PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR"),
+            1000150017 => Some(&"ACCELERATION_STRUCTURE_CREATE_INFO_KHR"),
+            1000150020 => Some(&"ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR"),
+            1000347000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR"),
+            1000347001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR"),
             1000150015 => Some(&"RAY_TRACING_PIPELINE_CREATE_INFO_KHR"),
             1000150016 => Some(&"RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR"),
-            1000150017 => Some(&"ACCELERATION_STRUCTURE_CREATE_INFO_KHR"),
             1000150018 => Some(&"RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR"),
+            1000348013 => Some(&"PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR"),
             1000152000 => Some(&"PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV"),
             1000154000 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV"),
             1000154001 => Some(&"PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV"),
@@ -13657,6 +13748,8 @@ impl fmt::Display for StructureType {
             1000165003 => Some(&"GEOMETRY_NV"),
             1000165004 => Some(&"GEOMETRY_TRIANGLES_NV"),
             1000165005 => Some(&"GEOMETRY_AABB_NV"),
+            1000165006 => Some(&"BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV"),
+            1000165007 => Some(&"WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV"),
             1000165008 => Some(&"ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV"),
             1000165009 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV"),
             1000165011 => Some(&"RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV"),
@@ -13741,7 +13834,6 @@ impl fmt::Display for StructureType {
             1000260000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT"),
             1000265000 => Some(&"PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT"),
             1000267000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT"),
-            1000268000 => Some(&"DEFERRED_OPERATION_INFO_KHR"),
             1000269000 => Some(&"PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR"),
             1000269001 => Some(&"PIPELINE_INFO_KHR"),
             1000269002 => Some(&"PIPELINE_EXECUTABLE_PROPERTIES_KHR"),
@@ -14057,13 +14149,14 @@ impl ObjectType {
     /// VkDebugUtilsMessengerEXT
     /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// VkValidationCacheEXT
     /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_EXT: Self = Self(1000160000);
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
+    /// Added by extension VK_NV_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_CONFIGURATION_INTEL: Self = Self(1000210000);
     /// Added by extension VK_KHR_deferred_host_operations.
@@ -14116,8 +14209,9 @@ impl fmt::Display for ObjectType {
             1000002001 => Some(&"DISPLAY_MODE_KHR"),
             1000011000 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
             1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000160000 => Some(&"VALIDATION_CACHE_EXT"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             1000210000 => Some(&"PERFORMANCE_CONFIGURATION_INTEL"),
             1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
             1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
@@ -14520,6 +14614,32 @@ impl fmt::Display for SemaphoreType {
 pub type SemaphoreTypeKHR = SemaphoreType;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct BuildAccelerationStructureModeKHR(i32);
+impl BuildAccelerationStructureModeKHR {
+    pub const BUILD: Self = Self(0);
+    pub const UPDATE: Self = Self(1);
+}
+impl default::Default for BuildAccelerationStructureModeKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for BuildAccelerationStructureModeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BUILD"),
+            1 => Some(&"UPDATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CopyAccelerationStructureModeKHR(i32);
 impl CopyAccelerationStructureModeKHR {
     pub const CLONE: Self = Self(0);
@@ -14557,6 +14677,7 @@ pub struct AccelerationStructureTypeKHR(i32);
 impl AccelerationStructureTypeKHR {
     pub const TOP_LEVEL: Self = Self(0);
     pub const BOTTOM_LEVEL: Self = Self(1);
+    pub const GENERIC: Self = Self(2);
     pub const TOP_LEVEL_NV: Self = Self::TOP_LEVEL;
     pub const BOTTOM_LEVEL_NV: Self = Self::BOTTOM_LEVEL;
 }
@@ -14570,6 +14691,7 @@ impl fmt::Display for AccelerationStructureTypeKHR {
         let name = match self.0 {
             0 => Some(&"TOP_LEVEL"),
             1 => Some(&"BOTTOM_LEVEL"),
+            2 => Some(&"GENERIC"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14586,8 +14708,7 @@ pub struct GeometryTypeKHR(i32);
 impl GeometryTypeKHR {
     pub const TRIANGLES: Self = Self(0);
     pub const AABBS: Self = Self(1);
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const INSTANCES: Self = Self(1000150000);
+    pub const INSTANCES: Self = Self(2);
     pub const TRIANGLES_NV: Self = Self::TRIANGLES;
     pub const AABBS_NV: Self = Self::AABBS;
 }
@@ -14601,7 +14722,7 @@ impl fmt::Display for GeometryTypeKHR {
         let name = match self.0 {
             0 => Some(&"TRIANGLES"),
             1 => Some(&"AABBS"),
-            1000150000 => Some(&"INSTANCES"),
+            2 => Some(&"INSTANCES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -14646,21 +14767,18 @@ impl fmt::Display for RayTracingShaderGroupTypeKHR {
 pub type RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMemoryRequirementsTypeKHR(i32);
-impl AccelerationStructureMemoryRequirementsTypeKHR {
+pub struct AccelerationStructureMemoryRequirementsTypeNV(i32);
+impl AccelerationStructureMemoryRequirementsTypeNV {
     pub const OBJECT: Self = Self(0);
     pub const BUILD_SCRATCH: Self = Self(1);
     pub const UPDATE_SCRATCH: Self = Self(2);
-    pub const OBJECT_NV: Self = Self::OBJECT;
-    pub const BUILD_SCRATCH_NV: Self = Self::BUILD_SCRATCH;
-    pub const UPDATE_SCRATCH_NV: Self = Self::UPDATE_SCRATCH;
 }
-impl default::Default for AccelerationStructureMemoryRequirementsTypeKHR {
+impl default::Default for AccelerationStructureMemoryRequirementsTypeNV {
     fn default() -> Self {
         Self(0)
     }
 }
-impl fmt::Display for AccelerationStructureMemoryRequirementsTypeKHR {
+impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"OBJECT"),
@@ -14675,7 +14793,6 @@ impl fmt::Display for AccelerationStructureMemoryRequirementsTypeKHR {
         }
     }
 }
-pub type AccelerationStructureMemoryRequirementsTypeNV = AccelerationStructureMemoryRequirementsTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureBuildTypeKHR(i32);
@@ -14695,6 +14812,62 @@ impl fmt::Display for AccelerationStructureBuildTypeKHR {
             0 => Some(&"HOST"),
             1 => Some(&"DEVICE"),
             2 => Some(&"HOST_OR_DEVICE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureCompatibilityKHR(i32);
+impl AccelerationStructureCompatibilityKHR {
+    pub const COMPATIBLE: Self = Self(0);
+    pub const INCOMPATIBLE: Self = Self(1);
+}
+impl default::Default for AccelerationStructureCompatibilityKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for AccelerationStructureCompatibilityKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"COMPATIBLE"),
+            1 => Some(&"INCOMPATIBLE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ShaderGroupShaderKHR(i32);
+impl ShaderGroupShaderKHR {
+    pub const GENERAL: Self = Self(0);
+    pub const CLOSEST_HIT: Self = Self(1);
+    pub const ANY_HIT: Self = Self(2);
+    pub const INTERSECTION: Self = Self(3);
+}
+impl default::Default for ShaderGroupShaderKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for ShaderGroupShaderKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"GENERAL"),
+            1 => Some(&"CLOSEST_HIT"),
+            2 => Some(&"ANY_HIT"),
+            3 => Some(&"INTERSECTION"),
             _ => None,
         };
         if let Some(name) = name {
@@ -15299,10 +15472,11 @@ impl DebugReportObjectTypeEXT {
     /// Added by extension VK_EXT_debug_report.
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
-    /// Added by extension VK_KHR_ray_tracing.
-    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000165000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
-    pub const ACCELERATION_STRUCTURE_NV: Self = Self::ACCELERATION_STRUCTURE_KHR;
+    /// Added by extension VK_NV_ray_tracing.
+    pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
 }
 impl default::Default for DebugReportObjectTypeEXT {
     fn default() -> Self {
@@ -15346,7 +15520,8 @@ impl fmt::Display for DebugReportObjectTypeEXT {
             33 => Some(&"VALIDATION_CACHE_EXT"),
             1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
             1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
-            1000165000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
+            1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
+            1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -30562,9 +30737,10 @@ pub struct RayTracingPipelineCreateInfoKHR {
     pub p_stages: *const PipelineShaderStageCreateInfo,
     pub group_count: u32,
     pub p_groups: *const RayTracingShaderGroupCreateInfoKHR,
-    pub max_recursion_depth: u32,
-    pub libraries: PipelineLibraryCreateInfoKHR,
+    pub max_pipeline_ray_recursion_depth: u32,
+    pub p_library_info: *const PipelineLibraryCreateInfoKHR,
     pub p_library_interface: *const RayTracingPipelineInterfaceCreateInfoKHR,
+    pub p_dynamic_state: *const PipelineDynamicStateCreateInfo,
     /// Interface layout of the pipeline
     pub layout: Option<PipelineLayout>,
     /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is nonzero, it specifies the handle of the base pipeline this is a derivative of
@@ -30582,9 +30758,10 @@ impl default::Default for RayTracingPipelineCreateInfoKHR {
             p_stages: ptr::null(),
             group_count: u32::default(),
             p_groups: ptr::null(),
-            max_recursion_depth: u32::default(),
-            libraries: PipelineLibraryCreateInfoKHR::default(),
+            max_pipeline_ray_recursion_depth: u32::default(),
+            p_library_info: ptr::null(),
             p_library_interface: ptr::null(),
+            p_dynamic_state: ptr::null(),
             layout: None,
             base_pipeline_handle: None,
             base_pipeline_index: i32::default(),
@@ -30601,9 +30778,13 @@ impl fmt::Debug for RayTracingPipelineCreateInfoKHR {
             .field("p_stages", &self.p_stages)
             .field("group_count", &self.group_count)
             .field("p_groups", &self.p_groups)
-            .field("max_recursion_depth", &self.max_recursion_depth)
-            .field("libraries", &self.libraries)
+            .field(
+                "max_pipeline_ray_recursion_depth",
+                &self.max_pipeline_ray_recursion_depth,
+            )
+            .field("p_library_info", &self.p_library_info)
             .field("p_library_interface", &self.p_library_interface)
+            .field("p_dynamic_state", &self.p_dynamic_state)
             .field("layout", &self.layout)
             .field("base_pipeline_handle", &self.base_pipeline_handle)
             .field("base_pipeline_index", &self.base_pipeline_index)
@@ -30822,19 +31003,19 @@ impl fmt::Debug for AccelerationStructureCreateInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct BindAccelerationStructureMemoryInfoKHR {
+pub struct BindAccelerationStructureMemoryInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub acceleration_structure: Option<AccelerationStructureKHR>,
+    pub acceleration_structure: Option<AccelerationStructureNV>,
     pub memory: Option<DeviceMemory>,
     pub memory_offset: DeviceSize,
     pub device_index_count: u32,
     pub p_device_indices: *const u32,
 }
-impl default::Default for BindAccelerationStructureMemoryInfoKHR {
+impl default::Default for BindAccelerationStructureMemoryInfoNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_KHR,
+            s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV,
             p_next: ptr::null(),
             acceleration_structure: None,
             memory: None,
@@ -30844,9 +31025,9 @@ impl default::Default for BindAccelerationStructureMemoryInfoKHR {
         }
     }
 }
-impl fmt::Debug for BindAccelerationStructureMemoryInfoKHR {
+impl fmt::Debug for BindAccelerationStructureMemoryInfoNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("BindAccelerationStructureMemoryInfoKHR")
+        fmt.debug_struct("BindAccelerationStructureMemoryInfoNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("acceleration_structure", &self.acceleration_structure)
@@ -30857,7 +31038,6 @@ impl fmt::Debug for BindAccelerationStructureMemoryInfoKHR {
             .finish()
     }
 }
-pub type BindAccelerationStructureMemoryInfoNV = BindAccelerationStructureMemoryInfoKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct WriteDescriptorSetAccelerationStructureKHR {
@@ -30886,35 +31066,31 @@ impl fmt::Debug for WriteDescriptorSetAccelerationStructureKHR {
             .finish()
     }
 }
-pub type WriteDescriptorSetAccelerationStructureNV = WriteDescriptorSetAccelerationStructureKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct AccelerationStructureMemoryRequirementsInfoKHR {
+pub struct WriteDescriptorSetAccelerationStructureNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub ty: AccelerationStructureMemoryRequirementsTypeKHR,
-    pub build_type: AccelerationStructureBuildTypeKHR,
-    pub acceleration_structure: Option<AccelerationStructureKHR>,
+    pub acceleration_structure_count: u32,
+    pub p_acceleration_structures: *const AccelerationStructureNV,
 }
-impl default::Default for AccelerationStructureMemoryRequirementsInfoKHR {
+impl default::Default for WriteDescriptorSetAccelerationStructureNV {
     fn default() -> Self {
         Self {
-            s_type: StructureType::ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_KHR,
+            s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV,
             p_next: ptr::null(),
-            ty: AccelerationStructureMemoryRequirementsTypeKHR::default(),
-            build_type: AccelerationStructureBuildTypeKHR::default(),
-            acceleration_structure: None,
+            acceleration_structure_count: u32::default(),
+            p_acceleration_structures: ptr::null(),
         }
     }
 }
-impl fmt::Debug for AccelerationStructureMemoryRequirementsInfoKHR {
+impl fmt::Debug for WriteDescriptorSetAccelerationStructureNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("AccelerationStructureMemoryRequirementsInfoKHR")
+        fmt.debug_struct("WriteDescriptorSetAccelerationStructureNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("ty", &self.ty)
-            .field("build_type", &self.build_type)
-            .field("acceleration_structure", &self.acceleration_structure)
+            .field("acceleration_structure_count", &self.acceleration_structure_count)
+            .field("p_acceleration_structures", &self.p_acceleration_structures)
             .finish()
     }
 }
@@ -30948,120 +31124,234 @@ impl fmt::Debug for AccelerationStructureMemoryRequirementsInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRayTracingFeaturesKHR {
+pub struct PhysicalDeviceAccelerationStructureFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub ray_tracing: Bool32,
-    pub ray_tracing_shader_group_handle_capture_replay: Bool32,
-    pub ray_tracing_shader_group_handle_capture_replay_mixed: Bool32,
-    pub ray_tracing_acceleration_structure_capture_replay: Bool32,
-    pub ray_tracing_indirect_trace_rays: Bool32,
-    pub ray_tracing_indirect_acceleration_structure_build: Bool32,
-    pub ray_tracing_host_acceleration_structure_commands: Bool32,
-    pub ray_query: Bool32,
-    pub ray_tracing_primitive_culling: Bool32,
+    pub acceleration_structure: Bool32,
+    pub acceleration_structure_capture_replay: Bool32,
+    pub acceleration_structure_indirect_build: Bool32,
+    pub acceleration_structure_host_commands: Bool32,
+    pub descriptor_binding_acceleration_structure_update_after_bind: Bool32,
 }
-impl default::Default for PhysicalDeviceRayTracingFeaturesKHR {
+impl default::Default for PhysicalDeviceAccelerationStructureFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_FEATURES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            ray_tracing: Bool32::default(),
-            ray_tracing_shader_group_handle_capture_replay: Bool32::default(),
-            ray_tracing_shader_group_handle_capture_replay_mixed: Bool32::default(),
-            ray_tracing_acceleration_structure_capture_replay: Bool32::default(),
-            ray_tracing_indirect_trace_rays: Bool32::default(),
-            ray_tracing_indirect_acceleration_structure_build: Bool32::default(),
-            ray_tracing_host_acceleration_structure_commands: Bool32::default(),
-            ray_query: Bool32::default(),
-            ray_tracing_primitive_culling: Bool32::default(),
+            acceleration_structure: Bool32::default(),
+            acceleration_structure_capture_replay: Bool32::default(),
+            acceleration_structure_indirect_build: Bool32::default(),
+            acceleration_structure_host_commands: Bool32::default(),
+            descriptor_binding_acceleration_structure_update_after_bind: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRayTracingFeaturesKHR {
+impl fmt::Debug for PhysicalDeviceAccelerationStructureFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRayTracingFeaturesKHR")
+        fmt.debug_struct("PhysicalDeviceAccelerationStructureFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("ray_tracing", &self.ray_tracing)
+            .field("acceleration_structure", &self.acceleration_structure)
             .field(
-                "ray_tracing_shader_group_handle_capture_replay",
-                &self.ray_tracing_shader_group_handle_capture_replay,
+                "acceleration_structure_capture_replay",
+                &self.acceleration_structure_capture_replay,
             )
             .field(
-                "ray_tracing_shader_group_handle_capture_replay_mixed",
-                &self.ray_tracing_shader_group_handle_capture_replay_mixed,
+                "acceleration_structure_indirect_build",
+                &self.acceleration_structure_indirect_build,
             )
             .field(
-                "ray_tracing_acceleration_structure_capture_replay",
-                &self.ray_tracing_acceleration_structure_capture_replay,
-            )
-            .field("ray_tracing_indirect_trace_rays", &self.ray_tracing_indirect_trace_rays)
-            .field(
-                "ray_tracing_indirect_acceleration_structure_build",
-                &self.ray_tracing_indirect_acceleration_structure_build,
+                "acceleration_structure_host_commands",
+                &self.acceleration_structure_host_commands,
             )
             .field(
-                "ray_tracing_host_acceleration_structure_commands",
-                &self.ray_tracing_host_acceleration_structure_commands,
+                "descriptor_binding_acceleration_structure_update_after_bind",
+                &self.descriptor_binding_acceleration_structure_update_after_bind,
             )
-            .field("ray_query", &self.ray_query)
-            .field("ray_tracing_primitive_culling", &self.ray_tracing_primitive_culling)
             .finish()
     }
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRayTracingPropertiesKHR {
+pub struct PhysicalDeviceRayTracingPipelineFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub shader_group_handle_size: u32,
-    pub max_recursion_depth: u32,
-    pub max_shader_group_stride: u32,
-    pub shader_group_base_alignment: u32,
-    pub max_geometry_count: u64,
-    pub max_instance_count: u64,
-    pub max_primitive_count: u64,
-    pub max_descriptor_set_acceleration_structures: u32,
-    pub shader_group_handle_capture_replay_size: u32,
+    pub ray_tracing_pipeline: Bool32,
+    pub ray_tracing_pipeline_shader_group_handle_capture_replay: Bool32,
+    pub ray_tracing_pipeline_shader_group_handle_capture_replay_mixed: Bool32,
+    pub ray_tracing_pipeline_trace_rays_indirect: Bool32,
+    pub ray_traversal_primitive_culling: Bool32,
 }
-impl default::Default for PhysicalDeviceRayTracingPropertiesKHR {
+impl default::Default for PhysicalDeviceRayTracingPipelineFeaturesKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_KHR,
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            shader_group_handle_size: u32::default(),
-            max_recursion_depth: u32::default(),
-            max_shader_group_stride: u32::default(),
-            shader_group_base_alignment: u32::default(),
-            max_geometry_count: u64::default(),
-            max_instance_count: u64::default(),
-            max_primitive_count: u64::default(),
-            max_descriptor_set_acceleration_structures: u32::default(),
-            shader_group_handle_capture_replay_size: u32::default(),
+            ray_tracing_pipeline: Bool32::default(),
+            ray_tracing_pipeline_shader_group_handle_capture_replay: Bool32::default(),
+            ray_tracing_pipeline_shader_group_handle_capture_replay_mixed: Bool32::default(),
+            ray_tracing_pipeline_trace_rays_indirect: Bool32::default(),
+            ray_traversal_primitive_culling: Bool32::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRayTracingPropertiesKHR {
+impl fmt::Debug for PhysicalDeviceRayTracingPipelineFeaturesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRayTracingPropertiesKHR")
+        fmt.debug_struct("PhysicalDeviceRayTracingPipelineFeaturesKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("shader_group_handle_size", &self.shader_group_handle_size)
-            .field("max_recursion_depth", &self.max_recursion_depth)
-            .field("max_shader_group_stride", &self.max_shader_group_stride)
-            .field("shader_group_base_alignment", &self.shader_group_base_alignment)
+            .field("ray_tracing_pipeline", &self.ray_tracing_pipeline)
+            .field(
+                "ray_tracing_pipeline_shader_group_handle_capture_replay",
+                &self.ray_tracing_pipeline_shader_group_handle_capture_replay,
+            )
+            .field(
+                "ray_tracing_pipeline_shader_group_handle_capture_replay_mixed",
+                &self.ray_tracing_pipeline_shader_group_handle_capture_replay_mixed,
+            )
+            .field(
+                "ray_tracing_pipeline_trace_rays_indirect",
+                &self.ray_tracing_pipeline_trace_rays_indirect,
+            )
+            .field("ray_traversal_primitive_culling", &self.ray_traversal_primitive_culling)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayQueryFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_query: Bool32,
+}
+impl default::Default for PhysicalDeviceRayQueryFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            ray_query: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayQueryFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayQueryFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_query", &self.ray_query)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceAccelerationStructurePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_geometry_count: u64,
+    pub max_instance_count: u64,
+    pub max_primitive_count: u64,
+    pub max_per_stage_descriptor_acceleration_structures: u32,
+    pub max_per_stage_descriptor_update_after_bind_acceleration_structures: u32,
+    pub max_descriptor_set_acceleration_structures: u32,
+    pub max_descriptor_set_update_after_bind_acceleration_structures: u32,
+    pub min_acceleration_structure_scratch_offset_alignment: u32,
+}
+impl default::Default for PhysicalDeviceAccelerationStructurePropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_geometry_count: u64::default(),
+            max_instance_count: u64::default(),
+            max_primitive_count: u64::default(),
+            max_per_stage_descriptor_acceleration_structures: u32::default(),
+            max_per_stage_descriptor_update_after_bind_acceleration_structures: u32::default(),
+            max_descriptor_set_acceleration_structures: u32::default(),
+            max_descriptor_set_update_after_bind_acceleration_structures: u32::default(),
+            min_acceleration_structure_scratch_offset_alignment: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAccelerationStructurePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAccelerationStructurePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
             .field("max_geometry_count", &self.max_geometry_count)
             .field("max_instance_count", &self.max_instance_count)
             .field("max_primitive_count", &self.max_primitive_count)
+            .field(
+                "max_per_stage_descriptor_acceleration_structures",
+                &self.max_per_stage_descriptor_acceleration_structures,
+            )
+            .field(
+                "max_per_stage_descriptor_update_after_bind_acceleration_structures",
+                &self.max_per_stage_descriptor_update_after_bind_acceleration_structures,
+            )
             .field(
                 "max_descriptor_set_acceleration_structures",
                 &self.max_descriptor_set_acceleration_structures,
             )
             .field(
+                "max_descriptor_set_update_after_bind_acceleration_structures",
+                &self.max_descriptor_set_update_after_bind_acceleration_structures,
+            )
+            .field(
+                "min_acceleration_structure_scratch_offset_alignment",
+                &self.min_acceleration_structure_scratch_offset_alignment,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingPipelinePropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_group_handle_size: u32,
+    pub max_ray_recursion_depth: u32,
+    pub max_shader_group_stride: u32,
+    pub shader_group_base_alignment: u32,
+    pub shader_group_handle_capture_replay_size: u32,
+    pub max_ray_dispatch_invocation_count: u32,
+    pub shader_group_handle_alignment: u32,
+    pub max_ray_hit_attribute_size: u32,
+}
+impl default::Default for PhysicalDeviceRayTracingPipelinePropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            shader_group_handle_size: u32::default(),
+            max_ray_recursion_depth: u32::default(),
+            max_shader_group_stride: u32::default(),
+            shader_group_base_alignment: u32::default(),
+            shader_group_handle_capture_replay_size: u32::default(),
+            max_ray_dispatch_invocation_count: u32::default(),
+            shader_group_handle_alignment: u32::default(),
+            max_ray_hit_attribute_size: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingPipelinePropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingPipelinePropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_group_handle_size", &self.shader_group_handle_size)
+            .field("max_ray_recursion_depth", &self.max_ray_recursion_depth)
+            .field("max_shader_group_stride", &self.max_shader_group_stride)
+            .field("shader_group_base_alignment", &self.shader_group_base_alignment)
+            .field(
                 "shader_group_handle_capture_replay_size",
                 &self.shader_group_handle_capture_replay_size,
             )
+            .field(
+                "max_ray_dispatch_invocation_count",
+                &self.max_ray_dispatch_invocation_count,
+            )
+            .field("shader_group_handle_alignment", &self.shader_group_handle_alignment)
+            .field("max_ray_hit_attribute_size", &self.max_ray_hit_attribute_size)
             .finish()
     }
 }
@@ -31115,28 +31405,25 @@ impl fmt::Debug for PhysicalDeviceRayTracingPropertiesNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
-pub struct StridedBufferRegionKHR {
-    pub buffer: Option<Buffer>,
-    pub offset: DeviceSize,
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct StridedDeviceAddressRegionKHR {
+    pub device_address: DeviceAddress,
     pub stride: DeviceSize,
     pub size: DeviceSize,
 }
-impl default::Default for StridedBufferRegionKHR {
+impl default::Default for StridedDeviceAddressRegionKHR {
     fn default() -> Self {
         Self {
-            buffer: None,
-            offset: DeviceSize::default(),
+            device_address: DeviceAddress::default(),
             stride: DeviceSize::default(),
             size: DeviceSize::default(),
         }
     }
 }
-impl fmt::Debug for StridedBufferRegionKHR {
+impl fmt::Debug for StridedDeviceAddressRegionKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("StridedBufferRegionKHR")
-            .field("buffer", &self.buffer)
-            .field("offset", &self.offset)
+        fmt.debug_struct("StridedDeviceAddressRegionKHR")
+            .field("device_address", &self.device_address)
             .field("stride", &self.stride)
             .field("size", &self.size)
             .finish()
@@ -34750,6 +35037,7 @@ pub struct AccelerationStructureGeometryTrianglesDataKHR {
     pub vertex_format: Format,
     pub vertex_data: DeviceOrHostAddressConstKHR,
     pub vertex_stride: DeviceSize,
+    pub max_vertex: u32,
     pub index_type: IndexType,
     pub index_data: DeviceOrHostAddressConstKHR,
     pub transform_data: DeviceOrHostAddressConstKHR,
@@ -34762,6 +35050,7 @@ impl default::Default for AccelerationStructureGeometryTrianglesDataKHR {
             vertex_format: Format::default(),
             vertex_data: DeviceOrHostAddressConstKHR::default(),
             vertex_stride: DeviceSize::default(),
+            max_vertex: u32::default(),
             index_type: IndexType::default(),
             index_data: DeviceOrHostAddressConstKHR::default(),
             transform_data: DeviceOrHostAddressConstKHR::default(),
@@ -34776,6 +35065,7 @@ impl fmt::Debug for AccelerationStructureGeometryTrianglesDataKHR {
             .field("vertex_format", &self.vertex_format)
             .field("vertex_data", &self.vertex_data)
             .field("vertex_stride", &self.vertex_stride)
+            .field("max_vertex", &self.max_vertex)
             .field("index_type", &self.index_type)
             .field("index_data", &self.index_data)
             .field("transform_data", &self.transform_data)
@@ -34897,11 +35187,11 @@ pub struct AccelerationStructureBuildGeometryInfoKHR {
     pub p_next: *const c_void,
     pub ty: AccelerationStructureTypeKHR,
     pub flags: BuildAccelerationStructureFlagsKHR,
-    pub update: Bool32,
+    pub mode: BuildAccelerationStructureModeKHR,
     pub src_acceleration_structure: Option<AccelerationStructureKHR>,
     pub dst_acceleration_structure: Option<AccelerationStructureKHR>,
-    pub geometry_array_of_pointers: Bool32,
     pub geometry_count: u32,
+    pub p_geometries: *const AccelerationStructureGeometryKHR,
     pub pp_geometries: *const *const AccelerationStructureGeometryKHR,
     pub scratch_data: DeviceOrHostAddressKHR,
 }
@@ -34912,11 +35202,11 @@ impl default::Default for AccelerationStructureBuildGeometryInfoKHR {
             p_next: ptr::null(),
             ty: AccelerationStructureTypeKHR::default(),
             flags: BuildAccelerationStructureFlagsKHR::default(),
-            update: Bool32::default(),
+            mode: BuildAccelerationStructureModeKHR::default(),
             src_acceleration_structure: None,
             dst_acceleration_structure: None,
-            geometry_array_of_pointers: Bool32::default(),
             geometry_count: u32::default(),
+            p_geometries: ptr::null(),
             pp_geometries: ptr::null(),
             scratch_data: DeviceOrHostAddressKHR::default(),
         }
@@ -34929,11 +35219,11 @@ impl fmt::Debug for AccelerationStructureBuildGeometryInfoKHR {
             .field("p_next", &self.p_next)
             .field("ty", &self.ty)
             .field("flags", &self.flags)
-            .field("update", &self.update)
+            .field("mode", &self.mode)
             .field("src_acceleration_structure", &self.src_acceleration_structure)
             .field("dst_acceleration_structure", &self.dst_acceleration_structure)
-            .field("geometry_array_of_pointers", &self.geometry_array_of_pointers)
             .field("geometry_count", &self.geometry_count)
+            .field("p_geometries", &self.p_geometries)
             .field("pp_geometries", &self.pp_geometries)
             .field("scratch_data", &self.scratch_data)
             .finish()
@@ -34941,13 +35231,13 @@ impl fmt::Debug for AccelerationStructureBuildGeometryInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureBuildOffsetInfoKHR {
+pub struct AccelerationStructureBuildRangeInfoKHR {
     pub primitive_count: u32,
     pub primitive_offset: u32,
     pub first_vertex: u32,
     pub transform_offset: u32,
 }
-impl default::Default for AccelerationStructureBuildOffsetInfoKHR {
+impl default::Default for AccelerationStructureBuildRangeInfoKHR {
     fn default() -> Self {
         Self {
             primitive_count: u32::default(),
@@ -34957,9 +35247,9 @@ impl default::Default for AccelerationStructureBuildOffsetInfoKHR {
         }
     }
 }
-impl fmt::Debug for AccelerationStructureBuildOffsetInfoKHR {
+impl fmt::Debug for AccelerationStructureBuildRangeInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("AccelerationStructureBuildOffsetInfoKHR")
+        fmt.debug_struct("AccelerationStructureBuildRangeInfoKHR")
             .field("primitive_count", &self.primitive_count)
             .field("primitive_offset", &self.primitive_offset)
             .field("first_vertex", &self.first_vertex)
@@ -34969,54 +35259,15 @@ impl fmt::Debug for AccelerationStructureBuildOffsetInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct AccelerationStructureCreateGeometryTypeInfoKHR {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub geometry_type: GeometryTypeKHR,
-    pub max_primitive_count: u32,
-    pub index_type: IndexType,
-    pub max_vertex_count: u32,
-    pub vertex_format: Format,
-    pub allows_transforms: Bool32,
-}
-impl default::Default for AccelerationStructureCreateGeometryTypeInfoKHR {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_GEOMETRY_TYPE_INFO_KHR,
-            p_next: ptr::null(),
-            geometry_type: GeometryTypeKHR::default(),
-            max_primitive_count: u32::default(),
-            index_type: IndexType::default(),
-            max_vertex_count: u32::default(),
-            vertex_format: Format::default(),
-            allows_transforms: Bool32::default(),
-        }
-    }
-}
-impl fmt::Debug for AccelerationStructureCreateGeometryTypeInfoKHR {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("AccelerationStructureCreateGeometryTypeInfoKHR")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("geometry_type", &self.geometry_type)
-            .field("max_primitive_count", &self.max_primitive_count)
-            .field("index_type", &self.index_type)
-            .field("max_vertex_count", &self.max_vertex_count)
-            .field("vertex_format", &self.vertex_format)
-            .field("allows_transforms", &self.allows_transforms)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
 pub struct AccelerationStructureCreateInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub compacted_size: DeviceSize,
+    pub create_flags: AccelerationStructureCreateFlagsKHR,
+    pub buffer: Option<Buffer>,
+    /// Specified in bytes
+    pub offset: DeviceSize,
+    pub size: DeviceSize,
     pub ty: AccelerationStructureTypeKHR,
-    pub flags: BuildAccelerationStructureFlagsKHR,
-    pub max_geometry_count: u32,
-    pub p_geometry_infos: *const AccelerationStructureCreateGeometryTypeInfoKHR,
     pub device_address: DeviceAddress,
 }
 impl default::Default for AccelerationStructureCreateInfoKHR {
@@ -35024,11 +35275,11 @@ impl default::Default for AccelerationStructureCreateInfoKHR {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            compacted_size: DeviceSize::default(),
+            create_flags: AccelerationStructureCreateFlagsKHR::default(),
+            buffer: None,
+            offset: DeviceSize::default(),
+            size: DeviceSize::default(),
             ty: AccelerationStructureTypeKHR::default(),
-            flags: BuildAccelerationStructureFlagsKHR::default(),
-            max_geometry_count: u32::default(),
-            p_geometry_infos: ptr::null(),
             device_address: DeviceAddress::default(),
         }
     }
@@ -35038,11 +35289,11 @@ impl fmt::Debug for AccelerationStructureCreateInfoKHR {
         fmt.debug_struct("AccelerationStructureCreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("compacted_size", &self.compacted_size)
+            .field("create_flags", &self.create_flags)
+            .field("buffer", &self.buffer)
+            .field("offset", &self.offset)
+            .field("size", &self.size)
             .field("ty", &self.ty)
-            .field("flags", &self.flags)
-            .field("max_geometry_count", &self.max_geometry_count)
-            .field("p_geometry_infos", &self.p_geometry_infos)
             .field("device_address", &self.device_address)
             .finish()
     }
@@ -35109,26 +35360,26 @@ impl fmt::Debug for AccelerationStructureDeviceAddressInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct AccelerationStructureVersionKHR {
+pub struct AccelerationStructureVersionInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub version_data: *const u8,
+    pub p_version_data: *const u8,
 }
-impl default::Default for AccelerationStructureVersionKHR {
+impl default::Default for AccelerationStructureVersionInfoKHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::ACCELERATION_STRUCTURE_VERSION_KHR,
+            s_type: StructureType::ACCELERATION_STRUCTURE_VERSION_INFO_KHR,
             p_next: ptr::null(),
-            version_data: ptr::null(),
+            p_version_data: ptr::null(),
         }
     }
 }
-impl fmt::Debug for AccelerationStructureVersionKHR {
+impl fmt::Debug for AccelerationStructureVersionInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("AccelerationStructureVersionKHR")
+        fmt.debug_struct("AccelerationStructureVersionInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("version_data", &self.version_data)
+            .field("p_version_data", &self.p_version_data)
             .finish()
     }
 }
@@ -35230,18 +35481,16 @@ impl fmt::Debug for CopyMemoryToAccelerationStructureInfoKHR {
 pub struct RayTracingPipelineInterfaceCreateInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub max_payload_size: u32,
-    pub max_attribute_size: u32,
-    pub max_callable_size: u32,
+    pub max_pipeline_ray_payload_size: u32,
+    pub max_pipeline_ray_hit_attribute_size: u32,
 }
 impl default::Default for RayTracingPipelineInterfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            max_payload_size: u32::default(),
-            max_attribute_size: u32::default(),
-            max_callable_size: u32::default(),
+            max_pipeline_ray_payload_size: u32::default(),
+            max_pipeline_ray_hit_attribute_size: u32::default(),
         }
     }
 }
@@ -35250,34 +35499,11 @@ impl fmt::Debug for RayTracingPipelineInterfaceCreateInfoKHR {
         fmt.debug_struct("RayTracingPipelineInterfaceCreateInfoKHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("max_payload_size", &self.max_payload_size)
-            .field("max_attribute_size", &self.max_attribute_size)
-            .field("max_callable_size", &self.max_callable_size)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct DeferredOperationInfoKHR {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub operation_handle: Option<DeferredOperationKHR>,
-}
-impl default::Default for DeferredOperationInfoKHR {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::DEFERRED_OPERATION_INFO_KHR,
-            p_next: ptr::null(),
-            operation_handle: None,
-        }
-    }
-}
-impl fmt::Debug for DeferredOperationInfoKHR {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("DeferredOperationInfoKHR")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("operation_handle", &self.operation_handle)
+            .field("max_pipeline_ray_payload_size", &self.max_pipeline_ray_payload_size)
+            .field(
+                "max_pipeline_ray_hit_attribute_size",
+                &self.max_pipeline_ray_hit_attribute_size,
+            )
             .finish()
     }
 }
@@ -36499,6 +36725,37 @@ impl fmt::Debug for PipelineFragmentShadingRateEnumStateCreateInfoNV {
             .field("shading_rate_type", &self.shading_rate_type)
             .field("shading_rate", &self.shading_rate)
             .field("combiner_ops", &self.combiner_ops)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureBuildSizesInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub acceleration_structure_size: DeviceSize,
+    pub update_scratch_size: DeviceSize,
+    pub build_scratch_size: DeviceSize,
+}
+impl default::Default for AccelerationStructureBuildSizesInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR,
+            p_next: ptr::null(),
+            acceleration_structure_size: DeviceSize::default(),
+            update_scratch_size: DeviceSize::default(),
+            build_scratch_size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureBuildSizesInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureBuildSizesInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("acceleration_structure_size", &self.acceleration_structure_size)
+            .field("update_scratch_size", &self.update_scratch_size)
+            .field("build_scratch_size", &self.build_scratch_size)
             .finish()
     }
 }
@@ -38175,41 +38432,43 @@ pub type FnDestroyAccelerationStructureKHR = unsafe extern "system" fn(
     acceleration_structure: Option<AccelerationStructureKHR>,
     p_allocator: *const AllocationCallbacks,
 ) -> c_void;
-pub type FnDestroyAccelerationStructureNV = FnDestroyAccelerationStructureKHR;
-pub type FnGetAccelerationStructureMemoryRequirementsKHR = unsafe extern "system" fn(
+pub type FnDestroyAccelerationStructureNV = unsafe extern "system" fn(
     device: Option<Device>,
-    p_info: *const AccelerationStructureMemoryRequirementsInfoKHR,
-    p_memory_requirements: *mut MemoryRequirements2,
+    acceleration_structure: Option<AccelerationStructureNV>,
+    p_allocator: *const AllocationCallbacks,
 ) -> c_void;
 pub type FnGetAccelerationStructureMemoryRequirementsNV = unsafe extern "system" fn(
     device: Option<Device>,
     p_info: *const AccelerationStructureMemoryRequirementsInfoNV,
     p_memory_requirements: *mut MemoryRequirements2KHR,
 ) -> c_void;
-pub type FnBindAccelerationStructureMemoryKHR = unsafe extern "system" fn(
+pub type FnBindAccelerationStructureMemoryNV = unsafe extern "system" fn(
     device: Option<Device>,
     bind_info_count: u32,
-    p_bind_infos: *const BindAccelerationStructureMemoryInfoKHR,
+    p_bind_infos: *const BindAccelerationStructureMemoryInfoNV,
 ) -> Result;
-pub type FnBindAccelerationStructureMemoryNV = FnBindAccelerationStructureMemoryKHR;
 pub type FnCmdCopyAccelerationStructureNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    dst: Option<AccelerationStructureKHR>,
-    src: Option<AccelerationStructureKHR>,
+    dst: Option<AccelerationStructureNV>,
+    src: Option<AccelerationStructureNV>,
     mode: CopyAccelerationStructureModeKHR,
 ) -> c_void;
 pub type FnCmdCopyAccelerationStructureKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_info: *const CopyAccelerationStructureInfoKHR,
 ) -> c_void;
-pub type FnCopyAccelerationStructureKHR =
-    unsafe extern "system" fn(device: Option<Device>, p_info: *const CopyAccelerationStructureInfoKHR) -> Result;
+pub type FnCopyAccelerationStructureKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
+    p_info: *const CopyAccelerationStructureInfoKHR,
+) -> Result;
 pub type FnCmdCopyAccelerationStructureToMemoryKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_info: *const CopyAccelerationStructureToMemoryInfoKHR,
 ) -> c_void;
 pub type FnCopyAccelerationStructureToMemoryKHR = unsafe extern "system" fn(
     device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
     p_info: *const CopyAccelerationStructureToMemoryInfoKHR,
 ) -> Result;
 pub type FnCmdCopyMemoryToAccelerationStructureKHR = unsafe extern "system" fn(
@@ -38218,6 +38477,7 @@ pub type FnCmdCopyMemoryToAccelerationStructureKHR = unsafe extern "system" fn(
 ) -> c_void;
 pub type FnCopyMemoryToAccelerationStructureKHR = unsafe extern "system" fn(
     device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
     p_info: *const CopyMemoryToAccelerationStructureInfoKHR,
 ) -> Result;
 pub type FnCmdWriteAccelerationStructuresPropertiesKHR = unsafe extern "system" fn(
@@ -38228,15 +38488,22 @@ pub type FnCmdWriteAccelerationStructuresPropertiesKHR = unsafe extern "system" 
     query_pool: Option<QueryPool>,
     first_query: u32,
 ) -> c_void;
-pub type FnCmdWriteAccelerationStructuresPropertiesNV = FnCmdWriteAccelerationStructuresPropertiesKHR;
+pub type FnCmdWriteAccelerationStructuresPropertiesNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    acceleration_structure_count: u32,
+    p_acceleration_structures: *const AccelerationStructureNV,
+    query_type: QueryType,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+) -> c_void;
 pub type FnCmdBuildAccelerationStructureNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_info: *const AccelerationStructureInfoNV,
     instance_data: Option<Buffer>,
     instance_offset: DeviceSize,
     update: Bool32,
-    dst: Option<AccelerationStructureKHR>,
-    src: Option<AccelerationStructureKHR>,
+    dst: Option<AccelerationStructureNV>,
+    src: Option<AccelerationStructureNV>,
     scratch: Option<Buffer>,
     scratch_offset: DeviceSize,
 ) -> c_void;
@@ -38251,10 +38518,10 @@ pub type FnWriteAccelerationStructuresPropertiesKHR = unsafe extern "system" fn(
 ) -> Result;
 pub type FnCmdTraceRaysKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_raygen_shader_binding_table: *const StridedBufferRegionKHR,
-    p_miss_shader_binding_table: *const StridedBufferRegionKHR,
-    p_hit_shader_binding_table: *const StridedBufferRegionKHR,
-    p_callable_shader_binding_table: *const StridedBufferRegionKHR,
+    p_raygen_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_miss_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_hit_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_callable_shader_binding_table: *const StridedDeviceAddressRegionKHR,
     width: u32,
     height: u32,
     depth: u32,
@@ -38295,7 +38562,7 @@ pub type FnGetRayTracingCaptureReplayShaderGroupHandlesKHR = unsafe extern "syst
 ) -> Result;
 pub type FnGetAccelerationStructureHandleNV = unsafe extern "system" fn(
     device: Option<Device>,
-    acceleration_structure: Option<AccelerationStructureKHR>,
+    acceleration_structure: Option<AccelerationStructureNV>,
     data_size: usize,
     p_data: *mut c_void,
 ) -> Result;
@@ -38309,6 +38576,7 @@ pub type FnCreateRayTracingPipelinesNV = unsafe extern "system" fn(
 ) -> Result;
 pub type FnCreateRayTracingPipelinesKHR = unsafe extern "system" fn(
     device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
     pipeline_cache: Option<PipelineCache>,
     create_info_count: u32,
     p_create_infos: *const RayTracingPipelineCreateInfoKHR,
@@ -38322,15 +38590,25 @@ pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesNV = unsafe extern "syste
 ) -> Result;
 pub type FnCmdTraceRaysIndirectKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_raygen_shader_binding_table: *const StridedBufferRegionKHR,
-    p_miss_shader_binding_table: *const StridedBufferRegionKHR,
-    p_hit_shader_binding_table: *const StridedBufferRegionKHR,
-    p_callable_shader_binding_table: *const StridedBufferRegionKHR,
-    buffer: Option<Buffer>,
-    offset: DeviceSize,
+    p_raygen_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_miss_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_hit_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    p_callable_shader_binding_table: *const StridedDeviceAddressRegionKHR,
+    indirect_device_address: DeviceAddress,
 ) -> c_void;
-pub type FnGetDeviceAccelerationStructureCompatibilityKHR =
-    unsafe extern "system" fn(device: Option<Device>, version: *const AccelerationStructureVersionKHR) -> Result;
+pub type FnGetDeviceAccelerationStructureCompatibilityKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_version_info: *const AccelerationStructureVersionInfoKHR,
+    p_compatibility: *mut AccelerationStructureCompatibilityKHR,
+) -> c_void;
+pub type FnGetRayTracingShaderGroupStackSizeKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline: Option<Pipeline>,
+    group: u32,
+    group_shader: ShaderGroupShaderKHR,
+) -> DeviceSize;
+pub type FnCmdSetRayTracingPipelineStackSizeKHR =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, pipeline_stack_size: u32) -> c_void;
 pub type FnGetImageViewHandleNVX =
     unsafe extern "system" fn(device: Option<Device>, p_info: *const ImageViewHandleInfoNVX) -> u32;
 pub type FnGetImageViewAddressNVX = unsafe extern "system" fn(
@@ -38459,24 +38737,26 @@ pub type FnCreateAccelerationStructureKHR = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_acceleration_structure: *mut AccelerationStructureKHR,
 ) -> Result;
-pub type FnCmdBuildAccelerationStructureKHR = unsafe extern "system" fn(
+pub type FnCmdBuildAccelerationStructuresKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     info_count: u32,
     p_infos: *const AccelerationStructureBuildGeometryInfoKHR,
-    pp_offset_infos: *const *const AccelerationStructureBuildOffsetInfoKHR,
+    pp_build_range_infos: *const *const AccelerationStructureBuildRangeInfoKHR,
 ) -> c_void;
-pub type FnCmdBuildAccelerationStructureIndirectKHR = unsafe extern "system" fn(
+pub type FnCmdBuildAccelerationStructuresIndirectKHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
-    p_info: *const AccelerationStructureBuildGeometryInfoKHR,
-    indirect_buffer: Option<Buffer>,
-    indirect_offset: DeviceSize,
-    indirect_stride: u32,
+    info_count: u32,
+    p_infos: *const AccelerationStructureBuildGeometryInfoKHR,
+    p_indirect_device_addresses: *const DeviceAddress,
+    p_indirect_strides: *const u32,
+    pp_max_primitive_counts: *const *const u32,
 ) -> c_void;
-pub type FnBuildAccelerationStructureKHR = unsafe extern "system" fn(
+pub type FnBuildAccelerationStructuresKHR = unsafe extern "system" fn(
     device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
     info_count: u32,
     p_infos: *const AccelerationStructureBuildGeometryInfoKHR,
-    pp_offset_infos: *const *const AccelerationStructureBuildOffsetInfoKHR,
+    pp_build_range_infos: *const *const AccelerationStructureBuildRangeInfoKHR,
 ) -> Result;
 pub type FnGetAccelerationStructureDeviceAddressKHR = unsafe extern "system" fn(
     device: Option<Device>,
@@ -38604,4 +38884,11 @@ pub type FnCmdSetFragmentShadingRateEnumNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     shading_rate: FragmentShadingRateNV,
     combiner_ops: *const FragmentShadingRateCombinerOpKHR,
+) -> c_void;
+pub type FnGetAccelerationStructureBuildSizesKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    build_type: AccelerationStructureBuildTypeKHR,
+    p_build_info: *const AccelerationStructureBuildGeometryInfoKHR,
+    p_max_primitive_counts: *const u32,
+    p_size_info: *mut AccelerationStructureBuildSizesInfoKHR,
 ) -> c_void;
