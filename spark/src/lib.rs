@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 162
+//! Generated from vk.xml with `VK_HEADER_VERSION` 164
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1173,12 +1173,26 @@ impl InstanceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.khr_get_physical_device_properties2 = true;
     }
+    pub fn supports_nv_acquire_winrt_display(&self) -> bool {
+        self.ext_direct_mode_display && self.khr_display && self.khr_surface
+    }
+    pub fn enable_nv_acquire_winrt_display(&mut self) {
+        self.ext_direct_mode_display = true;
+        self.khr_display = true;
+        self.khr_surface = true;
+    }
     pub fn supports_ext_directfb_surface(&self) -> bool {
         self.ext_directfb_surface && self.khr_surface
     }
     pub fn enable_ext_directfb_surface(&mut self) {
         self.ext_directfb_surface = true;
         self.khr_surface = true;
+    }
+    pub fn supports_valve_mutable_descriptor_type(&self) -> bool {
+        self.khr_get_physical_device_properties2
+    }
+    pub fn enable_valve_mutable_descriptor_type(&mut self) {
+        self.khr_get_physical_device_properties2 = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -3741,6 +3755,8 @@ pub struct DeviceExtensions {
     pub ext_image_robustness: bool,
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
+    pub nv_acquire_winrt_display: bool,
+    pub valve_mutable_descriptor_type: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -3935,6 +3951,8 @@ impl DeviceExtensions {
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
+            b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
+            b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             _ => {}
         }
     }
@@ -5219,6 +5237,19 @@ impl DeviceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.ext_4444_formats = true;
     }
+    pub fn supports_nv_acquire_winrt_display(&self) -> bool {
+        self.nv_acquire_winrt_display
+    }
+    pub fn enable_nv_acquire_winrt_display(&mut self) {
+        self.nv_acquire_winrt_display = true;
+    }
+    pub fn supports_valve_mutable_descriptor_type(&self) -> bool {
+        self.valve_mutable_descriptor_type && self.khr_maintenance3
+    }
+    pub fn enable_valve_mutable_descriptor_type(&mut self) {
+        self.valve_mutable_descriptor_type = true;
+        self.khr_maintenance3 = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -5787,6 +5818,12 @@ impl DeviceExtensions {
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
+        if self.nv_acquire_winrt_display {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_acquire_winrt_display\0") })
+        }
+        if self.valve_mutable_descriptor_type {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_mutable_descriptor_type\0") })
+        }
         v
     }
 }
@@ -5951,6 +5988,8 @@ pub struct Device {
     pub fp_import_fence_win32_handle_khr: Option<vk::FnImportFenceWin32HandleKHR>,
     pub fp_get_fence_fd_khr: Option<vk::FnGetFenceFdKHR>,
     pub fp_import_fence_fd_khr: Option<vk::FnImportFenceFdKHR>,
+    pub fp_acquire_winrt_display_nv: Option<vk::FnAcquireWinrtDisplayNV>,
+    pub fp_get_winrt_display_nv: Option<vk::FnGetWinrtDisplayNV>,
     pub fp_display_power_control_ext: Option<vk::FnDisplayPowerControlEXT>,
     pub fp_register_device_event_ext: Option<vk::FnRegisterDeviceEventEXT>,
     pub fp_register_display_event_ext: Option<vk::FnRegisterDisplayEventEXT>,
@@ -7260,6 +7299,18 @@ impl Device {
             },
             fp_import_fence_fd_khr: if extensions.khr_external_fence_fd {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkImportFenceFdKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_winrt_display_nv: if extensions.nv_acquire_winrt_display {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireWinrtDisplayNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_winrt_display_nv: if extensions.nv_acquire_winrt_display {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetWinrtDisplayNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11091,6 +11142,33 @@ impl Device {
         let err = (fp)(Some(self.handle), p_import_fence_fd_info);
         match err {
             vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn acquire_winrt_display_nv(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        display: vk::DisplayKHR,
+    ) -> Result<()> {
+        let fp = self
+            .fp_acquire_winrt_display_nv
+            .expect("vkAcquireWinrtDisplayNV is not loaded");
+        let err = (fp)(Some(physical_device), Some(display));
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_winrt_display_nv(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        device_relative_id: u32,
+    ) -> Result<vk::DisplayKHR> {
+        let fp = self.fp_get_winrt_display_nv.expect("vkGetWinrtDisplayNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(physical_device), device_relative_id, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }

@@ -15620,3 +15620,92 @@ impl Deref for AccelerationStructureBuildSizesInfoKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+    type Type = PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
+    inner: vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE,
+}
+impl PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mutable_descriptor_type(mut self, mutable_descriptor_type: bool) -> Self {
+        self.inner.mutable_descriptor_type = if mutable_descriptor_type { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
+    type Target = vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::MutableDescriptorTypeListVALVE {
+    type Type = MutableDescriptorTypeListVALVEBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MutableDescriptorTypeListVALVEBuilder<'a> {
+    inner: vk::MutableDescriptorTypeListVALVE,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> MutableDescriptorTypeListVALVEBuilder<'a> {
+    pub fn p_descriptor_types(mut self, p_descriptor_types: &'a [vk::DescriptorType]) -> Self {
+        self.inner.descriptor_type_count = p_descriptor_types.len() as u32;
+        self.inner.p_descriptor_types = p_descriptor_types.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for MutableDescriptorTypeListVALVEBuilder<'a> {
+    type Target = vk::MutableDescriptorTypeListVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::MutableDescriptorTypeCreateInfoVALVE {
+    type Type = MutableDescriptorTypeCreateInfoVALVEBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
+    inner: vk::MutableDescriptorTypeCreateInfoVALVE,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_mutable_descriptor_type_lists(
+        mut self,
+        p_mutable_descriptor_type_lists: &'a [vk::MutableDescriptorTypeListVALVE],
+    ) -> Self {
+        self.inner.mutable_descriptor_type_list_count = p_mutable_descriptor_type_lists.len() as u32;
+        self.inner.p_mutable_descriptor_type_lists = p_mutable_descriptor_type_lists.as_ptr();
+        self
+    }
+}
+impl<'a> Deref for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
+    type Target = vk::MutableDescriptorTypeCreateInfoVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

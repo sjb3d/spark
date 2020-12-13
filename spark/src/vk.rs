@@ -1293,6 +1293,8 @@ impl DescriptorSetLayoutCreateFlags {
     /// Added by extension VK_KHR_push_descriptor.
     pub const PUSH_DESCRIPTOR_KHR: Self = Self(0x1);
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self::UPDATE_AFTER_BIND_POOL;
+    /// Added by extension VK_VALVE_mutable_descriptor_type.
+    pub const HOST_ONLY_POOL_VALVE: Self = Self(0x4);
 }
 impl default::Default for DescriptorSetLayoutCreateFlags {
     fn default() -> Self {
@@ -1304,13 +1306,13 @@ impl DescriptorSetLayoutCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x7
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1356,7 +1358,11 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0,
-            &[(0x2, "UPDATE_AFTER_BIND_POOL"), (0x1, "PUSH_DESCRIPTOR_KHR")],
+            &[
+                (0x2, "UPDATE_AFTER_BIND_POOL"),
+                (0x1, "PUSH_DESCRIPTOR_KHR"),
+                (0x4, "HOST_ONLY_POOL_VALVE"),
+            ],
             f,
         )
     }
@@ -4858,6 +4864,8 @@ impl DescriptorPoolCreateFlags {
     pub const FREE_DESCRIPTOR_SET: Self = Self(0x1);
     pub const UPDATE_AFTER_BIND: Self = Self(0x2);
     pub const UPDATE_AFTER_BIND_EXT: Self = Self::UPDATE_AFTER_BIND;
+    /// Added by extension VK_VALVE_mutable_descriptor_type.
+    pub const HOST_ONLY_VALVE: Self = Self(0x4);
 }
 impl default::Default for DescriptorPoolCreateFlags {
     fn default() -> Self {
@@ -4869,13 +4877,13 @@ impl DescriptorPoolCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3)
+        Self(0x7)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x7
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4919,7 +4927,15 @@ impl ops::BitXorAssign for DescriptorPoolCreateFlags {
 }
 impl fmt::Display for DescriptorPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "FREE_DESCRIPTOR_SET"), (0x2, "UPDATE_AFTER_BIND")], f)
+        display_bitmask(
+            self.0,
+            &[
+                (0x1, "FREE_DESCRIPTOR_SET"),
+                (0x2, "UPDATE_AFTER_BIND"),
+                (0x4, "HOST_ONLY_VALVE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -10986,6 +11002,8 @@ impl DescriptorType {
     pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    /// Added by extension VK_VALVE_mutable_descriptor_type.
+    pub const MUTABLE_VALVE: Self = Self(1000351000);
 }
 impl default::Default for DescriptorType {
     fn default() -> Self {
@@ -11009,6 +11027,7 @@ impl fmt::Display for DescriptorType {
             1000138000 => Some(&"INLINE_UNIFORM_BLOCK_EXT"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000351000 => Some(&"MUTABLE_VALVE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13407,6 +13426,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
     /// Added by extension VK_EXT_directfb_surface.
     pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
+    /// Added by extension VK_VALVE_mutable_descriptor_type.
+    pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
+    /// Added by extension VK_VALVE_mutable_descriptor_type.
+    pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -13889,6 +13912,8 @@ impl fmt::Display for StructureType {
             1000337010 => Some(&"IMAGE_RESOLVE_2_KHR"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
+            1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
+            1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16058,6 +16083,8 @@ impl VendorId {
     pub const CODEPLAY: Self = Self(65540);
     /// Mesa vendor ID
     pub const MESA: Self = Self(65541);
+    /// PoCL vendor ID
+    pub const POCL: Self = Self(65542);
 }
 impl default::Default for VendorId {
     fn default() -> Self {
@@ -16072,6 +16099,7 @@ impl fmt::Display for VendorId {
             65539 => Some(&"KAZAN"),
             65540 => Some(&"CODEPLAY"),
             65541 => Some(&"MESA"),
+            65542 => Some(&"POCL"),
             _ => None,
         };
         if let Some(name) = name {
@@ -36759,6 +36787,84 @@ impl fmt::Debug for AccelerationStructureBuildSizesInfoKHR {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub mutable_descriptor_type: Bool32,
+}
+impl default::Default for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE,
+            p_next: ptr::null_mut(),
+            mutable_descriptor_type: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMutableDescriptorTypeFeaturesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mutable_descriptor_type", &self.mutable_descriptor_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MutableDescriptorTypeListVALVE {
+    pub descriptor_type_count: u32,
+    pub p_descriptor_types: *const DescriptorType,
+}
+impl default::Default for MutableDescriptorTypeListVALVE {
+    fn default() -> Self {
+        Self {
+            descriptor_type_count: u32::default(),
+            p_descriptor_types: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MutableDescriptorTypeListVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MutableDescriptorTypeListVALVE")
+            .field("descriptor_type_count", &self.descriptor_type_count)
+            .field("p_descriptor_types", &self.p_descriptor_types)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MutableDescriptorTypeCreateInfoVALVE {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mutable_descriptor_type_list_count: u32,
+    pub p_mutable_descriptor_type_lists: *const MutableDescriptorTypeListVALVE,
+}
+impl default::Default for MutableDescriptorTypeCreateInfoVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE,
+            p_next: ptr::null(),
+            mutable_descriptor_type_list_count: u32::default(),
+            p_mutable_descriptor_type_lists: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MutableDescriptorTypeCreateInfoVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "mutable_descriptor_type_list_count",
+                &self.mutable_descriptor_type_list_count,
+            )
+            .field("p_mutable_descriptor_type_lists", &self.p_mutable_descriptor_type_lists)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -37920,6 +38026,13 @@ pub type FnGetRandROutputDisplayEXT = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     dpy: *mut Display,
     rr_output: RROutput,
+    p_display: *mut DisplayKHR,
+) -> Result;
+pub type FnAcquireWinrtDisplayNV =
+    unsafe extern "system" fn(physical_device: Option<PhysicalDevice>, display: Option<DisplayKHR>) -> Result;
+pub type FnGetWinrtDisplayNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    device_relative_id: u32,
     p_display: *mut DisplayKHR,
 ) -> Result;
 pub type FnDisplayPowerControlEXT = unsafe extern "system" fn(
