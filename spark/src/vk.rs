@@ -14103,81 +14103,49 @@ impl fmt::Display for VertexInputRate {
 pub struct ObjectType(i32);
 impl ObjectType {
     pub const UNKNOWN: Self = Self(0);
-    /// VkInstance
     pub const INSTANCE: Self = Self(1);
-    /// VkPhysicalDevice
     pub const PHYSICAL_DEVICE: Self = Self(2);
-    /// VkDevice
     pub const DEVICE: Self = Self(3);
-    /// VkQueue
     pub const QUEUE: Self = Self(4);
-    /// VkSemaphore
     pub const SEMAPHORE: Self = Self(5);
-    /// VkCommandBuffer
     pub const COMMAND_BUFFER: Self = Self(6);
-    /// VkFence
     pub const FENCE: Self = Self(7);
-    /// VkDeviceMemory
     pub const DEVICE_MEMORY: Self = Self(8);
-    /// VkBuffer
     pub const BUFFER: Self = Self(9);
-    /// VkImage
     pub const IMAGE: Self = Self(10);
-    /// VkEvent
     pub const EVENT: Self = Self(11);
-    /// VkQueryPool
     pub const QUERY_POOL: Self = Self(12);
-    /// VkBufferView
     pub const BUFFER_VIEW: Self = Self(13);
-    /// VkImageView
     pub const IMAGE_VIEW: Self = Self(14);
-    /// VkShaderModule
     pub const SHADER_MODULE: Self = Self(15);
-    /// VkPipelineCache
     pub const PIPELINE_CACHE: Self = Self(16);
-    /// VkPipelineLayout
     pub const PIPELINE_LAYOUT: Self = Self(17);
-    /// VkRenderPass
     pub const RENDER_PASS: Self = Self(18);
-    /// VkPipeline
     pub const PIPELINE: Self = Self(19);
-    /// VkDescriptorSetLayout
     pub const DESCRIPTOR_SET_LAYOUT: Self = Self(20);
-    /// VkSampler
     pub const SAMPLER: Self = Self(21);
-    /// VkDescriptorPool
     pub const DESCRIPTOR_POOL: Self = Self(22);
-    /// VkDescriptorSet
     pub const DESCRIPTOR_SET: Self = Self(23);
-    /// VkFramebuffer
     pub const FRAMEBUFFER: Self = Self(24);
-    /// VkCommandPool
     pub const COMMAND_POOL: Self = Self(25);
     pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
-    /// VkSurfaceKHR
     /// Added by extension VK_KHR_surface.
     pub const SURFACE_KHR: Self = Self(1000000000);
-    /// VkSwapchainKHR
     /// Added by extension VK_KHR_swapchain.
     pub const SWAPCHAIN_KHR: Self = Self(1000001000);
-    /// VkDisplayKHR
     /// Added by extension VK_KHR_display.
     pub const DISPLAY_KHR: Self = Self(1000002000);
-    /// VkDisplayModeKHR
     /// Added by extension VK_KHR_display.
     pub const DISPLAY_MODE_KHR: Self = Self(1000002001);
-    /// VkDebugReportCallbackEXT
     /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_EXT: Self = Self(1000011000);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
-    /// VkDebugUtilsMessengerEXT
     /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
     /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
-    /// VkValidationCacheEXT
     /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_EXT: Self = Self(1000160000);
     /// Added by extension VK_NV_ray_tracing.
@@ -14186,7 +14154,6 @@ impl ObjectType {
     pub const PERFORMANCE_CONFIGURATION_INTEL: Self = Self(1000210000);
     /// Added by extension VK_KHR_deferred_host_operations.
     pub const DEFERRED_OPERATION_KHR: Self = Self(1000268000);
-    /// VkIndirectCommandsLayoutNV
     /// Added by extension VK_NV_device_generated_commands.
     pub const INDIRECT_COMMANDS_LAYOUT_NV: Self = Self(1000277000);
     /// Added by extension VK_EXT_private_data.
