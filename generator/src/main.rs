@@ -1632,7 +1632,8 @@ impl<'a> Generator<'a> {
                                 take_mut::take(&mut params[len_index].ty, |ty| match ty {
                                     LibParamType::SliceLenShared { name, mut slice_infos } => {
                                         if is_single {
-                                            panic!("unsupported mix of slices")
+                                            slice_infos.push(slice_info);
+                                            LibParamType::SliceLenSingle { slice_infos }
                                         } else {
                                             slice_infos.push(slice_info);
                                             LibParamType::SliceLenShared { name, slice_infos }
