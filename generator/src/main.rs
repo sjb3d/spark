@@ -1498,15 +1498,11 @@ impl<'a> Generator<'a> {
     }
 
     fn write_command_types(&self, w: &mut impl IoWrite) -> WriteResult {
-        for (name, info) in self.cmd_names.iter().filter_map(|name| {
+        for info in self.cmd_names.iter().filter_map(|name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
-            info.category.and(Some((name, info)))
+            info.category.and(Some(info))
         }) {
-            if let Some(alias) = info.alias {
-                let name_part = name.skip_prefix(FN_PREFIX);
-                let alias_part = alias.skip_prefix(FN_PREFIX);
-                write!(w, r#"pub type Fn{} = Fn{};"#, name_part, alias_part)?;
-            } else {
+            if info.alias.is_none() {
                 let mut decl = c_parse_function_decl(info.cmd_def.code.as_str());
                 let context = decl.proto.name;
                 for param in decl.parameters.iter_mut() {
@@ -2210,11 +2206,8 @@ impl<'a> Generator<'a> {
     }
 
     fn write_command(&self, w: &mut impl IoWrite, category: Category, cmd_name: &str) -> WriteResult {
-        let cmd_def = self
-            .cmd_info_by_name
-            .get(cmd_name)
-            .expect("missing command info")
-            .cmd_def;
+        let cmd_info = self.cmd_info_by_name.get(cmd_name).expect("missing command info");
+        let cmd_def = cmd_info.cmd_def;
         let decl = {
             let mut decl = c_parse_function_decl(cmd_def.code.as_str());
             let context = decl.proto.name;
@@ -2241,6 +2234,11 @@ impl<'a> Generator<'a> {
             self.wrap_command_arguments(category, &cmd_def, cmd_return_value, &decl, &mut params);
 
         let fn_name = cmd_name.skip_prefix(FN_PREFIX).to_snake_case();
+        let fp_name = cmd_info
+            .alias
+            .unwrap_or(cmd_name)
+            .skip_prefix(FN_PREFIX)
+            .to_snake_case();
 
         let styles: &[LibCommandStyle] = match return_type {
             LibReturnType::VecUnknownLen | LibReturnType::ResultVecUnknownLen => &[LibCommandStyle::ToVecUnknownLen],
@@ -2413,12 +2411,12 @@ impl<'a> Generator<'a> {
             writeln!(w, "{{")?;
 
             if cmd_name == "vkEnumerateInstanceVersion" {
-                writeln!(w, r#"if let Some(fp) = self.fp_{} {{"#, fn_name)?;
+                writeln!(w, r#"if let Some(fp) = self.fp_{} {{"#, fp_name)?;
             } else {
                 writeln!(
                     w,
                     r#"let fp = self.fp_{}.expect("{} is not loaded");"#,
-                    fn_name, cmd_name
+                    fp_name, cmd_name
                 )?;
             }
 
@@ -2756,6 +2754,31 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
+    fn write_command_ref_condition_array(&self, info: &CommandInfo, w: &mut impl IoWrite) -> WriteResult {
+        let category = info.category.unwrap();
+        let mut is_first = true;
+        for cmd_ref_pair in info.refs.iter() {
+            let want_brackets = (info.refs.len() > 1) && cmd_ref_pair.secondary.is_some();
+            if is_first {
+                is_first = false;
+            } else {
+                write!(w, " || ")?;
+            }
+            if want_brackets {
+                write!(w, "(")?;
+            }
+            self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
+            if let Some(secondary) = cmd_ref_pair.secondary {
+                write!(w, " && ")?;
+                self.write_command_ref_condition(category, secondary, w)?;
+            }
+            if want_brackets {
+                write!(w, ")")?;
+            }
+        }
+        Ok(())
+    }
+
     fn write_struct(&self, category: Category, w: &mut impl IoWrite) -> WriteResult {
         let all_supported_extensions: Vec<&vk::Extension> = self
             .registry
@@ -2879,7 +2902,7 @@ impl<'a> Generator<'a> {
         }
         for name in self.cmd_names.iter().filter(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
-            info.category == Some(category)
+            info.alias.is_none() && info.category == Some(category)
         }) {
             let name_part = name.skip_prefix(FN_PREFIX);
             let fn_name = name_part.to_snake_case();
@@ -2936,7 +2959,7 @@ impl<'a> Generator<'a> {
 
         for (name, info) in self.cmd_names.iter().filter_map(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
-            if info.category == Some(category) {
+            if info.alias.is_none() && info.category == Some(category) {
                 Some((name, info))
             } else {
                 None
@@ -2948,38 +2971,19 @@ impl<'a> Generator<'a> {
             if name == "vkGetInstanceProcAddr" {
                 writeln!(w, "Some(lib.fp_{})", fn_name)?;
             } else {
-                let mut is_core = true;
                 if !always_load {
                     writeln!(w, "if ")?;
-                    let mut is_first = true;
-                    for cmd_ref_pair in info.refs.iter() {
-                        let want_brackets = (info.refs.len() > 1) && cmd_ref_pair.secondary.is_some();
-                        if is_first {
-                            is_first = false;
-                        } else {
-                            write!(w, " || ")?;
-                        }
-                        if want_brackets {
-                            write!(w, "(")?;
-                        }
-                        self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
-                        if let CommandRef::Extension(_) = cmd_ref_pair.primary {
-                            is_core = false;
-                        }
-                        if let Some(secondary) = cmd_ref_pair.secondary {
-                            write!(w, " && ")?;
-                            self.write_command_ref_condition(category, secondary, w)?;
-                        }
-                        if want_brackets {
-                            write!(w, ")")?;
-                        }
-                    }
+                    self.write_command_ref_condition_array(info, w)?;
                 }
                 writeln!(
                     w,
                     r#"{{ let fp = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
                     name
                 )?;
+                let is_core = info
+                    .refs
+                    .iter()
+                    .all(|cmd_ref_pair| matches!(cmd_ref_pair.primary, CommandRef::Feature(_)));
                 if is_core && category != Category::Loader {
                     writeln!(
                         w,
@@ -2989,6 +2993,23 @@ impl<'a> Generator<'a> {
                 }
                 writeln!(w, "fp.map(|f| mem::transmute(f)) }}")?;
                 if !always_load {
+                    for (other_name, other_info) in self.cmd_names.iter().filter_map(|&other_name| {
+                        let other_info = self.cmd_info_by_name.get(other_name).expect("missing command info");
+                        if other_info.alias == Some(name) {
+                            Some((other_name, other_info))
+                        } else {
+                            None
+                        }
+                    }) {
+                        writeln!(w, "else if ")?;
+                        self.write_command_ref_condition_array(other_info, w)?;
+                        writeln!(
+                            w,
+                            r#"{{ let fp = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
+                            other_name
+                        )?;
+                        writeln!(w, "fp.map(|f| mem::transmute(f)) }}")?;
+                    }
                     writeln!(w, "else {{ None }}")?;
                 }
             }
