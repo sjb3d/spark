@@ -68,7 +68,7 @@ impl Context {
         let instance = {
             let loader = Loader::new().unwrap();
 
-            let mut extensions = InstanceExtensions::default();
+            let mut extensions = InstanceExtensions::new(version);
             window_surface::enable_extensions(window, &mut extensions);
             if is_debug {
                 extensions.enable_ext_debug_utils();
@@ -121,7 +121,7 @@ impl Context {
                 .queue_family_index(queue_family_index)
                 .p_queue_priorities(&queue_priorities);
 
-            let mut extensions = DeviceExtensions::default();
+            let mut extensions = DeviceExtensions::new(version);
             extensions.enable_khr_swapchain();
             let extension_names = extensions.to_name_vec();
 

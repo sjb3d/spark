@@ -87,6 +87,12 @@ pub fn c_try_parse_version(i: &str) -> Option<(u16, u16)> {
     all_consuming(version)(i).map(ignore_remainder).ok()
 }
 
+pub fn c_parse_version_decimal(i: &str) -> (u16, u16) {
+    all_consuming(separated_pair(version_num, char('.'), version_num))(i)
+        .map(ignore_remainder)
+        .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
+}
+
 fn parse_i32(i: &str) -> Res<i32> {
     alt((
         preceded(tag("0x"), map_res(hex_digit1, |s: &str| i32::from_str_radix(s, 16))),

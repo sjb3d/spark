@@ -2799,8 +2799,9 @@ impl<'a> Generator<'a> {
             .collect();
 
         if !extensions.is_empty() {
-            writeln!(w, "#[derive(Debug, Copy, Clone, Default)]")?;
+            writeln!(w, "#[derive(Debug, Copy, Clone)]")?;
             writeln!(w, "pub struct {}Extensions {{", category)?;
+            writeln!(w, "pub core_version: vk::Version,")?;
             for ext in extensions.iter() {
                 let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
                 writeln!(w, "pub {}: bool,", var_name)?;
@@ -2819,8 +2820,18 @@ impl<'a> Generator<'a> {
 
             writeln!(
                 w,
-                "pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {{\
-                 let mut ext = Self::default();\
+                "pub fn new(core_version: vk::Version) -> Self {{ Self {{ core_version,"
+            )?;
+            for ext in extensions.iter() {
+                let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                writeln!(w, "{}: false,", var_name)?;
+            }
+            writeln!(w, "}} }}")?;
+
+            writeln!(
+                w,
+                "pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {{\
+                 let mut ext = Self::new(core_version);\
                  for ep in properties.iter() {{\
                     if ep.extension_name.iter().any(|&c| c == 0) {{\
                         let name = unsafe {{ CStr::from_ptr(ep.extension_name.as_ptr()) }};\
@@ -2838,7 +2849,6 @@ impl<'a> Generator<'a> {
 
                 let mut dependencies: Vec<&'a vk::Extension> = Vec::new();
                 while let Some(ext) = queue.pop_front() {
-                    dependencies.push(ext);
                     for req in ext
                         .requires
                         .as_ref_str()
@@ -2847,27 +2857,74 @@ impl<'a> Generator<'a> {
                         .filter_map(|s| self.extension_by_name.get(s))
                     {
                         if queued_names.insert(req.name.as_ref()) {
+                            dependencies.push(req);
                             queue.push_back(req);
                         }
                     }
                 }
+                dependencies
+                    .retain(|ext| ext.is_supported() && !ext.is_blacklisted() && ext.get_category() == category);
 
-                let check_names: Vec<String> = dependencies
-                    .iter()
-                    .filter(|ext| ext.is_supported() && !ext.is_blacklisted() && ext.get_category() == category)
-                    .map(|ext| format!("self.{}", ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()))
-                    .collect();
-                if !check_names.is_empty() {
+                if ext.get_category() == category || !dependencies.is_empty() {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                    let promoted_to_version = ext.promotedto.as_ref_str().and_then(|s| c_try_parse_version(s));
+                    let min_version = ext.requires_core.as_ref_str().map(|s| c_parse_version_decimal(s));
+
+                    let mut support_checks = Vec::new();
+                    if let Some(version) = min_version {
+                        support_checks.push(format!(
+                            "self.core_version >= vk::Version::from_raw_parts({}, {}, 0)",
+                            version.0, version.1
+                        ))
+                    }
+                    if ext.get_category() == category {
+                        support_checks.push(if let Some(version) = promoted_to_version {
+                            format!(
+                                "self.{} || self.core_version >= vk::Version::from_raw_parts({}, {}, 0)",
+                                var_name, version.0, version.1
+                            )
+                        } else {
+                            format!("self.{}", var_name)
+                        });
+                    }
+                    support_checks.extend(dependencies.iter().map(|ext| {
+                        format!(
+                            "self.supports_{}()",
+                            ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()
+                        )
+                    }));
+                    if support_checks.len() > 1 {
+                        for check in support_checks.iter_mut() {
+                            if check.contains("||") {
+                                *check = format!("({})", check);
+                            }
+                        }
+                    }
                     writeln!(
                         w,
                         "pub fn supports_{}(&self) -> bool {{ {} }}",
                         var_name,
-                        check_names.join("&&")
+                        support_checks.join("&&")
                     )?;
-                    writeln!(w, "pub fn enable_{}(&mut self) {{", var_name)?;
-                    for name in check_names.iter() {
-                        writeln!(w, "{} = true;", name)?;
+
+                    writeln!(w, "pub fn enable_{}(&mut self) {{", var_name,)?;
+                    if ext.get_category() == category {
+                        if let Some(version) = promoted_to_version {
+                            writeln!(
+                                w,
+                                "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{ self.{} = true; }}",
+                                version.0, version.1, var_name
+                            )?;
+                        } else {
+                            writeln!(w, "self.{} = true;", var_name)?;
+                        }
+                    }
+                    for ext in dependencies {
+                        writeln!(
+                            w,
+                            "self.enable_{}();",
+                            ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()
+                        )?;
                     }
                     writeln!(w, "}}")?;
                 }
@@ -2928,7 +2985,7 @@ impl<'a> Generator<'a> {
                     w,
                     "pub unsafe fn load(loader: &Loader, instance: vk::Instance, create_info: &vk::InstanceCreateInfo) -> LoaderResult<Self> {{\
                      let version = create_info.p_application_info.as_ref().map(|app_info| app_info.api_version).unwrap_or_default();\
-                     let mut extensions = {}Extensions::default();", category)?;
+                     let mut extensions = {}Extensions::new(version);", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
@@ -2944,7 +3001,7 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "pub unsafe fn load(instance: &Instance, device: vk::Device, create_info: &vk::DeviceCreateInfo, version: vk::Version) -> LoaderResult<Self> {{\
-                     let mut extensions = {}Extensions::default();", category)?;
+                     let mut extensions = {}Extensions::new(version);", category)?;
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\

@@ -231,8 +231,9 @@ impl Loader {
         }
     }
 }
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone)]
 pub struct InstanceExtensions {
+    pub core_version: vk::Version,
     pub khr_surface: bool,
     pub khr_display: bool,
     pub khr_xlib_surface: bool,
@@ -302,8 +303,44 @@ impl InstanceExtensions {
             _ => {}
         }
     }
-    pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {
-        let mut ext = Self::default();
+    pub fn new(core_version: vk::Version) -> Self {
+        Self {
+            core_version,
+            khr_surface: false,
+            khr_display: false,
+            khr_xlib_surface: false,
+            khr_xcb_surface: false,
+            khr_wayland_surface: false,
+            khr_android_surface: false,
+            khr_win32_surface: false,
+            ext_debug_report: false,
+            nv_external_memory_capabilities: false,
+            khr_get_physical_device_properties2: false,
+            ext_validation_flags: false,
+            nn_vi_surface: false,
+            khr_device_group_creation: false,
+            khr_external_memory_capabilities: false,
+            khr_external_semaphore_capabilities: false,
+            ext_direct_mode_display: false,
+            ext_acquire_xlib_display: false,
+            ext_display_surface_counter: false,
+            ext_swapchain_colorspace: false,
+            khr_external_fence_capabilities: false,
+            khr_get_surface_capabilities2: false,
+            khr_get_display_properties2: false,
+            mvk_ios_surface: false,
+            mvk_macos_surface: false,
+            ext_debug_utils: false,
+            fuchsia_imagepipe_surface: false,
+            ext_metal_surface: false,
+            khr_surface_protected_capabilities: false,
+            ext_validation_features: false,
+            ext_headless_surface: false,
+            ext_directfb_surface: false,
+        }
+    }
+    pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
+        let mut ext = Self::new(core_version);
         for ep in properties.iter() {
             if ep.extension_name.iter().any(|&c| c == 0) {
                 let name = unsafe { CStr::from_ptr(ep.extension_name.as_ptr()) };
@@ -319,59 +356,59 @@ impl InstanceExtensions {
         self.khr_surface = true;
     }
     pub fn supports_khr_swapchain(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_khr_swapchain(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_display(&self) -> bool {
-        self.khr_display && self.khr_surface
+        self.khr_display && self.supports_khr_surface()
     }
     pub fn enable_khr_display(&mut self) {
         self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_display_swapchain(&self) -> bool {
-        self.khr_display && self.khr_surface
+        self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_khr_display_swapchain(&mut self) {
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_khr_xlib_surface(&self) -> bool {
-        self.khr_xlib_surface && self.khr_surface
+        self.khr_xlib_surface && self.supports_khr_surface()
     }
     pub fn enable_khr_xlib_surface(&mut self) {
         self.khr_xlib_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_xcb_surface(&self) -> bool {
-        self.khr_xcb_surface && self.khr_surface
+        self.khr_xcb_surface && self.supports_khr_surface()
     }
     pub fn enable_khr_xcb_surface(&mut self) {
         self.khr_xcb_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_wayland_surface(&self) -> bool {
-        self.khr_wayland_surface && self.khr_surface
+        self.khr_wayland_surface && self.supports_khr_surface()
     }
     pub fn enable_khr_wayland_surface(&mut self) {
         self.khr_wayland_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_android_surface(&self) -> bool {
-        self.khr_android_surface && self.khr_surface
+        self.khr_android_surface && self.supports_khr_surface()
     }
     pub fn enable_khr_android_surface(&mut self) {
         self.khr_android_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_win32_surface(&self) -> bool {
-        self.khr_win32_surface && self.khr_surface
+        self.khr_win32_surface && self.supports_khr_surface()
     }
     pub fn enable_khr_win32_surface(&mut self) {
         self.khr_win32_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_debug_report(&self) -> bool {
         self.ext_debug_report
@@ -380,34 +417,34 @@ impl InstanceExtensions {
         self.ext_debug_report = true;
     }
     pub fn supports_ext_debug_marker(&self) -> bool {
-        self.ext_debug_report
+        self.supports_ext_debug_report()
     }
     pub fn enable_ext_debug_marker(&mut self) {
-        self.ext_debug_report = true;
+        self.enable_ext_debug_report();
     }
     pub fn supports_ext_transform_feedback(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_transform_feedback(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_amd_texture_gather_bias_lod(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_amd_texture_gather_bias_lod(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_corner_sampled_image(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_corner_sampled_image(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_multiview(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_multiview(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_external_memory_capabilities(&self) -> bool {
         self.nv_external_memory_capabilities
@@ -416,34 +453,36 @@ impl InstanceExtensions {
         self.nv_external_memory_capabilities = true;
     }
     pub fn supports_nv_external_memory(&self) -> bool {
-        self.nv_external_memory_capabilities
+        self.supports_nv_external_memory_capabilities()
     }
     pub fn enable_nv_external_memory(&mut self) {
-        self.nv_external_memory_capabilities = true;
+        self.enable_nv_external_memory_capabilities();
     }
     pub fn supports_nv_external_memory_win32(&self) -> bool {
-        self.nv_external_memory_capabilities
+        self.supports_nv_external_memory_capabilities()
     }
     pub fn enable_nv_external_memory_win32(&mut self) {
-        self.nv_external_memory_capabilities = true;
+        self.enable_nv_external_memory_capabilities();
     }
     pub fn supports_nv_win32_keyed_mutex(&self) -> bool {
-        self.nv_external_memory_capabilities
+        self.supports_nv_external_memory_capabilities()
     }
     pub fn enable_nv_win32_keyed_mutex(&mut self) {
-        self.nv_external_memory_capabilities = true;
+        self.enable_nv_external_memory_capabilities();
     }
     pub fn supports_khr_get_physical_device_properties2(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.khr_get_physical_device_properties2 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_get_physical_device_properties2(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_get_physical_device_properties2 = true;
+        }
     }
     pub fn supports_khr_device_group(&self) -> bool {
-        self.khr_device_group_creation
+        self.supports_khr_device_group_creation()
     }
     pub fn enable_khr_device_group(&mut self) {
-        self.khr_device_group_creation = true;
+        self.enable_khr_device_group_creation();
     }
     pub fn supports_ext_validation_flags(&self) -> bool {
         self.ext_validation_flags
@@ -452,283 +491,299 @@ impl InstanceExtensions {
         self.ext_validation_flags = true;
     }
     pub fn supports_nn_vi_surface(&self) -> bool {
-        self.nn_vi_surface && self.khr_surface
+        self.nn_vi_surface && self.supports_khr_surface()
     }
     pub fn enable_nn_vi_surface(&mut self) {
         self.nn_vi_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_texture_compression_astc_hdr(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_texture_compression_astc_hdr(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_astc_decode_mode(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_astc_decode_mode(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_device_group_creation(&self) -> bool {
-        self.khr_device_group_creation
+        self.khr_device_group_creation || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_device_group_creation(&mut self) {
-        self.khr_device_group_creation = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_device_group_creation = true;
+        }
     }
     pub fn supports_khr_external_memory_capabilities(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        (self.khr_external_memory_capabilities || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_memory_capabilities(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_memory_capabilities = true;
+        }
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_memory(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_memory(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_memory_win32(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_memory_win32(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_memory_fd(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_memory_fd(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_win32_keyed_mutex(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_win32_keyed_mutex(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_semaphore_capabilities(&self) -> bool {
-        self.khr_external_semaphore_capabilities && self.khr_get_physical_device_properties2
+        (self.khr_external_semaphore_capabilities || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_semaphore_capabilities(&mut self) {
-        self.khr_external_semaphore_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_semaphore_capabilities = true;
+        }
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_semaphore(&self) -> bool {
-        self.khr_external_semaphore_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_semaphore_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_semaphore(&mut self) {
-        self.khr_external_semaphore_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_semaphore_win32(&self) -> bool {
-        self.khr_external_semaphore_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_semaphore_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_semaphore_win32(&mut self) {
-        self.khr_external_semaphore_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_semaphore_fd(&self) -> bool {
-        self.khr_external_semaphore_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_semaphore_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_semaphore_fd(&mut self) {
-        self.khr_external_semaphore_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_push_descriptor(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shader_float16_int8(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_float16_int8(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_16bit_storage(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_16bit_storage(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_incremental_present(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_khr_incremental_present(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_direct_mode_display(&self) -> bool {
-        self.ext_direct_mode_display && self.khr_display && self.khr_surface
+        self.ext_direct_mode_display && self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_ext_direct_mode_display(&mut self) {
         self.ext_direct_mode_display = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_ext_acquire_xlib_display(&self) -> bool {
-        self.ext_acquire_xlib_display && self.ext_direct_mode_display && self.khr_display && self.khr_surface
+        self.ext_acquire_xlib_display
+            && self.supports_ext_direct_mode_display()
+            && self.supports_khr_display()
+            && self.supports_khr_surface()
     }
     pub fn enable_ext_acquire_xlib_display(&mut self) {
         self.ext_acquire_xlib_display = true;
-        self.ext_direct_mode_display = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_ext_direct_mode_display();
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_ext_display_surface_counter(&self) -> bool {
-        self.ext_display_surface_counter && self.khr_display && self.khr_surface
+        self.ext_display_surface_counter && self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_ext_display_surface_counter(&mut self) {
         self.ext_display_surface_counter = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_ext_display_control(&self) -> bool {
-        self.ext_display_surface_counter && self.khr_display && self.khr_surface
+        self.supports_ext_display_surface_counter() && self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_ext_display_control(&mut self) {
-        self.ext_display_surface_counter = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_ext_display_surface_counter();
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_google_display_timing(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_google_display_timing(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_nvx_multiview_per_view_attributes(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nvx_multiview_per_view_attributes(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_discard_rectangles(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_discard_rectangles(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_conservative_rasterization(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_conservative_rasterization(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_swapchain_colorspace(&self) -> bool {
-        self.ext_swapchain_colorspace && self.khr_surface
+        self.ext_swapchain_colorspace && self.supports_khr_surface()
     }
     pub fn enable_ext_swapchain_colorspace(&mut self) {
         self.ext_swapchain_colorspace = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_hdr_metadata(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_ext_hdr_metadata(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_create_renderpass2(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_create_renderpass2(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shared_presentable_image(&self) -> bool {
-        self.khr_get_physical_device_properties2 && self.khr_get_surface_capabilities2 && self.khr_surface
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_get_surface_capabilities2()
+            && self.supports_khr_surface()
     }
     pub fn enable_khr_shared_presentable_image(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
-        self.khr_get_surface_capabilities2 = true;
-        self.khr_surface = true;
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_surface();
     }
     pub fn supports_khr_external_fence_capabilities(&self) -> bool {
-        self.khr_external_fence_capabilities && self.khr_get_physical_device_properties2
+        (self.khr_external_fence_capabilities || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_fence_capabilities(&mut self) {
-        self.khr_external_fence_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_fence_capabilities = true;
+        }
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_fence(&self) -> bool {
-        self.khr_external_fence_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_fence_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_fence(&mut self) {
-        self.khr_external_fence_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_fence_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_fence_win32(&self) -> bool {
-        self.khr_external_fence_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_fence_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_fence_win32(&mut self) {
-        self.khr_external_fence_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_fence_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_external_fence_fd(&self) -> bool {
-        self.khr_external_fence_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_fence_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_external_fence_fd(&mut self) {
-        self.khr_external_fence_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_fence_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_performance_query(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_performance_query(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_get_surface_capabilities2(&self) -> bool {
-        self.khr_get_surface_capabilities2 && self.khr_surface
+        self.khr_get_surface_capabilities2 && self.supports_khr_surface()
     }
     pub fn enable_khr_get_surface_capabilities2(&mut self) {
         self.khr_get_surface_capabilities2 = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_variable_pointers(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_variable_pointers(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_get_display_properties2(&self) -> bool {
-        self.khr_get_display_properties2 && self.khr_display && self.khr_surface
+        self.khr_get_display_properties2 && self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_khr_get_display_properties2(&mut self) {
         self.khr_get_display_properties2 = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_mvk_ios_surface(&self) -> bool {
-        self.mvk_ios_surface && self.khr_surface
+        self.mvk_ios_surface && self.supports_khr_surface()
     }
     pub fn enable_mvk_ios_surface(&mut self) {
         self.mvk_ios_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_mvk_macos_surface(&self) -> bool {
-        self.mvk_macos_surface && self.khr_surface
+        self.mvk_macos_surface && self.supports_khr_surface()
     }
     pub fn enable_mvk_macos_surface(&mut self) {
         self.mvk_macos_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_external_memory_dma_buf(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_external_memory_dma_buf(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_queue_family_foreign(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_queue_family_foreign(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_debug_utils(&self) -> bool {
         self.ext_debug_utils
@@ -737,300 +792,305 @@ impl InstanceExtensions {
         self.ext_debug_utils = true;
     }
     pub fn supports_android_external_memory_android_hardware_buffer(&self) -> bool {
-        self.khr_get_physical_device_properties2 && self.khr_external_memory_capabilities
+        self.supports_khr_get_physical_device_properties2() && self.supports_khr_external_memory_capabilities()
     }
     pub fn enable_android_external_memory_android_hardware_buffer(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
-        self.khr_external_memory_capabilities = true;
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_external_memory_capabilities();
     }
     pub fn supports_ext_sampler_filter_minmax(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_sampler_filter_minmax(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_inline_uniform_block(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_sample_locations(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_sample_locations(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_acceleration_structure(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_acceleration_structure(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_ray_tracing_pipeline(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_ray_query(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_ray_query(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_sampler_ycbcr_conversion(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_image_drm_format_modifier(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_descriptor_indexing(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_descriptor_indexing(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_portability_subset(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_portability_subset(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_shading_rate_image(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_shading_rate_image(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_ray_tracing(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_ray_tracing(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_maintenance3(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_maintenance3(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_8bit_storage(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_8bit_storage(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_external_memory_host(&self) -> bool {
-        self.khr_external_memory_capabilities && self.khr_get_physical_device_properties2
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_external_memory_host(&mut self) {
-        self.khr_external_memory_capabilities = true;
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shader_atomic_int64(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_atomic_int64(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shader_clock(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_clock(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_amd_shader_core_properties(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_amd_shader_core_properties(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_vertex_attribute_divisor(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_vertex_attribute_divisor(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_driver_properties(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_driver_properties(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shader_float_controls(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_float_controls(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_depth_stencil_resolve(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_depth_stencil_resolve(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_swapchain_mutable_format(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_khr_swapchain_mutable_format(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_nv_compute_shader_derivatives(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_compute_shader_derivatives(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_mesh_shader(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_mesh_shader(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_fragment_shader_barycentric(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_fragment_shader_barycentric(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_shader_image_footprint(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_shader_image_footprint(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_scissor_exclusive(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_scissor_exclusive(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_device_diagnostic_checkpoints(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_device_diagnostic_checkpoints(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_timeline_semaphore(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_timeline_semaphore(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_intel_shader_integer_functions2(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_intel_shader_integer_functions2(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_pci_bus_info(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_pci_bus_info(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_amd_display_native_hdr(&self) -> bool {
-        self.khr_get_physical_device_properties2 && self.khr_get_surface_capabilities2 && self.khr_surface
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_get_surface_capabilities2()
+            && self.supports_khr_surface()
     }
     pub fn enable_amd_display_native_hdr(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
-        self.khr_get_surface_capabilities2 = true;
-        self.khr_surface = true;
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_surface();
     }
     pub fn supports_fuchsia_imagepipe_surface(&self) -> bool {
-        self.fuchsia_imagepipe_surface && self.khr_surface
+        self.fuchsia_imagepipe_surface && self.supports_khr_surface()
     }
     pub fn enable_fuchsia_imagepipe_surface(&mut self) {
         self.fuchsia_imagepipe_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_shader_terminate_invocation(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_shader_terminate_invocation(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_metal_surface(&self) -> bool {
-        self.ext_metal_surface && self.khr_surface
+        self.ext_metal_surface && self.supports_khr_surface()
     }
     pub fn enable_ext_metal_surface(&mut self) {
         self.ext_metal_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_fragment_density_map(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_fragment_density_map(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_scalar_block_layout(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_scalar_block_layout(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_fragment_shading_rate(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_fragment_shading_rate(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_amd_shader_core_properties2(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_amd_shader_core_properties2(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_image_atomic_int64(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_spirv_1_4(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_memory_budget(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_memory_budget(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_memory_priority(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_memory_priority(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_surface_protected_capabilities(&self) -> bool {
-        self.khr_surface_protected_capabilities && self.khr_get_surface_capabilities2 && self.khr_surface
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.khr_surface_protected_capabilities
+            && self.supports_khr_get_surface_capabilities2()
+            && self.supports_khr_surface()
     }
     pub fn enable_khr_surface_protected_capabilities(&mut self) {
         self.khr_surface_protected_capabilities = true;
-        self.khr_get_surface_capabilities2 = true;
-        self.khr_surface = true;
+        self.enable_khr_get_surface_capabilities2();
+        self.enable_khr_surface();
     }
     pub fn supports_khr_separate_depth_stencil_layouts(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_separate_depth_stencil_layouts(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_buffer_device_address(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_buffer_device_address(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_validation_features(&self) -> bool {
         self.ext_validation_features
@@ -1039,160 +1099,162 @@ impl InstanceExtensions {
         self.ext_validation_features = true;
     }
     pub fn supports_nv_cooperative_matrix(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_cooperative_matrix(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_fragment_shader_interlock(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_fragment_shader_interlock(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_ycbcr_image_arrays(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_ycbcr_image_arrays(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_uniform_buffer_standard_layout(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_full_screen_exclusive(&self) -> bool {
-        self.khr_get_physical_device_properties2 && self.khr_surface && self.khr_get_surface_capabilities2
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_surface()
+            && self.supports_khr_get_surface_capabilities2()
     }
     pub fn enable_ext_full_screen_exclusive(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
-        self.khr_surface = true;
-        self.khr_get_surface_capabilities2 = true;
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
     }
     pub fn supports_ext_headless_surface(&self) -> bool {
-        self.ext_headless_surface && self.khr_surface
+        self.ext_headless_surface && self.supports_khr_surface()
     }
     pub fn enable_ext_headless_surface(&mut self) {
         self.ext_headless_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_khr_buffer_device_address(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_buffer_device_address(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_line_rasterization(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_line_rasterization(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_shader_atomic_float(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_atomic_float(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_host_query_reset(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_host_query_reset(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_extended_dynamic_state(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_extended_dynamic_state(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_pipeline_executable_properties(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_texel_buffer_alignment(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_qcom_render_pass_transform(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_qcom_render_pass_transform(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_device_memory_report(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_device_memory_report(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_device_diagnostics_config(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_device_diagnostics_config(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_fragment_density_map2(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
-        self.khr_surface
+        self.supports_khr_surface()
     }
     pub fn enable_qcom_rotated_copy_commands(&mut self) {
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_image_robustness(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_4444_formats(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_4444_formats(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_acquire_winrt_display(&self) -> bool {
-        self.ext_direct_mode_display && self.khr_display && self.khr_surface
+        self.supports_ext_direct_mode_display() && self.supports_khr_display() && self.supports_khr_surface()
     }
     pub fn enable_nv_acquire_winrt_display(&mut self) {
-        self.ext_direct_mode_display = true;
-        self.khr_display = true;
-        self.khr_surface = true;
+        self.enable_ext_direct_mode_display();
+        self.enable_khr_display();
+        self.enable_khr_surface();
     }
     pub fn supports_ext_directfb_surface(&self) -> bool {
-        self.ext_directfb_surface && self.khr_surface
+        self.ext_directfb_surface && self.supports_khr_surface()
     }
     pub fn enable_ext_directfb_surface(&mut self) {
         self.ext_directfb_surface = true;
-        self.khr_surface = true;
+        self.enable_khr_surface();
     }
     pub fn supports_valve_mutable_descriptor_type(&self) -> bool {
-        self.khr_get_physical_device_properties2
+        self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_valve_mutable_descriptor_type(&mut self) {
-        self.khr_get_physical_device_properties2 = true;
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -1394,7 +1456,7 @@ impl Instance {
             .as_ref()
             .map(|app_info| app_info.api_version)
             .unwrap_or_default();
-        let mut extensions = InstanceExtensions::default();
+        let mut extensions = InstanceExtensions::new(version);
         if create_info.enabled_extension_count != 0 {
             for &name_ptr in slice::from_raw_parts(
                 create_info.pp_enabled_extension_names,
@@ -3515,8 +3577,9 @@ impl Instance {
         }
     }
 }
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone)]
 pub struct DeviceExtensions {
+    pub core_version: vk::Version,
     pub khr_swapchain: bool,
     pub khr_display_swapchain: bool,
     pub nv_glsl_shader: bool,
@@ -3906,8 +3969,203 @@ impl DeviceExtensions {
             _ => {}
         }
     }
-    pub fn from_properties(properties: &[vk::ExtensionProperties]) -> Self {
-        let mut ext = Self::default();
+    pub fn new(core_version: vk::Version) -> Self {
+        Self {
+            core_version,
+            khr_swapchain: false,
+            khr_display_swapchain: false,
+            nv_glsl_shader: false,
+            ext_depth_range_unrestricted: false,
+            khr_sampler_mirror_clamp_to_edge: false,
+            img_filter_cubic: false,
+            amd_rasterization_order: false,
+            amd_shader_trinary_minmax: false,
+            amd_shader_explicit_vertex_parameter: false,
+            ext_debug_marker: false,
+            amd_gcn_shader: false,
+            nv_dedicated_allocation: false,
+            ext_transform_feedback: false,
+            nvx_image_view_handle: false,
+            amd_draw_indirect_count: false,
+            amd_negative_viewport_height: false,
+            amd_gpu_shader_half_float: false,
+            amd_shader_ballot: false,
+            amd_texture_gather_bias_lod: false,
+            amd_shader_info: false,
+            amd_shader_image_load_store_lod: false,
+            nv_corner_sampled_image: false,
+            khr_multiview: false,
+            img_format_pvrtc: false,
+            nv_external_memory: false,
+            nv_external_memory_win32: false,
+            nv_win32_keyed_mutex: false,
+            khr_device_group: false,
+            khr_shader_draw_parameters: false,
+            ext_shader_subgroup_ballot: false,
+            ext_shader_subgroup_vote: false,
+            ext_texture_compression_astc_hdr: false,
+            ext_astc_decode_mode: false,
+            khr_maintenance1: false,
+            khr_external_memory: false,
+            khr_external_memory_win32: false,
+            khr_external_memory_fd: false,
+            khr_win32_keyed_mutex: false,
+            khr_external_semaphore: false,
+            khr_external_semaphore_win32: false,
+            khr_external_semaphore_fd: false,
+            khr_push_descriptor: false,
+            ext_conditional_rendering: false,
+            khr_shader_float16_int8: false,
+            khr_16bit_storage: false,
+            khr_incremental_present: false,
+            khr_descriptor_update_template: false,
+            nv_clip_space_w_scaling: false,
+            ext_display_control: false,
+            google_display_timing: false,
+            nv_sample_mask_override_coverage: false,
+            nv_geometry_shader_passthrough: false,
+            nv_viewport_array2: false,
+            nvx_multiview_per_view_attributes: false,
+            nv_viewport_swizzle: false,
+            ext_discard_rectangles: false,
+            ext_conservative_rasterization: false,
+            ext_depth_clip_enable: false,
+            ext_hdr_metadata: false,
+            khr_imageless_framebuffer: false,
+            khr_create_renderpass2: false,
+            khr_shared_presentable_image: false,
+            khr_external_fence: false,
+            khr_external_fence_win32: false,
+            khr_external_fence_fd: false,
+            khr_performance_query: false,
+            khr_maintenance2: false,
+            khr_variable_pointers: false,
+            ext_external_memory_dma_buf: false,
+            ext_queue_family_foreign: false,
+            khr_dedicated_allocation: false,
+            android_external_memory_android_hardware_buffer: false,
+            ext_sampler_filter_minmax: false,
+            khr_storage_buffer_storage_class: false,
+            amd_gpu_shader_int16: false,
+            amd_mixed_attachment_samples: false,
+            amd_shader_fragment_mask: false,
+            ext_inline_uniform_block: false,
+            ext_shader_stencil_export: false,
+            ext_sample_locations: false,
+            khr_relaxed_block_layout: false,
+            khr_get_memory_requirements2: false,
+            khr_image_format_list: false,
+            ext_blend_operation_advanced: false,
+            nv_fragment_coverage_to_color: false,
+            khr_acceleration_structure: false,
+            khr_ray_tracing_pipeline: false,
+            khr_ray_query: false,
+            nv_framebuffer_mixed_samples: false,
+            nv_fill_rectangle: false,
+            nv_shader_sm_builtins: false,
+            ext_post_depth_coverage: false,
+            khr_sampler_ycbcr_conversion: false,
+            khr_bind_memory2: false,
+            ext_image_drm_format_modifier: false,
+            ext_validation_cache: false,
+            ext_descriptor_indexing: false,
+            ext_shader_viewport_index_layer: false,
+            khr_portability_subset: false,
+            nv_shading_rate_image: false,
+            nv_ray_tracing: false,
+            nv_representative_fragment_test: false,
+            khr_maintenance3: false,
+            khr_draw_indirect_count: false,
+            ext_filter_cubic: false,
+            qcom_render_pass_shader_resolve: false,
+            ext_global_priority: false,
+            khr_shader_subgroup_extended_types: false,
+            khr_8bit_storage: false,
+            ext_external_memory_host: false,
+            amd_buffer_marker: false,
+            khr_shader_atomic_int64: false,
+            khr_shader_clock: false,
+            amd_pipeline_compiler_control: false,
+            ext_calibrated_timestamps: false,
+            amd_shader_core_properties: false,
+            amd_memory_overallocation_behavior: false,
+            ext_vertex_attribute_divisor: false,
+            ext_pipeline_creation_feedback: false,
+            khr_driver_properties: false,
+            khr_shader_float_controls: false,
+            nv_shader_subgroup_partitioned: false,
+            khr_depth_stencil_resolve: false,
+            khr_swapchain_mutable_format: false,
+            nv_compute_shader_derivatives: false,
+            nv_mesh_shader: false,
+            nv_fragment_shader_barycentric: false,
+            nv_shader_image_footprint: false,
+            nv_scissor_exclusive: false,
+            nv_device_diagnostic_checkpoints: false,
+            khr_timeline_semaphore: false,
+            intel_shader_integer_functions2: false,
+            intel_performance_query: false,
+            khr_vulkan_memory_model: false,
+            ext_pci_bus_info: false,
+            amd_display_native_hdr: false,
+            khr_shader_terminate_invocation: false,
+            ext_fragment_density_map: false,
+            ext_scalar_block_layout: false,
+            google_hlsl_functionality1: false,
+            google_decorate_string: false,
+            ext_subgroup_size_control: false,
+            khr_fragment_shading_rate: false,
+            amd_shader_core_properties2: false,
+            amd_device_coherent_memory: false,
+            ext_shader_image_atomic_int64: false,
+            khr_spirv_1_4: false,
+            ext_memory_budget: false,
+            ext_memory_priority: false,
+            nv_dedicated_allocation_image_aliasing: false,
+            khr_separate_depth_stencil_layouts: false,
+            ext_buffer_device_address: false,
+            ext_tooling_info: false,
+            ext_separate_stencil_usage: false,
+            nv_cooperative_matrix: false,
+            nv_coverage_reduction_mode: false,
+            ext_fragment_shader_interlock: false,
+            ext_ycbcr_image_arrays: false,
+            khr_uniform_buffer_standard_layout: false,
+            ext_full_screen_exclusive: false,
+            khr_buffer_device_address: false,
+            ext_line_rasterization: false,
+            ext_shader_atomic_float: false,
+            ext_host_query_reset: false,
+            ext_index_type_uint8: false,
+            ext_extended_dynamic_state: false,
+            khr_deferred_host_operations: false,
+            khr_pipeline_executable_properties: false,
+            ext_shader_demote_to_helper_invocation: false,
+            nv_device_generated_commands: false,
+            ext_texel_buffer_alignment: false,
+            qcom_render_pass_transform: false,
+            ext_device_memory_report: false,
+            ext_robustness2: false,
+            ext_custom_border_color: false,
+            google_user_type: false,
+            khr_pipeline_library: false,
+            khr_shader_non_semantic_info: false,
+            ext_private_data: false,
+            ext_pipeline_creation_cache_control: false,
+            nv_device_diagnostics_config: false,
+            qcom_render_pass_store_ops: false,
+            nv_fragment_shading_rate_enums: false,
+            ext_fragment_density_map2: false,
+            qcom_rotated_copy_commands: false,
+            ext_image_robustness: false,
+            khr_copy_commands2: false,
+            ext_4444_formats: false,
+            nv_acquire_winrt_display: false,
+            valve_mutable_descriptor_type: false,
+        }
+    }
+    pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
+        let mut ext = Self::new(core_version);
         for ep in properties.iter() {
             if ep.extension_name.iter().any(|&c| c == 0) {
                 let name = unsafe { CStr::from_ptr(ep.extension_name.as_ptr()) };
@@ -3923,11 +4181,11 @@ impl DeviceExtensions {
         self.khr_swapchain = true;
     }
     pub fn supports_khr_display_swapchain(&self) -> bool {
-        self.khr_display_swapchain && self.khr_swapchain
+        self.khr_display_swapchain && self.supports_khr_swapchain()
     }
     pub fn enable_khr_display_swapchain(&mut self) {
         self.khr_display_swapchain = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_nv_glsl_shader(&self) -> bool {
         self.nv_glsl_shader
@@ -3942,10 +4200,12 @@ impl DeviceExtensions {
         self.ext_depth_range_unrestricted = true;
     }
     pub fn supports_khr_sampler_mirror_clamp_to_edge(&self) -> bool {
-        self.khr_sampler_mirror_clamp_to_edge
+        self.khr_sampler_mirror_clamp_to_edge || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_sampler_mirror_clamp_to_edge(&mut self) {
-        self.khr_sampler_mirror_clamp_to_edge = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_sampler_mirror_clamp_to_edge = true;
+        }
     }
     pub fn supports_img_filter_cubic(&self) -> bool {
         self.img_filter_cubic
@@ -4050,10 +4310,12 @@ impl DeviceExtensions {
         self.nv_corner_sampled_image = true;
     }
     pub fn supports_khr_multiview(&self) -> bool {
-        self.khr_multiview
+        self.khr_multiview || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_multiview(&mut self) {
-        self.khr_multiview = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_multiview = true;
+        }
     }
     pub fn supports_img_format_pvrtc(&self) -> bool {
         self.img_format_pvrtc
@@ -4068,31 +4330,35 @@ impl DeviceExtensions {
         self.nv_external_memory = true;
     }
     pub fn supports_nv_external_memory_win32(&self) -> bool {
-        self.nv_external_memory_win32 && self.nv_external_memory
+        self.nv_external_memory_win32 && self.supports_nv_external_memory()
     }
     pub fn enable_nv_external_memory_win32(&mut self) {
         self.nv_external_memory_win32 = true;
-        self.nv_external_memory = true;
+        self.enable_nv_external_memory();
     }
     pub fn supports_nv_win32_keyed_mutex(&self) -> bool {
-        self.nv_win32_keyed_mutex && self.nv_external_memory_win32 && self.nv_external_memory
+        self.nv_win32_keyed_mutex && self.supports_nv_external_memory_win32() && self.supports_nv_external_memory()
     }
     pub fn enable_nv_win32_keyed_mutex(&mut self) {
         self.nv_win32_keyed_mutex = true;
-        self.nv_external_memory_win32 = true;
-        self.nv_external_memory = true;
+        self.enable_nv_external_memory_win32();
+        self.enable_nv_external_memory();
     }
     pub fn supports_khr_device_group(&self) -> bool {
-        self.khr_device_group
+        self.khr_device_group || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_device_group(&mut self) {
-        self.khr_device_group = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_device_group = true;
+        }
     }
     pub fn supports_khr_shader_draw_parameters(&self) -> bool {
-        self.khr_shader_draw_parameters
+        self.khr_shader_draw_parameters || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_shader_draw_parameters(&mut self) {
-        self.khr_shader_draw_parameters = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_shader_draw_parameters = true;
+        }
     }
     pub fn supports_ext_shader_subgroup_ballot(&self) -> bool {
         self.ext_shader_subgroup_ballot
@@ -4119,58 +4385,64 @@ impl DeviceExtensions {
         self.ext_astc_decode_mode = true;
     }
     pub fn supports_khr_maintenance1(&self) -> bool {
-        self.khr_maintenance1
+        self.khr_maintenance1 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_maintenance1(&mut self) {
-        self.khr_maintenance1 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_maintenance1 = true;
+        }
     }
     pub fn supports_khr_external_memory(&self) -> bool {
-        self.khr_external_memory
+        self.khr_external_memory || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_memory(&mut self) {
-        self.khr_external_memory = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_memory = true;
+        }
     }
     pub fn supports_khr_external_memory_win32(&self) -> bool {
-        self.khr_external_memory_win32 && self.khr_external_memory
+        self.khr_external_memory_win32 && self.supports_khr_external_memory()
     }
     pub fn enable_khr_external_memory_win32(&mut self) {
         self.khr_external_memory_win32 = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory();
     }
     pub fn supports_khr_external_memory_fd(&self) -> bool {
-        self.khr_external_memory_fd && self.khr_external_memory
+        self.khr_external_memory_fd && self.supports_khr_external_memory()
     }
     pub fn enable_khr_external_memory_fd(&mut self) {
         self.khr_external_memory_fd = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory();
     }
     pub fn supports_khr_win32_keyed_mutex(&self) -> bool {
-        self.khr_win32_keyed_mutex && self.khr_external_memory_win32 && self.khr_external_memory
+        self.khr_win32_keyed_mutex && self.supports_khr_external_memory_win32() && self.supports_khr_external_memory()
     }
     pub fn enable_khr_win32_keyed_mutex(&mut self) {
         self.khr_win32_keyed_mutex = true;
-        self.khr_external_memory_win32 = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory_win32();
+        self.enable_khr_external_memory();
     }
     pub fn supports_khr_external_semaphore(&self) -> bool {
-        self.khr_external_semaphore
+        self.khr_external_semaphore || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_semaphore(&mut self) {
-        self.khr_external_semaphore = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_semaphore = true;
+        }
     }
     pub fn supports_khr_external_semaphore_win32(&self) -> bool {
-        self.khr_external_semaphore_win32 && self.khr_external_semaphore
+        self.khr_external_semaphore_win32 && self.supports_khr_external_semaphore()
     }
     pub fn enable_khr_external_semaphore_win32(&mut self) {
         self.khr_external_semaphore_win32 = true;
-        self.khr_external_semaphore = true;
+        self.enable_khr_external_semaphore();
     }
     pub fn supports_khr_external_semaphore_fd(&self) -> bool {
-        self.khr_external_semaphore_fd && self.khr_external_semaphore
+        self.khr_external_semaphore_fd && self.supports_khr_external_semaphore()
     }
     pub fn enable_khr_external_semaphore_fd(&mut self) {
         self.khr_external_semaphore_fd = true;
-        self.khr_external_semaphore = true;
+        self.enable_khr_external_semaphore();
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
         self.khr_push_descriptor
@@ -4185,30 +4457,37 @@ impl DeviceExtensions {
         self.ext_conditional_rendering = true;
     }
     pub fn supports_khr_shader_float16_int8(&self) -> bool {
-        self.khr_shader_float16_int8
+        self.khr_shader_float16_int8 || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_shader_float16_int8(&mut self) {
-        self.khr_shader_float16_int8 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_shader_float16_int8 = true;
+        }
     }
     pub fn supports_khr_16bit_storage(&self) -> bool {
-        self.khr_16bit_storage && self.khr_storage_buffer_storage_class
+        (self.khr_16bit_storage || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_storage_buffer_storage_class()
     }
     pub fn enable_khr_16bit_storage(&mut self) {
-        self.khr_16bit_storage = true;
-        self.khr_storage_buffer_storage_class = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_16bit_storage = true;
+        }
+        self.enable_khr_storage_buffer_storage_class();
     }
     pub fn supports_khr_incremental_present(&self) -> bool {
-        self.khr_incremental_present && self.khr_swapchain
+        self.khr_incremental_present && self.supports_khr_swapchain()
     }
     pub fn enable_khr_incremental_present(&mut self) {
         self.khr_incremental_present = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_khr_descriptor_update_template(&self) -> bool {
-        self.khr_descriptor_update_template
+        self.khr_descriptor_update_template || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_descriptor_update_template(&mut self) {
-        self.khr_descriptor_update_template = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_descriptor_update_template = true;
+        }
     }
     pub fn supports_nv_clip_space_w_scaling(&self) -> bool {
         self.nv_clip_space_w_scaling
@@ -4217,18 +4496,18 @@ impl DeviceExtensions {
         self.nv_clip_space_w_scaling = true;
     }
     pub fn supports_ext_display_control(&self) -> bool {
-        self.ext_display_control && self.khr_swapchain
+        self.ext_display_control && self.supports_khr_swapchain()
     }
     pub fn enable_ext_display_control(&mut self) {
         self.ext_display_control = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_google_display_timing(&self) -> bool {
-        self.google_display_timing && self.khr_swapchain
+        self.google_display_timing && self.supports_khr_swapchain()
     }
     pub fn enable_google_display_timing(&mut self) {
         self.google_display_timing = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_nv_sample_mask_override_coverage(&self) -> bool {
         self.nv_sample_mask_override_coverage
@@ -4249,11 +4528,11 @@ impl DeviceExtensions {
         self.nv_viewport_array2 = true;
     }
     pub fn supports_nvx_multiview_per_view_attributes(&self) -> bool {
-        self.nvx_multiview_per_view_attributes && self.khr_multiview
+        self.nvx_multiview_per_view_attributes && self.supports_khr_multiview()
     }
     pub fn enable_nvx_multiview_per_view_attributes(&mut self) {
         self.nvx_multiview_per_view_attributes = true;
-        self.khr_multiview = true;
+        self.enable_khr_multiview();
     }
     pub fn supports_nv_viewport_swizzle(&self) -> bool {
         self.nv_viewport_swizzle
@@ -4280,54 +4559,64 @@ impl DeviceExtensions {
         self.ext_depth_clip_enable = true;
     }
     pub fn supports_ext_hdr_metadata(&self) -> bool {
-        self.ext_hdr_metadata && self.khr_swapchain
+        self.ext_hdr_metadata && self.supports_khr_swapchain()
     }
     pub fn enable_ext_hdr_metadata(&mut self) {
         self.ext_hdr_metadata = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_khr_imageless_framebuffer(&self) -> bool {
-        self.khr_imageless_framebuffer && self.khr_maintenance2 && self.khr_image_format_list
+        (self.khr_imageless_framebuffer || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_maintenance2()
+            && self.supports_khr_image_format_list()
     }
     pub fn enable_khr_imageless_framebuffer(&mut self) {
-        self.khr_imageless_framebuffer = true;
-        self.khr_maintenance2 = true;
-        self.khr_image_format_list = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_imageless_framebuffer = true;
+        }
+        self.enable_khr_maintenance2();
+        self.enable_khr_image_format_list();
     }
     pub fn supports_khr_create_renderpass2(&self) -> bool {
-        self.khr_create_renderpass2 && self.khr_multiview && self.khr_maintenance2
+        (self.khr_create_renderpass2 || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_create_renderpass2(&mut self) {
-        self.khr_create_renderpass2 = true;
-        self.khr_multiview = true;
-        self.khr_maintenance2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_create_renderpass2 = true;
+        }
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_khr_shared_presentable_image(&self) -> bool {
-        self.khr_shared_presentable_image && self.khr_swapchain
+        self.khr_shared_presentable_image && self.supports_khr_swapchain()
     }
     pub fn enable_khr_shared_presentable_image(&mut self) {
         self.khr_shared_presentable_image = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_khr_external_fence(&self) -> bool {
-        self.khr_external_fence
+        self.khr_external_fence || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_fence(&mut self) {
-        self.khr_external_fence = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_external_fence = true;
+        }
     }
     pub fn supports_khr_external_fence_win32(&self) -> bool {
-        self.khr_external_fence_win32 && self.khr_external_fence
+        self.khr_external_fence_win32 && self.supports_khr_external_fence()
     }
     pub fn enable_khr_external_fence_win32(&mut self) {
         self.khr_external_fence_win32 = true;
-        self.khr_external_fence = true;
+        self.enable_khr_external_fence();
     }
     pub fn supports_khr_external_fence_fd(&self) -> bool {
-        self.khr_external_fence_fd && self.khr_external_fence
+        self.khr_external_fence_fd && self.supports_khr_external_fence()
     }
     pub fn enable_khr_external_fence_fd(&mut self) {
         self.khr_external_fence_fd = true;
-        self.khr_external_fence = true;
+        self.enable_khr_external_fence();
     }
     pub fn supports_khr_performance_query(&self) -> bool {
         self.khr_performance_query
@@ -4336,71 +4625,85 @@ impl DeviceExtensions {
         self.khr_performance_query = true;
     }
     pub fn supports_khr_maintenance2(&self) -> bool {
-        self.khr_maintenance2
+        self.khr_maintenance2 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_maintenance2(&mut self) {
-        self.khr_maintenance2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_maintenance2 = true;
+        }
     }
     pub fn supports_khr_variable_pointers(&self) -> bool {
-        self.khr_variable_pointers && self.khr_storage_buffer_storage_class
+        (self.khr_variable_pointers || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_storage_buffer_storage_class()
     }
     pub fn enable_khr_variable_pointers(&mut self) {
-        self.khr_variable_pointers = true;
-        self.khr_storage_buffer_storage_class = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_variable_pointers = true;
+        }
+        self.enable_khr_storage_buffer_storage_class();
     }
     pub fn supports_ext_external_memory_dma_buf(&self) -> bool {
-        self.ext_external_memory_dma_buf && self.khr_external_memory_fd && self.khr_external_memory
+        self.ext_external_memory_dma_buf
+            && self.supports_khr_external_memory_fd()
+            && self.supports_khr_external_memory()
     }
     pub fn enable_ext_external_memory_dma_buf(&mut self) {
         self.ext_external_memory_dma_buf = true;
-        self.khr_external_memory_fd = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory_fd();
+        self.enable_khr_external_memory();
     }
     pub fn supports_ext_queue_family_foreign(&self) -> bool {
-        self.ext_queue_family_foreign && self.khr_external_memory
+        self.ext_queue_family_foreign && self.supports_khr_external_memory()
     }
     pub fn enable_ext_queue_family_foreign(&mut self) {
         self.ext_queue_family_foreign = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory();
     }
     pub fn supports_khr_dedicated_allocation(&self) -> bool {
-        self.khr_dedicated_allocation && self.khr_get_memory_requirements2
+        (self.khr_dedicated_allocation || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_khr_dedicated_allocation(&mut self) {
-        self.khr_dedicated_allocation = true;
-        self.khr_get_memory_requirements2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_dedicated_allocation = true;
+        }
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_android_external_memory_android_hardware_buffer(&self) -> bool {
         self.android_external_memory_android_hardware_buffer
-            && self.khr_sampler_ycbcr_conversion
-            && self.khr_external_memory
-            && self.ext_queue_family_foreign
-            && self.khr_dedicated_allocation
-            && self.khr_maintenance1
-            && self.khr_bind_memory2
-            && self.khr_get_memory_requirements2
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_external_memory()
+            && self.supports_ext_queue_family_foreign()
+            && self.supports_khr_dedicated_allocation()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_android_external_memory_android_hardware_buffer(&mut self) {
         self.android_external_memory_android_hardware_buffer = true;
-        self.khr_sampler_ycbcr_conversion = true;
-        self.khr_external_memory = true;
-        self.ext_queue_family_foreign = true;
-        self.khr_dedicated_allocation = true;
-        self.khr_maintenance1 = true;
-        self.khr_bind_memory2 = true;
-        self.khr_get_memory_requirements2 = true;
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_external_memory();
+        self.enable_ext_queue_family_foreign();
+        self.enable_khr_dedicated_allocation();
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_ext_sampler_filter_minmax(&self) -> bool {
-        self.ext_sampler_filter_minmax
+        self.ext_sampler_filter_minmax || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_ext_sampler_filter_minmax(&mut self) {
-        self.ext_sampler_filter_minmax = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_sampler_filter_minmax = true;
+        }
     }
     pub fn supports_khr_storage_buffer_storage_class(&self) -> bool {
-        self.khr_storage_buffer_storage_class
+        self.khr_storage_buffer_storage_class || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_storage_buffer_storage_class(&mut self) {
-        self.khr_storage_buffer_storage_class = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_storage_buffer_storage_class = true;
+        }
     }
     pub fn supports_amd_gpu_shader_int16(&self) -> bool {
         self.amd_gpu_shader_int16
@@ -4421,11 +4724,11 @@ impl DeviceExtensions {
         self.amd_shader_fragment_mask = true;
     }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
-        self.ext_inline_uniform_block && self.khr_maintenance1
+        self.ext_inline_uniform_block && self.supports_khr_maintenance1()
     }
     pub fn enable_ext_inline_uniform_block(&mut self) {
         self.ext_inline_uniform_block = true;
-        self.khr_maintenance1 = true;
+        self.enable_khr_maintenance1();
     }
     pub fn supports_ext_shader_stencil_export(&self) -> bool {
         self.ext_shader_stencil_export
@@ -4440,22 +4743,28 @@ impl DeviceExtensions {
         self.ext_sample_locations = true;
     }
     pub fn supports_khr_relaxed_block_layout(&self) -> bool {
-        self.khr_relaxed_block_layout
+        self.khr_relaxed_block_layout || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_relaxed_block_layout(&mut self) {
-        self.khr_relaxed_block_layout = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_relaxed_block_layout = true;
+        }
     }
     pub fn supports_khr_get_memory_requirements2(&self) -> bool {
-        self.khr_get_memory_requirements2
+        self.khr_get_memory_requirements2 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_get_memory_requirements2(&mut self) {
-        self.khr_get_memory_requirements2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_get_memory_requirements2 = true;
+        }
     }
     pub fn supports_khr_image_format_list(&self) -> bool {
-        self.khr_image_format_list
+        self.khr_image_format_list || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_image_format_list(&mut self) {
-        self.khr_image_format_list = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_image_format_list = true;
+        }
     }
     pub fn supports_ext_blend_operation_advanced(&self) -> bool {
         self.ext_blend_operation_advanced
@@ -4470,58 +4779,61 @@ impl DeviceExtensions {
         self.nv_fragment_coverage_to_color = true;
     }
     pub fn supports_khr_acceleration_structure(&self) -> bool {
-        self.khr_acceleration_structure
-            && self.ext_descriptor_indexing
-            && self.khr_buffer_device_address
-            && self.khr_deferred_host_operations
-            && self.khr_maintenance3
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.khr_acceleration_structure
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
     }
     pub fn enable_khr_acceleration_structure(&mut self) {
         self.khr_acceleration_structure = true;
-        self.ext_descriptor_indexing = true;
-        self.khr_buffer_device_address = true;
-        self.khr_deferred_host_operations = true;
-        self.khr_maintenance3 = true;
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_khr_ray_tracing_pipeline(&self) -> bool {
-        self.khr_ray_tracing_pipeline
-            && self.khr_spirv_1_4
-            && self.khr_acceleration_structure
-            && self.khr_shader_float_controls
-            && self.ext_descriptor_indexing
-            && self.khr_buffer_device_address
-            && self.khr_deferred_host_operations
-            && self.khr_maintenance3
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.khr_ray_tracing_pipeline
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_shader_float_controls()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
     }
     pub fn enable_khr_ray_tracing_pipeline(&mut self) {
         self.khr_ray_tracing_pipeline = true;
-        self.khr_spirv_1_4 = true;
-        self.khr_acceleration_structure = true;
-        self.khr_shader_float_controls = true;
-        self.ext_descriptor_indexing = true;
-        self.khr_buffer_device_address = true;
-        self.khr_deferred_host_operations = true;
-        self.khr_maintenance3 = true;
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_shader_float_controls();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_khr_ray_query(&self) -> bool {
-        self.khr_ray_query
-            && self.khr_spirv_1_4
-            && self.khr_acceleration_structure
-            && self.khr_shader_float_controls
-            && self.ext_descriptor_indexing
-            && self.khr_buffer_device_address
-            && self.khr_deferred_host_operations
-            && self.khr_maintenance3
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.khr_ray_query
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_shader_float_controls()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
     }
     pub fn enable_khr_ray_query(&mut self) {
         self.khr_ray_query = true;
-        self.khr_spirv_1_4 = true;
-        self.khr_acceleration_structure = true;
-        self.khr_shader_float_controls = true;
-        self.ext_descriptor_indexing = true;
-        self.khr_buffer_device_address = true;
-        self.khr_deferred_host_operations = true;
-        self.khr_maintenance3 = true;
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_shader_float_controls();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_nv_framebuffer_mixed_samples(&self) -> bool {
         self.nv_framebuffer_mixed_samples
@@ -4536,7 +4848,7 @@ impl DeviceExtensions {
         self.nv_fill_rectangle = true;
     }
     pub fn supports_nv_shader_sm_builtins(&self) -> bool {
-        self.nv_shader_sm_builtins
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.nv_shader_sm_builtins
     }
     pub fn enable_nv_shader_sm_builtins(&mut self) {
         self.nv_shader_sm_builtins = true;
@@ -4548,38 +4860,42 @@ impl DeviceExtensions {
         self.ext_post_depth_coverage = true;
     }
     pub fn supports_khr_sampler_ycbcr_conversion(&self) -> bool {
-        self.khr_sampler_ycbcr_conversion
-            && self.khr_maintenance1
-            && self.khr_bind_memory2
-            && self.khr_get_memory_requirements2
+        (self.khr_sampler_ycbcr_conversion || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_khr_sampler_ycbcr_conversion(&mut self) {
-        self.khr_sampler_ycbcr_conversion = true;
-        self.khr_maintenance1 = true;
-        self.khr_bind_memory2 = true;
-        self.khr_get_memory_requirements2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_sampler_ycbcr_conversion = true;
+        }
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_khr_bind_memory2(&self) -> bool {
-        self.khr_bind_memory2
+        self.khr_bind_memory2 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_bind_memory2(&mut self) {
-        self.khr_bind_memory2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_bind_memory2 = true;
+        }
     }
     pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
         self.ext_image_drm_format_modifier
-            && self.khr_bind_memory2
-            && self.khr_image_format_list
-            && self.khr_sampler_ycbcr_conversion
-            && self.khr_maintenance1
-            && self.khr_get_memory_requirements2
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_image_format_list()
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_ext_image_drm_format_modifier(&mut self) {
         self.ext_image_drm_format_modifier = true;
-        self.khr_bind_memory2 = true;
-        self.khr_image_format_list = true;
-        self.khr_sampler_ycbcr_conversion = true;
-        self.khr_maintenance1 = true;
-        self.khr_get_memory_requirements2 = true;
+        self.enable_khr_bind_memory2();
+        self.enable_khr_image_format_list();
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_maintenance1();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_ext_validation_cache(&self) -> bool {
         self.ext_validation_cache
@@ -4588,17 +4904,22 @@ impl DeviceExtensions {
         self.ext_validation_cache = true;
     }
     pub fn supports_ext_descriptor_indexing(&self) -> bool {
-        self.ext_descriptor_indexing && self.khr_maintenance3
+        (self.ext_descriptor_indexing || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_maintenance3()
     }
     pub fn enable_ext_descriptor_indexing(&mut self) {
-        self.ext_descriptor_indexing = true;
-        self.khr_maintenance3 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_descriptor_indexing = true;
+        }
+        self.enable_khr_maintenance3();
     }
     pub fn supports_ext_shader_viewport_index_layer(&self) -> bool {
-        self.ext_shader_viewport_index_layer
+        self.ext_shader_viewport_index_layer || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_ext_shader_viewport_index_layer(&mut self) {
-        self.ext_shader_viewport_index_layer = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_shader_viewport_index_layer = true;
+        }
     }
     pub fn supports_khr_portability_subset(&self) -> bool {
         self.khr_portability_subset
@@ -4613,11 +4934,11 @@ impl DeviceExtensions {
         self.nv_shading_rate_image = true;
     }
     pub fn supports_nv_ray_tracing(&self) -> bool {
-        self.nv_ray_tracing && self.khr_get_memory_requirements2
+        self.nv_ray_tracing && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_nv_ray_tracing(&mut self) {
         self.nv_ray_tracing = true;
-        self.khr_get_memory_requirements2 = true;
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_nv_representative_fragment_test(&self) -> bool {
         self.nv_representative_fragment_test
@@ -4626,16 +4947,20 @@ impl DeviceExtensions {
         self.nv_representative_fragment_test = true;
     }
     pub fn supports_khr_maintenance3(&self) -> bool {
-        self.khr_maintenance3
+        self.khr_maintenance3 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_maintenance3(&mut self) {
-        self.khr_maintenance3 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.khr_maintenance3 = true;
+        }
     }
     pub fn supports_khr_draw_indirect_count(&self) -> bool {
-        self.khr_draw_indirect_count
+        self.khr_draw_indirect_count || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_draw_indirect_count(&mut self) {
-        self.khr_draw_indirect_count = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_draw_indirect_count = true;
+        }
     }
     pub fn supports_ext_filter_cubic(&self) -> bool {
         self.ext_filter_cubic
@@ -4656,24 +4981,30 @@ impl DeviceExtensions {
         self.ext_global_priority = true;
     }
     pub fn supports_khr_shader_subgroup_extended_types(&self) -> bool {
-        self.khr_shader_subgroup_extended_types
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && (self.khr_shader_subgroup_extended_types || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
     }
     pub fn enable_khr_shader_subgroup_extended_types(&mut self) {
-        self.khr_shader_subgroup_extended_types = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_shader_subgroup_extended_types = true;
+        }
     }
     pub fn supports_khr_8bit_storage(&self) -> bool {
-        self.khr_8bit_storage && self.khr_storage_buffer_storage_class
+        (self.khr_8bit_storage || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_storage_buffer_storage_class()
     }
     pub fn enable_khr_8bit_storage(&mut self) {
-        self.khr_8bit_storage = true;
-        self.khr_storage_buffer_storage_class = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_8bit_storage = true;
+        }
+        self.enable_khr_storage_buffer_storage_class();
     }
     pub fn supports_ext_external_memory_host(&self) -> bool {
-        self.ext_external_memory_host && self.khr_external_memory
+        self.ext_external_memory_host && self.supports_khr_external_memory()
     }
     pub fn enable_ext_external_memory_host(&mut self) {
         self.ext_external_memory_host = true;
-        self.khr_external_memory = true;
+        self.enable_khr_external_memory();
     }
     pub fn supports_amd_buffer_marker(&self) -> bool {
         self.amd_buffer_marker
@@ -4682,10 +5013,12 @@ impl DeviceExtensions {
         self.amd_buffer_marker = true;
     }
     pub fn supports_khr_shader_atomic_int64(&self) -> bool {
-        self.khr_shader_atomic_int64
+        self.khr_shader_atomic_int64 || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_shader_atomic_int64(&mut self) {
-        self.khr_shader_atomic_int64 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_shader_atomic_int64 = true;
+        }
     }
     pub fn supports_khr_shader_clock(&self) -> bool {
         self.khr_shader_clock
@@ -4730,40 +5063,52 @@ impl DeviceExtensions {
         self.ext_pipeline_creation_feedback = true;
     }
     pub fn supports_khr_driver_properties(&self) -> bool {
-        self.khr_driver_properties
+        self.khr_driver_properties || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_driver_properties(&mut self) {
-        self.khr_driver_properties = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_driver_properties = true;
+        }
     }
     pub fn supports_khr_shader_float_controls(&self) -> bool {
-        self.khr_shader_float_controls
+        self.khr_shader_float_controls || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_shader_float_controls(&mut self) {
-        self.khr_shader_float_controls = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_shader_float_controls = true;
+        }
     }
     pub fn supports_nv_shader_subgroup_partitioned(&self) -> bool {
-        self.nv_shader_subgroup_partitioned
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.nv_shader_subgroup_partitioned
     }
     pub fn enable_nv_shader_subgroup_partitioned(&mut self) {
         self.nv_shader_subgroup_partitioned = true;
     }
     pub fn supports_khr_depth_stencil_resolve(&self) -> bool {
-        self.khr_depth_stencil_resolve && self.khr_create_renderpass2 && self.khr_multiview && self.khr_maintenance2
+        (self.khr_depth_stencil_resolve || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_depth_stencil_resolve(&mut self) {
-        self.khr_depth_stencil_resolve = true;
-        self.khr_create_renderpass2 = true;
-        self.khr_multiview = true;
-        self.khr_maintenance2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_depth_stencil_resolve = true;
+        }
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_khr_swapchain_mutable_format(&self) -> bool {
-        self.khr_swapchain_mutable_format && self.khr_swapchain && self.khr_maintenance2 && self.khr_image_format_list
+        self.khr_swapchain_mutable_format
+            && self.supports_khr_swapchain()
+            && self.supports_khr_maintenance2()
+            && self.supports_khr_image_format_list()
     }
     pub fn enable_khr_swapchain_mutable_format(&mut self) {
         self.khr_swapchain_mutable_format = true;
-        self.khr_swapchain = true;
-        self.khr_maintenance2 = true;
-        self.khr_image_format_list = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_maintenance2();
+        self.enable_khr_image_format_list();
     }
     pub fn supports_nv_compute_shader_derivatives(&self) -> bool {
         self.nv_compute_shader_derivatives
@@ -4802,10 +5147,12 @@ impl DeviceExtensions {
         self.nv_device_diagnostic_checkpoints = true;
     }
     pub fn supports_khr_timeline_semaphore(&self) -> bool {
-        self.khr_timeline_semaphore
+        self.khr_timeline_semaphore || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_timeline_semaphore(&mut self) {
-        self.khr_timeline_semaphore = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_timeline_semaphore = true;
+        }
     }
     pub fn supports_intel_shader_integer_functions2(&self) -> bool {
         self.intel_shader_integer_functions2
@@ -4820,10 +5167,12 @@ impl DeviceExtensions {
         self.intel_performance_query = true;
     }
     pub fn supports_khr_vulkan_memory_model(&self) -> bool {
-        self.khr_vulkan_memory_model
+        self.khr_vulkan_memory_model || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_vulkan_memory_model(&mut self) {
-        self.khr_vulkan_memory_model = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_vulkan_memory_model = true;
+        }
     }
     pub fn supports_ext_pci_bus_info(&self) -> bool {
         self.ext_pci_bus_info
@@ -4832,11 +5181,11 @@ impl DeviceExtensions {
         self.ext_pci_bus_info = true;
     }
     pub fn supports_amd_display_native_hdr(&self) -> bool {
-        self.amd_display_native_hdr && self.khr_swapchain
+        self.amd_display_native_hdr && self.supports_khr_swapchain()
     }
     pub fn enable_amd_display_native_hdr(&mut self) {
         self.amd_display_native_hdr = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_khr_shader_terminate_invocation(&self) -> bool {
         self.khr_shader_terminate_invocation
@@ -4851,10 +5200,12 @@ impl DeviceExtensions {
         self.ext_fragment_density_map = true;
     }
     pub fn supports_ext_scalar_block_layout(&self) -> bool {
-        self.ext_scalar_block_layout
+        self.ext_scalar_block_layout || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_ext_scalar_block_layout(&mut self) {
-        self.ext_scalar_block_layout = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_scalar_block_layout = true;
+        }
     }
     pub fn supports_google_hlsl_functionality1(&self) -> bool {
         self.google_hlsl_functionality1
@@ -4869,26 +5220,29 @@ impl DeviceExtensions {
         self.google_decorate_string = true;
     }
     pub fn supports_ext_subgroup_size_control(&self) -> bool {
-        self.ext_subgroup_size_control
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.ext_subgroup_size_control
     }
     pub fn enable_ext_subgroup_size_control(&mut self) {
         self.ext_subgroup_size_control = true;
     }
     pub fn supports_khr_fragment_shading_rate(&self) -> bool {
-        self.khr_fragment_shading_rate && self.khr_create_renderpass2 && self.khr_multiview && self.khr_maintenance2
+        self.khr_fragment_shading_rate
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_fragment_shading_rate(&mut self) {
         self.khr_fragment_shading_rate = true;
-        self.khr_create_renderpass2 = true;
-        self.khr_multiview = true;
-        self.khr_maintenance2 = true;
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_amd_shader_core_properties2(&self) -> bool {
-        self.amd_shader_core_properties2 && self.amd_shader_core_properties
+        self.amd_shader_core_properties2 && self.supports_amd_shader_core_properties()
     }
     pub fn enable_amd_shader_core_properties2(&mut self) {
         self.amd_shader_core_properties2 = true;
-        self.amd_shader_core_properties = true;
+        self.enable_amd_shader_core_properties();
     }
     pub fn supports_amd_device_coherent_memory(&self) -> bool {
         self.amd_device_coherent_memory
@@ -4903,11 +5257,15 @@ impl DeviceExtensions {
         self.ext_shader_image_atomic_int64 = true;
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
-        self.khr_spirv_1_4 && self.khr_shader_float_controls
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && (self.khr_spirv_1_4 || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_shader_float_controls()
     }
     pub fn enable_khr_spirv_1_4(&mut self) {
-        self.khr_spirv_1_4 = true;
-        self.khr_shader_float_controls = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_spirv_1_4 = true;
+        }
+        self.enable_khr_shader_float_controls();
     }
     pub fn supports_ext_memory_budget(&self) -> bool {
         self.ext_memory_budget
@@ -4923,25 +5281,27 @@ impl DeviceExtensions {
     }
     pub fn supports_nv_dedicated_allocation_image_aliasing(&self) -> bool {
         self.nv_dedicated_allocation_image_aliasing
-            && self.khr_dedicated_allocation
-            && self.khr_get_memory_requirements2
+            && self.supports_khr_dedicated_allocation()
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_nv_dedicated_allocation_image_aliasing(&mut self) {
         self.nv_dedicated_allocation_image_aliasing = true;
-        self.khr_dedicated_allocation = true;
-        self.khr_get_memory_requirements2 = true;
+        self.enable_khr_dedicated_allocation();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_khr_separate_depth_stencil_layouts(&self) -> bool {
-        self.khr_separate_depth_stencil_layouts
-            && self.khr_create_renderpass2
-            && self.khr_multiview
-            && self.khr_maintenance2
+        (self.khr_separate_depth_stencil_layouts || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_separate_depth_stencil_layouts(&mut self) {
-        self.khr_separate_depth_stencil_layouts = true;
-        self.khr_create_renderpass2 = true;
-        self.khr_multiview = true;
-        self.khr_maintenance2 = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_separate_depth_stencil_layouts = true;
+        }
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_ext_buffer_device_address(&self) -> bool {
         self.ext_buffer_device_address
@@ -4956,10 +5316,12 @@ impl DeviceExtensions {
         self.ext_tooling_info = true;
     }
     pub fn supports_ext_separate_stencil_usage(&self) -> bool {
-        self.ext_separate_stencil_usage
+        self.ext_separate_stencil_usage || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_ext_separate_stencil_usage(&mut self) {
-        self.ext_separate_stencil_usage = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_separate_stencil_usage = true;
+        }
     }
     pub fn supports_nv_cooperative_matrix(&self) -> bool {
         self.nv_cooperative_matrix
@@ -4968,11 +5330,11 @@ impl DeviceExtensions {
         self.nv_cooperative_matrix = true;
     }
     pub fn supports_nv_coverage_reduction_mode(&self) -> bool {
-        self.nv_coverage_reduction_mode && self.nv_framebuffer_mixed_samples
+        self.nv_coverage_reduction_mode && self.supports_nv_framebuffer_mixed_samples()
     }
     pub fn enable_nv_coverage_reduction_mode(&mut self) {
         self.nv_coverage_reduction_mode = true;
-        self.nv_framebuffer_mixed_samples = true;
+        self.enable_nv_framebuffer_mixed_samples();
     }
     pub fn supports_ext_fragment_shader_interlock(&self) -> bool {
         self.ext_fragment_shader_interlock
@@ -4982,36 +5344,40 @@ impl DeviceExtensions {
     }
     pub fn supports_ext_ycbcr_image_arrays(&self) -> bool {
         self.ext_ycbcr_image_arrays
-            && self.khr_sampler_ycbcr_conversion
-            && self.khr_maintenance1
-            && self.khr_bind_memory2
-            && self.khr_get_memory_requirements2
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
     }
     pub fn enable_ext_ycbcr_image_arrays(&mut self) {
         self.ext_ycbcr_image_arrays = true;
-        self.khr_sampler_ycbcr_conversion = true;
-        self.khr_maintenance1 = true;
-        self.khr_bind_memory2 = true;
-        self.khr_get_memory_requirements2 = true;
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
-        self.khr_uniform_buffer_standard_layout
+        self.khr_uniform_buffer_standard_layout || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_uniform_buffer_standard_layout(&mut self) {
-        self.khr_uniform_buffer_standard_layout = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_uniform_buffer_standard_layout = true;
+        }
     }
     pub fn supports_ext_full_screen_exclusive(&self) -> bool {
-        self.ext_full_screen_exclusive && self.khr_swapchain
+        self.ext_full_screen_exclusive && self.supports_khr_swapchain()
     }
     pub fn enable_ext_full_screen_exclusive(&mut self) {
         self.ext_full_screen_exclusive = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_khr_buffer_device_address(&self) -> bool {
-        self.khr_buffer_device_address
+        self.khr_buffer_device_address || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_khr_buffer_device_address(&mut self) {
-        self.khr_buffer_device_address = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.khr_buffer_device_address = true;
+        }
     }
     pub fn supports_ext_line_rasterization(&self) -> bool {
         self.ext_line_rasterization
@@ -5026,10 +5392,12 @@ impl DeviceExtensions {
         self.ext_shader_atomic_float = true;
     }
     pub fn supports_ext_host_query_reset(&self) -> bool {
-        self.ext_host_query_reset
+        self.ext_host_query_reset || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
     }
     pub fn enable_ext_host_query_reset(&mut self) {
-        self.ext_host_query_reset = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.ext_host_query_reset = true;
+        }
     }
     pub fn supports_ext_index_type_uint8(&self) -> bool {
         self.ext_index_type_uint8
@@ -5062,7 +5430,7 @@ impl DeviceExtensions {
         self.ext_shader_demote_to_helper_invocation = true;
     }
     pub fn supports_nv_device_generated_commands(&self) -> bool {
-        self.nv_device_generated_commands
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.nv_device_generated_commands
     }
     pub fn enable_nv_device_generated_commands(&mut self) {
         self.nv_device_generated_commands = true;
@@ -5074,11 +5442,11 @@ impl DeviceExtensions {
         self.ext_texel_buffer_alignment = true;
     }
     pub fn supports_qcom_render_pass_transform(&self) -> bool {
-        self.qcom_render_pass_transform && self.khr_swapchain
+        self.qcom_render_pass_transform && self.supports_khr_swapchain()
     }
     pub fn enable_qcom_render_pass_transform(&mut self) {
         self.qcom_render_pass_transform = true;
-        self.khr_swapchain = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_ext_device_memory_report(&self) -> bool {
         self.ext_device_memory_report
@@ -5142,32 +5510,32 @@ impl DeviceExtensions {
     }
     pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
         self.nv_fragment_shading_rate_enums
-            && self.khr_fragment_shading_rate
-            && self.khr_create_renderpass2
-            && self.khr_multiview
-            && self.khr_maintenance2
+            && self.supports_khr_fragment_shading_rate()
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
         self.nv_fragment_shading_rate_enums = true;
-        self.khr_fragment_shading_rate = true;
-        self.khr_create_renderpass2 = true;
-        self.khr_multiview = true;
-        self.khr_maintenance2 = true;
+        self.enable_khr_fragment_shading_rate();
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
-        self.ext_fragment_density_map2 && self.ext_fragment_density_map
+        self.ext_fragment_density_map2 && self.supports_ext_fragment_density_map()
     }
     pub fn enable_ext_fragment_density_map2(&mut self) {
         self.ext_fragment_density_map2 = true;
-        self.ext_fragment_density_map = true;
+        self.enable_ext_fragment_density_map();
     }
     pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
-        self.qcom_rotated_copy_commands && self.khr_swapchain && self.khr_copy_commands2
+        self.qcom_rotated_copy_commands && self.supports_khr_swapchain() && self.supports_khr_copy_commands2()
     }
     pub fn enable_qcom_rotated_copy_commands(&mut self) {
         self.qcom_rotated_copy_commands = true;
-        self.khr_swapchain = true;
-        self.khr_copy_commands2 = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_copy_commands2();
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
         self.ext_image_robustness
@@ -5194,11 +5562,11 @@ impl DeviceExtensions {
         self.nv_acquire_winrt_display = true;
     }
     pub fn supports_valve_mutable_descriptor_type(&self) -> bool {
-        self.valve_mutable_descriptor_type && self.khr_maintenance3
+        self.valve_mutable_descriptor_type && self.supports_khr_maintenance3()
     }
     pub fn enable_valve_mutable_descriptor_type(&mut self) {
         self.valve_mutable_descriptor_type = true;
-        self.khr_maintenance3 = true;
+        self.enable_khr_maintenance3();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6118,7 +6486,7 @@ impl Device {
         create_info: &vk::DeviceCreateInfo,
         version: vk::Version,
     ) -> LoaderResult<Self> {
-        let mut extensions = DeviceExtensions::default();
+        let mut extensions = DeviceExtensions::new(version);
         if create_info.enabled_extension_count != 0 {
             for &name_ptr in slice::from_raw_parts(
                 create_info.pp_enabled_extension_names,
