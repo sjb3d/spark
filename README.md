@@ -10,7 +10,7 @@ It ended up very similar in design and scope to [`ash`](https://github.com/MaikK
 
 Since `ash` widely used, I'll just list the ways this library currently differs from `ash`.  These are just alternatives I personally found interesting to explore:
 
-### Extensions Are (Optional) Parts Of `Instance` And `Device`
+### Extensions Are Part Of `Instance` And `Device`
 
 When you create an `Instance` or `Device`, the library checks the Vulkan version and array of extension names, and loads all the function pointers that are referenced by that combination.  The `Instance` or `Device` object have an `extensions` member variable that can be inspected to check which extensions were loaded, and all Vulkan functions are accessible from either the `Instance` or `Device`.
 
@@ -24,6 +24,15 @@ if instance.extensions.ext_debug_utils {
     instance.cmd_begin_debug_utils_label_ext(cmd, &label);
 }
 ```
+
+Vulkan command aliases share a single function pointer on `Instance` or `Device`.  For example, `vkCmdDrawIndirectCount` is loaded for one of the following cases:
+* If the core version is 1.2 or greater (loaded as `vkCmdDrawIndirectCount`)
+* If the `VK_KHR_draw_indirect_count` extension is enabled (loaded as the alias `vkCmdDrawIndirectCountKHR`)
+* If the `VK_AMD_draw_indirect_count` extension is enabled (loaded as the alias `vkCmdDrawIndirectCountAMD`)
+
+Once loaded, any of the above aliases can be used to emit the command, since they all call through to the same function pointer on `Device`.
+
+There are also some structs `InstanceExtensions` and `DeviceExtensions` that provide helper functions to enable extensions and dependencies for a particular core version of Vulkan, which can help to simplify client code for cases such as dependencies that have been promoted to the core.
 
 ### Non-Zero Handles
 
