@@ -6,16 +6,20 @@ Supports Vulkan 1.2.165 and all extensions (apart from `GGP` extensions that use
 
 ## Design
 
-It ended up very similar in design and scope to [`ash`](https://github.com/MaikKlein/ash).  Ash seems to be the most popular low-library for Vulkan in Rust, so if you are looking for something with wide support, then I recommend using [`ash`](https://github.com/MaikKlein/ash) instead.
+The library is similar in scope to [`ash`](https://github.com/MaikKlein/ash).  Ash seems to be the most popular low-library for Vulkan in Rust, so if you are looking for something with wide support, then I recommend using [`ash`](https://github.com/MaikKlein/ash) instead.
 
 Since `ash` widely used, I'll just list the ways this library currently differs from `ash`.  These are just alternatives I personally found interesting to explore:
 
 ### Extensions Are Part Of `Instance` And `Device`
 
-When you create an `Instance` or `Device`, the library checks the Vulkan version and array of extension names, and loads all the function pointers that are referenced by that combination.  The `Instance` or `Device` object have an `extensions` member variable that can be inspected to check which extensions were loaded, and all Vulkan functions are accessible from either the `Instance` or `Device`.
+To simplify the handling of extensions and core Vulkan versions, the library manages all Vulkan function pointers directly on the `Instance` or `Device`.  When the `Instance` or `Device` is created, the core version and list of extensions is checked, and all Vulkan commands are loaded that are enabled for that combination.  This handles complex cases such as commands that are loaded only when a combination of extensions are present.
+
+The structs `InstanceExtensions` and `DeviceExtensions` can be used to simplify code that loads extensions, providing helper functions to load extensions and dependencies, but also to skip loading extensions that have been promoted to the target core version of Vulkan.
+
+An instance of these structs is available on `Instance` or `Device` to query which extensions were loaded when it was created.
 
 ```rust
-// emit marker if we have EXT_debug_utils loaded
+// emit a marker if EXT_debug_utils was loaded
 if instance.extensions.ext_debug_utils {
     let label = vk::DebugUtilsLabelEXT {
         p_label_name: name.as_ptr(),
@@ -25,14 +29,23 @@ if instance.extensions.ext_debug_utils {
 }
 ```
 
-Vulkan command aliases share a single function pointer on `Instance` or `Device`.  For example, `vkCmdDrawIndirectCount` is loaded for one of the following cases:
+### Vulkan Command Aliases Are Eqivalent
+
+Only one function pointer is stored for Vulkan commands that are aliases of each other.  Once loaded, any alias can be used to emit the command, since they all call through to the same function pointer on `Device` or `Instance`.
+
+For example, when the `Device` is created, `vkCmdDrawIndirectCount` is loaded for one of the following cases:
 * If the core version is 1.2 or greater (loaded as `vkCmdDrawIndirectCount`)
 * If the `VK_KHR_draw_indirect_count` extension is enabled (loaded as the alias `vkCmdDrawIndirectCountKHR`)
 * If the `VK_AMD_draw_indirect_count` extension is enabled (loaded as the alias `vkCmdDrawIndirectCountAMD`)
 
-Once loaded, any of the above aliases can be used to emit the command, since they all call through to the same function pointer on `Device`.
+The resulting function pointer is stored as `Device.fp_cmd_draw_indirect_count` regardless of how it was loaded, so client code can use any wrapper function to emit it:
 
-There are also some structs `InstanceExtensions` and `DeviceExtensions` that provide helper functions to enable extensions and dependencies for a particular core version of Vulkan, which can help to simplify client code for cases such as dependencies that have been promoted to the core.
+```rust
+// all the following are equivalent, they all call through to device.fp_cmd_draw_indirect_count
+device.cmd_draw_indirect_count(/*...*/)
+device.cmd_draw_indirect_count_khr(/*...*/)
+device.cmd_draw_indirect_count_amd(/*...*/)
+```
 
 ### Non-Zero Handles
 
