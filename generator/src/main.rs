@@ -456,7 +456,7 @@ impl<'a> Generator<'a> {
             _ => {
                 if let Some(ty) = self.type_by_name.get(type_name) {
                     match ty.category.as_ref_str() {
-                        Some("basetype") | Some("bitmask") | Some("enum)") => true,
+                        Some("basetype") | Some("bitmask") | Some("enum") => true,
                         Some("struct") => {
                             if let vk::TypeSpec::Members(ref members) = ty.spec {
                                 members

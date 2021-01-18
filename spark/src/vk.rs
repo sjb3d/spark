@@ -16526,7 +16526,7 @@ impl fmt::Debug for ClearRect {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ComponentMapping {
     pub r: ComponentSwizzle,
     pub g: ComponentSwizzle,
@@ -18261,7 +18261,7 @@ impl fmt::Debug for DescriptorSetLayoutCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorPoolSize {
     pub ty: DescriptorType,
     pub descriptor_count: u32,
@@ -18489,7 +18489,7 @@ impl fmt::Debug for ComputePipelineCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDescription {
     /// Vertex buffer binding id
     pub binding: u32,
@@ -18517,7 +18517,7 @@ impl fmt::Debug for VertexInputBindingDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct VertexInputAttributeDescription {
     /// location of the shader vertex attrib
     pub location: u32,
@@ -18793,7 +18793,7 @@ impl fmt::Debug for PipelineMultisampleStateCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineColorBlendAttachmentState {
     pub blend_enable: Bool32,
     pub src_color_blend_factor: BlendFactor,
@@ -18905,7 +18905,7 @@ impl fmt::Debug for PipelineDynamicStateCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct StencilOpState {
     pub fail_op: StencilOp,
     pub pass_op: StencilOp,
@@ -19509,7 +19509,7 @@ impl fmt::Debug for ClearAttachment {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct AttachmentDescription {
     pub flags: AttachmentDescriptionFlags,
     pub format: Format,
@@ -19556,7 +19556,7 @@ impl fmt::Debug for AttachmentDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct AttachmentReference {
     pub attachment: u32,
     pub layout: ImageLayout,
@@ -21132,7 +21132,7 @@ impl fmt::Debug for DisplayPresentInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SurfaceCapabilitiesKHR {
     /// Supported minimum number of images for the surface
     pub min_image_count: u32,
@@ -21427,7 +21427,7 @@ impl fmt::Debug for ImagePipeSurfaceCreateInfoFUCHSIA {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct SurfaceFormatKHR {
     /// Supported pair of rendering format
     pub format: Format,
@@ -22346,7 +22346,7 @@ impl fmt::Debug for BindShaderGroupIndirectCommandNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct BindIndexBufferIndirectCommandNV {
     pub buffer_address: DeviceAddress,
     pub size: u32,
@@ -24910,7 +24910,7 @@ impl fmt::Debug for DeviceGroupSwapchainCreateInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateEntry {
     /// Binding within the destination descriptor set to write
     pub dst_binding: u32,
@@ -25374,7 +25374,7 @@ impl fmt::Debug for PipelineViewportWScalingStateCreateInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ViewportSwizzleNV {
     pub x: ViewportCoordinateSwizzleNV,
     pub y: ViewportCoordinateSwizzleNV,
