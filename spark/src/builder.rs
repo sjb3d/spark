@@ -188,7 +188,7 @@ impl<'a> DeviceQueueCreateInfoBuilder<'a> {
     }
     pub fn p_queue_priorities(mut self, p_queue_priorities: &'a [f32]) -> Self {
         self.inner.queue_count = p_queue_priorities.len() as u32;
-        self.inner.p_queue_priorities = p_queue_priorities.as_ptr();
+        self.inner.p_queue_priorities = p_queue_priorities.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -224,17 +224,19 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
     }
     pub fn p_queue_create_infos(mut self, p_queue_create_infos: &'a [vk::DeviceQueueCreateInfo]) -> Self {
         self.inner.queue_create_info_count = p_queue_create_infos.len() as u32;
-        self.inner.p_queue_create_infos = p_queue_create_infos.as_ptr();
+        self.inner.p_queue_create_infos = p_queue_create_infos.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
-        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
+        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
-        self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
+        self.inner.pp_enabled_extension_names = pp_enabled_extension_names
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_enabled_features(mut self, p_enabled_features: Option<&'a vk::PhysicalDeviceFeatures>) -> Self {
@@ -278,12 +280,14 @@ impl<'a> InstanceCreateInfoBuilder<'a> {
     }
     pub fn pp_enabled_layer_names(mut self, pp_enabled_layer_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_layer_count = pp_enabled_layer_names.len() as u32;
-        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.as_ptr();
+        self.inner.pp_enabled_layer_names = pp_enabled_layer_names.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn pp_enabled_extension_names(mut self, pp_enabled_extension_names: &'a [*const c_char]) -> Self {
         self.inner.enabled_extension_count = pp_enabled_extension_names.len() as u32;
-        self.inner.pp_enabled_extension_names = pp_enabled_extension_names.as_ptr();
+        self.inner.pp_enabled_extension_names = pp_enabled_extension_names
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -399,17 +403,17 @@ impl<'a> WriteDescriptorSetBuilder<'a> {
     }
     pub fn p_image_info(mut self, p_image_info: &'a [vk::DescriptorImageInfo]) -> Self {
         self.inner.descriptor_count = p_image_info.len() as u32;
-        self.inner.p_image_info = p_image_info.as_ptr();
+        self.inner.p_image_info = p_image_info.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_buffer_info(mut self, p_buffer_info: &'a [vk::DescriptorBufferInfo]) -> Self {
         self.inner.descriptor_count = p_buffer_info.len() as u32;
-        self.inner.p_buffer_info = p_buffer_info.as_ptr();
+        self.inner.p_buffer_info = p_buffer_info.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_texel_buffer_view(mut self, p_texel_buffer_view: &'a [vk::BufferView]) -> Self {
         self.inner.descriptor_count = p_texel_buffer_view.len() as u32;
-        self.inner.p_texel_buffer_view = p_texel_buffer_view.as_ptr();
+        self.inner.p_texel_buffer_view = p_texel_buffer_view.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn descriptor_type(mut self, descriptor_type: vk::DescriptorType) -> Self {
@@ -515,7 +519,7 @@ impl<'a> BufferCreateInfoBuilder<'a> {
     }
     pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
-        self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
+        self.inner.p_queue_family_indices = p_queue_family_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -779,7 +783,7 @@ impl<'a> ImageCreateInfoBuilder<'a> {
     }
     pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
-        self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
+        self.inner.p_queue_family_indices = p_queue_family_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn initial_layout(mut self, initial_layout: vk::ImageLayout) -> Self {
@@ -861,7 +865,7 @@ impl<'a> SparseBufferMemoryBindInfoBuilder<'a> {
     }
     pub fn p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
-        self.inner.p_binds = p_binds.as_ptr();
+        self.inner.p_binds = p_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -889,7 +893,7 @@ impl<'a> SparseImageOpaqueMemoryBindInfoBuilder<'a> {
     }
     pub fn p_binds(mut self, p_binds: &'a [vk::SparseMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
-        self.inner.p_binds = p_binds.as_ptr();
+        self.inner.p_binds = p_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -917,7 +921,7 @@ impl<'a> SparseImageMemoryBindInfoBuilder<'a> {
     }
     pub fn p_binds(mut self, p_binds: &'a [vk::SparseImageMemoryBind]) -> Self {
         self.inner.bind_count = p_binds.len() as u32;
-        self.inner.p_binds = p_binds.as_ptr();
+        self.inner.p_binds = p_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -949,27 +953,27 @@ impl<'a> BindSparseInfoBuilder<'a> {
     }
     pub fn p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
-        self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
+        self.inner.p_wait_semaphores = p_wait_semaphores.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_buffer_binds(mut self, p_buffer_binds: &'a [vk::SparseBufferMemoryBindInfo]) -> Self {
         self.inner.buffer_bind_count = p_buffer_binds.len() as u32;
-        self.inner.p_buffer_binds = p_buffer_binds.as_ptr();
+        self.inner.p_buffer_binds = p_buffer_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_image_opaque_binds(mut self, p_image_opaque_binds: &'a [vk::SparseImageOpaqueMemoryBindInfo]) -> Self {
         self.inner.image_opaque_bind_count = p_image_opaque_binds.len() as u32;
-        self.inner.p_image_opaque_binds = p_image_opaque_binds.as_ptr();
+        self.inner.p_image_opaque_binds = p_image_opaque_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_image_binds(mut self, p_image_binds: &'a [vk::SparseImageMemoryBindInfo]) -> Self {
         self.inner.image_bind_count = p_image_binds.len() as u32;
-        self.inner.p_image_binds = p_image_binds.as_ptr();
+        self.inner.p_image_binds = p_image_binds.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphores.len() as u32;
-        self.inner.p_signal_semaphores = p_signal_semaphores.as_ptr();
+        self.inner.p_signal_semaphores = p_signal_semaphores.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1043,7 +1047,7 @@ impl<'a> DescriptorSetLayoutBindingBuilder<'a> {
     }
     pub fn p_immutable_samplers(mut self, p_immutable_samplers: &'a [vk::Sampler]) -> Self {
         self.inner.descriptor_count = p_immutable_samplers.len() as u32;
-        self.inner.p_immutable_samplers = p_immutable_samplers.as_ptr();
+        self.inner.p_immutable_samplers = p_immutable_samplers.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn stage_flags(mut self, stage_flags: vk::ShaderStageFlags) -> Self {
@@ -1083,7 +1087,7 @@ impl<'a> DescriptorSetLayoutCreateInfoBuilder<'a> {
     }
     pub fn p_bindings(mut self, p_bindings: &'a [vk::DescriptorSetLayoutBinding]) -> Self {
         self.inner.binding_count = p_bindings.len() as u32;
-        self.inner.p_bindings = p_bindings.as_ptr();
+        self.inner.p_bindings = p_bindings.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1123,7 +1127,7 @@ impl<'a> DescriptorPoolCreateInfoBuilder<'a> {
     }
     pub fn p_pool_sizes(mut self, p_pool_sizes: &'a [vk::DescriptorPoolSize]) -> Self {
         self.inner.pool_size_count = p_pool_sizes.len() as u32;
-        self.inner.p_pool_sizes = p_pool_sizes.as_ptr();
+        self.inner.p_pool_sizes = p_pool_sizes.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1159,7 +1163,7 @@ impl<'a> DescriptorSetAllocateInfoBuilder<'a> {
     }
     pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
         self.inner.descriptor_set_count = p_set_layouts.len() as u32;
-        self.inner.p_set_layouts = p_set_layouts.as_ptr();
+        self.inner.p_set_layouts = p_set_layouts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1183,12 +1187,12 @@ pub struct SpecializationInfoBuilder<'a> {
 impl<'a> SpecializationInfoBuilder<'a> {
     pub fn p_map_entries(mut self, p_map_entries: &'a [vk::SpecializationMapEntry]) -> Self {
         self.inner.map_entry_count = p_map_entries.len() as u32;
-        self.inner.p_map_entries = p_map_entries.as_ptr();
+        self.inner.p_map_entries = p_map_entries.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
         self.inner.data_size = mem::size_of_val(p_data) as usize;
-        self.inner.p_data = p_data.as_ptr() as *const _;
+        self.inner.p_data = p_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -1320,7 +1324,9 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
         p_vertex_binding_descriptions: &'a [vk::VertexInputBindingDescription],
     ) -> Self {
         self.inner.vertex_binding_description_count = p_vertex_binding_descriptions.len() as u32;
-        self.inner.p_vertex_binding_descriptions = p_vertex_binding_descriptions.as_ptr();
+        self.inner.p_vertex_binding_descriptions = p_vertex_binding_descriptions
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_vertex_attribute_descriptions(
@@ -1328,7 +1334,9 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
         p_vertex_attribute_descriptions: &'a [vk::VertexInputAttributeDescription],
     ) -> Self {
         self.inner.vertex_attribute_description_count = p_vertex_attribute_descriptions.len() as u32;
-        self.inner.p_vertex_attribute_descriptions = p_vertex_attribute_descriptions.as_ptr();
+        self.inner.p_vertex_attribute_descriptions = p_vertex_attribute_descriptions
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1440,7 +1448,7 @@ impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
     }
     pub fn p_viewports(mut self, p_viewports: &'a [vk::Viewport]) -> Self {
         self.inner.viewport_count = p_viewports.len() as u32;
-        self.inner.p_viewports = p_viewports.as_ptr();
+        self.inner.p_viewports = p_viewports.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn scissor_count(mut self, scissor_count: u32) -> Self {
@@ -1449,7 +1457,7 @@ impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
     }
     pub fn p_scissors(mut self, p_scissors: &'a [vk::Rect2D]) -> Self {
         self.inner.scissor_count = p_scissors.len() as u32;
-        self.inner.p_scissors = p_scissors.as_ptr();
+        self.inner.p_scissors = p_scissors.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1617,7 +1625,7 @@ impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
     }
     pub fn p_attachments(mut self, p_attachments: &'a [vk::PipelineColorBlendAttachmentState]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
-        self.inner.p_attachments = p_attachments.as_ptr();
+        self.inner.p_attachments = p_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1653,7 +1661,7 @@ impl<'a> PipelineDynamicStateCreateInfoBuilder<'a> {
     }
     pub fn p_dynamic_states(mut self, p_dynamic_states: &'a [vk::DynamicState]) -> Self {
         self.inner.dynamic_state_count = p_dynamic_states.len() as u32;
-        self.inner.p_dynamic_states = p_dynamic_states.as_ptr();
+        self.inner.p_dynamic_states = p_dynamic_states.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -1755,7 +1763,7 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
     }
     pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
-        self.inner.p_stages = p_stages.as_ptr();
+        self.inner.p_stages = p_stages.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_vertex_input_state(
@@ -1868,7 +1876,7 @@ impl<'a> PipelineCacheCreateInfoBuilder<'a> {
     }
     pub fn p_initial_data<T>(mut self, p_initial_data: &'a [T]) -> Self {
         self.inner.initial_data_size = mem::size_of_val(p_initial_data) as usize;
-        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
+        self.inner.p_initial_data = p_initial_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -1904,12 +1912,12 @@ impl<'a> PipelineLayoutCreateInfoBuilder<'a> {
     }
     pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
         self.inner.set_layout_count = p_set_layouts.len() as u32;
-        self.inner.p_set_layouts = p_set_layouts.as_ptr();
+        self.inner.p_set_layouts = p_set_layouts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
         self.inner.push_constant_range_count = p_push_constant_ranges.len() as u32;
-        self.inner.p_push_constant_ranges = p_push_constant_ranges.as_ptr();
+        self.inner.p_push_constant_ranges = p_push_constant_ranges.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -2200,7 +2208,7 @@ impl<'a> RenderPassBeginInfoBuilder<'a> {
     }
     pub fn p_clear_values(mut self, p_clear_values: &'a [vk::ClearValue]) -> Self {
         self.inner.clear_value_count = p_clear_values.len() as u32;
-        self.inner.p_clear_values = p_clear_values.as_ptr();
+        self.inner.p_clear_values = p_clear_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -2232,7 +2240,7 @@ impl<'a> SubpassDescriptionBuilder<'a> {
     }
     pub fn p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
-        self.inner.p_input_attachments = p_input_attachments.as_ptr();
+        self.inner.p_input_attachments = p_input_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_color_attachments(
@@ -2244,8 +2252,9 @@ impl<'a> SubpassDescriptionBuilder<'a> {
         if let Some(s) = p_resolve_attachments {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
-        self.inner.p_color_attachments = p_color_attachments.as_ptr();
-        self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
+        self.inner.p_color_attachments = p_color_attachments.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_resolve_attachments =
+            p_resolve_attachments.map_or(ptr::null(), |s| s.first().map_or(ptr::null(), |s| s as *const _));
         self
     }
     pub fn p_depth_stencil_attachment(
@@ -2257,7 +2266,7 @@ impl<'a> SubpassDescriptionBuilder<'a> {
     }
     pub fn p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
         self.inner.preserve_attachment_count = p_preserve_attachments.len() as u32;
-        self.inner.p_preserve_attachments = p_preserve_attachments.as_ptr();
+        self.inner.p_preserve_attachments = p_preserve_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -2293,17 +2302,17 @@ impl<'a> RenderPassCreateInfoBuilder<'a> {
     }
     pub fn p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
-        self.inner.p_attachments = p_attachments.as_ptr();
+        self.inner.p_attachments = p_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription]) -> Self {
         self.inner.subpass_count = p_subpasses.len() as u32;
-        self.inner.p_subpasses = p_subpasses.as_ptr();
+        self.inner.p_subpasses = p_subpasses.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency]) -> Self {
         self.inner.dependency_count = p_dependencies.len() as u32;
-        self.inner.p_dependencies = p_dependencies.as_ptr();
+        self.inner.p_dependencies = p_dependencies.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -2475,7 +2484,7 @@ impl<'a> FramebufferCreateInfoBuilder<'a> {
     }
     pub fn p_attachments(mut self, p_attachments: &'a [vk::ImageView]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
-        self.inner.p_attachments = p_attachments.as_ptr();
+        self.inner.p_attachments = p_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn width(mut self, width: u32) -> Self {
@@ -2524,18 +2533,18 @@ impl<'a> SubmitInfoBuilder<'a> {
     ) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
         assert_eq!(self.inner.wait_semaphore_count, p_wait_dst_stage_mask.len() as u32);
-        self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
-        self.inner.p_wait_dst_stage_mask = p_wait_dst_stage_mask.as_ptr();
+        self.inner.p_wait_semaphores = p_wait_semaphores.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_wait_dst_stage_mask = p_wait_dst_stage_mask.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_command_buffers(mut self, p_command_buffers: &'a [vk::CommandBuffer]) -> Self {
         self.inner.command_buffer_count = p_command_buffers.len() as u32;
-        self.inner.p_command_buffers = p_command_buffers.as_ptr();
+        self.inner.p_command_buffers = p_command_buffers.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_signal_semaphores(mut self, p_signal_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphores.len() as u32;
-        self.inner.p_signal_semaphores = p_signal_semaphores.as_ptr();
+        self.inner.p_signal_semaphores = p_signal_semaphores.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3025,7 +3034,7 @@ impl<'a> SwapchainCreateInfoKHRBuilder<'a> {
     }
     pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
-        self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
+        self.inner.p_queue_family_indices = p_queue_family_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn pre_transform(mut self, pre_transform: vk::SurfaceTransformFlagsKHR) -> Self {
@@ -3077,14 +3086,14 @@ impl<'a> PresentInfoKHRBuilder<'a> {
     }
     pub fn p_wait_semaphores(mut self, p_wait_semaphores: &'a [vk::Semaphore]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphores.len() as u32;
-        self.inner.p_wait_semaphores = p_wait_semaphores.as_ptr();
+        self.inner.p_wait_semaphores = p_wait_semaphores.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_swapchains(mut self, p_swapchains: &'a [vk::SwapchainKHR], p_image_indices: &'a [u32]) -> Self {
         self.inner.swapchain_count = p_swapchains.len() as u32;
         assert_eq!(self.inner.swapchain_count, p_image_indices.len() as u32);
-        self.inner.p_swapchains = p_swapchains.as_ptr();
-        self.inner.p_image_indices = p_image_indices.as_ptr();
+        self.inner.p_swapchains = p_swapchains.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_image_indices = p_image_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_results(mut self, p_results: *mut vk::Result) -> Self {
@@ -3158,7 +3167,9 @@ impl<'a> ValidationFlagsEXTBuilder<'a> {
     }
     pub fn p_disabled_validation_checks(mut self, p_disabled_validation_checks: &'a [vk::ValidationCheckEXT]) -> Self {
         self.inner.disabled_validation_check_count = p_disabled_validation_checks.len() as u32;
-        self.inner.p_disabled_validation_checks = p_disabled_validation_checks.as_ptr();
+        self.inner.p_disabled_validation_checks = p_disabled_validation_checks
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3193,7 +3204,9 @@ impl<'a> ValidationFeaturesEXTBuilder<'a> {
         p_enabled_validation_features: &'a [vk::ValidationFeatureEnableEXT],
     ) -> Self {
         self.inner.enabled_validation_feature_count = p_enabled_validation_features.len() as u32;
-        self.inner.p_enabled_validation_features = p_enabled_validation_features.as_ptr();
+        self.inner.p_enabled_validation_features = p_enabled_validation_features
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_disabled_validation_features(
@@ -3201,7 +3214,9 @@ impl<'a> ValidationFeaturesEXTBuilder<'a> {
         p_disabled_validation_features: &'a [vk::ValidationFeatureDisableEXT],
     ) -> Self {
         self.inner.disabled_validation_feature_count = p_disabled_validation_features.len() as u32;
-        self.inner.p_disabled_validation_features = p_disabled_validation_features.as_ptr();
+        self.inner.p_disabled_validation_features = p_disabled_validation_features
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3314,7 +3329,7 @@ impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
     }
     pub fn p_tag<T>(mut self, p_tag: &'a [T]) -> Self {
         self.inner.tag_size = mem::size_of_val(p_tag) as usize;
-        self.inner.p_tag = p_tag.as_ptr() as *const _;
+        self.inner.p_tag = p_tag.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -3607,16 +3622,18 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
         self.inner.acquire_count = p_acquire_syncs.len() as u32;
         assert_eq!(self.inner.acquire_count, p_acquire_keys.len() as u32);
         assert_eq!(self.inner.acquire_count, p_acquire_timeout_milliseconds.len() as u32);
-        self.inner.p_acquire_syncs = p_acquire_syncs.as_ptr();
-        self.inner.p_acquire_keys = p_acquire_keys.as_ptr();
-        self.inner.p_acquire_timeout_milliseconds = p_acquire_timeout_milliseconds.as_ptr();
+        self.inner.p_acquire_syncs = p_acquire_syncs.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_acquire_keys = p_acquire_keys.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_acquire_timeout_milliseconds = p_acquire_timeout_milliseconds
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
-        self.inner.p_release_syncs = p_release_syncs.as_ptr();
-        self.inner.p_release_keys = p_release_keys.as_ptr();
+        self.inner.p_release_syncs = p_release_syncs.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_release_keys = p_release_keys.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3768,7 +3785,7 @@ impl<'a> GraphicsShaderGroupCreateInfoNVBuilder<'a> {
     }
     pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
-        self.inner.p_stages = p_stages.as_ptr();
+        self.inner.p_stages = p_stages.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_vertex_input_state(
@@ -3814,12 +3831,12 @@ impl<'a> GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
     }
     pub fn p_groups(mut self, p_groups: &'a [vk::GraphicsShaderGroupCreateInfoNV]) -> Self {
         self.inner.group_count = p_groups.len() as u32;
-        self.inner.p_groups = p_groups.as_ptr();
+        self.inner.p_groups = p_groups.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_pipelines(mut self, p_pipelines: &'a [vk::Pipeline]) -> Self {
         self.inner.pipeline_count = p_pipelines.len() as u32;
-        self.inner.p_pipelines = p_pipelines.as_ptr();
+        self.inner.p_pipelines = p_pipelines.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3892,8 +3909,8 @@ impl<'a> IndirectCommandsLayoutTokenNVBuilder<'a> {
     pub fn p_index_types(mut self, p_index_types: &'a [vk::IndexType], p_index_type_values: &'a [u32]) -> Self {
         self.inner.index_type_count = p_index_types.len() as u32;
         assert_eq!(self.inner.index_type_count, p_index_type_values.len() as u32);
-        self.inner.p_index_types = p_index_types.as_ptr();
-        self.inner.p_index_type_values = p_index_type_values.as_ptr();
+        self.inner.p_index_types = p_index_types.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_index_type_values = p_index_type_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3933,12 +3950,12 @@ impl<'a> IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
     }
     pub fn p_tokens(mut self, p_tokens: &'a [vk::IndirectCommandsLayoutTokenNV]) -> Self {
         self.inner.token_count = p_tokens.len() as u32;
-        self.inner.p_tokens = p_tokens.as_ptr();
+        self.inner.p_tokens = p_tokens.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_stream_strides(mut self, p_stream_strides: &'a [u32]) -> Self {
         self.inner.stream_count = p_stream_strides.len() as u32;
-        self.inner.p_stream_strides = p_stream_strides.as_ptr();
+        self.inner.p_stream_strides = p_stream_strides.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -3982,7 +3999,7 @@ impl<'a> GeneratedCommandsInfoNVBuilder<'a> {
     }
     pub fn p_streams(mut self, p_streams: &'a [vk::IndirectCommandsStreamNV]) -> Self {
         self.inner.stream_count = p_streams.len() as u32;
-        self.inner.p_streams = p_streams.as_ptr();
+        self.inner.p_streams = p_streams.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn sequences_count(mut self, sequences_count: u32) -> Self {
@@ -4210,7 +4227,7 @@ impl<'a> PresentRegionsKHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::PresentRegionKHR]) -> Self {
         self.inner.swapchain_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -4234,7 +4251,7 @@ pub struct PresentRegionKHRBuilder<'a> {
 impl<'a> PresentRegionKHRBuilder<'a> {
     pub fn p_rectangles(mut self, p_rectangles: &'a [vk::RectLayerKHR]) -> Self {
         self.inner.rectangle_count = p_rectangles.len() as u32;
-        self.inner.p_rectangles = p_rectangles.as_ptr();
+        self.inner.p_rectangles = p_rectangles.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -4648,16 +4665,16 @@ impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
         self.inner.acquire_count = p_acquire_syncs.len() as u32;
         assert_eq!(self.inner.acquire_count, p_acquire_keys.len() as u32);
         assert_eq!(self.inner.acquire_count, p_acquire_timeouts.len() as u32);
-        self.inner.p_acquire_syncs = p_acquire_syncs.as_ptr();
-        self.inner.p_acquire_keys = p_acquire_keys.as_ptr();
-        self.inner.p_acquire_timeouts = p_acquire_timeouts.as_ptr();
+        self.inner.p_acquire_syncs = p_acquire_syncs.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_acquire_keys = p_acquire_keys.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_acquire_timeouts = p_acquire_timeouts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_release_syncs(mut self, p_release_syncs: &'a [vk::DeviceMemory], p_release_keys: &'a [u64]) -> Self {
         self.inner.release_count = p_release_syncs.len() as u32;
         assert_eq!(self.inner.release_count, p_release_keys.len() as u32);
-        self.inner.p_release_syncs = p_release_syncs.as_ptr();
-        self.inner.p_release_keys = p_release_keys.as_ptr();
+        self.inner.p_release_syncs = p_release_syncs.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_release_keys = p_release_keys.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -4834,12 +4851,12 @@ impl<'a> D3D12FenceSubmitInfoKHRBuilder<'a> {
     }
     pub fn p_wait_semaphore_values(mut self, p_wait_semaphore_values: &'a [u64]) -> Self {
         self.inner.wait_semaphore_values_count = p_wait_semaphore_values.len() as u32;
-        self.inner.p_wait_semaphore_values = p_wait_semaphore_values.as_ptr();
+        self.inner.p_wait_semaphore_values = p_wait_semaphore_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_signal_semaphore_values(mut self, p_signal_semaphore_values: &'a [u64]) -> Self {
         self.inner.signal_semaphore_values_count = p_signal_semaphore_values.len() as u32;
-        self.inner.p_signal_semaphore_values = p_signal_semaphore_values.as_ptr();
+        self.inner.p_signal_semaphore_values = p_signal_semaphore_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5278,17 +5295,17 @@ impl<'a> RenderPassMultiviewCreateInfoBuilder<'a> {
     }
     pub fn p_view_masks(mut self, p_view_masks: &'a [u32]) -> Self {
         self.inner.subpass_count = p_view_masks.len() as u32;
-        self.inner.p_view_masks = p_view_masks.as_ptr();
+        self.inner.p_view_masks = p_view_masks.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_view_offsets(mut self, p_view_offsets: &'a [i32]) -> Self {
         self.inner.dependency_count = p_view_offsets.len() as u32;
-        self.inner.p_view_offsets = p_view_offsets.as_ptr();
+        self.inner.p_view_offsets = p_view_offsets.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_correlation_masks(mut self, p_correlation_masks: &'a [u32]) -> Self {
         self.inner.correlation_mask_count = p_correlation_masks.len() as u32;
-        self.inner.p_correlation_masks = p_correlation_masks.as_ptr();
+        self.inner.p_correlation_masks = p_correlation_masks.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5512,7 +5529,7 @@ impl<'a> BindBufferMemoryDeviceGroupInfoBuilder<'a> {
     }
     pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
-        self.inner.p_device_indices = p_device_indices.as_ptr();
+        self.inner.p_device_indices = p_device_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5582,12 +5599,14 @@ impl<'a> BindImageMemoryDeviceGroupInfoBuilder<'a> {
     }
     pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
-        self.inner.p_device_indices = p_device_indices.as_ptr();
+        self.inner.p_device_indices = p_device_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_split_instance_bind_regions(mut self, p_split_instance_bind_regions: &'a [vk::Rect2D]) -> Self {
         self.inner.split_instance_bind_region_count = p_split_instance_bind_regions.len() as u32;
-        self.inner.p_split_instance_bind_regions = p_split_instance_bind_regions.as_ptr();
+        self.inner.p_split_instance_bind_regions = p_split_instance_bind_regions
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5623,7 +5642,7 @@ impl<'a> DeviceGroupRenderPassBeginInfoBuilder<'a> {
     }
     pub fn p_device_render_areas(mut self, p_device_render_areas: &'a [vk::Rect2D]) -> Self {
         self.inner.device_render_area_count = p_device_render_areas.len() as u32;
-        self.inner.p_device_render_areas = p_device_render_areas.as_ptr();
+        self.inner.p_device_render_areas = p_device_render_areas.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5685,17 +5704,23 @@ impl<'a> DeviceGroupSubmitInfoBuilder<'a> {
     }
     pub fn p_wait_semaphore_device_indices(mut self, p_wait_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.wait_semaphore_count = p_wait_semaphore_device_indices.len() as u32;
-        self.inner.p_wait_semaphore_device_indices = p_wait_semaphore_device_indices.as_ptr();
+        self.inner.p_wait_semaphore_device_indices = p_wait_semaphore_device_indices
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_command_buffer_device_masks(mut self, p_command_buffer_device_masks: &'a [u32]) -> Self {
         self.inner.command_buffer_count = p_command_buffer_device_masks.len() as u32;
-        self.inner.p_command_buffer_device_masks = p_command_buffer_device_masks.as_ptr();
+        self.inner.p_command_buffer_device_masks = p_command_buffer_device_masks
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_signal_semaphore_device_indices(mut self, p_signal_semaphore_device_indices: &'a [u32]) -> Self {
         self.inner.signal_semaphore_count = p_signal_semaphore_device_indices.len() as u32;
-        self.inner.p_signal_semaphore_device_indices = p_signal_semaphore_device_indices.as_ptr();
+        self.inner.p_signal_semaphore_device_indices = p_signal_semaphore_device_indices
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5871,7 +5896,7 @@ impl<'a> DeviceGroupPresentInfoKHRBuilder<'a> {
     }
     pub fn p_device_masks(mut self, p_device_masks: &'a [u32]) -> Self {
         self.inner.swapchain_count = p_device_masks.len() as u32;
-        self.inner.p_device_masks = p_device_masks.as_ptr();
+        self.inner.p_device_masks = p_device_masks.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn mode(mut self, mode: vk::DeviceGroupPresentModeFlagsKHR) -> Self {
@@ -5907,7 +5932,7 @@ impl<'a> DeviceGroupDeviceCreateInfoBuilder<'a> {
     }
     pub fn p_physical_devices(mut self, p_physical_devices: &'a [vk::PhysicalDevice]) -> Self {
         self.inner.physical_device_count = p_physical_devices.len() as u32;
-        self.inner.p_physical_devices = p_physical_devices.as_ptr();
+        self.inner.p_physical_devices = p_physical_devices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -5976,7 +6001,9 @@ impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         p_descriptor_update_entries: &'a [vk::DescriptorUpdateTemplateEntry],
     ) -> Self {
         self.inner.descriptor_update_entry_count = p_descriptor_update_entries.len() as u32;
-        self.inner.p_descriptor_update_entries = p_descriptor_update_entries.as_ptr();
+        self.inner.p_descriptor_update_entries = p_descriptor_update_entries
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn template_type(mut self, template_type: vk::DescriptorUpdateTemplateType) -> Self {
@@ -6116,7 +6143,7 @@ impl<'a> PresentTimesInfoGOOGLEBuilder<'a> {
     }
     pub fn p_times(mut self, p_times: &'a [vk::PresentTimeGOOGLE]) -> Self {
         self.inner.swapchain_count = p_times.len() as u32;
-        self.inner.p_times = p_times.as_ptr();
+        self.inner.p_times = p_times.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -6259,7 +6286,7 @@ impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_viewport_w_scalings(mut self, p_viewport_w_scalings: &'a [vk::ViewportWScalingNV]) -> Self {
         self.inner.viewport_count = p_viewport_w_scalings.len() as u32;
-        self.inner.p_viewport_w_scalings = p_viewport_w_scalings.as_ptr();
+        self.inner.p_viewport_w_scalings = p_viewport_w_scalings.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -6295,7 +6322,7 @@ impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_viewport_swizzles(mut self, p_viewport_swizzles: &'a [vk::ViewportSwizzleNV]) -> Self {
         self.inner.viewport_count = p_viewport_swizzles.len() as u32;
-        self.inner.p_viewport_swizzles = p_viewport_swizzles.as_ptr();
+        self.inner.p_viewport_swizzles = p_viewport_swizzles.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -6335,7 +6362,7 @@ impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
     }
     pub fn p_discard_rectangles(mut self, p_discard_rectangles: &'a [vk::Rect2D]) -> Self {
         self.inner.discard_rectangle_count = p_discard_rectangles.len() as u32;
-        self.inner.p_discard_rectangles = p_discard_rectangles.as_ptr();
+        self.inner.p_discard_rectangles = p_discard_rectangles.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -6367,7 +6394,7 @@ impl<'a> RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
     }
     pub fn p_aspect_references(mut self, p_aspect_references: &'a [vk::InputAttachmentAspectReference]) -> Self {
         self.inner.aspect_reference_count = p_aspect_references.len() as u32;
-        self.inner.p_aspect_references = p_aspect_references.as_ptr();
+        self.inner.p_aspect_references = p_aspect_references.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -7095,7 +7122,7 @@ impl<'a> SampleLocationsInfoEXTBuilder<'a> {
     }
     pub fn p_sample_locations(mut self, p_sample_locations: &'a [vk::SampleLocationEXT]) -> Self {
         self.inner.sample_locations_count = p_sample_locations.len() as u32;
-        self.inner.p_sample_locations = p_sample_locations.as_ptr();
+        self.inner.p_sample_locations = p_sample_locations.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -7130,7 +7157,9 @@ impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
         p_attachment_initial_sample_locations: &'a [vk::AttachmentSampleLocationsEXT],
     ) -> Self {
         self.inner.attachment_initial_sample_locations_count = p_attachment_initial_sample_locations.len() as u32;
-        self.inner.p_attachment_initial_sample_locations = p_attachment_initial_sample_locations.as_ptr();
+        self.inner.p_attachment_initial_sample_locations = p_attachment_initial_sample_locations
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_post_subpass_sample_locations(
@@ -7138,7 +7167,9 @@ impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
         p_post_subpass_sample_locations: &'a [vk::SubpassSampleLocationsEXT],
     ) -> Self {
         self.inner.post_subpass_sample_locations_count = p_post_subpass_sample_locations.len() as u32;
-        self.inner.p_post_subpass_sample_locations = p_post_subpass_sample_locations.as_ptr();
+        self.inner.p_post_subpass_sample_locations = p_post_subpass_sample_locations
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -7348,7 +7379,7 @@ impl<'a> WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
     }
     pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
         self.inner.data_size = mem::size_of_val(p_data) as u32;
-        self.inner.p_data = p_data.as_ptr() as *const _;
+        self.inner.p_data = p_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -7430,7 +7461,9 @@ impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_coverage_modulation_table(mut self, p_coverage_modulation_table: &'a [f32]) -> Self {
         self.inner.coverage_modulation_table_count = p_coverage_modulation_table.len() as u32;
-        self.inner.p_coverage_modulation_table = p_coverage_modulation_table.as_ptr();
+        self.inner.p_coverage_modulation_table = p_coverage_modulation_table
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -7462,7 +7495,7 @@ impl<'a> ImageFormatListCreateInfoBuilder<'a> {
     }
     pub fn p_view_formats(mut self, p_view_formats: &'a [vk::Format]) -> Self {
         self.inner.view_format_count = p_view_formats.len() as u32;
-        self.inner.p_view_formats = p_view_formats.as_ptr();
+        self.inner.p_view_formats = p_view_formats.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -7498,7 +7531,7 @@ impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
     }
     pub fn p_initial_data<T>(mut self, p_initial_data: &'a [T]) -> Self {
         self.inner.initial_data_size = mem::size_of_val(p_initial_data) as usize;
-        self.inner.p_initial_data = p_initial_data.as_ptr() as *const _;
+        self.inner.p_initial_data = p_initial_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -7841,7 +7874,7 @@ impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
     }
     pub fn p_tag<T>(mut self, p_tag: &'a [T]) -> Self {
         self.inner.tag_size = mem::size_of_val(p_tag) as usize;
-        self.inner.p_tag = p_tag.as_ptr() as *const _;
+        self.inner.p_tag = p_tag.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -7966,17 +7999,17 @@ impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
     }
     pub fn p_queue_labels(mut self, p_queue_labels: &'a [vk::DebugUtilsLabelEXT]) -> Self {
         self.inner.queue_label_count = p_queue_labels.len() as u32;
-        self.inner.p_queue_labels = p_queue_labels.as_ptr();
+        self.inner.p_queue_labels = p_queue_labels.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_cmd_buf_labels(mut self, p_cmd_buf_labels: &'a [vk::DebugUtilsLabelEXT]) -> Self {
         self.inner.cmd_buf_label_count = p_cmd_buf_labels.len() as u32;
-        self.inner.p_cmd_buf_labels = p_cmd_buf_labels.as_ptr();
+        self.inner.p_cmd_buf_labels = p_cmd_buf_labels.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_objects(mut self, p_objects: &'a [vk::DebugUtilsObjectNameInfoEXT]) -> Self {
         self.inner.object_count = p_objects.len() as u32;
-        self.inner.p_objects = p_objects.as_ptr();
+        self.inner.p_objects = p_objects.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8432,7 +8465,7 @@ impl<'a> DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a> {
     }
     pub fn p_binding_flags(mut self, p_binding_flags: &'a [vk::DescriptorBindingFlags]) -> Self {
         self.inner.binding_count = p_binding_flags.len() as u32;
-        self.inner.p_binding_flags = p_binding_flags.as_ptr();
+        self.inner.p_binding_flags = p_binding_flags.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8464,7 +8497,7 @@ impl<'a> DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a> {
     }
     pub fn p_descriptor_counts(mut self, p_descriptor_counts: &'a [u32]) -> Self {
         self.inner.descriptor_set_count = p_descriptor_counts.len() as u32;
-        self.inner.p_descriptor_counts = p_descriptor_counts.as_ptr();
+        self.inner.p_descriptor_counts = p_descriptor_counts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8608,7 +8641,7 @@ impl<'a> SubpassDescription2Builder<'a> {
     }
     pub fn p_input_attachments(mut self, p_input_attachments: &'a [vk::AttachmentReference2]) -> Self {
         self.inner.input_attachment_count = p_input_attachments.len() as u32;
-        self.inner.p_input_attachments = p_input_attachments.as_ptr();
+        self.inner.p_input_attachments = p_input_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_color_attachments(
@@ -8620,8 +8653,9 @@ impl<'a> SubpassDescription2Builder<'a> {
         if let Some(s) = p_resolve_attachments {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
-        self.inner.p_color_attachments = p_color_attachments.as_ptr();
-        self.inner.p_resolve_attachments = p_resolve_attachments.map_or(ptr::null(), |s| s.as_ptr());
+        self.inner.p_color_attachments = p_color_attachments.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_resolve_attachments =
+            p_resolve_attachments.map_or(ptr::null(), |s| s.first().map_or(ptr::null(), |s| s as *const _));
         self
     }
     pub fn p_depth_stencil_attachment(
@@ -8633,7 +8667,7 @@ impl<'a> SubpassDescription2Builder<'a> {
     }
     pub fn p_preserve_attachments(mut self, p_preserve_attachments: &'a [u32]) -> Self {
         self.inner.preserve_attachment_count = p_preserve_attachments.len() as u32;
-        self.inner.p_preserve_attachments = p_preserve_attachments.as_ptr();
+        self.inner.p_preserve_attachments = p_preserve_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8727,22 +8761,22 @@ impl<'a> RenderPassCreateInfo2Builder<'a> {
     }
     pub fn p_attachments(mut self, p_attachments: &'a [vk::AttachmentDescription2]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
-        self.inner.p_attachments = p_attachments.as_ptr();
+        self.inner.p_attachments = p_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_subpasses(mut self, p_subpasses: &'a [vk::SubpassDescription2]) -> Self {
         self.inner.subpass_count = p_subpasses.len() as u32;
-        self.inner.p_subpasses = p_subpasses.as_ptr();
+        self.inner.p_subpasses = p_subpasses.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_dependencies(mut self, p_dependencies: &'a [vk::SubpassDependency2]) -> Self {
         self.inner.dependency_count = p_dependencies.len() as u32;
-        self.inner.p_dependencies = p_dependencies.as_ptr();
+        self.inner.p_dependencies = p_dependencies.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_correlated_view_masks(mut self, p_correlated_view_masks: &'a [u32]) -> Self {
         self.inner.correlated_view_mask_count = p_correlated_view_masks.len() as u32;
-        self.inner.p_correlated_view_masks = p_correlated_view_masks.as_ptr();
+        self.inner.p_correlated_view_masks = p_correlated_view_masks.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8894,12 +8928,12 @@ impl<'a> TimelineSemaphoreSubmitInfoBuilder<'a> {
     }
     pub fn p_wait_semaphore_values(mut self, p_wait_semaphore_values: &'a [u64]) -> Self {
         self.inner.wait_semaphore_value_count = p_wait_semaphore_values.len() as u32;
-        self.inner.p_wait_semaphore_values = p_wait_semaphore_values.as_ptr();
+        self.inner.p_wait_semaphore_values = p_wait_semaphore_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_signal_semaphore_values(mut self, p_signal_semaphore_values: &'a [u64]) -> Self {
         self.inner.signal_semaphore_value_count = p_signal_semaphore_values.len() as u32;
-        self.inner.p_signal_semaphore_values = p_signal_semaphore_values.as_ptr();
+        self.inner.p_signal_semaphore_values = p_signal_semaphore_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -8936,8 +8970,8 @@ impl<'a> SemaphoreWaitInfoBuilder<'a> {
     pub fn p_semaphores(mut self, p_semaphores: &'a [vk::Semaphore], p_values: &'a [u64]) -> Self {
         self.inner.semaphore_count = p_semaphores.len() as u32;
         assert_eq!(self.inner.semaphore_count, p_values.len() as u32);
-        self.inner.p_semaphores = p_semaphores.as_ptr();
-        self.inner.p_values = p_values.as_ptr();
+        self.inner.p_semaphores = p_semaphores.first().map_or(ptr::null(), |s| s as *const _);
+        self.inner.p_values = p_values.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -9006,7 +9040,7 @@ impl<'a> PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
         p_vertex_binding_divisors: &'a [vk::VertexInputBindingDivisorDescriptionEXT],
     ) -> Self {
         self.inner.vertex_binding_divisor_count = p_vertex_binding_divisors.len() as u32;
-        self.inner.p_vertex_binding_divisors = p_vertex_binding_divisors.as_ptr();
+        self.inner.p_vertex_binding_divisors = p_vertex_binding_divisors.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -9777,7 +9811,7 @@ impl<'a> PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_exclusive_scissors(mut self, p_exclusive_scissors: &'a [vk::Rect2D]) -> Self {
         self.inner.exclusive_scissor_count = p_exclusive_scissors.len() as u32;
-        self.inner.p_exclusive_scissors = p_exclusive_scissors.as_ptr();
+        self.inner.p_exclusive_scissors = p_exclusive_scissors.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -9974,7 +10008,9 @@ impl<'a> ShadingRatePaletteNVBuilder<'a> {
         p_shading_rate_palette_entries: &'a [vk::ShadingRatePaletteEntryNV],
     ) -> Self {
         self.inner.shading_rate_palette_entry_count = p_shading_rate_palette_entries.len() as u32;
-        self.inner.p_shading_rate_palette_entries = p_shading_rate_palette_entries.as_ptr();
+        self.inner.p_shading_rate_palette_entries = p_shading_rate_palette_entries
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10010,7 +10046,7 @@ impl<'a> PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_shading_rate_palettes(mut self, p_shading_rate_palettes: &'a [vk::ShadingRatePaletteNV]) -> Self {
         self.inner.viewport_count = p_shading_rate_palettes.len() as u32;
-        self.inner.p_shading_rate_palettes = p_shading_rate_palettes.as_ptr();
+        self.inner.p_shading_rate_palettes = p_shading_rate_palettes.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10080,7 +10116,7 @@ impl<'a> CoarseSampleOrderCustomNVBuilder<'a> {
     }
     pub fn p_sample_locations(mut self, p_sample_locations: &'a [vk::CoarseSampleLocationNV]) -> Self {
         self.inner.sample_location_count = p_sample_locations.len() as u32;
-        self.inner.p_sample_locations = p_sample_locations.as_ptr();
+        self.inner.p_sample_locations = p_sample_locations.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10116,7 +10152,7 @@ impl<'a> PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
     }
     pub fn p_custom_sample_orders(mut self, p_custom_sample_orders: &'a [vk::CoarseSampleOrderCustomNV]) -> Self {
         self.inner.custom_sample_order_count = p_custom_sample_orders.len() as u32;
-        self.inner.p_custom_sample_orders = p_custom_sample_orders.as_ptr();
+        self.inner.p_custom_sample_orders = p_custom_sample_orders.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10282,12 +10318,12 @@ impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
     }
     pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
-        self.inner.p_stages = p_stages.as_ptr();
+        self.inner.p_stages = p_stages.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_groups(mut self, p_groups: &'a [vk::RayTracingShaderGroupCreateInfoNV]) -> Self {
         self.inner.group_count = p_groups.len() as u32;
-        self.inner.p_groups = p_groups.as_ptr();
+        self.inner.p_groups = p_groups.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn max_recursion_depth(mut self, max_recursion_depth: u32) -> Self {
@@ -10339,12 +10375,12 @@ impl<'a> RayTracingPipelineCreateInfoKHRBuilder<'a> {
     }
     pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
-        self.inner.p_stages = p_stages.as_ptr();
+        self.inner.p_stages = p_stages.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_groups(mut self, p_groups: &'a [vk::RayTracingShaderGroupCreateInfoKHR]) -> Self {
         self.inner.group_count = p_groups.len() as u32;
-        self.inner.p_groups = p_groups.as_ptr();
+        self.inner.p_groups = p_groups.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn max_pipeline_ray_recursion_depth(mut self, max_pipeline_ray_recursion_depth: u32) -> Self {
@@ -10569,7 +10605,7 @@ impl<'a> AccelerationStructureInfoNVBuilder<'a> {
     }
     pub fn p_geometries(mut self, p_geometries: &'a [vk::GeometryNV]) -> Self {
         self.inner.geometry_count = p_geometries.len() as u32;
-        self.inner.p_geometries = p_geometries.as_ptr();
+        self.inner.p_geometries = p_geometries.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10647,7 +10683,7 @@ impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
     }
     pub fn p_device_indices(mut self, p_device_indices: &'a [u32]) -> Self {
         self.inner.device_index_count = p_device_indices.len() as u32;
-        self.inner.p_device_indices = p_device_indices.as_ptr();
+        self.inner.p_device_indices = p_device_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10679,7 +10715,7 @@ impl<'a> WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
     }
     pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureKHR]) -> Self {
         self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
-        self.inner.p_acceleration_structures = p_acceleration_structures.as_ptr();
+        self.inner.p_acceleration_structures = p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10711,7 +10747,7 @@ impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
     }
     pub fn p_acceleration_structures(mut self, p_acceleration_structures: &'a [vk::AccelerationStructureNV]) -> Self {
         self.inner.acceleration_structure_count = p_acceleration_structures.len() as u32;
-        self.inner.p_acceleration_structures = p_acceleration_structures.as_ptr();
+        self.inner.p_acceleration_structures = p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10951,7 +10987,7 @@ impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
     }
     pub fn p_queue_family_indices(mut self, p_queue_family_indices: &'a [u32]) -> Self {
         self.inner.queue_family_index_count = p_queue_family_indices.len() as u32;
-        self.inner.p_queue_family_indices = p_queue_family_indices.as_ptr();
+        self.inner.p_queue_family_indices = p_queue_family_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -10983,7 +11019,7 @@ impl<'a> ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
     }
     pub fn p_drm_format_modifiers(mut self, p_drm_format_modifiers: &'a [u64]) -> Self {
         self.inner.drm_format_modifier_count = p_drm_format_modifiers.len() as u32;
-        self.inner.p_drm_format_modifiers = p_drm_format_modifiers.as_ptr();
+        self.inner.p_drm_format_modifiers = p_drm_format_modifiers.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -11019,7 +11055,7 @@ impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
     }
     pub fn p_plane_layouts(mut self, p_plane_layouts: &'a [vk::SubresourceLayout]) -> Self {
         self.inner.drm_format_modifier_plane_count = p_plane_layouts.len() as u32;
-        self.inner.p_plane_layouts = p_plane_layouts.as_ptr();
+        self.inner.p_plane_layouts = p_plane_layouts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -11687,7 +11723,7 @@ impl<'a> FramebufferAttachmentsCreateInfoBuilder<'a> {
         p_attachment_image_infos: &'a [vk::FramebufferAttachmentImageInfo],
     ) -> Self {
         self.inner.attachment_image_info_count = p_attachment_image_infos.len() as u32;
-        self.inner.p_attachment_image_infos = p_attachment_image_infos.as_ptr();
+        self.inner.p_attachment_image_infos = p_attachment_image_infos.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -11739,7 +11775,7 @@ impl<'a> FramebufferAttachmentImageInfoBuilder<'a> {
     }
     pub fn p_view_formats(mut self, p_view_formats: &'a [vk::Format]) -> Self {
         self.inner.view_format_count = p_view_formats.len() as u32;
-        self.inner.p_view_formats = p_view_formats.as_ptr();
+        self.inner.p_view_formats = p_view_formats.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -11771,7 +11807,7 @@ impl<'a> RenderPassAttachmentBeginInfoBuilder<'a> {
     }
     pub fn p_attachments(mut self, p_attachments: &'a [vk::ImageView]) -> Self {
         self.inner.attachment_count = p_attachments.len() as u32;
-        self.inner.p_attachments = p_attachments.as_ptr();
+        self.inner.p_attachments = p_attachments.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -12185,7 +12221,7 @@ impl<'a> QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
     }
     pub fn p_counter_indices(mut self, p_counter_indices: &'a [u32]) -> Self {
         self.inner.counter_index_count = p_counter_indices.len() as u32;
-        self.inner.p_counter_indices = p_counter_indices.as_ptr();
+        self.inner.p_counter_indices = p_counter_indices.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -14047,12 +14083,12 @@ impl<'a> AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
     }
     pub fn p_geometries(mut self, p_geometries: &'a [vk::AccelerationStructureGeometryKHR]) -> Self {
         self.inner.geometry_count = p_geometries.len() as u32;
-        self.inner.p_geometries = p_geometries.as_ptr();
+        self.inner.p_geometries = p_geometries.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn pp_geometries(mut self, pp_geometries: &'a [*const vk::AccelerationStructureGeometryKHR]) -> Self {
         self.inner.geometry_count = pp_geometries.len() as u32;
-        self.inner.pp_geometries = pp_geometries.as_ptr();
+        self.inner.pp_geometries = pp_geometries.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn scratch_data(mut self, scratch_data: vk::DeviceOrHostAddressKHR) -> Self {
@@ -14346,7 +14382,7 @@ impl<'a> PipelineLibraryCreateInfoKHRBuilder<'a> {
     }
     pub fn p_libraries(mut self, p_libraries: &'a [vk::Pipeline]) -> Self {
         self.inner.library_count = p_libraries.len() as u32;
-        self.inner.p_libraries = p_libraries.as_ptr();
+        self.inner.p_libraries = p_libraries.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15025,7 +15061,7 @@ impl<'a> CopyBufferInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::BufferCopy2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15073,7 +15109,7 @@ impl<'a> CopyImageInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::ImageCopy2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15121,7 +15157,7 @@ impl<'a> BlitImageInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::ImageBlit2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn filter(mut self, filter: vk::Filter) -> Self {
@@ -15169,7 +15205,7 @@ impl<'a> CopyBufferToImageInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::BufferImageCopy2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15213,7 +15249,7 @@ impl<'a> CopyImageToBufferInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::BufferImageCopy2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15261,7 +15297,7 @@ impl<'a> ResolveImageInfo2KHRBuilder<'a> {
     }
     pub fn p_regions(mut self, p_regions: &'a [vk::ImageResolve2KHR]) -> Self {
         self.inner.region_count = p_regions.len() as u32;
-        self.inner.p_regions = p_regions.as_ptr();
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15664,7 +15700,7 @@ pub struct MutableDescriptorTypeListVALVEBuilder<'a> {
 impl<'a> MutableDescriptorTypeListVALVEBuilder<'a> {
     pub fn p_descriptor_types(mut self, p_descriptor_types: &'a [vk::DescriptorType]) -> Self {
         self.inner.descriptor_type_count = p_descriptor_types.len() as u32;
-        self.inner.p_descriptor_types = p_descriptor_types.as_ptr();
+        self.inner.p_descriptor_types = p_descriptor_types.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -15699,7 +15735,9 @@ impl<'a> MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
         p_mutable_descriptor_type_lists: &'a [vk::MutableDescriptorTypeListVALVE],
     ) -> Self {
         self.inner.mutable_descriptor_type_list_count = p_mutable_descriptor_type_lists.len() as u32;
-        self.inner.p_mutable_descriptor_type_lists = p_mutable_descriptor_type_lists.as_ptr();
+        self.inner.p_mutable_descriptor_type_lists = p_mutable_descriptor_type_lists
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
 }

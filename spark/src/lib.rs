@@ -8980,7 +8980,12 @@ impl Device {
     ) -> Result<()> {
         let fp = self.fp_queue_submit.expect("vkQueueSubmit is not loaded");
         let submit_count = p_submits.len() as u32;
-        let err = (fp)(Some(queue), submit_count, p_submits.as_ptr(), fence);
+        let err = (fp)(
+            Some(queue),
+            submit_count,
+            p_submits.first().map_or(ptr::null(), |s| s as *const _),
+            fence,
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -9048,7 +9053,11 @@ impl Device {
             .fp_flush_mapped_memory_ranges
             .expect("vkFlushMappedMemoryRanges is not loaded");
         let memory_range_count = p_memory_ranges.len() as u32;
-        let err = (fp)(Some(self.handle), memory_range_count, p_memory_ranges.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            memory_range_count,
+            p_memory_ranges.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -9059,7 +9068,11 @@ impl Device {
             .fp_invalidate_mapped_memory_ranges
             .expect("vkInvalidateMappedMemoryRanges is not loaded");
         let memory_range_count = p_memory_ranges.len() as u32;
-        let err = (fp)(Some(self.handle), memory_range_count, p_memory_ranges.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            memory_range_count,
+            p_memory_ranges.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -9138,7 +9151,12 @@ impl Device {
     ) -> Result<()> {
         let fp = self.fp_queue_bind_sparse.expect("vkQueueBindSparse is not loaded");
         let bind_info_count = p_bind_info.len() as u32;
-        let err = (fp)(Some(queue), bind_info_count, p_bind_info.as_ptr(), fence);
+        let err = (fp)(
+            Some(queue),
+            bind_info_count,
+            p_bind_info.first().map_or(ptr::null(), |s| s as *const _),
+            fence,
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -9169,7 +9187,11 @@ impl Device {
     pub unsafe fn reset_fences(&self, p_fences: &[vk::Fence]) -> Result<()> {
         let fp = self.fp_reset_fences.expect("vkResetFences is not loaded");
         let fence_count = p_fences.len() as u32;
-        let err = (fp)(Some(self.handle), fence_count, p_fences.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            fence_count,
+            p_fences.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -9189,7 +9211,7 @@ impl Device {
         let err = (fp)(
             Some(self.handle),
             fence_count,
-            p_fences.as_ptr(),
+            p_fences.first().map_or(ptr::null(), |s| s as *const _),
             if wait_all { vk::TRUE } else { vk::FALSE },
             timeout,
         );
@@ -9532,7 +9554,7 @@ impl Device {
             Some(self.handle),
             Some(dst_cache),
             src_cache_count,
-            p_src_caches.as_ptr(),
+            p_src_caches.first().map_or(ptr::null(), |s| s as *const _),
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
@@ -9554,7 +9576,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
@@ -9579,7 +9601,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -9604,7 +9626,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr() as *mut _,
         );
@@ -9652,7 +9674,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
@@ -9677,7 +9699,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -9702,7 +9724,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr() as *mut _,
         );
@@ -9953,7 +9975,7 @@ impl Device {
             Some(self.handle),
             Some(descriptor_pool),
             descriptor_set_count,
-            p_descriptor_sets.as_ptr(),
+            p_descriptor_sets.first().map_or(ptr::null(), |s| s as *const _),
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
@@ -9973,9 +9995,9 @@ impl Device {
         (fp)(
             Some(self.handle),
             descriptor_write_count,
-            p_descriptor_writes.as_ptr(),
+            p_descriptor_writes.first().map_or(ptr::null(), |s| s as *const _),
             descriptor_copy_count,
-            p_descriptor_copies.as_ptr(),
+            p_descriptor_copies.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn create_framebuffer(
@@ -10146,7 +10168,7 @@ impl Device {
             Some(self.handle),
             Some(command_pool),
             command_buffer_count,
-            p_command_buffers.as_ptr(),
+            p_command_buffers.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn begin_command_buffer(
@@ -10206,7 +10228,7 @@ impl Device {
             Some(command_buffer),
             first_viewport,
             viewport_count,
-            p_viewports.as_ptr(),
+            p_viewports.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_scissor(
@@ -10217,7 +10239,12 @@ impl Device {
     ) {
         let fp = self.fp_cmd_set_scissor.expect("vkCmdSetScissor is not loaded");
         let scissor_count = p_scissors.len() as u32;
-        (fp)(Some(command_buffer), first_scissor, scissor_count, p_scissors.as_ptr());
+        (fp)(
+            Some(command_buffer),
+            first_scissor,
+            scissor_count,
+            p_scissors.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
     pub unsafe fn cmd_set_line_width(&self, command_buffer: vk::CommandBuffer, line_width: f32) {
         let fp = self.fp_cmd_set_line_width.expect("vkCmdSetLineWidth is not loaded");
@@ -10306,9 +10333,9 @@ impl Device {
             Some(layout),
             first_set,
             descriptor_set_count,
-            p_descriptor_sets.as_ptr(),
+            p_descriptor_sets.first().map_or(ptr::null(), |s| s as *const _),
             dynamic_offset_count,
-            p_dynamic_offsets.as_ptr(),
+            p_dynamic_offsets.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_bind_index_buffer(
@@ -10339,8 +10366,8 @@ impl Device {
             Some(command_buffer),
             first_binding,
             binding_count,
-            p_buffers.as_ptr(),
-            p_offsets.as_ptr(),
+            p_buffers.first().map_or(ptr::null(), |s| s as *const _),
+            p_offsets.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_draw(
@@ -10438,7 +10465,7 @@ impl Device {
             Some(src_buffer),
             Some(dst_buffer),
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_copy_image(
@@ -10459,7 +10486,7 @@ impl Device {
             Some(dst_image),
             dst_image_layout,
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_blit_image(
@@ -10481,7 +10508,7 @@ impl Device {
             Some(dst_image),
             dst_image_layout,
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
             filter,
         );
     }
@@ -10503,7 +10530,7 @@ impl Device {
             Some(dst_image),
             dst_image_layout,
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_copy_image_to_buffer(
@@ -10524,7 +10551,7 @@ impl Device {
             src_image_layout,
             Some(dst_buffer),
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_update_buffer<T>(
@@ -10541,7 +10568,7 @@ impl Device {
             Some(dst_buffer),
             dst_offset,
             data_size,
-            p_data.as_ptr() as *const _,
+            p_data.first().map_or(ptr::null(), |s| s as *const _) as *const _,
         );
     }
     pub unsafe fn cmd_fill_buffer(
@@ -10573,7 +10600,7 @@ impl Device {
             image_layout,
             p_color,
             range_count,
-            p_ranges.as_ptr(),
+            p_ranges.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_clear_depth_stencil_image(
@@ -10594,7 +10621,7 @@ impl Device {
             image_layout,
             p_depth_stencil,
             range_count,
-            p_ranges.as_ptr(),
+            p_ranges.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_clear_attachments(
@@ -10611,9 +10638,9 @@ impl Device {
         (fp)(
             Some(command_buffer),
             attachment_count,
-            p_attachments.as_ptr(),
+            p_attachments.first().map_or(ptr::null(), |s| s as *const _),
             rect_count,
-            p_rects.as_ptr(),
+            p_rects.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_resolve_image(
@@ -10634,7 +10661,7 @@ impl Device {
             Some(dst_image),
             dst_image_layout,
             region_count,
-            p_regions.as_ptr(),
+            p_regions.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_event(
@@ -10673,15 +10700,15 @@ impl Device {
         (fp)(
             Some(command_buffer),
             event_count,
-            p_events.as_ptr(),
+            p_events.first().map_or(ptr::null(), |s| s as *const _),
             src_stage_mask,
             dst_stage_mask,
             memory_barrier_count,
-            p_memory_barriers.as_ptr(),
+            p_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
             buffer_memory_barrier_count,
-            p_buffer_memory_barriers.as_ptr(),
+            p_buffer_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
             image_memory_barrier_count,
-            p_image_memory_barriers.as_ptr(),
+            p_image_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_pipeline_barrier(
@@ -10706,11 +10733,11 @@ impl Device {
             dst_stage_mask,
             dependency_flags,
             memory_barrier_count,
-            p_memory_barriers.as_ptr(),
+            p_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
             buffer_memory_barrier_count,
-            p_buffer_memory_barriers.as_ptr(),
+            p_buffer_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
             image_memory_barrier_count,
-            p_image_memory_barriers.as_ptr(),
+            p_image_memory_barriers.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_begin_query(
@@ -10804,7 +10831,7 @@ impl Device {
             stage_flags,
             offset,
             size,
-            p_values.as_ptr() as *const _,
+            p_values.first().map_or(ptr::null(), |s| s as *const _) as *const _,
         );
     }
     pub unsafe fn cmd_begin_render_pass(
@@ -10835,7 +10862,11 @@ impl Device {
             .fp_cmd_execute_commands
             .expect("vkCmdExecuteCommands is not loaded");
         let command_buffer_count = p_command_buffers.len() as u32;
-        (fp)(Some(command_buffer), command_buffer_count, p_command_buffers.as_ptr());
+        (fp)(
+            Some(command_buffer),
+            command_buffer_count,
+            p_command_buffers.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
     pub unsafe fn create_shared_swapchains_khr(
         &self,
@@ -10850,7 +10881,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             p_swapchains,
         );
@@ -10873,7 +10904,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -10896,7 +10927,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr() as *mut _,
         );
@@ -11176,7 +11207,7 @@ impl Device {
             Some(layout),
             set,
             descriptor_write_count,
-            p_descriptor_writes.as_ptr(),
+            p_descriptor_writes.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn trim_command_pool(&self, command_pool: vk::CommandPool, flags: vk::CommandPoolTrimFlags) {
@@ -11472,7 +11503,11 @@ impl Device {
     pub unsafe fn bind_buffer_memory2(&self, p_bind_infos: &[vk::BindBufferMemoryInfo]) -> Result<()> {
         let fp = self.fp_bind_buffer_memory2.expect("vkBindBufferMemory2 is not loaded");
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -11483,7 +11518,11 @@ impl Device {
             .fp_bind_buffer_memory2
             .expect("vkBindBufferMemory2KHR is not loaded");
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -11492,7 +11531,11 @@ impl Device {
     pub unsafe fn bind_image_memory2(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
         let fp = self.fp_bind_image_memory2.expect("vkBindImageMemory2 is not loaded");
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -11501,7 +11544,11 @@ impl Device {
     pub unsafe fn bind_image_memory2_khr(&self, p_bind_infos: &[vk::BindImageMemoryInfo]) -> Result<()> {
         let fp = self.fp_bind_image_memory2.expect("vkBindImageMemory2KHR is not loaded");
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -11750,8 +11797,8 @@ impl Device {
         (fp)(
             Some(self.handle),
             swapchain_count,
-            p_swapchains.as_ptr(),
-            p_metadata.as_ptr(),
+            p_swapchains.first().map_or(ptr::null(), |s| s as *const _),
+            p_metadata.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn get_swapchain_status_khr(&self, swapchain: vk::SwapchainKHR) -> Result<vk::Result> {
@@ -11813,7 +11860,7 @@ impl Device {
             Some(command_buffer),
             first_viewport,
             viewport_count,
-            p_viewport_w_scalings.as_ptr(),
+            p_viewport_w_scalings.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_discard_rectangle_ext(
@@ -11830,7 +11877,7 @@ impl Device {
             Some(command_buffer),
             first_discard_rectangle,
             discard_rectangle_count,
-            p_discard_rectangles.as_ptr(),
+            p_discard_rectangles.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_sample_locations_ext(
@@ -12060,7 +12107,7 @@ impl Device {
             Some(self.handle),
             Some(dst_cache),
             src_cache_count,
-            p_src_caches.as_ptr(),
+            p_src_caches.first().map_or(ptr::null(), |s| s as *const _),
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
@@ -12153,7 +12200,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
-            p_timestamp_infos.as_ptr(),
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_timestamps,
             p_max_deviation,
         );
@@ -12176,7 +12223,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
-            p_timestamp_infos.as_ptr(),
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
             v.as_mut_ptr(),
             p_max_deviation,
         );
@@ -12199,7 +12246,7 @@ impl Device {
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
-            p_timestamp_infos.as_ptr(),
+            p_timestamp_infos.first().map_or(ptr::null(), |s| s as *const _),
             v.as_mut_ptr() as *mut _,
             p_max_deviation,
         );
@@ -12623,9 +12670,9 @@ impl Device {
             Some(command_buffer),
             first_binding,
             binding_count,
-            p_buffers.as_ptr(),
-            p_offsets.as_ptr(),
-            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
+            p_buffers.first().map_or(ptr::null(), |s| s as *const _),
+            p_offsets.first().map_or(ptr::null(), |s| s as *const _),
+            p_sizes.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
         );
     }
     pub unsafe fn cmd_begin_transform_feedback_ext(
@@ -12646,8 +12693,8 @@ impl Device {
             Some(command_buffer),
             first_counter_buffer,
             counter_buffer_count,
-            p_counter_buffers.as_ptr(),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffers.first().map_or(ptr::null(), |s| s as *const _),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
         );
     }
     pub unsafe fn cmd_end_transform_feedback_ext(
@@ -12668,8 +12715,8 @@ impl Device {
             Some(command_buffer),
             first_counter_buffer,
             counter_buffer_count,
-            p_counter_buffers.as_ptr(),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.as_ptr()),
+            p_counter_buffers.first().map_or(ptr::null(), |s| s as *const _),
+            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
         );
     }
     pub unsafe fn cmd_begin_query_indexed_ext(
@@ -12734,7 +12781,7 @@ impl Device {
             Some(command_buffer),
             first_exclusive_scissor,
             exclusive_scissor_count,
-            p_exclusive_scissors.as_ptr(),
+            p_exclusive_scissors.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_bind_shading_rate_image_nv(
@@ -12762,7 +12809,7 @@ impl Device {
             Some(command_buffer),
             first_viewport,
             viewport_count,
-            p_shading_rate_palettes.as_ptr(),
+            p_shading_rate_palettes.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_coarse_sample_order_nv(
@@ -12779,7 +12826,7 @@ impl Device {
             Some(command_buffer),
             sample_order_type,
             custom_sample_order_count,
-            p_custom_sample_orders.as_ptr(),
+            p_custom_sample_orders.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_draw_mesh_tasks_nv(&self, command_buffer: vk::CommandBuffer, task_count: u32, first_task: u32) {
@@ -12898,7 +12945,11 @@ impl Device {
             .fp_bind_acceleration_structure_memory_nv
             .expect("vkBindAccelerationStructureMemoryNV is not loaded");
         let bind_info_count = p_bind_infos.len() as u32;
-        let err = (fp)(Some(self.handle), bind_info_count, p_bind_infos.as_ptr());
+        let err = (fp)(
+            Some(self.handle),
+            bind_info_count,
+            p_bind_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
@@ -13009,7 +13060,7 @@ impl Device {
         (fp)(
             Some(command_buffer),
             acceleration_structure_count,
-            p_acceleration_structures.as_ptr(),
+            p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _),
             query_type,
             Some(query_pool),
             first_query,
@@ -13030,7 +13081,7 @@ impl Device {
         (fp)(
             Some(command_buffer),
             acceleration_structure_count,
-            p_acceleration_structures.as_ptr(),
+            p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _),
             query_type,
             Some(query_pool),
             first_query,
@@ -13078,7 +13129,7 @@ impl Device {
         let err = (fp)(
             Some(self.handle),
             acceleration_structure_count,
-            p_acceleration_structures.as_ptr(),
+            p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _),
             query_type,
             data_size,
             p_data,
@@ -13251,7 +13302,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
@@ -13276,7 +13327,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -13301,7 +13352,7 @@ impl Device {
             Some(self.handle),
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr() as *mut _,
         );
@@ -13351,7 +13402,7 @@ impl Device {
             deferred_operation,
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             p_pipelines,
         );
@@ -13378,7 +13429,7 @@ impl Device {
             deferred_operation,
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr(),
         );
@@ -13405,7 +13456,7 @@ impl Device {
             deferred_operation,
             pipeline_cache,
             create_info_count,
-            p_create_infos.as_ptr(),
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
             p_allocator.map_or(ptr::null(), |r| r),
             v.as_mut_ptr() as *mut _,
         );
@@ -13969,8 +14020,8 @@ impl Device {
         (fp)(
             Some(command_buffer),
             info_count,
-            p_infos.as_ptr(),
-            pp_build_range_infos.as_ptr(),
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+            pp_build_range_infos.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_build_acceleration_structures_indirect_khr(
@@ -13991,10 +14042,12 @@ impl Device {
         (fp)(
             Some(command_buffer),
             info_count,
-            p_infos.as_ptr(),
-            p_indirect_device_addresses.as_ptr(),
-            p_indirect_strides.as_ptr(),
-            pp_max_primitive_counts.as_ptr(),
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_indirect_device_addresses
+                .first()
+                .map_or(ptr::null(), |s| s as *const _),
+            p_indirect_strides.first().map_or(ptr::null(), |s| s as *const _),
+            pp_max_primitive_counts.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn build_acceleration_structures_khr(
@@ -14012,8 +14065,8 @@ impl Device {
             Some(self.handle),
             deferred_operation,
             info_count,
-            p_infos.as_ptr(),
-            pp_build_range_infos.as_ptr(),
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+            pp_build_range_infos.first().map_or(ptr::null(), |s| s as *const _),
         );
         match err {
             vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
@@ -14116,14 +14169,22 @@ impl Device {
             .fp_cmd_set_viewport_with_count_ext
             .expect("vkCmdSetViewportWithCountEXT is not loaded");
         let viewport_count = p_viewports.len() as u32;
-        (fp)(Some(command_buffer), viewport_count, p_viewports.as_ptr());
+        (fp)(
+            Some(command_buffer),
+            viewport_count,
+            p_viewports.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
     pub unsafe fn cmd_set_scissor_with_count_ext(&self, command_buffer: vk::CommandBuffer, p_scissors: &[vk::Rect2D]) {
         let fp = self
             .fp_cmd_set_scissor_with_count_ext
             .expect("vkCmdSetScissorWithCountEXT is not loaded");
         let scissor_count = p_scissors.len() as u32;
-        (fp)(Some(command_buffer), scissor_count, p_scissors.as_ptr());
+        (fp)(
+            Some(command_buffer),
+            scissor_count,
+            p_scissors.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
     pub unsafe fn cmd_bind_vertex_buffers2_ext(
         &self,
@@ -14149,10 +14210,10 @@ impl Device {
             Some(command_buffer),
             first_binding,
             binding_count,
-            p_buffers.as_ptr(),
-            p_offsets.as_ptr(),
-            p_sizes.map_or(ptr::null(), |r| r.as_ptr()),
-            p_strides.map_or(ptr::null(), |r| r.as_ptr()),
+            p_buffers.first().map_or(ptr::null(), |s| s as *const _),
+            p_offsets.first().map_or(ptr::null(), |s| s as *const _),
+            p_sizes.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
+            p_strides.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
         );
     }
     pub unsafe fn cmd_set_depth_test_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_test_enable: bool) {
@@ -14409,7 +14470,7 @@ impl Device {
             Some(self.handle),
             build_type,
             p_build_info,
-            p_max_primitive_counts.as_ptr(),
+            p_max_primitive_counts.first().map_or(ptr::null(), |s| s as *const _),
             p_size_info,
         );
     }

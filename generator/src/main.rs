@@ -288,9 +288,9 @@ fn slice_type_name(type_name: &str) -> &str {
 
 fn slice_as_ptr(name: &str, type_name: &str) -> String {
     if type_name_is_void(type_name) {
-        format!("{}.as_ptr() as *const _", name)
+        format!("{}.first().map_or(ptr::null(), |s| s as *const _) as *const _", name)
     } else {
-        format!("{}.as_ptr()", name)
+        format!("{}.first().map_or(ptr::null(), |s| s as *const _)", name)
     }
 }
 
@@ -1842,7 +1842,7 @@ impl<'a> Generator<'a> {
                                         "self.inner.{} = {}.len() as {};",
                                         rparam.name, slice_info.name, len_type_name
                                     )?;
-                                    writeln!(w, "self.inner.{0} = {0}.as_ptr(); self }}", slice_info.name)?;
+                                    writeln!(w, "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}", slice_info.name)?;
                                 }
                             }
                             LibParamType::Ref {
