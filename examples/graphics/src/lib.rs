@@ -84,6 +84,7 @@ struct App {
     ui_context: imgui::Context,
     ui_platform: WinitPlatform,
     ui_renderer: spark_imgui::Renderer,
+    ui_pipeline: vk::Pipeline,
     last_instant: Instant,
 
     swapchain: Swapchain,
@@ -132,7 +133,7 @@ impl App {
         let mut ui_platform = WinitPlatform::init(&mut ui_context);
         ui_platform.attach_window(ui_context.io_mut(), &window, HiDpiMode::Default);
 
-        let mut ui_renderer = spark_imgui::Renderer::new(
+        let ui_renderer = spark_imgui::Renderer::new(
             &context.device,
             &context.physical_device_properties,
             &context.physical_device_memory_properties,
@@ -273,13 +274,14 @@ impl App {
         };
 
         // let the imgui renderer create its pipeline now
-        ui_renderer.create_pipeline(&context.device, render_pass, vk::SampleCountFlags::N1);
+        let ui_pipeline = ui_renderer.create_pipeline(&context.device, render_pass, vk::SampleCountFlags::N1);
 
         Self {
             context,
             ui_context,
             ui_platform,
             ui_renderer,
+            ui_pipeline,
             last_instant: Instant::now(),
 
             swapchain,
@@ -450,7 +452,8 @@ impl App {
 
         // draw imgui in the same render pass
         self.ui_platform.prepare_render(&ui, &window);
-        self.ui_renderer.render(ui.render(), &self.context.device, cmd);
+        self.ui_renderer
+            .render(ui.render(), &self.context.device, cmd, self.ui_pipeline);
 
         // end the render pass to the swapchain
         unsafe { self.context.device.cmd_end_render_pass(cmd) };
@@ -470,6 +473,7 @@ impl Drop for App {
         unsafe {
             device.device_wait_idle().unwrap();
 
+            device.destroy_pipeline(Some(self.ui_pipeline), None);
             self.ui_renderer.delete(device);
 
             device.destroy_pipeline(Some(self.pipeline), None);
