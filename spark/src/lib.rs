@@ -12672,7 +12672,7 @@ impl Device {
             binding_count,
             p_buffers.first().map_or(ptr::null(), |s| s as *const _),
             p_offsets.first().map_or(ptr::null(), |s| s as *const _),
-            p_sizes.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
+            p_sizes.and_then(|s| s.first()).map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_begin_transform_feedback_ext(
@@ -12694,7 +12694,9 @@ impl Device {
             first_counter_buffer,
             counter_buffer_count,
             p_counter_buffers.first().map_or(ptr::null(), |s| s as *const _),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
+            p_counter_buffer_offsets
+                .and_then(|s| s.first())
+                .map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_end_transform_feedback_ext(
@@ -12716,7 +12718,9 @@ impl Device {
             first_counter_buffer,
             counter_buffer_count,
             p_counter_buffers.first().map_or(ptr::null(), |s| s as *const _),
-            p_counter_buffer_offsets.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
+            p_counter_buffer_offsets
+                .and_then(|s| s.first())
+                .map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_begin_query_indexed_ext(
@@ -14212,8 +14216,8 @@ impl Device {
             binding_count,
             p_buffers.first().map_or(ptr::null(), |s| s as *const _),
             p_offsets.first().map_or(ptr::null(), |s| s as *const _),
-            p_sizes.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
-            p_strides.map_or(ptr::null(), |r| r.first().map_or(ptr::null(), |s| s as *const _)),
+            p_sizes.and_then(|s| s.first()).map_or(ptr::null(), |s| s as *const _),
+            p_strides.and_then(|s| s.first()).map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_depth_test_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_test_enable: bool) {

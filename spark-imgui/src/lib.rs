@@ -528,9 +528,7 @@ impl Renderer {
             ..Default::default()
         };
 
-        let depth_stencil_state = vk::PipelineDepthStencilStateCreateInfo {
-            ..Default::default()
-        };
+        let depth_stencil_state = vk::PipelineDepthStencilStateCreateInfo { ..Default::default() };
 
         let color_blend_attachment_state = vk::PipelineColorBlendAttachmentState {
             blend_enable: vk::TRUE,

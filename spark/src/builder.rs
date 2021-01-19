@@ -2253,8 +2253,9 @@ impl<'a> SubpassDescriptionBuilder<'a> {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
         self.inner.p_color_attachments = p_color_attachments.first().map_or(ptr::null(), |s| s as *const _);
-        self.inner.p_resolve_attachments =
-            p_resolve_attachments.map_or(ptr::null(), |s| s.first().map_or(ptr::null(), |s| s as *const _));
+        self.inner.p_resolve_attachments = p_resolve_attachments
+            .and_then(|s| s.first())
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_depth_stencil_attachment(
@@ -8654,8 +8655,9 @@ impl<'a> SubpassDescription2Builder<'a> {
             assert_eq!(self.inner.color_attachment_count, s.len() as u32);
         }
         self.inner.p_color_attachments = p_color_attachments.first().map_or(ptr::null(), |s| s as *const _);
-        self.inner.p_resolve_attachments =
-            p_resolve_attachments.map_or(ptr::null(), |s| s.first().map_or(ptr::null(), |s| s as *const _));
+        self.inner.p_resolve_attachments = p_resolve_attachments
+            .and_then(|s| s.first())
+            .map_or(ptr::null(), |s| s as *const _);
         self
     }
     pub fn p_depth_stencil_attachment(

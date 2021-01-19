@@ -286,12 +286,21 @@ fn slice_type_name(type_name: &str) -> &str {
     }
 }
 
-fn slice_as_ptr(name: &str, type_name: &str) -> String {
-    if type_name_is_void(type_name) {
-        format!("{}.first().map_or(ptr::null(), |s| s as *const _) as *const _", name)
-    } else {
-        format!("{}.first().map_or(ptr::null(), |s| s as *const _)", name)
-    }
+fn slice_as_ptr(name: &str, type_name: &str, in_option: bool) -> String {
+    format!(
+        "{}{}.map_or(ptr::null(), |s| s as *const _){}",
+        name,
+        if in_option {
+            ".and_then(|s| s.first())"
+        } else {
+            ".first()"
+        },
+        if type_name_is_void(type_name) {
+            "as *const _"
+        } else {
+            ""
+        }
+    )
 }
 
 fn slice_len(name: &str, type_name: &str) -> String {
@@ -318,8 +327,8 @@ impl SliceInfo {
         slice_type_name(&self.type_name)
     }
 
-    fn get_as_ptr(&self) -> String {
-        slice_as_ptr(&self.name, &self.type_name)
+    fn get_as_ptr(&self, in_option: bool) -> String {
+        slice_as_ptr(&self.name, &self.type_name, in_option)
     }
 
     fn get_len(&self) -> String {
@@ -1806,16 +1815,12 @@ impl<'a> Generator<'a> {
                                     }
                                 }
                                 for slice_info in slice_infos {
-                                    if slice_info.is_optional && has_multiple_slices {
-                                        writeln!(
-                                            w,
-                                            "self.inner.{0} = {0}.map_or(ptr::null(), |s| {1});",
-                                            slice_info.name,
-                                            slice_as_ptr("s", &slice_info.type_name)
-                                        )?;
-                                    } else {
-                                        writeln!(w, "self.inner.{} = {};", slice_info.name, slice_info.get_as_ptr())?;
-                                    }
+                                    writeln!(
+                                        w,
+                                        "self.inner.{} = {};",
+                                        slice_info.name,
+                                        slice_info.get_as_ptr(slice_info.is_optional && has_multiple_slices)
+                                    )?;
                                 }
                                 writeln!(w, "self }}",)?;
                             }
@@ -1842,7 +1847,11 @@ impl<'a> Generator<'a> {
                                         "self.inner.{} = {}.len() as {};",
                                         rparam.name, slice_info.name, len_type_name
                                     )?;
-                                    writeln!(w, "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}", slice_info.name)?;
+                                    writeln!(
+                                        w,
+                                        "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}",
+                                        slice_info.name
+                                    )?;
                                 }
                             }
                             LibParamType::Ref {
@@ -2574,16 +2583,7 @@ impl<'a> Generator<'a> {
                                     write!(w, "{}", rparam.name)?;
                                 }
                             } else {
-                                if is_optional {
-                                    write!(
-                                        w,
-                                        "{}.map_or(ptr::null(), |r| {})",
-                                        rparam.name,
-                                        slice_as_ptr("r", inner_type_name)
-                                    )?;
-                                } else {
-                                    write!(w, "{}", slice_as_ptr(&rparam.name, inner_type_name))?;
-                                }
+                                write!(w, "{}", slice_as_ptr(&rparam.name, inner_type_name, is_optional))?;
                             }
                         }
                         LibParamType::Ref { is_optional, .. } => {
