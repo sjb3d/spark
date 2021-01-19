@@ -528,6 +528,10 @@ impl Renderer {
             ..Default::default()
         };
 
+        let depth_stencil_state = vk::PipelineDepthStencilStateCreateInfo {
+            ..Default::default()
+        };
+
         let color_blend_attachment_state = vk::PipelineColorBlendAttachmentState {
             blend_enable: vk::TRUE,
             src_color_blend_factor: vk::BlendFactor::SRC_ALPHA,
@@ -552,6 +556,7 @@ impl Renderer {
             .p_viewport_state(Some(&viewport_state_create_info))
             .p_rasterization_state(&rasterization_state_create_info)
             .p_multisample_state(Some(&multisample_state_create_info))
+            .p_depth_stencil_state(Some(&depth_stencil_state))
             .p_color_blend_state(Some(&color_blend_state_create_info))
             .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
             .layout(self.pipeline_layout)
