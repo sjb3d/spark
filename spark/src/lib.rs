@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 165
+//! Generated from vk.xml with `VK_HEADER_VERSION` 167
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -14463,18 +14463,22 @@ impl Device {
         &self,
         build_type: vk::AccelerationStructureBuildTypeKHR,
         p_build_info: &vk::AccelerationStructureBuildGeometryInfoKHR,
-        p_max_primitive_counts: &[u32],
+        p_max_primitive_counts: Option<&[u32]>,
         p_size_info: &mut vk::AccelerationStructureBuildSizesInfoKHR,
     ) {
         let fp = self
             .fp_get_acceleration_structure_build_sizes_khr
             .expect("vkGetAccelerationStructureBuildSizesKHR is not loaded");
-        assert_eq!(p_max_primitive_counts.len() as u32, p_build_info.geometry_count);
+        if let Some(s) = p_max_primitive_counts {
+            assert_eq!(s.len() as u32, p_build_info.geometry_count);
+        }
         (fp)(
             Some(self.handle),
             build_type,
             p_build_info,
-            p_max_primitive_counts.first().map_or(ptr::null(), |s| s as *const _),
+            p_max_primitive_counts
+                .and_then(|s| s.first())
+                .map_or(ptr::null(), |s| s as *const _),
             p_size_info,
         );
     }

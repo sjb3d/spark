@@ -8330,6 +8330,10 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
     pub const D3D12_FENCE_KHR: Self = Self::D3D12_FENCE;
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
+    /// Added by extension VK_NV_extension_375.
+    pub const RESERVED_5_NV: Self = Self(0x20);
+    /// Added by extension VK_NV_extension_375.
+    pub const RESERVED_6_NV: Self = Self(0x40);
 }
 impl default::Default for ExternalSemaphoreHandleTypeFlags {
     fn default() -> Self {
@@ -8341,13 +8345,13 @@ impl ExternalSemaphoreHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1f)
+        Self(0x7f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0x7f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8399,6 +8403,8 @@ impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
                 (0x4, "OPAQUE_WIN32_KMT"),
                 (0x8, "D3D12_FENCE"),
                 (0x10, "SYNC_FD"),
+                (0x20, "RESERVED_5_NV"),
+                (0x40, "RESERVED_6_NV"),
             ],
             f,
         )
@@ -8561,6 +8567,10 @@ impl ExternalFenceHandleTypeFlags {
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
+    /// Added by extension VK_NV_extension_374.
+    pub const RESERVED_4_NV: Self = Self(0x10);
+    /// Added by extension VK_NV_extension_374.
+    pub const RESERVED_5_NV: Self = Self(0x20);
 }
 impl default::Default for ExternalFenceHandleTypeFlags {
     fn default() -> Self {
@@ -8572,13 +8582,13 @@ impl ExternalFenceHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xf)
+        Self(0x3f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x3f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8629,6 +8639,8 @@ impl fmt::Display for ExternalFenceHandleTypeFlags {
                 (0x2, "OPAQUE_WIN32"),
                 (0x4, "OPAQUE_WIN32_KMT"),
                 (0x8, "SYNC_FD"),
+                (0x10, "RESERVED_4_NV"),
+                (0x20, "RESERVED_5_NV"),
             ],
             f,
         )
@@ -13430,6 +13442,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
+    /// Added by extension VK_QNX_screen_surface.
+    pub const SCREEN_SURFACE_CREATE_INFO_QNX: Self = Self(1000378000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -13914,6 +13928,7 @@ impl fmt::Display for StructureType {
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
+            1000378000 => Some(&"SCREEN_SURFACE_CREATE_INFO_QNX"),
             _ => None,
         };
         if let Some(name) = name {
