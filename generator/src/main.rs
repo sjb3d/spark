@@ -2462,10 +2462,22 @@ impl<'a> Generator<'a> {
                             }
                         }
                     }
-                    LibParamType::Slice { ref len_expr, .. } => {
+                    LibParamType::Slice {
+                        ref len_expr,
+                        is_optional,
+                        ..
+                    } => {
                         if let Some(len_expr) = len_expr {
                             // bit of a hack, assume expression result is u32
-                            writeln!(w, "assert_eq!({}.len() as u32, {});", rparam.name, len_expr)?;
+                            if is_optional {
+                                writeln!(
+                                    w,
+                                    "if let Some(s) = {} {{ assert_eq!(s.len() as u32, {}); }}",
+                                    rparam.name, len_expr
+                                )?;
+                            } else {
+                                writeln!(w, "assert_eq!({}.len() as u32, {});", rparam.name, len_expr)?;
+                            }
                         }
                     }
                     _ => {}
