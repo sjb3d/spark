@@ -396,8 +396,11 @@ impl App {
 
         // start our render pass to the swapchain
         {
-            let mut clear_value: vk::ClearValue = Default::default();
-            clear_value.color.float32 = [0.1f32, 0.1f32, 0.1f32, 0f32];
+            let clear_value = vk::ClearValue {
+                color: vk::ClearColorValue {
+                    float32: [0.1f32, 0.1f32, 0.1f32, 0f32],
+                },
+            };
             let render_pass_begin_info = vk::RenderPassBeginInfo::builder()
                 .render_pass(self.render_pass)
                 .framebuffer(target.framebuffer)
