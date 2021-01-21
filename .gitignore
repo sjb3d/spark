@@ -1,5 +1,4 @@
+/.vscode
 /target
 Cargo.lock
-*.sublime-workspace
 imgui.ini
-*.cap
