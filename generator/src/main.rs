@@ -1699,7 +1699,8 @@ impl<'a> Generator<'a> {
                     | LibParamType::SliceLenSingle { .. }
                     | LibParamType::Ref { .. })
                     });
-                let needs_setters = ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
+                let needs_setters =
+                    ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
                 if is_extended || needs_setters {
                     let generics_decl = if needs_lifetime { "<'a>" } else { "" };
 
@@ -1740,8 +1741,18 @@ impl<'a> Generator<'a> {
                             "pub fn insert_next<T: {}Next>(mut self, next: &'a mut T) -> Self {{",
                             agg_name
                         )?;
-                        writeln!(w, "unsafe {{ insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _); }}")?;
+                        writeln!(
+                            w,
+                            "unsafe {{ insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _); }}"
+                        )?;
                         writeln!(w, "self }}")?;
+                        if ty.returnedonly.is_some() {
+                            writeln!(
+                                w,
+                                "pub fn as_mut(&mut self) -> &mut vk::{} {{ &mut self.inner }}",
+                                agg_name
+                            )?;
+                        }
                     }
                     if needs_setters {
                         for (cparam, rparam) in decls.iter().zip(params.iter()) {

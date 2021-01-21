@@ -4446,6 +4446,9 @@ impl<'a> PhysicalDeviceProperties2Builder<'a> {
         }
         self
     }
+    pub fn as_mut(&mut self) -> &mut vk::PhysicalDeviceProperties2 {
+        &mut self.inner
+    }
 }
 impl<'a> Deref for PhysicalDeviceProperties2Builder<'a> {
     type Target = vk::PhysicalDeviceProperties2;
@@ -4472,6 +4475,9 @@ impl<'a> FormatProperties2Builder<'a> {
         }
         self
     }
+    pub fn as_mut(&mut self) -> &mut vk::FormatProperties2 {
+        &mut self.inner
+    }
 }
 impl<'a> Deref for FormatProperties2Builder<'a> {
     type Target = vk::FormatProperties2;
@@ -4497,6 +4503,9 @@ impl<'a> ImageFormatProperties2Builder<'a> {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
         self
+    }
+    pub fn as_mut(&mut self) -> &mut vk::ImageFormatProperties2 {
+        &mut self.inner
     }
 }
 impl<'a> Deref for ImageFormatProperties2Builder<'a> {
@@ -4578,6 +4587,9 @@ impl<'a> QueueFamilyProperties2Builder<'a> {
         }
         self
     }
+    pub fn as_mut(&mut self) -> &mut vk::QueueFamilyProperties2 {
+        &mut self.inner
+    }
 }
 impl<'a> Deref for QueueFamilyProperties2Builder<'a> {
     type Target = vk::QueueFamilyProperties2;
@@ -4603,6 +4615,9 @@ impl<'a> PhysicalDeviceMemoryProperties2Builder<'a> {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
         self
+    }
+    pub fn as_mut(&mut self) -> &mut vk::PhysicalDeviceMemoryProperties2 {
+        &mut self.inner
     }
 }
 impl<'a> Deref for PhysicalDeviceMemoryProperties2Builder<'a> {
@@ -7021,6 +7036,9 @@ impl<'a> SurfaceCapabilities2KHRBuilder<'a> {
         }
         self
     }
+    pub fn as_mut(&mut self) -> &mut vk::SurfaceCapabilities2KHR {
+        &mut self.inner
+    }
 }
 impl<'a> Deref for SurfaceCapabilities2KHRBuilder<'a> {
     type Target = vk::SurfaceCapabilities2KHR;
@@ -7272,6 +7290,9 @@ impl<'a> MemoryRequirements2Builder<'a> {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
         self
+    }
+    pub fn as_mut(&mut self) -> &mut vk::MemoryRequirements2 {
+        &mut self.inner
     }
 }
 impl<'a> Deref for MemoryRequirements2Builder<'a> {
@@ -8303,6 +8324,9 @@ impl<'a> DescriptorSetLayoutSupportBuilder<'a> {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
         self
+    }
+    pub fn as_mut(&mut self) -> &mut vk::DescriptorSetLayoutSupport {
+        &mut self.inner
     }
 }
 impl<'a> Deref for DescriptorSetLayoutSupportBuilder<'a> {
@@ -9930,6 +9954,9 @@ impl<'a> AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
         self
+    }
+    pub fn as_mut(&mut self) -> &mut vk::AndroidHardwareBufferPropertiesANDROID {
+        &mut self.inner
     }
 }
 impl<'a> Deref for AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
