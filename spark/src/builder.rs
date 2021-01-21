@@ -13,6 +13,12 @@ pub trait Builder<'a> {
     fn builder() -> Self::Type;
 }
 
+unsafe fn insert_next(mut head: *mut vk::BaseOutStructure, other: *mut vk::BaseOutStructure) {
+    assert!((*other).p_next.is_null());
+    (*other).p_next = (*head).p_next;
+    (*head).p_next = other as *mut _;
+}
+
 impl Builder<'_> for vk::BaseOutStructure {
     type Type = BaseOutStructureBuilder;
     fn builder() -> Self::Type {
@@ -164,12 +170,19 @@ impl<'a> Builder<'a> for vk::DeviceQueueCreateInfo {
         Default::default()
     }
 }
+pub trait DeviceQueueCreateInfoNext {}
 #[derive(Default)]
 pub struct DeviceQueueCreateInfoBuilder<'a> {
     inner: vk::DeviceQueueCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceQueueCreateInfoBuilder<'a> {
+    pub fn insert_next<T: DeviceQueueCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -204,12 +217,19 @@ impl<'a> Builder<'a> for vk::DeviceCreateInfo {
         Default::default()
     }
 }
+pub trait DeviceCreateInfoNext {}
 #[derive(Default)]
 pub struct DeviceCreateInfoBuilder<'a> {
     inner: vk::DeviceCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceCreateInfoBuilder<'a> {
+    pub fn insert_next<T: DeviceCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -256,12 +276,19 @@ impl<'a> Builder<'a> for vk::InstanceCreateInfo {
         Default::default()
     }
 }
+pub trait InstanceCreateInfoNext {}
 #[derive(Default)]
 pub struct InstanceCreateInfoBuilder<'a> {
     inner: vk::InstanceCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> InstanceCreateInfoBuilder<'a> {
+    pub fn insert_next<T: InstanceCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -297,17 +324,25 @@ impl<'a> Deref for InstanceCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::MemoryAllocateInfo {
-    type Type = MemoryAllocateInfoBuilder;
+impl<'a> Builder<'a> for vk::MemoryAllocateInfo {
+    type Type = MemoryAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait MemoryAllocateInfoNext {}
 #[derive(Default)]
-pub struct MemoryAllocateInfoBuilder {
+pub struct MemoryAllocateInfoBuilder<'a> {
     inner: vk::MemoryAllocateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl MemoryAllocateInfoBuilder {
+impl<'a> MemoryAllocateInfoBuilder<'a> {
+    pub fn insert_next<T: MemoryAllocateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -325,7 +360,7 @@ impl MemoryAllocateInfoBuilder {
         self
     }
 }
-impl Deref for MemoryAllocateInfoBuilder {
+impl<'a> Deref for MemoryAllocateInfoBuilder<'a> {
     type Target = vk::MemoryAllocateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -375,12 +410,19 @@ impl<'a> Builder<'a> for vk::WriteDescriptorSet {
         Default::default()
     }
 }
+pub trait WriteDescriptorSetNext {}
 #[derive(Default)]
 pub struct WriteDescriptorSetBuilder<'a> {
     inner: vk::WriteDescriptorSet,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> WriteDescriptorSetBuilder<'a> {
+    pub fn insert_next<T: WriteDescriptorSetNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -487,12 +529,19 @@ impl<'a> Builder<'a> for vk::BufferCreateInfo {
         Default::default()
     }
 }
+pub trait BufferCreateInfoNext {}
 #[derive(Default)]
 pub struct BufferCreateInfoBuilder<'a> {
     inner: vk::BufferCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BufferCreateInfoBuilder<'a> {
+    pub fn insert_next<T: BufferCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -663,17 +712,25 @@ impl Deref for BufferMemoryBarrierBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ImageMemoryBarrier {
-    type Type = ImageMemoryBarrierBuilder;
+impl<'a> Builder<'a> for vk::ImageMemoryBarrier {
+    type Type = ImageMemoryBarrierBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ImageMemoryBarrierNext {}
 #[derive(Default)]
-pub struct ImageMemoryBarrierBuilder {
+pub struct ImageMemoryBarrierBuilder<'a> {
     inner: vk::ImageMemoryBarrier,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ImageMemoryBarrierBuilder {
+impl<'a> ImageMemoryBarrierBuilder<'a> {
+    pub fn insert_next<T: ImageMemoryBarrierNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -715,7 +772,7 @@ impl ImageMemoryBarrierBuilder {
         self
     }
 }
-impl Deref for ImageMemoryBarrierBuilder {
+impl<'a> Deref for ImageMemoryBarrierBuilder<'a> {
     type Target = vk::ImageMemoryBarrier;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -727,12 +784,19 @@ impl<'a> Builder<'a> for vk::ImageCreateInfo {
         Default::default()
     }
 }
+pub trait ImageCreateInfoNext {}
 #[derive(Default)]
 pub struct ImageCreateInfoBuilder<'a> {
     inner: vk::ImageCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageCreateInfoBuilder<'a> {
+    pub fn insert_next<T: ImageCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -797,17 +861,25 @@ impl<'a> Deref for ImageCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ImageViewCreateInfo {
-    type Type = ImageViewCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::ImageViewCreateInfo {
+    type Type = ImageViewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ImageViewCreateInfoNext {}
 #[derive(Default)]
-pub struct ImageViewCreateInfoBuilder {
+pub struct ImageViewCreateInfoBuilder<'a> {
     inner: vk::ImageViewCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ImageViewCreateInfoBuilder {
+impl<'a> ImageViewCreateInfoBuilder<'a> {
+    pub fn insert_next<T: ImageViewCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -841,7 +913,7 @@ impl ImageViewCreateInfoBuilder {
         self
     }
 }
-impl Deref for ImageViewCreateInfoBuilder {
+impl<'a> Deref for ImageViewCreateInfoBuilder<'a> {
     type Target = vk::ImageViewCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -937,12 +1009,19 @@ impl<'a> Builder<'a> for vk::BindSparseInfo {
         Default::default()
     }
 }
+pub trait BindSparseInfoNext {}
 #[derive(Default)]
 pub struct BindSparseInfoBuilder<'a> {
     inner: vk::BindSparseInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BindSparseInfoBuilder<'a> {
+    pub fn insert_next<T: BindSparseInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -983,17 +1062,25 @@ impl<'a> Deref for BindSparseInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ShaderModuleCreateInfo {
-    type Type = ShaderModuleCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::ShaderModuleCreateInfo {
+    type Type = ShaderModuleCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ShaderModuleCreateInfoNext {}
 #[derive(Default)]
-pub struct ShaderModuleCreateInfoBuilder {
+pub struct ShaderModuleCreateInfoBuilder<'a> {
     inner: vk::ShaderModuleCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ShaderModuleCreateInfoBuilder {
+impl<'a> ShaderModuleCreateInfoBuilder<'a> {
+    pub fn insert_next<T: ShaderModuleCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1015,7 +1102,7 @@ impl ShaderModuleCreateInfoBuilder {
         self
     }
 }
-impl Deref for ShaderModuleCreateInfoBuilder {
+impl<'a> Deref for ShaderModuleCreateInfoBuilder<'a> {
     type Target = vk::ShaderModuleCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -1067,12 +1154,19 @@ impl<'a> Builder<'a> for vk::DescriptorSetLayoutCreateInfo {
         Default::default()
     }
 }
+pub trait DescriptorSetLayoutCreateInfoNext {}
 #[derive(Default)]
 pub struct DescriptorSetLayoutCreateInfoBuilder<'a> {
     inner: vk::DescriptorSetLayoutCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorSetLayoutCreateInfoBuilder<'a> {
+    pub fn insert_next<T: DescriptorSetLayoutCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1103,12 +1197,19 @@ impl<'a> Builder<'a> for vk::DescriptorPoolCreateInfo {
         Default::default()
     }
 }
+pub trait DescriptorPoolCreateInfoNext {}
 #[derive(Default)]
 pub struct DescriptorPoolCreateInfoBuilder<'a> {
     inner: vk::DescriptorPoolCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorPoolCreateInfoBuilder<'a> {
+    pub fn insert_next<T: DescriptorPoolCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1143,12 +1244,19 @@ impl<'a> Builder<'a> for vk::DescriptorSetAllocateInfo {
         Default::default()
     }
 }
+pub trait DescriptorSetAllocateInfoNext {}
 #[derive(Default)]
 pub struct DescriptorSetAllocateInfoBuilder<'a> {
     inner: vk::DescriptorSetAllocateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorSetAllocateInfoBuilder<'a> {
+    pub fn insert_next<T: DescriptorSetAllocateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1208,12 +1316,19 @@ impl<'a> Builder<'a> for vk::PipelineShaderStageCreateInfo {
         Default::default()
     }
 }
+pub trait PipelineShaderStageCreateInfoNext {}
 #[derive(Default)]
 pub struct PipelineShaderStageCreateInfoBuilder<'a> {
     inner: vk::PipelineShaderStageCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineShaderStageCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1249,17 +1364,25 @@ impl<'a> Deref for PipelineShaderStageCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ComputePipelineCreateInfo {
-    type Type = ComputePipelineCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::ComputePipelineCreateInfo {
+    type Type = ComputePipelineCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ComputePipelineCreateInfoNext {}
 #[derive(Default)]
-pub struct ComputePipelineCreateInfoBuilder {
+pub struct ComputePipelineCreateInfoBuilder<'a> {
     inner: vk::ComputePipelineCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ComputePipelineCreateInfoBuilder {
+impl<'a> ComputePipelineCreateInfoBuilder<'a> {
+    pub fn insert_next<T: ComputePipelineCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1289,7 +1412,7 @@ impl ComputePipelineCreateInfoBuilder {
         self
     }
 }
-impl Deref for ComputePipelineCreateInfoBuilder {
+impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
     type Target = vk::ComputePipelineCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -1301,12 +1424,19 @@ impl<'a> Builder<'a> for vk::PipelineVertexInputStateCreateInfo {
         Default::default()
     }
 }
+pub trait PipelineVertexInputStateCreateInfoNext {}
 #[derive(Default)]
 pub struct PipelineVertexInputStateCreateInfoBuilder<'a> {
     inner: vk::PipelineVertexInputStateCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineVertexInputStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1384,17 +1514,25 @@ impl Deref for PipelineInputAssemblyStateCreateInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PipelineTessellationStateCreateInfo {
-    type Type = PipelineTessellationStateCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::PipelineTessellationStateCreateInfo {
+    type Type = PipelineTessellationStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PipelineTessellationStateCreateInfoNext {}
 #[derive(Default)]
-pub struct PipelineTessellationStateCreateInfoBuilder {
+pub struct PipelineTessellationStateCreateInfoBuilder<'a> {
     inner: vk::PipelineTessellationStateCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PipelineTessellationStateCreateInfoBuilder {
+impl<'a> PipelineTessellationStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineTessellationStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1412,7 +1550,7 @@ impl PipelineTessellationStateCreateInfoBuilder {
         self
     }
 }
-impl Deref for PipelineTessellationStateCreateInfoBuilder {
+impl<'a> Deref for PipelineTessellationStateCreateInfoBuilder<'a> {
     type Target = vk::PipelineTessellationStateCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -1424,12 +1562,19 @@ impl<'a> Builder<'a> for vk::PipelineViewportStateCreateInfo {
         Default::default()
     }
 }
+pub trait PipelineViewportStateCreateInfoNext {}
 #[derive(Default)]
 pub struct PipelineViewportStateCreateInfoBuilder<'a> {
     inner: vk::PipelineViewportStateCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineViewportStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1467,17 +1612,25 @@ impl<'a> Deref for PipelineViewportStateCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PipelineRasterizationStateCreateInfo {
-    type Type = PipelineRasterizationStateCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::PipelineRasterizationStateCreateInfo {
+    type Type = PipelineRasterizationStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PipelineRasterizationStateCreateInfoNext {}
 #[derive(Default)]
-pub struct PipelineRasterizationStateCreateInfoBuilder {
+pub struct PipelineRasterizationStateCreateInfoBuilder<'a> {
     inner: vk::PipelineRasterizationStateCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PipelineRasterizationStateCreateInfoBuilder {
+impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineRasterizationStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1531,23 +1684,31 @@ impl PipelineRasterizationStateCreateInfoBuilder {
         self
     }
 }
-impl Deref for PipelineRasterizationStateCreateInfoBuilder {
+impl<'a> Deref for PipelineRasterizationStateCreateInfoBuilder<'a> {
     type Target = vk::PipelineRasterizationStateCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PipelineMultisampleStateCreateInfo {
-    type Type = PipelineMultisampleStateCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::PipelineMultisampleStateCreateInfo {
+    type Type = PipelineMultisampleStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PipelineMultisampleStateCreateInfoNext {}
 #[derive(Default)]
-pub struct PipelineMultisampleStateCreateInfoBuilder {
+pub struct PipelineMultisampleStateCreateInfoBuilder<'a> {
     inner: vk::PipelineMultisampleStateCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PipelineMultisampleStateCreateInfoBuilder {
+impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineMultisampleStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1585,7 +1746,7 @@ impl PipelineMultisampleStateCreateInfoBuilder {
         self
     }
 }
-impl Deref for PipelineMultisampleStateCreateInfoBuilder {
+impl<'a> Deref for PipelineMultisampleStateCreateInfoBuilder<'a> {
     type Target = vk::PipelineMultisampleStateCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -1597,12 +1758,19 @@ impl<'a> Builder<'a> for vk::PipelineColorBlendStateCreateInfo {
         Default::default()
     }
 }
+pub trait PipelineColorBlendStateCreateInfoNext {}
 #[derive(Default)]
 pub struct PipelineColorBlendStateCreateInfoBuilder<'a> {
     inner: vk::PipelineColorBlendStateCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
+    pub fn insert_next<T: PipelineColorBlendStateCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1743,12 +1911,19 @@ impl<'a> Builder<'a> for vk::GraphicsPipelineCreateInfo {
         Default::default()
     }
 }
+pub trait GraphicsPipelineCreateInfoNext {}
 #[derive(Default)]
 pub struct GraphicsPipelineCreateInfoBuilder<'a> {
     inner: vk::GraphicsPipelineCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
+    pub fn insert_next<T: GraphicsPipelineCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -1927,17 +2102,25 @@ impl<'a> Deref for PipelineLayoutCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::SamplerCreateInfo {
-    type Type = SamplerCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::SamplerCreateInfo {
+    type Type = SamplerCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait SamplerCreateInfoNext {}
 #[derive(Default)]
-pub struct SamplerCreateInfoBuilder {
+pub struct SamplerCreateInfoBuilder<'a> {
     inner: vk::SamplerCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl SamplerCreateInfoBuilder {
+impl<'a> SamplerCreateInfoBuilder<'a> {
+    pub fn insert_next<T: SamplerCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2011,7 +2194,7 @@ impl SamplerCreateInfoBuilder {
         self
     }
 }
-impl Deref for SamplerCreateInfoBuilder {
+impl<'a> Deref for SamplerCreateInfoBuilder<'a> {
     type Target = vk::SamplerCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -2089,17 +2272,25 @@ impl Deref for CommandBufferAllocateInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::CommandBufferInheritanceInfo {
-    type Type = CommandBufferInheritanceInfoBuilder;
+impl<'a> Builder<'a> for vk::CommandBufferInheritanceInfo {
+    type Type = CommandBufferInheritanceInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait CommandBufferInheritanceInfoNext {}
 #[derive(Default)]
-pub struct CommandBufferInheritanceInfoBuilder {
+pub struct CommandBufferInheritanceInfoBuilder<'a> {
     inner: vk::CommandBufferInheritanceInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl CommandBufferInheritanceInfoBuilder {
+impl<'a> CommandBufferInheritanceInfoBuilder<'a> {
+    pub fn insert_next<T: CommandBufferInheritanceInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2133,7 +2324,7 @@ impl CommandBufferInheritanceInfoBuilder {
         self
     }
 }
-impl Deref for CommandBufferInheritanceInfoBuilder {
+impl<'a> Deref for CommandBufferInheritanceInfoBuilder<'a> {
     type Target = vk::CommandBufferInheritanceInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -2145,12 +2336,19 @@ impl<'a> Builder<'a> for vk::CommandBufferBeginInfo {
         Default::default()
     }
 }
+pub trait CommandBufferBeginInfoNext {}
 #[derive(Default)]
 pub struct CommandBufferBeginInfoBuilder<'a> {
     inner: vk::CommandBufferBeginInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CommandBufferBeginInfoBuilder<'a> {
+    pub fn insert_next<T: CommandBufferBeginInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2180,12 +2378,19 @@ impl<'a> Builder<'a> for vk::RenderPassBeginInfo {
         Default::default()
     }
 }
+pub trait RenderPassBeginInfoNext {}
 #[derive(Default)]
 pub struct RenderPassBeginInfoBuilder<'a> {
     inner: vk::RenderPassBeginInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassBeginInfoBuilder<'a> {
+    pub fn insert_next<T: RenderPassBeginInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2283,12 +2488,19 @@ impl<'a> Builder<'a> for vk::RenderPassCreateInfo {
         Default::default()
     }
 }
+pub trait RenderPassCreateInfoNext {}
 #[derive(Default)]
 pub struct RenderPassCreateInfoBuilder<'a> {
     inner: vk::RenderPassCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassCreateInfoBuilder<'a> {
+    pub fn insert_next<T: RenderPassCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2353,17 +2565,25 @@ impl Deref for EventCreateInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::FenceCreateInfo {
-    type Type = FenceCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::FenceCreateInfo {
+    type Type = FenceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait FenceCreateInfoNext {}
 #[derive(Default)]
-pub struct FenceCreateInfoBuilder {
+pub struct FenceCreateInfoBuilder<'a> {
     inner: vk::FenceCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl FenceCreateInfoBuilder {
+impl<'a> FenceCreateInfoBuilder<'a> {
+    pub fn insert_next<T: FenceCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2377,23 +2597,31 @@ impl FenceCreateInfoBuilder {
         self
     }
 }
-impl Deref for FenceCreateInfoBuilder {
+impl<'a> Deref for FenceCreateInfoBuilder<'a> {
     type Target = vk::FenceCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::SemaphoreCreateInfo {
-    type Type = SemaphoreCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::SemaphoreCreateInfo {
+    type Type = SemaphoreCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait SemaphoreCreateInfoNext {}
 #[derive(Default)]
-pub struct SemaphoreCreateInfoBuilder {
+pub struct SemaphoreCreateInfoBuilder<'a> {
     inner: vk::SemaphoreCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl SemaphoreCreateInfoBuilder {
+impl<'a> SemaphoreCreateInfoBuilder<'a> {
+    pub fn insert_next<T: SemaphoreCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2407,23 +2635,31 @@ impl SemaphoreCreateInfoBuilder {
         self
     }
 }
-impl Deref for SemaphoreCreateInfoBuilder {
+impl<'a> Deref for SemaphoreCreateInfoBuilder<'a> {
     type Target = vk::SemaphoreCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::QueryPoolCreateInfo {
-    type Type = QueryPoolCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::QueryPoolCreateInfo {
+    type Type = QueryPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait QueryPoolCreateInfoNext {}
 #[derive(Default)]
-pub struct QueryPoolCreateInfoBuilder {
+pub struct QueryPoolCreateInfoBuilder<'a> {
     inner: vk::QueryPoolCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl QueryPoolCreateInfoBuilder {
+impl<'a> QueryPoolCreateInfoBuilder<'a> {
+    pub fn insert_next<T: QueryPoolCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2449,7 +2685,7 @@ impl QueryPoolCreateInfoBuilder {
         self
     }
 }
-impl Deref for QueryPoolCreateInfoBuilder {
+impl<'a> Deref for QueryPoolCreateInfoBuilder<'a> {
     type Target = vk::QueryPoolCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -2461,12 +2697,19 @@ impl<'a> Builder<'a> for vk::FramebufferCreateInfo {
         Default::default()
     }
 }
+pub trait FramebufferCreateInfoNext {}
 #[derive(Default)]
 pub struct FramebufferCreateInfoBuilder<'a> {
     inner: vk::FramebufferCreateInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> FramebufferCreateInfoBuilder<'a> {
+    pub fn insert_next<T: FramebufferCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2513,12 +2756,19 @@ impl<'a> Builder<'a> for vk::SubmitInfo {
         Default::default()
     }
 }
+pub trait SubmitInfoNext {}
 #[derive(Default)]
 pub struct SubmitInfoBuilder<'a> {
     inner: vk::SubmitInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SubmitInfoBuilder<'a> {
+    pub fn insert_next<T: SubmitInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -2685,6 +2935,8 @@ impl Deref for DisplayPresentInfoKHRBuilder {
         &self.inner
     }
 }
+impl PresentInfoKHRNext for DisplayPresentInfoKHRBuilder {}
+impl PresentInfoKHRNext for vk::DisplayPresentInfoKHR {}
 impl Builder<'_> for vk::AndroidSurfaceCreateInfoKHR {
     type Type = AndroidSurfaceCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -2983,12 +3235,19 @@ impl<'a> Builder<'a> for vk::SwapchainCreateInfoKHR {
         Default::default()
     }
 }
+pub trait SwapchainCreateInfoKHRNext {}
 #[derive(Default)]
 pub struct SwapchainCreateInfoKHRBuilder<'a> {
     inner: vk::SwapchainCreateInfoKHR,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SwapchainCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: SwapchainCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3071,12 +3330,19 @@ impl<'a> Builder<'a> for vk::PresentInfoKHR {
         Default::default()
     }
 }
+pub trait PresentInfoKHRNext {}
 #[derive(Default)]
 pub struct PresentInfoKHRBuilder<'a> {
     inner: vk::PresentInfoKHR,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PresentInfoKHRBuilder<'a> {
+    pub fn insert_next<T: PresentInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -3146,6 +3412,8 @@ impl Deref for DebugReportCallbackCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl InstanceCreateInfoNext for DebugReportCallbackCreateInfoEXTBuilder {}
+impl InstanceCreateInfoNext for vk::DebugReportCallbackCreateInfoEXT {}
 impl<'a> Builder<'a> for vk::ValidationFlagsEXT {
     type Type = ValidationFlagsEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3180,6 +3448,8 @@ impl<'a> Deref for ValidationFlagsEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> InstanceCreateInfoNext for ValidationFlagsEXTBuilder<'a> {}
+impl InstanceCreateInfoNext for vk::ValidationFlagsEXT {}
 impl<'a> Builder<'a> for vk::ValidationFeaturesEXT {
     type Type = ValidationFeaturesEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3227,6 +3497,8 @@ impl<'a> Deref for ValidationFeaturesEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> InstanceCreateInfoNext for ValidationFeaturesEXTBuilder<'a> {}
+impl InstanceCreateInfoNext for vk::ValidationFeaturesEXT {}
 impl Builder<'_> for vk::PipelineRasterizationStateRasterizationOrderAMD {
     type Type = PipelineRasterizationStateRasterizationOrderAMDBuilder;
     fn builder() -> Self::Type {
@@ -3257,6 +3529,8 @@ impl Deref for PipelineRasterizationStateRasterizationOrderAMDBuilder {
         &self.inner
     }
 }
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationStateRasterizationOrderAMDBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationStateRasterizationOrderAMD {}
 impl<'a> Builder<'a> for vk::DebugMarkerObjectNameInfoEXT {
     type Type = DebugMarkerObjectNameInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3401,6 +3675,8 @@ impl Deref for DedicatedAllocationImageCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for DedicatedAllocationImageCreateInfoNVBuilder {}
+impl ImageCreateInfoNext for vk::DedicatedAllocationImageCreateInfoNV {}
 impl Builder<'_> for vk::DedicatedAllocationBufferCreateInfoNV {
     type Type = DedicatedAllocationBufferCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -3431,6 +3707,8 @@ impl Deref for DedicatedAllocationBufferCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl BufferCreateInfoNext for DedicatedAllocationBufferCreateInfoNVBuilder {}
+impl BufferCreateInfoNext for vk::DedicatedAllocationBufferCreateInfoNV {}
 impl Builder<'_> for vk::DedicatedAllocationMemoryAllocateInfoNV {
     type Type = DedicatedAllocationMemoryAllocateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -3465,6 +3743,8 @@ impl Deref for DedicatedAllocationMemoryAllocateInfoNVBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for DedicatedAllocationMemoryAllocateInfoNVBuilder {}
+impl MemoryAllocateInfoNext for vk::DedicatedAllocationMemoryAllocateInfoNV {}
 impl Builder<'_> for vk::ExternalMemoryImageCreateInfoNV {
     type Type = ExternalMemoryImageCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -3495,6 +3775,8 @@ impl Deref for ExternalMemoryImageCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for ExternalMemoryImageCreateInfoNVBuilder {}
+impl ImageCreateInfoNext for vk::ExternalMemoryImageCreateInfoNV {}
 impl Builder<'_> for vk::ExportMemoryAllocateInfoNV {
     type Type = ExportMemoryAllocateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -3525,6 +3807,8 @@ impl Deref for ExportMemoryAllocateInfoNVBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ExportMemoryAllocateInfoNVBuilder {}
+impl MemoryAllocateInfoNext for vk::ExportMemoryAllocateInfoNV {}
 impl Builder<'_> for vk::ImportMemoryWin32HandleInfoNV {
     type Type = ImportMemoryWin32HandleInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -3559,6 +3843,8 @@ impl Deref for ImportMemoryWin32HandleInfoNVBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ImportMemoryWin32HandleInfoNVBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryWin32HandleInfoNV {}
 impl<'a> Builder<'a> for vk::ExportMemoryWin32HandleInfoNV {
     type Type = ExportMemoryWin32HandleInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3594,6 +3880,8 @@ impl<'a> Deref for ExportMemoryWin32HandleInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> MemoryAllocateInfoNext for ExportMemoryWin32HandleInfoNVBuilder<'a> {}
+impl MemoryAllocateInfoNext for vk::ExportMemoryWin32HandleInfoNV {}
 impl<'a> Builder<'a> for vk::Win32KeyedMutexAcquireReleaseInfoNV {
     type Type = Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3644,6 +3932,8 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubmitInfoNext for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {}
+impl SubmitInfoNext for vk::Win32KeyedMutexAcquireReleaseInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     type Type = PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -3674,6 +3964,10 @@ impl Deref for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
 impl Builder<'_> for vk::DevicePrivateDataCreateInfoEXT {
     type Type = DevicePrivateDataCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -3704,6 +3998,8 @@ impl Deref for DevicePrivateDataCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl DeviceCreateInfoNext for DevicePrivateDataCreateInfoEXTBuilder {}
+impl DeviceCreateInfoNext for vk::DevicePrivateDataCreateInfoEXT {}
 impl Builder<'_> for vk::PrivateDataSlotCreateInfoEXT {
     type Type = PrivateDataSlotCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -3764,6 +4060,11 @@ impl Deref for PhysicalDevicePrivateDataFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePrivateDataFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePrivateDataFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrivateDataFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePrivateDataFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
 impl<'a> Builder<'a> for vk::GraphicsShaderGroupCreateInfoNV {
     type Type = GraphicsShaderGroupCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3847,6 +4148,8 @@ impl<'a> Deref for GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> GraphicsPipelineCreateInfoNext for GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {}
+impl GraphicsPipelineCreateInfoNext for vk::GraphicsPipelineShaderGroupsCreateInfoNV {}
 impl<'a> Builder<'a> for vk::IndirectCommandsLayoutTokenNV {
     type Type = IndirectCommandsLayoutTokenNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -4084,17 +4387,25 @@ impl Deref for GeneratedCommandsMemoryRequirementsInfoNVBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PhysicalDeviceFeatures2 {
-    type Type = PhysicalDeviceFeatures2Builder;
+impl<'a> Builder<'a> for vk::PhysicalDeviceFeatures2 {
+    type Type = PhysicalDeviceFeatures2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PhysicalDeviceFeatures2Next {}
 #[derive(Default)]
-pub struct PhysicalDeviceFeatures2Builder {
+pub struct PhysicalDeviceFeatures2Builder<'a> {
     inner: vk::PhysicalDeviceFeatures2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PhysicalDeviceFeatures2Builder {
+impl<'a> PhysicalDeviceFeatures2Builder<'a> {
+    pub fn insert_next<T: PhysicalDeviceFeatures2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4108,23 +4419,111 @@ impl PhysicalDeviceFeatures2Builder {
         self
     }
 }
-impl Deref for PhysicalDeviceFeatures2Builder {
+impl<'a> Deref for PhysicalDeviceFeatures2Builder<'a> {
     type Target = vk::PhysicalDeviceFeatures2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PhysicalDeviceImageFormatInfo2 {
-    type Type = PhysicalDeviceImageFormatInfo2Builder;
+impl<'a> DeviceCreateInfoNext for PhysicalDeviceFeatures2Builder<'a> {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFeatures2 {}
+impl<'a> Builder<'a> for vk::PhysicalDeviceProperties2 {
+    type Type = PhysicalDeviceProperties2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PhysicalDeviceProperties2Next {}
 #[derive(Default)]
-pub struct PhysicalDeviceImageFormatInfo2Builder {
-    inner: vk::PhysicalDeviceImageFormatInfo2,
+pub struct PhysicalDeviceProperties2Builder<'a> {
+    inner: vk::PhysicalDeviceProperties2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PhysicalDeviceImageFormatInfo2Builder {
+impl<'a> PhysicalDeviceProperties2Builder<'a> {
+    pub fn insert_next<T: PhysicalDeviceProperties2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceProperties2Builder<'a> {
+    type Target = vk::PhysicalDeviceProperties2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::FormatProperties2 {
+    type Type = FormatProperties2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait FormatProperties2Next {}
+#[derive(Default)]
+pub struct FormatProperties2Builder<'a> {
+    inner: vk::FormatProperties2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> FormatProperties2Builder<'a> {
+    pub fn insert_next<T: FormatProperties2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for FormatProperties2Builder<'a> {
+    type Target = vk::FormatProperties2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageFormatProperties2 {
+    type Type = ImageFormatProperties2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait ImageFormatProperties2Next {}
+#[derive(Default)]
+pub struct ImageFormatProperties2Builder<'a> {
+    inner: vk::ImageFormatProperties2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ImageFormatProperties2Builder<'a> {
+    pub fn insert_next<T: ImageFormatProperties2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for ImageFormatProperties2Builder<'a> {
+    type Target = vk::ImageFormatProperties2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceImageFormatInfo2 {
+    type Type = PhysicalDeviceImageFormatInfo2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PhysicalDeviceImageFormatInfo2Next {}
+#[derive(Default)]
+pub struct PhysicalDeviceImageFormatInfo2Builder<'a> {
+    inner: vk::PhysicalDeviceImageFormatInfo2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PhysicalDeviceImageFormatInfo2Builder<'a> {
+    pub fn insert_next<T: PhysicalDeviceImageFormatInfo2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4154,8 +4553,60 @@ impl PhysicalDeviceImageFormatInfo2Builder {
         self
     }
 }
-impl Deref for PhysicalDeviceImageFormatInfo2Builder {
+impl<'a> Deref for PhysicalDeviceImageFormatInfo2Builder<'a> {
     type Target = vk::PhysicalDeviceImageFormatInfo2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::QueueFamilyProperties2 {
+    type Type = QueueFamilyProperties2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait QueueFamilyProperties2Next {}
+#[derive(Default)]
+pub struct QueueFamilyProperties2Builder<'a> {
+    inner: vk::QueueFamilyProperties2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> QueueFamilyProperties2Builder<'a> {
+    pub fn insert_next<T: QueueFamilyProperties2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for QueueFamilyProperties2Builder<'a> {
+    type Target = vk::QueueFamilyProperties2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::PhysicalDeviceMemoryProperties2 {
+    type Type = PhysicalDeviceMemoryProperties2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait PhysicalDeviceMemoryProperties2Next {}
+#[derive(Default)]
+pub struct PhysicalDeviceMemoryProperties2Builder<'a> {
+    inner: vk::PhysicalDeviceMemoryProperties2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PhysicalDeviceMemoryProperties2Builder<'a> {
+    pub fn insert_next<T: PhysicalDeviceMemoryProperties2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for PhysicalDeviceMemoryProperties2Builder<'a> {
+    type Target = vk::PhysicalDeviceMemoryProperties2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -4206,6 +4657,8 @@ impl Deref for PhysicalDeviceSparseImageFormatInfo2Builder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePushDescriptorPropertiesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDriverProperties {}
 impl<'a> Builder<'a> for vk::PresentRegionsKHR {
     type Type = PresentRegionsKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -4238,6 +4691,8 @@ impl<'a> Deref for PresentRegionsKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PresentInfoKHRNext for PresentRegionsKHRBuilder<'a> {}
+impl PresentInfoKHRNext for vk::PresentRegionsKHR {}
 impl<'a> Builder<'a> for vk::PresentRegionKHR {
     type Type = PresentRegionKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -4300,6 +4755,10 @@ impl Deref for PhysicalDeviceVariablePointersFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVariablePointersFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVariablePointersFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVariablePointersFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVariablePointersFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceExternalImageFormatInfo {
     type Type = PhysicalDeviceExternalImageFormatInfoBuilder;
     fn builder() -> Self::Type {
@@ -4330,6 +4789,9 @@ impl Deref for PhysicalDeviceExternalImageFormatInfoBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceImageFormatInfo2Next for PhysicalDeviceExternalImageFormatInfoBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::PhysicalDeviceExternalImageFormatInfo {}
+impl ImageFormatProperties2Next for vk::ExternalImageFormatProperties {}
 impl Builder<'_> for vk::PhysicalDeviceExternalBufferInfo {
     type Type = PhysicalDeviceExternalBufferInfoBuilder;
     fn builder() -> Self::Type {
@@ -4368,6 +4830,7 @@ impl Deref for PhysicalDeviceExternalBufferInfoBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceIDProperties {}
 impl Builder<'_> for vk::ExternalMemoryImageCreateInfo {
     type Type = ExternalMemoryImageCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -4398,6 +4861,8 @@ impl Deref for ExternalMemoryImageCreateInfoBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for ExternalMemoryImageCreateInfoBuilder {}
+impl ImageCreateInfoNext for vk::ExternalMemoryImageCreateInfo {}
 impl Builder<'_> for vk::ExternalMemoryBufferCreateInfo {
     type Type = ExternalMemoryBufferCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -4428,6 +4893,8 @@ impl Deref for ExternalMemoryBufferCreateInfoBuilder {
         &self.inner
     }
 }
+impl BufferCreateInfoNext for ExternalMemoryBufferCreateInfoBuilder {}
+impl BufferCreateInfoNext for vk::ExternalMemoryBufferCreateInfo {}
 impl Builder<'_> for vk::ExportMemoryAllocateInfo {
     type Type = ExportMemoryAllocateInfoBuilder;
     fn builder() -> Self::Type {
@@ -4458,6 +4925,8 @@ impl Deref for ExportMemoryAllocateInfoBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ExportMemoryAllocateInfoBuilder {}
+impl MemoryAllocateInfoNext for vk::ExportMemoryAllocateInfo {}
 impl Builder<'_> for vk::ImportMemoryWin32HandleInfoKHR {
     type Type = ImportMemoryWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -4496,6 +4965,8 @@ impl Deref for ImportMemoryWin32HandleInfoKHRBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ImportMemoryWin32HandleInfoKHRBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryWin32HandleInfoKHR {}
 impl<'a> Builder<'a> for vk::ExportMemoryWin32HandleInfoKHR {
     type Type = ExportMemoryWin32HandleInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -4535,6 +5006,8 @@ impl<'a> Deref for ExportMemoryWin32HandleInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> MemoryAllocateInfoNext for ExportMemoryWin32HandleInfoKHRBuilder<'a> {}
+impl MemoryAllocateInfoNext for vk::ExportMemoryWin32HandleInfoKHR {}
 impl Builder<'_> for vk::MemoryGetWin32HandleInfoKHR {
     type Type = MemoryGetWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -4603,6 +5076,8 @@ impl Deref for ImportMemoryFdInfoKHRBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ImportMemoryFdInfoKHRBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryFdInfoKHR {}
 impl Builder<'_> for vk::MemoryGetFdInfoKHR {
     type Type = MemoryGetFdInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -4685,17 +5160,27 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PhysicalDeviceExternalSemaphoreInfo {
-    type Type = PhysicalDeviceExternalSemaphoreInfoBuilder;
+impl<'a> SubmitInfoNext for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {}
+impl SubmitInfoNext for vk::Win32KeyedMutexAcquireReleaseInfoKHR {}
+impl<'a> Builder<'a> for vk::PhysicalDeviceExternalSemaphoreInfo {
+    type Type = PhysicalDeviceExternalSemaphoreInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PhysicalDeviceExternalSemaphoreInfoNext {}
 #[derive(Default)]
-pub struct PhysicalDeviceExternalSemaphoreInfoBuilder {
+pub struct PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
     inner: vk::PhysicalDeviceExternalSemaphoreInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PhysicalDeviceExternalSemaphoreInfoBuilder {
+impl<'a> PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
+    pub fn insert_next<T: PhysicalDeviceExternalSemaphoreInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -4709,7 +5194,7 @@ impl PhysicalDeviceExternalSemaphoreInfoBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceExternalSemaphoreInfoBuilder {
+impl<'a> Deref for PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
     type Target = vk::PhysicalDeviceExternalSemaphoreInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -4745,6 +5230,8 @@ impl Deref for ExportSemaphoreCreateInfoBuilder {
         &self.inner
     }
 }
+impl SemaphoreCreateInfoNext for ExportSemaphoreCreateInfoBuilder {}
+impl SemaphoreCreateInfoNext for vk::ExportSemaphoreCreateInfo {}
 impl Builder<'_> for vk::ImportSemaphoreWin32HandleInfoKHR {
     type Type = ImportSemaphoreWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -4830,6 +5317,8 @@ impl<'a> Deref for ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SemaphoreCreateInfoNext for ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {}
+impl SemaphoreCreateInfoNext for vk::ExportSemaphoreWin32HandleInfoKHR {}
 impl<'a> Builder<'a> for vk::D3D12FenceSubmitInfoKHR {
     type Type = D3D12FenceSubmitInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -4867,6 +5356,8 @@ impl<'a> Deref for D3D12FenceSubmitInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubmitInfoNext for D3D12FenceSubmitInfoKHRBuilder<'a> {}
+impl SubmitInfoNext for vk::D3D12FenceSubmitInfoKHR {}
 impl Builder<'_> for vk::SemaphoreGetWin32HandleInfoKHR {
     type Type = SemaphoreGetWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5037,6 +5528,8 @@ impl Deref for ExportFenceCreateInfoBuilder {
         &self.inner
     }
 }
+impl FenceCreateInfoNext for ExportFenceCreateInfoBuilder {}
+impl FenceCreateInfoNext for vk::ExportFenceCreateInfo {}
 impl Builder<'_> for vk::ImportFenceWin32HandleInfoKHR {
     type Type = ImportFenceWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5122,6 +5615,8 @@ impl<'a> Deref for ExportFenceWin32HandleInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> FenceCreateInfoNext for ExportFenceWin32HandleInfoKHRBuilder<'a> {}
+impl FenceCreateInfoNext for vk::ExportFenceWin32HandleInfoKHR {}
 impl Builder<'_> for vk::FenceGetWin32HandleInfoKHR {
     type Type = FenceGetWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5274,6 +5769,11 @@ impl Deref for PhysicalDeviceMultiviewFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiviewFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultiviewFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiviewFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiviewFeatures {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMultiviewProperties {}
 impl<'a> Builder<'a> for vk::RenderPassMultiviewCreateInfo {
     type Type = RenderPassMultiviewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -5316,6 +5816,8 @@ impl<'a> Deref for RenderPassMultiviewCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> RenderPassCreateInfoNext for RenderPassMultiviewCreateInfoBuilder<'a> {}
+impl RenderPassCreateInfoNext for vk::RenderPassMultiviewCreateInfo {}
 impl Builder<'_> for vk::DisplayPowerInfoEXT {
     type Type = DisplayPowerInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -5436,6 +5938,8 @@ impl Deref for SwapchainCounterCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl SwapchainCreateInfoKHRNext for SwapchainCounterCreateInfoEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainCounterCreateInfoEXT {}
 impl Builder<'_> for vk::MemoryAllocateFlagsInfo {
     type Type = MemoryAllocateFlagsInfoBuilder;
     fn builder() -> Self::Type {
@@ -5470,17 +5974,27 @@ impl Deref for MemoryAllocateFlagsInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BindBufferMemoryInfo {
-    type Type = BindBufferMemoryInfoBuilder;
+impl MemoryAllocateInfoNext for MemoryAllocateFlagsInfoBuilder {}
+impl MemoryAllocateInfoNext for vk::MemoryAllocateFlagsInfo {}
+impl<'a> Builder<'a> for vk::BindBufferMemoryInfo {
+    type Type = BindBufferMemoryInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BindBufferMemoryInfoNext {}
 #[derive(Default)]
-pub struct BindBufferMemoryInfoBuilder {
+pub struct BindBufferMemoryInfoBuilder<'a> {
     inner: vk::BindBufferMemoryInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BindBufferMemoryInfoBuilder {
+impl<'a> BindBufferMemoryInfoBuilder<'a> {
+    pub fn insert_next<T: BindBufferMemoryInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5502,7 +6016,7 @@ impl BindBufferMemoryInfoBuilder {
         self
     }
 }
-impl Deref for BindBufferMemoryInfoBuilder {
+impl<'a> Deref for BindBufferMemoryInfoBuilder<'a> {
     type Target = vk::BindBufferMemoryInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -5540,17 +6054,27 @@ impl<'a> Deref for BindBufferMemoryDeviceGroupInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BindImageMemoryInfo {
-    type Type = BindImageMemoryInfoBuilder;
+impl<'a> BindBufferMemoryInfoNext for BindBufferMemoryDeviceGroupInfoBuilder<'a> {}
+impl BindBufferMemoryInfoNext for vk::BindBufferMemoryDeviceGroupInfo {}
+impl<'a> Builder<'a> for vk::BindImageMemoryInfo {
+    type Type = BindImageMemoryInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BindImageMemoryInfoNext {}
 #[derive(Default)]
-pub struct BindImageMemoryInfoBuilder {
+pub struct BindImageMemoryInfoBuilder<'a> {
     inner: vk::BindImageMemoryInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BindImageMemoryInfoBuilder {
+impl<'a> BindImageMemoryInfoBuilder<'a> {
+    pub fn insert_next<T: BindImageMemoryInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -5572,7 +6096,7 @@ impl BindImageMemoryInfoBuilder {
         self
     }
 }
-impl Deref for BindImageMemoryInfoBuilder {
+impl<'a> Deref for BindImageMemoryInfoBuilder<'a> {
     type Target = vk::BindImageMemoryInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -5617,6 +6141,8 @@ impl<'a> Deref for BindImageMemoryDeviceGroupInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> BindImageMemoryInfoNext for BindImageMemoryDeviceGroupInfoBuilder<'a> {}
+impl BindImageMemoryInfoNext for vk::BindImageMemoryDeviceGroupInfo {}
 impl<'a> Builder<'a> for vk::DeviceGroupRenderPassBeginInfo {
     type Type = DeviceGroupRenderPassBeginInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -5653,6 +6179,8 @@ impl<'a> Deref for DeviceGroupRenderPassBeginInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> RenderPassBeginInfoNext for DeviceGroupRenderPassBeginInfoBuilder<'a> {}
+impl RenderPassBeginInfoNext for vk::DeviceGroupRenderPassBeginInfo {}
 impl Builder<'_> for vk::DeviceGroupCommandBufferBeginInfo {
     type Type = DeviceGroupCommandBufferBeginInfoBuilder;
     fn builder() -> Self::Type {
@@ -5683,6 +6211,8 @@ impl Deref for DeviceGroupCommandBufferBeginInfoBuilder {
         &self.inner
     }
 }
+impl CommandBufferBeginInfoNext for DeviceGroupCommandBufferBeginInfoBuilder {}
+impl CommandBufferBeginInfoNext for vk::DeviceGroupCommandBufferBeginInfo {}
 impl<'a> Builder<'a> for vk::DeviceGroupSubmitInfo {
     type Type = DeviceGroupSubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -5731,6 +6261,8 @@ impl<'a> Deref for DeviceGroupSubmitInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubmitInfoNext for DeviceGroupSubmitInfoBuilder<'a> {}
+impl SubmitInfoNext for vk::DeviceGroupSubmitInfo {}
 impl Builder<'_> for vk::DeviceGroupBindSparseInfo {
     type Type = DeviceGroupBindSparseInfoBuilder;
     fn builder() -> Self::Type {
@@ -5765,6 +6297,8 @@ impl Deref for DeviceGroupBindSparseInfoBuilder {
         &self.inner
     }
 }
+impl BindSparseInfoNext for DeviceGroupBindSparseInfoBuilder {}
+impl BindSparseInfoNext for vk::DeviceGroupBindSparseInfo {}
 impl Builder<'_> for vk::ImageSwapchainCreateInfoKHR {
     type Type = ImageSwapchainCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5795,6 +6329,8 @@ impl Deref for ImageSwapchainCreateInfoKHRBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for ImageSwapchainCreateInfoKHRBuilder {}
+impl ImageCreateInfoNext for vk::ImageSwapchainCreateInfoKHR {}
 impl Builder<'_> for vk::BindImageMemorySwapchainInfoKHR {
     type Type = BindImageMemorySwapchainInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5829,6 +6365,8 @@ impl Deref for BindImageMemorySwapchainInfoKHRBuilder {
         &self.inner
     }
 }
+impl BindImageMemoryInfoNext for BindImageMemorySwapchainInfoKHRBuilder {}
+impl BindImageMemoryInfoNext for vk::BindImageMemorySwapchainInfoKHR {}
 impl Builder<'_> for vk::AcquireNextImageInfoKHR {
     type Type = AcquireNextImageInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5911,6 +6449,8 @@ impl<'a> Deref for DeviceGroupPresentInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PresentInfoKHRNext for DeviceGroupPresentInfoKHRBuilder<'a> {}
+impl PresentInfoKHRNext for vk::DeviceGroupPresentInfoKHR {}
 impl<'a> Builder<'a> for vk::DeviceGroupDeviceCreateInfo {
     type Type = DeviceGroupDeviceCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -5943,6 +6483,8 @@ impl<'a> Deref for DeviceGroupDeviceCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> DeviceCreateInfoNext for DeviceGroupDeviceCreateInfoBuilder<'a> {}
+impl DeviceCreateInfoNext for vk::DeviceGroupDeviceCreateInfo {}
 impl Builder<'_> for vk::DeviceGroupSwapchainCreateInfoKHR {
     type Type = DeviceGroupSwapchainCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5973,6 +6515,8 @@ impl Deref for DeviceGroupSwapchainCreateInfoKHRBuilder {
         &self.inner
     }
 }
+impl SwapchainCreateInfoKHRNext for DeviceGroupSwapchainCreateInfoKHRBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::DeviceGroupSwapchainCreateInfoKHR {}
 impl<'a> Builder<'a> for vk::DescriptorUpdateTemplateCreateInfo {
     type Type = DescriptorUpdateTemplateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6092,6 +6636,7 @@ impl Deref for HdrMetadataEXTBuilder {
         &self.inner
     }
 }
+impl SurfaceCapabilities2KHRNext for vk::DisplayNativeHdrSurfaceCapabilitiesAMD {}
 impl Builder<'_> for vk::SwapchainDisplayNativeHdrCreateInfoAMD {
     type Type = SwapchainDisplayNativeHdrCreateInfoAMDBuilder;
     fn builder() -> Self::Type {
@@ -6122,6 +6667,8 @@ impl Deref for SwapchainDisplayNativeHdrCreateInfoAMDBuilder {
         &self.inner
     }
 }
+impl SwapchainCreateInfoKHRNext for SwapchainDisplayNativeHdrCreateInfoAMDBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainDisplayNativeHdrCreateInfoAMD {}
 impl<'a> Builder<'a> for vk::PresentTimesInfoGOOGLE {
     type Type = PresentTimesInfoGOOGLEBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6154,6 +6701,8 @@ impl<'a> Deref for PresentTimesInfoGOOGLEBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PresentInfoKHRNext for PresentTimesInfoGOOGLEBuilder<'a> {}
+impl PresentInfoKHRNext for vk::PresentTimesInfoGOOGLE {}
 impl Builder<'_> for vk::IOSSurfaceCreateInfoMVK {
     type Type = IOSSurfaceCreateInfoMVKBuilder;
     fn builder() -> Self::Type {
@@ -6297,6 +6846,8 @@ impl<'a> Deref for PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportWScalingStateCreateInfoNV {}
 impl<'a> Builder<'a> for vk::PipelineViewportSwizzleStateCreateInfoNV {
     type Type = PipelineViewportSwizzleStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6333,6 +6884,9 @@ impl<'a> Deref for PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportSwizzleStateCreateInfoNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDiscardRectanglePropertiesEXT {}
 impl<'a> Builder<'a> for vk::PipelineDiscardRectangleStateCreateInfoEXT {
     type Type = PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6373,6 +6927,9 @@ impl<'a> Deref for PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> GraphicsPipelineCreateInfoNext for PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineDiscardRectangleStateCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {}
 impl<'a> Builder<'a> for vk::RenderPassInputAttachmentAspectCreateInfo {
     type Type = RenderPassInputAttachmentAspectCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -6405,17 +6962,27 @@ impl<'a> Deref for RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::PhysicalDeviceSurfaceInfo2KHR {
-    type Type = PhysicalDeviceSurfaceInfo2KHRBuilder;
+impl<'a> RenderPassCreateInfoNext for RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {}
+impl RenderPassCreateInfoNext for vk::RenderPassInputAttachmentAspectCreateInfo {}
+impl<'a> Builder<'a> for vk::PhysicalDeviceSurfaceInfo2KHR {
+    type Type = PhysicalDeviceSurfaceInfo2KHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait PhysicalDeviceSurfaceInfo2KHRNext {}
 #[derive(Default)]
-pub struct PhysicalDeviceSurfaceInfo2KHRBuilder {
+pub struct PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
     inner: vk::PhysicalDeviceSurfaceInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl PhysicalDeviceSurfaceInfo2KHRBuilder {
+impl<'a> PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
+    pub fn insert_next<T: PhysicalDeviceSurfaceInfo2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6429,8 +6996,34 @@ impl PhysicalDeviceSurfaceInfo2KHRBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceSurfaceInfo2KHRBuilder {
+impl<'a> Deref for PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
     type Target = vk::PhysicalDeviceSurfaceInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SurfaceCapabilities2KHR {
+    type Type = SurfaceCapabilities2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait SurfaceCapabilities2KHRNext {}
+#[derive(Default)]
+pub struct SurfaceCapabilities2KHRBuilder<'a> {
+    inner: vk::SurfaceCapabilities2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SurfaceCapabilities2KHRBuilder<'a> {
+    pub fn insert_next<T: SurfaceCapabilities2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for SurfaceCapabilities2KHRBuilder<'a> {
+    type Target = vk::SurfaceCapabilities2KHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -6469,6 +7062,7 @@ impl Deref for DisplayPlaneInfo2KHRBuilder {
         &self.inner
     }
 }
+impl SurfaceCapabilities2KHRNext for vk::SharedPresentSurfaceCapabilitiesKHR {}
 impl Builder<'_> for vk::PhysicalDevice16BitStorageFeatures {
     type Type = PhysicalDevice16BitStorageFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -6519,6 +7113,11 @@ impl Deref for PhysicalDevice16BitStorageFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevice16BitStorageFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevice16BitStorageFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevice16BitStorageFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDevice16BitStorageFeatures {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupProperties {}
 impl Builder<'_> for vk::PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
     type Type = PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -6553,6 +7152,10 @@ impl Deref for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
 impl Builder<'_> for vk::BufferMemoryRequirementsInfo2 {
     type Type = BufferMemoryRequirementsInfo2Builder;
     fn builder() -> Self::Type {
@@ -6583,17 +7186,25 @@ impl Deref for BufferMemoryRequirementsInfo2Builder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ImageMemoryRequirementsInfo2 {
-    type Type = ImageMemoryRequirementsInfo2Builder;
+impl<'a> Builder<'a> for vk::ImageMemoryRequirementsInfo2 {
+    type Type = ImageMemoryRequirementsInfo2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ImageMemoryRequirementsInfo2Next {}
 #[derive(Default)]
-pub struct ImageMemoryRequirementsInfo2Builder {
+pub struct ImageMemoryRequirementsInfo2Builder<'a> {
     inner: vk::ImageMemoryRequirementsInfo2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ImageMemoryRequirementsInfo2Builder {
+impl<'a> ImageMemoryRequirementsInfo2Builder<'a> {
+    pub fn insert_next<T: ImageMemoryRequirementsInfo2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6607,7 +7218,7 @@ impl ImageMemoryRequirementsInfo2Builder {
         self
     }
 }
-impl Deref for ImageMemoryRequirementsInfo2Builder {
+impl<'a> Deref for ImageMemoryRequirementsInfo2Builder<'a> {
     type Target = vk::ImageMemoryRequirementsInfo2;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -6643,6 +7254,34 @@ impl Deref for ImageSparseMemoryRequirementsInfo2Builder {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::MemoryRequirements2 {
+    type Type = MemoryRequirements2Builder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait MemoryRequirements2Next {}
+#[derive(Default)]
+pub struct MemoryRequirements2Builder<'a> {
+    inner: vk::MemoryRequirements2,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> MemoryRequirements2Builder<'a> {
+    pub fn insert_next<T: MemoryRequirements2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for MemoryRequirements2Builder<'a> {
+    type Target = vk::MemoryRequirements2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePointClippingProperties {}
+impl MemoryRequirements2Next for vk::MemoryDedicatedRequirements {}
 impl Builder<'_> for vk::MemoryDedicatedAllocateInfo {
     type Type = MemoryDedicatedAllocateInfoBuilder;
     fn builder() -> Self::Type {
@@ -6677,6 +7316,8 @@ impl Deref for MemoryDedicatedAllocateInfoBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for MemoryDedicatedAllocateInfoBuilder {}
+impl MemoryAllocateInfoNext for vk::MemoryDedicatedAllocateInfo {}
 impl Builder<'_> for vk::ImageViewUsageCreateInfo {
     type Type = ImageViewUsageCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -6707,6 +7348,8 @@ impl Deref for ImageViewUsageCreateInfoBuilder {
         &self.inner
     }
 }
+impl ImageViewCreateInfoNext for ImageViewUsageCreateInfoBuilder {}
+impl ImageViewCreateInfoNext for vk::ImageViewUsageCreateInfo {}
 impl Builder<'_> for vk::PipelineTessellationDomainOriginStateCreateInfo {
     type Type = PipelineTessellationDomainOriginStateCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -6737,6 +7380,8 @@ impl Deref for PipelineTessellationDomainOriginStateCreateInfoBuilder {
         &self.inner
     }
 }
+impl PipelineTessellationStateCreateInfoNext for PipelineTessellationDomainOriginStateCreateInfoBuilder {}
+impl PipelineTessellationStateCreateInfoNext for vk::PipelineTessellationDomainOriginStateCreateInfo {}
 impl Builder<'_> for vk::SamplerYcbcrConversionInfo {
     type Type = SamplerYcbcrConversionInfoBuilder;
     fn builder() -> Self::Type {
@@ -6767,17 +7412,29 @@ impl Deref for SamplerYcbcrConversionInfoBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::SamplerYcbcrConversionCreateInfo {
-    type Type = SamplerYcbcrConversionCreateInfoBuilder;
+impl SamplerCreateInfoNext for SamplerYcbcrConversionInfoBuilder {}
+impl ImageViewCreateInfoNext for SamplerYcbcrConversionInfoBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerYcbcrConversionInfo {}
+impl ImageViewCreateInfoNext for vk::SamplerYcbcrConversionInfo {}
+impl<'a> Builder<'a> for vk::SamplerYcbcrConversionCreateInfo {
+    type Type = SamplerYcbcrConversionCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait SamplerYcbcrConversionCreateInfoNext {}
 #[derive(Default)]
-pub struct SamplerYcbcrConversionCreateInfoBuilder {
+pub struct SamplerYcbcrConversionCreateInfoBuilder<'a> {
     inner: vk::SamplerYcbcrConversionCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl SamplerYcbcrConversionCreateInfoBuilder {
+impl<'a> SamplerYcbcrConversionCreateInfoBuilder<'a> {
+    pub fn insert_next<T: SamplerYcbcrConversionCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -6823,7 +7480,7 @@ impl SamplerYcbcrConversionCreateInfoBuilder {
         self
     }
 }
-impl Deref for SamplerYcbcrConversionCreateInfoBuilder {
+impl<'a> Deref for SamplerYcbcrConversionCreateInfoBuilder<'a> {
     type Target = vk::SamplerYcbcrConversionCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -6859,6 +7516,8 @@ impl Deref for BindImagePlaneMemoryInfoBuilder {
         &self.inner
     }
 }
+impl BindImageMemoryInfoNext for BindImagePlaneMemoryInfoBuilder {}
+impl BindImageMemoryInfoNext for vk::BindImagePlaneMemoryInfo {}
 impl Builder<'_> for vk::ImagePlaneMemoryRequirementsInfo {
     type Type = ImagePlaneMemoryRequirementsInfoBuilder;
     fn builder() -> Self::Type {
@@ -6889,6 +7548,8 @@ impl Deref for ImagePlaneMemoryRequirementsInfoBuilder {
         &self.inner
     }
 }
+impl ImageMemoryRequirementsInfo2Next for ImagePlaneMemoryRequirementsInfoBuilder {}
+impl ImageMemoryRequirementsInfo2Next for vk::ImagePlaneMemoryRequirementsInfo {}
 impl Builder<'_> for vk::PhysicalDeviceSamplerYcbcrConversionFeatures {
     type Type = PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -6919,6 +7580,12 @@ impl Deref for PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSamplerYcbcrConversionFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSamplerYcbcrConversionFeatures {}
+impl ImageFormatProperties2Next for vk::SamplerYcbcrConversionImageFormatProperties {}
+impl ImageFormatProperties2Next for vk::TextureLODGatherFormatPropertiesAMD {}
 impl Builder<'_> for vk::ConditionalRenderingBeginInfoEXT {
     type Type = ConditionalRenderingBeginInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -6987,6 +7654,8 @@ impl Deref for ProtectedSubmitInfoBuilder {
         &self.inner
     }
 }
+impl SubmitInfoNext for ProtectedSubmitInfoBuilder {}
+impl SubmitInfoNext for vk::ProtectedSubmitInfo {}
 impl Builder<'_> for vk::PhysicalDeviceProtectedMemoryFeatures {
     type Type = PhysicalDeviceProtectedMemoryFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -7017,6 +7686,11 @@ impl Deref for PhysicalDeviceProtectedMemoryFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceProtectedMemoryFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceProtectedMemoryFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceProtectedMemoryFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceProtectedMemoryFeatures {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceProtectedMemoryProperties {}
 impl Builder<'_> for vk::DeviceQueueInfo2 {
     type Type = DeviceQueueInfo2Builder;
     fn builder() -> Self::Type {
@@ -7093,6 +7767,9 @@ impl Deref for PipelineCoverageToColorStateCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl PipelineMultisampleStateCreateInfoNext for PipelineCoverageToColorStateCreateInfoNVBuilder {}
+impl PipelineMultisampleStateCreateInfoNext for vk::PipelineCoverageToColorStateCreateInfoNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSamplerFilterMinmaxProperties {}
 impl<'a> Builder<'a> for vk::SampleLocationsInfoEXT {
     type Type = SampleLocationsInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7133,6 +7810,8 @@ impl<'a> Deref for SampleLocationsInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> ImageMemoryBarrierNext for SampleLocationsInfoEXTBuilder<'a> {}
+impl ImageMemoryBarrierNext for vk::SampleLocationsInfoEXT {}
 impl<'a> Builder<'a> for vk::RenderPassSampleLocationsBeginInfoEXT {
     type Type = RenderPassSampleLocationsBeginInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7180,6 +7859,8 @@ impl<'a> Deref for RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> RenderPassBeginInfoNext for RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {}
+impl RenderPassBeginInfoNext for vk::RenderPassSampleLocationsBeginInfoEXT {}
 impl Builder<'_> for vk::PipelineSampleLocationsStateCreateInfoEXT {
     type Type = PipelineSampleLocationsStateCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -7214,6 +7895,9 @@ impl Deref for PipelineSampleLocationsStateCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineMultisampleStateCreateInfoNext for PipelineSampleLocationsStateCreateInfoEXTBuilder {}
+impl PipelineMultisampleStateCreateInfoNext for vk::PipelineSampleLocationsStateCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSampleLocationsPropertiesEXT {}
 impl Builder<'_> for vk::SamplerReductionModeCreateInfo {
     type Type = SamplerReductionModeCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -7244,6 +7928,8 @@ impl Deref for SamplerReductionModeCreateInfoBuilder {
         &self.inner
     }
 }
+impl SamplerCreateInfoNext for SamplerReductionModeCreateInfoBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerReductionModeCreateInfo {}
 impl Builder<'_> for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     type Type = PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -7278,6 +7964,11 @@ impl Deref for PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
 impl Builder<'_> for vk::PipelineColorBlendAdvancedStateCreateInfoEXT {
     type Type = PipelineColorBlendAdvancedStateCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -7316,6 +8007,8 @@ impl Deref for PipelineColorBlendAdvancedStateCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineColorBlendStateCreateInfoNext for PipelineColorBlendAdvancedStateCreateInfoEXTBuilder {}
+impl PipelineColorBlendStateCreateInfoNext for vk::PipelineColorBlendAdvancedStateCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceInlineUniformBlockFeaturesEXT {
     type Type = PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -7358,6 +8051,11 @@ impl Deref for PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceInlineUniformBlockFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceInlineUniformBlockFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceInlineUniformBlockFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceInlineUniformBlockPropertiesEXT {}
 impl<'a> Builder<'a> for vk::WriteDescriptorSetInlineUniformBlockEXT {
     type Type = WriteDescriptorSetInlineUniformBlockEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7390,6 +8088,8 @@ impl<'a> Deref for WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> WriteDescriptorSetNext for WriteDescriptorSetInlineUniformBlockEXTBuilder<'a> {}
+impl WriteDescriptorSetNext for vk::WriteDescriptorSetInlineUniformBlockEXT {}
 impl Builder<'_> for vk::DescriptorPoolInlineUniformBlockCreateInfoEXT {
     type Type = DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -7420,6 +8120,8 @@ impl Deref for DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl DescriptorPoolCreateInfoNext for DescriptorPoolInlineUniformBlockCreateInfoEXTBuilder {}
+impl DescriptorPoolCreateInfoNext for vk::DescriptorPoolInlineUniformBlockCreateInfoEXT {}
 impl<'a> Builder<'a> for vk::PipelineCoverageModulationStateCreateInfoNV {
     type Type = PipelineCoverageModulationStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7474,6 +8176,8 @@ impl<'a> Deref for PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineMultisampleStateCreateInfoNext for PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {}
+impl PipelineMultisampleStateCreateInfoNext for vk::PipelineCoverageModulationStateCreateInfoNV {}
 impl<'a> Builder<'a> for vk::ImageFormatListCreateInfo {
     type Type = ImageFormatListCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7506,6 +8210,12 @@ impl<'a> Deref for ImageFormatListCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> ImageCreateInfoNext for ImageFormatListCreateInfoBuilder<'a> {}
+impl<'a> SwapchainCreateInfoKHRNext for ImageFormatListCreateInfoBuilder<'a> {}
+impl<'a> PhysicalDeviceImageFormatInfo2Next for ImageFormatListCreateInfoBuilder<'a> {}
+impl ImageCreateInfoNext for vk::ImageFormatListCreateInfo {}
+impl SwapchainCreateInfoKHRNext for vk::ImageFormatListCreateInfo {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageFormatListCreateInfo {}
 impl<'a> Builder<'a> for vk::ValidationCacheCreateInfoEXT {
     type Type = ValidationCacheCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7572,6 +8282,35 @@ impl Deref for ShaderModuleValidationCacheCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl ShaderModuleCreateInfoNext for ShaderModuleValidationCacheCreateInfoEXTBuilder {}
+impl ShaderModuleCreateInfoNext for vk::ShaderModuleValidationCacheCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance3Properties {}
+impl<'a> Builder<'a> for vk::DescriptorSetLayoutSupport {
+    type Type = DescriptorSetLayoutSupportBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DescriptorSetLayoutSupportNext {}
+#[derive(Default)]
+pub struct DescriptorSetLayoutSupportBuilder<'a> {
+    inner: vk::DescriptorSetLayoutSupport,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DescriptorSetLayoutSupportBuilder<'a> {
+    pub fn insert_next<T: DescriptorSetLayoutSupportNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for DescriptorSetLayoutSupportBuilder<'a> {
+    type Target = vk::DescriptorSetLayoutSupport;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceShaderDrawParametersFeatures {
     type Type = PhysicalDeviceShaderDrawParametersFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -7602,6 +8341,10 @@ impl Deref for PhysicalDeviceShaderDrawParametersFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderDrawParametersFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderDrawParametersFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderDrawParametersFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderDrawParametersFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceShaderFloat16Int8Features {
     type Type = PhysicalDeviceShaderFloat16Int8FeaturesBuilder;
     fn builder() -> Self::Type {
@@ -7636,6 +8379,11 @@ impl Deref for PhysicalDeviceShaderFloat16Int8FeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderFloat16Int8FeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderFloat16Int8FeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderFloat16Int8Features {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderFloat16Int8Features {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFloatControlsProperties {}
 impl Builder<'_> for vk::PhysicalDeviceHostQueryResetFeatures {
     type Type = PhysicalDeviceHostQueryResetFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -7666,6 +8414,10 @@ impl Deref for PhysicalDeviceHostQueryResetFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceHostQueryResetFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceHostQueryResetFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceHostQueryResetFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceHostQueryResetFeatures {}
 impl Builder<'_> for vk::NativeBufferANDROID {
     type Type = NativeBufferANDROIDBuilder;
     fn builder() -> Self::Type {
@@ -7802,6 +8554,8 @@ impl Deref for DeviceQueueGlobalPriorityCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl DeviceQueueCreateInfoNext for DeviceQueueGlobalPriorityCreateInfoEXTBuilder {}
+impl DeviceQueueCreateInfoNext for vk::DeviceQueueGlobalPriorityCreateInfoEXT {}
 impl<'a> Builder<'a> for vk::DebugUtilsObjectNameInfoEXT {
     type Type = DebugUtilsObjectNameInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7962,6 +8716,8 @@ impl Deref for DebugUtilsMessengerCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl InstanceCreateInfoNext for DebugUtilsMessengerCreateInfoEXTBuilder {}
+impl InstanceCreateInfoNext for vk::DebugUtilsMessengerCreateInfoEXT {}
 impl<'a> Builder<'a> for vk::DebugUtilsMessengerCallbackDataEXT {
     type Type = DebugUtilsMessengerCallbackDataEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8050,6 +8806,10 @@ impl Deref for PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
 impl Builder<'_> for vk::DeviceDeviceMemoryReportCreateInfoEXT {
     type Type = DeviceDeviceMemoryReportCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -8088,6 +8848,8 @@ impl Deref for DeviceDeviceMemoryReportCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl DeviceCreateInfoNext for DeviceDeviceMemoryReportCreateInfoEXTBuilder {}
+impl DeviceCreateInfoNext for vk::DeviceDeviceMemoryReportCreateInfoEXT {}
 impl Builder<'_> for vk::ImportMemoryHostPointerInfoEXT {
     type Type = ImportMemoryHostPointerInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -8122,6 +8884,10 @@ impl Deref for ImportMemoryHostPointerInfoEXTBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for ImportMemoryHostPointerInfoEXTBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryHostPointerInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExternalMemoryHostPropertiesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceConservativeRasterizationPropertiesEXT {}
 impl Builder<'_> for vk::CalibratedTimestampInfoEXT {
     type Type = CalibratedTimestampInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -8152,6 +8918,8 @@ impl Deref for CalibratedTimestampInfoEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCorePropertiesAMD {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCoreProperties2AMD {}
 impl Builder<'_> for vk::PipelineRasterizationConservativeStateCreateInfoEXT {
     type Type = PipelineRasterizationConservativeStateCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -8193,6 +8961,8 @@ impl Deref for PipelineRasterizationConservativeStateCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationConservativeStateCreateInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationConservativeStateCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceDescriptorIndexingFeatures {
     type Type = PhysicalDeviceDescriptorIndexingFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -8444,6 +9214,11 @@ impl Deref for PhysicalDeviceDescriptorIndexingFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorIndexingFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorIndexingFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorIndexingFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorIndexingFeatures {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorIndexingProperties {}
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutBindingFlagsCreateInfo {
     type Type = DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8476,6 +9251,8 @@ impl<'a> Deref for DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> DescriptorSetLayoutCreateInfoNext for DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a> {}
+impl DescriptorSetLayoutCreateInfoNext for vk::DescriptorSetLayoutBindingFlagsCreateInfo {}
 impl<'a> Builder<'a> for vk::DescriptorSetVariableDescriptorCountAllocateInfo {
     type Type = DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8508,17 +9285,28 @@ impl<'a> Deref for DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::AttachmentDescription2 {
-    type Type = AttachmentDescription2Builder;
+impl<'a> DescriptorSetAllocateInfoNext for DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a> {}
+impl DescriptorSetAllocateInfoNext for vk::DescriptorSetVariableDescriptorCountAllocateInfo {}
+impl DescriptorSetLayoutSupportNext for vk::DescriptorSetVariableDescriptorCountLayoutSupport {}
+impl<'a> Builder<'a> for vk::AttachmentDescription2 {
+    type Type = AttachmentDescription2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait AttachmentDescription2Next {}
 #[derive(Default)]
-pub struct AttachmentDescription2Builder {
+pub struct AttachmentDescription2Builder<'a> {
     inner: vk::AttachmentDescription2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl AttachmentDescription2Builder {
+impl<'a> AttachmentDescription2Builder<'a> {
+    pub fn insert_next<T: AttachmentDescription2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8564,23 +9352,31 @@ impl AttachmentDescription2Builder {
         self
     }
 }
-impl Deref for AttachmentDescription2Builder {
+impl<'a> Deref for AttachmentDescription2Builder<'a> {
     type Target = vk::AttachmentDescription2;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::AttachmentReference2 {
-    type Type = AttachmentReference2Builder;
+impl<'a> Builder<'a> for vk::AttachmentReference2 {
+    type Type = AttachmentReference2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait AttachmentReference2Next {}
 #[derive(Default)]
-pub struct AttachmentReference2Builder {
+pub struct AttachmentReference2Builder<'a> {
     inner: vk::AttachmentReference2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl AttachmentReference2Builder {
+impl<'a> AttachmentReference2Builder<'a> {
+    pub fn insert_next<T: AttachmentReference2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8602,7 +9398,7 @@ impl AttachmentReference2Builder {
         self
     }
 }
-impl Deref for AttachmentReference2Builder {
+impl<'a> Deref for AttachmentReference2Builder<'a> {
     type Target = vk::AttachmentReference2;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -8614,12 +9410,19 @@ impl<'a> Builder<'a> for vk::SubpassDescription2 {
         Default::default()
     }
 }
+pub trait SubpassDescription2Next {}
 #[derive(Default)]
 pub struct SubpassDescription2Builder<'a> {
     inner: vk::SubpassDescription2,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SubpassDescription2Builder<'a> {
+    pub fn insert_next<T: SubpassDescription2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8743,12 +9546,19 @@ impl<'a> Builder<'a> for vk::RenderPassCreateInfo2 {
         Default::default()
     }
 }
+pub trait RenderPassCreateInfo2Next {}
 #[derive(Default)]
 pub struct RenderPassCreateInfo2Builder<'a> {
     inner: vk::RenderPassCreateInfo2,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassCreateInfo2Builder<'a> {
+    pub fn insert_next<T: RenderPassCreateInfo2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -8874,6 +9684,11 @@ impl Deref for PhysicalDeviceTimelineSemaphoreFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTimelineSemaphoreFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTimelineSemaphoreFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTimelineSemaphoreFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTimelineSemaphoreFeatures {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTimelineSemaphoreProperties {}
 impl Builder<'_> for vk::SemaphoreTypeCreateInfo {
     type Type = SemaphoreTypeCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -8908,6 +9723,10 @@ impl Deref for SemaphoreTypeCreateInfoBuilder {
         &self.inner
     }
 }
+impl SemaphoreCreateInfoNext for SemaphoreTypeCreateInfoBuilder {}
+impl PhysicalDeviceExternalSemaphoreInfoNext for SemaphoreTypeCreateInfoBuilder {}
+impl SemaphoreCreateInfoNext for vk::SemaphoreTypeCreateInfo {}
+impl PhysicalDeviceExternalSemaphoreInfoNext for vk::SemaphoreTypeCreateInfo {}
 impl<'a> Builder<'a> for vk::TimelineSemaphoreSubmitInfo {
     type Type = TimelineSemaphoreSubmitInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8945,6 +9764,10 @@ impl<'a> Deref for TimelineSemaphoreSubmitInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubmitInfoNext for TimelineSemaphoreSubmitInfoBuilder<'a> {}
+impl<'a> BindSparseInfoNext for TimelineSemaphoreSubmitInfoBuilder<'a> {}
+impl SubmitInfoNext for vk::TimelineSemaphoreSubmitInfo {}
+impl BindSparseInfoNext for vk::TimelineSemaphoreSubmitInfo {}
 impl<'a> Builder<'a> for vk::SemaphoreWaitInfo {
     type Type = SemaphoreWaitInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9052,6 +9875,10 @@ impl<'a> Deref for PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineVertexInputStateCreateInfoNext for PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {}
+impl PipelineVertexInputStateCreateInfoNext for vk::PipelineVertexInputDivisorStateCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePCIBusInfoPropertiesEXT {}
 impl Builder<'_> for vk::ImportAndroidHardwareBufferInfoANDROID {
     type Type = ImportAndroidHardwareBufferInfoANDROIDBuilder;
     fn builder() -> Self::Type {
@@ -9078,6 +9905,35 @@ impl ImportAndroidHardwareBufferInfoANDROIDBuilder {
 }
 impl Deref for ImportAndroidHardwareBufferInfoANDROIDBuilder {
     type Target = vk::ImportAndroidHardwareBufferInfoANDROID;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for ImportAndroidHardwareBufferInfoANDROIDBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportAndroidHardwareBufferInfoANDROID {}
+impl ImageFormatProperties2Next for vk::AndroidHardwareBufferUsageANDROID {}
+impl<'a> Builder<'a> for vk::AndroidHardwareBufferPropertiesANDROID {
+    type Type = AndroidHardwareBufferPropertiesANDROIDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait AndroidHardwareBufferPropertiesANDROIDNext {}
+#[derive(Default)]
+pub struct AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
+    inner: vk::AndroidHardwareBufferPropertiesANDROID,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
+    pub fn insert_next<T: AndroidHardwareBufferPropertiesANDROIDNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+}
+impl<'a> Deref for AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
+    type Target = vk::AndroidHardwareBufferPropertiesANDROID;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -9112,6 +9968,7 @@ impl Deref for MemoryGetAndroidHardwareBufferInfoANDROIDBuilder {
         &self.inner
     }
 }
+impl AndroidHardwareBufferPropertiesANDROIDNext for vk::AndroidHardwareBufferFormatPropertiesANDROID {}
 impl Builder<'_> for vk::CommandBufferInheritanceConditionalRenderingInfoEXT {
     type Type = CommandBufferInheritanceConditionalRenderingInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -9146,6 +10003,8 @@ impl Deref for CommandBufferInheritanceConditionalRenderingInfoEXTBuilder {
         &self.inner
     }
 }
+impl CommandBufferInheritanceInfoNext for CommandBufferInheritanceConditionalRenderingInfoEXTBuilder {}
+impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceConditionalRenderingInfoEXT {}
 impl Builder<'_> for vk::ExternalFormatANDROID {
     type Type = ExternalFormatANDROIDBuilder;
     fn builder() -> Self::Type {
@@ -9176,6 +10035,10 @@ impl Deref for ExternalFormatANDROIDBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for ExternalFormatANDROIDBuilder {}
+impl SamplerYcbcrConversionCreateInfoNext for ExternalFormatANDROIDBuilder {}
+impl ImageCreateInfoNext for vk::ExternalFormatANDROID {}
+impl SamplerYcbcrConversionCreateInfoNext for vk::ExternalFormatANDROID {}
 impl Builder<'_> for vk::PhysicalDevice8BitStorageFeatures {
     type Type = PhysicalDevice8BitStorageFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -9222,6 +10085,10 @@ impl Deref for PhysicalDevice8BitStorageFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevice8BitStorageFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevice8BitStorageFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevice8BitStorageFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDevice8BitStorageFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceConditionalRenderingFeaturesEXT {
     type Type = PhysicalDeviceConditionalRenderingFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -9260,6 +10127,10 @@ impl Deref for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceConditionalRenderingFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceConditionalRenderingFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceConditionalRenderingFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVulkanMemoryModelFeatures {
     type Type = PhysicalDeviceVulkanMemoryModelFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -9310,6 +10181,10 @@ impl Deref for PhysicalDeviceVulkanMemoryModelFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVulkanMemoryModelFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVulkanMemoryModelFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVulkanMemoryModelFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVulkanMemoryModelFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceShaderAtomicInt64Features {
     type Type = PhysicalDeviceShaderAtomicInt64FeaturesBuilder;
     fn builder() -> Self::Type {
@@ -9352,6 +10227,10 @@ impl Deref for PhysicalDeviceShaderAtomicInt64FeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicInt64FeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicInt64FeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicInt64Features {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicInt64Features {}
 impl Builder<'_> for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {
     type Type = PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -9474,6 +10353,10 @@ impl Deref for PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -9519,6 +10402,12 @@ impl Deref for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
+impl QueueFamilyProperties2Next for vk::QueueFamilyCheckpointPropertiesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDepthStencilResolveProperties {}
 impl<'a> Builder<'a> for vk::SubpassDescriptionDepthStencilResolve {
     type Type = SubpassDescriptionDepthStencilResolveBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9561,6 +10450,8 @@ impl<'a> Deref for SubpassDescriptionDepthStencilResolveBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubpassDescription2Next for SubpassDescriptionDepthStencilResolveBuilder<'a> {}
+impl SubpassDescription2Next for vk::SubpassDescriptionDepthStencilResolve {}
 impl Builder<'_> for vk::ImageViewASTCDecodeModeEXT {
     type Type = ImageViewASTCDecodeModeEXTBuilder;
     fn builder() -> Self::Type {
@@ -9591,6 +10482,8 @@ impl Deref for ImageViewASTCDecodeModeEXTBuilder {
         &self.inner
     }
 }
+impl ImageViewCreateInfoNext for ImageViewASTCDecodeModeEXTBuilder {}
+impl ImageViewCreateInfoNext for vk::ImageViewASTCDecodeModeEXT {}
 impl Builder<'_> for vk::PhysicalDeviceASTCDecodeFeaturesEXT {
     type Type = PhysicalDeviceASTCDecodeFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -9625,6 +10518,10 @@ impl Deref for PhysicalDeviceASTCDecodeFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceASTCDecodeFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceASTCDecodeFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceASTCDecodeFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceASTCDecodeFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceTransformFeedbackFeaturesEXT {
     type Type = PhysicalDeviceTransformFeedbackFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -9659,6 +10556,11 @@ impl Deref for PhysicalDeviceTransformFeedbackFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTransformFeedbackFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTransformFeedbackFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTransformFeedbackFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTransformFeedbackFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTransformFeedbackPropertiesEXT {}
 impl Builder<'_> for vk::PipelineRasterizationStateStreamCreateInfoEXT {
     type Type = PipelineRasterizationStateStreamCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -9693,6 +10595,8 @@ impl Deref for PipelineRasterizationStateStreamCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationStateStreamCreateInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationStateStreamCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     type Type = PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9727,6 +10631,10 @@ impl Deref for PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
 impl Builder<'_> for vk::PipelineRepresentativeFragmentTestStateCreateInfoNV {
     type Type = PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -9761,6 +10669,8 @@ impl Deref for PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl GraphicsPipelineCreateInfoNext for PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineRepresentativeFragmentTestStateCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceExclusiveScissorFeaturesNV {
     type Type = PhysicalDeviceExclusiveScissorFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9791,6 +10701,10 @@ impl Deref for PhysicalDeviceExclusiveScissorFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExclusiveScissorFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExclusiveScissorFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExclusiveScissorFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExclusiveScissorFeaturesNV {}
 impl<'a> Builder<'a> for vk::PipelineViewportExclusiveScissorStateCreateInfoNV {
     type Type = PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9823,6 +10737,8 @@ impl<'a> Deref for PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> 
         &self.inner
     }
 }
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportExclusiveScissorStateCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceCornerSampledImageFeaturesNV {
     type Type = PhysicalDeviceCornerSampledImageFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9853,6 +10769,10 @@ impl Deref for PhysicalDeviceCornerSampledImageFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCornerSampledImageFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCornerSampledImageFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCornerSampledImageFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCornerSampledImageFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     type Type = PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9895,6 +10815,10 @@ impl Deref for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     type Type = PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9929,6 +10853,10 @@ impl Deref for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {
     type Type = PhysicalDeviceShaderImageFootprintFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9959,6 +10887,10 @@ impl Deref for PhysicalDeviceShaderImageFootprintFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderImageFootprintFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderImageFootprintFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     type Type = PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -9993,6 +10925,10 @@ impl Deref for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
 impl<'a> Builder<'a> for vk::ShadingRatePaletteNV {
     type Type = ShadingRatePaletteNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10058,6 +10994,8 @@ impl<'a> Deref for PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> 
         &self.inner
     }
 }
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportShadingRateImageStateCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceShadingRateImageFeaturesNV {
     type Type = PhysicalDeviceShadingRateImageFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -10096,6 +11034,11 @@ impl Deref for PhysicalDeviceShadingRateImageFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShadingRateImageFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShadingRateImageFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShadingRateImageFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShadingRateImageFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShadingRateImagePropertiesNV {}
 impl<'a> Builder<'a> for vk::CoarseSampleOrderCustomNV {
     type Type = CoarseSampleOrderCustomNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10164,6 +11107,8 @@ impl<'a> Deref for PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a>
         &self.inner
     }
 }
+impl<'a> PipelineViewportStateCreateInfoNext for PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportCoarseSampleOrderStateCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceMeshShaderFeaturesNV {
     type Type = PhysicalDeviceMeshShaderFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -10198,6 +11143,11 @@ impl Deref for PhysicalDeviceMeshShaderFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMeshShaderFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMeshShaderFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMeshShaderFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMeshShaderFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMeshShaderPropertiesNV {}
 impl Builder<'_> for vk::RayTracingShaderGroupCreateInfoNV {
     type Type = RayTracingShaderGroupCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -10300,12 +11250,19 @@ impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoNV {
         Default::default()
     }
 }
+pub trait RayTracingPipelineCreateInfoNVNext {}
 #[derive(Default)]
 pub struct RayTracingPipelineCreateInfoNVBuilder<'a> {
     inner: vk::RayTracingPipelineCreateInfoNV,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
+    pub fn insert_next<T: RayTracingPipelineCreateInfoNVNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10357,12 +11314,19 @@ impl<'a> Builder<'a> for vk::RayTracingPipelineCreateInfoKHR {
         Default::default()
     }
 }
+pub trait RayTracingPipelineCreateInfoKHRNext {}
 #[derive(Default)]
 pub struct RayTracingPipelineCreateInfoKHRBuilder<'a> {
     inner: vk::RayTracingPipelineCreateInfoKHR,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RayTracingPipelineCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: RayTracingPipelineCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -10727,6 +11691,8 @@ impl<'a> Deref for WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> WriteDescriptorSetNext for WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {}
+impl WriteDescriptorSetNext for vk::WriteDescriptorSetAccelerationStructureKHR {}
 impl<'a> Builder<'a> for vk::WriteDescriptorSetAccelerationStructureNV {
     type Type = WriteDescriptorSetAccelerationStructureNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10759,6 +11725,8 @@ impl<'a> Deref for WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> WriteDescriptorSetNext for WriteDescriptorSetAccelerationStructureNVBuilder<'a> {}
+impl WriteDescriptorSetNext for vk::WriteDescriptorSetAccelerationStructureNV {}
 impl Builder<'_> for vk::AccelerationStructureMemoryRequirementsInfoNV {
     type Type = AccelerationStructureMemoryRequirementsInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -10859,6 +11827,10 @@ impl Deref for PhysicalDeviceAccelerationStructureFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAccelerationStructureFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAccelerationStructureFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAccelerationStructureFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAccelerationStructureFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRayTracingPipelineFeaturesKHR {
     type Type = PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -10929,6 +11901,10 @@ impl Deref for PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingPipelineFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingPipelineFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRayQueryFeaturesKHR {
     type Type = PhysicalDeviceRayQueryFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -10959,6 +11935,14 @@ impl Deref for PhysicalDeviceRayQueryFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayQueryFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayQueryFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayQueryFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayQueryFeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceAccelerationStructurePropertiesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingPipelinePropertiesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingPropertiesNV {}
+impl FormatProperties2Next for vk::DrmFormatModifierPropertiesListEXT {}
 impl<'a> Builder<'a> for vk::PhysicalDeviceImageDrmFormatModifierInfoEXT {
     type Type = PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -10999,6 +11983,8 @@ impl<'a> Deref for PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PhysicalDeviceImageFormatInfo2Next for PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::PhysicalDeviceImageDrmFormatModifierInfoEXT {}
 impl<'a> Builder<'a> for vk::ImageDrmFormatModifierListCreateInfoEXT {
     type Type = ImageDrmFormatModifierListCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11031,6 +12017,8 @@ impl<'a> Deref for ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> ImageCreateInfoNext for ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {}
+impl ImageCreateInfoNext for vk::ImageDrmFormatModifierListCreateInfoEXT {}
 impl<'a> Builder<'a> for vk::ImageDrmFormatModifierExplicitCreateInfoEXT {
     type Type = ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11067,6 +12055,8 @@ impl<'a> Deref for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> ImageCreateInfoNext for ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {}
+impl ImageCreateInfoNext for vk::ImageDrmFormatModifierExplicitCreateInfoEXT {}
 impl Builder<'_> for vk::ImageStencilUsageCreateInfo {
     type Type = ImageStencilUsageCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -11097,6 +12087,10 @@ impl Deref for ImageStencilUsageCreateInfoBuilder {
         &self.inner
     }
 }
+impl ImageCreateInfoNext for ImageStencilUsageCreateInfoBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for ImageStencilUsageCreateInfoBuilder {}
+impl ImageCreateInfoNext for vk::ImageStencilUsageCreateInfo {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageStencilUsageCreateInfo {}
 impl Builder<'_> for vk::DeviceMemoryOverallocationCreateInfoAMD {
     type Type = DeviceMemoryOverallocationCreateInfoAMDBuilder;
     fn builder() -> Self::Type {
@@ -11127,6 +12121,8 @@ impl Deref for DeviceMemoryOverallocationCreateInfoAMDBuilder {
         &self.inner
     }
 }
+impl DeviceCreateInfoNext for DeviceMemoryOverallocationCreateInfoAMDBuilder {}
+impl DeviceCreateInfoNext for vk::DeviceMemoryOverallocationCreateInfoAMD {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMapFeaturesEXT {
     type Type = PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11176,6 +12172,10 @@ impl Deref for PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMapFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMapFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {
     type Type = PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11210,6 +12210,12 @@ impl Deref for PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMapPropertiesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
 impl Builder<'_> for vk::RenderPassFragmentDensityMapCreateInfoEXT {
     type Type = RenderPassFragmentDensityMapCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -11240,6 +12246,10 @@ impl Deref for RenderPassFragmentDensityMapCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl RenderPassCreateInfoNext for RenderPassFragmentDensityMapCreateInfoEXTBuilder {}
+impl RenderPassCreateInfo2Next for RenderPassFragmentDensityMapCreateInfoEXTBuilder {}
+impl RenderPassCreateInfoNext for vk::RenderPassFragmentDensityMapCreateInfoEXT {}
+impl RenderPassCreateInfo2Next for vk::RenderPassFragmentDensityMapCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceScalarBlockLayoutFeatures {
     type Type = PhysicalDeviceScalarBlockLayoutFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -11270,6 +12280,10 @@ impl Deref for PhysicalDeviceScalarBlockLayoutFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceScalarBlockLayoutFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceScalarBlockLayoutFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceScalarBlockLayoutFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceScalarBlockLayoutFeatures {}
 impl Builder<'_> for vk::SurfaceProtectedCapabilitiesKHR {
     type Type = SurfaceProtectedCapabilitiesKHRBuilder;
     fn builder() -> Self::Type {
@@ -11300,6 +12314,8 @@ impl Deref for SurfaceProtectedCapabilitiesKHRBuilder {
         &self.inner
     }
 }
+impl SurfaceCapabilities2KHRNext for SurfaceProtectedCapabilitiesKHRBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfaceProtectedCapabilitiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceUniformBufferStandardLayoutFeatures {
     type Type = PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -11334,6 +12350,10 @@ impl Deref for PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceUniformBufferStandardLayoutFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceUniformBufferStandardLayoutFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {
     type Type = PhysicalDeviceDepthClipEnableFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11364,6 +12384,10 @@ impl Deref for PhysicalDeviceDepthClipEnableFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClipEnableFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthClipEnableFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClipEnableFeaturesEXT {}
 impl Builder<'_> for vk::PipelineRasterizationDepthClipStateCreateInfoEXT {
     type Type = PipelineRasterizationDepthClipStateCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -11398,6 +12422,9 @@ impl Deref for PipelineRasterizationDepthClipStateCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationDepthClipStateCreateInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationDepthClipStateCreateInfoEXT {}
+impl PhysicalDeviceMemoryProperties2Next for vk::PhysicalDeviceMemoryBudgetPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {
     type Type = PhysicalDeviceMemoryPriorityFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11428,6 +12455,10 @@ impl Deref for PhysicalDeviceMemoryPriorityFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMemoryPriorityFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMemoryPriorityFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMemoryPriorityFeaturesEXT {}
 impl Builder<'_> for vk::MemoryPriorityAllocateInfoEXT {
     type Type = MemoryPriorityAllocateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -11458,6 +12489,8 @@ impl Deref for MemoryPriorityAllocateInfoEXTBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for MemoryPriorityAllocateInfoEXTBuilder {}
+impl MemoryAllocateInfoNext for vk::MemoryPriorityAllocateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceBufferDeviceAddressFeatures {
     type Type = PhysicalDeviceBufferDeviceAddressFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -11504,6 +12537,10 @@ impl Deref for PhysicalDeviceBufferDeviceAddressFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceBufferDeviceAddressFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceBufferDeviceAddressFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBufferDeviceAddressFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceBufferDeviceAddressFeatures {}
 impl Builder<'_> for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     type Type = PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11550,6 +12587,10 @@ impl Deref for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
 impl Builder<'_> for vk::BufferDeviceAddressInfo {
     type Type = BufferDeviceAddressInfoBuilder;
     fn builder() -> Self::Type {
@@ -11610,6 +12651,8 @@ impl Deref for BufferOpaqueCaptureAddressCreateInfoBuilder {
         &self.inner
     }
 }
+impl BufferCreateInfoNext for BufferOpaqueCaptureAddressCreateInfoBuilder {}
+impl BufferCreateInfoNext for vk::BufferOpaqueCaptureAddressCreateInfo {}
 impl Builder<'_> for vk::BufferDeviceAddressCreateInfoEXT {
     type Type = BufferDeviceAddressCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -11640,6 +12683,8 @@ impl Deref for BufferDeviceAddressCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl BufferCreateInfoNext for BufferDeviceAddressCreateInfoEXTBuilder {}
+impl BufferCreateInfoNext for vk::BufferDeviceAddressCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceImageViewImageFormatInfoEXT {
     type Type = PhysicalDeviceImageViewImageFormatInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -11670,6 +12715,9 @@ impl Deref for PhysicalDeviceImageViewImageFormatInfoEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceImageFormatInfo2Next for PhysicalDeviceImageViewImageFormatInfoEXTBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::PhysicalDeviceImageViewImageFormatInfoEXT {}
+impl ImageFormatProperties2Next for vk::FilterCubicImageViewImageFormatPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceImagelessFramebufferFeatures {
     type Type = PhysicalDeviceImagelessFramebufferFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -11700,6 +12748,10 @@ impl Deref for PhysicalDeviceImagelessFramebufferFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImagelessFramebufferFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImagelessFramebufferFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImagelessFramebufferFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImagelessFramebufferFeatures {}
 impl<'a> Builder<'a> for vk::FramebufferAttachmentsCreateInfo {
     type Type = FramebufferAttachmentsCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11735,6 +12787,8 @@ impl<'a> Deref for FramebufferAttachmentsCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> FramebufferCreateInfoNext for FramebufferAttachmentsCreateInfoBuilder<'a> {}
+impl FramebufferCreateInfoNext for vk::FramebufferAttachmentsCreateInfo {}
 impl<'a> Builder<'a> for vk::FramebufferAttachmentImageInfo {
     type Type = FramebufferAttachmentImageInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -11819,6 +12873,8 @@ impl<'a> Deref for RenderPassAttachmentBeginInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> RenderPassBeginInfoNext for RenderPassAttachmentBeginInfoBuilder<'a> {}
+impl RenderPassBeginInfoNext for vk::RenderPassAttachmentBeginInfo {}
 impl Builder<'_> for vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     type Type = PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11853,6 +12909,10 @@ impl Deref for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {
     type Type = PhysicalDeviceCooperativeMatrixFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -11891,6 +12951,11 @@ impl Deref for PhysicalDeviceCooperativeMatrixFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrixPropertiesNV {}
 impl Builder<'_> for vk::CooperativeMatrixPropertiesNV {
     type Type = CooperativeMatrixPropertiesNVBuilder;
     fn builder() -> Self::Type {
@@ -11979,6 +13044,10 @@ impl Deref for PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
 impl Builder<'_> for vk::ImageViewHandleInfoNVX {
     type Type = ImageViewHandleInfoNVXBuilder;
     fn builder() -> Self::Type {
@@ -12061,6 +13130,14 @@ impl Deref for PipelineCreationFeedbackCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl GraphicsPipelineCreateInfoNext for PipelineCreationFeedbackCreateInfoEXTBuilder {}
+impl ComputePipelineCreateInfoNext for PipelineCreationFeedbackCreateInfoEXTBuilder {}
+impl RayTracingPipelineCreateInfoNVNext for PipelineCreationFeedbackCreateInfoEXTBuilder {}
+impl RayTracingPipelineCreateInfoKHRNext for PipelineCreationFeedbackCreateInfoEXTBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineCreationFeedbackCreateInfoEXT {}
+impl ComputePipelineCreateInfoNext for vk::PipelineCreationFeedbackCreateInfoEXT {}
+impl RayTracingPipelineCreateInfoNVNext for vk::PipelineCreationFeedbackCreateInfoEXT {}
+impl RayTracingPipelineCreateInfoKHRNext for vk::PipelineCreationFeedbackCreateInfoEXT {}
 impl Builder<'_> for vk::SurfaceFullScreenExclusiveInfoEXT {
     type Type = SurfaceFullScreenExclusiveInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -12091,6 +13168,10 @@ impl Deref for SurfaceFullScreenExclusiveInfoEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceSurfaceInfo2KHRNext for SurfaceFullScreenExclusiveInfoEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for SurfaceFullScreenExclusiveInfoEXTBuilder {}
+impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfaceFullScreenExclusiveInfoEXT {}
+impl SwapchainCreateInfoKHRNext for vk::SurfaceFullScreenExclusiveInfoEXT {}
 impl Builder<'_> for vk::SurfaceFullScreenExclusiveWin32InfoEXT {
     type Type = SurfaceFullScreenExclusiveWin32InfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -12121,6 +13202,10 @@ impl Deref for SurfaceFullScreenExclusiveWin32InfoEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceSurfaceInfo2KHRNext for SurfaceFullScreenExclusiveWin32InfoEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for SurfaceFullScreenExclusiveWin32InfoEXTBuilder {}
+impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfaceFullScreenExclusiveWin32InfoEXT {}
+impl SwapchainCreateInfoKHRNext for vk::SurfaceFullScreenExclusiveWin32InfoEXT {}
 impl Builder<'_> for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {
     type Type = SurfaceCapabilitiesFullScreenExclusiveEXTBuilder;
     fn builder() -> Self::Type {
@@ -12155,6 +13240,8 @@ impl Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
         &self.inner
     }
 }
+impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {}
 impl Builder<'_> for vk::PhysicalDevicePerformanceQueryFeaturesKHR {
     type Type = PhysicalDevicePerformanceQueryFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -12197,6 +13284,11 @@ impl Deref for PhysicalDevicePerformanceQueryFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePerformanceQueryFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePerformanceQueryFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePerformanceQueryFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePerformanceQueryFeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePerformanceQueryPropertiesKHR {}
 impl<'a> Builder<'a> for vk::QueryPoolPerformanceCreateInfoKHR {
     type Type = QueryPoolPerformanceCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -12233,6 +13325,8 @@ impl<'a> Deref for QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> QueryPoolCreateInfoNext for QueryPoolPerformanceCreateInfoKHRBuilder<'a> {}
+impl QueryPoolCreateInfoNext for vk::QueryPoolPerformanceCreateInfoKHR {}
 impl Builder<'_> for vk::AcquireProfilingLockInfoKHR {
     type Type = AcquireProfilingLockInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -12297,6 +13391,8 @@ impl Deref for PerformanceQuerySubmitInfoKHRBuilder {
         &self.inner
     }
 }
+impl SubmitInfoNext for PerformanceQuerySubmitInfoKHRBuilder {}
+impl SubmitInfoNext for vk::PerformanceQuerySubmitInfoKHR {}
 impl Builder<'_> for vk::HeadlessSurfaceCreateInfoEXT {
     type Type = HeadlessSurfaceCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -12357,6 +13453,10 @@ impl Deref for PhysicalDeviceCoverageReductionModeFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCoverageReductionModeFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCoverageReductionModeFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCoverageReductionModeFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCoverageReductionModeFeaturesNV {}
 impl Builder<'_> for vk::PipelineCoverageReductionStateCreateInfoNV {
     type Type = PipelineCoverageReductionStateCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -12391,6 +13491,8 @@ impl Deref for PipelineCoverageReductionStateCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl PipelineMultisampleStateCreateInfoNext for PipelineCoverageReductionStateCreateInfoNVBuilder {}
+impl PipelineMultisampleStateCreateInfoNext for vk::PipelineCoverageReductionStateCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     type Type = PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder;
     fn builder() -> Self::Type {
@@ -12421,6 +13523,10 @@ impl Deref for PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
 impl Builder<'_> for vk::InitializePerformanceApiInfoINTEL {
     type Type = InitializePerformanceApiInfoINTELBuilder;
     fn builder() -> Self::Type {
@@ -12484,6 +13590,8 @@ impl Deref for QueryPoolPerformanceQueryCreateInfoINTELBuilder {
         &self.inner
     }
 }
+impl QueryPoolCreateInfoNext for QueryPoolPerformanceQueryCreateInfoINTELBuilder {}
+impl QueryPoolCreateInfoNext for vk::QueryPoolPerformanceQueryCreateInfoINTEL {}
 impl Builder<'_> for vk::PerformanceMarkerInfoINTEL {
     type Type = PerformanceMarkerInfoINTELBuilder;
     fn builder() -> Self::Type {
@@ -12646,6 +13754,10 @@ impl Deref for PhysicalDeviceShaderClockFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderClockFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderClockFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderClockFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderClockFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceIndexTypeUint8FeaturesEXT {
     type Type = PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -12676,6 +13788,11 @@ impl Deref for PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceIndexTypeUint8FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceIndexTypeUint8FeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV {}
 impl Builder<'_> for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     type Type = PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -12706,6 +13823,10 @@ impl Deref for PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     type Type = PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -12756,6 +13877,10 @@ impl Deref for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
     type Type = PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -12790,6 +13915,10 @@ impl Deref for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
 impl Builder<'_> for vk::AttachmentReferenceStencilLayout {
     type Type = AttachmentReferenceStencilLayoutBuilder;
     fn builder() -> Self::Type {
@@ -12820,6 +13949,8 @@ impl Deref for AttachmentReferenceStencilLayoutBuilder {
         &self.inner
     }
 }
+impl AttachmentReference2Next for AttachmentReferenceStencilLayoutBuilder {}
+impl AttachmentReference2Next for vk::AttachmentReferenceStencilLayout {}
 impl Builder<'_> for vk::AttachmentDescriptionStencilLayout {
     type Type = AttachmentDescriptionStencilLayoutBuilder;
     fn builder() -> Self::Type {
@@ -12854,6 +13985,8 @@ impl Deref for AttachmentDescriptionStencilLayoutBuilder {
         &self.inner
     }
 }
+impl AttachmentDescription2Next for AttachmentDescriptionStencilLayoutBuilder {}
+impl AttachmentDescription2Next for vk::AttachmentDescriptionStencilLayout {}
 impl Builder<'_> for vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     type Type = PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -12884,6 +14017,10 @@ impl Deref for PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
 impl Builder<'_> for vk::PipelineInfoKHR {
     type Type = PipelineInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -12982,6 +14119,10 @@ impl Deref for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     type Type = PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -13012,6 +14153,11 @@ impl Deref for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceTexelBufferAlignmentPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT {
     type Type = PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -13046,6 +14192,12 @@ impl Deref for PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSubgroupSizeControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT {}
+impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {}
 impl Builder<'_> for vk::MemoryOpaqueCaptureAddressAllocateInfo {
     type Type = MemoryOpaqueCaptureAddressAllocateInfoBuilder;
     fn builder() -> Self::Type {
@@ -13076,6 +14228,8 @@ impl Deref for MemoryOpaqueCaptureAddressAllocateInfoBuilder {
         &self.inner
     }
 }
+impl MemoryAllocateInfoNext for MemoryOpaqueCaptureAddressAllocateInfoBuilder {}
+impl MemoryAllocateInfoNext for vk::MemoryOpaqueCaptureAddressAllocateInfo {}
 impl Builder<'_> for vk::DeviceMemoryOpaqueCaptureAddressInfo {
     type Type = DeviceMemoryOpaqueCaptureAddressInfoBuilder;
     fn builder() -> Self::Type {
@@ -13160,6 +14314,11 @@ impl Deref for PhysicalDeviceLineRasterizationFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceLineRasterizationFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceLineRasterizationFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLineRasterizationFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceLineRasterizationFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLineRasterizationPropertiesEXT {}
 impl Builder<'_> for vk::PipelineRasterizationLineStateCreateInfoEXT {
     type Type = PipelineRasterizationLineStateCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -13202,6 +14361,8 @@ impl Deref for PipelineRasterizationLineStateCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationLineStateCreateInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationLineStateCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
     type Type = PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -13236,6 +14397,10 @@ impl Deref for PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineCreationCacheControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineCreationCacheControlFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVulkan11Features {
     type Type = PhysicalDeviceVulkan11FeaturesBuilder;
     fn builder() -> Self::Type {
@@ -13326,6 +14491,11 @@ impl Deref for PhysicalDeviceVulkan11FeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVulkan11FeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVulkan11FeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVulkan11Features {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVulkan11Features {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceVulkan11Properties {}
 impl Builder<'_> for vk::PhysicalDeviceVulkan12Features {
     type Type = PhysicalDeviceVulkan12FeaturesBuilder;
     fn builder() -> Self::Type {
@@ -13745,6 +14915,11 @@ impl Deref for PhysicalDeviceVulkan12FeaturesBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVulkan12FeaturesBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVulkan12FeaturesBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVulkan12Features {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVulkan12Features {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceVulkan12Properties {}
 impl Builder<'_> for vk::PipelineCompilerControlCreateInfoAMD {
     type Type = PipelineCompilerControlCreateInfoAMDBuilder;
     fn builder() -> Self::Type {
@@ -13775,6 +14950,10 @@ impl Deref for PipelineCompilerControlCreateInfoAMDBuilder {
         &self.inner
     }
 }
+impl GraphicsPipelineCreateInfoNext for PipelineCompilerControlCreateInfoAMDBuilder {}
+impl ComputePipelineCreateInfoNext for PipelineCompilerControlCreateInfoAMDBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineCompilerControlCreateInfoAMD {}
+impl ComputePipelineCreateInfoNext for vk::PipelineCompilerControlCreateInfoAMD {}
 impl Builder<'_> for vk::PhysicalDeviceCoherentMemoryFeaturesAMD {
     type Type = PhysicalDeviceCoherentMemoryFeaturesAMDBuilder;
     fn builder() -> Self::Type {
@@ -13805,6 +14984,10 @@ impl Deref for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCoherentMemoryFeaturesAMD {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCoherentMemoryFeaturesAMD {}
 impl Builder<'_> for vk::SamplerCustomBorderColorCreateInfoEXT {
     type Type = SamplerCustomBorderColorCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -13839,6 +15022,9 @@ impl Deref for SamplerCustomBorderColorCreateInfoEXTBuilder {
         &self.inner
     }
 }
+impl SamplerCreateInfoNext for SamplerCustomBorderColorCreateInfoEXTBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerCustomBorderColorCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCustomBorderColorPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {
     type Type = PhysicalDeviceCustomBorderColorFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -13877,6 +15063,10 @@ impl Deref for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
 impl Builder<'_> for vk::AccelerationStructureGeometryTrianglesDataKHR {
     type Type = AccelerationStructureGeometryTrianglesDataKHRBuilder;
     fn builder() -> Self::Type {
@@ -14424,6 +15614,10 @@ impl Deref for PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
 impl Builder<'_> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder;
     fn builder() -> Self::Type {
@@ -14454,6 +15648,8 @@ impl Deref for RenderPassTransformBeginInfoQCOMBuilder {
         &self.inner
     }
 }
+impl RenderPassBeginInfoNext for RenderPassTransformBeginInfoQCOMBuilder {}
+impl RenderPassBeginInfoNext for vk::RenderPassTransformBeginInfoQCOM {}
 impl Builder<'_> for vk::CopyCommandTransformInfoQCOM {
     type Type = CopyCommandTransformInfoQCOMBuilder;
     fn builder() -> Self::Type {
@@ -14484,6 +15680,10 @@ impl Deref for CopyCommandTransformInfoQCOMBuilder {
         &self.inner
     }
 }
+impl BufferImageCopy2KHRNext for CopyCommandTransformInfoQCOMBuilder {}
+impl ImageBlit2KHRNext for CopyCommandTransformInfoQCOMBuilder {}
+impl BufferImageCopy2KHRNext for vk::CopyCommandTransformInfoQCOM {}
+impl ImageBlit2KHRNext for vk::CopyCommandTransformInfoQCOM {}
 impl Builder<'_> for vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {
     type Type = CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder;
     fn builder() -> Self::Type {
@@ -14518,6 +15718,8 @@ impl Deref for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {
         &self.inner
     }
 }
+impl CommandBufferInheritanceInfoNext for CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {}
+impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceRenderPassTransformInfoQCOM {}
 impl Builder<'_> for vk::PhysicalDeviceDiagnosticsConfigFeaturesNV {
     type Type = PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -14548,6 +15750,10 @@ impl Deref for PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDiagnosticsConfigFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDiagnosticsConfigFeaturesNV {}
 impl Builder<'_> for vk::DeviceDiagnosticsConfigCreateInfoNV {
     type Type = DeviceDiagnosticsConfigCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -14578,6 +15784,8 @@ impl Deref for DeviceDiagnosticsConfigCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl DeviceCreateInfoNext for DeviceDiagnosticsConfigCreateInfoNVBuilder {}
+impl DeviceCreateInfoNext for vk::DeviceDiagnosticsConfigCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceRobustness2FeaturesEXT {
     type Type = PhysicalDeviceRobustness2FeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -14616,6 +15824,11 @@ impl Deref for PhysicalDeviceRobustness2FeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRobustness2FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRobustness2FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRobustness2FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRobustness2FeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRobustness2PropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceImageRobustnessFeaturesEXT {
     type Type = PhysicalDeviceImageRobustnessFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -14646,6 +15859,10 @@ impl Deref for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageRobustnessFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageRobustnessFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {
     type Type = PhysicalDevicePortabilitySubsetFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -14755,6 +15972,10 @@ impl Deref for PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetPropertiesKHR {
     type Type = PhysicalDevicePortabilitySubsetPropertiesKHRBuilder;
     fn builder() -> Self::Type {
@@ -14785,6 +16006,8 @@ impl Deref for PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePortabilitySubsetPropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDevice4444FormatsFeaturesEXT {
     type Type = PhysicalDevice4444FormatsFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -14819,6 +16042,10 @@ impl Deref for PhysicalDevice4444FormatsFeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDevice4444FormatsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevice4444FormatsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevice4444FormatsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevice4444FormatsFeaturesEXT {}
 impl Builder<'_> for vk::BufferCopy2KHR {
     type Type = BufferCopy2KHRBuilder;
     fn builder() -> Self::Type {
@@ -14903,17 +16130,25 @@ impl Deref for ImageCopy2KHRBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::ImageBlit2KHR {
-    type Type = ImageBlit2KHRBuilder;
+impl<'a> Builder<'a> for vk::ImageBlit2KHR {
+    type Type = ImageBlit2KHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait ImageBlit2KHRNext {}
 #[derive(Default)]
-pub struct ImageBlit2KHRBuilder {
+pub struct ImageBlit2KHRBuilder<'a> {
     inner: vk::ImageBlit2KHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl ImageBlit2KHRBuilder {
+impl<'a> ImageBlit2KHRBuilder<'a> {
+    pub fn insert_next<T: ImageBlit2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -14931,23 +16166,31 @@ impl ImageBlit2KHRBuilder {
         self
     }
 }
-impl Deref for ImageBlit2KHRBuilder {
+impl<'a> Deref for ImageBlit2KHRBuilder<'a> {
     type Target = vk::ImageBlit2KHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BufferImageCopy2KHR {
-    type Type = BufferImageCopy2KHRBuilder;
+impl<'a> Builder<'a> for vk::BufferImageCopy2KHR {
+    type Type = BufferImageCopy2KHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BufferImageCopy2KHRNext {}
 #[derive(Default)]
-pub struct BufferImageCopy2KHRBuilder {
+pub struct BufferImageCopy2KHRBuilder<'a> {
     inner: vk::BufferImageCopy2KHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BufferImageCopy2KHRBuilder {
+impl<'a> BufferImageCopy2KHRBuilder<'a> {
+    pub fn insert_next<T: BufferImageCopy2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -14981,7 +16224,7 @@ impl BufferImageCopy2KHRBuilder {
         self
     }
 }
-impl Deref for BufferImageCopy2KHRBuilder {
+impl<'a> Deref for BufferImageCopy2KHRBuilder<'a> {
     type Target = vk::BufferImageCopy2KHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -15351,6 +16594,10 @@ impl Deref for PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
 impl<'a> Builder<'a> for vk::FragmentShadingRateAttachmentInfoKHR {
     type Type = FragmentShadingRateAttachmentInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -15389,6 +16636,8 @@ impl<'a> Deref for FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> SubpassDescription2Next for FragmentShadingRateAttachmentInfoKHRBuilder<'a> {}
+impl SubpassDescription2Next for vk::FragmentShadingRateAttachmentInfoKHR {}
 impl Builder<'_> for vk::PipelineFragmentShadingRateStateCreateInfoKHR {
     type Type = PipelineFragmentShadingRateStateCreateInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -15419,6 +16668,8 @@ impl Deref for PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
         &self.inner
     }
 }
+impl GraphicsPipelineCreateInfoNext for PipelineFragmentShadingRateStateCreateInfoKHRBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineFragmentShadingRateStateCreateInfoKHR {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateFeaturesKHR {
     type Type = PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -15469,6 +16720,11 @@ impl Deref for PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShadingRateFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShadingRateFeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentShadingRatePropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
     type Type = PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -15503,6 +16759,10 @@ impl Deref for PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderTerminateInvocationFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderTerminateInvocationFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
     type Type = PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -15553,6 +16813,10 @@ impl Deref for PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
     type Type = PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder;
     fn builder() -> Self::Type {
@@ -15586,6 +16850,8 @@ impl Deref for PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {}
 impl Builder<'_> for vk::PipelineFragmentShadingRateEnumStateCreateInfoNV {
     type Type = PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -15620,6 +16886,8 @@ impl Deref for PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
         &self.inner
     }
 }
+impl GraphicsPipelineCreateInfoNext for PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineFragmentShadingRateEnumStateCreateInfoNV {}
 impl Builder<'_> for vk::AccelerationStructureBuildSizesInfoKHR {
     type Type = AccelerationStructureBuildSizesInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -15688,6 +16956,10 @@ impl Deref for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
 impl<'a> Builder<'a> for vk::MutableDescriptorTypeListVALVE {
     type Type = MutableDescriptorTypeListVALVEBuilder<'a>;
     fn builder() -> Self::Type {
@@ -15749,3 +17021,7 @@ impl<'a> Deref for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
+impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
+impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
+impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}

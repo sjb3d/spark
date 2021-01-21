@@ -1547,7 +1547,7 @@ impl<'a> Generator<'a> {
     fn write_builder_structs(&self, w: &mut impl IoWrite) -> WriteResult {
         for ty in self
             .get_type_iterator()
-            .filter(|ty| ty.category.as_ref_str() == Some("struct") && ty.alias.is_none() && ty.returnedonly.is_none())
+            .filter(|ty| ty.category.as_ref_str() == Some("struct") && ty.alias.is_none())
             .filter(|ty| !self.type_name_blacklist.contains(ty.get_type_name()))
         {
             if let vk::TypeSpec::Members(ref members) = ty.spec {
@@ -1686,14 +1686,21 @@ impl<'a> Generator<'a> {
                         continue;
                     }
                 }
-                let needs_lifetime = params.iter().any(|rparam| {
-                    matches!(rparam.ty,
+                let is_extended = self
+                    .get_type_iterator()
+                    .filter_map(|ty| ty.structextends.as_ref_str())
+                    .flat_map(|s| s.split(','))
+                    .any(|s| s == type_name);
+                let needs_lifetime = is_extended
+                    || params.iter().any(|rparam| {
+                        matches!(rparam.ty,
                     LibParamType::CStr { .. }
                     | LibParamType::SliceLenShared { .. }
                     | LibParamType::SliceLenSingle { .. }
                     | LibParamType::Ref { .. })
-                });
-                if decls.iter().any(|decl| decl.ty.decoration != CDecoration::None) {
+                    });
+                let needs_setters = ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
+                if is_extended || needs_setters {
                     let generics_decl = if needs_lifetime { "<'a>" } else { "" };
 
                     // implement trait on vk type
@@ -1706,6 +1713,11 @@ impl<'a> Generator<'a> {
                         agg_name,
                         if needs_lifetime { "a" } else { "_" }
                     )?;
+
+                    // declare extension trait if used
+                    if is_extended {
+                        writeln!(w, "pub trait {}Next {{ }}", agg_name)?;
+                    }
 
                     // declare builder in lib
                     writeln!(w, "#[derive(Default)]")?;
@@ -1722,159 +1734,170 @@ impl<'a> Generator<'a> {
 
                     // setters
                     writeln!(w, "impl{0} {1}Builder{0} {{", generics_decl, agg_name)?;
-                    for (cparam, rparam) in decls.iter().zip(params.iter()) {
-                        match rparam.ty {
-                            LibParamType::CDecl => {
-                                if cparam.ty.array_size.is_none() {
+                    if is_extended {
+                        writeln!(
+                            w,
+                            "pub fn insert_next<T: {}Next>(mut self, next: &'a mut T) -> Self {{",
+                            agg_name
+                        )?;
+                        writeln!(w, "unsafe {{ insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _); }}")?;
+                        writeln!(w, "self }}")?;
+                    }
+                    if needs_setters {
+                        for (cparam, rparam) in decls.iter().zip(params.iter()) {
+                            match rparam.ty {
+                                LibParamType::CDecl => {
+                                    if cparam.ty.array_size.is_none() {
+                                        writeln!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: {1}) -> Self {{\
+                                            self.inner.{0} = {0}; self }}",
+                                            rparam.name,
+                                            self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
+                                        )?;
+                                    }
+                                }
+                                LibParamType::Bool => {
+                                    writeln!(
+                                        w,
+                                        "pub fn {0}(mut self, {0}: bool) -> Self {{\
+                                        self.inner.{0} = if {0} {{ vk::TRUE }} else {{ vk::FALSE }}; self }}",
+                                        rparam.name
+                                    )?;
+                                }
+                                LibParamType::CStr { is_optional } => {
+                                    if is_optional {
+                                        writeln!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: Option<&'a CStr>) -> Self {{\
+                                            self.inner.{0} = {0}.map_or(ptr::null(), |s| s.as_ptr()); self }}",
+                                            rparam.name
+                                        )?;
+                                    } else {
+                                        writeln!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: &'a CStr) -> Self {{\
+                                            self.inner.{0} = {0}.as_ptr(); self }}",
+                                            rparam.name
+                                        )?;
+                                    }
+                                }
+                                LibParamType::NonOptional { ref inner_type_name } => {
                                     writeln!(
                                         w,
                                         "pub fn {0}(mut self, {0}: {1}) -> Self {{\
-                                         self.inner.{0} = {0}; self }}",
-                                        rparam.name,
-                                        self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
+                                        self.inner.{0} = Some({0}); self }}",
+                                        rparam.name, inner_type_name,
                                     )?;
                                 }
-                            }
-                            LibParamType::Bool => {
-                                writeln!(
-                                    w,
-                                    "pub fn {0}(mut self, {0}: bool) -> Self {{\
-                                     self.inner.{0} = if {0} {{ vk::TRUE }} else {{ vk::FALSE }}; self }}",
-                                    rparam.name
-                                )?;
-                            }
-                            LibParamType::CStr { is_optional } => {
-                                if is_optional {
-                                    writeln!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: Option<&'a CStr>) -> Self {{\
-                                         self.inner.{0} = {0}.map_or(ptr::null(), |s| s.as_ptr()); self }}",
-                                        rparam.name
-                                    )?;
-                                } else {
-                                    writeln!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: &'a CStr) -> Self {{\
-                                         self.inner.{0} = {0}.as_ptr(); self }}",
-                                        rparam.name
-                                    )?;
-                                }
-                            }
-                            LibParamType::NonOptional { ref inner_type_name } => {
-                                writeln!(
-                                    w,
-                                    "pub fn {0}(mut self, {0}: {1}) -> Self {{\
-                                     self.inner.{0} = Some({0}); self }}",
-                                    rparam.name, inner_type_name,
-                                )?;
-                            }
-                            LibParamType::Slice { .. } => {}
-                            LibParamType::SliceLenShared { ref slice_infos, .. } => {
-                                let len_type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
-                                let any_generic = slice_infos.iter().any(SliceInfo::is_generic);
-                                write!(w, "pub fn {}", slice_infos[0].name)?;
-                                if any_generic {
-                                    write!(w, "<T>")?;
-                                }
-                                write!(w, "(mut self ")?;
-                                let has_multiple_slices = slice_infos.len() > 1;
-                                for slice_info in slice_infos {
-                                    let type_name = slice_info.get_type_name();
-                                    if slice_info.is_optional && has_multiple_slices {
-                                        write!(w, ", {}: Option<&'a [{}]>", slice_info.name, type_name)?;
-                                    } else {
-                                        write!(w, ", {}: &'a [{}]", slice_info.name, type_name)?;
+                                LibParamType::Slice { .. } => {}
+                                LibParamType::SliceLenShared { ref slice_infos, .. } => {
+                                    let len_type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
+                                    let any_generic = slice_infos.iter().any(SliceInfo::is_generic);
+                                    write!(w, "pub fn {}", slice_infos[0].name)?;
+                                    if any_generic {
+                                        write!(w, "<T>")?;
                                     }
-                                }
-                                writeln!(w, ") -> Self {{")?;
-                                writeln!(
-                                    w,
-                                    "self.inner.{} = {} as {};",
-                                    rparam.name,
-                                    slice_infos[0].get_len(),
-                                    len_type_name
-                                )?;
-                                for slice_info in slice_infos.iter().skip(1) {
-                                    if slice_info.is_optional && has_multiple_slices {
+                                    write!(w, "(mut self ")?;
+                                    let has_multiple_slices = slice_infos.len() > 1;
+                                    for slice_info in slice_infos {
+                                        let type_name = slice_info.get_type_name();
+                                        if slice_info.is_optional && has_multiple_slices {
+                                            write!(w, ", {}: Option<&'a [{}]>", slice_info.name, type_name)?;
+                                        } else {
+                                            write!(w, ", {}: &'a [{}]", slice_info.name, type_name)?;
+                                        }
+                                    }
+                                    writeln!(w, ") -> Self {{")?;
+                                    writeln!(
+                                        w,
+                                        "self.inner.{} = {} as {};",
+                                        rparam.name,
+                                        slice_infos[0].get_len(),
+                                        len_type_name
+                                    )?;
+                                    for slice_info in slice_infos.iter().skip(1) {
+                                        if slice_info.is_optional && has_multiple_slices {
+                                            writeln!(
+                                                w,
+                                                "if let Some(s) = {} {{ assert_eq!(self.inner.{}, {} as {}); }}",
+                                                slice_info.name,
+                                                rparam.name,
+                                                slice_len("s", &slice_info.type_name),
+                                                len_type_name
+                                            )?;
+                                        } else {
+                                            writeln!(
+                                                w,
+                                                "assert_eq!(self.inner.{}, {} as {});",
+                                                rparam.name,
+                                                slice_info.get_len(),
+                                                len_type_name
+                                            )?;
+                                        }
+                                    }
+                                    for slice_info in slice_infos {
                                         writeln!(
                                             w,
-                                            "if let Some(s) = {} {{ assert_eq!(self.inner.{}, {} as {}); }}",
+                                            "self.inner.{} = {};",
                                             slice_info.name,
+                                            slice_info.get_as_ptr(slice_info.is_optional && has_multiple_slices)
+                                        )?;
+                                    }
+                                    writeln!(w, "self }}",)?;
+                                }
+                                LibParamType::SliceLenSingle { ref slice_infos } => {
+                                    let len_type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
+                                    if slice_infos.iter().all(|s| s.is_optional) {
+                                        writeln!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: {1}) -> Self {{\
+                                            self.inner.{0} = {0}; self }}",
                                             rparam.name,
-                                            slice_len("s", &slice_info.type_name),
-                                            len_type_name
+                                            self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
+                                        )?;
+                                    }
+                                    for slice_info in slice_infos {
+                                        assert!(!slice_info.is_generic()); // TODO
+                                        write!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: &'a [{1}]) -> Self {{",
+                                            slice_info.name, slice_info.type_name
+                                        )?;
+                                        write!(
+                                            w,
+                                            "self.inner.{} = {}.len() as {};",
+                                            rparam.name, slice_info.name, len_type_name
+                                        )?;
+                                        writeln!(
+                                            w,
+                                            "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}",
+                                            slice_info.name
+                                        )?;
+                                    }
+                                }
+                                LibParamType::Ref {
+                                    ref inner_type_name,
+                                    is_optional,
+                                } => {
+                                    if is_optional {
+                                        writeln!(
+                                            w,
+                                            "pub fn {0}(mut self, {0}: Option<&'a {1}>) -> Self {{\
+                                            self.inner.{0} = {0}.map_or(ptr::null(), |p| p); self }}",
+                                            rparam.name, inner_type_name,
                                         )?;
                                     } else {
                                         writeln!(
                                             w,
-                                            "assert_eq!(self.inner.{}, {} as {});",
-                                            rparam.name,
-                                            slice_info.get_len(),
-                                            len_type_name
+                                            "pub fn {0}(mut self, {0}: &'a {1}) -> Self {{\
+                                            self.inner.{0} = {0}; self }}",
+                                            rparam.name, inner_type_name,
                                         )?;
                                     }
                                 }
-                                for slice_info in slice_infos {
-                                    writeln!(
-                                        w,
-                                        "self.inner.{} = {};",
-                                        slice_info.name,
-                                        slice_info.get_as_ptr(slice_info.is_optional && has_multiple_slices)
-                                    )?;
-                                }
-                                writeln!(w, "self }}",)?;
+                                _ => panic!("unhandled struct member {:?}", rparam),
                             }
-                            LibParamType::SliceLenSingle { ref slice_infos } => {
-                                let len_type_name = self.get_rust_parameter_type(&cparam.ty, Some("vk::"));
-                                if slice_infos.iter().all(|s| s.is_optional) {
-                                    writeln!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: {1}) -> Self {{\
-                                         self.inner.{0} = {0}; self }}",
-                                        rparam.name,
-                                        self.get_rust_parameter_type(&cparam.ty, Some("vk::"))
-                                    )?;
-                                }
-                                for slice_info in slice_infos {
-                                    assert!(!slice_info.is_generic()); // TODO
-                                    write!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: &'a [{1}]) -> Self {{",
-                                        slice_info.name, slice_info.type_name
-                                    )?;
-                                    write!(
-                                        w,
-                                        "self.inner.{} = {}.len() as {};",
-                                        rparam.name, slice_info.name, len_type_name
-                                    )?;
-                                    writeln!(
-                                        w,
-                                        "self.inner.{0} = {0}.first().map_or(ptr::null(), |s| s as *const _); self }}",
-                                        slice_info.name
-                                    )?;
-                                }
-                            }
-                            LibParamType::Ref {
-                                ref inner_type_name,
-                                is_optional,
-                            } => {
-                                if is_optional {
-                                    writeln!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: Option<&'a {1}>) -> Self {{\
-                                         self.inner.{0} = {0}.map_or(ptr::null(), |p| p); self }}",
-                                        rparam.name, inner_type_name,
-                                    )?;
-                                } else {
-                                    writeln!(
-                                        w,
-                                        "pub fn {0}(mut self, {0}: &'a {1}) -> Self {{\
-                                         self.inner.{0} = {0}; self }}",
-                                        rparam.name, inner_type_name,
-                                    )?;
-                                }
-                            }
-                            _ => panic!("unhandled struct member {:?}", rparam),
                         }
                     }
                     writeln!(w, "}}")?;
@@ -1887,6 +1910,37 @@ impl<'a> Generator<'a> {
                          fn deref(&self) -> &Self::Target {{ &self.inner }} }}",
                         generics_decl, agg_name
                     )?;
+
+                    // implement next marker traits for builder
+                    if let Some(structextends) = ty.structextends.as_ref_str() {
+                        for base_type_name in structextends
+                            .split(',')
+                            .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
+                        {
+                            writeln!(
+                                w,
+                                "impl{} {}Next for {}Builder{0} {{ }}",
+                                generics_decl,
+                                base_type_name.skip_prefix("Vk"),
+                                agg_name
+                            )?;
+                        }
+                    }
+                }
+
+                // implement next marker traits for base type
+                if let Some(structextends) = ty.structextends.as_ref_str() {
+                    for base_type_name in structextends
+                        .split(',')
+                        .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
+                    {
+                        writeln!(
+                            w,
+                            "impl {}Next for vk::{} {{ }}",
+                            base_type_name.skip_prefix("Vk"),
+                            agg_name
+                        )?;
+                    }
                 }
             } else {
                 panic!("missing type members for {:?}", ty);
