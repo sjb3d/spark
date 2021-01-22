@@ -14,7 +14,41 @@ Since `ash` widely used, I'll just list the ways this library currently differs 
 
 To simplify the handling of extensions and core Vulkan versions, the library manages all Vulkan function pointers directly on the `Instance` or `Device`.  When the `Instance` or `Device` is created, the core version and list of extensions is checked, and all Vulkan commands are loaded that are enabled for that combination.  This handles complex cases such as commands that are loaded only when a combination of extensions are present.
 
-The structs `InstanceExtensions` and `DeviceExtensions` can be used to simplify code that loads extensions, providing helper functions to load extensions and dependencies, but also to skip loading extensions that have been promoted to the target core version of Vulkan.
+The structs `InstanceExtensions` and `DeviceExtensions` can be used to simplify code that loads extensions, providing helper functions to check if a particular extension is supported either directly or via promotion.
+
+```rust
+// parse physical device extension properties into DeviceExtensions
+let available_extensions = {
+    let extension_properties =
+        unsafe { instance.enumerate_device_extension_properties_to_vec(physical_device, None) }.unwrap();
+    DeviceExtensions::from_properties(core_version, &extension_properties)
+};
+
+// check availability
+if available_extensions.supports_khr_draw_indirect_count() {
+    println!("VK_KHR_draw_indirect_count is present OR core_version >= 1.2");
+}
+```
+
+The structs also provide functions to enable extensions and dependencies that are not already satisified by the given core version of Vulkan.
+
+```rust
+let mut extensions = DeviceExtensions::new(core_version);
+
+// enables VK_KHR_draw_indirect_count (unless core_version >= 1.2)
+extensions.enable_khr_draw_indirect_count();
+
+// enables all the following:
+//  VK_KHR_acceleration_structure
+//  VK_EXT_descriptor_indexing (unless core_version >= 1.2)
+//  VK_KHR_maintenance3 (unless core_version >= 1.1)
+//  VK_EXT_buffer_device_address (unless core_version >= 1.2)
+//  VK_KHR_deferred_host_operations
+extensions.enable_khr_acceleration_structure();
+
+// for passing to device creation
+let extension_names = extensions.to_name_vec();
+```
 
 An instance of these structs is available on `Instance` or `Device` to query which extensions were loaded when it was created.
 
