@@ -30,7 +30,7 @@ if available_extensions.supports_khr_draw_indirect_count() {
 }
 ```
 
-The structs also provide functions to enable extensions and dependencies that are not already satisified by the given core version of Vulkan.
+The structs also provide functions to enable extensions and dependencies that are not already promoted to the given core version of Vulkan.
 
 ```rust
 let mut extensions = DeviceExtensions::new(core_version);
