@@ -66,16 +66,25 @@ const PFN_PREFIX: &str = "PFN_vk";
 const CONST_PREFIX: &str = "VK_";
 
 trait SkipPrefix {
-    fn skip_prefix(&self, prefix: &str) -> &str;
+    fn skip_prefix(self, prefix: &str) -> Self;
 }
 
-impl SkipPrefix for str {
-    fn skip_prefix(&self, prefix: &str) -> &str {
+impl SkipPrefix for &str {
+    fn skip_prefix(self, prefix: &str) -> Self {
         let len = prefix.len();
         if &self[0..len] != prefix {
             panic!("cannot remove prefix {} from {}", prefix, self);
         }
         &self[len..]
+    }
+}
+
+impl SkipPrefix for CArraySize<'_> {
+    fn skip_prefix(self, prefix: &str) -> Self {
+        match self {
+            CArraySize::Ident(s) => CArraySize::Ident(s.skip_prefix(prefix)),
+            CArraySize::Literal(n) => CArraySize::Literal(n),
+        }
     }
 }
 
@@ -1285,11 +1294,8 @@ impl<'a> Generator<'a> {
             self.get_rust_type_name(&ty.name, ty.decoration == CDecoration::None, vk_prefix)
         )
         .unwrap();
-        if let Some(mut array_size) = ty.array_size {
-            if array_size.starts_with(CONST_PREFIX) {
-                array_size = &array_size[3..];
-            }
-            write!(&mut s, "; {}]", array_size).unwrap();
+        if let Some(array_size) = ty.array_size {
+            write!(&mut s, "; {}]", array_size.skip_prefix(CONST_PREFIX)).unwrap();
         }
         s
     }
@@ -1417,11 +1423,8 @@ impl<'a> Generator<'a> {
                             };
 
                             // write single or array
-                            if let Some(mut array_size) = decl.ty.array_size {
-                                if array_size.starts_with(CONST_PREFIX) {
-                                    array_size = &array_size[3..];
-                                }
-                                writeln!(w, "[{}; {}],", element_value, array_size)?;
+                            if let Some(array_size) = decl.ty.array_size {
+                                writeln!(w, "[{}; {}],", element_value, array_size.skip_prefix(CONST_PREFIX))?;
                             } else {
                                 writeln!(w, "{},", element_value)?;
                             }

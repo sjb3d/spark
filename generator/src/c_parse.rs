@@ -4,11 +4,12 @@ use nom::{
     character::complete::{char, digit1, hex_digit1, multispace0},
     combinator::{all_consuming, map, map_res, not, opt, peek},
     error::VerboseError,
-    multi::separated_list1,
+    multi::{many0, separated_list1},
     number::complete::float,
     sequence::{delimited, preceded, separated_pair, terminated, tuple},
     IResult,
 };
+use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CDecoration {
@@ -21,10 +22,25 @@ pub enum CDecoration {
 }
 
 #[derive(Debug, Clone, Copy)]
+pub enum CArraySize<'a> {
+    Literal(usize),
+    Ident(&'a str),
+}
+
+impl fmt::Display for CArraySize<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            CArraySize::Literal(n) => n.fmt(f),
+            CArraySize::Ident(s) => s.fmt(f),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
 pub struct CType<'a> {
     pub name: &'a str,
     pub decoration: CDecoration,
-    pub array_size: Option<&'a str>,
+    pub array_size: Option<CArraySize<'a>>,
 }
 
 impl<'a> CType<'a> {
@@ -123,6 +139,13 @@ fn op<'a>(c: char) -> impl FnMut(&'a str) -> Res<'a, char> {
     preceded(multispace0, char(c))
 }
 
+fn array_size(i: &str) -> Res<CArraySize> {
+    alt((
+        map(map_res(digit1, str::parse::<usize>), CArraySize::Literal),
+        map(ident, CArraySize::Ident),
+    ))(i)
+}
+
 fn variable_decl(i: &str) -> Res<CVariableDecl> {
     let (i, const0) = opt(keyword("const"))(i)?;
     let (i, _) = opt(keyword("struct"))(i)?;
@@ -131,7 +154,13 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
     let (i, const1) = opt(keyword("const"))(i)?;
     let (i, ptr1) = opt(op('*'))(i)?;
     let (i, var_name) = ident(i)?;
-    let (i, array_size) = opt(delimited(op('['), ident, op(']')))(i)?;
+    let (i, array_sizes) = many0(delimited(op('['), array_size, op(']')))(i)?;
+    let array_size = array_sizes.split_first().map(|(&first, rest)| {
+        rest.iter().fold(first, |acc, x| match (acc, x) {
+            (CArraySize::Literal(a), CArraySize::Literal(b)) => CArraySize::Literal(a * b),
+            _ => panic!("cannot fold array sizes"),
+        })
+    });
     Ok((
         i,
         CVariableDecl {

@@ -35345,6 +35345,26 @@ impl fmt::Debug for AabbPositionsKHR {
 pub type AabbPositionsNV = AabbPositionsKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct TransformMatrixKHR {
+    pub matrix: [f32; 12],
+}
+impl default::Default for TransformMatrixKHR {
+    fn default() -> Self {
+        Self {
+            matrix: [f32::default(); 12],
+        }
+    }
+}
+impl fmt::Debug for TransformMatrixKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TransformMatrixKHR")
+            .field("matrix", &self.matrix)
+            .finish()
+    }
+}
+pub type TransformMatrixNV = TransformMatrixKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct AccelerationStructureDeviceAddressInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
