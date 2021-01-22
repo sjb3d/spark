@@ -41,6 +41,7 @@ pub struct CType<'a> {
     pub name: &'a str,
     pub decoration: CDecoration,
     pub array_size: Option<CArraySize<'a>>,
+    pub bit_count: Option<u32>,
 }
 
 impl<'a> CType<'a> {
@@ -55,6 +56,7 @@ impl<'a> CType<'a> {
                 name: self.name,
                 decoration,
                 array_size: None,
+                bit_count: self.bit_count,
             }
         } else {
             Clone::clone(self)
@@ -62,7 +64,7 @@ impl<'a> CType<'a> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct CVariableDecl<'a> {
     pub name: &'a str,
     pub ty: CType<'a>,
@@ -155,12 +157,15 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
     let (i, ptr1) = opt(op('*'))(i)?;
     let (i, var_name) = ident(i)?;
     let (i, array_sizes) = many0(delimited(op('['), array_size, op(']')))(i)?;
+    let (i, bit_count) = opt(preceded(op(':'), map_res(digit1, str::parse::<u32>)))(i)?;
+
     let array_size = array_sizes.split_first().map(|(&first, rest)| {
         rest.iter().fold(first, |acc, x| match (acc, x) {
             (CArraySize::Literal(a), CArraySize::Literal(b)) => CArraySize::Literal(a * b),
             _ => panic!("cannot fold array sizes"),
         })
     });
+
     Ok((
         i,
         CVariableDecl {
@@ -177,15 +182,10 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
                     v => panic!("unsupported decoration {:?}", v),
                 },
                 array_size,
+                bit_count,
             },
         },
     ))
-}
-
-pub fn c_try_parse_variable_decl(i: &str) -> Option<CVariableDecl> {
-    all_consuming(terminated(variable_decl, multispace0))(i)
-        .map(ignore_remainder)
-        .ok()
 }
 
 pub fn c_parse_variable_decl(i: &str) -> CVariableDecl {
@@ -219,6 +219,7 @@ fn function_decl(i: &str) -> Res<CFunctionDecl> {
                         CDecoration::None
                     },
                     array_size: None,
+                    bit_count: None,
                 },
             },
             parameters,
@@ -257,6 +258,7 @@ fn function_ptr_typedef<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
                         CDecoration::None
                     },
                     array_size: None,
+                    bit_count: None,
                 },
             },
             parameters,
@@ -281,6 +283,7 @@ fn typedef(i: &str) -> Res<CVariableDecl> {
                 name: type_name,
                 decoration: CDecoration::None,
                 array_size: None,
+                bit_count: None,
             },
         },
     ))

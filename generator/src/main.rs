@@ -320,6 +320,33 @@ fn slice_len(name: &str, type_name: &str) -> String {
     }
 }
 
+struct StructMember<'a> {
+    def: &'a vk::TypeMemberDefinition,
+    decl: CVariableDecl<'a>,
+    merged_name: String,
+}
+
+impl StructMember<'_> {
+    fn name(&self) -> &str {
+        if self.merged_name.is_empty() {
+            self.decl.name
+        } else {
+            self.merged_name.as_str()
+        }
+    }
+
+    fn merge_with(&mut self, other: StructMember) {
+        let bit_count = self.decl.ty.bit_count.unwrap() + other.decl.ty.bit_count.unwrap();
+        self.merged_name = format!("{}_and_{}", self.name(), other.name());
+        if bit_count == 32 {
+            self.decl.ty.name = "uint32_t";
+            self.decl.ty.bit_count = None;
+        } else {
+            self.decl.ty.bit_count = Some(bit_count);
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct SliceInfo {
     name: String,
@@ -534,11 +561,8 @@ impl<'a> Generator<'a> {
                             vk::TypeMember::Definition(ref member_def) => Some(member_def),
                             _ => None,
                         }) {
-                            if let Some(decl) = c_try_parse_variable_decl(member_def.code.as_str()) {
-                                self.used_type_names.insert(decl.ty.name);
-                            } else {
-                                self.type_name_blacklist.insert(name);
-                            }
+                            let decl = c_parse_variable_decl(member_def.code.as_str());
+                            self.used_type_names.insert(decl.ty.name);
                         }
                     }
                 }
@@ -1373,20 +1397,34 @@ impl<'a> Generator<'a> {
                 },
                 agg_name
             )?;
-            let member_defs: Vec<&vk::TypeMemberDefinition> = members
+            let mut members: Vec<_> = members
                 .iter()
                 .filter_map(|member| match member {
                     vk::TypeMember::Definition(ref member_def) => Some(member_def),
                     _ => None,
                 })
+                .map(|member_def| {
+                    let decl = c_parse_variable_decl(member_def.code.as_str());
+                    let decl = self.rewrite_variable_decl(agg_name, decl);
+                    StructMember {
+                        def: member_def,
+                        decl,
+                        merged_name: String::new(),
+                    }
+                })
                 .collect();
-            let decls: Vec<CVariableDecl> = member_defs
+            // merge bitfield members
+            while let Some(index) = members
                 .iter()
-                .map(|member_def| c_parse_variable_decl(member_def.code.as_str()))
-                .map(|decl| self.rewrite_variable_decl(agg_name, decl))
-                .collect();
-            for (member_def, decl) in member_defs.iter().zip(decls.iter()) {
-                for comment in member_def.markup.iter().filter_map(|markup| match markup {
+                .enumerate()
+                .find(|(_, member)| member.decl.ty.bit_count.is_some())
+                .map(|(i, _)| i)
+            {
+                let temp = members.remove(index + 1);
+                members[index].merge_with(temp);
+            }
+            for member in members.iter() {
+                for comment in member.def.markup.iter().filter_map(|markup| match markup {
                     vk::TypeMemberMarkup::Comment(ref comment) => Some(comment),
                     _ => None,
                 }) {
@@ -1395,8 +1433,8 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "pub {}: {},",
-                    get_rust_variable_name(&decl.name),
-                    self.get_rust_parameter_type(&decl.ty, None)
+                    get_rust_variable_name(member.name()),
+                    self.get_rust_parameter_type(&member.decl.ty, None)
                 )?;
             }
             writeln!(w, "}}")?;
@@ -1404,26 +1442,31 @@ impl<'a> Generator<'a> {
             match agg_type {
                 AggregateType::Struct => {
                     write!(w, "Self {{")?;
-                    for (member_def, decl) in member_defs.iter().zip(decls.iter()) {
-                        write!(w, "{}: ", get_rust_variable_name(&decl.name))?;
-                        if let Some(values) = member_def.values.as_ref_str() {
+                    for member in members.iter() {
+                        write!(w, "{}: ", get_rust_variable_name(&member.name()))?;
+                        if let Some(values) = member.def.values.as_ref_str() {
                             // assume enum value for now
-                            let name = self.get_enum_entry_name(&decl.ty.name, EnumType::Value, values);
-                            writeln!(w, "{}::{},", self.get_rust_type_name(decl.ty.name, true, None), name)?;
+                            let name = self.get_enum_entry_name(&member.decl.ty.name, EnumType::Value, values);
+                            writeln!(
+                                w,
+                                "{}::{},",
+                                self.get_rust_type_name(member.decl.ty.name, true, None),
+                                name
+                            )?;
                         } else {
                             // get element default
-                            let element_value = match decl.ty.decoration {
+                            let element_value = match member.decl.ty.decoration {
                                 CDecoration::Pointer | CDecoration::PointerToPointer => "ptr::null_mut()".to_owned(),
                                 CDecoration::PointerToConst | CDecoration::PointerToConstPointerToConst => {
                                     "ptr::null()".to_owned()
                                 }
                                 CDecoration::None | CDecoration::Const => {
-                                    self.get_rust_default(decl.ty.name).to_owned()
+                                    self.get_rust_default(member.decl.ty.name).to_owned()
                                 }
                             };
 
                             // write single or array
-                            if let Some(array_size) = decl.ty.array_size {
+                            if let Some(array_size) = member.decl.ty.array_size {
                                 writeln!(w, "[{}; {}],", element_value, array_size.skip_prefix(CONST_PREFIX))?;
                             } else {
                                 writeln!(w, "{},", element_value)?;
@@ -1441,13 +1484,15 @@ impl<'a> Generator<'a> {
                 writeln!(w, "impl fmt::Debug for {} {{", agg_name)?;
                 writeln!(w, "fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {{")?;
                 writeln!(w, r#"fmt.debug_struct("{}")"#, agg_name)?;
-                for decl in &decls {
-                    let var_name = get_rust_variable_name(&decl.name);
+                for member in members.iter() {
+                    let var_name = get_rust_variable_name(&member.name());
                     let category = self
                         .type_by_name
-                        .get(decl.ty.name)
+                        .get(member.decl.ty.name)
                         .and_then(|ty| ty.category.as_ref_str());
-                    if decl.ty.name == "char" && decl.ty.decoration == CDecoration::None && decl.ty.array_size.is_some()
+                    if member.decl.ty.name == "char"
+                        && member.decl.ty.decoration == CDecoration::None
+                        && member.decl.ty.array_size.is_some()
                     {
                         writeln!(
                             w,
@@ -1455,8 +1500,8 @@ impl<'a> Generator<'a> {
                             var_name
                         )?;
                     } else if category == Some("funcpointer")
-                        && decl.ty.decoration == CDecoration::None
-                        && decl.ty.array_size.is_none()
+                        && member.decl.ty.decoration == CDecoration::None
+                        && member.decl.ty.array_size.is_none()
                     {
                         writeln!(
                             w,

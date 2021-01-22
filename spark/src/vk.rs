@@ -35365,6 +35365,41 @@ impl fmt::Debug for TransformMatrixKHR {
 pub type TransformMatrixNV = TransformMatrixKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct AccelerationStructureInstanceKHR {
+    pub transform: TransformMatrixKHR,
+    pub instance_custom_index_and_mask: u32,
+    pub instance_shader_binding_table_record_offset_and_flags: u32,
+    pub acceleration_structure_reference: u64,
+}
+impl default::Default for AccelerationStructureInstanceKHR {
+    fn default() -> Self {
+        Self {
+            transform: TransformMatrixKHR::default(),
+            instance_custom_index_and_mask: u32::default(),
+            instance_shader_binding_table_record_offset_and_flags: u32::default(),
+            acceleration_structure_reference: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureInstanceKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureInstanceKHR")
+            .field("transform", &self.transform)
+            .field("instance_custom_index_and_mask", &self.instance_custom_index_and_mask)
+            .field(
+                "instance_shader_binding_table_record_offset_and_flags",
+                &self.instance_shader_binding_table_record_offset_and_flags,
+            )
+            .field(
+                "acceleration_structure_reference",
+                &self.acceleration_structure_reference,
+            )
+            .finish()
+    }
+}
+pub type AccelerationStructureInstanceNV = AccelerationStructureInstanceKHR;
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct AccelerationStructureDeviceAddressInfoKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
