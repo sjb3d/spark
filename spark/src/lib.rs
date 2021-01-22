@@ -9318,26 +9318,26 @@ impl Device {
         let fp = self.fp_destroy_query_pool.expect("vkDestroyQueryPool is not loaded");
         (fp)(Some(self.handle), query_pool, p_allocator.map_or(ptr::null(), |r| r));
     }
-    pub unsafe fn get_query_pool_results(
+    pub unsafe fn get_query_pool_results<T>(
         &self,
         query_pool: vk::QueryPool,
         first_query: u32,
         query_count: u32,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
         stride: vk::DeviceSize,
         flags: vk::QueryResultFlags,
     ) -> Result<vk::Result> {
         let fp = self
             .fp_get_query_pool_results
             .expect("vkGetQueryPoolResults is not loaded");
+        let data_size = mem::size_of_val(p_data) as usize;
         let err = (fp)(
             Some(self.handle),
             Some(query_pool),
             first_query,
             query_count,
             data_size,
-            p_data,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
             stride,
             flags,
         );
@@ -13118,25 +13118,25 @@ impl Device {
             scratch_offset,
         );
     }
-    pub unsafe fn write_acceleration_structures_properties_khr(
+    pub unsafe fn write_acceleration_structures_properties_khr<T>(
         &self,
         p_acceleration_structures: &[vk::AccelerationStructureKHR],
         query_type: vk::QueryType,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
         stride: usize,
     ) -> Result<()> {
         let fp = self
             .fp_write_acceleration_structures_properties_khr
             .expect("vkWriteAccelerationStructuresPropertiesKHR is not loaded");
         let acceleration_structure_count = p_acceleration_structures.len() as u32;
+        let data_size = mem::size_of_val(p_data) as usize;
         let err = (fp)(
             Some(self.handle),
             acceleration_structure_count,
             p_acceleration_structures.first().map_or(ptr::null(), |s| s as *const _),
             query_type,
             data_size,
-            p_data,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
             stride,
         );
         match err {
@@ -13204,88 +13204,93 @@ impl Device {
             depth,
         );
     }
-    pub unsafe fn get_ray_tracing_shader_group_handles_khr(
+    pub unsafe fn get_ray_tracing_shader_group_handles_khr<T>(
         &self,
         pipeline: vk::Pipeline,
         first_group: u32,
         group_count: u32,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
     ) -> Result<()> {
         let fp = self
             .fp_get_ray_tracing_shader_group_handles_khr
             .expect("vkGetRayTracingShaderGroupHandlesKHR is not loaded");
+        let data_size = mem::size_of_val(p_data) as usize;
         let err = (fp)(
             Some(self.handle),
             Some(pipeline),
             first_group,
             group_count,
             data_size,
-            p_data,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
     }
-    pub unsafe fn get_ray_tracing_shader_group_handles_nv(
+    pub unsafe fn get_ray_tracing_shader_group_handles_nv<T>(
         &self,
         pipeline: vk::Pipeline,
         first_group: u32,
         group_count: u32,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
     ) -> Result<()> {
         let fp = self
             .fp_get_ray_tracing_shader_group_handles_khr
             .expect("vkGetRayTracingShaderGroupHandlesNV is not loaded");
+        let data_size = mem::size_of_val(p_data) as usize;
         let err = (fp)(
             Some(self.handle),
             Some(pipeline),
             first_group,
             group_count,
             data_size,
-            p_data,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
     }
-    pub unsafe fn get_ray_tracing_capture_replay_shader_group_handles_khr(
+    pub unsafe fn get_ray_tracing_capture_replay_shader_group_handles_khr<T>(
         &self,
         pipeline: vk::Pipeline,
         first_group: u32,
         group_count: u32,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
     ) -> Result<()> {
         let fp = self
             .fp_get_ray_tracing_capture_replay_shader_group_handles_khr
             .expect("vkGetRayTracingCaptureReplayShaderGroupHandlesKHR is not loaded");
+        let data_size = mem::size_of_val(p_data) as usize;
         let err = (fp)(
             Some(self.handle),
             Some(pipeline),
             first_group,
             group_count,
             data_size,
-            p_data,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
     }
-    pub unsafe fn get_acceleration_structure_handle_nv(
+    pub unsafe fn get_acceleration_structure_handle_nv<T>(
         &self,
         acceleration_structure: vk::AccelerationStructureNV,
-        data_size: usize,
-        p_data: *mut c_void,
+        p_data: &mut [T],
     ) -> Result<()> {
         let fp = self
             .fp_get_acceleration_structure_handle_nv
             .expect("vkGetAccelerationStructureHandleNV is not loaded");
-        let err = (fp)(Some(self.handle), Some(acceleration_structure), data_size, p_data);
+        let data_size = mem::size_of_val(p_data) as usize;
+        let err = (fp)(
+            Some(self.handle),
+            Some(acceleration_structure),
+            data_size,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
+        );
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),

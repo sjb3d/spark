@@ -295,21 +295,34 @@ fn slice_type_name(type_name: &str) -> &str {
     }
 }
 
-fn slice_as_ptr(name: &str, type_name: &str, in_option: bool) -> String {
-    format!(
-        "{}{}.map_or(ptr::null(), |s| s as *const _){}",
-        name,
-        if in_option {
-            ".and_then(|s| s.first())"
-        } else {
-            ".first()"
-        },
-        if type_name_is_void(type_name) {
-            "as *const _"
-        } else {
-            ""
-        }
-    )
+fn slice_as_ptr(name: &str, type_name: &str, is_mutable: bool, in_option: bool) -> String {
+    if is_mutable {
+        format!(
+            "{}{}.map_or(ptr::null_mut(), |s| s as *mut _){}",
+            name,
+            if in_option {
+                ".and_then(|s| s.first_mut())"
+            } else {
+                ".first_mut()"
+            },
+            if type_name_is_void(type_name) { "as *mut _" } else { "" }
+        )
+    } else {
+        format!(
+            "{}{}.map_or(ptr::null(), |s| s as *const _){}",
+            name,
+            if in_option {
+                ".and_then(|s| s.first())"
+            } else {
+                ".first()"
+            },
+            if type_name_is_void(type_name) {
+                "as *const _"
+            } else {
+                ""
+            }
+        )
+    }
 }
 
 fn slice_len(name: &str, type_name: &str) -> String {
@@ -351,6 +364,7 @@ impl StructMember<'_> {
 struct SliceInfo {
     name: String,
     type_name: String,
+    is_mutable: bool,
     is_optional: bool,
 }
 
@@ -364,7 +378,7 @@ impl SliceInfo {
     }
 
     fn get_as_ptr(&self, in_option: bool) -> String {
-        slice_as_ptr(&self.name, &self.type_name, in_option)
+        slice_as_ptr(&self.name, &self.type_name, self.is_mutable, in_option)
     }
 
     fn get_len(&self) -> String {
@@ -392,6 +406,7 @@ enum LibParamType {
     },
     Slice {
         inner_type_name: String,
+        is_mutable: bool,
         is_optional: bool,
         len_expr: Option<String>,
     },
@@ -1660,6 +1675,7 @@ impl<'a> Generator<'a> {
                         let is_slice_type = cparam.ty.decoration == CDecoration::PointerToConst
                             || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst;
                         if is_slice_type {
+                            let is_mutable = false;
                             let is_optional = vparam.optional.as_ref_str() == Some("true");
                             let is_single = vparam.noautovalidity.as_ref_str() == Some("true")
                                 || vparam.optional.as_ref_str() == Some("true,false")
@@ -1675,10 +1691,12 @@ impl<'a> Generator<'a> {
                                 let slice_info = SliceInfo {
                                     name: params[i].name.clone(),
                                     type_name: inner_type_name.clone(),
+                                    is_mutable,
                                     is_optional,
                                 };
                                 params[i].ty = LibParamType::Slice {
                                     inner_type_name,
+                                    is_mutable,
                                     is_optional,
                                     len_expr: None,
                                 };
@@ -2079,7 +2097,11 @@ impl<'a> Generator<'a> {
             if let Some(len_name) = vparam.len.as_ref_str() {
                 if cparam.ty.decoration == CDecoration::PointerToConst
                     || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst
+                    || (cparam.ty.name == "void"
+                        && vparam.optional.is_none()
+                        && cparam.ty.decoration == CDecoration::Pointer)
                 {
+                    let is_mutable = matches!(cparam.ty.decoration, CDecoration::Pointer);
                     let is_optional = vparam.optional.as_ref_str() == Some("true");
                     let inner_type_name = if cparam.ty.decoration == CDecoration::PointerToConstPointerToConst {
                         format!("*const {}", inner_type_name)
@@ -2092,6 +2114,7 @@ impl<'a> Generator<'a> {
                             let slice_info = SliceInfo {
                                 name: params[i].name.clone(),
                                 type_name: inner_type_name.clone(),
+                                is_mutable,
                                 is_optional,
                             };
                             take_mut::take(&mut params[len_index].ty, |ty| match ty {
@@ -2118,6 +2141,7 @@ impl<'a> Generator<'a> {
                         };
                     params[i].ty = LibParamType::Slice {
                         inner_type_name: inner_type_name.clone(),
+                        is_mutable,
                         is_optional,
                         len_expr,
                     };
@@ -2440,22 +2464,24 @@ impl<'a> Generator<'a> {
                     LibParamType::SliceLenSingle { .. } => {}
                     LibParamType::Slice {
                         ref inner_type_name,
+                        is_mutable,
                         is_optional,
                         ..
                     } => {
                         let type_name = slice_type_name(inner_type_name);
+                        let mutability = if is_mutable { "mut" } else { "" };
                         if let LibCommandStyle::Single = style {
                             // bit of a hack: assume all slices share this length, so can be references
                             if is_optional {
-                                write!(w, "{}: Option<&{}>,", rparam.name, type_name)?;
+                                write!(w, "{}: Option<&{}{}>,", rparam.name, mutability, type_name)?;
                             } else {
-                                write!(w, "{}: &{},", rparam.name, type_name)?;
+                                write!(w, "{}: &{}{},", rparam.name, mutability, type_name)?;
                             }
                         } else {
                             if is_optional {
-                                write!(w, "{}: Option<&[{}]>,", rparam.name, type_name)?;
+                                write!(w, "{}: Option<&{}[{}]>,", rparam.name, mutability, type_name)?;
                             } else {
-                                write!(w, "{}: &[{}],", rparam.name, type_name)?;
+                                write!(w, "{}: &{}[{}],", rparam.name, mutability, type_name)?;
                             }
                         }
                     }
@@ -2697,6 +2723,7 @@ impl<'a> Generator<'a> {
                             write!(w, "{} as {}", slice_infos.first().unwrap().get_len(), type_name)?;
                         }
                         LibParamType::Slice {
+                            is_mutable,
                             is_optional,
                             ref inner_type_name,
                             ..
@@ -2708,7 +2735,11 @@ impl<'a> Generator<'a> {
                                     write!(w, "{}", rparam.name)?;
                                 }
                             } else {
-                                write!(w, "{}", slice_as_ptr(&rparam.name, inner_type_name, is_optional))?;
+                                write!(
+                                    w,
+                                    "{}",
+                                    slice_as_ptr(&rparam.name, inner_type_name, is_mutable, is_optional)
+                                )?;
                             }
                         }
                         LibParamType::Ref { is_optional, .. } => {
