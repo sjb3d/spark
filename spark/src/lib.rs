@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 167
+//! Generated from vk.xml with `VK_HEADER_VERSION` 168
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1205,6 +1205,12 @@ impl InstanceExtensions {
     pub fn enable_nv_device_diagnostics_config(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_zero_initialize_workgroup_memory(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1227,6 +1233,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_image_robustness(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_workgroup_memory_explicit_layout(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_workgroup_memory_explicit_layout(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_4444_formats(&self) -> bool {
@@ -3762,10 +3774,12 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
     pub ext_fragment_density_map2: bool,
     pub qcom_rotated_copy_commands: bool,
     pub ext_image_robustness: bool,
+    pub khr_workgroup_memory_explicit_layout: bool,
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
     pub nv_acquire_winrt_display: bool,
@@ -3958,10 +3972,12 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
             b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
+            b"VK_KHR_workgroup_memory_explicit_layout" => self.khr_workgroup_memory_explicit_layout = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
@@ -4154,10 +4170,12 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
             ext_fragment_density_map2: false,
             qcom_rotated_copy_commands: false,
             ext_image_robustness: false,
+            khr_workgroup_memory_explicit_layout: false,
             khr_copy_commands2: false,
             ext_4444_formats: false,
             nv_acquire_winrt_display: false,
@@ -5508,6 +5526,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
+        self.khr_zero_initialize_workgroup_memory
+    }
+    pub fn enable_khr_zero_initialize_workgroup_memory(&mut self) {
+        self.khr_zero_initialize_workgroup_memory = true;
+    }
     pub fn supports_nv_fragment_shading_rate_enums(&self) -> bool {
         self.nv_fragment_shading_rate_enums
             && self.supports_khr_fragment_shading_rate()
@@ -5542,6 +5566,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_image_robustness(&mut self) {
         self.ext_image_robustness = true;
+    }
+    pub fn supports_khr_workgroup_memory_explicit_layout(&self) -> bool {
+        self.khr_workgroup_memory_explicit_layout
+    }
+    pub fn enable_khr_workgroup_memory_explicit_layout(&mut self) {
+        self.khr_workgroup_memory_explicit_layout = true;
     }
     pub fn supports_khr_copy_commands2(&self) -> bool {
         self.khr_copy_commands2
@@ -6118,6 +6148,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
+        if self.khr_zero_initialize_workgroup_memory {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_zero_initialize_workgroup_memory\0") })
+        }
         if self.nv_fragment_shading_rate_enums {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shading_rate_enums\0") })
         }
@@ -6129,6 +6162,9 @@ impl DeviceExtensions {
         }
         if self.ext_image_robustness {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_robustness\0") })
+        }
+        if self.khr_workgroup_memory_explicit_layout {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_workgroup_memory_explicit_layout\0") })
         }
         if self.khr_copy_commands2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_copy_commands2\0") })

@@ -5505,6 +5505,8 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const PREFER_FAST_TRACE_NV: Self = Self::PREFER_FAST_TRACE;
     pub const PREFER_FAST_BUILD_NV: Self = Self::PREFER_FAST_BUILD;
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
+    /// Added by extension VK_NV_extension_328.
+    pub const RESERVED_BIT_5_NV: Self = Self(0x20);
 }
 impl default::Default for BuildAccelerationStructureFlagsKHR {
     fn default() -> Self {
@@ -5516,13 +5518,13 @@ impl BuildAccelerationStructureFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1f)
+        Self(0x3f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0x3f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5574,6 +5576,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x4, "PREFER_FAST_TRACE"),
                 (0x8, "PREFER_FAST_BUILD"),
                 (0x10, "LOW_MEMORY"),
+                (0x20, "RESERVED_BIT_5_NV"),
             ],
             f,
         )
@@ -5652,6 +5655,8 @@ impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
 pub struct AccelerationStructureCreateFlagsKHR(u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
+    /// Added by extension VK_NV_extension_328.
+    pub const RESERVED_BIT_2_NV: Self = Self(0x4);
 }
 impl default::Default for AccelerationStructureCreateFlagsKHR {
     fn default() -> Self {
@@ -5663,13 +5668,13 @@ impl AccelerationStructureCreateFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x5)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x5
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5713,7 +5718,11 @@ impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
 }
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY")], f)
+        display_bitmask(
+            self.0,
+            &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"), (0x4, "RESERVED_BIT_2_NV")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -13398,6 +13407,8 @@ impl StructureType {
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
+    /// Added by extension VK_KHR_zero_initialize_workgroup_memory.
+    pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self = Self(1000325000);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV: Self = Self(1000326000);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
@@ -13412,6 +13423,8 @@ impl StructureType {
     pub const COPY_COMMAND_TRANSFORM_INFO_QCOM: Self = Self(1000333000);
     /// Added by extension VK_EXT_image_robustness.
     pub const PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000335000);
+    /// Added by extension VK_KHR_workgroup_memory_explicit_layout.
+    pub const PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR: Self = Self(1000336000);
     /// Added by extension VK_KHR_copy_commands2.
     pub const COPY_BUFFER_INFO_2_KHR: Self = Self(1000337000);
     /// Added by extension VK_KHR_copy_commands2.
@@ -13906,6 +13919,7 @@ impl fmt::Display for StructureType {
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000309000 => Some(&"RESERVED_QCOM"),
+            1000325000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
             1000326002 => Some(&"PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV"),
@@ -13913,6 +13927,7 @@ impl fmt::Display for StructureType {
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000333000 => Some(&"COPY_COMMAND_TRANSFORM_INFO_QCOM"),
             1000335000 => Some(&"PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT"),
+            1000336000 => Some(&"PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR"),
             1000337000 => Some(&"COPY_BUFFER_INFO_2_KHR"),
             1000337001 => Some(&"COPY_IMAGE_INFO_2_KHR"),
             1000337002 => Some(&"COPY_BUFFER_TO_IMAGE_INFO_2_KHR"),
@@ -35757,6 +35772,34 @@ impl fmt::Debug for DeviceDiagnosticsConfigCreateInfoNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_zero_initialize_workgroup_memory: Bool32,
+}
+impl default::Default for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_zero_initialize_workgroup_memory: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_zero_initialize_workgroup_memory",
+                &self.shader_zero_initialize_workgroup_memory,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceRobustness2FeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -35842,6 +35885,52 @@ impl fmt::Debug for PhysicalDeviceImageRobustnessFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("robust_image_access", &self.robust_image_access)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub workgroup_memory_explicit_layout: Bool32,
+    pub workgroup_memory_explicit_layout_scalar_block_layout: Bool32,
+    pub workgroup_memory_explicit_layout8_bit_access: Bool32,
+    pub workgroup_memory_explicit_layout16_bit_access: Bool32,
+}
+impl default::Default for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            workgroup_memory_explicit_layout: Bool32::default(),
+            workgroup_memory_explicit_layout_scalar_block_layout: Bool32::default(),
+            workgroup_memory_explicit_layout8_bit_access: Bool32::default(),
+            workgroup_memory_explicit_layout16_bit_access: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "workgroup_memory_explicit_layout",
+                &self.workgroup_memory_explicit_layout,
+            )
+            .field(
+                "workgroup_memory_explicit_layout_scalar_block_layout",
+                &self.workgroup_memory_explicit_layout_scalar_block_layout,
+            )
+            .field(
+                "workgroup_memory_explicit_layout8_bit_access",
+                &self.workgroup_memory_explicit_layout8_bit_access,
+            )
+            .field(
+                "workgroup_memory_explicit_layout16_bit_access",
+                &self.workgroup_memory_explicit_layout16_bit_access,
+            )
             .finish()
     }
 }

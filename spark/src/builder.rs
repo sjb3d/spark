@@ -15813,6 +15813,44 @@ impl Deref for DeviceDiagnosticsConfigCreateInfoNVBuilder {
 }
 impl DeviceCreateInfoNext for DeviceDiagnosticsConfigCreateInfoNVBuilder {}
 impl DeviceCreateInfoNext for vk::DeviceDiagnosticsConfigCreateInfoNV {}
+impl Builder<'_> for vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
+    type Type = PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR,
+}
+impl PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_zero_initialize_workgroup_memory(mut self, shader_zero_initialize_workgroup_memory: bool) -> Self {
+        self.inner.shader_zero_initialize_workgroup_memory = if shader_zero_initialize_workgroup_memory {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRobustness2FeaturesEXT {
     type Type = PhysicalDeviceRobustness2FeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -15890,6 +15928,78 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageRobustnessFeaturesEXTBui
 impl DeviceCreateInfoNext for PhysicalDeviceImageRobustnessFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageRobustnessFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceImageRobustnessFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
+    type Type = PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR,
+}
+impl PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn workgroup_memory_explicit_layout(mut self, workgroup_memory_explicit_layout: bool) -> Self {
+        self.inner.workgroup_memory_explicit_layout = if workgroup_memory_explicit_layout {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn workgroup_memory_explicit_layout_scalar_block_layout(
+        mut self,
+        workgroup_memory_explicit_layout_scalar_block_layout: bool,
+    ) -> Self {
+        self.inner.workgroup_memory_explicit_layout_scalar_block_layout =
+            if workgroup_memory_explicit_layout_scalar_block_layout {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn workgroup_memory_explicit_layout8_bit_access(
+        mut self,
+        workgroup_memory_explicit_layout8_bit_access: bool,
+    ) -> Self {
+        self.inner.workgroup_memory_explicit_layout8_bit_access = if workgroup_memory_explicit_layout8_bit_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn workgroup_memory_explicit_layout16_bit_access(
+        mut self,
+        workgroup_memory_explicit_layout16_bit_access: bool,
+    ) -> Self {
+        self.inner.workgroup_memory_explicit_layout16_bit_access = if workgroup_memory_explicit_layout16_bit_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDevicePortabilitySubsetFeaturesKHR {
     type Type = PhysicalDevicePortabilitySubsetFeaturesKHRBuilder;
     fn builder() -> Self::Type {
