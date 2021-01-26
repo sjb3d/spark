@@ -1,3 +1,3 @@
 fn main() {
-    graphics::main()
+    graphics_lib::main()
 }

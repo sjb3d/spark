@@ -1,3 +1,3 @@
 fn main() {
-    compute::main()
+    compute_lib::main()
 }

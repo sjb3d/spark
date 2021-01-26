@@ -1,9 +1,9 @@
 GLSLC=glslangValidator
 GLSLCFLAGS=-V
 
-SHD=compute/src/fill.comp.spv\
-	graphics/src/test.vert.spv\
-	graphics/src/test.frag.spv
+SHD=compute-lib/src/fill.comp.spv\
+	graphics-lib/src/test.vert.spv\
+	graphics-lib/src/test.frag.spv
 
 all: shaders
 .PHONY: all clean shaders

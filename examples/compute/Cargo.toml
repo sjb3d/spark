@@ -5,11 +5,5 @@ authors = ["Simon Brown <si@sjbrown.co.uk>"]
 edition = "2018"
 publish = false
 
-[lib]
-crate-type = [ "lib", "cdylib" ]
-
 [dependencies]
-spark = { path = "../../spark" }
-
-[target.'cfg(target_os = "android")'.dependencies]
-ndk-glue = "0.2"
+compute-lib = { path = "../compute-lib" }
