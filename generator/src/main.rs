@@ -1815,7 +1815,7 @@ impl<'a> Generator<'a> {
                         if ty.returnedonly.is_some() {
                             writeln!(
                                 w,
-                                "pub fn as_mut(&mut self) -> &mut vk::{} {{ &mut self.inner }}",
+                                "pub fn get_mut(&mut self) -> &mut vk::{} {{ &mut self.inner }}",
                                 agg_name
                             )?;
                         }

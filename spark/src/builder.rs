@@ -4446,7 +4446,7 @@ impl<'a> PhysicalDeviceProperties2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::PhysicalDeviceProperties2 {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceProperties2 {
         &mut self.inner
     }
 }
@@ -4475,7 +4475,7 @@ impl<'a> FormatProperties2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::FormatProperties2 {
+    pub fn get_mut(&mut self) -> &mut vk::FormatProperties2 {
         &mut self.inner
     }
 }
@@ -4504,7 +4504,7 @@ impl<'a> ImageFormatProperties2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::ImageFormatProperties2 {
+    pub fn get_mut(&mut self) -> &mut vk::ImageFormatProperties2 {
         &mut self.inner
     }
 }
@@ -4587,7 +4587,7 @@ impl<'a> QueueFamilyProperties2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::QueueFamilyProperties2 {
+    pub fn get_mut(&mut self) -> &mut vk::QueueFamilyProperties2 {
         &mut self.inner
     }
 }
@@ -4616,7 +4616,7 @@ impl<'a> PhysicalDeviceMemoryProperties2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::PhysicalDeviceMemoryProperties2 {
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceMemoryProperties2 {
         &mut self.inner
     }
 }
@@ -7036,7 +7036,7 @@ impl<'a> SurfaceCapabilities2KHRBuilder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::SurfaceCapabilities2KHR {
+    pub fn get_mut(&mut self) -> &mut vk::SurfaceCapabilities2KHR {
         &mut self.inner
     }
 }
@@ -7291,7 +7291,7 @@ impl<'a> MemoryRequirements2Builder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::MemoryRequirements2 {
+    pub fn get_mut(&mut self) -> &mut vk::MemoryRequirements2 {
         &mut self.inner
     }
 }
@@ -8325,7 +8325,7 @@ impl<'a> DescriptorSetLayoutSupportBuilder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::DescriptorSetLayoutSupport {
+    pub fn get_mut(&mut self) -> &mut vk::DescriptorSetLayoutSupport {
         &mut self.inner
     }
 }
@@ -9955,7 +9955,7 @@ impl<'a> AndroidHardwareBufferPropertiesANDROIDBuilder<'a> {
         }
         self
     }
-    pub fn as_mut(&mut self) -> &mut vk::AndroidHardwareBufferPropertiesANDROID {
+    pub fn get_mut(&mut self) -> &mut vk::AndroidHardwareBufferPropertiesANDROID {
         &mut self.inner
     }
 }
