@@ -17,6 +17,7 @@ fn get_memory_type_index(
     None
 }
 
+#[allow(clippy::float_cmp)]
 #[cfg_attr(target_os = "android", ndk_glue::main(backtrace = "on"))]
 pub fn main() {
     // this example only requires Vulkan 1.0.0

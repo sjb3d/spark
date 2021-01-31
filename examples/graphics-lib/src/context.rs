@@ -47,7 +47,7 @@ impl InstanceExt for Instance {
                     None
                 }
             })
-            .nth(0)
+            .next()
     }
 }
 
