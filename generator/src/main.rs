@@ -3280,21 +3280,18 @@ impl<'a> Generator<'a> {
 
 fn main() -> WriteResult {
     let args: Vec<String> = env::args().collect();
-    let xml_file_name = &args
-        .get(1)
-        .map(|s| s.as_str())
-        .unwrap_or("/usr/share/vulkan/registry/vk.xml");
+    let xml_file_name = &args.get(1).expect("missing XML filename as argument").as_str();
     let (registry, errors) = vk::parse_file(Path::new(xml_file_name))?;
     for error in &errors {
         println!("Parser error: {:?}", error);
     }
 
     let generator = Generator::new(&registry);
-    generator.write_vk(Path::new("../spark/src/vk.rs"))?;
-    generator.write_builder(Path::new("../spark/src/builder.rs"))?;
-    generator.write_lib(Path::new("../spark/src/lib.rs"))?;
+    generator.write_vk(Path::new("spark/src/vk.rs"))?;
+    generator.write_builder(Path::new("spark/src/builder.rs"))?;
+    generator.write_lib(Path::new("spark/src/lib.rs"))?;
 
-    Spawn::new("cargo").arg("fmt").current_dir("../spark").output()?;
+    Spawn::new("cargo").arg("fmt").current_dir("spark").output()?;
 
     Ok(())
 }
