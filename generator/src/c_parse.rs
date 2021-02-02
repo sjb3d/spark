@@ -36,9 +36,38 @@ impl fmt::Display for CArraySize<'_> {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CBaseType<'a> {
+    Void,
+    Char,
+    Int,
+    F32,
+    F64,
+    U8,
+    U16,
+    U32,
+    U64,
+    I8,
+    I16,
+    I32,
+    I64,
+    USize,
+    Named(&'a str),
+}
+
+impl<'a> CBaseType<'a> {
+    pub fn try_name(&self) -> Option<&'a str> {
+        if let CBaseType::Named(name) = *self {
+            Some(name)
+        } else {
+            None
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct CType<'a> {
-    pub name: &'a str,
+    pub base: CBaseType<'a>,
     pub decoration: CDecoration,
     pub array_size: Option<CArraySize<'a>>,
     pub bit_count: Option<u32>,
@@ -53,7 +82,7 @@ impl<'a> CType<'a> {
                 _ => panic!("cannot convert array to pointer type"),
             };
             CType {
-                name: self.name,
+                base: self.base,
                 decoration,
                 array_size: None,
                 bit_count: self.bit_count,
@@ -148,10 +177,30 @@ fn array_size(i: &str) -> Res<CArraySize> {
     ))(i)
 }
 
+fn base_type(i: &str) -> Res<CBaseType> {
+    alt((
+        map(keyword("void"), |_| CBaseType::Void),
+        map(keyword("char"), |_| CBaseType::Char),
+        map(keyword("int"), |_| CBaseType::Int),
+        map(keyword("float"), |_| CBaseType::F32),
+        map(keyword("double"), |_| CBaseType::F64),
+        map(keyword("uint8_t"), |_| CBaseType::U8),
+        map(keyword("uint16_t"), |_| CBaseType::U16),
+        map(keyword("uint32_t"), |_| CBaseType::U32),
+        map(keyword("uint64_t"), |_| CBaseType::U64),
+        map(keyword("int8_t"), |_| CBaseType::I8),
+        map(keyword("int16_t"), |_| CBaseType::I16),
+        map(keyword("int32_t"), |_| CBaseType::I32),
+        map(keyword("int64_t"), |_| CBaseType::I64),
+        map(keyword("size_t"), |_| CBaseType::USize),
+        map(ident, CBaseType::Named),
+    ))(i)
+}
+
 fn variable_decl(i: &str) -> Res<CVariableDecl> {
     let (i, const0) = opt(keyword("const"))(i)?;
     let (i, _) = opt(keyword("struct"))(i)?;
-    let (i, type_name) = ident(i)?;
+    let (i, base) = base_type(i)?;
     let (i, ptr0) = opt(op('*'))(i)?;
     let (i, const1) = opt(keyword("const"))(i)?;
     let (i, ptr1) = opt(op('*'))(i)?;
@@ -171,7 +220,7 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
         CVariableDecl {
             name: var_name,
             ty: CType {
-                name: type_name,
+                base: base,
                 decoration: match (const0.is_some(), ptr0.is_some(), const1.is_some(), ptr1.is_some()) {
                     (false, false, false, false) => CDecoration::None,
                     (true, false, false, false) => CDecoration::Const,
@@ -195,7 +244,7 @@ pub fn c_parse_variable_decl(i: &str) -> CVariableDecl {
 }
 
 fn function_decl(i: &str) -> Res<CFunctionDecl> {
-    let (i, ret_type_name) = ident(i)?;
+    let (i, ret_base) = base_type(i)?;
     let (i, ret_ptr) = opt(op('*'))(i)?;
     let (i, func_name) = ident(i)?;
     let (i, parameters) = delimited(
@@ -212,7 +261,7 @@ fn function_decl(i: &str) -> Res<CFunctionDecl> {
             proto: CVariableDecl {
                 name: func_name,
                 ty: CType {
-                    name: ret_type_name,
+                    base: ret_base,
                     decoration: if ret_ptr.is_some() {
                         CDecoration::Pointer
                     } else {
@@ -234,7 +283,7 @@ pub fn c_parse_function_decl(i: &str) -> CFunctionDecl {
 }
 
 fn function_ptr_typedef<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
-    let (i, ret_type_name) = preceded(keyword("typedef"), ident)(i)?;
+    let (i, ret_base) = preceded(keyword("typedef"), base_type)(i)?;
     let (i, ret_ptr) = opt(op('*'))(i)?;
     let (i, func_name) = delimited(tuple((op('('), keyword("VKAPI_PTR"), op('*'))), ident, op(')'))(i)?;
     let (i, parameters) = delimited(
@@ -251,7 +300,7 @@ fn function_ptr_typedef<'a>(i: &'a str) -> Res<'a, CFunctionDecl> {
             proto: CVariableDecl {
                 name: func_name,
                 ty: CType {
-                    name: ret_type_name,
+                    base: ret_base,
                     decoration: if ret_ptr.is_some() {
                         CDecoration::Pointer
                     } else {
@@ -273,14 +322,14 @@ pub fn c_parse_func_pointer_typedef(i: &str) -> CFunctionDecl {
 }
 
 fn typedef(i: &str) -> Res<CVariableDecl> {
-    let (i, type_name) = preceded(keyword("typedef"), ident)(i)?;
+    let (i, base) = preceded(keyword("typedef"), base_type)(i)?;
     let (i, var_name) = terminated(ident, op(';'))(i)?;
     Ok((
         i,
         CVariableDecl {
             name: var_name,
             ty: CType {
-                name: type_name,
+                base,
                 decoration: CDecoration::None,
                 array_size: None,
                 bit_count: None,

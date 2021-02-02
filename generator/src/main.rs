@@ -65,6 +65,11 @@ const FN_PREFIX: &str = "vk";
 const PFN_PREFIX: &str = "PFN_vk";
 const CONST_PREFIX: &str = "VK_";
 
+const NAMED_TYPE_VKBOOL32: CBaseType = CBaseType::Named("VkBool32");
+const NAMED_TYPE_VKVERSION: CBaseType = CBaseType::Named("VkVersion");
+const NAMED_TYPE_VKINSTANCE: CBaseType = CBaseType::Named("VkInstance");
+const NAMED_TYPE_VKDEVICE: CBaseType = CBaseType::Named("VkDevice");
+
 trait SkipPrefix {
     fn skip_prefix(self, prefix: &str) -> Self;
 }
@@ -352,7 +357,7 @@ impl StructMember<'_> {
         let bit_count = self.decl.ty.bit_count.unwrap() + other.decl.ty.bit_count.unwrap();
         self.merged_name = format!("{}_and_{}", self.name(), other.name());
         if bit_count == 32 {
-            self.decl.ty.name = "uint32_t";
+            self.decl.ty.base = CBaseType::U32;
             self.decl.ty.bit_count = None;
         } else {
             self.decl.ty.bit_count = Some(bit_count);
@@ -508,12 +513,22 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn check_type_derives(&self, type_name: &str) -> bool {
-        match type_name {
-            "char" | "int" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "int8_t" | "int16_t" | "int32_t"
-            | "int64_t" | "size_t" => true,
-            "float" | "double" => false,
-            _ => {
+    fn check_type_derives(&self, base_type: CBaseType) -> bool {
+        match base_type {
+            CBaseType::Void
+            | CBaseType::Char
+            | CBaseType::Int
+            | CBaseType::U8
+            | CBaseType::U16
+            | CBaseType::U32
+            | CBaseType::U64
+            | CBaseType::I8
+            | CBaseType::I16
+            | CBaseType::I32
+            | CBaseType::I64
+            | CBaseType::USize => true,
+            CBaseType::F32 | CBaseType::F64 => false,
+            CBaseType::Named(type_name) => {
                 if let Some(ty) = self.type_by_name.get(type_name) {
                     match ty.category.as_ref_str() {
                         Some("basetype") | Some("bitmask") | Some("enum") => true,
@@ -529,7 +544,7 @@ impl<'a> Generator<'a> {
                                     .all(|decl| {
                                         decl.ty.array_size.is_none()
                                             && decl.ty.decoration == CDecoration::None
-                                            && self.check_type_derives(decl.ty.name)
+                                            && self.check_type_derives(decl.ty.base)
                                     })
                             } else {
                                 false
@@ -564,9 +579,13 @@ impl<'a> Generator<'a> {
                 if let Some("funcpointer") = category {
                     if let vk::TypeSpec::Code(ref code) = ty.spec {
                         let decl = c_parse_func_pointer_typedef(code.code.as_str());
-                        self.used_type_names.insert(decl.proto.ty.name);
+                        if let CBaseType::Named(name) = decl.proto.ty.base {
+                            self.used_type_names.insert(name);
+                        }
                         for param in decl.parameters.iter() {
-                            self.used_type_names.insert(param.ty.name);
+                            if let CBaseType::Named(name) = param.ty.base {
+                                self.used_type_names.insert(name);
+                            }
                         }
                     }
                 }
@@ -577,7 +596,9 @@ impl<'a> Generator<'a> {
                             _ => None,
                         }) {
                             let decl = c_parse_variable_decl(member_def.code.as_str());
-                            self.used_type_names.insert(decl.ty.name);
+                            if let CBaseType::Named(name) = decl.ty.base {
+                                self.used_type_names.insert(name);
+                            }
                         }
                     }
                 }
@@ -740,9 +761,13 @@ impl<'a> Generator<'a> {
                                 },
                             );
                             let decl = c_parse_function_decl(cmd_def.code.as_str());
-                            self.used_type_names.insert(decl.proto.ty.name);
+                            if let CBaseType::Named(name) = decl.proto.ty.base {
+                                self.used_type_names.insert(name);
+                            }
                             for param in decl.parameters.iter() {
-                                self.used_type_names.insert(param.ty.name);
+                                if let CBaseType::Named(name) = param.ty.base {
+                                    self.used_type_names.insert(name);
+                                }
                             }
                         }
                     }
@@ -865,34 +890,34 @@ impl<'a> Generator<'a> {
         gen
     }
 
-    fn is_non_null_type(&self, type_name: &str) -> bool {
-        self.type_by_name
-            .get(type_name)
+    fn is_non_null_type(&self, base: CBaseType) -> bool {
+        base.try_name()
+            .and_then(|name| self.type_by_name.get(name))
             .and_then(|ref ty| ty.category.as_ref_str())
             .map(|s| s == "funcpointer" || s == "handle")
             .unwrap_or(false)
     }
 
-    fn get_rust_type_name(&self, type_name: &str, use_option: bool, vk_prefix: Option<&str>) -> String {
-        match type_name {
-            "void" => "c_void".to_owned(),
-            "char" => "c_char".to_owned(),
-            "int" => "c_int".to_owned(),
-            "float" => "f32".to_owned(),
-            "double" => "f64".to_owned(),
-            "uint8_t" => "u8".to_owned(),
-            "uint16_t" => "u16".to_owned(),
-            "uint32_t" => "u32".to_owned(),
-            "uint64_t" => "u64".to_owned(),
-            "int8_t" => "i8".to_owned(),
-            "int16_t" => "i16".to_owned(),
-            "int32_t" => "i32".to_owned(),
-            "int64_t" => "i64".to_owned(),
-            "size_t" => "usize".to_owned(),
-            _ => {
+    fn get_rust_type_name(&self, base_type: CBaseType, use_option: bool, vk_prefix: Option<&str>) -> String {
+        match base_type {
+            CBaseType::Void => "c_void".to_owned(),
+            CBaseType::Char => "c_char".to_owned(),
+            CBaseType::Int => "c_int".to_owned(),
+            CBaseType::F32 => "f32".to_owned(),
+            CBaseType::F64 => "f64".to_owned(),
+            CBaseType::U8 => "u8".to_owned(),
+            CBaseType::U16 => "u16".to_owned(),
+            CBaseType::U32 => "u32".to_owned(),
+            CBaseType::U64 => "u64".to_owned(),
+            CBaseType::I8 => "i8".to_owned(),
+            CBaseType::I16 => "i16".to_owned(),
+            CBaseType::I32 => "i32".to_owned(),
+            CBaseType::I64 => "i64".to_owned(),
+            CBaseType::USize => "usize".to_owned(),
+            CBaseType::Named(type_name) => {
                 let type_name = self.bitmask_from_value.get(type_name).cloned().unwrap_or(type_name);
                 if type_name.starts_with(TYPE_PREFIX) {
-                    if self.is_non_null_type(type_name) && use_option {
+                    if self.is_non_null_type(base_type) && use_option {
                         format!(
                             "Option<{}{}>",
                             vk_prefix.unwrap_or(""),
@@ -918,18 +943,23 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn get_rust_default(&self, type_name: &str) -> String {
-        match type_name {
-            "char" => "c_char::default()".to_owned(),
-            "int" => "c_int::default()".to_owned(),
-            "float" => "f32::default()".to_owned(),
-            "uint8_t" => "u8::default()".to_owned(),
-            "uint16_t" => "u16::default()".to_owned(),
-            "uint32_t" => "u32::default()".to_owned(),
-            "uint64_t" => "u64::default()".to_owned(),
-            "int32_t" => "i32::default()".to_owned(),
-            "size_t" => "usize::default()".to_owned(),
-            _ => {
+    fn get_rust_default(&self, base_type: CBaseType) -> String {
+        match base_type {
+            CBaseType::Void => panic!("cannot set a default"),
+            CBaseType::Char => "c_char::default()".to_owned(),
+            CBaseType::Int => "c_int::default()".to_owned(),
+            CBaseType::F32 => "f32::default()".to_owned(),
+            CBaseType::F64 => "f64::default()".to_owned(),
+            CBaseType::U8 => "u8::default()".to_owned(),
+            CBaseType::U16 => "u16::default()".to_owned(),
+            CBaseType::U32 => "u32::default()".to_owned(),
+            CBaseType::U64 => "u64::default()".to_owned(),
+            CBaseType::I8 => "i8::default()".to_owned(),
+            CBaseType::I16 => "i16::default()".to_owned(),
+            CBaseType::I32 => "i32::default()".to_owned(),
+            CBaseType::I64 => "i64::default()".to_owned(),
+            CBaseType::USize => "usize::default()".to_owned(),
+            CBaseType::Named(type_name) => {
                 let type_name = self.bitmask_from_value.get(type_name).cloned().unwrap_or(type_name);
                 if type_name.starts_with(TYPE_PREFIX) {
                     if self
@@ -1001,7 +1031,7 @@ impl<'a> Generator<'a> {
                     w,
                     "pub type {} = {};",
                     decl.name.skip_prefix(TYPE_PREFIX),
-                    self.get_rust_type_name(decl.ty.name, true, None)
+                    self.get_rust_type_name(decl.ty.base, true, None)
                 )?;
             }
         } else {
@@ -1094,8 +1124,8 @@ impl<'a> Generator<'a> {
             writeln!(
                 w,
                 "pub type {} = {};",
-                self.get_rust_type_name(type_name, true, None),
-                self.get_rust_type_name(alias, true, None)
+                type_name.skip_prefix(TYPE_PREFIX),
+                alias.skip_prefix(TYPE_PREFIX),
             )?;
         } else {
             let requires = ty.requires.as_ref_str();
@@ -1330,7 +1360,7 @@ impl<'a> Generator<'a> {
                 CDecoration::PointerToPointer => "* mut *mut ",
                 CDecoration::PointerToConstPointerToConst => "*const *const ",
             },
-            self.get_rust_type_name(&ty.name, ty.decoration == CDecoration::None, vk_prefix)
+            self.get_rust_type_name(ty.base, ty.decoration == CDecoration::None, vk_prefix)
         )
         .unwrap();
         if let Some(array_size) = ty.array_size {
@@ -1369,10 +1399,10 @@ impl<'a> Generator<'a> {
     fn rewrite_variable_decl(&self, context: &str, mut decl: CVariableDecl<'a>) -> CVariableDecl<'a> {
         match decl.name {
             "apiVersion" | "pApiVersion" => {
-                decl.ty.name = "VkVersion";
+                decl.ty.base = NAMED_TYPE_VKVERSION;
             }
             "specVersion" if context == "LayerProperties" => {
-                decl.ty.name = "VkVersion";
+                decl.ty.base = NAMED_TYPE_VKVERSION;
             }
             _ => {}
         }
@@ -1401,7 +1431,7 @@ impl<'a> Generator<'a> {
             writeln!(
                 w,
                 "#[repr(C)] #[derive({})] pub {} {} {{",
-                if self.check_type_derives(type_name) {
+                if self.check_type_derives(CBaseType::Named(type_name)) {
                     "Copy, Clone, PartialEq, Eq, Hash"
                 } else {
                     "Copy, Clone"
@@ -1461,11 +1491,12 @@ impl<'a> Generator<'a> {
                         write!(w, "{}: ", get_rust_variable_name(&member.name()))?;
                         if let Some(values) = member.def.values.as_ref_str() {
                             // assume enum value for now
-                            let name = self.get_enum_entry_name(&member.decl.ty.name, EnumType::Value, values);
+                            let member_type_name = member.decl.ty.base.try_name().unwrap();
+                            let name = self.get_enum_entry_name(member_type_name, EnumType::Value, values);
                             writeln!(
                                 w,
                                 "{}::{},",
-                                self.get_rust_type_name(member.decl.ty.name, true, None),
+                                self.get_rust_type_name(member.decl.ty.base, true, None),
                                 name
                             )?;
                         } else {
@@ -1476,7 +1507,7 @@ impl<'a> Generator<'a> {
                                     "ptr::null()".to_owned()
                                 }
                                 CDecoration::None | CDecoration::Const => {
-                                    self.get_rust_default(member.decl.ty.name).to_owned()
+                                    self.get_rust_default(member.decl.ty.base).to_owned()
                                 }
                             };
 
@@ -1501,11 +1532,14 @@ impl<'a> Generator<'a> {
                 writeln!(w, r#"fmt.debug_struct("{}")"#, agg_name)?;
                 for member in members.iter() {
                     let var_name = get_rust_variable_name(&member.name());
-                    let category = self
-                        .type_by_name
-                        .get(member.decl.ty.name)
+                    let category = member
+                        .decl
+                        .ty
+                        .base
+                        .try_name()
+                        .and_then(|name| self.type_by_name.get(name))
                         .and_then(|ty| ty.category.as_ref_str());
-                    if member.decl.ty.name == "char"
+                    if member.decl.ty.base == CBaseType::Char
                         && member.decl.ty.decoration == CDecoration::None
                         && member.decl.ty.array_size.is_some()
                     {
@@ -1638,19 +1672,19 @@ impl<'a> Generator<'a> {
                 for (i, cparam) in decls.iter().enumerate() {
                     let vparam = &member_defs[i];
                     let inner_type_name = self.get_rust_type_name(
-                        cparam.ty.name,
+                        cparam.ty.base,
                         cparam.ty.decoration == CDecoration::None,
                         Some("vk::"),
                     );
 
                     // match bool
-                    if cparam.ty.name == "VkBool32" && cparam.ty.decoration == CDecoration::None {
+                    if cparam.ty.base == NAMED_TYPE_VKBOOL32 && cparam.ty.decoration == CDecoration::None {
                         params[i].ty = LibParamType::Bool;
                         continue;
                     }
 
                     // match CStr
-                    if cparam.ty.name == "char"
+                    if cparam.ty.base == CBaseType::Char
                         && cparam.ty.decoration == CDecoration::PointerToConst
                         && vparam.len.as_ref_str() == Some("null-terminated")
                     {
@@ -1662,10 +1696,10 @@ impl<'a> Generator<'a> {
                     // remove Option if not optional
                     if cparam.ty.decoration == CDecoration::None
                         && vparam.optional.is_none()
-                        && self.is_non_null_type(cparam.ty.name)
+                        && self.is_non_null_type(cparam.ty.base)
                     {
                         params[i].ty = LibParamType::NonOptional {
-                            inner_type_name: self.get_rust_type_name(cparam.ty.name, false, Some("vk::")),
+                            inner_type_name: self.get_rust_type_name(cparam.ty.base, false, Some("vk::")),
                         };
                         continue;
                     }
@@ -1740,7 +1774,7 @@ impl<'a> Generator<'a> {
                     }
 
                     // match reference
-                    if cparam.ty.name != "void"
+                    if cparam.ty.base != CBaseType::Void
                         && cparam.ty.decoration == CDecoration::PointerToConst
                         && vparam.len.is_none()
                     {
@@ -2050,7 +2084,7 @@ impl<'a> Generator<'a> {
         for (i, cparam) in decl.parameters.iter().enumerate() {
             let vparam = &cmd_def.params[i];
             let inner_type_name =
-                self.get_rust_type_name(cparam.ty.name, cparam.ty.decoration == CDecoration::None, Some("vk::"));
+                self.get_rust_type_name(cparam.ty.base, cparam.ty.decoration == CDecoration::None, Some("vk::"));
 
             // match member handle (first parameter only)
             if i == 0 {
@@ -2059,7 +2093,7 @@ impl<'a> Generator<'a> {
                     Category::Device => Some("VkDevice"),
                     _ => None,
                 } {
-                    if cparam.ty.name == type_name && cparam.ty.decoration == CDecoration::None {
+                    if cparam.ty.base == CBaseType::Named(type_name) && cparam.ty.decoration == CDecoration::None {
                         params[i].ty = LibParamType::MemberHandle;
                         continue;
                     }
@@ -2067,13 +2101,13 @@ impl<'a> Generator<'a> {
             }
 
             // match bool
-            if cparam.ty.name == "VkBool32" && cparam.ty.decoration == CDecoration::None {
+            if cparam.ty.base == NAMED_TYPE_VKBOOL32 && cparam.ty.decoration == CDecoration::None {
                 params[i].ty = LibParamType::Bool;
                 continue;
             }
 
             // match CStr
-            if cparam.ty.name == "char"
+            if cparam.ty.base == CBaseType::Char
                 && cparam.ty.decoration == CDecoration::PointerToConst
                 && vparam.len.as_ref_str() == Some("null-terminated")
             {
@@ -2085,10 +2119,10 @@ impl<'a> Generator<'a> {
             // remove Option if not optional
             if cparam.ty.decoration == CDecoration::None
                 && vparam.optional.is_none()
-                && self.is_non_null_type(cparam.ty.name)
+                && self.is_non_null_type(cparam.ty.base)
             {
                 params[i].ty = LibParamType::NonOptional {
-                    inner_type_name: self.get_rust_type_name(cparam.ty.name, false, Some("vk::")),
+                    inner_type_name: self.get_rust_type_name(cparam.ty.base, false, Some("vk::")),
                 };
                 continue;
             }
@@ -2097,7 +2131,7 @@ impl<'a> Generator<'a> {
             if let Some(len_name) = vparam.len.as_ref_str() {
                 if cparam.ty.decoration == CDecoration::PointerToConst
                     || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst
-                    || (cparam.ty.name == "void"
+                    || (cparam.ty.base == CBaseType::Void
                         && vparam.optional.is_none()
                         && cparam.ty.decoration == CDecoration::Pointer)
                 {
@@ -2147,7 +2181,7 @@ impl<'a> Generator<'a> {
                     };
                     continue;
                 }
-                if cparam.ty.name != "void"
+                if cparam.ty.base != CBaseType::Void
                     && cparam.ty.decoration == CDecoration::Pointer
                     && vparam.optional.as_ref_str() == Some("true")
                     && (cmd_return_value == CommandReturnValue::Void
@@ -2188,7 +2222,7 @@ impl<'a> Generator<'a> {
                         continue;
                     }
                 }
-                if cparam.ty.name != "void"
+                if cparam.ty.base != CBaseType::Void
                     && cparam.ty.decoration == CDecoration::Pointer
                     && vparam.optional.is_none()
                     && vparam.len.is_some()
@@ -2252,9 +2286,11 @@ impl<'a> Generator<'a> {
                 && cmd_return_value != CommandReturnValue::Other
                 && return_type == LibReturnType::CDecl
             {
-                let has_member_values = self
-                    .type_by_name
-                    .get(cparam.ty.name)
+                let has_member_values = cparam
+                    .ty
+                    .base
+                    .try_name()
+                    .and_then(|name| self.type_by_name.get(name))
                     .and_then(|vtype| {
                         if let Some(alias) = vtype.alias.as_ref_str() {
                             self.type_by_name.get(alias)
@@ -2283,16 +2319,16 @@ impl<'a> Generator<'a> {
                         inner_type_name.clone()
                     };
                     if cparam.ty.decoration == CDecoration::Pointer {
-                        match cparam.ty.name {
-                            "VkBool32" => {
+                        match cparam.ty.base {
+                            NAMED_TYPE_VKBOOL32 => {
                                 inner_type_name = "bool".to_owned();
                                 return_transform = LibReturnTransform::ToBool;
                             }
-                            "VkInstance" => {
+                            NAMED_TYPE_VKINSTANCE => {
                                 inner_type_name = "Instance".to_owned();
                                 return_transform = LibReturnTransform::ToInstance;
                             }
-                            "VkDevice" => {
+                            NAMED_TYPE_VKDEVICE => {
                                 inner_type_name = "Device".to_owned();
                                 return_transform = LibReturnTransform::ToDevice;
                             }
@@ -2319,7 +2355,7 @@ impl<'a> Generator<'a> {
             }
 
             // match reference
-            if cparam.ty.name != "void" && vparam.len.is_none() && !self.is_non_null_type(cparam.ty.name) {
+            if cparam.ty.base != CBaseType::Void && vparam.len.is_none() && !self.is_non_null_type(cparam.ty.base) {
                 if cparam.ty.decoration == CDecoration::PointerToConst {
                     let is_optional = vparam.optional.as_ref_str() == Some("true");
                     params[i].ty = LibParamType::Ref {
@@ -2504,7 +2540,7 @@ impl<'a> Generator<'a> {
                             w,
                             "{}: &mut {},",
                             rparam.name,
-                            self.get_rust_type_name(&cparam.ty.name, true, Some("vk::")),
+                            self.get_rust_type_name(cparam.ty.base, true, Some("vk::")),
                         )?;
                     }
                     LibParamType::ReturnVecLenSingle { .. } => {}
