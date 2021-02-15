@@ -74,6 +74,13 @@ pub struct CType<'a> {
 }
 
 impl<'a> CType<'a> {
+    pub fn is_base_type(&self, base: CBaseType) -> bool {
+        self.base == base
+            && matches!(self.decoration, CDecoration::None | CDecoration::Const)
+            && self.array_size.is_none()
+            && self.bit_count.is_none()
+    }
+
     pub fn strip_array(&self) -> CType<'a> {
         if self.array_size.is_some() {
             let decoration = match self.decoration {

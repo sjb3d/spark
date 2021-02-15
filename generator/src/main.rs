@@ -1385,11 +1385,11 @@ impl<'a> Generator<'a> {
                     self.get_rust_parameter_type(&decl.ty.strip_array(), None),
                 )?;
             }
-            writeln!(
-                w,
-                ") -> {};",
-                self.get_rust_parameter_type(&function_decl.proto.ty, None)
-            )?;
+            writeln!(w, ")")?;
+            if !function_decl.proto.ty.is_base_type(CBaseType::Void) {
+                writeln!(w, "-> {}", self.get_rust_parameter_type(&function_decl.proto.ty, None))?;
+            }
+            writeln!(w, ";")?;
         } else {
             panic!("missing function pointer code for {:?}", ty);
         }
@@ -1624,7 +1624,11 @@ impl<'a> Generator<'a> {
                         self.get_rust_parameter_type(&param.ty.strip_array(), None),
                     )?;
                 }
-                writeln!(w, ") -> {};", self.get_rust_parameter_type(&decl.proto.ty, None))?;
+                writeln!(w, ")")?;
+                if !decl.proto.ty.is_base_type(CBaseType::Void) {
+                    writeln!(w, "-> {}", self.get_rust_parameter_type(&decl.proto.ty, None))?;
+                }
+                writeln!(w, ";")?;
             }
         }
         Ok(())
@@ -2406,10 +2410,12 @@ impl<'a> Generator<'a> {
                 ty: LibParamType::CDecl,
             })
             .collect();
-        let cmd_return_value = match cmd_def.proto.type_name.as_ref_str() {
-            Some("VkResult") => CommandReturnValue::Result,
-            Some("void") => CommandReturnValue::Void,
-            _ => CommandReturnValue::Other,
+        let cmd_return_value = if decl.proto.ty.is_base_type(CBaseType::Named("VkResult")) {
+            CommandReturnValue::Result
+        } else if decl.proto.ty.is_base_type(CBaseType::Void) {
+            CommandReturnValue::Void
+        } else {
+            CommandReturnValue::Other
         };
 
         let (return_type, return_transform, return_type_name) =
