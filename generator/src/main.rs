@@ -1076,6 +1076,12 @@ impl<'a> Generator<'a> {
 
     fn get_enum_entry_name(&self, type_name: &str, enum_type: EnumType, enum_name: &str) -> String {
         let uppercase_entry_name = enum_name.to_uppercase();
+        // HACK: move numbers in the typename so they can be removed from the name
+        let type_name = if let Some(index) = type_name.find("FlagBits2") {
+            format!("{}_2_{}", &type_name[..index], &type_name[(index + 9)..])
+        } else {
+            type_name.to_owned()
+        };
         let shouty_type_name = type_name.to_shouty_snake_case();
         let mut name_parts: Vec<&str> = uppercase_entry_name
             .split('_')

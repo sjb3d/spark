@@ -6320,53 +6320,53 @@ impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct AccessFlags2KHR(u64);
 impl AccessFlags2KHR {
-    pub const N2_NONE: Self = Self(0x0);
-    pub const N2_INDIRECT_COMMAND_READ: Self = Self(0x1);
-    pub const N2_INDEX_READ: Self = Self(0x2);
-    pub const N2_VERTEX_ATTRIBUTE_READ: Self = Self(0x4);
-    pub const N2_UNIFORM_READ: Self = Self(0x8);
-    pub const N2_INPUT_ATTACHMENT_READ: Self = Self(0x10);
-    pub const N2_SHADER_READ: Self = Self(0x20);
-    pub const N2_SHADER_WRITE: Self = Self(0x40);
-    pub const N2_COLOR_ATTACHMENT_READ: Self = Self(0x80);
-    pub const N2_COLOR_ATTACHMENT_WRITE: Self = Self(0x100);
-    pub const N2_DEPTH_STENCIL_ATTACHMENT_READ: Self = Self(0x200);
-    pub const N2_DEPTH_STENCIL_ATTACHMENT_WRITE: Self = Self(0x400);
-    pub const N2_TRANSFER_READ: Self = Self(0x800);
-    pub const N2_TRANSFER_WRITE: Self = Self(0x1000);
-    pub const N2_HOST_READ: Self = Self(0x2000);
-    pub const N2_HOST_WRITE: Self = Self(0x4000);
-    pub const N2_MEMORY_READ: Self = Self(0x8000);
-    pub const N2_MEMORY_WRITE: Self = Self(0x10000);
-    pub const N2_SHADER_SAMPLED_READ: Self = Self(0x100000000);
-    pub const N2_SHADER_STORAGE_READ: Self = Self(0x200000000);
-    pub const N2_SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    pub const NONE: Self = Self(0x0);
+    pub const INDIRECT_COMMAND_READ: Self = Self(0x1);
+    pub const INDEX_READ: Self = Self(0x2);
+    pub const VERTEX_ATTRIBUTE_READ: Self = Self(0x4);
+    pub const UNIFORM_READ: Self = Self(0x8);
+    pub const INPUT_ATTACHMENT_READ: Self = Self(0x10);
+    pub const SHADER_READ: Self = Self(0x20);
+    pub const SHADER_WRITE: Self = Self(0x40);
+    pub const COLOR_ATTACHMENT_READ: Self = Self(0x80);
+    pub const COLOR_ATTACHMENT_WRITE: Self = Self(0x100);
+    pub const DEPTH_STENCIL_ATTACHMENT_READ: Self = Self(0x200);
+    pub const DEPTH_STENCIL_ATTACHMENT_WRITE: Self = Self(0x400);
+    pub const TRANSFER_READ: Self = Self(0x800);
+    pub const TRANSFER_WRITE: Self = Self(0x1000);
+    pub const HOST_READ: Self = Self(0x2000);
+    pub const HOST_WRITE: Self = Self(0x4000);
+    pub const MEMORY_READ: Self = Self(0x8000);
+    pub const MEMORY_WRITE: Self = Self(0x10000);
+    pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
+    pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
+    pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
+    pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = Self(0x4000000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = Self(0x4000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = Self(0x8000000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = Self(0x8000000);
     /// read access flag for reading conditional rendering predicate
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
+    pub const CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
+    pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
+    pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ: Self = Self(0x800000);
-    pub const N2_SHADING_RATE_IMAGE_READ_NV: Self = Self::N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ;
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ: Self = Self(0x800000);
+    pub const SHADING_RATE_IMAGE_READ_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_READ;
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_ACCELERATION_STRUCTURE_READ: Self = Self(0x200000);
+    pub const ACCELERATION_STRUCTURE_READ: Self = Self(0x200000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_ACCELERATION_STRUCTURE_WRITE: Self = Self(0x400000);
-    pub const N2_ACCELERATION_STRUCTURE_READ_NV: Self = Self::N2_ACCELERATION_STRUCTURE_READ;
-    pub const N2_ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::N2_ACCELERATION_STRUCTURE_WRITE;
+    pub const ACCELERATION_STRUCTURE_WRITE: Self = Self(0x400000);
+    pub const ACCELERATION_STRUCTURE_READ_NV: Self = Self::ACCELERATION_STRUCTURE_READ;
+    pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::ACCELERATION_STRUCTURE_WRITE;
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
+    pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
+    pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
 }
 impl default::Default for AccessFlags2KHR {
     fn default() -> Self {
@@ -6431,37 +6431,37 @@ impl fmt::Display for AccessFlags2KHR {
         display_bitmask(
             self.0 as _,
             &[
-                (0x1, "N2_INDIRECT_COMMAND_READ"),
-                (0x2, "N2_INDEX_READ"),
-                (0x4, "N2_VERTEX_ATTRIBUTE_READ"),
-                (0x8, "N2_UNIFORM_READ"),
-                (0x10, "N2_INPUT_ATTACHMENT_READ"),
-                (0x20, "N2_SHADER_READ"),
-                (0x40, "N2_SHADER_WRITE"),
-                (0x80, "N2_COLOR_ATTACHMENT_READ"),
-                (0x100, "N2_COLOR_ATTACHMENT_WRITE"),
-                (0x200, "N2_DEPTH_STENCIL_ATTACHMENT_READ"),
-                (0x400, "N2_DEPTH_STENCIL_ATTACHMENT_WRITE"),
-                (0x800, "N2_TRANSFER_READ"),
-                (0x1000, "N2_TRANSFER_WRITE"),
-                (0x2000, "N2_HOST_READ"),
-                (0x4000, "N2_HOST_WRITE"),
-                (0x8000, "N2_MEMORY_READ"),
-                (0x10000, "N2_MEMORY_WRITE"),
-                (0x100000000, "N2_SHADER_SAMPLED_READ"),
-                (0x200000000, "N2_SHADER_STORAGE_READ"),
-                (0x400000000, "N2_SHADER_STORAGE_WRITE"),
-                (0x2000000, "N2_TRANSFORM_FEEDBACK_WRITE_EXT"),
-                (0x4000000, "N2_TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
-                (0x8000000, "N2_TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
-                (0x100000, "N2_CONDITIONAL_RENDERING_READ_EXT"),
-                (0x20000, "N2_COMMAND_PREPROCESS_READ_NV"),
-                (0x40000, "N2_COMMAND_PREPROCESS_WRITE_NV"),
-                (0x800000, "N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ"),
-                (0x200000, "N2_ACCELERATION_STRUCTURE_READ"),
-                (0x400000, "N2_ACCELERATION_STRUCTURE_WRITE"),
-                (0x1000000, "N2_FRAGMENT_DENSITY_MAP_READ_EXT"),
-                (0x80000, "N2_COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+                (0x1, "INDIRECT_COMMAND_READ"),
+                (0x2, "INDEX_READ"),
+                (0x4, "VERTEX_ATTRIBUTE_READ"),
+                (0x8, "UNIFORM_READ"),
+                (0x10, "INPUT_ATTACHMENT_READ"),
+                (0x20, "SHADER_READ"),
+                (0x40, "SHADER_WRITE"),
+                (0x80, "COLOR_ATTACHMENT_READ"),
+                (0x100, "COLOR_ATTACHMENT_WRITE"),
+                (0x200, "DEPTH_STENCIL_ATTACHMENT_READ"),
+                (0x400, "DEPTH_STENCIL_ATTACHMENT_WRITE"),
+                (0x800, "TRANSFER_READ"),
+                (0x1000, "TRANSFER_WRITE"),
+                (0x2000, "HOST_READ"),
+                (0x4000, "HOST_WRITE"),
+                (0x8000, "MEMORY_READ"),
+                (0x10000, "MEMORY_WRITE"),
+                (0x100000000, "SHADER_SAMPLED_READ"),
+                (0x200000000, "SHADER_STORAGE_READ"),
+                (0x400000000, "SHADER_STORAGE_WRITE"),
+                (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
+                (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
+                (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
+                (0x100000, "CONDITIONAL_RENDERING_READ_EXT"),
+                (0x20000, "COMMAND_PREPROCESS_READ_NV"),
+                (0x40000, "COMMAND_PREPROCESS_WRITE_NV"),
+                (0x800000, "FRAGMENT_SHADING_RATE_ATTACHMENT_READ"),
+                (0x200000, "ACCELERATION_STRUCTURE_READ"),
+                (0x400000, "ACCELERATION_STRUCTURE_WRITE"),
+                (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
+                (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
             ],
             f,
         )
@@ -6471,54 +6471,54 @@ impl fmt::Display for AccessFlags2KHR {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineStageFlags2KHR(u64);
 impl PipelineStageFlags2KHR {
-    pub const N2_NONE: Self = Self(0x0);
-    pub const N2_TOP_OF_PIPE: Self = Self(0x1);
-    pub const N2_DRAW_INDIRECT: Self = Self(0x2);
-    pub const N2_VERTEX_INPUT: Self = Self(0x4);
-    pub const N2_VERTEX_SHADER: Self = Self(0x8);
-    pub const N2_TESSELLATION_CONTROL_SHADER: Self = Self(0x10);
-    pub const N2_TESSELLATION_EVALUATION_SHADER: Self = Self(0x20);
-    pub const N2_GEOMETRY_SHADER: Self = Self(0x40);
-    pub const N2_FRAGMENT_SHADER: Self = Self(0x80);
-    pub const N2_EARLY_FRAGMENT_TESTS: Self = Self(0x100);
-    pub const N2_LATE_FRAGMENT_TESTS: Self = Self(0x200);
-    pub const N2_COLOR_ATTACHMENT_OUTPUT: Self = Self(0x400);
-    pub const N2_COMPUTE_SHADER: Self = Self(0x800);
-    pub const N2_ALL_TRANSFER: Self = Self(0x1000);
-    pub const N2_TRANSFER: Self = Self::N2_ALL_TRANSFER;
-    pub const N2_BOTTOM_OF_PIPE: Self = Self(0x2000);
-    pub const N2_HOST: Self = Self(0x4000);
-    pub const N2_ALL_GRAPHICS: Self = Self(0x8000);
-    pub const N2_ALL_COMMANDS: Self = Self(0x10000);
-    pub const N2_COPY: Self = Self(0x100000000);
-    pub const N2_RESOLVE: Self = Self(0x200000000);
-    pub const N2_BLIT: Self = Self(0x400000000);
-    pub const N2_CLEAR: Self = Self(0x800000000);
-    pub const N2_INDEX_INPUT: Self = Self(0x1000000000);
-    pub const N2_VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
-    pub const N2_PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
+    pub const NONE: Self = Self(0x0);
+    pub const TOP_OF_PIPE: Self = Self(0x1);
+    pub const DRAW_INDIRECT: Self = Self(0x2);
+    pub const VERTEX_INPUT: Self = Self(0x4);
+    pub const VERTEX_SHADER: Self = Self(0x8);
+    pub const TESSELLATION_CONTROL_SHADER: Self = Self(0x10);
+    pub const TESSELLATION_EVALUATION_SHADER: Self = Self(0x20);
+    pub const GEOMETRY_SHADER: Self = Self(0x40);
+    pub const FRAGMENT_SHADER: Self = Self(0x80);
+    pub const EARLY_FRAGMENT_TESTS: Self = Self(0x100);
+    pub const LATE_FRAGMENT_TESTS: Self = Self(0x200);
+    pub const COLOR_ATTACHMENT_OUTPUT: Self = Self(0x400);
+    pub const COMPUTE_SHADER: Self = Self(0x800);
+    pub const ALL_TRANSFER: Self = Self(0x1000);
+    pub const TRANSFER: Self = Self::ALL_TRANSFER;
+    pub const BOTTOM_OF_PIPE: Self = Self(0x2000);
+    pub const HOST: Self = Self(0x4000);
+    pub const ALL_GRAPHICS: Self = Self(0x8000);
+    pub const ALL_COMMANDS: Self = Self(0x10000);
+    pub const COPY: Self = Self(0x100000000);
+    pub const RESOLVE: Self = Self(0x200000000);
+    pub const BLIT: Self = Self(0x400000000);
+    pub const CLEAR: Self = Self(0x800000000);
+    pub const INDEX_INPUT: Self = Self(0x1000000000);
+    pub const VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
+    pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
+    pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
+    pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_COMMAND_PREPROCESS_NV: Self = Self(0x20000);
+    pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x400000);
-    pub const N2_SHADING_RATE_IMAGE_NV: Self = Self::N2_FRAGMENT_SHADING_RATE_ATTACHMENT;
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x400000);
+    pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT;
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_ACCELERATION_STRUCTURE_BUILD: Self = Self(0x2000000);
+    pub const ACCELERATION_STRUCTURE_BUILD: Self = Self(0x2000000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_RAY_TRACING_SHADER: Self = Self(0x200000);
-    pub const N2_RAY_TRACING_SHADER_NV: Self = Self::N2_RAY_TRACING_SHADER;
-    pub const N2_ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::N2_ACCELERATION_STRUCTURE_BUILD;
+    pub const RAY_TRACING_SHADER: Self = Self(0x200000);
+    pub const RAY_TRACING_SHADER_NV: Self = Self::RAY_TRACING_SHADER;
+    pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::ACCELERATION_STRUCTURE_BUILD;
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
+    pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_TASK_SHADER_NV: Self = Self(0x80000);
+    pub const TASK_SHADER_NV: Self = Self(0x80000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const N2_MESH_SHADER_NV: Self = Self(0x100000);
+    pub const MESH_SHADER_NV: Self = Self(0x100000);
 }
 impl default::Default for PipelineStageFlags2KHR {
     fn default() -> Self {
@@ -6583,39 +6583,39 @@ impl fmt::Display for PipelineStageFlags2KHR {
         display_bitmask(
             self.0 as _,
             &[
-                (0x1, "N2_TOP_OF_PIPE"),
-                (0x2, "N2_DRAW_INDIRECT"),
-                (0x4, "N2_VERTEX_INPUT"),
-                (0x8, "N2_VERTEX_SHADER"),
-                (0x10, "N2_TESSELLATION_CONTROL_SHADER"),
-                (0x20, "N2_TESSELLATION_EVALUATION_SHADER"),
-                (0x40, "N2_GEOMETRY_SHADER"),
-                (0x80, "N2_FRAGMENT_SHADER"),
-                (0x100, "N2_EARLY_FRAGMENT_TESTS"),
-                (0x200, "N2_LATE_FRAGMENT_TESTS"),
-                (0x400, "N2_COLOR_ATTACHMENT_OUTPUT"),
-                (0x800, "N2_COMPUTE_SHADER"),
-                (0x1000, "N2_ALL_TRANSFER"),
-                (0x2000, "N2_BOTTOM_OF_PIPE"),
-                (0x4000, "N2_HOST"),
-                (0x8000, "N2_ALL_GRAPHICS"),
-                (0x10000, "N2_ALL_COMMANDS"),
-                (0x100000000, "N2_COPY"),
-                (0x200000000, "N2_RESOLVE"),
-                (0x400000000, "N2_BLIT"),
-                (0x800000000, "N2_CLEAR"),
-                (0x1000000000, "N2_INDEX_INPUT"),
-                (0x2000000000, "N2_VERTEX_ATTRIBUTE_INPUT"),
-                (0x4000000000, "N2_PRE_RASTERIZATION_SHADERS"),
-                (0x1000000, "N2_TRANSFORM_FEEDBACK_EXT"),
-                (0x40000, "N2_CONDITIONAL_RENDERING_EXT"),
-                (0x20000, "N2_COMMAND_PREPROCESS_NV"),
-                (0x400000, "N2_FRAGMENT_SHADING_RATE_ATTACHMENT"),
-                (0x2000000, "N2_ACCELERATION_STRUCTURE_BUILD"),
-                (0x200000, "N2_RAY_TRACING_SHADER"),
-                (0x800000, "N2_FRAGMENT_DENSITY_PROCESS_EXT"),
-                (0x80000, "N2_TASK_SHADER_NV"),
-                (0x100000, "N2_MESH_SHADER_NV"),
+                (0x1, "TOP_OF_PIPE"),
+                (0x2, "DRAW_INDIRECT"),
+                (0x4, "VERTEX_INPUT"),
+                (0x8, "VERTEX_SHADER"),
+                (0x10, "TESSELLATION_CONTROL_SHADER"),
+                (0x20, "TESSELLATION_EVALUATION_SHADER"),
+                (0x40, "GEOMETRY_SHADER"),
+                (0x80, "FRAGMENT_SHADER"),
+                (0x100, "EARLY_FRAGMENT_TESTS"),
+                (0x200, "LATE_FRAGMENT_TESTS"),
+                (0x400, "COLOR_ATTACHMENT_OUTPUT"),
+                (0x800, "COMPUTE_SHADER"),
+                (0x1000, "ALL_TRANSFER"),
+                (0x2000, "BOTTOM_OF_PIPE"),
+                (0x4000, "HOST"),
+                (0x8000, "ALL_GRAPHICS"),
+                (0x10000, "ALL_COMMANDS"),
+                (0x100000000, "COPY"),
+                (0x200000000, "RESOLVE"),
+                (0x400000000, "BLIT"),
+                (0x800000000, "CLEAR"),
+                (0x1000000000, "INDEX_INPUT"),
+                (0x2000000000, "VERTEX_ATTRIBUTE_INPUT"),
+                (0x4000000000, "PRE_RASTERIZATION_SHADERS"),
+                (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
+                (0x40000, "CONDITIONAL_RENDERING_EXT"),
+                (0x20000, "COMMAND_PREPROCESS_NV"),
+                (0x400000, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x2000000, "ACCELERATION_STRUCTURE_BUILD"),
+                (0x200000, "RAY_TRACING_SHADER"),
+                (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
+                (0x80000, "TASK_SHADER_NV"),
+                (0x100000, "MESH_SHADER_NV"),
             ],
             f,
         )
