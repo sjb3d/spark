@@ -140,13 +140,16 @@ trait GetBitmaskValueName {
 
 impl GetBitmaskValueName for vk::Type {
     fn get_bitmask_value_name(&self) -> Option<String> {
-        self.requires.as_ref_str().map(|s| s.to_owned())
-            .or_else(|| {
+        self.requires.as_ref_str().map(|s| s.to_owned()).or_else(|| {
             // TODO: look for "bitvalues" attribute once supported by vk-parse
             // HACK: just replace "Flags" with "FlagBits" for now
             let type_name = self.get_type_name();
             if let Some(offset) = type_name.find("Flags") {
-                Some(format!("{}FlagBits{}", &type_name[..offset], &type_name[(offset + 5)..]))
+                Some(format!(
+                    "{}FlagBits{}",
+                    &type_name[..offset],
+                    &type_name[(offset + 5)..]
+                ))
             } else {
                 None
             }
@@ -1165,11 +1168,11 @@ impl<'a> Generator<'a> {
                                 CBaseType::Named("VkFlags64") => BitMaskSize::N64,
                                 _ => panic!("unknown enum type {:?}", def.ty),
                             }
-                        },
+                        }
                         _ => panic!("failed to find bitmask size for {:?}", ty),
                     };
                     EnumType::Bitmask(size)
-                },
+                }
                 _ => panic!("unknown enum category {:?}", ty.category),
             };
             let value_type_name = match enum_type {
@@ -1300,17 +1303,15 @@ impl<'a> Generator<'a> {
                          fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{",
                         enum_name
                     )?;
-                    if entries.is_empty() {
-                        writeln!(w, r#"f.write_str("0")"#)?;
-                    } else {
-                        writeln!(w, "display_bitmask(self.0 as _, &[")?;
-                        for (ref name, value, _) in &entries {
-                            if let EnumEntryValue::Number { value, .. } = value {
+                    writeln!(w, "display_bitmask(self.0 as _, &[")?;
+                    for (ref name, value, _) in &entries {
+                        if let EnumEntryValue::Number { value, .. } = value {
+                            if *value != 0 {
                                 writeln!(w, r#"({:#x}, "{}"),"#, value, name)?;
                             }
                         }
-                        writeln!(w, "], f)")?;
                     }
+                    writeln!(w, "], f)")?;
                     writeln!(w, "}} }}")?;
                 }
                 EnumType::Value => {
@@ -1839,11 +1840,13 @@ impl<'a> Generator<'a> {
                     .any(|s| s == type_name);
                 let needs_lifetime = is_extended
                     || params.iter().any(|rparam| {
-                        matches!(rparam.ty,
-                    LibParamType::CStr { .. }
-                    | LibParamType::SliceLenShared { .. }
-                    | LibParamType::SliceLenSingle { .. }
-                    | LibParamType::Ref { .. })
+                        matches!(
+                            rparam.ty,
+                            LibParamType::CStr { .. }
+                                | LibParamType::SliceLenShared { .. }
+                                | LibParamType::SliceLenSingle { .. }
+                                | LibParamType::Ref { .. }
+                        )
                     });
                 let needs_setters =
                     ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
