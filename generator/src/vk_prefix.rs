@@ -104,7 +104,7 @@ pub type CAMetalLayer = Never;
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
 
-fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
+fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
     for (bit, name) in bit_names.iter().cloned() {

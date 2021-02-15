@@ -134,6 +134,26 @@ impl GetTypeName for vk::Type {
     }
 }
 
+trait GetBitmaskValueName {
+    fn get_bitmask_value_name(&self) -> Option<String>;
+}
+
+impl GetBitmaskValueName for vk::Type {
+    fn get_bitmask_value_name(&self) -> Option<String> {
+        self.requires.as_ref_str().map(|s| s.to_owned())
+            .or_else(|| {
+            // TODO: look for "bitvalues" attribute once supported by vk-parse
+            // HACK: just replace "Flags" with "FlagBits" for now
+            let type_name = self.get_type_name();
+            if let Some(offset) = type_name.find("Flags") {
+                Some(format!("{}FlagBits{}", &type_name[..offset], &type_name[(offset + 5)..]))
+            } else {
+                None
+            }
+        })
+    }
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Category {
     Loader,
@@ -181,13 +201,19 @@ enum CommandReturnValue {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum BitMaskSize {
+    N32,
+    N64,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum EnumType {
-    Bitmask,
+    Bitmask(BitMaskSize),
     Value,
 }
 
 enum EnumEntryValue {
-    Number { value: i32, comment: Option<String> },
+    Number { value: i64, comment: Option<String> },
     Alias(String),
 }
 
@@ -479,7 +505,7 @@ struct Generator<'a> {
     used_type_names: HashSet<&'a str>,
     type_name_blacklist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
-    bitmask_from_value: HashMap<&'a str, &'a str>,
+    bitmask_from_value: HashMap<String, &'a str>,
     enums_by_name: HashMap<&'a str, Vec<&'a vk::Enum>>,
     constant_enums: Vec<&'a vk::Enum>,
     extension_by_enum_name: HashMap<&'a str, &'a vk::Extension>,
@@ -570,9 +596,9 @@ impl<'a> Generator<'a> {
                     panic!("duplicate type name from {:?}", ty)
                 }
                 if let Some("bitmask") = category {
-                    if let Some(requires) = ty.requires.as_ref_str() {
-                        if self.bitmask_from_value.insert(requires, name).is_some() {
-                            panic!("duplicate value for bitmask {}", requires);
+                    if let Some(value) = ty.get_bitmask_value_name() {
+                        if self.bitmask_from_value.insert(value, name).is_some() {
+                            panic!("duplicate value for bitmask {}", name);
                         }
                     }
                 }
@@ -1059,7 +1085,7 @@ impl<'a> Generator<'a> {
         if tag_match.is_some() {
             name_parts.pop();
         }
-        if enum_type == EnumType::Bitmask && name_parts.last() == Some(&"BIT") {
+        if matches!(enum_type, EnumType::Bitmask(_)) && name_parts.last() == Some(&"BIT") {
             name_parts.pop();
         }
         if let Some(tag) = tag_match {
@@ -1079,7 +1105,7 @@ impl<'a> Generator<'a> {
     fn get_enum_entry_value(&self, type_name: &str, enum_type: EnumType, en: &'a vk::Enum) -> EnumEntryValue {
         match en.spec {
             vk::EnumSpec::Value { ref value, .. } => EnumEntryValue::Number {
-                value: c_parse_int(value),
+                value: c_parse_int(value) as i64,
                 comment: en.comment.clone(),
             },
             vk::EnumSpec::Bitpos { ref bitpos, .. } => EnumEntryValue::Number {
@@ -1098,7 +1124,7 @@ impl<'a> Generator<'a> {
                 });
                 let value = 1_000_000_000 + (num - 1) * 1000 + offset;
                 EnumEntryValue::Number {
-                    value: if dir { value as i32 } else { -value as i32 },
+                    value: if dir { value } else { -value },
                     comment: en.comment.clone(),
                 }
             }
@@ -1109,7 +1135,7 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn write_enum_type(&self, w: &mut impl IoWrite, ty: &vk::Type, enum_type: EnumType) -> WriteResult {
+    fn write_enum_type(&self, w: &mut impl IoWrite, ty: &vk::Type) -> WriteResult {
         let type_name = ty.get_type_name();
         if self.type_name_blacklist.contains(type_name) {
             return Ok(());
@@ -1118,7 +1144,7 @@ impl<'a> Generator<'a> {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
         if let Some(alias) = ty.alias.as_ref_str() {
-            if enum_type == EnumType::Value && !self.is_enum_value_type_used(alias) {
+            if ty.category.as_ref_str() == Some("enum") && !self.is_enum_value_type_used(alias) {
                 return Ok(());
             }
             writeln!(
@@ -1128,12 +1154,29 @@ impl<'a> Generator<'a> {
                 alias.skip_prefix(TYPE_PREFIX),
             )?;
         } else {
-            let requires = ty.requires.as_ref_str();
+            let enum_type = match ty.category.as_ref_str() {
+                Some("enum") => EnumType::Value,
+                Some("bitmask") => {
+                    let size = match &ty.spec {
+                        vk::TypeSpec::Code(vk::TypeCode { code, .. }) => {
+                            let def = c_try_parse_typedef(&code).unwrap();
+                            match def.ty.base {
+                                CBaseType::Named("VkFlags") => BitMaskSize::N32,
+                                CBaseType::Named("VkFlags64") => BitMaskSize::N64,
+                                _ => panic!("unknown enum type {:?}", def.ty),
+                            }
+                        },
+                        _ => panic!("failed to find bitmask size for {:?}", ty),
+                    };
+                    EnumType::Bitmask(size)
+                },
+                _ => panic!("unknown enum category {:?}", ty.category),
+            };
             let value_type_name = match enum_type {
-                EnumType::Bitmask => requires.unwrap_or(type_name),
+                EnumType::Bitmask(_) => ty.get_bitmask_value_name().unwrap_or_else(|| type_name.to_owned()),
                 EnumType::Value => {
                     if self.is_enum_value_type_used(type_name) {
-                        type_name
+                        type_name.to_owned()
                     } else {
                         return Ok(());
                     }
@@ -1142,21 +1185,22 @@ impl<'a> Generator<'a> {
 
             let entries: Vec<(String, EnumEntryValue, Option<&vk::Extension>)> = self
                 .enums_by_name
-                .get(value_type_name)
+                .get(value_type_name.as_str())
                 .map(|s| s.as_slice())
                 .unwrap_or(&[])
                 .iter()
                 .map(|en| {
                     (
-                        self.get_enum_entry_name(value_type_name, enum_type, en.name.as_str()),
-                        self.get_enum_entry_value(value_type_name, enum_type, en),
+                        self.get_enum_entry_name(&value_type_name, enum_type, en.name.as_str()),
+                        self.get_enum_entry_value(&value_type_name, enum_type, en),
                         self.extension_by_enum_name.get(en.name.as_str()).cloned(),
                     )
                 })
                 .collect();
 
             let (derives, interior_type) = match enum_type {
-                EnumType::Bitmask => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u32"),
+                EnumType::Bitmask(BitMaskSize::N32) => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u32"),
+                EnumType::Bitmask(BitMaskSize::N64) => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u64"),
                 EnumType::Value => ("Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash", "i32"),
             };
             let enum_name = type_name.skip_prefix(TYPE_PREFIX);
@@ -1180,8 +1224,9 @@ impl<'a> Generator<'a> {
                             "pub const {}: Self = Self({});",
                             name,
                             match enum_type {
-                                EnumType::Bitmask => format!("{:#x}", value),
-                                EnumType::Value => format!("{}", value),
+                                EnumType::Bitmask(BitMaskSize::N32) => format!("{:#x}", *value as i32),
+                                EnumType::Bitmask(BitMaskSize::N64) => format!("{:#x}", value),
+                                EnumType::Value => format!("{}", *value as i32),
                             },
                         )?;
                         all |= value;
@@ -1200,7 +1245,7 @@ impl<'a> Generator<'a> {
                 enum_name
             )?;
             match enum_type {
-                EnumType::Bitmask => {
+                EnumType::Bitmask(_) => {
                     writeln!(
                         w,
                         "impl {0} {{\
@@ -1258,7 +1303,7 @@ impl<'a> Generator<'a> {
                     if entries.is_empty() {
                         writeln!(w, r#"f.write_str("0")"#)?;
                     } else {
-                        writeln!(w, "display_bitmask(self.0, &[")?;
+                        writeln!(w, "display_bitmask(self.0 as _, &[")?;
                         for (ref name, value, _) in &entries {
                             if let EnumEntryValue::Number { value, .. } = value {
                                 writeln!(w, r#"({:#x}, "{}"),"#, value, name)?;
@@ -1579,11 +1624,8 @@ impl<'a> Generator<'a> {
                 Some("basetype") => {
                     self.write_base_type(w, ty)?;
                 }
-                Some("bitmask") => {
-                    self.write_enum_type(w, ty, EnumType::Bitmask)?;
-                }
-                Some("enum") => {
-                    self.write_enum_type(w, ty, EnumType::Value)?;
+                Some("bitmask") | Some("enum") => {
+                    self.write_enum_type(w, ty)?;
                 }
                 Some("handle") => {
                     self.write_handle_type(w, ty)?;

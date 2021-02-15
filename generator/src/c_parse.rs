@@ -227,7 +227,7 @@ fn variable_decl(i: &str) -> Res<CVariableDecl> {
         CVariableDecl {
             name: var_name,
             ty: CType {
-                base: base,
+                base,
                 decoration: match (const0.is_some(), ptr0.is_some(), const1.is_some(), ptr1.is_some()) {
                     (false, false, false, false) => CDecoration::None,
                     (true, false, false, false) => CDecoration::Const,
