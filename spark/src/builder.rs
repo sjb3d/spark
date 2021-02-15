@@ -3933,7 +3933,9 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
     }
 }
 impl<'a> SubmitInfoNext for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {}
+impl<'a> SubmitInfo2KHRNext for Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {}
 impl SubmitInfoNext for vk::Win32KeyedMutexAcquireReleaseInfoNV {}
+impl SubmitInfo2KHRNext for vk::Win32KeyedMutexAcquireReleaseInfoNV {}
 impl Builder<'_> for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     type Type = PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -5176,7 +5178,9 @@ impl<'a> Deref for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
     }
 }
 impl<'a> SubmitInfoNext for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {}
+impl<'a> SubmitInfo2KHRNext for Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {}
 impl SubmitInfoNext for vk::Win32KeyedMutexAcquireReleaseInfoKHR {}
+impl SubmitInfo2KHRNext for vk::Win32KeyedMutexAcquireReleaseInfoKHR {}
 impl<'a> Builder<'a> for vk::PhysicalDeviceExternalSemaphoreInfo {
     type Type = PhysicalDeviceExternalSemaphoreInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -7832,7 +7836,9 @@ impl<'a> Deref for SampleLocationsInfoEXTBuilder<'a> {
     }
 }
 impl<'a> ImageMemoryBarrierNext for SampleLocationsInfoEXTBuilder<'a> {}
+impl<'a> ImageMemoryBarrier2KHRNext for SampleLocationsInfoEXTBuilder<'a> {}
 impl ImageMemoryBarrierNext for vk::SampleLocationsInfoEXT {}
+impl ImageMemoryBarrier2KHRNext for vk::SampleLocationsInfoEXT {}
 impl<'a> Builder<'a> for vk::RenderPassSampleLocationsBeginInfoEXT {
     type Type = RenderPassSampleLocationsBeginInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -9506,17 +9512,25 @@ impl<'a> Deref for SubpassDescription2Builder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::SubpassDependency2 {
-    type Type = SubpassDependency2Builder;
+impl<'a> Builder<'a> for vk::SubpassDependency2 {
+    type Type = SubpassDependency2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait SubpassDependency2Next {}
 #[derive(Default)]
-pub struct SubpassDependency2Builder {
+pub struct SubpassDependency2Builder<'a> {
     inner: vk::SubpassDependency2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl SubpassDependency2Builder {
+impl<'a> SubpassDependency2Builder<'a> {
+    pub fn insert_next<T: SubpassDependency2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -9558,7 +9572,7 @@ impl SubpassDependency2Builder {
         self
     }
 }
-impl Deref for SubpassDependency2Builder {
+impl<'a> Deref for SubpassDependency2Builder<'a> {
     type Target = vk::SubpassDependency2;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -13419,7 +13433,9 @@ impl Deref for PerformanceQuerySubmitInfoKHRBuilder {
     }
 }
 impl SubmitInfoNext for PerformanceQuerySubmitInfoKHRBuilder {}
+impl SubmitInfo2KHRNext for PerformanceQuerySubmitInfoKHRBuilder {}
 impl SubmitInfoNext for vk::PerformanceQuerySubmitInfoKHR {}
+impl SubmitInfo2KHRNext for vk::PerformanceQuerySubmitInfoKHR {}
 impl Builder<'_> for vk::HeadlessSurfaceCreateInfoEXT {
     type Type = HeadlessSurfaceCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -17162,3 +17178,393 @@ impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoVA
 impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
 impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
 impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
+impl Builder<'_> for vk::MemoryBarrier2KHR {
+    type Type = MemoryBarrier2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryBarrier2KHRBuilder {
+    inner: vk::MemoryBarrier2KHR,
+}
+impl MemoryBarrier2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.src_stage_mask = src_stage_mask;
+        self
+    }
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.src_access_mask = src_access_mask;
+        self
+    }
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.dst_stage_mask = dst_stage_mask;
+        self
+    }
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.dst_access_mask = dst_access_mask;
+        self
+    }
+}
+impl Deref for MemoryBarrier2KHRBuilder {
+    type Target = vk::MemoryBarrier2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubpassDependency2Next for MemoryBarrier2KHRBuilder {}
+impl SubpassDependency2Next for vk::MemoryBarrier2KHR {}
+impl<'a> Builder<'a> for vk::ImageMemoryBarrier2KHR {
+    type Type = ImageMemoryBarrier2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait ImageMemoryBarrier2KHRNext {}
+#[derive(Default)]
+pub struct ImageMemoryBarrier2KHRBuilder<'a> {
+    inner: vk::ImageMemoryBarrier2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ImageMemoryBarrier2KHRBuilder<'a> {
+    pub fn insert_next<T: ImageMemoryBarrier2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.src_stage_mask = src_stage_mask;
+        self
+    }
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.src_access_mask = src_access_mask;
+        self
+    }
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.dst_stage_mask = dst_stage_mask;
+        self
+    }
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.dst_access_mask = dst_access_mask;
+        self
+    }
+    pub fn old_layout(mut self, old_layout: vk::ImageLayout) -> Self {
+        self.inner.old_layout = old_layout;
+        self
+    }
+    pub fn new_layout(mut self, new_layout: vk::ImageLayout) -> Self {
+        self.inner.new_layout = new_layout;
+        self
+    }
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+        self.inner.src_queue_family_index = src_queue_family_index;
+        self
+    }
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+        self.inner.dst_queue_family_index = dst_queue_family_index;
+        self
+    }
+    pub fn image(mut self, image: vk::Image) -> Self {
+        self.inner.image = Some(image);
+        self
+    }
+    pub fn subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
+        self.inner.subresource_range = subresource_range;
+        self
+    }
+}
+impl<'a> Deref for ImageMemoryBarrier2KHRBuilder<'a> {
+    type Target = vk::ImageMemoryBarrier2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferMemoryBarrier2KHR {
+    type Type = BufferMemoryBarrier2KHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferMemoryBarrier2KHRBuilder {
+    inner: vk::BufferMemoryBarrier2KHR,
+}
+impl BufferMemoryBarrier2KHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src_stage_mask(mut self, src_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.src_stage_mask = src_stage_mask;
+        self
+    }
+    pub fn src_access_mask(mut self, src_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.src_access_mask = src_access_mask;
+        self
+    }
+    pub fn dst_stage_mask(mut self, dst_stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.dst_stage_mask = dst_stage_mask;
+        self
+    }
+    pub fn dst_access_mask(mut self, dst_access_mask: vk::AccessFlags2KHR) -> Self {
+        self.inner.dst_access_mask = dst_access_mask;
+        self
+    }
+    pub fn src_queue_family_index(mut self, src_queue_family_index: u32) -> Self {
+        self.inner.src_queue_family_index = src_queue_family_index;
+        self
+    }
+    pub fn dst_queue_family_index(mut self, dst_queue_family_index: u32) -> Self {
+        self.inner.dst_queue_family_index = dst_queue_family_index;
+        self
+    }
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
+        self.inner.buffer = Some(buffer);
+        self
+    }
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for BufferMemoryBarrier2KHRBuilder {
+    type Target = vk::BufferMemoryBarrier2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DependencyInfoKHR {
+    type Type = DependencyInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DependencyInfoKHRBuilder<'a> {
+    inner: vk::DependencyInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DependencyInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dependency_flags(mut self, dependency_flags: vk::DependencyFlags) -> Self {
+        self.inner.dependency_flags = dependency_flags;
+        self
+    }
+    pub fn p_memory_barriers(mut self, p_memory_barriers: &'a [vk::MemoryBarrier2KHR]) -> Self {
+        self.inner.memory_barrier_count = p_memory_barriers.len() as u32;
+        self.inner.p_memory_barriers = p_memory_barriers.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_buffer_memory_barriers(mut self, p_buffer_memory_barriers: &'a [vk::BufferMemoryBarrier2KHR]) -> Self {
+        self.inner.buffer_memory_barrier_count = p_buffer_memory_barriers.len() as u32;
+        self.inner.p_buffer_memory_barriers = p_buffer_memory_barriers.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_image_memory_barriers(mut self, p_image_memory_barriers: &'a [vk::ImageMemoryBarrier2KHR]) -> Self {
+        self.inner.image_memory_barrier_count = p_image_memory_barriers.len() as u32;
+        self.inner.p_image_memory_barriers = p_image_memory_barriers.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for DependencyInfoKHRBuilder<'a> {
+    type Target = vk::DependencyInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::SemaphoreSubmitInfoKHR {
+    type Type = SemaphoreSubmitInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SemaphoreSubmitInfoKHRBuilder {
+    inner: vk::SemaphoreSubmitInfoKHR,
+}
+impl SemaphoreSubmitInfoKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+        self.inner.semaphore = Some(semaphore);
+        self
+    }
+    pub fn value(mut self, value: u64) -> Self {
+        self.inner.value = value;
+        self
+    }
+    pub fn stage_mask(mut self, stage_mask: vk::PipelineStageFlags2KHR) -> Self {
+        self.inner.stage_mask = stage_mask;
+        self
+    }
+    pub fn device_index(mut self, device_index: u32) -> Self {
+        self.inner.device_index = device_index;
+        self
+    }
+}
+impl Deref for SemaphoreSubmitInfoKHRBuilder {
+    type Target = vk::SemaphoreSubmitInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::CommandBufferSubmitInfoKHR {
+    type Type = CommandBufferSubmitInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CommandBufferSubmitInfoKHRBuilder {
+    inner: vk::CommandBufferSubmitInfoKHR,
+}
+impl CommandBufferSubmitInfoKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn command_buffer(mut self, command_buffer: vk::CommandBuffer) -> Self {
+        self.inner.command_buffer = Some(command_buffer);
+        self
+    }
+    pub fn device_mask(mut self, device_mask: u32) -> Self {
+        self.inner.device_mask = device_mask;
+        self
+    }
+}
+impl Deref for CommandBufferSubmitInfoKHRBuilder {
+    type Target = vk::CommandBufferSubmitInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SubmitInfo2KHR {
+    type Type = SubmitInfo2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait SubmitInfo2KHRNext {}
+#[derive(Default)]
+pub struct SubmitInfo2KHRBuilder<'a> {
+    inner: vk::SubmitInfo2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SubmitInfo2KHRBuilder<'a> {
+    pub fn insert_next<T: SubmitInfo2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::SubmitFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_wait_semaphore_infos(mut self, p_wait_semaphore_infos: &'a [vk::SemaphoreSubmitInfoKHR]) -> Self {
+        self.inner.wait_semaphore_info_count = p_wait_semaphore_infos.len() as u32;
+        self.inner.p_wait_semaphore_infos = p_wait_semaphore_infos.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_command_buffer_infos(mut self, p_command_buffer_infos: &'a [vk::CommandBufferSubmitInfoKHR]) -> Self {
+        self.inner.command_buffer_info_count = p_command_buffer_infos.len() as u32;
+        self.inner.p_command_buffer_infos = p_command_buffer_infos.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_signal_semaphore_infos(mut self, p_signal_semaphore_infos: &'a [vk::SemaphoreSubmitInfoKHR]) -> Self {
+        self.inner.signal_semaphore_info_count = p_signal_semaphore_infos.len() as u32;
+        self.inner.p_signal_semaphore_infos = p_signal_semaphore_infos.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for SubmitInfo2KHRBuilder<'a> {
+    type Target = vk::SubmitInfo2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl QueueFamilyProperties2Next for vk::QueueFamilyCheckpointProperties2NV {}
+impl Builder<'_> for vk::PhysicalDeviceSynchronization2FeaturesKHR {
+    type Type = PhysicalDeviceSynchronization2FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSynchronization2FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceSynchronization2FeaturesKHR,
+}
+impl PhysicalDeviceSynchronization2FeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn synchronization2(mut self, synchronization2: bool) -> Self {
+        self.inner.synchronization2 = if synchronization2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceSynchronization2FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceSynchronization2FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSynchronization2FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSynchronization2FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSynchronization2FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSynchronization2FeaturesKHR {}

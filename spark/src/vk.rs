@@ -104,7 +104,7 @@ pub type CAMetalLayer = Never;
 #[allow(non_camel_case_types)]
 pub type zx_handle_t = u32;
 
-fn display_bitmask(bits: u32, bit_names: &[(u32, &str)], f: &mut fmt::Formatter) -> fmt::Result {
+fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
     for (bit, name) in bit_names.iter().cloned() {
@@ -160,6 +160,7 @@ pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
+pub type Flags64 = u64;
 pub type DeviceSize = u64;
 pub type DeviceAddress = u64;
 #[repr(transparent)]
@@ -229,7 +230,7 @@ impl ops::BitXorAssign for FramebufferCreateFlags {
 }
 impl fmt::Display for FramebufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "IMAGELESS")], f)
+        display_bitmask(self.0 as _, &[(0x1, "IMAGELESS")], f)
     }
 }
 #[repr(transparent)]
@@ -296,7 +297,7 @@ impl ops::BitXorAssign for QueryPoolCreateFlags {
 }
 impl fmt::Display for QueryPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -368,7 +369,7 @@ impl ops::BitXorAssign for RenderPassCreateFlags {
 }
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "RESERVED_0_KHR"), (0x2, "TRANSFORM_QCOM")], f)
+        display_bitmask(self.0 as _, &[(0x1, "RESERVED_0_KHR"), (0x2, "TRANSFORM_QCOM")], f)
     }
 }
 #[repr(transparent)]
@@ -441,7 +442,7 @@ impl ops::BitXorAssign for SamplerCreateFlags {
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "SUBSAMPLED_EXT"), (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT")],
             f,
         )
@@ -511,7 +512,7 @@ impl ops::BitXorAssign for PipelineLayoutCreateFlags {
 }
 impl fmt::Display for PipelineLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -586,7 +587,7 @@ impl ops::BitXorAssign for PipelineCacheCreateFlags {
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x2, "RESERVED_1_EXT"),
                 (0x1, "EXTERNALLY_SYNCHRONIZED_EXT"),
@@ -660,7 +661,7 @@ impl ops::BitXorAssign for PipelineDepthStencilStateCreateFlags {
 }
 impl fmt::Display for PipelineDepthStencilStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -727,7 +728,7 @@ impl ops::BitXorAssign for PipelineDynamicStateCreateFlags {
 }
 impl fmt::Display for PipelineDynamicStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -794,7 +795,7 @@ impl ops::BitXorAssign for PipelineColorBlendStateCreateFlags {
 }
 impl fmt::Display for PipelineColorBlendStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -861,7 +862,7 @@ impl ops::BitXorAssign for PipelineMultisampleStateCreateFlags {
 }
 impl fmt::Display for PipelineMultisampleStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -928,7 +929,7 @@ impl ops::BitXorAssign for PipelineRasterizationStateCreateFlags {
 }
 impl fmt::Display for PipelineRasterizationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -995,7 +996,7 @@ impl ops::BitXorAssign for PipelineViewportStateCreateFlags {
 }
 impl fmt::Display for PipelineViewportStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1062,7 +1063,7 @@ impl ops::BitXorAssign for PipelineTessellationStateCreateFlags {
 }
 impl fmt::Display for PipelineTessellationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1129,7 +1130,7 @@ impl ops::BitXorAssign for PipelineInputAssemblyStateCreateFlags {
 }
 impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1196,7 +1197,7 @@ impl ops::BitXorAssign for PipelineVertexInputStateCreateFlags {
 }
 impl fmt::Display for PipelineVertexInputStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1273,7 +1274,7 @@ impl ops::BitXorAssign for PipelineShaderStageCreateFlags {
 impl fmt::Display for PipelineShaderStageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x4, "RESERVED_2_NV"),
                 (0x1, "ALLOW_VARYING_SUBGROUP_SIZE_EXT"),
@@ -1357,7 +1358,7 @@ impl ops::BitXorAssign for DescriptorSetLayoutCreateFlags {
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x2, "UPDATE_AFTER_BIND_POOL"),
                 (0x1, "PUSH_DESCRIPTOR_KHR"),
@@ -1431,7 +1432,7 @@ impl ops::BitXorAssign for BufferViewCreateFlags {
 }
 impl fmt::Display for BufferViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1498,7 +1499,7 @@ impl ops::BitXorAssign for InstanceCreateFlags {
 }
 impl fmt::Display for InstanceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1565,7 +1566,7 @@ impl ops::BitXorAssign for DeviceCreateFlags {
 }
 impl fmt::Display for DeviceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -1635,7 +1636,7 @@ impl ops::BitXorAssign for DeviceQueueCreateFlags {
 }
 impl fmt::Display for DeviceQueueCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "PROTECTED")], f)
+        display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
     }
 }
 #[repr(transparent)]
@@ -1718,7 +1719,7 @@ impl ops::BitXorAssign for QueueFlags {
 impl fmt::Display for QueueFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "GRAPHICS"),
                 (0x2, "COMPUTE"),
@@ -1814,7 +1815,7 @@ impl ops::BitXorAssign for MemoryPropertyFlags {
 impl fmt::Display for MemoryPropertyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "DEVICE_LOCAL"),
                 (0x2, "HOST_VISIBLE"),
@@ -1902,7 +1903,7 @@ impl ops::BitXorAssign for MemoryHeapFlags {
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE"), (0x4, "RESERVED_2_KHR")],
             f,
         )
@@ -1978,6 +1979,8 @@ impl AccessFlags {
     pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const NONE_KHR: Self = Self(0x0);
 }
 impl default::Default for AccessFlags {
     fn default() -> Self {
@@ -2040,7 +2043,7 @@ impl ops::BitXorAssign for AccessFlags {
 impl fmt::Display for AccessFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "INDIRECT_COMMAND_READ"),
                 (0x2, "INDEX_READ"),
@@ -2189,7 +2192,7 @@ impl ops::BitXorAssign for BufferUsageFlags {
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "TRANSFER_SRC"),
                 (0x2, "TRANSFER_DST"),
@@ -2225,7 +2228,7 @@ impl BufferCreateFlags {
     pub const SPARSE_BINDING: Self = Self(0x1);
     /// Buffer should support sparse backing with partial residency
     pub const SPARSE_RESIDENCY: Self = Self(0x2);
-    /// Buffer should support constent data access to physical memory ranges mapped into multiple locations of sparse buffers
+    /// Buffer should support constant data access to physical memory ranges mapped into multiple locations of sparse buffers
     pub const SPARSE_ALIASED: Self = Self(0x4);
     /// Buffer requires protected memory
     pub const PROTECTED: Self = Self(0x8);
@@ -2296,7 +2299,7 @@ impl ops::BitXorAssign for BufferCreateFlags {
 impl fmt::Display for BufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "SPARSE_BINDING"),
                 (0x2, "SPARSE_RESIDENCY"),
@@ -2405,7 +2408,7 @@ impl ops::BitXorAssign for ShaderStageFlags {
 impl fmt::Display for ShaderStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "VERTEX"),
                 (0x2, "TESSELLATION_CONTROL"),
@@ -2531,7 +2534,7 @@ impl ops::BitXorAssign for ImageUsageFlags {
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "TRANSFER_SRC"),
                 (0x2, "TRANSFER_DST"),
@@ -2564,7 +2567,7 @@ impl ImageCreateFlags {
     pub const SPARSE_BINDING: Self = Self(0x1);
     /// Image should support sparse backing with partial residency
     pub const SPARSE_RESIDENCY: Self = Self(0x2);
-    /// Image should support constent data access to physical memory ranges mapped into multiple locations of sparse images
+    /// Image should support constant data access to physical memory ranges mapped into multiple locations of sparse images
     pub const SPARSE_ALIASED: Self = Self(0x4);
     /// Allows image views to have different format than the base image
     pub const MUTABLE_FORMAT: Self = Self(0x8);
@@ -2656,7 +2659,7 @@ impl ops::BitXorAssign for ImageCreateFlags {
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "SPARSE_BINDING"),
                 (0x2, "SPARSE_RESIDENCY"),
@@ -2749,7 +2752,7 @@ impl ops::BitXorAssign for ImageViewCreateFlags {
 impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT"),
                 (0x2, "FRAGMENT_DENSITY_MAP_DEFERRED_EXT"),
@@ -2797,6 +2800,8 @@ impl PipelineCreateFlags {
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(0x100);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self(0x200);
+    /// Added by extension VK_NV_extension_328.
+    pub const RESERVED_BIT_20_NV: Self = Self(0x100000);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2808,13 +2813,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xffbff)
+        Self(0x1ffbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xffbff
+        self.0 == 0x1ffbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2859,7 +2864,7 @@ impl ops::BitXorAssign for PipelineCreateFlags {
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
@@ -2880,6 +2885,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x800, "LIBRARY_KHR"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT"),
                 (0x200, "EARLY_RETURN_ON_FAILURE_EXT"),
+                (0x100000, "RESERVED_BIT_20_NV"),
             ],
             f,
         )
@@ -2954,7 +2960,7 @@ impl ops::BitXorAssign for ColorComponentFlags {
 }
 impl fmt::Display for ColorComponentFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "R"), (0x2, "G"), (0x4, "B"), (0x8, "A")], f)
+        display_bitmask(self.0 as _, &[(0x1, "R"), (0x2, "G"), (0x4, "B"), (0x8, "A")], f)
     }
 }
 #[repr(transparent)]
@@ -3023,7 +3029,7 @@ impl ops::BitXorAssign for FenceCreateFlags {
 }
 impl fmt::Display for FenceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "SIGNALED")], f)
+        display_bitmask(self.0 as _, &[(0x1, "SIGNALED")], f)
     }
 }
 #[repr(transparent)]
@@ -3090,7 +3096,7 @@ impl ops::BitXorAssign for SemaphoreCreateFlags {
 }
 impl fmt::Display for SemaphoreCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -3235,7 +3241,7 @@ impl ops::BitXorAssign for FormatFeatureFlags {
 impl fmt::Display for FormatFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "SAMPLED_IMAGE"),
                 (0x2, "STORAGE_IMAGE"),
@@ -3346,7 +3352,7 @@ impl ops::BitXorAssign for QueryControlFlags {
 }
 impl fmt::Display for QueryControlFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "PRECISE")], f)
+        display_bitmask(self.0 as _, &[(0x1, "PRECISE")], f)
     }
 }
 #[repr(transparent)]
@@ -3423,7 +3429,7 @@ impl ops::BitXorAssign for QueryResultFlags {
 impl fmt::Display for QueryResultFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "N64"),
                 (0x2, "WAIT"),
@@ -3501,13 +3507,16 @@ impl ops::BitXorAssign for ShaderModuleCreateFlags {
 }
 impl fmt::Display for ShaderModuleCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "RESERVED_0_NV")], f)
+        display_bitmask(self.0 as _, &[(0x1, "RESERVED_0_NV")], f)
     }
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct EventCreateFlags(u32);
-impl EventCreateFlags {}
+impl EventCreateFlags {
+    /// Added by extension VK_KHR_synchronization2.
+    pub const DEVICE_ONLY_KHR: Self = Self(0x1);
+}
 impl default::Default for EventCreateFlags {
     fn default() -> Self {
         Self(0)
@@ -3518,13 +3527,13 @@ impl EventCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x0)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3568,7 +3577,7 @@ impl ops::BitXorAssign for EventCreateFlags {
 }
 impl fmt::Display for EventCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[(0x1, "DEVICE_ONLY_KHR")], f)
     }
 }
 #[repr(transparent)]
@@ -3643,7 +3652,7 @@ impl ops::BitXorAssign for CommandPoolCreateFlags {
 impl fmt::Display for CommandPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "TRANSIENT"), (0x2, "RESET_COMMAND_BUFFER"), (0x4, "PROTECTED")],
             f,
         )
@@ -3716,7 +3725,7 @@ impl ops::BitXorAssign for CommandPoolResetFlags {
 }
 impl fmt::Display for CommandPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "RELEASE_RESOURCES")], f)
+        display_bitmask(self.0 as _, &[(0x1, "RELEASE_RESOURCES")], f)
     }
 }
 #[repr(transparent)]
@@ -3786,7 +3795,7 @@ impl ops::BitXorAssign for CommandBufferResetFlags {
 }
 impl fmt::Display for CommandBufferResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "RELEASE_RESOURCES")], f)
+        display_bitmask(self.0 as _, &[(0x1, "RELEASE_RESOURCES")], f)
     }
 }
 #[repr(transparent)]
@@ -3859,7 +3868,7 @@ impl ops::BitXorAssign for CommandBufferUsageFlags {
 impl fmt::Display for CommandBufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "ONE_TIME_SUBMIT"),
                 (0x2, "RENDER_PASS_CONTINUE"),
@@ -3957,7 +3966,7 @@ impl ops::BitXorAssign for QueryPipelineStatisticFlags {
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "INPUT_ASSEMBLY_VERTICES"),
                 (0x2, "INPUT_ASSEMBLY_PRIMITIVES"),
@@ -4039,7 +4048,7 @@ impl ops::BitXorAssign for MemoryMapFlags {
 }
 impl fmt::Display for MemoryMapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -4126,7 +4135,7 @@ impl ops::BitXorAssign for ImageAspectFlags {
 impl fmt::Display for ImageAspectFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "COLOR"),
                 (0x2, "DEPTH"),
@@ -4211,7 +4220,7 @@ impl ops::BitXorAssign for SparseMemoryBindFlags {
 }
 impl fmt::Display for SparseMemoryBindFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "METADATA")], f)
+        display_bitmask(self.0 as _, &[(0x1, "METADATA")], f)
     }
 }
 #[repr(transparent)]
@@ -4286,7 +4295,7 @@ impl ops::BitXorAssign for SparseImageFormatFlags {
 impl fmt::Display for SparseImageFormatFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "SINGLE_MIPTAIL"),
                 (0x2, "ALIGNED_MIP_SIZE"),
@@ -4370,7 +4379,7 @@ impl ops::BitXorAssign for SubpassDescriptionFlags {
 impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "PER_VIEW_ATTRIBUTES_NVX"),
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
@@ -4445,6 +4454,8 @@ impl PipelineStageFlags {
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const NONE_KHR: Self = Self(0x0);
 }
 impl default::Default for PipelineStageFlags {
     fn default() -> Self {
@@ -4507,7 +4518,7 @@ impl ops::BitXorAssign for PipelineStageFlags {
 impl fmt::Display for PipelineStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "TOP_OF_PIPE"),
                 (0x2, "DRAW_INDIRECT"),
@@ -4622,7 +4633,7 @@ impl ops::BitXorAssign for SampleCountFlags {
 impl fmt::Display for SampleCountFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "N1"),
                 (0x2, "N2"),
@@ -4703,7 +4714,7 @@ impl ops::BitXorAssign for AttachmentDescriptionFlags {
 }
 impl fmt::Display for AttachmentDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "MAY_ALIAS")], f)
+        display_bitmask(self.0 as _, &[(0x1, "MAY_ALIAS")], f)
     }
 }
 #[repr(transparent)]
@@ -4777,7 +4788,11 @@ impl ops::BitXorAssign for StencilFaceFlags {
 }
 impl fmt::Display for StencilFaceFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -4850,8 +4865,8 @@ impl ops::BitXorAssign for CullModeFlags {
 impl fmt::Display for CullModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
-            &[(0x0, "NONE"), (0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")],
+            self.0 as _,
+            &[(0x1, "FRONT"), (0x2, "BACK"), (0x3, "FRONT_AND_BACK")],
             f,
         )
     }
@@ -4928,7 +4943,7 @@ impl ops::BitXorAssign for DescriptorPoolCreateFlags {
 impl fmt::Display for DescriptorPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "FREE_DESCRIPTOR_SET"),
                 (0x2, "UPDATE_AFTER_BIND"),
@@ -5002,7 +5017,7 @@ impl ops::BitXorAssign for DescriptorPoolResetFlags {
 }
 impl fmt::Display for DescriptorPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -5078,7 +5093,7 @@ impl ops::BitXorAssign for DependencyFlags {
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "BY_REGION"), (0x4, "DEVICE_GROUP"), (0x2, "VIEW_LOCAL")],
             f,
         )
@@ -5168,7 +5183,7 @@ impl ops::BitXorAssign for SubgroupFeatureFlags {
 impl fmt::Display for SubgroupFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "BASIC"),
                 (0x2, "VOTE"),
@@ -5253,7 +5268,7 @@ impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNV {
 impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "EXPLICIT_PREPROCESS"),
                 (0x2, "INDEXED_SEQUENCES"),
@@ -5329,7 +5344,7 @@ impl ops::BitXorAssign for IndirectStateFlagsNV {
 }
 impl fmt::Display for IndirectStateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "FRONTFACE")], f)
+        display_bitmask(self.0 as _, &[(0x1, "FRONTFACE")], f)
     }
 }
 #[repr(transparent)]
@@ -5401,7 +5416,11 @@ impl ops::BitXorAssign for GeometryFlagsKHR {
 }
 impl fmt::Display for GeometryFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "OPAQUE"), (0x2, "NO_DUPLICATE_ANY_HIT_INVOCATION")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "OPAQUE"), (0x2, "NO_DUPLICATE_ANY_HIT_INVOCATION")],
+            f,
+        )
     }
 }
 pub type GeometryFlagsNV = GeometryFlagsKHR;
@@ -5479,7 +5498,7 @@ impl ops::BitXorAssign for GeometryInstanceFlagsKHR {
 impl fmt::Display for GeometryInstanceFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "TRIANGLE_FACING_CULL_DISABLE"),
                 (0x2, "TRIANGLE_FRONT_COUNTERCLOCKWISE"),
@@ -5569,7 +5588,7 @@ impl ops::BitXorAssign for BuildAccelerationStructureFlagsKHR {
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "ALLOW_UPDATE"),
                 (0x2, "ALLOW_COMPACTION"),
@@ -5647,7 +5666,7 @@ impl ops::BitXorAssign for PrivateDataSlotCreateFlagsEXT {
 }
 impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -5719,7 +5738,7 @@ impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"), (0x4, "RESERVED_BIT_2_NV")],
             f,
         )
@@ -5789,7 +5808,7 @@ impl ops::BitXorAssign for DescriptorUpdateTemplateCreateFlags {
 }
 impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
@@ -5862,7 +5881,7 @@ impl ops::BitXorAssign for PipelineCreationFeedbackFlagsEXT {
 impl fmt::Display for PipelineCreationFeedbackFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "VALID"),
                 (0x2, "APPLICATION_PIPELINE_CACHE_HIT"),
@@ -5940,7 +5959,7 @@ impl ops::BitXorAssign for PerformanceCounterDescriptionFlagsKHR {
 impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "PERFORMANCE_IMPACTING"), (0x2, "CONCURRENTLY_IMPACTED")],
             f,
         )
@@ -6010,7 +6029,7 @@ impl ops::BitXorAssign for AcquireProfilingLockFlagsKHR {
 }
 impl fmt::Display for AcquireProfilingLockFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6080,7 +6099,7 @@ impl ops::BitXorAssign for SemaphoreWaitFlags {
 }
 impl fmt::Display for SemaphoreWaitFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "ANY")], f)
+        display_bitmask(self.0 as _, &[(0x1, "ANY")], f)
     }
 }
 pub type SemaphoreWaitFlagsKHR = SemaphoreWaitFlags;
@@ -6148,7 +6167,7 @@ impl ops::BitXorAssign for PipelineCompilerControlFlagsAMD {
 }
 impl fmt::Display for PipelineCompilerControlFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6215,7 +6234,7 @@ impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
 }
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6287,11 +6306,316 @@ impl ops::BitXorAssign for DeviceDiagnosticsConfigFlagsNV {
 impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "ENABLE_SHADER_DEBUG_INFO"),
                 (0x2, "ENABLE_RESOURCE_TRACKING"),
                 (0x4, "ENABLE_AUTOMATIC_CHECKPOINTS"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccessFlags2KHR(u64);
+impl AccessFlags2KHR {
+    pub const N2_NONE: Self = Self(0x0);
+    pub const N2_INDIRECT_COMMAND_READ: Self = Self(0x1);
+    pub const N2_INDEX_READ: Self = Self(0x2);
+    pub const N2_VERTEX_ATTRIBUTE_READ: Self = Self(0x4);
+    pub const N2_UNIFORM_READ: Self = Self(0x8);
+    pub const N2_INPUT_ATTACHMENT_READ: Self = Self(0x10);
+    pub const N2_SHADER_READ: Self = Self(0x20);
+    pub const N2_SHADER_WRITE: Self = Self(0x40);
+    pub const N2_COLOR_ATTACHMENT_READ: Self = Self(0x80);
+    pub const N2_COLOR_ATTACHMENT_WRITE: Self = Self(0x100);
+    pub const N2_DEPTH_STENCIL_ATTACHMENT_READ: Self = Self(0x200);
+    pub const N2_DEPTH_STENCIL_ATTACHMENT_WRITE: Self = Self(0x400);
+    pub const N2_TRANSFER_READ: Self = Self(0x800);
+    pub const N2_TRANSFER_WRITE: Self = Self(0x1000);
+    pub const N2_HOST_READ: Self = Self(0x2000);
+    pub const N2_HOST_WRITE: Self = Self(0x4000);
+    pub const N2_MEMORY_READ: Self = Self(0x8000);
+    pub const N2_MEMORY_WRITE: Self = Self(0x10000);
+    pub const N2_SHADER_SAMPLED_READ: Self = Self(0x100000000);
+    pub const N2_SHADER_STORAGE_READ: Self = Self(0x200000000);
+    pub const N2_SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_TRANSFORM_FEEDBACK_COUNTER_READ_EXT: Self = Self(0x4000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT: Self = Self(0x8000000);
+    /// read access flag for reading conditional rendering predicate
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_CONDITIONAL_RENDERING_READ_EXT: Self = Self(0x100000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ: Self = Self(0x800000);
+    pub const N2_SHADING_RATE_IMAGE_READ_NV: Self = Self::N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ;
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_ACCELERATION_STRUCTURE_READ: Self = Self(0x200000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_ACCELERATION_STRUCTURE_WRITE: Self = Self(0x400000);
+    pub const N2_ACCELERATION_STRUCTURE_READ_NV: Self = Self::N2_ACCELERATION_STRUCTURE_READ;
+    pub const N2_ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::N2_ACCELERATION_STRUCTURE_WRITE;
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
+}
+impl default::Default for AccessFlags2KHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl AccessFlags2KHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x70fffffff)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x70fffffff
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for AccessFlags2KHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for AccessFlags2KHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for AccessFlags2KHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for AccessFlags2KHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for AccessFlags2KHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for AccessFlags2KHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for AccessFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "N2_INDIRECT_COMMAND_READ"),
+                (0x2, "N2_INDEX_READ"),
+                (0x4, "N2_VERTEX_ATTRIBUTE_READ"),
+                (0x8, "N2_UNIFORM_READ"),
+                (0x10, "N2_INPUT_ATTACHMENT_READ"),
+                (0x20, "N2_SHADER_READ"),
+                (0x40, "N2_SHADER_WRITE"),
+                (0x80, "N2_COLOR_ATTACHMENT_READ"),
+                (0x100, "N2_COLOR_ATTACHMENT_WRITE"),
+                (0x200, "N2_DEPTH_STENCIL_ATTACHMENT_READ"),
+                (0x400, "N2_DEPTH_STENCIL_ATTACHMENT_WRITE"),
+                (0x800, "N2_TRANSFER_READ"),
+                (0x1000, "N2_TRANSFER_WRITE"),
+                (0x2000, "N2_HOST_READ"),
+                (0x4000, "N2_HOST_WRITE"),
+                (0x8000, "N2_MEMORY_READ"),
+                (0x10000, "N2_MEMORY_WRITE"),
+                (0x100000000, "N2_SHADER_SAMPLED_READ"),
+                (0x200000000, "N2_SHADER_STORAGE_READ"),
+                (0x400000000, "N2_SHADER_STORAGE_WRITE"),
+                (0x2000000, "N2_TRANSFORM_FEEDBACK_WRITE_EXT"),
+                (0x4000000, "N2_TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
+                (0x8000000, "N2_TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
+                (0x100000, "N2_CONDITIONAL_RENDERING_READ_EXT"),
+                (0x20000, "N2_COMMAND_PREPROCESS_READ_NV"),
+                (0x40000, "N2_COMMAND_PREPROCESS_WRITE_NV"),
+                (0x800000, "N2_FRAGMENT_SHADING_RATE_ATTACHMENT_READ"),
+                (0x200000, "N2_ACCELERATION_STRUCTURE_READ"),
+                (0x400000, "N2_ACCELERATION_STRUCTURE_WRITE"),
+                (0x1000000, "N2_FRAGMENT_DENSITY_MAP_READ_EXT"),
+                (0x80000, "N2_COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct PipelineStageFlags2KHR(u64);
+impl PipelineStageFlags2KHR {
+    pub const N2_NONE: Self = Self(0x0);
+    pub const N2_TOP_OF_PIPE: Self = Self(0x1);
+    pub const N2_DRAW_INDIRECT: Self = Self(0x2);
+    pub const N2_VERTEX_INPUT: Self = Self(0x4);
+    pub const N2_VERTEX_SHADER: Self = Self(0x8);
+    pub const N2_TESSELLATION_CONTROL_SHADER: Self = Self(0x10);
+    pub const N2_TESSELLATION_EVALUATION_SHADER: Self = Self(0x20);
+    pub const N2_GEOMETRY_SHADER: Self = Self(0x40);
+    pub const N2_FRAGMENT_SHADER: Self = Self(0x80);
+    pub const N2_EARLY_FRAGMENT_TESTS: Self = Self(0x100);
+    pub const N2_LATE_FRAGMENT_TESTS: Self = Self(0x200);
+    pub const N2_COLOR_ATTACHMENT_OUTPUT: Self = Self(0x400);
+    pub const N2_COMPUTE_SHADER: Self = Self(0x800);
+    pub const N2_ALL_TRANSFER: Self = Self(0x1000);
+    pub const N2_TRANSFER: Self = Self::N2_ALL_TRANSFER;
+    pub const N2_BOTTOM_OF_PIPE: Self = Self(0x2000);
+    pub const N2_HOST: Self = Self(0x4000);
+    pub const N2_ALL_GRAPHICS: Self = Self(0x8000);
+    pub const N2_ALL_COMMANDS: Self = Self(0x10000);
+    pub const N2_COPY: Self = Self(0x100000000);
+    pub const N2_RESOLVE: Self = Self(0x200000000);
+    pub const N2_BLIT: Self = Self(0x400000000);
+    pub const N2_CLEAR: Self = Self(0x800000000);
+    pub const N2_INDEX_INPUT: Self = Self(0x1000000000);
+    pub const N2_VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
+    pub const N2_PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
+    /// A pipeline stage for conditional rendering predicate fetch
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_CONDITIONAL_RENDERING_EXT: Self = Self(0x40000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_COMMAND_PREPROCESS_NV: Self = Self(0x20000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x400000);
+    pub const N2_SHADING_RATE_IMAGE_NV: Self = Self::N2_FRAGMENT_SHADING_RATE_ATTACHMENT;
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_ACCELERATION_STRUCTURE_BUILD: Self = Self(0x2000000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_RAY_TRACING_SHADER: Self = Self(0x200000);
+    pub const N2_RAY_TRACING_SHADER_NV: Self = Self::N2_RAY_TRACING_SHADER;
+    pub const N2_ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::N2_ACCELERATION_STRUCTURE_BUILD;
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_TASK_SHADER_NV: Self = Self(0x80000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const N2_MESH_SHADER_NV: Self = Self(0x100000);
+}
+impl default::Default for PipelineStageFlags2KHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl PipelineStageFlags2KHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x7f03ffffff)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x7f03ffffff
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for PipelineStageFlags2KHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for PipelineStageFlags2KHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for PipelineStageFlags2KHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for PipelineStageFlags2KHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for PipelineStageFlags2KHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for PipelineStageFlags2KHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for PipelineStageFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "N2_TOP_OF_PIPE"),
+                (0x2, "N2_DRAW_INDIRECT"),
+                (0x4, "N2_VERTEX_INPUT"),
+                (0x8, "N2_VERTEX_SHADER"),
+                (0x10, "N2_TESSELLATION_CONTROL_SHADER"),
+                (0x20, "N2_TESSELLATION_EVALUATION_SHADER"),
+                (0x40, "N2_GEOMETRY_SHADER"),
+                (0x80, "N2_FRAGMENT_SHADER"),
+                (0x100, "N2_EARLY_FRAGMENT_TESTS"),
+                (0x200, "N2_LATE_FRAGMENT_TESTS"),
+                (0x400, "N2_COLOR_ATTACHMENT_OUTPUT"),
+                (0x800, "N2_COMPUTE_SHADER"),
+                (0x1000, "N2_ALL_TRANSFER"),
+                (0x2000, "N2_BOTTOM_OF_PIPE"),
+                (0x4000, "N2_HOST"),
+                (0x8000, "N2_ALL_GRAPHICS"),
+                (0x10000, "N2_ALL_COMMANDS"),
+                (0x100000000, "N2_COPY"),
+                (0x200000000, "N2_RESOLVE"),
+                (0x400000000, "N2_BLIT"),
+                (0x800000000, "N2_CLEAR"),
+                (0x1000000000, "N2_INDEX_INPUT"),
+                (0x2000000000, "N2_VERTEX_ATTRIBUTE_INPUT"),
+                (0x4000000000, "N2_PRE_RASTERIZATION_SHADERS"),
+                (0x1000000, "N2_TRANSFORM_FEEDBACK_EXT"),
+                (0x40000, "N2_CONDITIONAL_RENDERING_EXT"),
+                (0x20000, "N2_COMMAND_PREPROCESS_NV"),
+                (0x400000, "N2_FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x2000000, "N2_ACCELERATION_STRUCTURE_BUILD"),
+                (0x200000, "N2_RAY_TRACING_SHADER"),
+                (0x800000, "N2_FRAGMENT_DENSITY_PROCESS_EXT"),
+                (0x80000, "N2_TASK_SHADER_NV"),
+                (0x100000, "N2_MESH_SHADER_NV"),
             ],
             f,
         )
@@ -6367,7 +6691,7 @@ impl ops::BitXorAssign for CompositeAlphaFlagsKHR {
 impl fmt::Display for CompositeAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE"),
                 (0x2, "PRE_MULTIPLIED"),
@@ -6448,7 +6772,7 @@ impl ops::BitXorAssign for DisplayPlaneAlphaFlagsKHR {
 impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE"),
                 (0x2, "GLOBAL"),
@@ -6534,7 +6858,7 @@ impl ops::BitXorAssign for SurfaceTransformFlagsKHR {
 impl fmt::Display for SurfaceTransformFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "IDENTITY"),
                 (0x2, "ROTATE_90"),
@@ -6624,7 +6948,7 @@ impl ops::BitXorAssign for SwapchainCreateFlagsKHR {
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "SPLIT_INSTANCE_BIND_REGIONS"),
                 (0x2, "PROTECTED"),
@@ -6698,7 +7022,7 @@ impl ops::BitXorAssign for DisplayModeCreateFlagsKHR {
 }
 impl fmt::Display for DisplayModeCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6765,7 +7089,7 @@ impl ops::BitXorAssign for DisplaySurfaceCreateFlagsKHR {
 }
 impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6832,7 +7156,7 @@ impl ops::BitXorAssign for AndroidSurfaceCreateFlagsKHR {
 }
 impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6899,7 +7223,7 @@ impl ops::BitXorAssign for ViSurfaceCreateFlagsNN {
 }
 impl fmt::Display for ViSurfaceCreateFlagsNN {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -6966,7 +7290,7 @@ impl ops::BitXorAssign for WaylandSurfaceCreateFlagsKHR {
 }
 impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7033,7 +7357,7 @@ impl ops::BitXorAssign for Win32SurfaceCreateFlagsKHR {
 }
 impl fmt::Display for Win32SurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7100,7 +7424,7 @@ impl ops::BitXorAssign for XlibSurfaceCreateFlagsKHR {
 }
 impl fmt::Display for XlibSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7167,7 +7491,7 @@ impl ops::BitXorAssign for XcbSurfaceCreateFlagsKHR {
 }
 impl fmt::Display for XcbSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7234,7 +7558,7 @@ impl ops::BitXorAssign for DirectFBSurfaceCreateFlagsEXT {
 }
 impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7301,7 +7625,7 @@ impl ops::BitXorAssign for IOSSurfaceCreateFlagsMVK {
 }
 impl fmt::Display for IOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7368,7 +7692,7 @@ impl ops::BitXorAssign for MacOSSurfaceCreateFlagsMVK {
 }
 impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7435,7 +7759,7 @@ impl ops::BitXorAssign for MetalSurfaceCreateFlagsEXT {
 }
 impl fmt::Display for MetalSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7502,7 +7826,7 @@ impl ops::BitXorAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
 }
 impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7569,7 +7893,7 @@ impl ops::BitXorAssign for HeadlessSurfaceCreateFlagsEXT {
 }
 impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7650,7 +7974,7 @@ impl ops::BitXorAssign for PeerMemoryFeatureFlags {
 impl fmt::Display for PeerMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "COPY_SRC"),
                 (0x2, "COPY_DST"),
@@ -7735,7 +8059,7 @@ impl ops::BitXorAssign for MemoryAllocateFlags {
 impl fmt::Display for MemoryAllocateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "DEVICE_MASK"),
                 (0x2, "DEVICE_ADDRESS"),
@@ -7820,7 +8144,7 @@ impl ops::BitXorAssign for DeviceGroupPresentModeFlagsKHR {
 impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "LOCAL"),
                 (0x2, "REMOTE"),
@@ -7902,7 +8226,7 @@ impl ops::BitXorAssign for DebugReportFlagsEXT {
 impl fmt::Display for DebugReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "INFORMATION"),
                 (0x2, "WARNING"),
@@ -7978,7 +8302,7 @@ impl ops::BitXorAssign for CommandPoolTrimFlags {
 }
 impl fmt::Display for CommandPoolTrimFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 pub type CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
@@ -8052,7 +8376,7 @@ impl ops::BitXorAssign for ExternalMemoryHandleTypeFlagsNV {
 impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE_WIN32"),
                 (0x2, "OPAQUE_WIN32_KMT"),
@@ -8132,7 +8456,7 @@ impl ops::BitXorAssign for ExternalMemoryFeatureFlagsNV {
 impl fmt::Display for ExternalMemoryFeatureFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "DEDICATED_ONLY"), (0x2, "EXPORTABLE"), (0x4, "IMPORTABLE")],
             f,
         )
@@ -8226,7 +8550,7 @@ impl ops::BitXorAssign for ExternalMemoryHandleTypeFlags {
 impl fmt::Display for ExternalMemoryHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE_FD"),
                 (0x2, "OPAQUE_WIN32"),
@@ -8317,7 +8641,7 @@ impl ops::BitXorAssign for ExternalMemoryFeatureFlags {
 impl fmt::Display for ExternalMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "DEDICATED_ONLY"), (0x2, "EXPORTABLE"), (0x4, "IMPORTABLE")],
             f,
         )
@@ -8405,7 +8729,7 @@ impl ops::BitXorAssign for ExternalSemaphoreHandleTypeFlags {
 impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE_FD"),
                 (0x2, "OPAQUE_WIN32"),
@@ -8489,7 +8813,7 @@ impl ops::BitXorAssign for ExternalSemaphoreFeatureFlags {
 }
 impl fmt::Display for ExternalSemaphoreFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
+        display_bitmask(self.0 as _, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
     }
 }
 pub type ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
@@ -8560,7 +8884,7 @@ impl ops::BitXorAssign for SemaphoreImportFlags {
 }
 impl fmt::Display for SemaphoreImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "TEMPORARY")], f)
+        display_bitmask(self.0 as _, &[(0x1, "TEMPORARY")], f)
     }
 }
 pub type SemaphoreImportFlagsKHR = SemaphoreImportFlags;
@@ -8642,7 +8966,7 @@ impl ops::BitXorAssign for ExternalFenceHandleTypeFlags {
 impl fmt::Display for ExternalFenceHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "OPAQUE_FD"),
                 (0x2, "OPAQUE_WIN32"),
@@ -8725,7 +9049,7 @@ impl ops::BitXorAssign for ExternalFenceFeatureFlags {
 }
 impl fmt::Display for ExternalFenceFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
+        display_bitmask(self.0 as _, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
     }
 }
 pub type ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
@@ -8796,7 +9120,7 @@ impl ops::BitXorAssign for FenceImportFlags {
 }
 impl fmt::Display for FenceImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "TEMPORARY")], f)
+        display_bitmask(self.0 as _, &[(0x1, "TEMPORARY")], f)
     }
 }
 pub type FenceImportFlagsKHR = FenceImportFlags;
@@ -8866,7 +9190,7 @@ impl ops::BitXorAssign for SurfaceCounterFlagsEXT {
 }
 impl fmt::Display for SurfaceCounterFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "VBLANK")], f)
+        display_bitmask(self.0 as _, &[(0x1, "VBLANK")], f)
     }
 }
 #[repr(transparent)]
@@ -8933,7 +9257,7 @@ impl ops::BitXorAssign for PipelineViewportSwizzleStateCreateFlagsNV {
 }
 impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9000,7 +9324,7 @@ impl ops::BitXorAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
 }
 impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9067,7 +9391,7 @@ impl ops::BitXorAssign for PipelineCoverageToColorStateCreateFlagsNV {
 }
 impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9134,7 +9458,7 @@ impl ops::BitXorAssign for PipelineCoverageModulationStateCreateFlagsNV {
 }
 impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9201,7 +9525,7 @@ impl ops::BitXorAssign for PipelineCoverageReductionStateCreateFlagsNV {
 }
 impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9268,7 +9592,7 @@ impl ops::BitXorAssign for ValidationCacheCreateFlagsEXT {
 }
 impl fmt::Display for ValidationCacheCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9341,7 +9665,7 @@ impl ops::BitXorAssign for DebugUtilsMessageSeverityFlagsEXT {
 impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "VERBOSE"), (0x10, "INFO"), (0x100, "WARNING"), (0x1000, "ERROR")],
             f,
         )
@@ -9416,7 +9740,7 @@ impl ops::BitXorAssign for DebugUtilsMessageTypeFlagsEXT {
 impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[(0x1, "GENERAL"), (0x2, "VALIDATION"), (0x4, "PERFORMANCE")],
             f,
         )
@@ -9486,7 +9810,7 @@ impl ops::BitXorAssign for DebugUtilsMessengerCreateFlagsEXT {
 }
 impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9553,7 +9877,7 @@ impl ops::BitXorAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
 }
 impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9620,7 +9944,7 @@ impl ops::BitXorAssign for DeviceMemoryReportFlagsEXT {
 }
 impl fmt::Display for DeviceMemoryReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9687,7 +10011,7 @@ impl ops::BitXorAssign for PipelineRasterizationConservativeStateCreateFlagsEXT 
 }
 impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -9766,7 +10090,7 @@ impl ops::BitXorAssign for DescriptorBindingFlags {
 impl fmt::Display for DescriptorBindingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "UPDATE_AFTER_BIND"),
                 (0x2, "UPDATE_UNUSED_WHILE_PENDING"),
@@ -9845,7 +10169,7 @@ impl ops::BitXorAssign for ConditionalRenderingFlagsEXT {
 }
 impl fmt::Display for ConditionalRenderingFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "INVERTED")], f)
+        display_bitmask(self.0 as _, &[(0x1, "INVERTED")], f)
     }
 }
 #[repr(transparent)]
@@ -9924,14 +10248,8 @@ impl ops::BitXorAssign for ResolveModeFlags {
 impl fmt::Display for ResolveModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
-            &[
-                (0x0, "NONE"),
-                (0x1, "SAMPLE_ZERO"),
-                (0x2, "AVERAGE"),
-                (0x4, "MIN"),
-                (0x8, "MAX"),
-            ],
+            self.0 as _,
+            &[(0x1, "SAMPLE_ZERO"), (0x2, "AVERAGE"), (0x4, "MIN"), (0x8, "MAX")],
             f,
         )
     }
@@ -10001,7 +10319,7 @@ impl ops::BitXorAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
 }
 impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -10068,7 +10386,7 @@ impl ops::BitXorAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 }
 impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("0")
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -10137,7 +10455,7 @@ impl ops::BitXorAssign for SwapchainImageUsageFlagsANDROID {
 }
 impl fmt::Display for SwapchainImageUsageFlagsANDROID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0, &[(0x1, "SHARED")], f)
+        display_bitmask(self.0 as _, &[(0x1, "SHARED")], f)
     }
 }
 #[repr(transparent)]
@@ -10215,7 +10533,7 @@ impl ops::BitXorAssign for ToolPurposeFlagsEXT {
 impl fmt::Display for ToolPurposeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
-            self.0,
+            self.0 as _,
             &[
                 (0x1, "VALIDATION"),
                 (0x2, "PROFILING"),
@@ -10227,6 +10545,75 @@ impl fmt::Display for ToolPurposeFlagsEXT {
             ],
             f,
         )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct SubmitFlagsKHR(u32);
+impl SubmitFlagsKHR {
+    pub const PROTECTED: Self = Self(0x1);
+}
+impl default::Default for SubmitFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl SubmitFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x1)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x1
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for SubmitFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for SubmitFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for SubmitFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for SubmitFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for SubmitFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for SubmitFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for SubmitFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
     }
 }
 #[repr(transparent)]
@@ -11917,6 +12304,10 @@ impl ImageLayout {
     pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_OPTIMAL;
     pub const STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::STENCIL_ATTACHMENT_OPTIMAL;
     pub const STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::STENCIL_READ_ONLY_OPTIMAL;
+    /// Added by extension VK_KHR_synchronization2.
+    pub const READ_ONLY_OPTIMAL_KHR: Self = Self(1000314000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const ATTACHMENT_OPTIMAL_KHR: Self = Self(1000314001);
 }
 impl default::Default for ImageLayout {
     fn default() -> Self {
@@ -11945,6 +12336,8 @@ impl fmt::Display for ImageLayout {
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
             1000164003 => Some(&"SHADING_RATE_OPTIMAL_NV"),
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
+            1000314000 => Some(&"READ_ONLY_OPTIMAL_KHR"),
+            1000314001 => Some(&"ATTACHMENT_OPTIMAL_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13407,6 +13800,26 @@ impl StructureType {
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
     /// Added by extension VK_QCOM_extension_310.
     pub const RESERVED_QCOM: Self = Self(1000309000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const MEMORY_BARRIER_2_KHR: Self = Self(1000314000);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const BUFFER_MEMORY_BARRIER_2_KHR: Self = Self(1000314001);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const IMAGE_MEMORY_BARRIER_2_KHR: Self = Self(1000314002);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const DEPENDENCY_INFO_KHR: Self = Self(1000314003);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const SUBMIT_INFO_2_KHR: Self = Self(1000314004);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const SEMAPHORE_SUBMIT_INFO_KHR: Self = Self(1000314005);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const COMMAND_BUFFER_SUBMIT_INFO_KHR: Self = Self(1000314006);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR: Self = Self(1000314007);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV: Self = Self(1000314008);
+    /// Added by extension VK_KHR_synchronization2.
+    pub const CHECKPOINT_DATA_2_NV: Self = Self(1000314009);
     /// Added by extension VK_KHR_zero_initialize_workgroup_memory.
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self = Self(1000325000);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
@@ -13919,6 +14332,16 @@ impl fmt::Display for StructureType {
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000309000 => Some(&"RESERVED_QCOM"),
+            1000314000 => Some(&"MEMORY_BARRIER_2_KHR"),
+            1000314001 => Some(&"BUFFER_MEMORY_BARRIER_2_KHR"),
+            1000314002 => Some(&"IMAGE_MEMORY_BARRIER_2_KHR"),
+            1000314003 => Some(&"DEPENDENCY_INFO_KHR"),
+            1000314004 => Some(&"SUBMIT_INFO_2_KHR"),
+            1000314005 => Some(&"SEMAPHORE_SUBMIT_INFO_KHR"),
+            1000314006 => Some(&"COMMAND_BUFFER_SUBMIT_INFO_KHR"),
+            1000314007 => Some(&"PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR"),
+            1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
+            1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
             1000325000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
@@ -36989,6 +37412,367 @@ impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryBarrier2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_stage_mask: PipelineStageFlags2KHR,
+    pub src_access_mask: AccessFlags2KHR,
+    pub dst_stage_mask: PipelineStageFlags2KHR,
+    pub dst_access_mask: AccessFlags2KHR,
+}
+impl default::Default for MemoryBarrier2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_BARRIER_2_KHR,
+            p_next: ptr::null(),
+            src_stage_mask: PipelineStageFlags2KHR::default(),
+            src_access_mask: AccessFlags2KHR::default(),
+            dst_stage_mask: PipelineStageFlags2KHR::default(),
+            dst_access_mask: AccessFlags2KHR::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryBarrier2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryBarrier2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_stage_mask", &self.src_stage_mask)
+            .field("src_access_mask", &self.src_access_mask)
+            .field("dst_stage_mask", &self.dst_stage_mask)
+            .field("dst_access_mask", &self.dst_access_mask)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageMemoryBarrier2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_stage_mask: PipelineStageFlags2KHR,
+    pub src_access_mask: AccessFlags2KHR,
+    pub dst_stage_mask: PipelineStageFlags2KHR,
+    pub dst_access_mask: AccessFlags2KHR,
+    pub old_layout: ImageLayout,
+    pub new_layout: ImageLayout,
+    pub src_queue_family_index: u32,
+    pub dst_queue_family_index: u32,
+    pub image: Option<Image>,
+    pub subresource_range: ImageSubresourceRange,
+}
+impl default::Default for ImageMemoryBarrier2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_MEMORY_BARRIER_2_KHR,
+            p_next: ptr::null(),
+            src_stage_mask: PipelineStageFlags2KHR::default(),
+            src_access_mask: AccessFlags2KHR::default(),
+            dst_stage_mask: PipelineStageFlags2KHR::default(),
+            dst_access_mask: AccessFlags2KHR::default(),
+            old_layout: ImageLayout::default(),
+            new_layout: ImageLayout::default(),
+            src_queue_family_index: u32::default(),
+            dst_queue_family_index: u32::default(),
+            image: None,
+            subresource_range: ImageSubresourceRange::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageMemoryBarrier2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageMemoryBarrier2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_stage_mask", &self.src_stage_mask)
+            .field("src_access_mask", &self.src_access_mask)
+            .field("dst_stage_mask", &self.dst_stage_mask)
+            .field("dst_access_mask", &self.dst_access_mask)
+            .field("old_layout", &self.old_layout)
+            .field("new_layout", &self.new_layout)
+            .field("src_queue_family_index", &self.src_queue_family_index)
+            .field("dst_queue_family_index", &self.dst_queue_family_index)
+            .field("image", &self.image)
+            .field("subresource_range", &self.subresource_range)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferMemoryBarrier2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src_stage_mask: PipelineStageFlags2KHR,
+    pub src_access_mask: AccessFlags2KHR,
+    pub dst_stage_mask: PipelineStageFlags2KHR,
+    pub dst_access_mask: AccessFlags2KHR,
+    pub src_queue_family_index: u32,
+    pub dst_queue_family_index: u32,
+    pub buffer: Option<Buffer>,
+    pub offset: DeviceSize,
+    pub size: DeviceSize,
+}
+impl default::Default for BufferMemoryBarrier2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_MEMORY_BARRIER_2_KHR,
+            p_next: ptr::null(),
+            src_stage_mask: PipelineStageFlags2KHR::default(),
+            src_access_mask: AccessFlags2KHR::default(),
+            dst_stage_mask: PipelineStageFlags2KHR::default(),
+            dst_access_mask: AccessFlags2KHR::default(),
+            src_queue_family_index: u32::default(),
+            dst_queue_family_index: u32::default(),
+            buffer: None,
+            offset: DeviceSize::default(),
+            size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferMemoryBarrier2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferMemoryBarrier2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src_stage_mask", &self.src_stage_mask)
+            .field("src_access_mask", &self.src_access_mask)
+            .field("dst_stage_mask", &self.dst_stage_mask)
+            .field("dst_access_mask", &self.dst_access_mask)
+            .field("src_queue_family_index", &self.src_queue_family_index)
+            .field("dst_queue_family_index", &self.dst_queue_family_index)
+            .field("buffer", &self.buffer)
+            .field("offset", &self.offset)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DependencyInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub dependency_flags: DependencyFlags,
+    pub memory_barrier_count: u32,
+    pub p_memory_barriers: *const MemoryBarrier2KHR,
+    pub buffer_memory_barrier_count: u32,
+    pub p_buffer_memory_barriers: *const BufferMemoryBarrier2KHR,
+    pub image_memory_barrier_count: u32,
+    pub p_image_memory_barriers: *const ImageMemoryBarrier2KHR,
+}
+impl default::Default for DependencyInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEPENDENCY_INFO_KHR,
+            p_next: ptr::null(),
+            dependency_flags: DependencyFlags::default(),
+            memory_barrier_count: u32::default(),
+            p_memory_barriers: ptr::null(),
+            buffer_memory_barrier_count: u32::default(),
+            p_buffer_memory_barriers: ptr::null(),
+            image_memory_barrier_count: u32::default(),
+            p_image_memory_barriers: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DependencyInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DependencyInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dependency_flags", &self.dependency_flags)
+            .field("memory_barrier_count", &self.memory_barrier_count)
+            .field("p_memory_barriers", &self.p_memory_barriers)
+            .field("buffer_memory_barrier_count", &self.buffer_memory_barrier_count)
+            .field("p_buffer_memory_barriers", &self.p_buffer_memory_barriers)
+            .field("image_memory_barrier_count", &self.image_memory_barrier_count)
+            .field("p_image_memory_barriers", &self.p_image_memory_barriers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SemaphoreSubmitInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore: Option<Semaphore>,
+    pub value: u64,
+    pub stage_mask: PipelineStageFlags2KHR,
+    pub device_index: u32,
+}
+impl default::Default for SemaphoreSubmitInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SEMAPHORE_SUBMIT_INFO_KHR,
+            p_next: ptr::null(),
+            semaphore: None,
+            value: u64::default(),
+            stage_mask: PipelineStageFlags2KHR::default(),
+            device_index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for SemaphoreSubmitInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SemaphoreSubmitInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore", &self.semaphore)
+            .field("value", &self.value)
+            .field("stage_mask", &self.stage_mask)
+            .field("device_index", &self.device_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CommandBufferSubmitInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub command_buffer: Option<CommandBuffer>,
+    pub device_mask: u32,
+}
+impl default::Default for CommandBufferSubmitInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMMAND_BUFFER_SUBMIT_INFO_KHR,
+            p_next: ptr::null(),
+            command_buffer: None,
+            device_mask: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for CommandBufferSubmitInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CommandBufferSubmitInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("command_buffer", &self.command_buffer)
+            .field("device_mask", &self.device_mask)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubmitInfo2KHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: SubmitFlagsKHR,
+    pub wait_semaphore_info_count: u32,
+    pub p_wait_semaphore_infos: *const SemaphoreSubmitInfoKHR,
+    pub command_buffer_info_count: u32,
+    pub p_command_buffer_infos: *const CommandBufferSubmitInfoKHR,
+    pub signal_semaphore_info_count: u32,
+    pub p_signal_semaphore_infos: *const SemaphoreSubmitInfoKHR,
+}
+impl default::Default for SubmitInfo2KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBMIT_INFO_2_KHR,
+            p_next: ptr::null(),
+            flags: SubmitFlagsKHR::default(),
+            wait_semaphore_info_count: u32::default(),
+            p_wait_semaphore_infos: ptr::null(),
+            command_buffer_info_count: u32::default(),
+            p_command_buffer_infos: ptr::null(),
+            signal_semaphore_info_count: u32::default(),
+            p_signal_semaphore_infos: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SubmitInfo2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubmitInfo2KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("wait_semaphore_info_count", &self.wait_semaphore_info_count)
+            .field("p_wait_semaphore_infos", &self.p_wait_semaphore_infos)
+            .field("command_buffer_info_count", &self.command_buffer_info_count)
+            .field("p_command_buffer_infos", &self.p_command_buffer_infos)
+            .field("signal_semaphore_info_count", &self.signal_semaphore_info_count)
+            .field("p_signal_semaphore_infos", &self.p_signal_semaphore_infos)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyCheckpointProperties2NV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub checkpoint_execution_stage_mask: PipelineStageFlags2KHR,
+}
+impl default::Default for QueueFamilyCheckpointProperties2NV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV,
+            p_next: ptr::null_mut(),
+            checkpoint_execution_stage_mask: PipelineStageFlags2KHR::default(),
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyCheckpointProperties2NV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyCheckpointProperties2NV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("checkpoint_execution_stage_mask", &self.checkpoint_execution_stage_mask)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CheckpointData2NV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub stage: PipelineStageFlags2KHR,
+    pub p_checkpoint_marker: *mut c_void,
+}
+impl default::Default for CheckpointData2NV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CHECKPOINT_DATA_2_NV,
+            p_next: ptr::null_mut(),
+            stage: PipelineStageFlags2KHR::default(),
+            p_checkpoint_marker: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for CheckpointData2NV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CheckpointData2NV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("stage", &self.stage)
+            .field("p_checkpoint_marker", &self.p_checkpoint_marker)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSynchronization2FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub synchronization2: Bool32,
+}
+impl default::Default for PhysicalDeviceSynchronization2FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            synchronization2: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSynchronization2FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSynchronization2FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("synchronization2", &self.synchronization2)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -39004,4 +39788,46 @@ pub type FnGetAccelerationStructureBuildSizesKHR = unsafe extern "system" fn(
     p_build_info: *const AccelerationStructureBuildGeometryInfoKHR,
     p_max_primitive_counts: *const u32,
     p_size_info: *mut AccelerationStructureBuildSizesInfoKHR,
+);
+pub type FnCmdSetEvent2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event: Option<Event>,
+    p_dependency_info: *const DependencyInfoKHR,
+);
+pub type FnCmdResetEvent2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event: Option<Event>,
+    stage_mask: PipelineStageFlags2KHR,
+);
+pub type FnCmdWaitEvents2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    event_count: u32,
+    p_events: *const Event,
+    p_dependency_infos: *const DependencyInfoKHR,
+);
+pub type FnCmdPipelineBarrier2KHR =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_dependency_info: *const DependencyInfoKHR);
+pub type FnQueueSubmit2KHR = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    submit_count: u32,
+    p_submits: *const SubmitInfo2KHR,
+    fence: Option<Fence>,
+) -> Result;
+pub type FnCmdWriteTimestamp2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    stage: PipelineStageFlags2KHR,
+    query_pool: Option<QueryPool>,
+    query: u32,
+);
+pub type FnCmdWriteBufferMarker2AMD = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    stage: PipelineStageFlags2KHR,
+    dst_buffer: Option<Buffer>,
+    dst_offset: DeviceSize,
+    marker: u32,
+);
+pub type FnGetQueueCheckpointData2NV = unsafe extern "system" fn(
+    queue: Option<Queue>,
+    p_checkpoint_data_count: *mut u32,
+    p_checkpoint_data: *mut CheckpointData2NV,
 );

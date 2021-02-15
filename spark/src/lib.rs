@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 169
+//! Generated from vk.xml with `VK_HEADER_VERSION` 170
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1203,6 +1203,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_device_diagnostics_config(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_synchronization2(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_synchronization2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
@@ -3774,6 +3780,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub khr_synchronization2: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
     pub ext_fragment_density_map2: bool,
@@ -3972,6 +3979,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
@@ -4170,6 +4178,7 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            khr_synchronization2: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
             ext_fragment_density_map2: false,
@@ -5526,6 +5535,18 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_khr_synchronization2(&self) -> bool {
+        self.khr_synchronization2
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
+    }
+    pub fn enable_khr_synchronization2(&mut self) {
+        self.khr_synchronization2 = true;
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
+    }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
         self.khr_zero_initialize_workgroup_memory
     }
@@ -6148,6 +6169,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
+        if self.khr_synchronization2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_synchronization2\0") })
+        }
         if self.khr_zero_initialize_workgroup_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_zero_initialize_workgroup_memory\0") })
         }
@@ -6513,6 +6537,14 @@ pub struct Device {
     pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
     pub fp_cmd_set_fragment_shading_rate_enum_nv: Option<vk::FnCmdSetFragmentShadingRateEnumNV>,
     pub fp_get_acceleration_structure_build_sizes_khr: Option<vk::FnGetAccelerationStructureBuildSizesKHR>,
+    pub fp_cmd_set_event2_khr: Option<vk::FnCmdSetEvent2KHR>,
+    pub fp_cmd_reset_event2_khr: Option<vk::FnCmdResetEvent2KHR>,
+    pub fp_cmd_wait_events2_khr: Option<vk::FnCmdWaitEvents2KHR>,
+    pub fp_cmd_pipeline_barrier2_khr: Option<vk::FnCmdPipelineBarrier2KHR>,
+    pub fp_queue_submit2_khr: Option<vk::FnQueueSubmit2KHR>,
+    pub fp_cmd_write_timestamp2_khr: Option<vk::FnCmdWriteTimestamp2KHR>,
+    pub fp_cmd_write_buffer_marker2_amd: Option<vk::FnCmdWriteBufferMarker2AMD>,
+    pub fp_get_queue_checkpoint_data2_nv: Option<vk::FnGetQueueCheckpointData2NV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -8992,6 +9024,56 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetAccelerationStructureBuildSizesKHR\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_event2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetEvent2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_reset_event2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdResetEvent2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_wait_events2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWaitEvents2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_pipeline_barrier2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdPipelineBarrier2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_submit2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkQueueSubmit2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_timestamp2_khr: if extensions.khr_synchronization2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteTimestamp2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_buffer_marker2_amd: if extensions.khr_synchronization2 && extensions.amd_buffer_marker {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdWriteBufferMarker2AMD\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_queue_checkpoint_data2_nv: if extensions.khr_synchronization2
+                && extensions.nv_device_diagnostic_checkpoints
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointData2NV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -14522,6 +14604,106 @@ impl Device {
                 .map_or(ptr::null(), |s| s as *const _),
             p_size_info,
         );
+    }
+    pub unsafe fn cmd_set_event2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        event: vk::Event,
+        p_dependency_info: &vk::DependencyInfoKHR,
+    ) {
+        let fp = self.fp_cmd_set_event2_khr.expect("vkCmdSetEvent2KHR is not loaded");
+        (fp)(Some(command_buffer), Some(event), p_dependency_info);
+    }
+    pub unsafe fn cmd_reset_event2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        event: vk::Event,
+        stage_mask: vk::PipelineStageFlags2KHR,
+    ) {
+        let fp = self.fp_cmd_reset_event2_khr.expect("vkCmdResetEvent2KHR is not loaded");
+        (fp)(Some(command_buffer), Some(event), stage_mask);
+    }
+    pub unsafe fn cmd_wait_events2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_events: &[vk::Event],
+        p_dependency_infos: &[vk::DependencyInfoKHR],
+    ) {
+        let fp = self.fp_cmd_wait_events2_khr.expect("vkCmdWaitEvents2KHR is not loaded");
+        let event_count = p_events.len() as u32;
+        assert_eq!(event_count, p_dependency_infos.len() as u32);
+        (fp)(
+            Some(command_buffer),
+            event_count,
+            p_events.first().map_or(ptr::null(), |s| s as *const _),
+            p_dependency_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_pipeline_barrier2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_dependency_info: &vk::DependencyInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_pipeline_barrier2_khr
+            .expect("vkCmdPipelineBarrier2KHR is not loaded");
+        (fp)(Some(command_buffer), p_dependency_info);
+    }
+    pub unsafe fn queue_submit2_khr(
+        &self,
+        queue: vk::Queue,
+        p_submits: &[vk::SubmitInfo2KHR],
+        fence: Option<vk::Fence>,
+    ) -> Result<()> {
+        let fp = self.fp_queue_submit2_khr.expect("vkQueueSubmit2KHR is not loaded");
+        let submit_count = p_submits.len() as u32;
+        let err = (fp)(
+            Some(queue),
+            submit_count,
+            p_submits.first().map_or(ptr::null(), |s| s as *const _),
+            fence,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_write_timestamp2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        stage: vk::PipelineStageFlags2KHR,
+        query_pool: vk::QueryPool,
+        query: u32,
+    ) {
+        let fp = self
+            .fp_cmd_write_timestamp2_khr
+            .expect("vkCmdWriteTimestamp2KHR is not loaded");
+        (fp)(Some(command_buffer), stage, Some(query_pool), query);
+    }
+    pub unsafe fn cmd_write_buffer_marker2_amd(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        stage: vk::PipelineStageFlags2KHR,
+        dst_buffer: vk::Buffer,
+        dst_offset: vk::DeviceSize,
+        marker: u32,
+    ) {
+        let fp = self
+            .fp_cmd_write_buffer_marker2_amd
+            .expect("vkCmdWriteBufferMarker2AMD is not loaded");
+        (fp)(Some(command_buffer), stage, Some(dst_buffer), dst_offset, marker);
+    }
+    pub unsafe fn get_queue_checkpoint_data2_nv_to_vec(&self, queue: vk::Queue) -> Vec<vk::CheckpointData2NV> {
+        let fp = self
+            .fp_get_queue_checkpoint_data2_nv
+            .expect("vkGetQueueCheckpointData2NV is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(queue), len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        (fp)(Some(queue), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        v
     }
 }
 
