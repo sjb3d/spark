@@ -192,7 +192,7 @@ impl ExtensionExtra for vk::Extension {
         self.supported.as_ref_str() == Some("vulkan")
     }
     fn is_blacklisted(&self) -> bool {
-        self.author.as_ref_str() == Some("GGP")
+        matches!(self.author.as_ref_str(), Some("GGP") | Some("QNX"))
     }
 }
 

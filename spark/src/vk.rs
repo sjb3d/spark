@@ -13868,8 +13868,6 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
-    /// Added by extension VK_QNX_screen_surface.
-    pub const SCREEN_SURFACE_CREATE_INFO_QNX: Self = Self(1000378000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14366,7 +14364,6 @@ impl fmt::Display for StructureType {
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
-            1000378000 => Some(&"SCREEN_SURFACE_CREATE_INFO_QNX"),
             _ => None,
         };
         if let Some(name) = name {
