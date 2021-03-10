@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 171
+//! Generated from vk.xml with `VK_HEADER_VERSION` 172
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -5537,15 +5537,9 @@ impl DeviceExtensions {
     }
     pub fn supports_khr_synchronization2(&self) -> bool {
         self.khr_synchronization2
-            && self.supports_khr_create_renderpass2()
-            && self.supports_khr_multiview()
-            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_synchronization2(&mut self) {
         self.khr_synchronization2 = true;
-        self.enable_khr_create_renderpass2();
-        self.enable_khr_multiview();
-        self.enable_khr_maintenance2();
     }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
         self.khr_zero_initialize_workgroup_memory
