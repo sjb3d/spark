@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 172
+//! Generated from vk.xml with `VK_HEADER_VERSION` 173
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1272,6 +1272,20 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_valve_mutable_descriptor_type(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_fuchsia_external_memory(&self) -> bool {
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_fuchsia_external_memory(&mut self) {
+        self.enable_khr_external_memory_capabilities();
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_fuchsia_external_semaphore(&self) -> bool {
+        self.supports_khr_external_semaphore_capabilities() && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_fuchsia_external_semaphore(&mut self) {
+        self.enable_khr_external_semaphore_capabilities();
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -3791,6 +3805,8 @@ pub struct DeviceExtensions {
     pub ext_4444_formats: bool,
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
+    pub fuchsia_external_memory: bool,
+    pub fuchsia_external_semaphore: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -3990,6 +4006,8 @@ impl DeviceExtensions {
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
+            b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
+            b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             _ => {}
         }
     }
@@ -4189,6 +4207,8 @@ impl DeviceExtensions {
             ext_4444_formats: false,
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
+            fuchsia_external_memory: false,
+            fuchsia_external_semaphore: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5613,6 +5633,20 @@ impl DeviceExtensions {
         self.valve_mutable_descriptor_type = true;
         self.enable_khr_maintenance3();
     }
+    pub fn supports_fuchsia_external_memory(&self) -> bool {
+        self.fuchsia_external_memory && self.supports_khr_external_memory()
+    }
+    pub fn enable_fuchsia_external_memory(&mut self) {
+        self.fuchsia_external_memory = true;
+        self.enable_khr_external_memory();
+    }
+    pub fn supports_fuchsia_external_semaphore(&self) -> bool {
+        self.fuchsia_external_semaphore && self.supports_khr_external_semaphore()
+    }
+    pub fn enable_fuchsia_external_semaphore(&mut self) {
+        self.fuchsia_external_semaphore = true;
+        self.enable_khr_external_semaphore();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -6196,6 +6230,12 @@ impl DeviceExtensions {
         if self.valve_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_mutable_descriptor_type\0") })
         }
+        if self.fuchsia_external_memory {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })
+        }
+        if self.fuchsia_external_semaphore {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_semaphore\0") })
+        }
         v
     }
 }
@@ -6350,10 +6390,14 @@ pub struct Device {
     pub fp_get_memory_win32_handle_properties_khr: Option<vk::FnGetMemoryWin32HandlePropertiesKHR>,
     pub fp_get_memory_fd_khr: Option<vk::FnGetMemoryFdKHR>,
     pub fp_get_memory_fd_properties_khr: Option<vk::FnGetMemoryFdPropertiesKHR>,
+    pub fp_get_memory_zircon_handle_fuchsia: Option<vk::FnGetMemoryZirconHandleFUCHSIA>,
+    pub fp_get_memory_zircon_handle_properties_fuchsia: Option<vk::FnGetMemoryZirconHandlePropertiesFUCHSIA>,
     pub fp_get_semaphore_win32_handle_khr: Option<vk::FnGetSemaphoreWin32HandleKHR>,
     pub fp_import_semaphore_win32_handle_khr: Option<vk::FnImportSemaphoreWin32HandleKHR>,
     pub fp_get_semaphore_fd_khr: Option<vk::FnGetSemaphoreFdKHR>,
     pub fp_import_semaphore_fd_khr: Option<vk::FnImportSemaphoreFdKHR>,
+    pub fp_get_semaphore_zircon_handle_fuchsia: Option<vk::FnGetSemaphoreZirconHandleFUCHSIA>,
+    pub fp_import_semaphore_zircon_handle_fuchsia: Option<vk::FnImportSemaphoreZirconHandleFUCHSIA>,
     pub fp_get_fence_win32_handle_khr: Option<vk::FnGetFenceWin32HandleKHR>,
     pub fp_import_fence_win32_handle_khr: Option<vk::FnImportFenceWin32HandleKHR>,
     pub fp_get_fence_fd_khr: Option<vk::FnGetFenceFdKHR>,
@@ -7595,6 +7639,20 @@ impl Device {
             } else {
                 None
             },
+            fp_get_memory_zircon_handle_fuchsia: if extensions.fuchsia_external_memory {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryZirconHandleFUCHSIA\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_zircon_handle_properties_fuchsia: if extensions.fuchsia_external_memory {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetMemoryZirconHandlePropertiesFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_semaphore_win32_handle_khr: if extensions.khr_external_semaphore_win32 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetSemaphoreWin32HandleKHR\0"));
                 fp.map(|f| mem::transmute(f))
@@ -7617,6 +7675,22 @@ impl Device {
             },
             fp_import_semaphore_fd_khr: if extensions.khr_external_semaphore_fd {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkImportSemaphoreFdKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_semaphore_zircon_handle_fuchsia: if extensions.fuchsia_external_semaphore {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetSemaphoreZirconHandleFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_import_semaphore_zircon_handle_fuchsia: if extensions.fuchsia_external_semaphore {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkImportSemaphoreZirconHandleFUCHSIA\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11383,6 +11457,40 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_memory_zircon_handle_fuchsia(
+        &self,
+        p_get_zircon_handle_info: &vk::MemoryGetZirconHandleInfoFUCHSIA,
+    ) -> Result<vk::zx_handle_t> {
+        let fp = self
+            .fp_get_memory_zircon_handle_fuchsia
+            .expect("vkGetMemoryZirconHandleFUCHSIA is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_zircon_handle_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_memory_zircon_handle_properties_fuchsia(
+        &self,
+        handle_type: vk::ExternalMemoryHandleTypeFlags,
+        zircon_handle: vk::zx_handle_t,
+        p_memory_zircon_handle_properties: &mut vk::MemoryZirconHandlePropertiesFUCHSIA,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_memory_zircon_handle_properties_fuchsia
+            .expect("vkGetMemoryZirconHandlePropertiesFUCHSIA is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            handle_type,
+            zircon_handle,
+            p_memory_zircon_handle_properties,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn get_semaphore_win32_handle_khr(
         &self,
         p_get_win32_handle_info: &vk::SemaphoreGetWin32HandleInfoKHR,
@@ -11427,6 +11535,33 @@ impl Device {
             .fp_import_semaphore_fd_khr
             .expect("vkImportSemaphoreFdKHR is not loaded");
         let err = (fp)(Some(self.handle), p_import_semaphore_fd_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_semaphore_zircon_handle_fuchsia(
+        &self,
+        p_get_zircon_handle_info: &vk::SemaphoreGetZirconHandleInfoFUCHSIA,
+    ) -> Result<vk::zx_handle_t> {
+        let fp = self
+            .fp_get_semaphore_zircon_handle_fuchsia
+            .expect("vkGetSemaphoreZirconHandleFUCHSIA is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_get_zircon_handle_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn import_semaphore_zircon_handle_fuchsia(
+        &self,
+        p_import_semaphore_zircon_handle_info: &vk::ImportSemaphoreZirconHandleInfoFUCHSIA,
+    ) -> Result<()> {
+        let fp = self
+            .fp_import_semaphore_zircon_handle_fuchsia
+            .expect("vkImportSemaphoreZirconHandleFUCHSIA is not loaded");
+        let err = (fp)(Some(self.handle), p_import_semaphore_zircon_handle_info);
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),

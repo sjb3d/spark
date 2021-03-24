@@ -1947,12 +1947,6 @@ impl AccessFlags {
     pub const MEMORY_READ: Self = Self(0x8000);
     /// Controls coherency of memory writes
     pub const MEMORY_WRITE: Self = Self(0x10000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_30_KHR: Self = Self(0x40000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_28_KHR: Self = Self(0x10000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_29_KHR: Self = Self(0x20000000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
     /// Added by extension VK_EXT_transform_feedback.
@@ -1992,13 +1986,13 @@ impl AccessFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7fffffff)
+        Self(0xfffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7fffffff
+        self.0 == 0xfffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2062,9 +2056,6 @@ impl fmt::Display for AccessFlags {
                 (0x4000, "HOST_WRITE"),
                 (0x8000, "MEMORY_READ"),
                 (0x10000, "MEMORY_WRITE"),
-                (0x40000000, "RESERVED_30_KHR"),
-                (0x10000000, "RESERVED_28_KHR"),
-                (0x20000000, "RESERVED_29_KHR"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
@@ -4428,10 +4419,6 @@ impl PipelineStageFlags {
     pub const ALL_GRAPHICS: Self = Self(0x8000);
     /// All stages supported on the queue
     pub const ALL_COMMANDS: Self = Self(0x10000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_27_KHR: Self = Self(0x8000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_26_KHR: Self = Self(0x4000000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
@@ -4467,13 +4454,13 @@ impl PipelineStageFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xfffffff)
+        Self(0x3ffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xfffffff
+        self.0 == 0x3ffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4537,8 +4524,6 @@ impl fmt::Display for PipelineStageFlags {
                 (0x4000, "HOST"),
                 (0x8000, "ALL_GRAPHICS"),
                 (0x10000, "ALL_COMMANDS"),
-                (0x8000000, "RESERVED_27_KHR"),
-                (0x4000000, "RESERVED_26_KHR"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
@@ -6341,6 +6326,14 @@ impl AccessFlags2KHR {
     pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
     pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
     pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_READ_35: Self = Self(0x800000000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_WRITE_36: Self = Self(0x1000000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_READ_37: Self = Self(0x2000000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_WRITE_38: Self = Self(0x4000000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
     /// Added by extension VK_KHR_synchronization2.
@@ -6378,13 +6371,13 @@ impl AccessFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x70fffffff)
+        Self(0x7f0fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x70fffffff
+        self.0 == 0x7f0fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6451,6 +6444,10 @@ impl fmt::Display for AccessFlags2KHR {
                 (0x100000000, "SHADER_SAMPLED_READ"),
                 (0x200000000, "SHADER_STORAGE_READ"),
                 (0x400000000, "SHADER_STORAGE_WRITE"),
+                (0x800000000, "RESERVED_READ_35"),
+                (0x1000000000, "RESERVED_WRITE_36"),
+                (0x2000000000, "RESERVED_READ_37"),
+                (0x4000000000, "RESERVED_WRITE_38"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
@@ -6497,6 +6494,10 @@ impl PipelineStageFlags2KHR {
     pub const INDEX_INPUT: Self = Self(0x1000000000);
     pub const VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
     pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
+    /// Added by extension VK_AMD_extension_24.
+    pub const RESERVED_26: Self = Self(0x4000000);
+    /// Added by extension VK_AMD_extension_25.
+    pub const RESERVED_27: Self = Self(0x8000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
@@ -6530,13 +6531,13 @@ impl PipelineStageFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f03ffffff)
+        Self(0x7f0fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f03ffffff
+        self.0 == 0x7f0fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6607,6 +6608,8 @@ impl fmt::Display for PipelineStageFlags2KHR {
                 (0x1000000000, "INDEX_INPUT"),
                 (0x2000000000, "VERTEX_ATTRIBUTE_INPUT"),
                 (0x4000000000, "PRE_RASTERIZATION_SHADERS"),
+                (0x4000000, "RESERVED_26"),
+                (0x8000000, "RESERVED_27"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x20000, "COMMAND_PREPROCESS_NV"),
@@ -8488,6 +8491,8 @@ impl ExternalMemoryHandleTypeFlags {
     pub const HOST_ALLOCATION_EXT: Self = Self(0x80);
     /// Added by extension VK_EXT_external_memory_host.
     pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = Self(0x100);
+    /// Added by extension VK_FUCHSIA_external_memory.
+    pub const ZIRCON_VMO_FUCHSIA: Self = Self(0x800);
 }
 impl default::Default for ExternalMemoryHandleTypeFlags {
     fn default() -> Self {
@@ -8499,13 +8504,13 @@ impl ExternalMemoryHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7ff)
+        Self(0xfff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7ff
+        self.0 == 0xfff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8563,6 +8568,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
                 (0x400, "ANDROID_HARDWARE_BUFFER_ANDROID"),
                 (0x80, "HOST_ALLOCATION_EXT"),
                 (0x100, "HOST_MAPPED_FOREIGN_MEMORY_EXT"),
+                (0x800, "ZIRCON_VMO_FUCHSIA"),
             ],
             f,
         )
@@ -8663,6 +8669,8 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
     pub const D3D12_FENCE_KHR: Self = Self::D3D12_FENCE;
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
+    /// Added by extension VK_FUCHSIA_external_semaphore.
+    pub const ZIRCON_EVENT_FUCHSIA: Self = Self(0x80);
     /// Added by extension VK_NV_extension_375.
     pub const RESERVED_5_NV: Self = Self(0x20);
     /// Added by extension VK_NV_extension_375.
@@ -8678,13 +8686,13 @@ impl ExternalSemaphoreHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f)
+        Self(0xff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f
+        self.0 == 0xff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8736,6 +8744,7 @@ impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
                 (0x4, "OPAQUE_WIN32_KMT"),
                 (0x8, "D3D12_FENCE"),
                 (0x10, "SYNC_FD"),
+                (0x80, "ZIRCON_EVENT_FUCHSIA"),
                 (0x20, "RESERVED_5_NV"),
                 (0x40, "RESERVED_6_NV"),
             ],
@@ -13868,6 +13877,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
+    /// Added by extension VK_FUCHSIA_external_memory.
+    pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
+    /// Added by extension VK_FUCHSIA_external_memory.
+    pub const MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA: Self = Self(1000364001);
+    /// Added by extension VK_FUCHSIA_external_memory.
+    pub const MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364002);
+    /// Added by extension VK_FUCHSIA_external_semaphore.
+    pub const IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365000);
+    /// Added by extension VK_FUCHSIA_external_semaphore.
+    pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14364,6 +14383,11 @@ impl fmt::Display for StructureType {
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
+            1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
+            1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -23860,6 +23884,87 @@ impl fmt::Debug for ExportMemoryWin32HandleInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct ImportMemoryZirconHandleInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+    pub handle: zx_handle_t,
+}
+impl default::Default for ImportMemoryZirconHandleInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            handle: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportMemoryZirconHandleInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMemoryZirconHandleInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("handle_type", &self.handle_type)
+            .field("handle", &self.handle)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryZirconHandlePropertiesFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_type_bits: u32,
+}
+impl default::Default for MemoryZirconHandlePropertiesFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA,
+            p_next: ptr::null_mut(),
+            memory_type_bits: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryZirconHandlePropertiesFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryZirconHandlePropertiesFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_type_bits", &self.memory_type_bits)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryGetZirconHandleInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+}
+impl default::Default for MemoryGetZirconHandleInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            memory: None,
+            handle_type: ExternalMemoryHandleTypeFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryGetZirconHandleInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryGetZirconHandleInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .field("handle_type", &self.handle_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MemoryWin32HandlePropertiesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -24307,6 +24412,68 @@ impl default::Default for SemaphoreGetFdInfoKHR {
 impl fmt::Debug for SemaphoreGetFdInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("SemaphoreGetFdInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore", &self.semaphore)
+            .field("handle_type", &self.handle_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportSemaphoreZirconHandleInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore: Option<Semaphore>,
+    pub flags: SemaphoreImportFlags,
+    pub handle_type: ExternalSemaphoreHandleTypeFlags,
+    pub zircon_handle: zx_handle_t,
+}
+impl default::Default for ImportSemaphoreZirconHandleInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            semaphore: None,
+            flags: SemaphoreImportFlags::default(),
+            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            zircon_handle: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportSemaphoreZirconHandleInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportSemaphoreZirconHandleInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore", &self.semaphore)
+            .field("flags", &self.flags)
+            .field("handle_type", &self.handle_type)
+            .field("zircon_handle", &self.zircon_handle)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SemaphoreGetZirconHandleInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore: Option<Semaphore>,
+    pub handle_type: ExternalSemaphoreHandleTypeFlags,
+}
+impl default::Default for SemaphoreGetZirconHandleInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            semaphore: None,
+            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for SemaphoreGetZirconHandleInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SemaphoreGetZirconHandleInfoFUCHSIA")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("semaphore", &self.semaphore)
@@ -38809,6 +38976,17 @@ pub type FnGetMemoryFdPropertiesKHR = unsafe extern "system" fn(
     fd: c_int,
     p_memory_fd_properties: *mut MemoryFdPropertiesKHR,
 ) -> Result;
+pub type FnGetMemoryZirconHandleFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_zircon_handle_info: *const MemoryGetZirconHandleInfoFUCHSIA,
+    p_zircon_handle: *mut zx_handle_t,
+) -> Result;
+pub type FnGetMemoryZirconHandlePropertiesFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    handle_type: ExternalMemoryHandleTypeFlags,
+    zircon_handle: zx_handle_t,
+    p_memory_zircon_handle_properties: *mut MemoryZirconHandlePropertiesFUCHSIA,
+) -> Result;
 pub type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     p_external_semaphore_info: *const PhysicalDeviceExternalSemaphoreInfo,
@@ -38831,6 +39009,15 @@ pub type FnGetSemaphoreFdKHR = unsafe extern "system" fn(
 pub type FnImportSemaphoreFdKHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_import_semaphore_fd_info: *const ImportSemaphoreFdInfoKHR,
+) -> Result;
+pub type FnGetSemaphoreZirconHandleFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_get_zircon_handle_info: *const SemaphoreGetZirconHandleInfoFUCHSIA,
+    p_zircon_handle: *mut zx_handle_t,
+) -> Result;
+pub type FnImportSemaphoreZirconHandleFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_import_semaphore_zircon_handle_info: *const ImportSemaphoreZirconHandleInfoFUCHSIA,
 ) -> Result;
 pub type FnGetPhysicalDeviceExternalFenceProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,

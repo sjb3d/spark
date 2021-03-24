@@ -5025,6 +5025,76 @@ impl<'a> Deref for ExportMemoryWin32HandleInfoKHRBuilder<'a> {
 }
 impl<'a> MemoryAllocateInfoNext for ExportMemoryWin32HandleInfoKHRBuilder<'a> {}
 impl MemoryAllocateInfoNext for vk::ExportMemoryWin32HandleInfoKHR {}
+impl Builder<'_> for vk::ImportMemoryZirconHandleInfoFUCHSIA {
+    type Type = ImportMemoryZirconHandleInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMemoryZirconHandleInfoFUCHSIABuilder {
+    inner: vk::ImportMemoryZirconHandleInfoFUCHSIA,
+}
+impl ImportMemoryZirconHandleInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+    pub fn handle(mut self, handle: vk::zx_handle_t) -> Self {
+        self.inner.handle = handle;
+        self
+    }
+}
+impl Deref for ImportMemoryZirconHandleInfoFUCHSIABuilder {
+    type Target = vk::ImportMemoryZirconHandleInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for ImportMemoryZirconHandleInfoFUCHSIABuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryZirconHandleInfoFUCHSIA {}
+impl Builder<'_> for vk::MemoryGetZirconHandleInfoFUCHSIA {
+    type Type = MemoryGetZirconHandleInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryGetZirconHandleInfoFUCHSIABuilder {
+    inner: vk::MemoryGetZirconHandleInfoFUCHSIA,
+}
+impl MemoryGetZirconHandleInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+}
+impl Deref for MemoryGetZirconHandleInfoFUCHSIABuilder {
+    type Target = vk::MemoryGetZirconHandleInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::MemoryGetWin32HandleInfoKHR {
     type Type = MemoryGetWin32HandleInfoKHRBuilder;
     fn builder() -> Self::Type {
@@ -5483,6 +5553,82 @@ impl SemaphoreGetFdInfoKHRBuilder {
 }
 impl Deref for SemaphoreGetFdInfoKHRBuilder {
     type Target = vk::SemaphoreGetFdInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImportSemaphoreZirconHandleInfoFUCHSIA {
+    type Type = ImportSemaphoreZirconHandleInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportSemaphoreZirconHandleInfoFUCHSIABuilder {
+    inner: vk::ImportSemaphoreZirconHandleInfoFUCHSIA,
+}
+impl ImportSemaphoreZirconHandleInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+        self.inner.semaphore = Some(semaphore);
+        self
+    }
+    pub fn flags(mut self, flags: vk::SemaphoreImportFlags) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+    pub fn zircon_handle(mut self, zircon_handle: vk::zx_handle_t) -> Self {
+        self.inner.zircon_handle = zircon_handle;
+        self
+    }
+}
+impl Deref for ImportSemaphoreZirconHandleInfoFUCHSIABuilder {
+    type Target = vk::ImportSemaphoreZirconHandleInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::SemaphoreGetZirconHandleInfoFUCHSIA {
+    type Type = SemaphoreGetZirconHandleInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SemaphoreGetZirconHandleInfoFUCHSIABuilder {
+    inner: vk::SemaphoreGetZirconHandleInfoFUCHSIA,
+}
+impl SemaphoreGetZirconHandleInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore(mut self, semaphore: vk::Semaphore) -> Self {
+        self.inner.semaphore = Some(semaphore);
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalSemaphoreHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+}
+impl Deref for SemaphoreGetZirconHandleInfoFUCHSIABuilder {
+    type Target = vk::SemaphoreGetZirconHandleInfoFUCHSIA;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
