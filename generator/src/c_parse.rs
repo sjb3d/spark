@@ -353,7 +353,7 @@ pub fn c_try_parse_typedef(i: &str) -> Option<CVariableDecl> {
 
 fn expr_inner(i: &str) -> Res<CExpr> {
     alt((
-        map(terminated(float, char('f')), CExpr::Float),
+        map(terminated(float, alt((char('f'), char('F')))), CExpr::Float),
         map(
             terminated(map_res(digit1, str::parse::<u64>), tag("ULL")),
             CExpr::Uint64,
