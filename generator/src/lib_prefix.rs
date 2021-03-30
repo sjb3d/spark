@@ -17,32 +17,6 @@ use shared_library::dynamic_library::DynamicLibrary;
 #[doc(no_inline)]
 pub use self::builder::*;
 
-// For methods to be generic over array length (until there is language support)
-pub trait Array {
-    type Item;
-    fn as_mut_ptr(&mut self) -> *mut Self::Item;
-    fn len() -> usize;
-}
-
-macro_rules! array_impl {
-    ($len:expr) => (
-        impl<T> Array for [T; $len] {
-            type Item = T;
-            fn as_mut_ptr(&mut self) -> *mut T { self as *mut _ as *mut _ }
-            fn len() -> usize { $len }
-        }
-    )
-}
-
-array_impl!(1);
-array_impl!(2);
-array_impl!(3);
-array_impl!(4);
-array_impl!(5);
-array_impl!(6);
-array_impl!(7);
-array_impl!(8);
-
 pub type Result<T> = result::Result<T, vk::Result>;
 
 struct Lib {

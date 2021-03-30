@@ -2508,7 +2508,7 @@ impl<'a> Generator<'a> {
                     write!(w, "_to_vec")?;
                 }
                 LibCommandStyle::Array => {
-                    write!(w, "_array<A: Array<Item = {}>>", return_type_name)?;
+                    write!(w, "_array<const N: usize>")?;
                 }
                 LibCommandStyle::Single => {
                     write!(w, "_single")?;
@@ -2639,7 +2639,7 @@ impl<'a> Generator<'a> {
                         write!(w, "-> Result<Vec<{}>>", return_type_name)?;
                     }
                     LibCommandStyle::Array => {
-                        write!(w, "-> Result<A>")?;
+                        write!(w, "-> Result<[{}; N]>", return_type_name)?;
                     }
                     LibCommandStyle::Single => {
                         write!(w, "-> Result<{}>", return_type_name)?;
@@ -2763,7 +2763,7 @@ impl<'a> Generator<'a> {
                         LibCommandStyle::Array => {
                             write!(
                                 w,
-                                "assert_eq!({}, A::len() as u32); let mut v = MaybeUninit::<A>::uninit(); let v_err = ",
+                                "assert_eq!({}, N as u32); let mut v = MaybeUninit::<_>::uninit(); let v_err = ",
                                 len_expr
                             )?;
                         }

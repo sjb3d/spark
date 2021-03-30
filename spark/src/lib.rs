@@ -22,36 +22,6 @@ use std::slice;
 #[doc(no_inline)]
 pub use self::builder::*;
 
-// For methods to be generic over array length (until there is language support)
-pub trait Array {
-    type Item;
-    fn as_mut_ptr(&mut self) -> *mut Self::Item;
-    fn len() -> usize;
-}
-
-macro_rules! array_impl {
-    ($len:expr) => {
-        impl<T> Array for [T; $len] {
-            type Item = T;
-            fn as_mut_ptr(&mut self) -> *mut T {
-                self as *mut _ as *mut _
-            }
-            fn len() -> usize {
-                $len
-            }
-        }
-    };
-}
-
-array_impl!(1);
-array_impl!(2);
-array_impl!(3);
-array_impl!(4);
-array_impl!(5);
-array_impl!(6);
-array_impl!(7);
-array_impl!(8);
-
 pub type Result<T> = result::Result<T, vk::Result>;
 
 struct Lib {
@@ -9796,18 +9766,18 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn create_graphics_pipelines_array<A: Array<Item = vk::Pipeline>>(
+    pub unsafe fn create_graphics_pipelines_array<const N: usize>(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::GraphicsPipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<A> {
+    ) -> Result<[vk::Pipeline; N]> {
         let fp = self
             .fp_create_graphics_pipelines
             .expect("vkCreateGraphicsPipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        assert_eq!(create_info_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -9894,18 +9864,18 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn create_compute_pipelines_array<A: Array<Item = vk::Pipeline>>(
+    pub unsafe fn create_compute_pipelines_array<const N: usize>(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::ComputePipelineCreateInfo],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<A> {
+    ) -> Result<[vk::Pipeline; N]> {
         let fp = self
             .fp_create_compute_pipelines
             .expect("vkCreateComputePipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        assert_eq!(create_info_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -10118,15 +10088,15 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn allocate_descriptor_sets_array<A: Array<Item = vk::DescriptorSet>>(
+    pub unsafe fn allocate_descriptor_sets_array<const N: usize>(
         &self,
         p_allocate_info: &vk::DescriptorSetAllocateInfo,
-    ) -> Result<A> {
+    ) -> Result<[vk::DescriptorSet; N]> {
         let fp = self
             .fp_allocate_descriptor_sets
             .expect("vkAllocateDescriptorSets is not loaded");
-        assert_eq!(p_allocate_info.descriptor_set_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(p_allocate_info.descriptor_set_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr() as *mut _);
         match v_err {
             vk::Result::SUCCESS => Ok(v.assume_init()),
@@ -10315,15 +10285,15 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn allocate_command_buffers_array<A: Array<Item = vk::CommandBuffer>>(
+    pub unsafe fn allocate_command_buffers_array<const N: usize>(
         &self,
         p_allocate_info: &vk::CommandBufferAllocateInfo,
-    ) -> Result<A> {
+    ) -> Result<[vk::CommandBuffer; N]> {
         let fp = self
             .fp_allocate_command_buffers
             .expect("vkAllocateCommandBuffers is not loaded");
-        assert_eq!(p_allocate_info.command_buffer_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(p_allocate_info.command_buffer_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr() as *mut _);
         match v_err {
             vk::Result::SUCCESS => Ok(v.assume_init()),
@@ -11099,17 +11069,17 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn create_shared_swapchains_khr_array<A: Array<Item = vk::SwapchainKHR>>(
+    pub unsafe fn create_shared_swapchains_khr_array<const N: usize>(
         &self,
         p_create_infos: &[vk::SwapchainCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<A> {
+    ) -> Result<[vk::SwapchainKHR; N]> {
         let fp = self
             .fp_create_shared_swapchains_khr
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
         let swapchain_count = p_create_infos.len() as u32;
-        assert_eq!(swapchain_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(swapchain_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
@@ -12479,17 +12449,17 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn get_calibrated_timestamps_ext_array<A: Array<Item = u64>>(
+    pub unsafe fn get_calibrated_timestamps_ext_array<const N: usize>(
         &self,
         p_timestamp_infos: &[vk::CalibratedTimestampInfoEXT],
         p_max_deviation: &mut u64,
-    ) -> Result<A> {
+    ) -> Result<[u64; N]> {
         let fp = self
             .fp_get_calibrated_timestamps_ext
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
-        assert_eq!(timestamp_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(timestamp_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
@@ -13592,18 +13562,18 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn create_ray_tracing_pipelines_nv_array<A: Array<Item = vk::Pipeline>>(
+    pub unsafe fn create_ray_tracing_pipelines_nv_array<const N: usize>(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::RayTracingPipelineCreateInfoNV],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<A> {
+    ) -> Result<[vk::Pipeline; N]> {
         let fp = self
             .fp_create_ray_tracing_pipelines_nv
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        assert_eq!(create_info_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -13694,19 +13664,19 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn create_ray_tracing_pipelines_khr_array<A: Array<Item = vk::Pipeline>>(
+    pub unsafe fn create_ray_tracing_pipelines_khr_array<const N: usize>(
         &self,
         deferred_operation: Option<vk::DeferredOperationKHR>,
         pipeline_cache: Option<vk::PipelineCache>,
         p_create_infos: &[vk::RayTracingPipelineCreateInfoKHR],
         p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<A> {
+    ) -> Result<[vk::Pipeline; N]> {
         let fp = self
             .fp_create_ray_tracing_pipelines_khr
             .expect("vkCreateRayTracingPipelinesKHR is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        assert_eq!(create_info_count, A::len() as u32);
-        let mut v = MaybeUninit::<A>::uninit();
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
         let v_err = (fp)(
             Some(self.handle),
             deferred_operation,
