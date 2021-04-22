@@ -304,8 +304,6 @@ impl fmt::Display for QueryPoolCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct RenderPassCreateFlags(u32);
 impl RenderPassCreateFlags {
-    /// Added by extension VK_KHR_extension_221.
-    pub const RESERVED_0_KHR: Self = Self(0x1);
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const TRANSFORM_QCOM: Self = Self(0x2);
 }
@@ -319,13 +317,13 @@ impl RenderPassCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3)
+        Self(0x2)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3
+        self.0 == 0x2
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -369,7 +367,7 @@ impl ops::BitXorAssign for RenderPassCreateFlags {
 }
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "RESERVED_0_KHR"), (0x2, "TRANSFORM_QCOM")], f)
+        display_bitmask(self.0 as _, &[(0x2, "TRANSFORM_QCOM")], f)
     }
 }
 #[repr(transparent)]
@@ -519,12 +517,8 @@ impl fmt::Display for PipelineLayoutCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineCacheCreateFlags(u32);
 impl PipelineCacheCreateFlags {
-    /// Added by extension VK_GOOGLE_extension_196.
-    pub const RESERVED_1_EXT: Self = Self(0x2);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self(0x1);
-    /// Added by extension VK_KHR_extension_350.
-    pub const RESERVED_2_EXT: Self = Self(0x4);
 }
 impl default::Default for PipelineCacheCreateFlags {
     fn default() -> Self {
@@ -536,13 +530,13 @@ impl PipelineCacheCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -586,15 +580,7 @@ impl ops::BitXorAssign for PipelineCacheCreateFlags {
 }
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(
-            self.0 as _,
-            &[
-                (0x2, "RESERVED_1_EXT"),
-                (0x1, "EXTERNALLY_SYNCHRONIZED_EXT"),
-                (0x4, "RESERVED_2_EXT"),
-            ],
-            f,
-        )
+        display_bitmask(self.0 as _, &[(0x1, "EXTERNALLY_SYNCHRONIZED_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -1204,14 +1190,10 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineShaderStageCreateFlags(u32);
 impl PipelineShaderStageCreateFlags {
-    /// Added by extension VK_NV_extension_52.
-    pub const RESERVED_2_NV: Self = Self(0x4);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_subgroup_size_control.
     pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = Self(0x2);
-    /// Added by extension VK_KHR_extension_297.
-    pub const RESERVED_3_KHR: Self = Self(0x8);
 }
 impl default::Default for PipelineShaderStageCreateFlags {
     fn default() -> Self {
@@ -1223,13 +1205,13 @@ impl PipelineShaderStageCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xf)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x3
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1276,10 +1258,8 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
         display_bitmask(
             self.0 as _,
             &[
-                (0x4, "RESERVED_2_NV"),
                 (0x1, "ALLOW_VARYING_SUBGROUP_SIZE_EXT"),
                 (0x2, "REQUIRE_FULL_SUBGROUPS_EXT"),
-                (0x8, "RESERVED_3_KHR"),
             ],
             f,
         )
@@ -1653,10 +1633,6 @@ impl QueueFlags {
     pub const SPARSE_BINDING: Self = Self(0x8);
     /// Queues may support protected operations
     pub const PROTECTED: Self = Self(0x10);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_6_KHR: Self = Self(0x40);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_5_KHR: Self = Self(0x20);
 }
 impl default::Default for QueueFlags {
     fn default() -> Self {
@@ -1668,13 +1644,13 @@ impl QueueFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f
+        self.0 == 0x1f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1726,8 +1702,6 @@ impl fmt::Display for QueueFlags {
                 (0x4, "TRANSFER"),
                 (0x8, "SPARSE_BINDING"),
                 (0x10, "PROTECTED"),
-                (0x40, "RESERVED_6_KHR"),
-                (0x20, "RESERVED_5_KHR"),
             ],
             f,
         )
@@ -1839,8 +1813,6 @@ impl MemoryHeapFlags {
     /// If set, heap allocations allocate multiple instances by default
     pub const MULTI_INSTANCE: Self = Self(0x2);
     pub const MULTI_INSTANCE_KHR: Self = Self::MULTI_INSTANCE;
-    /// Added by extension VK_KHR_extension_309.
-    pub const RESERVED_2_KHR: Self = Self(0x4);
 }
 impl default::Default for MemoryHeapFlags {
     fn default() -> Self {
@@ -1852,13 +1824,13 @@ impl MemoryHeapFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7
+        self.0 == 0x3
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1902,11 +1874,7 @@ impl ops::BitXorAssign for MemoryHeapFlags {
 }
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(
-            self.0 as _,
-            &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE"), (0x4, "RESERVED_2_KHR")],
-            f,
-        )
+        display_bitmask(self.0 as _, &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE")], f)
     }
 }
 #[repr(transparent)]
@@ -2095,14 +2063,6 @@ impl BufferUsageFlags {
     /// Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
     pub const INDIRECT_BUFFER: Self = Self(0x100);
     pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_15_KHR: Self = Self(0x8000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_16_KHR: Self = Self(0x10000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_13_KHR: Self = Self(0x2000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_14_KHR: Self = Self(0x4000);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = Self(0x800);
     /// Added by extension VK_EXT_transform_feedback.
@@ -2117,8 +2077,6 @@ impl BufferUsageFlags {
     /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const SHADER_BINDING_TABLE_KHR: Self = Self(0x400);
     pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE_KHR;
-    /// Added by extension VK_QCOM_extension_173.
-    pub const RESERVED_18_QCOM: Self = Self(0x40000);
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
     pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self::SHADER_DEVICE_ADDRESS;
 }
@@ -2132,13 +2090,13 @@ impl BufferUsageFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1fffff)
+        Self(0x1a1fff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1fffff
+        self.0 == 0x1a1fff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2195,17 +2153,12 @@ impl fmt::Display for BufferUsageFlags {
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
                 (0x20000, "SHADER_DEVICE_ADDRESS"),
-                (0x8000, "RESERVED_15_KHR"),
-                (0x10000, "RESERVED_16_KHR"),
-                (0x2000, "RESERVED_13_KHR"),
-                (0x4000, "RESERVED_14_KHR"),
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
-                (0x40000, "RESERVED_18_QCOM"),
             ],
             f,
         )
@@ -2226,8 +2179,6 @@ impl BufferCreateFlags {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x10);
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
-    /// Added by extension VK_NV_extension_372.
-    pub const RESERVED_5_NV: Self = Self(0x20);
 }
 impl default::Default for BufferCreateFlags {
     fn default() -> Self {
@@ -2239,13 +2190,13 @@ impl BufferCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3f
+        self.0 == 0x1f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2297,7 +2248,6 @@ impl fmt::Display for BufferCreateFlags {
                 (0x4, "SPARSE_ALIASED"),
                 (0x8, "PROTECTED"),
                 (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY"),
-                (0x20, "RESERVED_5_NV"),
             ],
             f,
         )
@@ -2442,24 +2392,8 @@ impl ImageUsageFlags {
     pub const TRANSIENT_ATTACHMENT: Self = Self(0x40);
     /// Can be used as framebuffer input attachment
     pub const INPUT_ATTACHMENT: Self = Self(0x80);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_13_KHR: Self = Self(0x2000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_14_KHR: Self = Self(0x4000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_15_KHR: Self = Self(0x8000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_10_KHR: Self = Self(0x400);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_11_KHR: Self = Self(0x800);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_12_KHR: Self = Self(0x1000);
     /// Added by extension VK_NV_shading_rate_image.
     pub const SHADING_RATE_IMAGE_NV: Self = Self(0x100);
-    /// Added by extension VK_QCOM_extension_173.
-    pub const RESERVED_16_QCOM: Self = Self(0x10000);
-    /// Added by extension VK_QCOM_extension_173.
-    pub const RESERVED_17_QCOM: Self = Self(0x20000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
@@ -2474,13 +2408,13 @@ impl ImageUsageFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3ffff)
+        Self(0x3ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3ffff
+        self.0 == 0x3ff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2535,15 +2469,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x20, "DEPTH_STENCIL_ATTACHMENT"),
                 (0x40, "TRANSIENT_ATTACHMENT"),
                 (0x80, "INPUT_ATTACHMENT"),
-                (0x2000, "RESERVED_13_KHR"),
-                (0x4000, "RESERVED_14_KHR"),
-                (0x8000, "RESERVED_15_KHR"),
-                (0x400, "RESERVED_10_KHR"),
-                (0x800, "RESERVED_11_KHR"),
-                (0x1000, "RESERVED_12_KHR"),
                 (0x100, "SHADING_RATE_IMAGE_NV"),
-                (0x10000, "RESERVED_16_QCOM"),
-                (0x20000, "RESERVED_17_QCOM"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
             ],
             f,
@@ -2586,8 +2512,6 @@ impl ImageCreateFlags {
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
-    /// Added by extension VK_NV_extension_372.
-    pub const RESERVED_15_NV: Self = Self(0x8000);
 }
 impl default::Default for ImageCreateFlags {
     fn default() -> Self {
@@ -2599,13 +2523,13 @@ impl ImageCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xffff)
+        Self(0x7fff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xffff
+        self.0 == 0x7fff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2667,7 +2591,6 @@ impl fmt::Display for ImageCreateFlags {
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
-                (0x8000, "RESERVED_15_NV"),
             ],
             f,
         )
@@ -2791,8 +2714,6 @@ impl PipelineCreateFlags {
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(0x100);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self(0x200);
-    /// Added by extension VK_NV_extension_328.
-    pub const RESERVED_BIT_20_NV: Self = Self(0x100000);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2804,13 +2725,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1ffbff)
+        Self(0xffbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1ffbff
+        self.0 == 0xffbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2876,7 +2797,6 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x800, "LIBRARY_KHR"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT"),
                 (0x200, "EARLY_RETURN_ON_FAILURE_EXT"),
-                (0x100000, "RESERVED_BIT_20_NV"),
             ],
             f,
         )
@@ -3141,14 +3061,6 @@ impl FormatFeatureFlags {
     /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
     /// Added by extension VK_IMG_filter_cubic.
     pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = Self(0x2000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_27_KHR: Self = Self(0x8000000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_28_KHR: Self = Self(0x10000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_25_KHR: Self = Self(0x2000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_26_KHR: Self = Self(0x4000000);
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
@@ -3181,13 +3093,13 @@ impl FormatFeatureFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7fffffff)
+        Self(0x61ffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7fffffff
+        self.0 == 0x61ffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3264,10 +3176,6 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x800000, "COSITED_CHROMA_SAMPLES"),
                 (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX"),
                 (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
-                (0x8000000, "RESERVED_27_KHR"),
-                (0x10000000, "RESERVED_28_KHR"),
-                (0x2000000, "RESERVED_25_KHR"),
-                (0x4000000, "RESERVED_26_KHR"),
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
@@ -3434,10 +3342,7 @@ impl fmt::Display for QueryResultFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderModuleCreateFlags(u32);
-impl ShaderModuleCreateFlags {
-    /// Added by extension VK_NV_extension_52.
-    pub const RESERVED_0_NV: Self = Self(0x1);
-}
+impl ShaderModuleCreateFlags {}
 impl default::Default for ShaderModuleCreateFlags {
     fn default() -> Self {
         Self(0)
@@ -3448,13 +3353,13 @@ impl ShaderModuleCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x0)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x0
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -3498,7 +3403,7 @@ impl ops::BitXorAssign for ShaderModuleCreateFlags {
 }
 impl fmt::Display for ShaderModuleCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "RESERVED_0_NV")], f)
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -5509,8 +5414,6 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const PREFER_FAST_TRACE_NV: Self = Self::PREFER_FAST_TRACE;
     pub const PREFER_FAST_BUILD_NV: Self = Self::PREFER_FAST_BUILD;
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
-    /// Added by extension VK_NV_extension_328.
-    pub const RESERVED_BIT_5_NV: Self = Self(0x20);
 }
 impl default::Default for BuildAccelerationStructureFlagsKHR {
     fn default() -> Self {
@@ -5522,13 +5425,13 @@ impl BuildAccelerationStructureFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3f)
+        Self(0x1f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3f
+        self.0 == 0x1f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5580,7 +5483,6 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x4, "PREFER_FAST_TRACE"),
                 (0x8, "PREFER_FAST_BUILD"),
                 (0x10, "LOW_MEMORY"),
-                (0x20, "RESERVED_BIT_5_NV"),
             ],
             f,
         )
@@ -5659,8 +5561,6 @@ impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
 pub struct AccelerationStructureCreateFlagsKHR(u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
-    /// Added by extension VK_NV_extension_328.
-    pub const RESERVED_BIT_2_NV: Self = Self(0x4);
 }
 impl default::Default for AccelerationStructureCreateFlagsKHR {
     fn default() -> Self {
@@ -5672,13 +5572,13 @@ impl AccelerationStructureCreateFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x5)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x5
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5722,11 +5622,7 @@ impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
 }
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(
-            self.0 as _,
-            &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"), (0x4, "RESERVED_BIT_2_NV")],
-            f,
-        )
+        display_bitmask(self.0 as _, &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY")], f)
     }
 }
 #[repr(transparent)]
@@ -6326,14 +6222,6 @@ impl AccessFlags2KHR {
     pub const SHADER_SAMPLED_READ: Self = Self(0x100000000);
     pub const SHADER_STORAGE_READ: Self = Self(0x200000000);
     pub const SHADER_STORAGE_WRITE: Self = Self(0x400000000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_READ_35: Self = Self(0x800000000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_WRITE_36: Self = Self(0x1000000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_READ_37: Self = Self(0x2000000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_WRITE_38: Self = Self(0x4000000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_WRITE_EXT: Self = Self(0x2000000);
     /// Added by extension VK_KHR_synchronization2.
@@ -6371,13 +6259,13 @@ impl AccessFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f0fffffff)
+        Self(0x70fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f0fffffff
+        self.0 == 0x70fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6444,10 +6332,6 @@ impl fmt::Display for AccessFlags2KHR {
                 (0x100000000, "SHADER_SAMPLED_READ"),
                 (0x200000000, "SHADER_STORAGE_READ"),
                 (0x400000000, "SHADER_STORAGE_WRITE"),
-                (0x800000000, "RESERVED_READ_35"),
-                (0x1000000000, "RESERVED_WRITE_36"),
-                (0x2000000000, "RESERVED_READ_37"),
-                (0x4000000000, "RESERVED_WRITE_38"),
                 (0x2000000, "TRANSFORM_FEEDBACK_WRITE_EXT"),
                 (0x4000000, "TRANSFORM_FEEDBACK_COUNTER_READ_EXT"),
                 (0x8000000, "TRANSFORM_FEEDBACK_COUNTER_WRITE_EXT"),
@@ -6494,10 +6378,6 @@ impl PipelineStageFlags2KHR {
     pub const INDEX_INPUT: Self = Self(0x1000000000);
     pub const VERTEX_ATTRIBUTE_INPUT: Self = Self(0x2000000000);
     pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x4000000000);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_26: Self = Self(0x4000000);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_27: Self = Self(0x8000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const TRANSFORM_FEEDBACK_EXT: Self = Self(0x1000000);
     /// A pipeline stage for conditional rendering predicate fetch
@@ -6531,13 +6411,13 @@ impl PipelineStageFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f0fffffff)
+        Self(0x7f03ffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f0fffffff
+        self.0 == 0x7f03ffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6608,8 +6488,6 @@ impl fmt::Display for PipelineStageFlags2KHR {
                 (0x1000000000, "INDEX_INPUT"),
                 (0x2000000000, "VERTEX_ATTRIBUTE_INPUT"),
                 (0x4000000000, "PRE_RASTERIZATION_SHADERS"),
-                (0x4000000, "RESERVED_26"),
-                (0x8000000, "RESERVED_27"),
                 (0x1000000, "TRANSFORM_FEEDBACK_EXT"),
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x20000, "COMMAND_PREPROCESS_NV"),
@@ -8671,10 +8549,6 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const ZIRCON_EVENT_FUCHSIA: Self = Self(0x80);
-    /// Added by extension VK_NV_extension_375.
-    pub const RESERVED_5_NV: Self = Self(0x20);
-    /// Added by extension VK_NV_extension_375.
-    pub const RESERVED_6_NV: Self = Self(0x40);
 }
 impl default::Default for ExternalSemaphoreHandleTypeFlags {
     fn default() -> Self {
@@ -8686,13 +8560,13 @@ impl ExternalSemaphoreHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xff)
+        Self(0x9f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xff
+        self.0 == 0x9f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8745,8 +8619,6 @@ impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
                 (0x8, "D3D12_FENCE"),
                 (0x10, "SYNC_FD"),
                 (0x80, "ZIRCON_EVENT_FUCHSIA"),
-                (0x20, "RESERVED_5_NV"),
-                (0x40, "RESERVED_6_NV"),
             ],
             f,
         )
@@ -8909,10 +8781,6 @@ impl ExternalFenceHandleTypeFlags {
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
-    /// Added by extension VK_NV_extension_374.
-    pub const RESERVED_4_NV: Self = Self(0x10);
-    /// Added by extension VK_NV_extension_374.
-    pub const RESERVED_5_NV: Self = Self(0x20);
 }
 impl default::Default for ExternalFenceHandleTypeFlags {
     fn default() -> Self {
@@ -8924,13 +8792,13 @@ impl ExternalFenceHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3f)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3f
+        self.0 == 0xf
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8981,8 +8849,6 @@ impl fmt::Display for ExternalFenceHandleTypeFlags {
                 (0x2, "OPAQUE_WIN32"),
                 (0x4, "OPAQUE_WIN32_KMT"),
                 (0x8, "SYNC_FD"),
-                (0x10, "RESERVED_4_NV"),
-                (0x20, "RESERVED_5_NV"),
             ],
             f,
         )
@@ -10035,8 +9901,6 @@ impl DescriptorBindingFlags {
     pub const UPDATE_UNUSED_WHILE_PENDING_EXT: Self = Self::UPDATE_UNUSED_WHILE_PENDING;
     pub const PARTIALLY_BOUND_EXT: Self = Self::PARTIALLY_BOUND;
     pub const VARIABLE_DESCRIPTOR_COUNT_EXT: Self = Self::VARIABLE_DESCRIPTOR_COUNT;
-    /// Added by extension VK_QCOM_extension_369.
-    pub const RESERVED_4_QCOM: Self = Self(0x10);
 }
 impl default::Default for DescriptorBindingFlags {
     fn default() -> Self {
@@ -10048,13 +9912,13 @@ impl DescriptorBindingFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1f)
+        Self(0xf)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0xf
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -10105,7 +9969,6 @@ impl fmt::Display for DescriptorBindingFlags {
                 (0x2, "UPDATE_UNUSED_WHILE_PENDING"),
                 (0x4, "PARTIALLY_BOUND"),
                 (0x8, "VARIABLE_DESCRIPTOR_COUNT"),
-                (0x10, "RESERVED_4_QCOM"),
             ],
             f,
         )
@@ -10396,75 +10259,6 @@ impl ops::BitXorAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct SwapchainImageUsageFlagsANDROID(u32);
-impl SwapchainImageUsageFlagsANDROID {
-    pub const SHARED: Self = Self(0x1);
-}
-impl default::Default for SwapchainImageUsageFlagsANDROID {
-    fn default() -> Self {
-        Self(0)
-    }
-}
-impl SwapchainImageUsageFlagsANDROID {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SwapchainImageUsageFlagsANDROID {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SwapchainImageUsageFlagsANDROID {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SwapchainImageUsageFlagsANDROID {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SwapchainImageUsageFlagsANDROID {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SwapchainImageUsageFlagsANDROID {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SwapchainImageUsageFlagsANDROID {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
-impl fmt::Display for SwapchainImageUsageFlagsANDROID {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "SHARED")], f)
     }
 }
 #[repr(transparent)]
@@ -11889,66 +11683,6 @@ impl Format {
     pub const G16_B16_R16_3PLANE_422_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_422_UNORM;
     pub const G16_B16R16_2PLANE_422_UNORM_KHR: Self = Self::G16_B16R16_2PLANE_422_UNORM;
     pub const G16_B16_R16_3PLANE_444_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_444_UNORM;
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_3X3X3_UNORM_BLOCK_EXT: Self = Self(1000288000);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_3X3X3_SRGB_BLOCK_EXT: Self = Self(1000288001);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_3X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288002);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X3X3_UNORM_BLOCK_EXT: Self = Self(1000288003);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X3X3_SRGB_BLOCK_EXT: Self = Self(1000288004);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X3X3_SFLOAT_BLOCK_EXT: Self = Self(1000288005);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X3_UNORM_BLOCK_EXT: Self = Self(1000288006);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X3_SRGB_BLOCK_EXT: Self = Self(1000288007);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X3_SFLOAT_BLOCK_EXT: Self = Self(1000288008);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X4_UNORM_BLOCK_EXT: Self = Self(1000288009);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X4_SRGB_BLOCK_EXT: Self = Self(1000288010);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_4X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288011);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X4X4_UNORM_BLOCK_EXT: Self = Self(1000288012);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X4X4_SRGB_BLOCK_EXT: Self = Self(1000288013);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X4X4_SFLOAT_BLOCK_EXT: Self = Self(1000288014);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X4_UNORM_BLOCK_EXT: Self = Self(1000288015);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X4_SRGB_BLOCK_EXT: Self = Self(1000288016);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X4_SFLOAT_BLOCK_EXT: Self = Self(1000288017);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X5_UNORM_BLOCK_EXT: Self = Self(1000288018);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X5_SRGB_BLOCK_EXT: Self = Self(1000288019);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_5X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288020);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X5X5_UNORM_BLOCK_EXT: Self = Self(1000288021);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X5X5_SRGB_BLOCK_EXT: Self = Self(1000288022);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X5X5_SFLOAT_BLOCK_EXT: Self = Self(1000288023);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X5_UNORM_BLOCK_EXT: Self = Self(1000288024);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X5_SRGB_BLOCK_EXT: Self = Self(1000288025);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X5_SFLOAT_BLOCK_EXT: Self = Self(1000288026);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X6_UNORM_BLOCK_EXT: Self = Self(1000288027);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X6_SRGB_BLOCK_EXT: Self = Self(1000288028);
-    /// Added by extension VK_EXT_extension_289.
-    pub const ASTC_6X6X6_SFLOAT_BLOCK_EXT: Self = Self(1000288029);
     /// Added by extension VK_EXT_4444_formats.
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self(1000340000);
     /// Added by extension VK_EXT_4444_formats.
@@ -12203,36 +11937,6 @@ impl fmt::Display for Format {
             1000066011 => Some(&"ASTC_10X10_SFLOAT_BLOCK_EXT"),
             1000066012 => Some(&"ASTC_12X10_SFLOAT_BLOCK_EXT"),
             1000066013 => Some(&"ASTC_12X12_SFLOAT_BLOCK_EXT"),
-            1000288000 => Some(&"ASTC_3X3X3_UNORM_BLOCK_EXT"),
-            1000288001 => Some(&"ASTC_3X3X3_SRGB_BLOCK_EXT"),
-            1000288002 => Some(&"ASTC_3X3X3_SFLOAT_BLOCK_EXT"),
-            1000288003 => Some(&"ASTC_4X3X3_UNORM_BLOCK_EXT"),
-            1000288004 => Some(&"ASTC_4X3X3_SRGB_BLOCK_EXT"),
-            1000288005 => Some(&"ASTC_4X3X3_SFLOAT_BLOCK_EXT"),
-            1000288006 => Some(&"ASTC_4X4X3_UNORM_BLOCK_EXT"),
-            1000288007 => Some(&"ASTC_4X4X3_SRGB_BLOCK_EXT"),
-            1000288008 => Some(&"ASTC_4X4X3_SFLOAT_BLOCK_EXT"),
-            1000288009 => Some(&"ASTC_4X4X4_UNORM_BLOCK_EXT"),
-            1000288010 => Some(&"ASTC_4X4X4_SRGB_BLOCK_EXT"),
-            1000288011 => Some(&"ASTC_4X4X4_SFLOAT_BLOCK_EXT"),
-            1000288012 => Some(&"ASTC_5X4X4_UNORM_BLOCK_EXT"),
-            1000288013 => Some(&"ASTC_5X4X4_SRGB_BLOCK_EXT"),
-            1000288014 => Some(&"ASTC_5X4X4_SFLOAT_BLOCK_EXT"),
-            1000288015 => Some(&"ASTC_5X5X4_UNORM_BLOCK_EXT"),
-            1000288016 => Some(&"ASTC_5X5X4_SRGB_BLOCK_EXT"),
-            1000288017 => Some(&"ASTC_5X5X4_SFLOAT_BLOCK_EXT"),
-            1000288018 => Some(&"ASTC_5X5X5_UNORM_BLOCK_EXT"),
-            1000288019 => Some(&"ASTC_5X5X5_SRGB_BLOCK_EXT"),
-            1000288020 => Some(&"ASTC_5X5X5_SFLOAT_BLOCK_EXT"),
-            1000288021 => Some(&"ASTC_6X5X5_UNORM_BLOCK_EXT"),
-            1000288022 => Some(&"ASTC_6X5X5_SRGB_BLOCK_EXT"),
-            1000288023 => Some(&"ASTC_6X5X5_SFLOAT_BLOCK_EXT"),
-            1000288024 => Some(&"ASTC_6X6X5_UNORM_BLOCK_EXT"),
-            1000288025 => Some(&"ASTC_6X6X5_SRGB_BLOCK_EXT"),
-            1000288026 => Some(&"ASTC_6X6X5_SFLOAT_BLOCK_EXT"),
-            1000288027 => Some(&"ASTC_6X6X6_UNORM_BLOCK_EXT"),
-            1000288028 => Some(&"ASTC_6X6X6_SRGB_BLOCK_EXT"),
-            1000288029 => Some(&"ASTC_6X6X6_SFLOAT_BLOCK_EXT"),
             1000340000 => Some(&"A4R4G4B4_UNORM_PACK16_EXT"),
             1000340001 => Some(&"A4B4G4R4_UNORM_PACK16_EXT"),
             _ => None,
@@ -12676,10 +12380,6 @@ impl QueryType {
     /// Optional
     pub const PIPELINE_STATISTICS: Self = Self(1);
     pub const TIMESTAMP: Self = Self(2);
-    /// Added by extension VK_AMD_extension_24.
-    pub const RESERVED_8: Self = Self(1000023008);
-    /// Added by extension VK_AMD_extension_25.
-    pub const RESERVED_4: Self = Self(1000024004);
     /// Added by extension VK_EXT_transform_feedback.
     pub const TRANSFORM_FEEDBACK_STREAM_EXT: Self = Self(1000028004);
     /// Added by extension VK_KHR_performance_query.
@@ -12704,8 +12404,6 @@ impl fmt::Display for QueryType {
             0 => Some(&"OCCLUSION"),
             1 => Some(&"PIPELINE_STATISTICS"),
             2 => Some(&"TIMESTAMP"),
-            1000023008 => Some(&"RESERVED_8"),
-            1000024004 => Some(&"RESERVED_4"),
             1000028004 => Some(&"TRANSFORM_FEEDBACK_STREAM_EXT"),
             1000116000 => Some(&"PERFORMANCE_QUERY_KHR"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR"),
@@ -13128,12 +12826,6 @@ impl StructureType {
     pub const ANDROID_SURFACE_CREATE_INFO_KHR: Self = Self(1000008000);
     /// Added by extension VK_KHR_win32_surface.
     pub const WIN32_SURFACE_CREATE_INFO_KHR: Self = Self(1000009000);
-    /// Added by extension VK_ANDROID_native_buffer.
-    pub const NATIVE_BUFFER_ANDROID: Self = Self(1000010000);
-    /// Added by extension VK_ANDROID_native_buffer.
-    pub const SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID: Self = Self(1000010001);
-    /// Added by extension VK_ANDROID_native_buffer.
-    pub const PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID: Self = Self(1000010002);
     /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT: Self = Self(1000011000);
     pub const DEBUG_REPORT_CREATE_INFO_EXT: Self = Self::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -13807,8 +13499,6 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
     /// Added by extension VK_NV_device_diagnostics_config.
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
-    /// Added by extension VK_QCOM_extension_310.
-    pub const RESERVED_QCOM: Self = Self(1000309000);
     /// Added by extension VK_KHR_synchronization2.
     pub const MEMORY_BARRIER_2_KHR: Self = Self(1000314000);
     /// Added by extension VK_KHR_synchronization2.
@@ -14076,9 +13766,6 @@ impl fmt::Display for StructureType {
             1000006000 => Some(&"WAYLAND_SURFACE_CREATE_INFO_KHR"),
             1000008000 => Some(&"ANDROID_SURFACE_CREATE_INFO_KHR"),
             1000009000 => Some(&"WIN32_SURFACE_CREATE_INFO_KHR"),
-            1000010000 => Some(&"NATIVE_BUFFER_ANDROID"),
-            1000010001 => Some(&"SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID"),
-            1000010002 => Some(&"PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID"),
             1000011000 => Some(&"DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT"),
             1000018000 => Some(&"PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD"),
             1000022000 => Some(&"DEBUG_MARKER_OBJECT_NAME_INFO_EXT"),
@@ -14348,7 +14035,6 @@ impl fmt::Display for StructureType {
             1000297000 => Some(&"PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
-            1000309000 => Some(&"RESERVED_QCOM"),
             1000314000 => Some(&"MEMORY_BARRIER_2_KHR"),
             1000314001 => Some(&"BUFFER_MEMORY_BARRIER_2_KHR"),
             1000314002 => Some(&"IMAGE_MEMORY_BARRIER_2_KHR"),
@@ -28111,115 +27797,6 @@ impl fmt::Debug for PhysicalDeviceHostQueryResetFeatures {
     }
 }
 pub type PhysicalDeviceHostQueryResetFeaturesEXT = PhysicalDeviceHostQueryResetFeatures;
-#[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
-pub struct NativeBufferUsage2ANDROID {
-    pub consumer: u64,
-    pub producer: u64,
-}
-impl default::Default for NativeBufferUsage2ANDROID {
-    fn default() -> Self {
-        Self {
-            consumer: u64::default(),
-            producer: u64::default(),
-        }
-    }
-}
-impl fmt::Debug for NativeBufferUsage2ANDROID {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("NativeBufferUsage2ANDROID")
-            .field("consumer", &self.consumer)
-            .field("producer", &self.producer)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct NativeBufferANDROID {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub handle: *const c_void,
-    pub stride: c_int,
-    pub format: c_int,
-    pub usage: c_int,
-    pub usage2: NativeBufferUsage2ANDROID,
-}
-impl default::Default for NativeBufferANDROID {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::NATIVE_BUFFER_ANDROID,
-            p_next: ptr::null(),
-            handle: ptr::null(),
-            stride: c_int::default(),
-            format: c_int::default(),
-            usage: c_int::default(),
-            usage2: NativeBufferUsage2ANDROID::default(),
-        }
-    }
-}
-impl fmt::Debug for NativeBufferANDROID {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("NativeBufferANDROID")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("handle", &self.handle)
-            .field("stride", &self.stride)
-            .field("format", &self.format)
-            .field("usage", &self.usage)
-            .field("usage2", &self.usage2)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct SwapchainImageCreateInfoANDROID {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub usage: SwapchainImageUsageFlagsANDROID,
-}
-impl default::Default for SwapchainImageCreateInfoANDROID {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::SWAPCHAIN_IMAGE_CREATE_INFO_ANDROID,
-            p_next: ptr::null(),
-            usage: SwapchainImageUsageFlagsANDROID::default(),
-        }
-    }
-}
-impl fmt::Debug for SwapchainImageCreateInfoANDROID {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SwapchainImageCreateInfoANDROID")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("usage", &self.usage)
-            .finish()
-    }
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PhysicalDevicePresentationPropertiesANDROID {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
-    pub shared_image: Bool32,
-}
-impl default::Default for PhysicalDevicePresentationPropertiesANDROID {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::PHYSICAL_DEVICE_PRESENTATION_PROPERTIES_ANDROID,
-            p_next: ptr::null(),
-            shared_image: Bool32::default(),
-        }
-    }
-}
-impl fmt::Debug for PhysicalDevicePresentationPropertiesANDROID {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDevicePresentationPropertiesANDROID")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("shared_image", &self.shared_image)
-            .finish()
-    }
-}
 #[repr(C)]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ShaderResourceUsageAMD {

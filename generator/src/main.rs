@@ -193,6 +193,8 @@ impl ExtensionExtra for vk::Extension {
     }
     fn is_blacklisted(&self) -> bool {
         matches!(self.author.as_ref_str(), Some("GGP") | Some("QNX"))
+            || (self.provisional && self.name != "VK_KHR_portability_subset")
+            || self.supported.as_ref_str() == Some("disabled")
     }
 }
 
