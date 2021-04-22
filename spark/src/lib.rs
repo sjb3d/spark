@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 173
+//! Generated from vk.xml with `VK_HEADER_VERSION` 175
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1193,6 +1193,12 @@ impl InstanceExtensions {
     pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_ycbcr_2plane_444_formats(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1244,6 +1250,12 @@ impl InstanceExtensions {
     pub fn enable_valve_mutable_descriptor_type(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_vertex_input_dynamic_state(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_vertex_input_dynamic_state(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
@@ -1256,6 +1268,12 @@ impl InstanceExtensions {
     }
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_color_write_enable(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_color_write_enable(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -3752,6 +3770,7 @@ pub struct DeviceExtensions {
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub nv_device_generated_commands: bool,
+    pub nv_inherited_viewport_scissor: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
     pub ext_device_memory_report: bool,
@@ -3767,6 +3786,7 @@ pub struct DeviceExtensions {
     pub khr_synchronization2: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
+    pub ext_ycbcr_2plane_444_formats: bool,
     pub ext_fragment_density_map2: bool,
     pub qcom_rotated_copy_commands: bool,
     pub ext_image_robustness: bool,
@@ -3775,8 +3795,10 @@ pub struct DeviceExtensions {
     pub ext_4444_formats: bool,
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
+    pub ext_vertex_input_dynamic_state: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
+    pub ext_color_write_enable: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -3953,6 +3975,7 @@ impl DeviceExtensions {
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
             b"VK_NV_device_generated_commands" => self.nv_device_generated_commands = true,
+            b"VK_NV_inherited_viewport_scissor" => self.nv_inherited_viewport_scissor = true,
             b"VK_EXT_texel_buffer_alignment" => self.ext_texel_buffer_alignment = true,
             b"VK_QCOM_render_pass_transform" => self.qcom_render_pass_transform = true,
             b"VK_EXT_device_memory_report" => self.ext_device_memory_report = true,
@@ -3968,6 +3991,7 @@ impl DeviceExtensions {
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
+            b"VK_EXT_ycbcr_2plane_444_formats" => self.ext_ycbcr_2plane_444_formats = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
             b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
@@ -3976,8 +4000,10 @@ impl DeviceExtensions {
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
+            b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
+            b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             _ => {}
         }
     }
@@ -4154,6 +4180,7 @@ impl DeviceExtensions {
             khr_pipeline_executable_properties: false,
             ext_shader_demote_to_helper_invocation: false,
             nv_device_generated_commands: false,
+            nv_inherited_viewport_scissor: false,
             ext_texel_buffer_alignment: false,
             qcom_render_pass_transform: false,
             ext_device_memory_report: false,
@@ -4169,6 +4196,7 @@ impl DeviceExtensions {
             khr_synchronization2: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
+            ext_ycbcr_2plane_444_formats: false,
             ext_fragment_density_map2: false,
             qcom_rotated_copy_commands: false,
             ext_image_robustness: false,
@@ -4177,8 +4205,10 @@ impl DeviceExtensions {
             ext_4444_formats: false,
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
+            ext_vertex_input_dynamic_state: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
+            ext_color_write_enable: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5452,6 +5482,12 @@ impl DeviceExtensions {
     pub fn enable_nv_device_generated_commands(&mut self) {
         self.nv_device_generated_commands = true;
     }
+    pub fn supports_nv_inherited_viewport_scissor(&self) -> bool {
+        self.nv_inherited_viewport_scissor
+    }
+    pub fn enable_nv_inherited_viewport_scissor(&mut self) {
+        self.nv_inherited_viewport_scissor = true;
+    }
     pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
         self.ext_texel_buffer_alignment
     }
@@ -5551,6 +5587,20 @@ impl DeviceExtensions {
         self.enable_khr_multiview();
         self.enable_khr_maintenance2();
     }
+    pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
+        self.ext_ycbcr_2plane_444_formats
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
+    }
+    pub fn enable_ext_ycbcr_2plane_444_formats(&mut self) {
+        self.ext_ycbcr_2plane_444_formats = true;
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
+    }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
         self.ext_fragment_density_map2 && self.supports_ext_fragment_density_map()
     }
@@ -5603,6 +5653,12 @@ impl DeviceExtensions {
         self.valve_mutable_descriptor_type = true;
         self.enable_khr_maintenance3();
     }
+    pub fn supports_ext_vertex_input_dynamic_state(&self) -> bool {
+        self.ext_vertex_input_dynamic_state
+    }
+    pub fn enable_ext_vertex_input_dynamic_state(&mut self) {
+        self.ext_vertex_input_dynamic_state = true;
+    }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.fuchsia_external_memory && self.supports_khr_external_memory()
     }
@@ -5616,6 +5672,12 @@ impl DeviceExtensions {
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.fuchsia_external_semaphore = true;
         self.enable_khr_external_semaphore();
+    }
+    pub fn supports_ext_color_write_enable(&self) -> bool {
+        self.ext_color_write_enable
+    }
+    pub fn enable_ext_color_write_enable(&mut self) {
+        self.ext_color_write_enable = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6131,6 +6193,9 @@ impl DeviceExtensions {
         if self.nv_device_generated_commands {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands\0") })
         }
+        if self.nv_inherited_viewport_scissor {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_inherited_viewport_scissor\0") })
+        }
         if self.ext_texel_buffer_alignment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") })
         }
@@ -6176,6 +6241,9 @@ impl DeviceExtensions {
         if self.nv_fragment_shading_rate_enums {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shading_rate_enums\0") })
         }
+        if self.ext_ycbcr_2plane_444_formats {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_2plane_444_formats\0") })
+        }
         if self.ext_fragment_density_map2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_fragment_density_map2\0") })
         }
@@ -6200,11 +6268,17 @@ impl DeviceExtensions {
         if self.valve_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_mutable_descriptor_type\0") })
         }
+        if self.ext_vertex_input_dynamic_state {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_input_dynamic_state\0") })
+        }
         if self.fuchsia_external_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })
         }
         if self.fuchsia_external_semaphore {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_semaphore\0") })
+        }
+        if self.ext_color_write_enable {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_color_write_enable\0") })
         }
         v
     }
@@ -6545,6 +6619,8 @@ pub struct Device {
     pub fp_get_physical_device_fragment_shading_rates_khr: Option<vk::FnGetPhysicalDeviceFragmentShadingRatesKHR>,
     pub fp_cmd_set_fragment_shading_rate_enum_nv: Option<vk::FnCmdSetFragmentShadingRateEnumNV>,
     pub fp_get_acceleration_structure_build_sizes_khr: Option<vk::FnGetAccelerationStructureBuildSizesKHR>,
+    pub fp_cmd_set_vertex_input_ext: Option<vk::FnCmdSetVertexInputEXT>,
+    pub fp_cmd_set_color_write_enable_ext: Option<vk::FnCmdSetColorWriteEnableEXT>,
     pub fp_cmd_set_event2_khr: Option<vk::FnCmdSetEvent2KHR>,
     pub fp_cmd_reset_event2_khr: Option<vk::FnCmdResetEvent2KHR>,
     pub fp_cmd_wait_events2_khr: Option<vk::FnCmdWaitEvents2KHR>,
@@ -9062,6 +9138,18 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetAccelerationStructureBuildSizesKHR\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_vertex_input_ext: if extensions.ext_vertex_input_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetVertexInputEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_color_write_enable_ext: if extensions.ext_color_write_enable {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorWriteEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -14702,6 +14790,44 @@ impl Device {
                 .and_then(|s| s.first())
                 .map_or(ptr::null(), |s| s as *const _),
             p_size_info,
+        );
+    }
+    pub unsafe fn cmd_set_vertex_input_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_vertex_binding_descriptions: &[vk::VertexInputBindingDescription2EXT],
+        p_vertex_attribute_descriptions: &[vk::VertexInputAttributeDescription2EXT],
+    ) {
+        let fp = self
+            .fp_cmd_set_vertex_input_ext
+            .expect("vkCmdSetVertexInputEXT is not loaded");
+        let vertex_binding_description_count = p_vertex_binding_descriptions.len() as u32;
+        let vertex_attribute_description_count = p_vertex_attribute_descriptions.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            vertex_binding_description_count,
+            p_vertex_binding_descriptions
+                .first()
+                .map_or(ptr::null(), |s| s as *const _),
+            vertex_attribute_description_count,
+            p_vertex_attribute_descriptions
+                .first()
+                .map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_color_write_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_color_write_enables: &[vk::Bool32],
+    ) {
+        let fp = self
+            .fp_cmd_set_color_write_enable_ext
+            .expect("vkCmdSetColorWriteEnableEXT is not loaded");
+        let attachment_count = p_color_write_enables.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            attachment_count,
+            p_color_write_enables.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_set_event2_khr(

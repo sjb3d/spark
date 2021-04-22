@@ -10742,6 +10742,22 @@ impl DebugUtilsMessengerEXT {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct VideoSessionKHR(num::NonZeroU64);
+impl VideoSessionKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct VideoSessionParametersKHR(num::NonZeroU64);
+impl VideoSessionParametersKHR {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentLoadOp(i32);
 impl AttachmentLoadOp {
@@ -11303,6 +11319,10 @@ impl DynamicState {
     pub const STENCIL_TEST_ENABLE_EXT: Self = Self(1000267010);
     /// Added by extension VK_EXT_extended_dynamic_state.
     pub const STENCIL_OP_EXT: Self = Self(1000267011);
+    /// Added by extension VK_EXT_vertex_input_dynamic_state.
+    pub const VERTEX_INPUT_EXT: Self = Self(1000352000);
+    /// Added by extension VK_EXT_color_write_enable.
+    pub const COLOR_WRITE_ENABLE_EXT: Self = Self(1000381000);
 }
 impl default::Default for DynamicState {
     fn default() -> Self {
@@ -11342,6 +11362,8 @@ impl fmt::Display for DynamicState {
             1000267009 => Some(&"DEPTH_BOUNDS_TEST_ENABLE_EXT"),
             1000267010 => Some(&"STENCIL_TEST_ENABLE_EXT"),
             1000267011 => Some(&"STENCIL_OP_EXT"),
+            1000352000 => Some(&"VERTEX_INPUT_EXT"),
+            1000381000 => Some(&"COLOR_WRITE_ENABLE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11683,6 +11705,14 @@ impl Format {
     pub const G16_B16_R16_3PLANE_422_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_422_UNORM;
     pub const G16_B16R16_2PLANE_422_UNORM_KHR: Self = Self::G16_B16R16_2PLANE_422_UNORM;
     pub const G16_B16_R16_3PLANE_444_UNORM_KHR: Self = Self::G16_B16_R16_3PLANE_444_UNORM;
+    /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
+    pub const G8_B8R8_2PLANE_444_UNORM_EXT: Self = Self(1000330000);
+    /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
+    pub const G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16_EXT: Self = Self(1000330001);
+    /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
+    pub const G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16_EXT: Self = Self(1000330002);
+    /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
+    pub const G16_B16R16_2PLANE_444_UNORM_EXT: Self = Self(1000330003);
     /// Added by extension VK_EXT_4444_formats.
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self(1000340000);
     /// Added by extension VK_EXT_4444_formats.
@@ -11937,6 +11967,10 @@ impl fmt::Display for Format {
             1000066011 => Some(&"ASTC_10X10_SFLOAT_BLOCK_EXT"),
             1000066012 => Some(&"ASTC_12X10_SFLOAT_BLOCK_EXT"),
             1000066013 => Some(&"ASTC_12X12_SFLOAT_BLOCK_EXT"),
+            1000330000 => Some(&"G8_B8R8_2PLANE_444_UNORM_EXT"),
+            1000330001 => Some(&"G10X6_B10X6R10X6_2PLANE_444_UNORM_3PACK16_EXT"),
+            1000330002 => Some(&"G12X4_B12X4R12X4_2PLANE_444_UNORM_3PACK16_EXT"),
+            1000330003 => Some(&"G16_B16R16_2PLANE_444_UNORM_EXT"),
             1000340000 => Some(&"A4R4G4B4_UNORM_PACK16_EXT"),
             1000340001 => Some(&"A4B4G4R4_UNORM_PACK16_EXT"),
             _ => None,
@@ -13461,6 +13495,10 @@ impl StructureType {
     pub const GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV: Self = Self(1000277006);
     /// Added by extension VK_NV_device_generated_commands.
     pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV: Self = Self(1000277007);
+    /// Added by extension VK_NV_inherited_viewport_scissor.
+    pub const PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV: Self = Self(1000278000);
+    /// Added by extension VK_NV_inherited_viewport_scissor.
+    pub const COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV: Self = Self(1000278001);
     /// Added by extension VK_EXT_texel_buffer_alignment.
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
@@ -13527,6 +13565,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV: Self = Self(1000326001);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
     pub const PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV: Self = Self(1000326002);
+    /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
+    pub const PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT: Self = Self(1000330000);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT: Self = Self(1000332000);
     /// Added by extension VK_EXT_fragment_density_map2.
@@ -13567,6 +13607,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
+    /// Added by extension VK_EXT_vertex_input_dynamic_state.
+    pub const PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000352000);
+    /// Added by extension VK_EXT_vertex_input_dynamic_state.
+    pub const VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT: Self = Self(1000352001);
+    /// Added by extension VK_EXT_vertex_input_dynamic_state.
+    pub const VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT: Self = Self(1000352002);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     /// Added by extension VK_FUCHSIA_external_memory.
@@ -13577,6 +13623,10 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365000);
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
+    /// Added by extension VK_EXT_color_write_enable.
+    pub const PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT: Self = Self(1000381000);
+    /// Added by extension VK_EXT_color_write_enable.
+    pub const PIPELINE_COLOR_WRITE_CREATE_INFO_EXT: Self = Self(1000381001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14016,6 +14066,8 @@ impl fmt::Display for StructureType {
             1000277005 => Some(&"GENERATED_COMMANDS_INFO_NV"),
             1000277006 => Some(&"GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV"),
             1000277007 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV"),
+            1000278000 => Some(&"PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV"),
+            1000278001 => Some(&"COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
@@ -14049,6 +14101,7 @@ impl fmt::Display for StructureType {
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
             1000326002 => Some(&"PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV"),
+            1000330000 => Some(&"PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000333000 => Some(&"COPY_COMMAND_TRANSFORM_INFO_QCOM"),
@@ -14069,11 +14122,16 @@ impl fmt::Display for StructureType {
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
+            1000352000 => Some(&"PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT"),
+            1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
+            1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
+            1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16268,6 +16326,8 @@ impl DriverId {
     pub const MESA_LLVMPIPE: Self = Self(13);
     /// MoltenVK
     pub const MOLTENVK: Self = Self(14);
+    /// Core Avionics & Industrial Inc.
+    pub const COREAVI_PROPRIETARY: Self = Self(15);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -16303,6 +16363,7 @@ impl fmt::Display for DriverId {
             12 => Some(&"BROADCOM_PROPRIETARY"),
             13 => Some(&"MESA_LLVMPIPE"),
             14 => Some(&"MOLTENVK"),
+            15 => Some(&"COREAVI_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -37155,6 +37216,157 @@ impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub vertex_input_dynamic_state: Bool32,
+}
+impl default::Default for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            vertex_input_dynamic_state: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceVertexInputDynamicStateFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_input_dynamic_state", &self.vertex_input_dynamic_state)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct VertexInputBindingDescription2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub binding: u32,
+    pub stride: u32,
+    pub input_rate: VertexInputRate,
+    pub divisor: u32,
+}
+impl default::Default for VertexInputBindingDescription2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
+            p_next: ptr::null_mut(),
+            binding: u32::default(),
+            stride: u32::default(),
+            input_rate: VertexInputRate::default(),
+            divisor: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for VertexInputBindingDescription2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("VertexInputBindingDescription2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("binding", &self.binding)
+            .field("stride", &self.stride)
+            .field("input_rate", &self.input_rate)
+            .field("divisor", &self.divisor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct VertexInputAttributeDescription2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// location of the shader vertex attrib
+    pub location: u32,
+    /// Vertex buffer binding id
+    pub binding: u32,
+    /// format of source data
+    pub format: Format,
+    /// Offset of first element in bytes from base of vertex
+    pub offset: u32,
+}
+impl default::Default for VertexInputAttributeDescription2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
+            p_next: ptr::null_mut(),
+            location: u32::default(),
+            binding: u32::default(),
+            format: Format::default(),
+            offset: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for VertexInputAttributeDescription2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("VertexInputAttributeDescription2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("location", &self.location)
+            .field("binding", &self.binding)
+            .field("format", &self.format)
+            .field("offset", &self.offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceColorWriteEnableFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub color_write_enable: Bool32,
+}
+impl default::Default for PhysicalDeviceColorWriteEnableFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            color_write_enable: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceColorWriteEnableFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceColorWriteEnableFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("color_write_enable", &self.color_write_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineColorWriteCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// # of pAttachments
+    pub attachment_count: u32,
+    pub p_color_write_enables: *const Bool32,
+}
+impl default::Default for PipelineColorWriteCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_COLOR_WRITE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            attachment_count: u32::default(),
+            p_color_write_enables: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineColorWriteCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineColorWriteCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("attachment_count", &self.attachment_count)
+            .field("p_color_write_enables", &self.p_color_write_enables)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MemoryBarrier2KHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -37511,6 +37723,87 @@ impl fmt::Debug for PhysicalDeviceSynchronization2FeaturesKHR {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("synchronization2", &self.synchronization2)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub inherited_viewport_scissor2_d: Bool32,
+}
+impl default::Default for PhysicalDeviceInheritedViewportScissorFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            inherited_viewport_scissor2_d: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceInheritedViewportScissorFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceInheritedViewportScissorFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("inherited_viewport_scissor2_d", &self.inherited_viewport_scissor2_d)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CommandBufferInheritanceViewportScissorInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub viewport_scissor2_d: Bool32,
+    pub viewport_depth_count: u32,
+    pub p_viewport_depths: *const Viewport,
+}
+impl default::Default for CommandBufferInheritanceViewportScissorInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV,
+            p_next: ptr::null(),
+            viewport_scissor2_d: Bool32::default(),
+            viewport_depth_count: u32::default(),
+            p_viewport_depths: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CommandBufferInheritanceViewportScissorInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CommandBufferInheritanceViewportScissorInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("viewport_scissor2_d", &self.viewport_scissor2_d)
+            .field("viewport_depth_count", &self.viewport_depth_count)
+            .field("p_viewport_depths", &self.p_viewport_depths)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ycbcr2plane444_formats: Bool32,
+}
+impl default::Default for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            ycbcr2plane444_formats: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ycbcr2plane444_formats", &self.ycbcr2plane444_formats)
             .finish()
     }
 }
@@ -39549,6 +39842,18 @@ pub type FnGetAccelerationStructureBuildSizesKHR = unsafe extern "system" fn(
     p_build_info: *const AccelerationStructureBuildGeometryInfoKHR,
     p_max_primitive_counts: *const u32,
     p_size_info: *mut AccelerationStructureBuildSizesInfoKHR,
+);
+pub type FnCmdSetVertexInputEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    vertex_binding_description_count: u32,
+    p_vertex_binding_descriptions: *const VertexInputBindingDescription2EXT,
+    vertex_attribute_description_count: u32,
+    p_vertex_attribute_descriptions: *const VertexInputAttributeDescription2EXT,
+);
+pub type FnCmdSetColorWriteEnableEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    attachment_count: u32,
+    p_color_write_enables: *const Bool32,
 );
 pub type FnCmdSetEvent2KHR = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,

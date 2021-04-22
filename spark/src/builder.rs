@@ -17218,6 +17218,196 @@ impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoVA
 impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
 impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
 impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
+impl Builder<'_> for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
+    type Type = PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT,
+}
+impl PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_input_dynamic_state(mut self, vertex_input_dynamic_state: bool) -> Self {
+        self.inner.vertex_input_dynamic_state = if vertex_input_dynamic_state {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
+impl Builder<'_> for vk::VertexInputBindingDescription2EXT {
+    type Type = VertexInputBindingDescription2EXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct VertexInputBindingDescription2EXTBuilder {
+    inner: vk::VertexInputBindingDescription2EXT,
+}
+impl VertexInputBindingDescription2EXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn binding(mut self, binding: u32) -> Self {
+        self.inner.binding = binding;
+        self
+    }
+    pub fn stride(mut self, stride: u32) -> Self {
+        self.inner.stride = stride;
+        self
+    }
+    pub fn input_rate(mut self, input_rate: vk::VertexInputRate) -> Self {
+        self.inner.input_rate = input_rate;
+        self
+    }
+    pub fn divisor(mut self, divisor: u32) -> Self {
+        self.inner.divisor = divisor;
+        self
+    }
+}
+impl Deref for VertexInputBindingDescription2EXTBuilder {
+    type Target = vk::VertexInputBindingDescription2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::VertexInputAttributeDescription2EXT {
+    type Type = VertexInputAttributeDescription2EXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct VertexInputAttributeDescription2EXTBuilder {
+    inner: vk::VertexInputAttributeDescription2EXT,
+}
+impl VertexInputAttributeDescription2EXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn location(mut self, location: u32) -> Self {
+        self.inner.location = location;
+        self
+    }
+    pub fn binding(mut self, binding: u32) -> Self {
+        self.inner.binding = binding;
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+    pub fn offset(mut self, offset: u32) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+}
+impl Deref for VertexInputAttributeDescription2EXTBuilder {
+    type Target = vk::VertexInputAttributeDescription2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceColorWriteEnableFeaturesEXT {
+    type Type = PhysicalDeviceColorWriteEnableFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceColorWriteEnableFeaturesEXT,
+}
+impl PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn color_write_enable(mut self, color_write_enable: bool) -> Self {
+        self.inner.color_write_enable = if color_write_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceColorWriteEnableFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceColorWriteEnableFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceColorWriteEnableFeaturesEXT {}
+impl<'a> Builder<'a> for vk::PipelineColorWriteCreateInfoEXT {
+    type Type = PipelineColorWriteCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineColorWriteCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineColorWriteCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineColorWriteCreateInfoEXTBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_color_write_enables(mut self, p_color_write_enables: &'a [vk::Bool32]) -> Self {
+        self.inner.attachment_count = p_color_write_enables.len() as u32;
+        self.inner.p_color_write_enables = p_color_write_enables.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PipelineColorWriteCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineColorWriteCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PipelineColorBlendStateCreateInfoNext for PipelineColorWriteCreateInfoEXTBuilder<'a> {}
+impl PipelineColorBlendStateCreateInfoNext for vk::PipelineColorWriteCreateInfoEXT {}
 impl Builder<'_> for vk::MemoryBarrier2KHR {
     type Type = MemoryBarrier2KHRBuilder;
     fn builder() -> Self::Type {
@@ -17608,3 +17798,116 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSynchronization2FeaturesKHRBu
 impl DeviceCreateInfoNext for PhysicalDeviceSynchronization2FeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSynchronization2FeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSynchronization2FeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {
+    type Type = PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceInheritedViewportScissorFeaturesNV,
+}
+impl PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn inherited_viewport_scissor2_d(mut self, inherited_viewport_scissor2_d: bool) -> Self {
+        self.inner.inherited_viewport_scissor2_d = if inherited_viewport_scissor2_d {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceInheritedViewportScissorFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {}
+impl<'a> Builder<'a> for vk::CommandBufferInheritanceViewportScissorInfoNV {
+    type Type = CommandBufferInheritanceViewportScissorInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
+    inner: vk::CommandBufferInheritanceViewportScissorInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn viewport_scissor2_d(mut self, viewport_scissor2_d: bool) -> Self {
+        self.inner.viewport_scissor2_d = if viewport_scissor2_d { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn viewport_depth_count(mut self, viewport_depth_count: u32) -> Self {
+        self.inner.viewport_depth_count = viewport_depth_count;
+        self
+    }
+    pub fn p_viewport_depths(mut self, p_viewport_depths: &'a vk::Viewport) -> Self {
+        self.inner.p_viewport_depths = p_viewport_depths;
+        self
+    }
+}
+impl<'a> Deref for CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
+    type Target = vk::CommandBufferInheritanceViewportScissorInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> CommandBufferInheritanceInfoNext for CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {}
+impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceViewportScissorInfoNV {}
+impl Builder<'_> for vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
+    type Type = PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT,
+}
+impl PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ycbcr2plane444_formats(mut self, ycbcr2plane444_formats: bool) -> Self {
+        self.inner.ycbcr2plane444_formats = if ycbcr2plane444_formats { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
