@@ -15701,6 +15701,59 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicStateFeaturesE
 impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT {
+    type Type = PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT,
+}
+impl PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn extended_dynamic_state2(mut self, extended_dynamic_state2: bool) -> Self {
+        self.inner.extended_dynamic_state2 = if extended_dynamic_state2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn extended_dynamic_state2_logic_op(mut self, extended_dynamic_state2_logic_op: bool) -> Self {
+        self.inner.extended_dynamic_state2_logic_op = if extended_dynamic_state2_logic_op {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state2_patch_control_points(
+        mut self,
+        extended_dynamic_state2_patch_control_points: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state2_patch_control_points = if extended_dynamic_state2_patch_control_points {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
 impl Builder<'_> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder;
     fn builder() -> Self::Type {

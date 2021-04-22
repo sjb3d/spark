@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 175
+//! Generated from vk.xml with `VK_HEADER_VERSION` 176
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1268,6 +1268,12 @@ impl InstanceExtensions {
     }
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_extended_dynamic_state2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_color_write_enable(&self) -> bool {
@@ -3798,6 +3804,7 @@ pub struct DeviceExtensions {
     pub ext_vertex_input_dynamic_state: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
+    pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
 }
 impl DeviceExtensions {
@@ -4003,6 +4010,7 @@ impl DeviceExtensions {
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
+            b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             _ => {}
         }
@@ -4208,6 +4216,7 @@ impl DeviceExtensions {
             ext_vertex_input_dynamic_state: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
+            ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
         }
     }
@@ -5673,6 +5682,12 @@ impl DeviceExtensions {
         self.fuchsia_external_semaphore = true;
         self.enable_khr_external_semaphore();
     }
+    pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
+        self.ext_extended_dynamic_state2
+    }
+    pub fn enable_ext_extended_dynamic_state2(&mut self) {
+        self.ext_extended_dynamic_state2 = true;
+    }
     pub fn supports_ext_color_write_enable(&self) -> bool {
         self.ext_color_write_enable
     }
@@ -6277,6 +6292,9 @@ impl DeviceExtensions {
         if self.fuchsia_external_semaphore {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_semaphore\0") })
         }
+        if self.ext_extended_dynamic_state2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state2\0") })
+        }
         if self.ext_color_write_enable {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_color_write_enable\0") })
         }
@@ -6605,6 +6623,11 @@ pub struct Device {
     pub fp_cmd_set_depth_bounds_test_enable_ext: Option<vk::FnCmdSetDepthBoundsTestEnableEXT>,
     pub fp_cmd_set_stencil_test_enable_ext: Option<vk::FnCmdSetStencilTestEnableEXT>,
     pub fp_cmd_set_stencil_op_ext: Option<vk::FnCmdSetStencilOpEXT>,
+    pub fp_cmd_set_patch_control_points_ext: Option<vk::FnCmdSetPatchControlPointsEXT>,
+    pub fp_cmd_set_rasterizer_discard_enable_ext: Option<vk::FnCmdSetRasterizerDiscardEnableEXT>,
+    pub fp_cmd_set_depth_bias_enable_ext: Option<vk::FnCmdSetDepthBiasEnableEXT>,
+    pub fp_cmd_set_logic_op_ext: Option<vk::FnCmdSetLogicOpEXT>,
+    pub fp_cmd_set_primitive_restart_enable_ext: Option<vk::FnCmdSetPrimitiveRestartEnableEXT>,
     pub fp_create_private_data_slot_ext: Option<vk::FnCreatePrivateDataSlotEXT>,
     pub fp_destroy_private_data_slot_ext: Option<vk::FnDestroyPrivateDataSlotEXT>,
     pub fp_set_private_data_ext: Option<vk::FnSetPrivateDataEXT>,
@@ -9048,6 +9071,40 @@ impl Device {
             },
             fp_cmd_set_stencil_op_ext: if extensions.ext_extended_dynamic_state {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilOpEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_patch_control_points_ext: if extensions.ext_extended_dynamic_state2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPatchControlPointsEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_rasterizer_discard_enable_ext: if extensions.ext_extended_dynamic_state2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRasterizerDiscardEnableEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_bias_enable_ext: if extensions.ext_extended_dynamic_state2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBiasEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_logic_op_ext: if extensions.ext_extended_dynamic_state2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLogicOpEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_primitive_restart_enable_ext: if extensions.ext_extended_dynamic_state2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetPrimitiveRestartEnableEXT\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -14599,6 +14656,55 @@ impl Device {
             pass_op,
             depth_fail_op,
             compare_op,
+        );
+    }
+    pub unsafe fn cmd_set_patch_control_points_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        patch_control_points: u32,
+    ) {
+        let fp = self
+            .fp_cmd_set_patch_control_points_ext
+            .expect("vkCmdSetPatchControlPointsEXT is not loaded");
+        (fp)(Some(command_buffer), patch_control_points);
+    }
+    pub unsafe fn cmd_set_rasterizer_discard_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        rasterizer_discard_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_rasterizer_discard_enable_ext
+            .expect("vkCmdSetRasterizerDiscardEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if rasterizer_discard_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_depth_bias_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_bias_enable: bool) {
+        let fp = self
+            .fp_cmd_set_depth_bias_enable_ext
+            .expect("vkCmdSetDepthBiasEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_bias_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_logic_op_ext(&self, command_buffer: vk::CommandBuffer, logic_op: vk::LogicOp) {
+        let fp = self.fp_cmd_set_logic_op_ext.expect("vkCmdSetLogicOpEXT is not loaded");
+        (fp)(Some(command_buffer), logic_op);
+    }
+    pub unsafe fn cmd_set_primitive_restart_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        primitive_restart_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_primitive_restart_enable_ext
+            .expect("vkCmdSetPrimitiveRestartEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if primitive_restart_enable { vk::TRUE } else { vk::FALSE },
         );
     }
     pub unsafe fn create_private_data_slot_ext(

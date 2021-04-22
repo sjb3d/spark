@@ -11321,6 +11321,16 @@ impl DynamicState {
     pub const STENCIL_OP_EXT: Self = Self(1000267011);
     /// Added by extension VK_EXT_vertex_input_dynamic_state.
     pub const VERTEX_INPUT_EXT: Self = Self(1000352000);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const PATCH_CONTROL_POINTS_EXT: Self = Self(1000377000);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const RASTERIZER_DISCARD_ENABLE_EXT: Self = Self(1000377001);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const DEPTH_BIAS_ENABLE_EXT: Self = Self(1000377002);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const LOGIC_OP_EXT: Self = Self(1000377003);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const PRIMITIVE_RESTART_ENABLE_EXT: Self = Self(1000377004);
     /// Added by extension VK_EXT_color_write_enable.
     pub const COLOR_WRITE_ENABLE_EXT: Self = Self(1000381000);
 }
@@ -11363,6 +11373,11 @@ impl fmt::Display for DynamicState {
             1000267010 => Some(&"STENCIL_TEST_ENABLE_EXT"),
             1000267011 => Some(&"STENCIL_OP_EXT"),
             1000352000 => Some(&"VERTEX_INPUT_EXT"),
+            1000377000 => Some(&"PATCH_CONTROL_POINTS_EXT"),
+            1000377001 => Some(&"RASTERIZER_DISCARD_ENABLE_EXT"),
+            1000377002 => Some(&"DEPTH_BIAS_ENABLE_EXT"),
+            1000377003 => Some(&"LOGIC_OP_EXT"),
+            1000377004 => Some(&"PRIMITIVE_RESTART_ENABLE_EXT"),
             1000381000 => Some(&"COLOR_WRITE_ENABLE_EXT"),
             _ => None,
         };
@@ -13623,6 +13638,8 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365000);
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
+    /// Added by extension VK_EXT_extended_dynamic_state2.
+    pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT: Self = Self(1000377000);
     /// Added by extension VK_EXT_color_write_enable.
     pub const PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT: Self = Self(1000381000);
     /// Added by extension VK_EXT_color_write_enable.
@@ -14130,6 +14147,7 @@ impl fmt::Display for StructureType {
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             _ => None,
@@ -35865,6 +35883,43 @@ impl fmt::Debug for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedDynamicState2FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub extended_dynamic_state2: Bool32,
+    pub extended_dynamic_state2_logic_op: Bool32,
+    pub extended_dynamic_state2_patch_control_points: Bool32,
+}
+impl default::Default for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            extended_dynamic_state2: Bool32::default(),
+            extended_dynamic_state2_logic_op: Bool32::default(),
+            extended_dynamic_state2_patch_control_points: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedDynamicState2FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("extended_dynamic_state2", &self.extended_dynamic_state2)
+            .field(
+                "extended_dynamic_state2_logic_op",
+                &self.extended_dynamic_state2_logic_op,
+            )
+            .field(
+                "extended_dynamic_state2_patch_control_points",
+                &self.extended_dynamic_state2_patch_control_points,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderPassTransformBeginInfoQCOM {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -39780,6 +39835,15 @@ pub type FnCmdSetStencilOpEXT = unsafe extern "system" fn(
     depth_fail_op: StencilOp,
     compare_op: CompareOp,
 );
+pub type FnCmdSetPatchControlPointsEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, patch_control_points: u32);
+pub type FnCmdSetRasterizerDiscardEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, rasterizer_discard_enable: Bool32);
+pub type FnCmdSetDepthBiasEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_bias_enable: Bool32);
+pub type FnCmdSetLogicOpEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, logic_op: LogicOp);
+pub type FnCmdSetPrimitiveRestartEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, primitive_restart_enable: Bool32);
 pub type FnCreatePrivateDataSlotEXT = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const PrivateDataSlotCreateInfoEXT,
