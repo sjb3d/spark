@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 176
+//! Generated from vk.xml with `VK_HEADER_VERSION` 177
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1090,6 +1090,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_uniform_buffer_standard_layout(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_provoking_vertex(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_provoking_vertex(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_full_screen_exclusive(&self) -> bool {
@@ -3765,6 +3771,7 @@ pub struct DeviceExtensions {
     pub ext_fragment_shader_interlock: bool,
     pub ext_ycbcr_image_arrays: bool,
     pub khr_uniform_buffer_standard_layout: bool,
+    pub ext_provoking_vertex: bool,
     pub ext_full_screen_exclusive: bool,
     pub khr_buffer_device_address: bool,
     pub ext_line_rasterization: bool,
@@ -3971,6 +3978,7 @@ impl DeviceExtensions {
             b"VK_EXT_fragment_shader_interlock" => self.ext_fragment_shader_interlock = true,
             b"VK_EXT_ycbcr_image_arrays" => self.ext_ycbcr_image_arrays = true,
             b"VK_KHR_uniform_buffer_standard_layout" => self.khr_uniform_buffer_standard_layout = true,
+            b"VK_EXT_provoking_vertex" => self.ext_provoking_vertex = true,
             b"VK_EXT_full_screen_exclusive" => self.ext_full_screen_exclusive = true,
             b"VK_KHR_buffer_device_address" => self.khr_buffer_device_address = true,
             b"VK_EXT_line_rasterization" => self.ext_line_rasterization = true,
@@ -4177,6 +4185,7 @@ impl DeviceExtensions {
             ext_fragment_shader_interlock: false,
             ext_ycbcr_image_arrays: false,
             khr_uniform_buffer_standard_layout: false,
+            ext_provoking_vertex: false,
             ext_full_screen_exclusive: false,
             khr_buffer_device_address: false,
             ext_line_rasterization: false,
@@ -5420,6 +5429,12 @@ impl DeviceExtensions {
             self.khr_uniform_buffer_standard_layout = true;
         }
     }
+    pub fn supports_ext_provoking_vertex(&self) -> bool {
+        self.ext_provoking_vertex
+    }
+    pub fn enable_ext_provoking_vertex(&mut self) {
+        self.ext_provoking_vertex = true;
+    }
     pub fn supports_ext_full_screen_exclusive(&self) -> bool {
         self.ext_full_screen_exclusive && self.supports_khr_swapchain()
     }
@@ -6174,6 +6189,9 @@ impl DeviceExtensions {
         }
         if self.khr_uniform_buffer_standard_layout {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_uniform_buffer_standard_layout\0") })
+        }
+        if self.ext_provoking_vertex {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_provoking_vertex\0") })
         }
         if self.ext_full_screen_exclusive {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_full_screen_exclusive\0") })

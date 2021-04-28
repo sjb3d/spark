@@ -17964,3 +17964,81 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceYcbcr2Plane444FormatsFeatures
 impl DeviceCreateInfoNext for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceProvokingVertexFeaturesEXT {
+    type Type = PhysicalDeviceProvokingVertexFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceProvokingVertexFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceProvokingVertexFeaturesEXT,
+}
+impl PhysicalDeviceProvokingVertexFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn provoking_vertex_last(mut self, provoking_vertex_last: bool) -> Self {
+        self.inner.provoking_vertex_last = if provoking_vertex_last { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn transform_feedback_preserves_provoking_vertex(
+        mut self,
+        transform_feedback_preserves_provoking_vertex: bool,
+    ) -> Self {
+        self.inner.transform_feedback_preserves_provoking_vertex = if transform_feedback_preserves_provoking_vertex {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceProvokingVertexFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceProvokingVertexFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceProvokingVertexFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceProvokingVertexFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceProvokingVertexFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceProvokingVertexFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceProvokingVertexPropertiesEXT {}
+impl Builder<'_> for vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT {
+    type Type = PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
+    inner: vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT,
+}
+impl PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn provoking_vertex_mode(mut self, provoking_vertex_mode: vk::ProvokingVertexModeEXT) -> Self {
+        self.inner.provoking_vertex_mode = provoking_vertex_mode;
+        self
+    }
+}
+impl Deref for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
+    type Target = vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT {}

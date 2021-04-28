@@ -13453,6 +13453,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT: Self = Self(1000252000);
     pub const PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES_KHR: Self =
         Self::PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES;
+    /// Added by extension VK_EXT_provoking_vertex.
+    pub const PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT: Self = Self(1000254000);
+    /// Added by extension VK_EXT_provoking_vertex.
+    pub const PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT: Self = Self(1000254001);
+    /// Added by extension VK_EXT_provoking_vertex.
+    pub const PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT: Self = Self(1000254002);
     /// Added by extension VK_EXT_full_screen_exclusive.
     pub const SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT: Self = Self(1000255000);
     /// Added by extension VK_EXT_full_screen_exclusive.
@@ -14058,6 +14064,9 @@ impl fmt::Display for StructureType {
             1000250002 => Some(&"FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV"),
             1000251000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT"),
             1000252000 => Some(&"PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT"),
+            1000254000 => Some(&"PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT"),
+            1000254001 => Some(&"PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT"),
+            1000254002 => Some(&"PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT"),
             1000255000 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT"),
             1000255002 => Some(&"SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT"),
             1000255001 => Some(&"SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT"),
@@ -15541,6 +15550,32 @@ impl fmt::Display for FragmentShadingRateTypeNV {
         let name = match self.0 {
             0 => Some(&"FRAGMENT_SIZE"),
             1 => Some(&"ENUMS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ProvokingVertexModeEXT(i32);
+impl ProvokingVertexModeEXT {
+    pub const FIRST_VERTEX: Self = Self(0);
+    pub const LAST_VERTEX: Self = Self(1);
+}
+impl default::Default for ProvokingVertexModeEXT {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for ProvokingVertexModeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"FIRST_VERTEX"),
+            1 => Some(&"LAST_VERTEX"),
             _ => None,
         };
         if let Some(name) = name {
@@ -37859,6 +37894,96 @@ impl fmt::Debug for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("ycbcr2plane444_formats", &self.ycbcr2plane444_formats)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceProvokingVertexFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub provoking_vertex_last: Bool32,
+    pub transform_feedback_preserves_provoking_vertex: Bool32,
+}
+impl default::Default for PhysicalDeviceProvokingVertexFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            provoking_vertex_last: Bool32::default(),
+            transform_feedback_preserves_provoking_vertex: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceProvokingVertexFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceProvokingVertexFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("provoking_vertex_last", &self.provoking_vertex_last)
+            .field(
+                "transform_feedback_preserves_provoking_vertex",
+                &self.transform_feedback_preserves_provoking_vertex,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceProvokingVertexPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub provoking_vertex_mode_per_pipeline: Bool32,
+    pub transform_feedback_preserves_triangle_fan_provoking_vertex: Bool32,
+}
+impl default::Default for PhysicalDeviceProvokingVertexPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            provoking_vertex_mode_per_pipeline: Bool32::default(),
+            transform_feedback_preserves_triangle_fan_provoking_vertex: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceProvokingVertexPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceProvokingVertexPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "provoking_vertex_mode_per_pipeline",
+                &self.provoking_vertex_mode_per_pipeline,
+            )
+            .field(
+                "transform_feedback_preserves_triangle_fan_provoking_vertex",
+                &self.transform_feedback_preserves_triangle_fan_provoking_vertex,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRasterizationProvokingVertexStateCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub provoking_vertex_mode: ProvokingVertexModeEXT,
+}
+impl default::Default for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            provoking_vertex_mode: ProvokingVertexModeEXT::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRasterizationProvokingVertexStateCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("provoking_vertex_mode", &self.provoking_vertex_mode)
             .finish()
     }
 }
