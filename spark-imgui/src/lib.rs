@@ -125,8 +125,8 @@ impl Renderer {
                 usage: vk::BufferUsageFlags::VERTEX_BUFFER,
                 ..Default::default()
             };
-            let mut buffers = ArrayVec::<[vk::Buffer; Self::FRAME_COUNT]>::new();
-            let mut mem_offsets = ArrayVec::<[usize; Self::FRAME_COUNT]>::new();
+            let mut buffers = ArrayVec::<vk::Buffer, { Self::FRAME_COUNT }>::new();
+            let mut mem_offsets = ArrayVec::<usize, { Self::FRAME_COUNT }>::new();
             for _i in 0..Self::FRAME_COUNT {
                 let buffer = unsafe { device.create_buffer(&buffer_create_info, None) }.unwrap();
                 let mem_req = unsafe { device.get_buffer_memory_requirements(buffer) };
@@ -146,8 +146,8 @@ impl Renderer {
                 usage: vk::BufferUsageFlags::INDEX_BUFFER,
                 ..Default::default()
             };
-            let mut buffers = ArrayVec::<[vk::Buffer; Self::FRAME_COUNT]>::new();
-            let mut mem_offsets = ArrayVec::<[usize; Self::FRAME_COUNT]>::new();
+            let mut buffers = ArrayVec::<vk::Buffer, { Self::FRAME_COUNT }>::new();
+            let mut mem_offsets = ArrayVec::<usize, { Self::FRAME_COUNT }>::new();
             for _i in 0..Self::FRAME_COUNT {
                 let buffer = unsafe { device.create_buffer(&buffer_create_info, None) }.unwrap();
                 let mem_req = unsafe { device.get_buffer_memory_requirements(buffer) };
