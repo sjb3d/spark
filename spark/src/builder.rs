@@ -16866,9 +16866,9 @@ impl<'a> FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
     }
     pub fn p_fragment_shading_rate_attachment(
         mut self,
-        p_fragment_shading_rate_attachment: &'a vk::AttachmentReference2,
+        p_fragment_shading_rate_attachment: Option<&'a vk::AttachmentReference2>,
     ) -> Self {
-        self.inner.p_fragment_shading_rate_attachment = p_fragment_shading_rate_attachment;
+        self.inner.p_fragment_shading_rate_attachment = p_fragment_shading_rate_attachment.map_or(ptr::null(), |p| p);
         self
     }
     pub fn shading_rate_attachment_texel_size(mut self, shading_rate_attachment_texel_size: vk::Extent2D) -> Self {
@@ -18042,3 +18042,146 @@ impl Deref for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
 }
 impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {}
 impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
+impl Builder<'_> for vk::CuModuleCreateInfoNVX {
+    type Type = CuModuleCreateInfoNVXBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CuModuleCreateInfoNVXBuilder {
+    inner: vk::CuModuleCreateInfoNVX,
+}
+impl CuModuleCreateInfoNVXBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn data_size(mut self, data_size: usize) -> Self {
+        self.inner.data_size = data_size;
+        self
+    }
+    pub fn p_data(mut self, p_data: *const c_void) -> Self {
+        self.inner.p_data = p_data;
+        self
+    }
+}
+impl Deref for CuModuleCreateInfoNVXBuilder {
+    type Target = vk::CuModuleCreateInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CuFunctionCreateInfoNVX {
+    type Type = CuFunctionCreateInfoNVXBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CuFunctionCreateInfoNVXBuilder<'a> {
+    inner: vk::CuFunctionCreateInfoNVX,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CuFunctionCreateInfoNVXBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn module(mut self, module: vk::CuModuleNVX) -> Self {
+        self.inner.module = Some(module);
+        self
+    }
+    pub fn p_name(mut self, p_name: &'a c_char) -> Self {
+        self.inner.p_name = p_name;
+        self
+    }
+}
+impl<'a> Deref for CuFunctionCreateInfoNVXBuilder<'a> {
+    type Target = vk::CuFunctionCreateInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::CuLaunchInfoNVX {
+    type Type = CuLaunchInfoNVXBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CuLaunchInfoNVXBuilder {
+    inner: vk::CuLaunchInfoNVX,
+}
+impl CuLaunchInfoNVXBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn function(mut self, function: vk::CuFunctionNVX) -> Self {
+        self.inner.function = Some(function);
+        self
+    }
+    pub fn grid_dim_x(mut self, grid_dim_x: u32) -> Self {
+        self.inner.grid_dim_x = grid_dim_x;
+        self
+    }
+    pub fn grid_dim_y(mut self, grid_dim_y: u32) -> Self {
+        self.inner.grid_dim_y = grid_dim_y;
+        self
+    }
+    pub fn grid_dim_z(mut self, grid_dim_z: u32) -> Self {
+        self.inner.grid_dim_z = grid_dim_z;
+        self
+    }
+    pub fn block_dim_x(mut self, block_dim_x: u32) -> Self {
+        self.inner.block_dim_x = block_dim_x;
+        self
+    }
+    pub fn block_dim_y(mut self, block_dim_y: u32) -> Self {
+        self.inner.block_dim_y = block_dim_y;
+        self
+    }
+    pub fn block_dim_z(mut self, block_dim_z: u32) -> Self {
+        self.inner.block_dim_z = block_dim_z;
+        self
+    }
+    pub fn shared_mem_bytes(mut self, shared_mem_bytes: u32) -> Self {
+        self.inner.shared_mem_bytes = shared_mem_bytes;
+        self
+    }
+    pub fn param_count(mut self, param_count: usize) -> Self {
+        self.inner.param_count = param_count;
+        self
+    }
+    pub fn p_params(mut self, p_params: *const *const c_void) -> Self {
+        self.inner.p_params = p_params;
+        self
+    }
+    pub fn extra_count(mut self, extra_count: usize) -> Self {
+        self.inner.extra_count = extra_count;
+        self
+    }
+    pub fn p_extras(mut self, p_extras: *const *const c_void) -> Self {
+        self.inner.p_extras = p_extras;
+        self
+    }
+}
+impl Deref for CuLaunchInfoNVXBuilder {
+    type Target = vk::CuLaunchInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

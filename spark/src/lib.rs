@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 177
+//! Generated from vk.xml with `VK_HEADER_VERSION` 178
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -3625,6 +3625,7 @@ pub struct DeviceExtensions {
     pub amd_gcn_shader: bool,
     pub nv_dedicated_allocation: bool,
     pub ext_transform_feedback: bool,
+    pub nvx_binary_import: bool,
     pub nvx_image_view_handle: bool,
     pub amd_draw_indirect_count: bool,
     pub amd_negative_viewport_height: bool,
@@ -3830,6 +3831,7 @@ impl DeviceExtensions {
             b"VK_AMD_gcn_shader" => self.amd_gcn_shader = true,
             b"VK_NV_dedicated_allocation" => self.nv_dedicated_allocation = true,
             b"VK_EXT_transform_feedback" => self.ext_transform_feedback = true,
+            b"VK_NVX_binary_import" => self.nvx_binary_import = true,
             b"VK_NVX_image_view_handle" => self.nvx_image_view_handle = true,
             b"VK_AMD_draw_indirect_count" => self.amd_draw_indirect_count = true,
             b"VK_AMD_negative_viewport_height" => self.amd_negative_viewport_height = true,
@@ -4039,6 +4041,7 @@ impl DeviceExtensions {
             amd_gcn_shader: false,
             nv_dedicated_allocation: false,
             ext_transform_feedback: false,
+            nvx_binary_import: false,
             nvx_image_view_handle: false,
             amd_draw_indirect_count: false,
             amd_negative_viewport_height: false,
@@ -4319,6 +4322,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_transform_feedback(&mut self) {
         self.ext_transform_feedback = true;
+    }
+    pub fn supports_nvx_binary_import(&self) -> bool {
+        self.nvx_binary_import
+    }
+    pub fn enable_nvx_binary_import(&mut self) {
+        self.nvx_binary_import = true;
     }
     pub fn supports_nvx_image_view_handle(&self) -> bool {
         self.nvx_image_view_handle
@@ -5750,6 +5759,9 @@ impl DeviceExtensions {
         if self.ext_transform_feedback {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_transform_feedback\0") })
         }
+        if self.nvx_binary_import {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_binary_import\0") })
+        }
         if self.nvx_image_view_handle {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NVX_image_view_handle\0") })
         }
@@ -6670,6 +6682,11 @@ pub struct Device {
     pub fp_cmd_write_timestamp2_khr: Option<vk::FnCmdWriteTimestamp2KHR>,
     pub fp_cmd_write_buffer_marker2_amd: Option<vk::FnCmdWriteBufferMarker2AMD>,
     pub fp_get_queue_checkpoint_data2_nv: Option<vk::FnGetQueueCheckpointData2NV>,
+    pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
+    pub fp_create_cu_function_nvx: Option<vk::FnCreateCuFunctionNVX>,
+    pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
+    pub fp_destroy_cu_function_nvx: Option<vk::FnDestroyCuFunctionNVX>,
+    pub fp_cmd_cu_launch_kernel_nvx: Option<vk::FnCmdCuLaunchKernelNVX>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -9275,6 +9292,36 @@ impl Device {
                 && extensions.nv_device_diagnostic_checkpoints
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetQueueCheckpointData2NV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_cu_module_nvx: if extensions.nvx_binary_import {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCuModuleNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_cu_function_nvx: if extensions.nvx_binary_import {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCuFunctionNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_cu_module_nvx: if extensions.nvx_binary_import {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyCuModuleNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_cu_function_nvx: if extensions.nvx_binary_import {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyCuFunctionNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_cu_launch_kernel_nvx: if extensions.nvx_binary_import {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCuLaunchKernelNVX\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -15053,6 +15100,74 @@ impl Device {
         (fp)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         v
+    }
+    pub unsafe fn create_cu_module_nvx(
+        &self,
+        p_create_info: &vk::CuModuleCreateInfoNVX,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::CuModuleNVX> {
+        let fp = self.fp_create_cu_module_nvx.expect("vkCreateCuModuleNVX is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_cu_function_nvx(
+        &self,
+        p_create_info: &vk::CuFunctionCreateInfoNVX,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::CuFunctionNVX> {
+        let fp = self
+            .fp_create_cu_function_nvx
+            .expect("vkCreateCuFunctionNVX is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_cu_module_nvx(&self, module: vk::CuModuleNVX, p_allocator: Option<&vk::AllocationCallbacks>) {
+        let fp = self
+            .fp_destroy_cu_module_nvx
+            .expect("vkDestroyCuModuleNVX is not loaded");
+        (fp)(Some(self.handle), Some(module), p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn destroy_cu_function_nvx(
+        &self,
+        function: vk::CuFunctionNVX,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_cu_function_nvx
+            .expect("vkDestroyCuFunctionNVX is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(function),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn cmd_cu_launch_kernel_nvx(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_launch_info: &vk::CuLaunchInfoNVX,
+    ) {
+        let fp = self
+            .fp_cmd_cu_launch_kernel_nvx
+            .expect("vkCmdCuLaunchKernelNVX is not loaded");
+        (fp)(Some(command_buffer), p_launch_info);
     }
 }
 

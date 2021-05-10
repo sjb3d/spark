@@ -10695,6 +10695,22 @@ impl PrivateDataSlotEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct CuModuleNVX(num::NonZeroU64);
+impl CuModuleNVX {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct CuFunctionNVX(num::NonZeroU64);
+impl CuFunctionNVX {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayKHR(num::NonZeroU64);
 impl DisplayKHR {
     pub fn from_raw(x: u64) -> Option<Self> {
@@ -12898,6 +12914,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT: Self = Self(1000028001);
     /// Added by extension VK_EXT_transform_feedback.
     pub const PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT: Self = Self(1000028002);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_MODULE_CREATE_INFO_NVX: Self = Self(1000029000);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_FUNCTION_CREATE_INFO_NVX: Self = Self(1000029001);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_LAUNCH_INFO_NVX: Self = Self(1000029002);
     /// Added by extension VK_NVX_image_view_handle.
     pub const IMAGE_VIEW_HANDLE_INFO_NVX: Self = Self(1000030000);
     /// Added by extension VK_NVX_image_view_handle.
@@ -13850,6 +13872,9 @@ impl fmt::Display for StructureType {
             1000028000 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT"),
             1000028001 => Some(&"PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT"),
             1000028002 => Some(&"PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT"),
+            1000029000 => Some(&"CU_MODULE_CREATE_INFO_NVX"),
+            1000029001 => Some(&"CU_FUNCTION_CREATE_INFO_NVX"),
+            1000029002 => Some(&"CU_LAUNCH_INFO_NVX"),
             1000030000 => Some(&"IMAGE_VIEW_HANDLE_INFO_NVX"),
             1000030001 => Some(&"IMAGE_VIEW_ADDRESS_PROPERTIES_NVX"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
@@ -14385,6 +14410,10 @@ impl ObjectType {
     pub const DISPLAY_MODE_KHR: Self = Self(1000002001);
     /// Added by extension VK_EXT_debug_report.
     pub const DEBUG_REPORT_CALLBACK_EXT: Self = Self(1000011000);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_MODULE_NVX: Self = Self(1000029000);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_FUNCTION_NVX: Self = Self(1000029001);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     /// Added by extension VK_EXT_debug_utils.
     pub const DEBUG_UTILS_MESSENGER_EXT: Self = Self(1000128000);
@@ -14445,6 +14474,8 @@ impl fmt::Display for ObjectType {
             1000002000 => Some(&"DISPLAY_KHR"),
             1000002001 => Some(&"DISPLAY_MODE_KHR"),
             1000011000 => Some(&"DEBUG_REPORT_CALLBACK_EXT"),
+            1000029000 => Some(&"CU_MODULE_NVX"),
+            1000029001 => Some(&"CU_FUNCTION_NVX"),
             1000128000 => Some(&"DEBUG_UTILS_MESSENGER_EXT"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000160000 => Some(&"VALIDATION_CACHE_EXT"),
@@ -15734,6 +15765,10 @@ impl DebugReportObjectTypeEXT {
     pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
     /// Added by extension VK_EXT_debug_report.
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_MODULE_NVX: Self = Self(1000029000);
+    /// Added by extension VK_NVX_binary_import.
+    pub const CU_FUNCTION_NVX: Self = Self(1000029001);
     pub const DESCRIPTOR_UPDATE_TEMPLATE_KHR: Self = Self::DESCRIPTOR_UPDATE_TEMPLATE;
     /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
@@ -15783,6 +15818,8 @@ impl fmt::Display for DebugReportObjectTypeEXT {
             33 => Some(&"VALIDATION_CACHE_EXT"),
             1000156000 => Some(&"SAMPLER_YCBCR_CONVERSION"),
             1000085000 => Some(&"DESCRIPTOR_UPDATE_TEMPLATE"),
+            1000029000 => Some(&"CU_MODULE_NVX"),
+            1000029001 => Some(&"CU_FUNCTION_NVX"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             _ => None,
@@ -16381,6 +16418,8 @@ impl DriverId {
     pub const MOLTENVK: Self = Self(14);
     /// Core Avionics & Industrial Inc.
     pub const COREAVI_PROPRIETARY: Self = Self(15);
+    /// Juice Technologies, Inc.
+    pub const JUICE_PROPRIETARY: Self = Self(16);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -16417,6 +16456,7 @@ impl fmt::Display for DriverId {
             13 => Some(&"MESA_LLVMPIPE"),
             14 => Some(&"MOLTENVK"),
             15 => Some(&"COREAVI_PROPRIETARY"),
+            16 => Some(&"JUICE_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -37987,6 +38027,120 @@ impl fmt::Debug for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CuModuleCreateInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub data_size: usize,
+    pub p_data: *const c_void,
+}
+impl default::Default for CuModuleCreateInfoNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CU_MODULE_CREATE_INFO_NVX,
+            p_next: ptr::null(),
+            data_size: usize::default(),
+            p_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CuModuleCreateInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CuModuleCreateInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("data_size", &self.data_size)
+            .field("p_data", &self.p_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CuFunctionCreateInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub module: Option<CuModuleNVX>,
+    pub p_name: *const c_char,
+}
+impl default::Default for CuFunctionCreateInfoNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CU_FUNCTION_CREATE_INFO_NVX,
+            p_next: ptr::null(),
+            module: None,
+            p_name: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CuFunctionCreateInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CuFunctionCreateInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("module", &self.module)
+            .field("p_name", &self.p_name)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CuLaunchInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub function: Option<CuFunctionNVX>,
+    pub grid_dim_x: u32,
+    pub grid_dim_y: u32,
+    pub grid_dim_z: u32,
+    pub block_dim_x: u32,
+    pub block_dim_y: u32,
+    pub block_dim_z: u32,
+    pub shared_mem_bytes: u32,
+    pub param_count: usize,
+    pub p_params: *const *const c_void,
+    pub extra_count: usize,
+    pub p_extras: *const *const c_void,
+}
+impl default::Default for CuLaunchInfoNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::CU_LAUNCH_INFO_NVX,
+            p_next: ptr::null(),
+            function: None,
+            grid_dim_x: u32::default(),
+            grid_dim_y: u32::default(),
+            grid_dim_z: u32::default(),
+            block_dim_x: u32::default(),
+            block_dim_y: u32::default(),
+            block_dim_z: u32::default(),
+            shared_mem_bytes: u32::default(),
+            param_count: usize::default(),
+            p_params: ptr::null(),
+            extra_count: usize::default(),
+            p_extras: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CuLaunchInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CuLaunchInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("function", &self.function)
+            .field("grid_dim_x", &self.grid_dim_x)
+            .field("grid_dim_y", &self.grid_dim_y)
+            .field("grid_dim_z", &self.grid_dim_z)
+            .field("block_dim_x", &self.block_dim_x)
+            .field("block_dim_y", &self.block_dim_y)
+            .field("block_dim_z", &self.block_dim_z)
+            .field("shared_mem_bytes", &self.shared_mem_bytes)
+            .field("param_count", &self.param_count)
+            .field("p_params", &self.p_params)
+            .field("extra_count", &self.extra_count)
+            .field("p_extras", &self.p_extras)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -40086,3 +40240,27 @@ pub type FnGetQueueCheckpointData2NV = unsafe extern "system" fn(
     p_checkpoint_data_count: *mut u32,
     p_checkpoint_data: *mut CheckpointData2NV,
 );
+pub type FnCreateCuModuleNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const CuModuleCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_module: *mut CuModuleNVX,
+) -> Result;
+pub type FnCreateCuFunctionNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const CuFunctionCreateInfoNVX,
+    p_allocator: *const AllocationCallbacks,
+    p_function: *mut CuFunctionNVX,
+) -> Result;
+pub type FnDestroyCuModuleNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    module: Option<CuModuleNVX>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnDestroyCuFunctionNVX = unsafe extern "system" fn(
+    device: Option<Device>,
+    function: Option<CuFunctionNVX>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdCuLaunchKernelNVX =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_launch_info: *const CuLaunchInfoNVX);
