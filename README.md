@@ -169,6 +169,22 @@ This is maybe overkill, but functions that fill an array of known size have `_ar
 ```rust
 impl Device {
     /* ... */
+    pub unsafe fn create_compute_pipelines_to_vec(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ComputePipelineCreateInfo],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<Vec<vk::Pipeline>> {
+        /* ... */
+    }
+    pub unsafe fn create_compute_pipelines_array<const N: usize>(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ComputePipelineCreateInfo],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<[vk::Pipeline; N]> {
+        /* ... */
+    }
     pub unsafe fn create_compute_pipelines_single(
         &self,
         pipeline_cache: Option<vk::PipelineCache>,
@@ -181,7 +197,7 @@ impl Device {
 }
 ```
 
-The `_array` version is implemented using a trait up to arrays of length 8, but should be possible to make fully generic once *const generics* are part of stable Rust.
+The `_array` version now makes use of const generics to be fully generic over array length.
 
 ## Examples
 
