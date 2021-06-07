@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 178
+//! Generated from vk.xml with `VK_HEADER_VERSION` 180
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1286,6 +1286,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_color_write_enable(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_global_priority_query(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_global_priority_query(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -3798,6 +3804,7 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub khr_synchronization2: bool,
+    pub khr_shader_subgroup_uniform_control_flow: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
     pub ext_ycbcr_2plane_444_formats: bool,
@@ -3814,6 +3821,7 @@ pub struct DeviceExtensions {
     pub fuchsia_external_semaphore: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
+    pub ext_global_priority_query: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4006,6 +4014,7 @@ impl DeviceExtensions {
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
+            b"VK_KHR_shader_subgroup_uniform_control_flow" => self.khr_shader_subgroup_uniform_control_flow = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
             b"VK_EXT_ycbcr_2plane_444_formats" => self.ext_ycbcr_2plane_444_formats = true,
@@ -4022,6 +4031,7 @@ impl DeviceExtensions {
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
+            b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             _ => {}
         }
     }
@@ -4214,6 +4224,7 @@ impl DeviceExtensions {
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
             khr_synchronization2: false,
+            khr_shader_subgroup_uniform_control_flow: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
             ext_ycbcr_2plane_444_formats: false,
@@ -4230,6 +4241,7 @@ impl DeviceExtensions {
             fuchsia_external_semaphore: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
+            ext_global_priority_query: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5600,6 +5612,12 @@ impl DeviceExtensions {
     pub fn enable_khr_synchronization2(&mut self) {
         self.khr_synchronization2 = true;
     }
+    pub fn supports_khr_shader_subgroup_uniform_control_flow(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.khr_shader_subgroup_uniform_control_flow
+    }
+    pub fn enable_khr_shader_subgroup_uniform_control_flow(&mut self) {
+        self.khr_shader_subgroup_uniform_control_flow = true;
+    }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
         self.khr_zero_initialize_workgroup_memory
     }
@@ -5717,6 +5735,13 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_color_write_enable(&mut self) {
         self.ext_color_write_enable = true;
+    }
+    pub fn supports_ext_global_priority_query(&self) -> bool {
+        self.ext_global_priority_query && self.supports_ext_global_priority()
+    }
+    pub fn enable_ext_global_priority_query(&mut self) {
+        self.ext_global_priority_query = true;
+        self.enable_ext_global_priority();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6280,6 +6305,9 @@ impl DeviceExtensions {
         if self.khr_synchronization2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_synchronization2\0") })
         }
+        if self.khr_shader_subgroup_uniform_control_flow {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_uniform_control_flow\0") })
+        }
         if self.khr_zero_initialize_workgroup_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_zero_initialize_workgroup_memory\0") })
         }
@@ -6327,6 +6355,9 @@ impl DeviceExtensions {
         }
         if self.ext_color_write_enable {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_color_write_enable\0") })
+        }
+        if self.ext_global_priority_query {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority_query\0") })
         }
         v
     }

@@ -157,6 +157,7 @@ pub const MAX_DRIVER_INFO_SIZE: usize = 256;
 pub const MAX_DRIVER_INFO_SIZE_KHR: usize = MAX_DRIVER_INFO_SIZE;
 pub const SHADER_UNUSED_KHR: u32 = 0xffffffff;
 pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
+pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = 16;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -1930,13 +1931,13 @@ impl AccessFlags {
     pub const ACCELERATION_STRUCTURE_READ_KHR: Self = Self(0x200000);
     /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_WRITE_KHR: Self = Self(0x400000);
-    /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_READ_NV: Self = Self(0x800000);
+    pub const SHADING_RATE_IMAGE_READ_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR;
     pub const ACCELERATION_STRUCTURE_READ_NV: Self = Self::ACCELERATION_STRUCTURE_READ_KHR;
     pub const ACCELERATION_STRUCTURE_WRITE_NV: Self = Self::ACCELERATION_STRUCTURE_WRITE_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
-    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self::SHADING_RATE_IMAGE_READ_NV;
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR: Self = Self(0x800000);
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_READ_NV: Self = Self(0x20000);
     /// Added by extension VK_NV_device_generated_commands.
@@ -2031,8 +2032,8 @@ impl fmt::Display for AccessFlags {
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
                 (0x200000, "ACCELERATION_STRUCTURE_READ_KHR"),
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE_KHR"),
-                (0x800000, "SHADING_RATE_IMAGE_READ_NV"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
+                (0x800000, "FRAGMENT_SHADING_RATE_ATTACHMENT_READ_KHR"),
                 (0x20000, "COMMAND_PREPROCESS_READ_NV"),
                 (0x40000, "COMMAND_PREPROCESS_WRITE_NV"),
             ],
@@ -2392,11 +2393,11 @@ impl ImageUsageFlags {
     pub const TRANSIENT_ATTACHMENT: Self = Self(0x40);
     /// Can be used as framebuffer input attachment
     pub const INPUT_ATTACHMENT: Self = Self(0x80);
-    /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_NV: Self = Self(0x100);
+    pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
-    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
 }
 impl default::Default for ImageUsageFlags {
     fn default() -> Self {
@@ -2469,8 +2470,8 @@ impl fmt::Display for ImageUsageFlags {
                 (0x20, "DEPTH_STENCIL_ATTACHMENT"),
                 (0x40, "TRANSIENT_ATTACHMENT"),
                 (0x80, "INPUT_ATTACHMENT"),
-                (0x100, "SHADING_RATE_IMAGE_NV"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
+                (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
             ],
             f,
         )
@@ -4333,8 +4334,7 @@ impl PipelineStageFlags {
     pub const ACCELERATION_STRUCTURE_BUILD_KHR: Self = Self(0x2000000);
     /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_SHADER_KHR: Self = Self(0x200000);
-    /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_IMAGE_NV: Self = Self(0x400000);
+    pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
     pub const RAY_TRACING_SHADER_NV: Self = Self::RAY_TRACING_SHADER_KHR;
     pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::ACCELERATION_STRUCTURE_BUILD_KHR;
     /// Added by extension VK_NV_mesh_shader.
@@ -4343,7 +4343,8 @@ impl PipelineStageFlags {
     pub const MESH_SHADER_NV: Self = Self(0x100000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
-    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self::SHADING_RATE_IMAGE_NV;
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x400000);
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
     /// Added by extension VK_KHR_synchronization2.
@@ -4433,10 +4434,10 @@ impl fmt::Display for PipelineStageFlags {
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
                 (0x200000, "RAY_TRACING_SHADER_KHR"),
-                (0x400000, "SHADING_RATE_IMAGE_NV"),
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
+                (0x400000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x20000, "COMMAND_PREPROCESS_NV"),
             ],
             f,
@@ -12073,11 +12074,11 @@ impl ImageLayout {
     pub const SHARED_PRESENT_KHR: Self = Self(1000111000);
     pub const DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
     pub const DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
-    /// Added by extension VK_NV_shading_rate_image.
-    pub const SHADING_RATE_OPTIMAL_NV: Self = Self(1000164003);
+    pub const SHADING_RATE_OPTIMAL_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
-    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR: Self = Self::SHADING_RATE_OPTIMAL_NV;
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR: Self = Self(1000164003);
     pub const DEPTH_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_OPTIMAL;
     pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_OPTIMAL;
     pub const STENCIL_ATTACHMENT_OPTIMAL_KHR: Self = Self::STENCIL_ATTACHMENT_OPTIMAL;
@@ -12112,8 +12113,8 @@ impl fmt::Display for ImageLayout {
             1000241003 => Some(&"STENCIL_READ_ONLY_OPTIMAL"),
             1000001002 => Some(&"PRESENT_SRC_KHR"),
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
-            1000164003 => Some(&"SHADING_RATE_OPTIMAL_NV"),
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
+            1000164003 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR"),
             1000314000 => Some(&"READ_ONLY_OPTIMAL_KHR"),
             1000314001 => Some(&"ATTACHMENT_OPTIMAL_KHR"),
             _ => None,
@@ -13600,6 +13601,8 @@ impl StructureType {
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV: Self = Self(1000314008);
     /// Added by extension VK_KHR_synchronization2.
     pub const CHECKPOINT_DATA_2_NV: Self = Self(1000314009);
+    /// Added by extension VK_KHR_shader_subgroup_uniform_control_flow.
+    pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR: Self = Self(1000323000);
     /// Added by extension VK_KHR_zero_initialize_workgroup_memory.
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self = Self(1000325000);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
@@ -13672,6 +13675,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT: Self = Self(1000381000);
     /// Added by extension VK_EXT_color_write_enable.
     pub const PIPELINE_COLOR_WRITE_CREATE_INFO_EXT: Self = Self(1000381001);
+    /// Added by extension VK_EXT_global_priority_query.
+    pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self = Self(1000388000);
+    /// Added by extension VK_EXT_global_priority_query.
+    pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self(1000388001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14148,6 +14155,7 @@ impl fmt::Display for StructureType {
             1000314007 => Some(&"PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES_KHR"),
             1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
             1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
+            1000323000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR"),
             1000325000 => Some(&"PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
@@ -14184,6 +14192,8 @@ impl fmt::Display for StructureType {
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
+            1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT"),
+            1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -15958,6 +15968,7 @@ impl ValidationFeatureDisableEXT {
     pub const OBJECT_LIFETIMES: Self = Self(4);
     pub const CORE_CHECKS: Self = Self(5);
     pub const UNIQUE_HANDLES: Self = Self(6);
+    pub const SHADER_VALIDATION_CACHE: Self = Self(7);
 }
 impl default::Default for ValidationFeatureDisableEXT {
     fn default() -> Self {
@@ -15974,6 +15985,7 @@ impl fmt::Display for ValidationFeatureDisableEXT {
             4 => Some(&"OBJECT_LIFETIMES"),
             5 => Some(&"CORE_CHECKS"),
             6 => Some(&"UNIQUE_HANDLES"),
+            7 => Some(&"SHADER_VALIDATION_CACHE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -28046,6 +28058,59 @@ impl fmt::Debug for DeviceQueueGlobalPriorityCreateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub global_priority_query: Bool32,
+}
+impl default::Default for PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            global_priority_query: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGlobalPriorityQueryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("global_priority_query", &self.global_priority_query)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueueFamilyGlobalPriorityPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub priority_count: u32,
+    pub priorities: [QueueGlobalPriorityEXT; MAX_GLOBAL_PRIORITY_SIZE_EXT],
+}
+impl default::Default for QueueFamilyGlobalPriorityPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            priority_count: u32::default(),
+            priorities: [QueueGlobalPriorityEXT::default(); MAX_GLOBAL_PRIORITY_SIZE_EXT],
+        }
+    }
+}
+impl fmt::Debug for QueueFamilyGlobalPriorityPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueueFamilyGlobalPriorityPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("priority_count", &self.priority_count)
+            .field("priorities", &self.priorities)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DebugUtilsObjectNameInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -36147,6 +36212,34 @@ impl fmt::Debug for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
             .field(
                 "shader_zero_initialize_workgroup_memory",
                 &self.shader_zero_initialize_workgroup_memory,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_subgroup_uniform_control_flow: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_subgroup_uniform_control_flow: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_subgroup_uniform_control_flow",
+                &self.shader_subgroup_uniform_control_flow,
             )
             .finish()
     }

@@ -8626,6 +8626,70 @@ impl Deref for DeviceQueueGlobalPriorityCreateInfoEXTBuilder {
 }
 impl DeviceQueueCreateInfoNext for DeviceQueueGlobalPriorityCreateInfoEXTBuilder {}
 impl DeviceQueueCreateInfoNext for vk::DeviceQueueGlobalPriorityCreateInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
+    type Type = PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT,
+}
+impl PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn global_priority_query(mut self, global_priority_query: bool) -> Self {
+        self.inner.global_priority_query = if global_priority_query { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT {}
+impl Builder<'_> for vk::QueueFamilyGlobalPriorityPropertiesEXT {
+    type Type = QueueFamilyGlobalPriorityPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct QueueFamilyGlobalPriorityPropertiesEXTBuilder {
+    inner: vk::QueueFamilyGlobalPriorityPropertiesEXT,
+}
+impl QueueFamilyGlobalPriorityPropertiesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn priority_count(mut self, priority_count: u32) -> Self {
+        self.inner.priority_count = priority_count;
+        self
+    }
+}
+impl Deref for QueueFamilyGlobalPriorityPropertiesEXTBuilder {
+    type Target = vk::QueueFamilyGlobalPriorityPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl QueueFamilyProperties2Next for QueueFamilyGlobalPriorityPropertiesEXTBuilder {}
+impl QueueFamilyProperties2Next for vk::QueueFamilyGlobalPriorityPropertiesEXT {}
 impl<'a> Builder<'a> for vk::DebugUtilsObjectNameInfoEXT {
     type Type = DebugUtilsObjectNameInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -15960,6 +16024,44 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceZeroInitializeWorkgroupMemory
 impl DeviceCreateInfoNext for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHRBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
+    type Type = PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR,
+}
+impl PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_subgroup_uniform_control_flow(mut self, shader_subgroup_uniform_control_flow: bool) -> Self {
+        self.inner.shader_subgroup_uniform_control_flow = if shader_subgroup_uniform_control_flow {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRobustness2FeaturesEXT {
     type Type = PhysicalDeviceRobustness2FeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -18100,8 +18202,8 @@ impl<'a> CuFunctionCreateInfoNVXBuilder<'a> {
         self.inner.module = Some(module);
         self
     }
-    pub fn p_name(mut self, p_name: &'a c_char) -> Self {
-        self.inner.p_name = p_name;
+    pub fn p_name(mut self, p_name: &'a CStr) -> Self {
+        self.inner.p_name = p_name.as_ptr();
         self
     }
 }
