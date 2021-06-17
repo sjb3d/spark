@@ -683,6 +683,7 @@ impl<'a> Generator<'a> {
             vk::EnumSpec::Bitpos { ref extends, .. } => extends.as_ref_str(),
             vk::EnumSpec::Value { ref extends, .. } => extends.as_ref_str(),
             vk::EnumSpec::None => None,
+            _ => panic!("enum spec type not handled"),
         };
         if let Some(name) = extends {
             let enums = self.enums_by_name.get_mut(name).expect("missing enum to extend");
@@ -801,6 +802,7 @@ impl<'a> Generator<'a> {
                                 }
                             }
                         }
+                        _ => panic!("command type not handled"),
                     }
                 }
             }
