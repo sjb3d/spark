@@ -946,7 +946,7 @@ impl<'a> Generator<'a> {
             CBaseType::I64 => "i64".to_owned(),
             CBaseType::USize => "usize".to_owned(),
             CBaseType::Named(type_name) => {
-                let type_name = self.bitmask_from_value.get(type_name).cloned().unwrap_or(type_name);
+                let type_name = self.bitmask_from_value.get(type_name).copied().unwrap_or(type_name);
                 if type_name.starts_with(TYPE_PREFIX) {
                     if self.is_non_null_type(base_type) && use_option {
                         format!(
@@ -991,7 +991,7 @@ impl<'a> Generator<'a> {
             CBaseType::I64 => "i64::default()".to_owned(),
             CBaseType::USize => "usize::default()".to_owned(),
             CBaseType::Named(type_name) => {
-                let type_name = self.bitmask_from_value.get(type_name).cloned().unwrap_or(type_name);
+                let type_name = self.bitmask_from_value.get(type_name).copied().unwrap_or(type_name);
                 if type_name.starts_with(TYPE_PREFIX) {
                     if self
                         .type_by_name
@@ -1204,7 +1204,7 @@ impl<'a> Generator<'a> {
                     (
                         self.get_enum_entry_name(&value_type_name, enum_type, en.name.as_str()),
                         self.get_enum_entry_value(&value_type_name, enum_type, en),
-                        self.extension_by_enum_name.get(en.name.as_str()).cloned(),
+                        self.extension_by_enum_name.get(en.name.as_str()).copied(),
                     )
                 })
                 .collect();
@@ -2289,7 +2289,7 @@ impl<'a> Generator<'a> {
                         let len_index = decl
                             .parameters
                             .iter()
-                            .position(|cparam| cparam.name == len_names.first().cloned().unwrap())
+                            .position(|cparam| cparam.name == len_names.first().copied().unwrap())
                             .expect("missing len variable");
                         let len_cparam = &decl.parameters[len_index];
                         let len_expr = len_cparam.name.to_snake_case();
@@ -3045,7 +3045,7 @@ impl<'a> Generator<'a> {
 
         let extensions: Vec<&vk::Extension> = all_supported_extensions
             .iter()
-            .cloned()
+            .copied()
             .filter(|ext| ext.get_category() == category)
             .collect();
 

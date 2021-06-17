@@ -42,7 +42,7 @@ pub fn main() {
                 CStr::from_ptr(props.device_name.as_ptr())
             });
         }
-        physical_devices.first().cloned().expect("no physical device found")
+        physical_devices.first().copied().expect("no physical device found")
     };
 
     // find the first queue family that supports compute
@@ -219,7 +219,7 @@ pub fn main() {
     // check results
     let mapping = unsafe { device.map_memory(mem, 0, vk::WHOLE_SIZE, Default::default()) }.unwrap();
     let check = unsafe { slice::from_raw_parts(mapping as *const f32, dispatch_size) };
-    for (i, v) in check.iter().cloned().enumerate() {
+    for (i, v) in check.iter().copied().enumerate() {
         assert_eq!(i as f32, v);
     }
     println!("compute shader run successfully!");

@@ -107,7 +107,7 @@ pub type zx_handle_t = u32;
 fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter) -> fmt::Result {
     let mut has_output = false;
     let mut remain = bits;
-    for (bit, name) in bit_names.iter().cloned() {
+    for (bit, name) in bit_names.iter().copied() {
         if (remain & bit) == bit {
             if has_output {
                 f.write_str(" | ")?;
