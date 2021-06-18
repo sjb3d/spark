@@ -93,16 +93,6 @@ impl SkipPrefix for CArraySize<'_> {
     }
 }
 
-trait AsRefStr {
-    fn as_ref_str(&self) -> Option<&str>;
-}
-
-impl AsRefStr for Option<String> {
-    fn as_ref_str(&self) -> Option<&str> {
-        self.as_ref().map(|s| s.as_str())
-    }
-}
-
 trait GetTypeName {
     fn get_type_name(&self) -> &str;
 }
@@ -110,9 +100,9 @@ trait GetTypeName {
 impl GetTypeName for vk::Type {
     fn get_type_name(&self) -> &str {
         if self.alias.is_some() {
-            self.name.as_ref().expect("missing bitmask or enum alias type name")
+            self.name.as_deref().expect("missing bitmask or enum alias type name")
         } else {
-            match self.category.as_ref_str() {
+            match self.category.as_deref() {
                 Some("basetype") | Some("bitmask") | Some("handle") | Some("funcpointer") => {
                     if let vk::TypeSpec::Code(ref code) = self.spec {
                         code.markup
@@ -127,7 +117,7 @@ impl GetTypeName for vk::Type {
                         panic!("failed to get type name for {:?}", self)
                     }
                 }
-                Some("enum") | Some("struct") | Some("union") => self.name.as_ref().expect("missing struct name"),
+                Some("enum") | Some("struct") | Some("union") => self.name.as_deref().expect("missing struct name"),
                 _ => panic!("cannot get type name for {:?}", self),
             }
         }
@@ -140,7 +130,7 @@ trait GetBitmaskValueName {
 
 impl GetBitmaskValueName for vk::Type {
     fn get_bitmask_value_name(&self) -> Option<String> {
-        self.requires.as_ref_str().map(|s| s.to_owned()).or_else(|| {
+        self.requires.as_deref().map(|s| s.to_owned()).or_else(|| {
             // TODO: look for "bitvalues" attribute once supported by vk-parse
             // HACK: just replace "Flags" with "FlagBits" for now
             let type_name = self.get_type_name();
@@ -182,19 +172,19 @@ trait ExtensionExtra {
 
 impl ExtensionExtra for vk::Extension {
     fn get_category(&self) -> Category {
-        match self.ext_type.as_ref_str() {
+        match self.ext_type.as_deref() {
             Some("instance") => Category::Instance,
             Some("device") => Category::Device,
             _ => panic!("unknown extension type {:?}", self),
         }
     }
     fn is_supported(&self) -> bool {
-        self.supported.as_ref_str() == Some("vulkan")
+        self.supported.as_deref() == Some("vulkan")
     }
     fn is_blacklisted(&self) -> bool {
-        matches!(self.author.as_ref_str(), Some("GGP") | Some("QNX"))
+        matches!(self.author.as_deref(), Some("GGP") | Some("QNX"))
             || (self.provisional && self.name != "VK_KHR_portability_subset")
-            || self.supported.as_ref_str() == Some("disabled")
+            || self.supported.as_deref() == Some("disabled")
     }
 }
 
@@ -253,8 +243,8 @@ impl GetCommandCategory for vk::CommandDefinition {
                 let is_first_param_from_device = self
                     .params
                     .get(0)
-                    .and_then(|param| param.definition.type_name.as_ref())
-                    .map(|type_name| matches!(type_name.as_str(), "VkDevice" | "VkCommandBuffer" | "VkQueue"))
+                    .and_then(|param| param.definition.type_name.as_deref())
+                    .map(|type_name| matches!(type_name, "VkDevice" | "VkCommandBuffer" | "VkQueue"))
                     .unwrap_or(false);
                 if is_first_param_from_device {
                     Category::Device
@@ -561,7 +551,7 @@ impl<'a> Generator<'a> {
             CBaseType::F32 | CBaseType::F64 => false,
             CBaseType::Named(type_name) => {
                 if let Some(ty) = self.type_by_name.get(type_name) {
-                    match ty.category.as_ref_str() {
+                    match ty.category.as_deref() {
                         Some("basetype") | Some("bitmask") | Some("enum") => true,
                         Some("struct") => {
                             if let vk::TypeSpec::Members(ref members) = ty.spec {
@@ -592,7 +582,7 @@ impl<'a> Generator<'a> {
 
     fn collect_types(&mut self) {
         for ty in self.get_type_iterator() {
-            let category = ty.category.as_ref_str();
+            let category = ty.category.as_deref();
             if let Some("basetype") | Some("bitmask") | Some("enum") | Some("handle") | Some("funcpointer")
             | Some("struct") | Some("union") = category
             {
@@ -678,10 +668,10 @@ impl<'a> Generator<'a> {
 
     fn collect_extension_enum(&mut self, en: &'a vk::Enum) {
         let extends = match en.spec {
-            vk::EnumSpec::Alias { ref extends, .. } => extends.as_ref_str(),
+            vk::EnumSpec::Alias { ref extends, .. } => extends.as_deref(),
             vk::EnumSpec::Offset { ref extends, .. } => Some(extends.as_str()),
-            vk::EnumSpec::Bitpos { ref extends, .. } => extends.as_ref_str(),
-            vk::EnumSpec::Value { ref extends, .. } => extends.as_ref_str(),
+            vk::EnumSpec::Bitpos { ref extends, .. } => extends.as_deref(),
+            vk::EnumSpec::Value { ref extends, .. } => extends.as_deref(),
             vk::EnumSpec::None => None,
             _ => panic!("enum spec type not handled"),
         };
@@ -698,9 +688,9 @@ impl<'a> Generator<'a> {
     fn collect_enums(&mut self) {
         for registry_child in &self.registry.0 {
             match registry_child {
-                vk::RegistryChild::Enums(enums) => match enums.kind.as_ref_str() {
+                vk::RegistryChild::Enums(enums) => match enums.kind.as_deref() {
                     Some("enum") | Some("bitmask") => {
-                        let name = enums.name.as_ref_str().expect("missing enum name");
+                        let name = enums.name.as_deref().expect("missing enum name");
                         let enums = enums
                             .children
                             .iter()
@@ -867,10 +857,10 @@ impl<'a> Generator<'a> {
                                 ..
                             } => {
                                 let cmd_ref = feature
-                                    .as_ref_str()
+                                    .as_deref()
                                     .and_then(Version::try_from_feature)
                                     .map(CommandRef::Feature)
-                                    .or_else(|| extension.as_ref_str().map(|s| CommandRef::Extension(s)));
+                                    .or_else(|| extension.as_deref().map(|s| CommandRef::Extension(s)));
                                 Some((cmd_ref, items))
                             }
                             _ => None,
@@ -926,7 +916,7 @@ impl<'a> Generator<'a> {
     fn is_non_null_type(&self, base: CBaseType) -> bool {
         base.try_name()
             .and_then(|name| self.type_by_name.get(name))
-            .and_then(|ref ty| ty.category.as_ref_str())
+            .and_then(|ref ty| ty.category.as_deref())
             .map(|s| s == "funcpointer" || s == "handle")
             .unwrap_or(false)
     }
@@ -998,7 +988,7 @@ impl<'a> Generator<'a> {
                     if self
                         .type_by_name
                         .get(type_name)
-                        .and_then(|ref ty| ty.category.as_ref_str())
+                        .and_then(|ref ty| ty.category.as_deref())
                         .map(|s| s == "handle")
                         .unwrap_or(false)
                     {
@@ -1156,8 +1146,8 @@ impl<'a> Generator<'a> {
         if let Some(ref comment) = ty.comment {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
-        if let Some(alias) = ty.alias.as_ref_str() {
-            if ty.category.as_ref_str() == Some("enum") && !self.is_enum_value_type_used(alias) {
+        if let Some(alias) = ty.alias.as_deref() {
+            if ty.category.as_deref() == Some("enum") && !self.is_enum_value_type_used(alias) {
                 return Ok(());
             }
             writeln!(
@@ -1167,7 +1157,7 @@ impl<'a> Generator<'a> {
                 alias.skip_prefix(TYPE_PREFIX),
             )?;
         } else {
-            let enum_type = match ty.category.as_ref_str() {
+            let enum_type = match ty.category.as_deref() {
                 Some("enum") => EnumType::Value,
                 Some("bitmask") => {
                     let size = match &ty.spec {
@@ -1353,7 +1343,7 @@ impl<'a> Generator<'a> {
 
     fn write_handle_type(&self, w: &mut impl IoWrite, ty: &'a vk::Type) -> WriteResult {
         if let Some(ref alias) = ty.alias {
-            let type_name = ty.name.as_ref_str().expect("missing handle alias name");
+            let type_name = ty.name.as_deref().expect("missing handle alias name");
             writeln!(
                 w,
                 "pub type {} = {};",
@@ -1466,7 +1456,7 @@ impl<'a> Generator<'a> {
     }
 
     fn write_aggregrate_type(&self, w: &mut impl IoWrite, ty: &vk::Type, agg_type: AggregateType) -> WriteResult {
-        let type_name = ty.name.as_ref_str().expect("missing struct name");
+        let type_name = ty.name.as_deref().expect("missing struct name");
         if self.type_name_blacklist.contains(type_name) {
             return Ok(());
         }
@@ -1545,7 +1535,7 @@ impl<'a> Generator<'a> {
                     write!(w, "Self {{")?;
                     for member in members.iter() {
                         write!(w, "{}: ", get_rust_variable_name(&member.name()))?;
-                        if let Some(values) = member.def.values.as_ref_str() {
+                        if let Some(values) = member.def.values.as_deref() {
                             // assume enum value for now
                             let member_type_name = member.decl.ty.base.try_name().unwrap();
                             let name = self.get_enum_entry_name(member_type_name, EnumType::Value, values);
@@ -1594,7 +1584,7 @@ impl<'a> Generator<'a> {
                         .base
                         .try_name()
                         .and_then(|name| self.type_by_name.get(name))
-                        .and_then(|ty| ty.category.as_ref_str());
+                        .and_then(|ty| ty.category.as_deref());
                     if member.decl.ty.base == CBaseType::Char
                         && member.decl.ty.decoration == CDecoration::None
                         && member.decl.ty.array_size.is_some()
@@ -1630,7 +1620,7 @@ impl<'a> Generator<'a> {
 
     fn write_types(&self, w: &mut impl IoWrite) -> WriteResult {
         for ty in self.get_type_iterator() {
-            let category = ty.category.as_ref_str();
+            let category = ty.category.as_deref();
             match category {
                 Some("basetype") => {
                     self.write_base_type(w, ty)?;
@@ -1701,11 +1691,11 @@ impl<'a> Generator<'a> {
     fn write_builder_structs(&self, w: &mut impl IoWrite) -> WriteResult {
         for ty in self
             .get_type_iterator()
-            .filter(|ty| ty.category.as_ref_str() == Some("struct") && ty.alias.is_none())
+            .filter(|ty| ty.category.as_deref() == Some("struct") && ty.alias.is_none())
             .filter(|ty| !self.type_name_blacklist.contains(ty.get_type_name()))
         {
             if let vk::TypeSpec::Members(ref members) = ty.spec {
-                let type_name = ty.name.as_ref_str().expect("missing struct name");
+                let type_name = ty.name.as_deref().expect("missing struct name");
                 let agg_name = type_name.skip_prefix(TYPE_PREFIX);
                 let member_defs: Vec<&vk::TypeMemberDefinition> = members
                     .iter()
@@ -1743,9 +1733,9 @@ impl<'a> Generator<'a> {
                     // match CStr
                     if cparam.ty.base == CBaseType::Char
                         && cparam.ty.decoration == CDecoration::PointerToConst
-                        && vparam.len.as_ref_str() == Some("null-terminated")
+                        && vparam.len.as_deref() == Some("null-terminated")
                     {
-                        let is_optional = vparam.optional.as_ref_str() == Some("true");
+                        let is_optional = vparam.optional.as_deref() == Some("true");
                         params[i].ty = LibParamType::CStr { is_optional };
                         continue;
                     }
@@ -1762,15 +1752,15 @@ impl<'a> Generator<'a> {
                     }
 
                     // match slice
-                    if let Some(len_name) = vparam.len.as_ref_str().and_then(|s| s.split(',').next()) {
+                    if let Some(len_name) = vparam.len.as_deref().and_then(|s| s.split(',').next()) {
                         let is_slice_type = cparam.ty.decoration == CDecoration::PointerToConst
                             || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst;
                         if is_slice_type {
                             let is_mutable = false;
-                            let is_optional = vparam.optional.as_ref_str() == Some("true");
-                            let is_single = vparam.noautovalidity.as_ref_str() == Some("true")
-                                || vparam.optional.as_ref_str() == Some("true,false")
-                                || vparam.optional.as_ref_str() == Some("true,false,false");
+                            let is_optional = vparam.optional.as_deref() == Some("true");
+                            let is_single = vparam.noautovalidity.as_deref() == Some("true")
+                                || vparam.optional.as_deref() == Some("true,false")
+                                || vparam.optional.as_deref() == Some("true,false,false");
                             if let Some(len_index) = decls.iter().position(|decl| decl.name == len_name) {
                                 let len_cparam = &decls[len_index];
                                 let inner_type_name =
@@ -1835,7 +1825,7 @@ impl<'a> Generator<'a> {
                         && cparam.ty.decoration == CDecoration::PointerToConst
                         && vparam.len.is_none()
                     {
-                        let is_optional = vparam.optional.as_ref_str() == Some("true");
+                        let is_optional = vparam.optional.as_deref() == Some("true");
                         params[i].ty = LibParamType::Ref {
                             inner_type_name,
                             is_optional,
@@ -1845,7 +1835,7 @@ impl<'a> Generator<'a> {
                 }
                 let is_extended = self
                     .get_type_iterator()
-                    .filter_map(|ty| ty.structextends.as_ref_str())
+                    .filter_map(|ty| ty.structextends.as_deref())
                     .flat_map(|s| s.split(','))
                     .any(|s| s == type_name);
                 let needs_lifetime = is_extended
@@ -2082,7 +2072,7 @@ impl<'a> Generator<'a> {
                     )?;
 
                     // implement next marker traits for builder
-                    if let Some(structextends) = ty.structextends.as_ref_str() {
+                    if let Some(structextends) = ty.structextends.as_deref() {
                         for base_type_name in structextends
                             .split(',')
                             .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
@@ -2099,7 +2089,7 @@ impl<'a> Generator<'a> {
                 }
 
                 // implement next marker traits for base type
-                if let Some(structextends) = ty.structextends.as_ref_str() {
+                if let Some(structextends) = ty.structextends.as_deref() {
                     for base_type_name in structextends
                         .split(',')
                         .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
@@ -2168,9 +2158,9 @@ impl<'a> Generator<'a> {
             // match CStr
             if cparam.ty.base == CBaseType::Char
                 && cparam.ty.decoration == CDecoration::PointerToConst
-                && vparam.len.as_ref_str() == Some("null-terminated")
+                && vparam.len.as_deref() == Some("null-terminated")
             {
-                let is_optional = vparam.optional.as_ref_str() == Some("true");
+                let is_optional = vparam.optional.as_deref() == Some("true");
                 params[i].ty = LibParamType::CStr { is_optional };
                 continue;
             }
@@ -2187,7 +2177,7 @@ impl<'a> Generator<'a> {
             }
 
             // match slice (parameter or return)
-            if let Some(len_name) = vparam.len.as_ref_str() {
+            if let Some(len_name) = vparam.len.as_deref() {
                 if cparam.ty.decoration == CDecoration::PointerToConst
                     || cparam.ty.decoration == CDecoration::PointerToConstPointerToConst
                     || (cparam.ty.base == CBaseType::Void
@@ -2195,7 +2185,7 @@ impl<'a> Generator<'a> {
                         && cparam.ty.decoration == CDecoration::Pointer)
                 {
                     let is_mutable = matches!(cparam.ty.decoration, CDecoration::Pointer);
-                    let is_optional = vparam.optional.as_ref_str() == Some("true");
+                    let is_optional = vparam.optional.as_deref() == Some("true");
                     let inner_type_name = if cparam.ty.decoration == CDecoration::PointerToConstPointerToConst {
                         format!("*const {}", inner_type_name)
                     } else {
@@ -2242,9 +2232,9 @@ impl<'a> Generator<'a> {
                 }
                 if cparam.ty.base != CBaseType::Void
                     && cparam.ty.decoration == CDecoration::Pointer
-                    && vparam.optional.as_ref_str() == Some("true")
+                    && vparam.optional.as_deref() == Some("true")
                     && (cmd_return_value == CommandReturnValue::Void
-                        || cmd_def.successcodes.as_ref_str() == Some("VK_SUCCESS,VK_INCOMPLETE"))
+                        || cmd_def.successcodes.as_deref() == Some("VK_SUCCESS,VK_INCOMPLETE"))
                 {
                     let len_index = decl
                         .parameters
@@ -2254,7 +2244,7 @@ impl<'a> Generator<'a> {
                     let len_cparam = &decl.parameters[len_index];
                     let len_vparam = &cmd_def.params[len_index];
                     if len_cparam.ty.decoration == CDecoration::Pointer
-                        && len_vparam.optional.as_ref_str() == Some("false,true")
+                        && len_vparam.optional.as_deref() == Some("false,true")
                     {
                         params[i].ty = LibParamType::ReturnVec {
                             inner_type_name: inner_type_name.clone(),
@@ -2340,7 +2330,7 @@ impl<'a> Generator<'a> {
             if i == decl.parameters.len() - 1
                 && (cparam.ty.decoration == CDecoration::Pointer
                     || cparam.ty.decoration == CDecoration::PointerToPointer)
-                && (vparam.optional.is_none() || vparam.optional.as_ref_str() == Some("false,true"))
+                && (vparam.optional.is_none() || vparam.optional.as_deref() == Some("false,true"))
                 && vparam.len.is_none()
                 && cmd_return_value != CommandReturnValue::Other
                 && return_type == LibReturnType::CDecl
@@ -2351,7 +2341,7 @@ impl<'a> Generator<'a> {
                     .try_name()
                     .and_then(|name| self.type_by_name.get(name))
                     .and_then(|vtype| {
-                        if let Some(alias) = vtype.alias.as_ref_str() {
+                        if let Some(alias) = vtype.alias.as_deref() {
                             self.type_by_name.get(alias)
                         } else {
                             Some(vtype)
@@ -2399,7 +2389,7 @@ impl<'a> Generator<'a> {
                     };
                     take_mut::take(&mut return_type, |ty| match ty {
                         LibReturnType::CDecl => match cmd_return_value {
-                            CommandReturnValue::Result => match cmd_def.successcodes.as_ref_str() {
+                            CommandReturnValue::Result => match cmd_def.successcodes.as_deref() {
                                 None | Some("VK_SUCCESS") => LibReturnType::ResultObject,
                                 _ => LibReturnType::ResultEnumAndObject,
                             },
@@ -2416,7 +2406,7 @@ impl<'a> Generator<'a> {
             // match reference
             if cparam.ty.base != CBaseType::Void && vparam.len.is_none() && !self.is_non_null_type(cparam.ty.base) {
                 if cparam.ty.decoration == CDecoration::PointerToConst {
-                    let is_optional = vparam.optional.as_ref_str() == Some("true");
+                    let is_optional = vparam.optional.as_deref() == Some("true");
                     params[i].ty = LibParamType::Ref {
                         inner_type_name,
                         is_optional,
@@ -2431,7 +2421,7 @@ impl<'a> Generator<'a> {
         }
 
         if return_type == LibReturnType::CDecl && cmd_return_value == CommandReturnValue::Result {
-            return_type = if cmd_def.successcodes.as_ref_str() == Some("VK_SUCCESS") {
+            return_type = if cmd_def.successcodes.as_deref() == Some("VK_SUCCESS") {
                 return_type_name = "()".to_owned();
                 LibReturnType::ResultEmpty
             } else {
@@ -2889,7 +2879,7 @@ impl<'a> Generator<'a> {
                         write!(w, "match err {{ vk::Result::SUCCESS => Ok(()), _ => Err(err) }}")?;
                     }
                     LibReturnType::ResultEnum | LibReturnType::ResultMultiVecUnknownLen => {
-                        let ok_matches = if let Some(successcodes) = cmd_def.successcodes.as_ref_str() {
+                        let ok_matches = if let Some(successcodes) = cmd_def.successcodes.as_deref() {
                             let matches: Vec<String> = successcodes
                                 .split(',')
                                 .map(|s| format!("vk::Result::{}", s.skip_prefix("VK_")))
@@ -2909,7 +2899,7 @@ impl<'a> Generator<'a> {
                     LibReturnType::ResultEnumAndObject => {
                         let matches: Vec<String> = cmd_def
                             .successcodes
-                            .as_ref_str()
+                            .as_deref()
                             .unwrap()
                             .split(',')
                             .map(|s| format!("vk::Result::{}", s.skip_prefix("VK_")))
@@ -3104,12 +3094,12 @@ impl<'a> Generator<'a> {
                 while let Some(ext) = queue.pop_front() {
                     for req in ext
                         .requires
-                        .as_ref_str()
+                        .as_deref()
                         .iter()
                         .flat_map(|s| s.split(','))
                         .filter_map(|s| self.extension_by_name.get(s))
                     {
-                        if queued_names.insert(req.name.as_ref()) {
+                        if queued_names.insert(req.name.as_str()) {
                             dependencies.push(req);
                             queue.push_back(req);
                         }
@@ -3120,8 +3110,8 @@ impl<'a> Generator<'a> {
 
                 if ext.get_category() == category || !dependencies.is_empty() {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                    let promoted_to_version = ext.promotedto.as_ref_str().and_then(|s| c_try_parse_version(s));
-                    let min_version = ext.requires_core.as_ref_str().map(|s| c_parse_version_decimal(s));
+                    let promoted_to_version = ext.promotedto.as_deref().and_then(|s| c_try_parse_version(s));
+                    let min_version = ext.requires_core.as_deref().map(|s| c_parse_version_decimal(s));
 
                     let mut support_checks = Vec::new();
                     if let Some(version) = min_version {
@@ -3350,7 +3340,7 @@ impl<'a> Generator<'a> {
 
         let mut header_version = None;
         for ty in self.get_type_iterator() {
-            if Some("define") == ty.category.as_ref_str() {
+            if Some("define") == ty.category.as_deref() {
                 if let vk::TypeSpec::Code(ref type_code) = ty.spec {
                     let prefix = "#define VK_HEADER_VERSION";
                     if let Some(offset) = type_code.code.find(&prefix) {

@@ -494,7 +494,7 @@ pub fn main() {
     let mut is_debug = false;
     let mut is_fullscreen = false;
     for arg in env::args().skip(1) {
-        match arg.as_ref() {
+        match arg.as_str() {
             "-d" => is_debug = true,
             "-f" => is_fullscreen = true,
             _ => panic!("unknown argument {:?}", arg),
