@@ -130,7 +130,7 @@ trait GetBitmaskValueName {
 
 impl GetBitmaskValueName for vk::Type {
     fn get_bitmask_value_name(&self) -> Option<String> {
-        self.requires.as_deref().map(|s| s.to_owned()).or_else(|| {
+        self.requires.clone().or_else(|| {
             // TODO: look for "bitvalues" attribute once supported by vk-parse
             // HACK: just replace "Flags" with "FlagBits" for now
             let type_name = self.get_type_name();
