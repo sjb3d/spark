@@ -13,8 +13,8 @@ spark = { path = "../../spark" }
 spark-imgui = { path = "../../spark-imgui" }
 winit = "0.24"
 raw-window-handle = "0.3"
-imgui = "0.6.1"
-imgui-winit-support = "0.6.1"
+imgui = "0.7"
+imgui-winit-support = "0.7"
 
 [target.'cfg(target_os = "android")'.dependencies]
 ndk-glue = "0.2"

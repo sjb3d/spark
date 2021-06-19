@@ -334,7 +334,7 @@ impl App {
                 });
 
             // also exit if ESC is pressed
-            if ui.is_key_pressed(ui.key_index(Key::Escape)) {
+            if ui.is_key_pressed(Key::Escape) {
                 *exit_requested = true;
             }
         }
