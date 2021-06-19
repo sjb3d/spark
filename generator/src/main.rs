@@ -134,15 +134,9 @@ impl GetBitmaskValueName for vk::Type {
             // TODO: look for "bitvalues" attribute once supported by vk-parse
             // HACK: just replace "Flags" with "FlagBits" for now
             let type_name = self.get_type_name();
-            if let Some(offset) = type_name.find("Flags") {
-                Some(format!(
-                    "{}FlagBits{}",
-                    &type_name[..offset],
-                    &type_name[(offset + 5)..]
-                ))
-            } else {
-                None
-            }
+            type_name
+                .find("Flags")
+                .map(|offset| format!("{}FlagBits{}", &type_name[..offset], &type_name[(offset + 5)..]))
         })
     }
 }
@@ -1783,17 +1777,16 @@ impl<'a> Generator<'a> {
                                 };
                                 take_mut::take(&mut params[len_index].ty, |ty| match ty {
                                     LibParamType::SliceLenShared { name, mut slice_infos } => {
+                                        slice_infos.push(slice_info);
                                         if is_single {
-                                            slice_infos.push(slice_info);
                                             LibParamType::SliceLenSingle { slice_infos }
                                         } else {
-                                            slice_infos.push(slice_info);
                                             LibParamType::SliceLenShared { name, slice_infos }
                                         }
                                     }
                                     LibParamType::SliceLenSingle { mut slice_infos } => {
+                                        slice_infos.push(slice_info);
                                         if is_single {
-                                            slice_infos.push(slice_info);
                                             LibParamType::SliceLenSingle { slice_infos }
                                         } else {
                                             panic!("unsupported mix of slices")
@@ -2689,21 +2682,19 @@ impl<'a> Generator<'a> {
                         }
                     }
                     LibParamType::Slice {
-                        ref len_expr,
+                        len_expr: Some(ref len_expr),
                         is_optional,
                         ..
                     } => {
-                        if let Some(len_expr) = len_expr {
-                            // bit of a hack, assume expression result is u32
-                            if is_optional {
-                                writeln!(
-                                    w,
-                                    "if let Some(s) = {} {{ assert_eq!(s.len() as u32, {}); }}",
-                                    rparam.name, len_expr
-                                )?;
-                            } else {
-                                writeln!(w, "assert_eq!({}.len() as u32, {});", rparam.name, len_expr)?;
-                            }
+                        // bit of a hack, assume expression result is u32
+                        if is_optional {
+                            writeln!(
+                                w,
+                                "if let Some(s) = {} {{ assert_eq!(s.len() as u32, {}); }}",
+                                rparam.name, len_expr
+                            )?;
+                        } else {
+                            writeln!(w, "assert_eq!({}.len() as u32, {});", rparam.name, len_expr)?;
                         }
                     }
                     _ => {}
