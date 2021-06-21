@@ -2288,6 +2288,8 @@ impl ShaderStageFlags {
     pub const TASK_NV: Self = Self(0x40);
     /// Added by extension VK_NV_mesh_shader.
     pub const MESH_NV: Self = Self(0x80);
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x4000);
 }
 impl default::Default for ShaderStageFlags {
     fn default() -> Self {
@@ -2368,6 +2370,7 @@ impl fmt::Display for ShaderStageFlags {
                 (0x2000, "CALLABLE_KHR"),
                 (0x40, "TASK_NV"),
                 (0x80, "MESH_NV"),
+                (0x4000, "SUBPASS_SHADING_HUAWEI"),
             ],
             f,
         )
@@ -2715,6 +2718,8 @@ impl PipelineCreateFlags {
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self(0x100);
     /// Added by extension VK_EXT_pipeline_creation_cache_control.
     pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self(0x200);
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
 }
 impl default::Default for PipelineCreateFlags {
     fn default() -> Self {
@@ -2726,13 +2731,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xffbff)
+        Self(0x1ffbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xffbff
+        self.0 == 0x1ffbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2798,6 +2803,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x800, "LIBRARY_KHR"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT"),
                 (0x200, "EARLY_RETURN_ON_FAILURE_EXT"),
+                (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
             ],
             f,
         )
@@ -5415,6 +5421,8 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const PREFER_FAST_TRACE_NV: Self = Self::PREFER_FAST_TRACE;
     pub const PREFER_FAST_BUILD_NV: Self = Self::PREFER_FAST_BUILD;
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const MOTION_NV: Self = Self(0x20);
 }
 impl default::Default for BuildAccelerationStructureFlagsKHR {
     fn default() -> Self {
@@ -5426,13 +5434,13 @@ impl BuildAccelerationStructureFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1f)
+        Self(0x3f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1f
+        self.0 == 0x3f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5484,6 +5492,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x4, "PREFER_FAST_TRACE"),
                 (0x8, "PREFER_FAST_BUILD"),
                 (0x10, "LOW_MEMORY"),
+                (0x20, "MOTION_NV"),
             ],
             f,
         )
@@ -5562,6 +5571,8 @@ impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
 pub struct AccelerationStructureCreateFlagsKHR(u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const MOTION_NV: Self = Self(0x4);
 }
 impl default::Default for AccelerationStructureCreateFlagsKHR {
     fn default() -> Self {
@@ -5573,13 +5584,13 @@ impl AccelerationStructureCreateFlagsKHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1)
+        Self(0x5)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1
+        self.0 == 0x5
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -5623,7 +5634,11 @@ impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
 }
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY")], f)
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"), (0x4, "MOTION_NV")],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -6401,6 +6416,8 @@ impl PipelineStageFlags2KHR {
     pub const TASK_SHADER_NV: Self = Self(0x80000);
     /// Added by extension VK_KHR_synchronization2.
     pub const MESH_SHADER_NV: Self = Self(0x100000);
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x8000000000);
 }
 impl default::Default for PipelineStageFlags2KHR {
     fn default() -> Self {
@@ -6412,13 +6429,13 @@ impl PipelineStageFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x7f03ffffff)
+        Self(0xff03ffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x7f03ffffff
+        self.0 == 0xff03ffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6498,9 +6515,144 @@ impl fmt::Display for PipelineStageFlags2KHR {
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
+                (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
             ],
             f,
         )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureMotionInfoFlagsNV(u32);
+impl AccelerationStructureMotionInfoFlagsNV {}
+impl default::Default for AccelerationStructureMotionInfoFlagsNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl AccelerationStructureMotionInfoFlagsNV {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for AccelerationStructureMotionInfoFlagsNV {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for AccelerationStructureMotionInfoFlagsNV {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for AccelerationStructureMotionInfoFlagsNV {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for AccelerationStructureMotionInfoFlagsNV {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for AccelerationStructureMotionInfoFlagsNV {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for AccelerationStructureMotionInfoFlagsNV {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureMotionInstanceFlagsNV(u32);
+impl AccelerationStructureMotionInstanceFlagsNV {}
+impl default::Default for AccelerationStructureMotionInstanceFlagsNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl AccelerationStructureMotionInstanceFlagsNV {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for AccelerationStructureMotionInstanceFlagsNV {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for AccelerationStructureMotionInstanceFlagsNV {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for AccelerationStructureMotionInstanceFlagsNV {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for AccelerationStructureMotionInstanceFlagsNV {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for AccelerationStructureMotionInstanceFlagsNV {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for AccelerationStructureMotionInstanceFlagsNV {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -12373,6 +12525,8 @@ impl PipelineBindPoint {
     /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_KHR: Self = Self(1000165000);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const SUBPASS_SHADING_HUAWEI: Self = Self(1000369003);
 }
 impl default::Default for PipelineBindPoint {
     fn default() -> Self {
@@ -12385,6 +12539,7 @@ impl fmt::Display for PipelineBindPoint {
             0 => Some(&"GRAPHICS"),
             1 => Some(&"COMPUTE"),
             1000165000 => Some(&"RAY_TRACING_KHR"),
+            1000369003 => Some(&"SUBPASS_SHADING_HUAWEI"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13611,6 +13766,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV: Self = Self(1000326001);
     /// Added by extension VK_NV_fragment_shading_rate_enums.
     pub const PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV: Self = Self(1000326002);
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV: Self = Self(1000327000);
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV: Self = Self(1000327001);
+    /// Added by extension VK_NV_ray_tracing_motion_blur.
+    pub const ACCELERATION_STRUCTURE_MOTION_INFO_NV: Self = Self(1000327002);
     /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
     pub const PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT: Self = Self(1000330000);
     /// Added by extension VK_EXT_fragment_density_map2.
@@ -13659,6 +13820,8 @@ impl StructureType {
     pub const VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT: Self = Self(1000352001);
     /// Added by extension VK_EXT_vertex_input_dynamic_state.
     pub const VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT: Self = Self(1000352002);
+    /// Added by extension VK_EXT_physical_device_drm.
+    pub const PHYSICAL_DEVICE_DRM_PROPERTIES_EXT: Self = Self(1000353000);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     /// Added by extension VK_FUCHSIA_external_memory.
@@ -13669,6 +13832,12 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365000);
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI: Self = Self(1000369000);
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI: Self = Self(1000369001);
+    /// Added by extension VK_HUAWEI_subpass_shading.
+    pub const PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI: Self = Self(1000369002);
     /// Added by extension VK_EXT_extended_dynamic_state2.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT: Self = Self(1000377000);
     /// Added by extension VK_EXT_color_write_enable.
@@ -13679,6 +13848,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self = Self(1000388000);
     /// Added by extension VK_EXT_global_priority_query.
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self(1000388001);
+    /// Added by extension VK_EXT_multi_draw.
+    pub const PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT: Self = Self(1000392000);
+    /// Added by extension VK_EXT_multi_draw.
+    pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14160,6 +14333,9 @@ impl fmt::Display for StructureType {
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
             1000326002 => Some(&"PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV"),
+            1000327000 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV"),
+            1000327001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV"),
+            1000327002 => Some(&"ACCELERATION_STRUCTURE_MOTION_INFO_NV"),
             1000330000 => Some(&"PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
@@ -14184,16 +14360,22 @@ impl fmt::Display for StructureType {
             1000352000 => Some(&"PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT"),
             1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
+            1000353000 => Some(&"PHYSICAL_DEVICE_DRM_PROPERTIES_EXT"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000369000 => Some(&"SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
+            1000369001 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI"),
+            1000369002 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT"),
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT"),
+            1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
+            1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -21136,6 +21318,53 @@ impl fmt::Debug for DispatchIndirectCommand {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct MultiDrawInfoEXT {
+    pub first_vertex: u32,
+    pub vertex_count: u32,
+}
+impl default::Default for MultiDrawInfoEXT {
+    fn default() -> Self {
+        Self {
+            first_vertex: u32::default(),
+            vertex_count: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for MultiDrawInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MultiDrawInfoEXT")
+            .field("first_vertex", &self.first_vertex)
+            .field("vertex_count", &self.vertex_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct MultiDrawIndexedInfoEXT {
+    pub first_index: u32,
+    pub index_count: u32,
+    pub vertex_offset: i32,
+}
+impl default::Default for MultiDrawIndexedInfoEXT {
+    fn default() -> Self {
+        Self {
+            first_index: u32::default(),
+            index_count: u32::default(),
+            vertex_offset: i32::default(),
+        }
+    }
+}
+impl fmt::Debug for MultiDrawIndexedInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MultiDrawIndexedInfoEXT")
+            .field("first_index", &self.first_index)
+            .field("index_count", &self.index_count)
+            .field("vertex_offset", &self.vertex_offset)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SubmitInfo {
     pub s_type: StructureType,
@@ -22579,6 +22808,31 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
                 "min_indirect_commands_buffer_offset_alignment",
                 &self.min_indirect_commands_buffer_offset_alignment,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultiDrawPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_multi_draw_count: u32,
+}
+impl default::Default for PhysicalDeviceMultiDrawPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_multi_draw_count: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultiDrawPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultiDrawPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_multi_draw_count", &self.max_multi_draw_count)
             .finish()
     }
 }
@@ -27349,6 +27603,31 @@ impl fmt::Debug for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
                 "advanced_blend_coherent_operations",
                 &self.advanced_blend_coherent_operations,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultiDrawFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub multi_draw: Bool32,
+}
+impl default::Default for PhysicalDeviceMultiDrawFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            multi_draw: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultiDrawFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultiDrawFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("multi_draw", &self.multi_draw)
             .finish()
     }
 }
@@ -34350,6 +34629,62 @@ impl fmt::Debug for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SubpassShadingPipelineCreateInfoHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub render_pass: Option<RenderPass>,
+    pub subpass: u32,
+}
+impl default::Default for SubpassShadingPipelineCreateInfoHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
+            p_next: ptr::null_mut(),
+            render_pass: None,
+            subpass: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for SubpassShadingPipelineCreateInfoHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubpassShadingPipelineCreateInfoHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("render_pass", &self.render_pass)
+            .field("subpass", &self.subpass)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSubpassShadingPropertiesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_subpass_shading_workgroup_size_aspect_ratio: u32,
+}
+impl default::Default for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
+            p_next: ptr::null_mut(),
+            max_subpass_shading_workgroup_size_aspect_ratio: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSubpassShadingPropertiesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_subpass_shading_workgroup_size_aspect_ratio",
+                &self.max_subpass_shading_workgroup_size_aspect_ratio,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MemoryOpaqueCaptureAddressAllocateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -36517,6 +36852,31 @@ impl fmt::Debug for PhysicalDevice4444FormatsFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceSubpassShadingFeaturesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub subpass_shading: Bool32,
+}
+impl default::Default for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
+            p_next: ptr::null_mut(),
+            subpass_shading: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSubpassShadingFeaturesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subpass_shading", &self.subpass_shading)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct BufferCopy2KHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -38234,6 +38594,342 @@ impl fmt::Debug for CuLaunchInfoNVX {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDrmPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub has_primary: Bool32,
+    pub has_render: Bool32,
+    pub primary_major: i64,
+    pub primary_minor: i64,
+    pub render_major: i64,
+    pub render_minor: i64,
+}
+impl default::Default for PhysicalDeviceDrmPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            has_primary: Bool32::default(),
+            has_render: Bool32::default(),
+            primary_major: i64::default(),
+            primary_minor: i64::default(),
+            render_major: i64::default(),
+            render_minor: i64::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDrmPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDrmPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("has_primary", &self.has_primary)
+            .field("has_render", &self.has_render)
+            .field("primary_major", &self.primary_major)
+            .field("primary_minor", &self.primary_minor)
+            .field("render_major", &self.render_major)
+            .field("render_minor", &self.render_minor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ray_tracing_motion_blur: Bool32,
+    pub ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32,
+}
+impl default::Default for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV,
+            p_next: ptr::null(),
+            ray_tracing_motion_blur: Bool32::default(),
+            ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingMotionBlurFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_motion_blur", &self.ray_tracing_motion_blur)
+            .field(
+                "ray_tracing_motion_blur_pipeline_trace_rays_indirect",
+                &self.ray_tracing_motion_blur_pipeline_trace_rays_indirect,
+            )
+            .finish()
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct AccelerationStructureMotionInstanceTypeNV(i32);
+impl AccelerationStructureMotionInstanceTypeNV {
+    pub const STATIC: Self = Self(0);
+    pub const MATRIX_MOTION: Self = Self(1);
+    pub const SRT_MOTION: Self = Self(2);
+}
+impl default::Default for AccelerationStructureMotionInstanceTypeNV {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl fmt::Display for AccelerationStructureMotionInstanceTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"STATIC"),
+            1 => Some(&"MATRIX_MOTION"),
+            2 => Some(&"SRT_MOTION"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureGeometryMotionTrianglesDataNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub vertex_data: DeviceOrHostAddressConstKHR,
+}
+impl default::Default for AccelerationStructureGeometryMotionTrianglesDataNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV,
+            p_next: ptr::null(),
+            vertex_data: DeviceOrHostAddressConstKHR::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureGeometryMotionTrianglesDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureGeometryMotionTrianglesDataNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("vertex_data", &self.vertex_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureMotionInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub max_instances: u32,
+    pub flags: AccelerationStructureMotionInfoFlagsNV,
+}
+impl default::Default for AccelerationStructureMotionInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_MOTION_INFO_NV,
+            p_next: ptr::null(),
+            max_instances: u32::default(),
+            flags: AccelerationStructureMotionInfoFlagsNV::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureMotionInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureMotionInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_instances", &self.max_instances)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SRTDataNV {
+    pub sx: f32,
+    pub a: f32,
+    pub b: f32,
+    pub pvx: f32,
+    pub sy: f32,
+    pub c: f32,
+    pub pvy: f32,
+    pub sz: f32,
+    pub pvz: f32,
+    pub qx: f32,
+    pub qy: f32,
+    pub qz: f32,
+    pub qw: f32,
+    pub tx: f32,
+    pub ty: f32,
+    pub tz: f32,
+}
+impl default::Default for SRTDataNV {
+    fn default() -> Self {
+        Self {
+            sx: f32::default(),
+            a: f32::default(),
+            b: f32::default(),
+            pvx: f32::default(),
+            sy: f32::default(),
+            c: f32::default(),
+            pvy: f32::default(),
+            sz: f32::default(),
+            pvz: f32::default(),
+            qx: f32::default(),
+            qy: f32::default(),
+            qz: f32::default(),
+            qw: f32::default(),
+            tx: f32::default(),
+            ty: f32::default(),
+            tz: f32::default(),
+        }
+    }
+}
+impl fmt::Debug for SRTDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SRTDataNV")
+            .field("sx", &self.sx)
+            .field("a", &self.a)
+            .field("b", &self.b)
+            .field("pvx", &self.pvx)
+            .field("sy", &self.sy)
+            .field("c", &self.c)
+            .field("pvy", &self.pvy)
+            .field("sz", &self.sz)
+            .field("pvz", &self.pvz)
+            .field("qx", &self.qx)
+            .field("qy", &self.qy)
+            .field("qz", &self.qz)
+            .field("qw", &self.qw)
+            .field("tx", &self.tx)
+            .field("ty", &self.ty)
+            .field("tz", &self.tz)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureSRTMotionInstanceNV {
+    pub transform_t0: SRTDataNV,
+    pub transform_t1: SRTDataNV,
+    pub instance_custom_index_and_mask: u32,
+    pub instance_shader_binding_table_record_offset_and_flags: u32,
+    pub acceleration_structure_reference: u64,
+}
+impl default::Default for AccelerationStructureSRTMotionInstanceNV {
+    fn default() -> Self {
+        Self {
+            transform_t0: SRTDataNV::default(),
+            transform_t1: SRTDataNV::default(),
+            instance_custom_index_and_mask: u32::default(),
+            instance_shader_binding_table_record_offset_and_flags: u32::default(),
+            acceleration_structure_reference: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureSRTMotionInstanceNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureSRTMotionInstanceNV")
+            .field("transform_t0", &self.transform_t0)
+            .field("transform_t1", &self.transform_t1)
+            .field("instance_custom_index_and_mask", &self.instance_custom_index_and_mask)
+            .field(
+                "instance_shader_binding_table_record_offset_and_flags",
+                &self.instance_shader_binding_table_record_offset_and_flags,
+            )
+            .field(
+                "acceleration_structure_reference",
+                &self.acceleration_structure_reference,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureMatrixMotionInstanceNV {
+    pub transform_t0: TransformMatrixKHR,
+    pub transform_t1: TransformMatrixKHR,
+    pub instance_custom_index_and_mask: u32,
+    pub instance_shader_binding_table_record_offset_and_flags: u32,
+    pub acceleration_structure_reference: u64,
+}
+impl default::Default for AccelerationStructureMatrixMotionInstanceNV {
+    fn default() -> Self {
+        Self {
+            transform_t0: TransformMatrixKHR::default(),
+            transform_t1: TransformMatrixKHR::default(),
+            instance_custom_index_and_mask: u32::default(),
+            instance_shader_binding_table_record_offset_and_flags: u32::default(),
+            acceleration_structure_reference: u64::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureMatrixMotionInstanceNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureMatrixMotionInstanceNV")
+            .field("transform_t0", &self.transform_t0)
+            .field("transform_t1", &self.transform_t1)
+            .field("instance_custom_index_and_mask", &self.instance_custom_index_and_mask)
+            .field(
+                "instance_shader_binding_table_record_offset_and_flags",
+                &self.instance_shader_binding_table_record_offset_and_flags,
+            )
+            .field(
+                "acceleration_structure_reference",
+                &self.acceleration_structure_reference,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union AccelerationStructureMotionInstanceDataNV {
+    pub static_instance: AccelerationStructureInstanceKHR,
+    pub matrix_motion_instance: AccelerationStructureMatrixMotionInstanceNV,
+    pub srt_motion_instance: AccelerationStructureSRTMotionInstanceNV,
+}
+impl default::Default for AccelerationStructureMotionInstanceDataNV {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for AccelerationStructureMotionInstanceDataNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureMotionInstanceDataNV")
+            .field("static_instance", unsafe { &self.static_instance })
+            .field("matrix_motion_instance", unsafe { &self.matrix_motion_instance })
+            .field("srt_motion_instance", unsafe { &self.srt_motion_instance })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureMotionInstanceNV {
+    pub ty: AccelerationStructureMotionInstanceTypeNV,
+    pub flags: AccelerationStructureMotionInstanceFlagsNV,
+    pub data: AccelerationStructureMotionInstanceDataNV,
+}
+impl default::Default for AccelerationStructureMotionInstanceNV {
+    fn default() -> Self {
+        Self {
+            ty: AccelerationStructureMotionInstanceTypeNV::default(),
+            flags: AccelerationStructureMotionInstanceFlagsNV::default(),
+            data: AccelerationStructureMotionInstanceDataNV::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureMotionInstanceNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureMotionInstanceNV")
+            .field("ty", &self.ty)
+            .field("flags", &self.flags)
+            .field("data", &self.data)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -38553,6 +39249,8 @@ pub type FnCreateComputePipelines = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_pipelines: *mut Pipeline,
 ) -> Result;
+pub type FnGetSubpassShadingMaxWorkgroupSizeHUAWEI =
+    unsafe extern "system" fn(renderpass: Option<RenderPass>, p_max_workgroup_size: *mut Extent2D) -> Result;
 pub type FnDestroyPipeline = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
@@ -38755,6 +39453,23 @@ pub type FnCmdDrawIndexed = unsafe extern "system" fn(
     vertex_offset: i32,
     first_instance: u32,
 );
+pub type FnCmdDrawMultiEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    draw_count: u32,
+    p_vertex_info: *const MultiDrawInfoEXT,
+    instance_count: u32,
+    first_instance: u32,
+    stride: u32,
+);
+pub type FnCmdDrawMultiIndexedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    draw_count: u32,
+    p_index_info: *const MultiDrawIndexedInfoEXT,
+    instance_count: u32,
+    first_instance: u32,
+    stride: u32,
+    p_vertex_offset: *const i32,
+);
 pub type FnCmdDrawIndirect = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
@@ -38777,6 +39492,7 @@ pub type FnCmdDispatch = unsafe extern "system" fn(
 );
 pub type FnCmdDispatchIndirect =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize);
+pub type FnCmdSubpassShadingHUAWEI = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
 pub type FnCmdCopyBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     src_buffer: Option<Buffer>,
@@ -40357,3 +41073,14 @@ pub type FnDestroyCuFunctionNVX = unsafe extern "system" fn(
 );
 pub type FnCmdCuLaunchKernelNVX =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_launch_info: *const CuLaunchInfoNVX);
+pub type FnAcquireDrmDisplayEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    drm_fd: i32,
+    display: Option<DisplayKHR>,
+) -> Result;
+pub type FnGetDrmDisplayEXT = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    drm_fd: i32,
+    connector_id: u32,
+    display: *mut DisplayKHR,
+) -> Result;

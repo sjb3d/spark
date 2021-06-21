@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 180
+//! Generated from vk.xml with `VK_HEADER_VERSION` 182
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -234,6 +234,7 @@ pub struct InstanceExtensions {
     pub khr_surface_protected_capabilities: bool,
     pub ext_validation_features: bool,
     pub ext_headless_surface: bool,
+    pub ext_acquire_drm_display: bool,
     pub ext_directfb_surface: bool,
 }
 impl InstanceExtensions {
@@ -269,6 +270,7 @@ impl InstanceExtensions {
             b"VK_KHR_surface_protected_capabilities" => self.khr_surface_protected_capabilities = true,
             b"VK_EXT_validation_features" => self.ext_validation_features = true,
             b"VK_EXT_headless_surface" => self.ext_headless_surface = true,
+            b"VK_EXT_acquire_drm_display" => self.ext_acquire_drm_display = true,
             b"VK_EXT_directfb_surface" => self.ext_directfb_surface = true,
             _ => {}
         }
@@ -306,6 +308,7 @@ impl InstanceExtensions {
             khr_surface_protected_capabilities: false,
             ext_validation_features: false,
             ext_headless_surface: false,
+            ext_acquire_drm_display: false,
             ext_directfb_surface: false,
         }
     }
@@ -1175,6 +1178,18 @@ impl InstanceExtensions {
     pub fn enable_ext_device_memory_report(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_acquire_drm_display(&self) -> bool {
+        self.ext_acquire_drm_display
+            && self.supports_ext_direct_mode_display()
+            && self.supports_khr_display()
+            && self.supports_khr_surface()
+    }
+    pub fn enable_ext_acquire_drm_display(&mut self) {
+        self.ext_acquire_drm_display = true;
+        self.enable_ext_direct_mode_display();
+        self.enable_khr_display();
+        self.enable_khr_surface();
+    }
     pub fn supports_nv_device_diagnostics_config(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1197,6 +1212,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_nv_fragment_shading_rate_enums(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_nv_ray_tracing_motion_blur(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_ray_tracing_motion_blur(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
@@ -1262,6 +1283,12 @@ impl InstanceExtensions {
     pub fn enable_ext_vertex_input_dynamic_state(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_physical_device_drm(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_physical_device_drm(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
     }
@@ -1274,6 +1301,12 @@ impl InstanceExtensions {
     }
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_huawei_subpass_shading(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_huawei_subpass_shading(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
@@ -1386,6 +1419,9 @@ impl InstanceExtensions {
         if self.ext_headless_surface {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") })
         }
+        if self.ext_acquire_drm_display {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_acquire_drm_display\0") })
+        }
         if self.ext_directfb_surface {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_directfb_surface\0") })
         }
@@ -1481,6 +1517,8 @@ pub struct Instance {
     pub fp_destroy_debug_utils_messenger_ext: Option<vk::FnDestroyDebugUtilsMessengerEXT>,
     pub fp_submit_debug_utils_message_ext: Option<vk::FnSubmitDebugUtilsMessageEXT>,
     pub fp_create_headless_surface_ext: Option<vk::FnCreateHeadlessSurfaceEXT>,
+    pub fp_acquire_drm_display_ext: Option<vk::FnAcquireDrmDisplayEXT>,
+    pub fp_get_drm_display_ext: Option<vk::FnGetDrmDisplayEXT>,
 }
 impl Instance {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -2184,6 +2222,18 @@ impl Instance {
             },
             fp_create_headless_surface_ext: if extensions.ext_headless_surface {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateHeadlessSurfaceEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_acquire_drm_display_ext: if extensions.ext_acquire_drm_display {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireDrmDisplayEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_drm_display_ext: if extensions.ext_acquire_drm_display {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetDrmDisplayEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -3614,6 +3664,35 @@ impl Instance {
             _ => Err(err),
         }
     }
+    pub unsafe fn acquire_drm_display_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        drm_fd: i32,
+        display: vk::DisplayKHR,
+    ) -> Result<()> {
+        let fp = self
+            .fp_acquire_drm_display_ext
+            .expect("vkAcquireDrmDisplayEXT is not loaded");
+        let err = (fp)(Some(physical_device), drm_fd, Some(display));
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_drm_display_ext(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        drm_fd: i32,
+        connector_id: u32,
+    ) -> Result<vk::DisplayKHR> {
+        let fp = self.fp_get_drm_display_ext.expect("vkGetDrmDisplayEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(physical_device), drm_fd, connector_id, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
 }
 #[derive(Debug, Copy, Clone)]
 pub struct DeviceExtensions {
@@ -3807,6 +3886,7 @@ pub struct DeviceExtensions {
     pub khr_shader_subgroup_uniform_control_flow: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
+    pub nv_ray_tracing_motion_blur: bool,
     pub ext_ycbcr_2plane_444_formats: bool,
     pub ext_fragment_density_map2: bool,
     pub qcom_rotated_copy_commands: bool,
@@ -3817,11 +3897,14 @@ pub struct DeviceExtensions {
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
     pub ext_vertex_input_dynamic_state: bool,
+    pub ext_physical_device_drm: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
+    pub huawei_subpass_shading: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
     pub ext_global_priority_query: bool,
+    pub ext_multi_draw: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4017,6 +4100,7 @@ impl DeviceExtensions {
             b"VK_KHR_shader_subgroup_uniform_control_flow" => self.khr_shader_subgroup_uniform_control_flow = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
+            b"VK_NV_ray_tracing_motion_blur" => self.nv_ray_tracing_motion_blur = true,
             b"VK_EXT_ycbcr_2plane_444_formats" => self.ext_ycbcr_2plane_444_formats = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
             b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
@@ -4027,11 +4111,14 @@ impl DeviceExtensions {
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
+            b"VK_EXT_physical_device_drm" => self.ext_physical_device_drm = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
+            b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
+            b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             _ => {}
         }
     }
@@ -4227,6 +4314,7 @@ impl DeviceExtensions {
             khr_shader_subgroup_uniform_control_flow: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
+            nv_ray_tracing_motion_blur: false,
             ext_ycbcr_2plane_444_formats: false,
             ext_fragment_density_map2: false,
             qcom_rotated_copy_commands: false,
@@ -4237,11 +4325,14 @@ impl DeviceExtensions {
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
             ext_vertex_input_dynamic_state: false,
+            ext_physical_device_drm: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
+            huawei_subpass_shading: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
             ext_global_priority_query: false,
+            ext_multi_draw: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5638,6 +5729,28 @@ impl DeviceExtensions {
         self.enable_khr_multiview();
         self.enable_khr_maintenance2();
     }
+    pub fn supports_nv_ray_tracing_motion_blur(&self) -> bool {
+        self.nv_ray_tracing_motion_blur
+            && self.supports_khr_ray_tracing_pipeline()
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_shader_float_controls()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_nv_ray_tracing_motion_blur(&mut self) {
+        self.nv_ray_tracing_motion_blur = true;
+        self.enable_khr_ray_tracing_pipeline();
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_shader_float_controls();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
+    }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         self.ext_ycbcr_2plane_444_formats
             && self.supports_khr_sampler_ycbcr_conversion()
@@ -5710,6 +5823,12 @@ impl DeviceExtensions {
     pub fn enable_ext_vertex_input_dynamic_state(&mut self) {
         self.ext_vertex_input_dynamic_state = true;
     }
+    pub fn supports_ext_physical_device_drm(&self) -> bool {
+        self.ext_physical_device_drm
+    }
+    pub fn enable_ext_physical_device_drm(&mut self) {
+        self.ext_physical_device_drm = true;
+    }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.fuchsia_external_memory && self.supports_khr_external_memory()
     }
@@ -5723,6 +5842,20 @@ impl DeviceExtensions {
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.fuchsia_external_semaphore = true;
         self.enable_khr_external_semaphore();
+    }
+    pub fn supports_huawei_subpass_shading(&self) -> bool {
+        self.huawei_subpass_shading
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_synchronization2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
+    }
+    pub fn enable_huawei_subpass_shading(&mut self) {
+        self.huawei_subpass_shading = true;
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_synchronization2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.ext_extended_dynamic_state2
@@ -5742,6 +5875,12 @@ impl DeviceExtensions {
     pub fn enable_ext_global_priority_query(&mut self) {
         self.ext_global_priority_query = true;
         self.enable_ext_global_priority();
+    }
+    pub fn supports_ext_multi_draw(&self) -> bool {
+        self.ext_multi_draw
+    }
+    pub fn enable_ext_multi_draw(&mut self) {
+        self.ext_multi_draw = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6314,6 +6453,9 @@ impl DeviceExtensions {
         if self.nv_fragment_shading_rate_enums {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_fragment_shading_rate_enums\0") })
         }
+        if self.nv_ray_tracing_motion_blur {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_motion_blur\0") })
+        }
         if self.ext_ycbcr_2plane_444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_2plane_444_formats\0") })
         }
@@ -6344,11 +6486,17 @@ impl DeviceExtensions {
         if self.ext_vertex_input_dynamic_state {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_vertex_input_dynamic_state\0") })
         }
+        if self.ext_physical_device_drm {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_physical_device_drm\0") })
+        }
         if self.fuchsia_external_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })
         }
         if self.fuchsia_external_semaphore {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_semaphore\0") })
+        }
+        if self.huawei_subpass_shading {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_subpass_shading\0") })
         }
         if self.ext_extended_dynamic_state2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state2\0") })
@@ -6358,6 +6506,9 @@ impl DeviceExtensions {
         }
         if self.ext_global_priority_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority_query\0") })
+        }
+        if self.ext_multi_draw {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_multi_draw\0") })
         }
         v
     }
@@ -6417,6 +6568,7 @@ pub struct Device {
     pub fp_merge_pipeline_caches: Option<vk::FnMergePipelineCaches>,
     pub fp_create_graphics_pipelines: Option<vk::FnCreateGraphicsPipelines>,
     pub fp_create_compute_pipelines: Option<vk::FnCreateComputePipelines>,
+    pub fp_get_subpass_shading_max_workgroup_size_huawei: Option<vk::FnGetSubpassShadingMaxWorkgroupSizeHUAWEI>,
     pub fp_destroy_pipeline: Option<vk::FnDestroyPipeline>,
     pub fp_create_pipeline_layout: Option<vk::FnCreatePipelineLayout>,
     pub fp_destroy_pipeline_layout: Option<vk::FnDestroyPipelineLayout>,
@@ -6458,10 +6610,13 @@ pub struct Device {
     pub fp_cmd_bind_vertex_buffers: Option<vk::FnCmdBindVertexBuffers>,
     pub fp_cmd_draw: Option<vk::FnCmdDraw>,
     pub fp_cmd_draw_indexed: Option<vk::FnCmdDrawIndexed>,
+    pub fp_cmd_draw_multi_ext: Option<vk::FnCmdDrawMultiEXT>,
+    pub fp_cmd_draw_multi_indexed_ext: Option<vk::FnCmdDrawMultiIndexedEXT>,
     pub fp_cmd_draw_indirect: Option<vk::FnCmdDrawIndirect>,
     pub fp_cmd_draw_indexed_indirect: Option<vk::FnCmdDrawIndexedIndirect>,
     pub fp_cmd_dispatch: Option<vk::FnCmdDispatch>,
     pub fp_cmd_dispatch_indirect: Option<vk::FnCmdDispatchIndirect>,
+    pub fp_cmd_subpass_shading_huawei: Option<vk::FnCmdSubpassShadingHUAWEI>,
     pub fp_cmd_copy_buffer: Option<vk::FnCmdCopyBuffer>,
     pub fp_cmd_copy_image: Option<vk::FnCmdCopyImage>,
     pub fp_cmd_blit_image: Option<vk::FnCmdBlitImage>,
@@ -7106,6 +7261,14 @@ impl Device {
                 }
                 fp.map(|f| mem::transmute(f))
             },
+            fp_get_subpass_shading_max_workgroup_size_huawei: if extensions.huawei_subpass_shading {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetSubpassShadingMaxWorkgroupSizeHUAWEI\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_destroy_pipeline: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPipeline\0"));
                 if fp.is_none() {
@@ -7393,6 +7556,18 @@ impl Device {
                 }
                 fp.map(|f| mem::transmute(f))
             },
+            fp_cmd_draw_multi_ext: if extensions.ext_multi_draw {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMultiEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_multi_indexed_ext: if extensions.ext_multi_draw {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMultiIndexedEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_draw_indirect: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawIndirect\0"));
                 if fp.is_none() {
@@ -7420,6 +7595,12 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdDispatchIndirect".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_cmd_subpass_shading_huawei: if extensions.huawei_subpass_shading {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSubpassShadingHUAWEI\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_cmd_copy_buffer: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyBuffer\0"));
@@ -10154,6 +10335,20 @@ impl Device {
             _ => Err(v_err),
         }
     }
+    pub unsafe fn get_subpass_shading_max_workgroup_size_huawei(
+        &self,
+        renderpass: vk::RenderPass,
+    ) -> Result<(vk::Result, vk::Extent2D)> {
+        let fp = self
+            .fp_get_subpass_shading_max_workgroup_size_huawei
+            .expect("vkGetSubpassShadingMaxWorkgroupSizeHUAWEI is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(renderpass), res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok((err, res.assume_init())),
+            _ => Err(err),
+        }
+    }
     pub unsafe fn destroy_pipeline(
         &self,
         pipeline: Option<vk::Pipeline>,
@@ -10803,6 +10998,48 @@ impl Device {
             first_instance,
         );
     }
+    pub unsafe fn cmd_draw_multi_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_vertex_info: &[vk::MultiDrawInfoEXT],
+        instance_count: u32,
+        first_instance: u32,
+        stride: u32,
+    ) {
+        let fp = self.fp_cmd_draw_multi_ext.expect("vkCmdDrawMultiEXT is not loaded");
+        let draw_count = p_vertex_info.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            draw_count,
+            p_vertex_info.first().map_or(ptr::null(), |s| s as *const _),
+            instance_count,
+            first_instance,
+            stride,
+        );
+    }
+    pub unsafe fn cmd_draw_multi_indexed_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_index_info: &[vk::MultiDrawIndexedInfoEXT],
+        instance_count: u32,
+        first_instance: u32,
+        stride: u32,
+        p_vertex_offset: Option<&i32>,
+    ) {
+        let fp = self
+            .fp_cmd_draw_multi_indexed_ext
+            .expect("vkCmdDrawMultiIndexedEXT is not loaded");
+        let draw_count = p_index_info.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            draw_count,
+            p_index_info.first().map_or(ptr::null(), |s| s as *const _),
+            instance_count,
+            first_instance,
+            stride,
+            p_vertex_offset.map_or(ptr::null(), |r| r),
+        );
+    }
     pub unsafe fn cmd_draw_indirect(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -10847,6 +11084,12 @@ impl Device {
             .fp_cmd_dispatch_indirect
             .expect("vkCmdDispatchIndirect is not loaded");
         (fp)(Some(command_buffer), Some(buffer), offset);
+    }
+    pub unsafe fn cmd_subpass_shading_huawei(&self, command_buffer: vk::CommandBuffer) {
+        let fp = self
+            .fp_cmd_subpass_shading_huawei
+            .expect("vkCmdSubpassShadingHUAWEI is not loaded");
+        (fp)(Some(command_buffer));
     }
     pub unsafe fn cmd_copy_buffer(
         &self,

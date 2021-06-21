@@ -4067,6 +4067,7 @@ impl DeviceCreateInfoNext for PhysicalDevicePrivateDataFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrivateDataFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePrivateDataFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMultiDrawPropertiesEXT {}
 impl<'a> Builder<'a> for vk::GraphicsShaderGroupCreateInfoNV {
     type Type = GraphicsShaderGroupCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -8141,6 +8142,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceBlendOperationAdvancedFeature
 impl DeviceCreateInfoNext for PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceMultiDrawFeaturesEXT {
+    type Type = PhysicalDeviceMultiDrawFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMultiDrawFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMultiDrawFeaturesEXT,
+}
+impl PhysicalDeviceMultiDrawFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multi_draw(mut self, multi_draw: bool) -> Self {
+        self.inner.multi_draw = if multi_draw { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMultiDrawFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMultiDrawFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiDrawFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultiDrawFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiDrawFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiDrawFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
 impl Builder<'_> for vk::PipelineColorBlendAdvancedStateCreateInfoEXT {
     type Type = PipelineColorBlendAdvancedStateCreateInfoEXTBuilder;
@@ -14345,6 +14380,8 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubgroupSizeControlFeatur
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubgroupSizeControlFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlPropertiesEXT {}
 impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {}
+impl ComputePipelineCreateInfoNext for vk::SubpassShadingPipelineCreateInfoHUAWEI {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
 impl Builder<'_> for vk::MemoryOpaqueCaptureAddressAllocateInfo {
     type Type = MemoryOpaqueCaptureAddressAllocateInfoBuilder;
     fn builder() -> Self::Type {
@@ -15214,17 +15251,25 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceCustomBorderColorFeaturesEXTB
 impl DeviceCreateInfoNext for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
-impl Builder<'_> for vk::AccelerationStructureGeometryTrianglesDataKHR {
-    type Type = AccelerationStructureGeometryTrianglesDataKHRBuilder;
+impl<'a> Builder<'a> for vk::AccelerationStructureGeometryTrianglesDataKHR {
+    type Type = AccelerationStructureGeometryTrianglesDataKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait AccelerationStructureGeometryTrianglesDataKHRNext {}
 #[derive(Default)]
-pub struct AccelerationStructureGeometryTrianglesDataKHRBuilder {
+pub struct AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
     inner: vk::AccelerationStructureGeometryTrianglesDataKHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl AccelerationStructureGeometryTrianglesDataKHRBuilder {
+impl<'a> AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
+    pub fn insert_next<T: AccelerationStructureGeometryTrianglesDataKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -15262,7 +15307,7 @@ impl AccelerationStructureGeometryTrianglesDataKHRBuilder {
         self
     }
 }
-impl Deref for AccelerationStructureGeometryTrianglesDataKHRBuilder {
+impl<'a> Deref for AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
     type Target = vk::AccelerationStructureGeometryTrianglesDataKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -15441,17 +15486,25 @@ impl<'a> Deref for AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::AccelerationStructureCreateInfoKHR {
-    type Type = AccelerationStructureCreateInfoKHRBuilder;
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoKHR {
+    type Type = AccelerationStructureCreateInfoKHRBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait AccelerationStructureCreateInfoKHRNext {}
 #[derive(Default)]
-pub struct AccelerationStructureCreateInfoKHRBuilder {
+pub struct AccelerationStructureCreateInfoKHRBuilder<'a> {
     inner: vk::AccelerationStructureCreateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl AccelerationStructureCreateInfoKHRBuilder {
+impl<'a> AccelerationStructureCreateInfoKHRBuilder<'a> {
+    pub fn insert_next<T: AccelerationStructureCreateInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -15485,7 +15538,7 @@ impl AccelerationStructureCreateInfoKHRBuilder {
         self
     }
 }
-impl Deref for AccelerationStructureCreateInfoKHRBuilder {
+impl<'a> Deref for AccelerationStructureCreateInfoKHRBuilder<'a> {
     type Target = vk::AccelerationStructureCreateInfoKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -16394,6 +16447,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevice4444FormatsFeaturesEXTBuilder
 impl DeviceCreateInfoNext for PhysicalDevice4444FormatsFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevice4444FormatsFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevice4444FormatsFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {
+    type Type = PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {
+    inner: vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI,
+}
+impl PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subpass_shading(mut self, subpass_shading: bool) -> Self {
+        self.inner.subpass_shading = if subpass_shading { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {
+    type Target = vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
 impl Builder<'_> for vk::BufferCopy2KHR {
     type Type = BufferCopy2KHRBuilder;
     fn builder() -> Self::Type {
@@ -18287,3 +18374,118 @@ impl Deref for CuLaunchInfoNVXBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDrmPropertiesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {
+    type Type = PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV,
+}
+impl PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_motion_blur(mut self, ray_tracing_motion_blur: bool) -> Self {
+        self.inner.ray_tracing_motion_blur = if ray_tracing_motion_blur { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn ray_tracing_motion_blur_pipeline_trace_rays_indirect(
+        mut self,
+        ray_tracing_motion_blur_pipeline_trace_rays_indirect: bool,
+    ) -> Self {
+        self.inner.ray_tracing_motion_blur_pipeline_trace_rays_indirect =
+            if ray_tracing_motion_blur_pipeline_trace_rays_indirect {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
+impl Builder<'_> for vk::AccelerationStructureGeometryMotionTrianglesDataNV {
+    type Type = AccelerationStructureGeometryMotionTrianglesDataNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureGeometryMotionTrianglesDataNVBuilder {
+    inner: vk::AccelerationStructureGeometryMotionTrianglesDataNV,
+}
+impl AccelerationStructureGeometryMotionTrianglesDataNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn vertex_data(mut self, vertex_data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.vertex_data = vertex_data;
+        self
+    }
+}
+impl Deref for AccelerationStructureGeometryMotionTrianglesDataNVBuilder {
+    type Target = vk::AccelerationStructureGeometryMotionTrianglesDataNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for AccelerationStructureGeometryMotionTrianglesDataNVBuilder {}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureGeometryMotionTrianglesDataNV {}
+impl Builder<'_> for vk::AccelerationStructureMotionInfoNV {
+    type Type = AccelerationStructureMotionInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureMotionInfoNVBuilder {
+    inner: vk::AccelerationStructureMotionInfoNV,
+}
+impl AccelerationStructureMotionInfoNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_instances(mut self, max_instances: u32) -> Self {
+        self.inner.max_instances = max_instances;
+        self
+    }
+    pub fn flags(mut self, flags: vk::AccelerationStructureMotionInfoFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for AccelerationStructureMotionInfoNVBuilder {
+    type Target = vk::AccelerationStructureMotionInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl AccelerationStructureCreateInfoKHRNext for AccelerationStructureMotionInfoNVBuilder {}
+impl AccelerationStructureCreateInfoKHRNext for vk::AccelerationStructureMotionInfoNV {}
