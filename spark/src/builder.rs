@@ -8692,7 +8692,9 @@ impl Deref for PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {
     }
 }
 impl PhysicalDeviceFeatures2Next for PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceGlobalPriorityQueryFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceGlobalPriorityQueryFeaturesEXT {}
 impl Builder<'_> for vk::QueueFamilyGlobalPriorityPropertiesEXT {
     type Type = QueueFamilyGlobalPriorityPropertiesEXTBuilder;
     fn builder() -> Self::Type {
@@ -18300,17 +18302,18 @@ impl<'a> Deref for CuFunctionCreateInfoNVXBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::CuLaunchInfoNVX {
-    type Type = CuLaunchInfoNVXBuilder;
+impl<'a> Builder<'a> for vk::CuLaunchInfoNVX {
+    type Type = CuLaunchInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct CuLaunchInfoNVXBuilder {
+pub struct CuLaunchInfoNVXBuilder<'a> {
     inner: vk::CuLaunchInfoNVX,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl CuLaunchInfoNVXBuilder {
+impl<'a> CuLaunchInfoNVXBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -18351,24 +18354,18 @@ impl CuLaunchInfoNVXBuilder {
         self.inner.shared_mem_bytes = shared_mem_bytes;
         self
     }
-    pub fn param_count(mut self, param_count: usize) -> Self {
-        self.inner.param_count = param_count;
+    pub fn p_params(mut self, p_params: &'a [*const c_void]) -> Self {
+        self.inner.param_count = p_params.len() as usize;
+        self.inner.p_params = p_params.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
-    pub fn p_params(mut self, p_params: *const *const c_void) -> Self {
-        self.inner.p_params = p_params;
-        self
-    }
-    pub fn extra_count(mut self, extra_count: usize) -> Self {
-        self.inner.extra_count = extra_count;
-        self
-    }
-    pub fn p_extras(mut self, p_extras: *const *const c_void) -> Self {
-        self.inner.p_extras = p_extras;
+    pub fn p_extras(mut self, p_extras: &'a [*const c_void]) -> Self {
+        self.inner.extra_count = p_extras.len() as usize;
+        self.inner.p_extras = p_extras.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
-impl Deref for CuLaunchInfoNVXBuilder {
+impl<'a> Deref for CuLaunchInfoNVXBuilder<'a> {
     type Target = vk::CuLaunchInfoNVX;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -18390,7 +18387,7 @@ impl PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
         self.inner.s_type = s_type;
         self
     }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -18417,9 +18414,9 @@ impl Deref for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
         &self.inner
     }
 }
-impl PhysicalDeviceProperties2Next for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
 impl DeviceCreateInfoNext for PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {}
-impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
 impl Builder<'_> for vk::AccelerationStructureGeometryMotionTrianglesDataNV {
     type Type = AccelerationStructureGeometryMotionTrianglesDataNVBuilder;

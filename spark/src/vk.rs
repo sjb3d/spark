@@ -13833,7 +13833,7 @@ impl StructureType {
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
     /// Added by extension VK_HUAWEI_subpass_shading.
-    pub const SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI: Self = Self(1000369000);
+    pub const SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI: Self = Self(1000369000);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI: Self = Self(1000369001);
     /// Added by extension VK_HUAWEI_subpass_shading.
@@ -14366,7 +14366,7 @@ impl fmt::Display for StructureType {
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
-            1000369000 => Some(&"SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
+            1000369000 => Some(&"SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
             1000369001 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI"),
             1000369002 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
@@ -25431,7 +25431,7 @@ pub type DeviceGroupBindSparseInfoKHR = DeviceGroupBindSparseInfo;
 #[derive(Copy, Clone)]
 pub struct DeviceGroupPresentCapabilitiesKHR {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub present_mask: [u32; MAX_DEVICE_GROUP_SIZE],
     pub modes: DeviceGroupPresentModeFlagsKHR,
 }
@@ -25439,7 +25439,7 @@ impl default::Default for DeviceGroupPresentCapabilitiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_PRESENT_CAPABILITIES_KHR,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             present_mask: [u32::default(); MAX_DEVICE_GROUP_SIZE],
             modes: DeviceGroupPresentModeFlagsKHR::default(),
         }
@@ -28647,7 +28647,7 @@ impl fmt::Debug for DeviceDeviceMemoryReportCreateInfoEXT {
 #[derive(Copy, Clone)]
 pub struct DeviceMemoryReportCallbackDataEXT {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub flags: DeviceMemoryReportFlagsEXT,
     pub ty: DeviceMemoryReportEventTypeEXT,
     pub memory_object_id: u64,
@@ -28660,7 +28660,7 @@ impl default::Default for DeviceMemoryReportCallbackDataEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             flags: DeviceMemoryReportFlagsEXT::default(),
             ty: DeviceMemoryReportEventTypeEXT::default(),
             memory_object_id: u64::default(),
@@ -33487,7 +33487,7 @@ impl fmt::Debug for PhysicalDevicePerformanceQueryPropertiesKHR {
 #[derive(Copy, Clone)]
 pub struct PerformanceCounterKHR {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub unit: PerformanceCounterUnitKHR,
     pub scope: PerformanceCounterScopeKHR,
     pub storage: PerformanceCounterStorageKHR,
@@ -33497,7 +33497,7 @@ impl default::Default for PerformanceCounterKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_COUNTER_KHR,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             unit: PerformanceCounterUnitKHR::default(),
             scope: PerformanceCounterScopeKHR::default(),
             storage: PerformanceCounterStorageKHR::default(),
@@ -33521,7 +33521,7 @@ impl fmt::Debug for PerformanceCounterKHR {
 #[derive(Copy, Clone)]
 pub struct PerformanceCounterDescriptionKHR {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub flags: PerformanceCounterDescriptionFlagsKHR,
     pub name: [c_char; MAX_DESCRIPTION_SIZE],
     pub category: [c_char; MAX_DESCRIPTION_SIZE],
@@ -33531,7 +33531,7 @@ impl default::Default for PerformanceCounterDescriptionKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_COUNTER_DESCRIPTION_KHR,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             flags: PerformanceCounterDescriptionFlagsKHR::default(),
             name: [c_char::default(); MAX_DESCRIPTION_SIZE],
             category: [c_char::default(); MAX_DESCRIPTION_SIZE],
@@ -34638,7 +34638,7 @@ pub struct SubpassShadingPipelineCreateInfoHUAWEI {
 impl default::Default for SubpassShadingPipelineCreateInfoHUAWEI {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
+            s_type: StructureType::SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
             p_next: ptr::null_mut(),
             render_pass: None,
             subpass: u32::default(),
@@ -38638,7 +38638,7 @@ impl fmt::Debug for PhysicalDeviceDrmPropertiesEXT {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub ray_tracing_motion_blur: Bool32,
     pub ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32,
 }
@@ -38646,7 +38646,7 @@ impl default::Default for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             ray_tracing_motion_blur: Bool32::default(),
             ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32::default(),
         }
