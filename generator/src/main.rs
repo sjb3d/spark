@@ -1046,8 +1046,9 @@ impl<'a> Generator<'a> {
             if let Some(decl) = c_try_parse_typedef(code.code.as_str()) {
                 writeln!(
                     w,
-                    "pub type {} = {};",
+                    "pub type {} = {}{};",
                     decl.name.skip_prefix(TYPE_PREFIX),
+                    decl.ty.decoration,
                     self.get_rust_type_name(decl.ty.base, true, None)
                 )?;
             }
@@ -1393,13 +1394,7 @@ impl<'a> Generator<'a> {
             &mut s,
             "{}{}{}",
             if ty.array_size.is_some() { "[" } else { "" },
-            match ty.decoration {
-                CDecoration::None | CDecoration::Const => "",
-                CDecoration::Pointer => "* mut ",
-                CDecoration::PointerToConst => "* const ",
-                CDecoration::PointerToPointer => "* mut *mut ",
-                CDecoration::PointerToConstPointerToConst => "*const *const ",
-            },
+            ty.decoration,
             self.get_rust_type_name(ty.base, ty.decoration == CDecoration::None, vk_prefix)
         )
         .unwrap();

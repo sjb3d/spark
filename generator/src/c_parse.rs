@@ -21,6 +21,19 @@ pub enum CDecoration {
     PointerToConstPointerToConst,
 }
 
+impl fmt::Display for CDecoration {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            CDecoration::None | CDecoration::Const => "",
+            CDecoration::Pointer => "* mut ",
+            CDecoration::PointerToConst => "* const ",
+            CDecoration::PointerToPointer => "* mut *mut ",
+            CDecoration::PointerToConstPointerToConst => "*const *const ",
+        };
+        s.fmt(f)
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum CArraySize<'a> {
     Literal(usize),
@@ -330,6 +343,7 @@ pub fn c_parse_func_pointer_typedef(i: &str) -> CFunctionDecl {
 
 fn typedef(i: &str) -> Res<CVariableDecl> {
     let (i, base) = preceded(keyword("typedef"), base_type)(i)?;
+    let (i, ptr) = opt(op('*'))(i)?;
     let (i, var_name) = terminated(ident, op(';'))(i)?;
     Ok((
         i,
@@ -337,7 +351,11 @@ fn typedef(i: &str) -> Res<CVariableDecl> {
             name: var_name,
             ty: CType {
                 base,
-                decoration: CDecoration::None,
+                decoration: if ptr.is_some() {
+                    CDecoration::Pointer
+                } else {
+                    CDecoration::None
+                },
                 array_size: None,
                 bit_count: None,
             },
