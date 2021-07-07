@@ -17500,6 +17500,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceVertexInputDynamicStateFeatur
 impl DeviceCreateInfoNext for PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV {
+    type Type = PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV,
+}
+impl PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn external_memory_rdma(mut self, external_memory_rdma: bool) -> Self {
+        self.inner.external_memory_rdma = if external_memory_rdma { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
 impl Builder<'_> for vk::VertexInputBindingDescription2EXT {
     type Type = VertexInputBindingDescription2EXTBuilder;
     fn builder() -> Self::Type {
@@ -18486,3 +18520,37 @@ impl Deref for AccelerationStructureMotionInfoNVBuilder {
 }
 impl AccelerationStructureCreateInfoKHRNext for AccelerationStructureMotionInfoNVBuilder {}
 impl AccelerationStructureCreateInfoKHRNext for vk::AccelerationStructureMotionInfoNV {}
+impl Builder<'_> for vk::MemoryGetRemoteAddressInfoNV {
+    type Type = MemoryGetRemoteAddressInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryGetRemoteAddressInfoNVBuilder {
+    inner: vk::MemoryGetRemoteAddressInfoNV,
+}
+impl MemoryGetRemoteAddressInfoNVBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn handle_type(mut self, handle_type: vk::ExternalMemoryHandleTypeFlags) -> Self {
+        self.inner.handle_type = handle_type;
+        self
+    }
+}
+impl Deref for MemoryGetRemoteAddressInfoNVBuilder {
+    type Target = vk::MemoryGetRemoteAddressInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 183
+//! Generated from vk.xml with `VK_HEADER_VERSION` 184
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1307,6 +1307,13 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_huawei_subpass_shading(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_nv_external_memory_rdma(&self) -> bool {
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_external_memory_rdma(&mut self) {
+        self.enable_khr_external_memory_capabilities();
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
@@ -3901,6 +3908,7 @@ pub struct DeviceExtensions {
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
     pub huawei_subpass_shading: bool,
+    pub nv_external_memory_rdma: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
     pub ext_global_priority_query: bool,
@@ -4115,6 +4123,7 @@ impl DeviceExtensions {
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
+            b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
@@ -4329,6 +4338,7 @@ impl DeviceExtensions {
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
             huawei_subpass_shading: false,
+            nv_external_memory_rdma: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
             ext_global_priority_query: false,
@@ -5857,6 +5867,13 @@ impl DeviceExtensions {
         self.enable_khr_multiview();
         self.enable_khr_maintenance2();
     }
+    pub fn supports_nv_external_memory_rdma(&self) -> bool {
+        self.nv_external_memory_rdma && self.supports_khr_external_memory()
+    }
+    pub fn enable_nv_external_memory_rdma(&mut self) {
+        self.nv_external_memory_rdma = true;
+        self.enable_khr_external_memory();
+    }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.ext_extended_dynamic_state2
     }
@@ -6498,6 +6515,9 @@ impl DeviceExtensions {
         if self.huawei_subpass_shading {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_subpass_shading\0") })
         }
+        if self.nv_external_memory_rdma {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_rdma\0") })
+        }
         if self.ext_extended_dynamic_state2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state2\0") })
         }
@@ -6568,7 +6588,8 @@ pub struct Device {
     pub fp_merge_pipeline_caches: Option<vk::FnMergePipelineCaches>,
     pub fp_create_graphics_pipelines: Option<vk::FnCreateGraphicsPipelines>,
     pub fp_create_compute_pipelines: Option<vk::FnCreateComputePipelines>,
-    pub fp_get_subpass_shading_max_workgroup_size_huawei: Option<vk::FnGetSubpassShadingMaxWorkgroupSizeHUAWEI>,
+    pub fp_get_device_subpass_shading_max_workgroup_size_huawei:
+        Option<vk::FnGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI>,
     pub fp_destroy_pipeline: Option<vk::FnDestroyPipeline>,
     pub fp_create_pipeline_layout: Option<vk::FnCreatePipelineLayout>,
     pub fp_destroy_pipeline_layout: Option<vk::FnDestroyPipelineLayout>,
@@ -6670,6 +6691,7 @@ pub struct Device {
     pub fp_get_memory_fd_properties_khr: Option<vk::FnGetMemoryFdPropertiesKHR>,
     pub fp_get_memory_zircon_handle_fuchsia: Option<vk::FnGetMemoryZirconHandleFUCHSIA>,
     pub fp_get_memory_zircon_handle_properties_fuchsia: Option<vk::FnGetMemoryZirconHandlePropertiesFUCHSIA>,
+    pub fp_get_memory_remote_address_nv: Option<vk::FnGetMemoryRemoteAddressNV>,
     pub fp_get_semaphore_win32_handle_khr: Option<vk::FnGetSemaphoreWin32HandleKHR>,
     pub fp_import_semaphore_win32_handle_khr: Option<vk::FnImportSemaphoreWin32HandleKHR>,
     pub fp_get_semaphore_fd_khr: Option<vk::FnGetSemaphoreFdKHR>,
@@ -7261,9 +7283,9 @@ impl Device {
                 }
                 fp.map(|f| mem::transmute(f))
             },
-            fp_get_subpass_shading_max_workgroup_size_huawei: if extensions.huawei_subpass_shading {
+            fp_get_device_subpass_shading_max_workgroup_size_huawei: if extensions.huawei_subpass_shading {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkGetSubpassShadingMaxWorkgroupSizeHUAWEI\0",
+                    b"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -7965,6 +7987,12 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetMemoryZirconHandlePropertiesFUCHSIA\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_memory_remote_address_nv: if extensions.nv_external_memory_rdma {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetMemoryRemoteAddressNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -10335,15 +10363,15 @@ impl Device {
             _ => Err(v_err),
         }
     }
-    pub unsafe fn get_subpass_shading_max_workgroup_size_huawei(
+    pub unsafe fn get_device_subpass_shading_max_workgroup_size_huawei(
         &self,
         renderpass: vk::RenderPass,
     ) -> Result<(vk::Result, vk::Extent2D)> {
         let fp = self
-            .fp_get_subpass_shading_max_workgroup_size_huawei
-            .expect("vkGetSubpassShadingMaxWorkgroupSizeHUAWEI is not loaded");
+            .fp_get_device_subpass_shading_max_workgroup_size_huawei
+            .expect("vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
-        let err = (fp)(Some(renderpass), res.as_mut_ptr());
+        let err = (fp)(Some(self.handle), Some(renderpass), res.as_mut_ptr());
         match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok((err, res.assume_init())),
             _ => Err(err),
@@ -11942,6 +11970,20 @@ impl Device {
         );
         match err {
             vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_memory_remote_address_nv(
+        &self,
+        get_memory_remote_address_info: &vk::MemoryGetRemoteAddressInfoNV,
+    ) -> Result<vk::RemoteAddressNV> {
+        let fp = self
+            .fp_get_memory_remote_address_nv
+            .expect("vkGetMemoryRemoteAddressNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), get_memory_remote_address_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
     }

@@ -1728,6 +1728,8 @@ impl MemoryPropertyFlags {
     pub const DEVICE_COHERENT_AMD: Self = Self(0x40);
     /// Added by extension VK_AMD_device_coherent_memory.
     pub const DEVICE_UNCACHED_AMD: Self = Self(0x80);
+    /// Added by extension VK_NV_external_memory_rdma.
+    pub const RDMA_CAPABLE_NV: Self = Self(0x100);
 }
 impl default::Default for MemoryPropertyFlags {
     fn default() -> Self {
@@ -1739,13 +1741,13 @@ impl MemoryPropertyFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xff)
+        Self(0x1ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xff
+        self.0 == 0x1ff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -1800,6 +1802,7 @@ impl fmt::Display for MemoryPropertyFlags {
                 (0x20, "PROTECTED"),
                 (0x40, "DEVICE_COHERENT_AMD"),
                 (0x80, "DEVICE_UNCACHED_AMD"),
+                (0x100, "RDMA_CAPABLE_NV"),
             ],
             f,
         )
@@ -8524,6 +8527,8 @@ impl ExternalMemoryHandleTypeFlags {
     pub const HOST_MAPPED_FOREIGN_MEMORY_EXT: Self = Self(0x100);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const ZIRCON_VMO_FUCHSIA: Self = Self(0x800);
+    /// Added by extension VK_NV_external_memory_rdma.
+    pub const RDMA_ADDRESS_NV: Self = Self(0x1000);
 }
 impl default::Default for ExternalMemoryHandleTypeFlags {
     fn default() -> Self {
@@ -8535,13 +8540,13 @@ impl ExternalMemoryHandleTypeFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xfff)
+        Self(0x1fff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xfff
+        self.0 == 0x1fff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -8600,6 +8605,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
                 (0x80, "HOST_ALLOCATION_EXT"),
                 (0x100, "HOST_MAPPED_FOREIGN_MEMORY_EXT"),
                 (0x800, "ZIRCON_VMO_FUCHSIA"),
+                (0x1000, "RDMA_ADDRESS_NV"),
             ],
             f,
         )
@@ -13838,6 +13844,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI: Self = Self(1000369001);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI: Self = Self(1000369002);
+    /// Added by extension VK_NV_external_memory_rdma.
+    pub const MEMORY_GET_REMOTE_ADDRESS_INFO_NV: Self = Self(1000371000);
+    /// Added by extension VK_NV_external_memory_rdma.
+    pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV: Self = Self(1000371001);
     /// Added by extension VK_EXT_extended_dynamic_state2.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT: Self = Self(1000377000);
     /// Added by extension VK_EXT_color_write_enable.
@@ -14369,6 +14379,8 @@ impl fmt::Display for StructureType {
             1000369000 => Some(&"SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
             1000369001 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI"),
             1000369002 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI"),
+            1000371000 => Some(&"MEMORY_GET_REMOTE_ADDRESS_INFO_NV"),
+            1000371001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
@@ -19608,6 +19620,37 @@ impl fmt::Debug for PipelineCacheCreateInfo {
             .field("flags", &self.flags)
             .field("initial_data_size", &self.initial_data_size)
             .field("p_initial_data", &self.p_initial_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCacheHeaderVersionOne {
+    pub header_size: u32,
+    pub header_version: PipelineCacheHeaderVersion,
+    pub vendor_id: u32,
+    pub device_id: u32,
+    pub pipeline_cache_uuid: [u8; UUID_SIZE],
+}
+impl default::Default for PipelineCacheHeaderVersionOne {
+    fn default() -> Self {
+        Self {
+            header_size: u32::default(),
+            header_version: PipelineCacheHeaderVersion::default(),
+            vendor_id: u32::default(),
+            device_id: u32::default(),
+            pipeline_cache_uuid: [u8::default(); UUID_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PipelineCacheHeaderVersionOne {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCacheHeaderVersionOne")
+            .field("header_size", &self.header_size)
+            .field("header_version", &self.header_version)
+            .field("vendor_id", &self.vendor_id)
+            .field("device_id", &self.device_id)
+            .field("pipeline_cache_uuid", &self.pipeline_cache_uuid)
             .finish()
     }
 }
@@ -37824,6 +37867,31 @@ impl fmt::Debug for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceExternalMemoryRDMAFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub external_memory_rdma: Bool32,
+}
+impl default::Default for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            external_memory_rdma: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExternalMemoryRDMAFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("external_memory_rdma", &self.external_memory_rdma)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct VertexInputBindingDescription2EXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -38930,6 +38998,35 @@ impl fmt::Debug for AccelerationStructureMotionInstanceNV {
             .finish()
     }
 }
+pub type RemoteAddressNV = *mut c_void;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryGetRemoteAddressInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+    pub handle_type: ExternalMemoryHandleTypeFlags,
+}
+impl default::Default for MemoryGetRemoteAddressInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_GET_REMOTE_ADDRESS_INFO_NV,
+            p_next: ptr::null(),
+            memory: None,
+            handle_type: ExternalMemoryHandleTypeFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryGetRemoteAddressInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryGetRemoteAddressInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .field("handle_type", &self.handle_type)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -39249,8 +39346,11 @@ pub type FnCreateComputePipelines = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_pipelines: *mut Pipeline,
 ) -> Result;
-pub type FnGetSubpassShadingMaxWorkgroupSizeHUAWEI =
-    unsafe extern "system" fn(renderpass: Option<RenderPass>, p_max_workgroup_size: *mut Extent2D) -> Result;
+pub type FnGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = unsafe extern "system" fn(
+    device: Option<Device>,
+    renderpass: Option<RenderPass>,
+    p_max_workgroup_size: *mut Extent2D,
+) -> Result;
 pub type FnDestroyPipeline = unsafe extern "system" fn(
     device: Option<Device>,
     pipeline: Option<Pipeline>,
@@ -39999,6 +40099,11 @@ pub type FnGetMemoryZirconHandlePropertiesFUCHSIA = unsafe extern "system" fn(
     handle_type: ExternalMemoryHandleTypeFlags,
     zircon_handle: zx_handle_t,
     p_memory_zircon_handle_properties: *mut MemoryZirconHandlePropertiesFUCHSIA,
+) -> Result;
+pub type FnGetMemoryRemoteAddressNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    get_memory_remote_address_info: *const MemoryGetRemoteAddressInfoNV,
+    p_address: *mut RemoteAddressNV,
 ) -> Result;
 pub type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
