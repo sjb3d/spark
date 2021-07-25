@@ -2404,6 +2404,8 @@ impl ImageUsageFlags {
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
+    /// Added by extension VK_HUAWEI_invocation_mask.
+    pub const INVOCATION_MASK_HUAWEI: Self = Self(0x40000);
 }
 impl default::Default for ImageUsageFlags {
     fn default() -> Self {
@@ -2415,13 +2417,13 @@ impl ImageUsageFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x3ff)
+        Self(0x403ff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x3ff
+        self.0 == 0x403ff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2478,6 +2480,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x80, "INPUT_ATTACHMENT"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x40000, "INVOCATION_MASK_HUAWEI"),
             ],
             f,
         )
@@ -6267,6 +6270,8 @@ impl AccessFlags2KHR {
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
+    /// Added by extension VK_HUAWEI_invocation_mask.
+    pub const INVOCATION_MASK_READ_HUAWEI: Self = Self(0x8000000000);
 }
 impl default::Default for AccessFlags2KHR {
     fn default() -> Self {
@@ -6278,13 +6283,13 @@ impl AccessFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x70fffffff)
+        Self(0x870fffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x70fffffff
+        self.0 == 0x870fffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6362,6 +6367,7 @@ impl fmt::Display for AccessFlags2KHR {
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+                (0x8000000000, "INVOCATION_MASK_READ_HUAWEI"),
             ],
             f,
         )
@@ -6421,6 +6427,8 @@ impl PipelineStageFlags2KHR {
     pub const MESH_SHADER_NV: Self = Self(0x100000);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x8000000000);
+    /// Added by extension VK_HUAWEI_invocation_mask.
+    pub const INVOCATION_MASK_HUAWEI: Self = Self(0x10000000000);
 }
 impl default::Default for PipelineStageFlags2KHR {
     fn default() -> Self {
@@ -6432,13 +6440,13 @@ impl PipelineStageFlags2KHR {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xff03ffffff)
+        Self(0x1ff03ffffff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xff03ffffff
+        self.0 == 0x1ff03ffffff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -6519,6 +6527,7 @@ impl fmt::Display for PipelineStageFlags2KHR {
                 (0x80000, "TASK_SHADER_NV"),
                 (0x100000, "MESH_SHADER_NV"),
                 (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
+                (0x10000000000, "INVOCATION_MASK_HUAWEI"),
             ],
             f,
         )
@@ -13619,6 +13628,8 @@ impl StructureType {
     pub const IMAGE_STENCIL_USAGE_CREATE_INFO_EXT: Self = Self::IMAGE_STENCIL_USAGE_CREATE_INFO;
     /// Added by extension VK_EXT_validation_features.
     pub const VALIDATION_FEATURES_EXT: Self = Self(1000247000);
+    /// Added by extension VK_KHR_present_wait.
+    pub const PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR: Self = Self(1000248000);
     /// Added by extension VK_NV_cooperative_matrix.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV: Self = Self(1000249000);
     /// Added by extension VK_NV_cooperative_matrix.
@@ -13682,6 +13693,8 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = Self(1000269004);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
+    /// Added by extension VK_EXT_shader_atomic_float2.
+    pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT: Self = Self(1000273000);
     /// Added by extension VK_EXT_shader_demote_to_helper_invocation.
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self = Self(1000276000);
     /// Added by extension VK_NV_device_generated_commands.
@@ -13730,6 +13743,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT: Self = Self(1000287002);
     /// Added by extension VK_KHR_pipeline_library.
     pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
+    /// Added by extension VK_KHR_present_id.
+    pub const PRESENT_ID_KHR: Self = Self(1000294000);
+    /// Added by extension VK_KHR_present_id.
+    pub const PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR: Self = Self(1000294001);
     /// Added by extension VK_EXT_private_data.
     pub const PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT: Self = Self(1000295000);
     /// Added by extension VK_EXT_private_data.
@@ -13844,6 +13861,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI: Self = Self(1000369001);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI: Self = Self(1000369002);
+    /// Added by extension VK_HUAWEI_invocation_mask.
+    pub const PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI: Self = Self(1000370000);
     /// Added by extension VK_NV_external_memory_rdma.
     pub const MEMORY_GET_REMOTE_ADDRESS_INFO_NV: Self = Self(1000371000);
     /// Added by extension VK_NV_external_memory_rdma.
@@ -14271,6 +14290,7 @@ impl fmt::Display for StructureType {
             1000244002 => Some(&"BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT"),
             1000245000 => Some(&"PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT"),
             1000247000 => Some(&"VALIDATION_FEATURES_EXT"),
+            1000248000 => Some(&"PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR"),
             1000249000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV"),
             1000249001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_NV"),
             1000249002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV"),
@@ -14298,6 +14318,7 @@ impl fmt::Display for StructureType {
             1000269003 => Some(&"PIPELINE_EXECUTABLE_INFO_KHR"),
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
+            1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
             1000276000 => Some(&"PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT"),
             1000277000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV"),
             1000277001 => Some(&"GRAPHICS_SHADER_GROUP_CREATE_INFO_NV"),
@@ -14322,6 +14343,8 @@ impl fmt::Display for StructureType {
             1000287001 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT"),
             1000287002 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT"),
             1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
+            1000294000 => Some(&"PRESENT_ID_KHR"),
+            1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000295000 => Some(&"PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT"),
             1000295001 => Some(&"DEVICE_PRIVATE_DATA_CREATE_INFO_EXT"),
             1000295002 => Some(&"PRIVATE_DATA_SLOT_CREATE_INFO_EXT"),
@@ -14379,6 +14402,7 @@ impl fmt::Display for StructureType {
             1000369000 => Some(&"SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
             1000369001 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI"),
             1000369002 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI"),
+            1000370000 => Some(&"PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI"),
             1000371000 => Some(&"MEMORY_GET_REMOTE_ADDRESS_INFO_NV"),
             1000371001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
@@ -25789,6 +25813,88 @@ impl fmt::Debug for XYColorEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentIdFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Present ID in VkPresentInfoKHR
+    pub present_id: Bool32,
+}
+impl default::Default for PhysicalDevicePresentIdFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            present_id: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentIdFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentIdFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PresentIdKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Copy of VkPresentInfoKHR::swapchainCount
+    pub swapchain_count: u32,
+    /// Present ID values for each swapchain
+    pub p_present_ids: *const u64,
+}
+impl default::Default for PresentIdKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PRESENT_ID_KHR,
+            p_next: ptr::null(),
+            swapchain_count: u32::default(),
+            p_present_ids: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PresentIdKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PresentIdKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_count", &self.swapchain_count)
+            .field("p_present_ids", &self.p_present_ids)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentWaitFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// vkWaitForPresentKHR is supported
+    pub present_wait: Bool32,
+}
+impl default::Default for PhysicalDevicePresentWaitFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            present_wait: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentWaitFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentWaitFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_wait", &self.present_wait)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct HdrMetadataEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -30425,6 +30531,94 @@ impl fmt::Debug for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_buffer_float16_atomics: Bool32,
+    pub shader_buffer_float16_atomic_add: Bool32,
+    pub shader_buffer_float16_atomic_min_max: Bool32,
+    pub shader_buffer_float32_atomic_min_max: Bool32,
+    pub shader_buffer_float64_atomic_min_max: Bool32,
+    pub shader_shared_float16_atomics: Bool32,
+    pub shader_shared_float16_atomic_add: Bool32,
+    pub shader_shared_float16_atomic_min_max: Bool32,
+    pub shader_shared_float32_atomic_min_max: Bool32,
+    pub shader_shared_float64_atomic_min_max: Bool32,
+    pub shader_image_float32_atomic_min_max: Bool32,
+    pub sparse_image_float32_atomic_min_max: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_buffer_float16_atomics: Bool32::default(),
+            shader_buffer_float16_atomic_add: Bool32::default(),
+            shader_buffer_float16_atomic_min_max: Bool32::default(),
+            shader_buffer_float32_atomic_min_max: Bool32::default(),
+            shader_buffer_float64_atomic_min_max: Bool32::default(),
+            shader_shared_float16_atomics: Bool32::default(),
+            shader_shared_float16_atomic_add: Bool32::default(),
+            shader_shared_float16_atomic_min_max: Bool32::default(),
+            shader_shared_float32_atomic_min_max: Bool32::default(),
+            shader_shared_float64_atomic_min_max: Bool32::default(),
+            shader_image_float32_atomic_min_max: Bool32::default(),
+            sparse_image_float32_atomic_min_max: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderAtomicFloat2FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_buffer_float16_atomics", &self.shader_buffer_float16_atomics)
+            .field(
+                "shader_buffer_float16_atomic_add",
+                &self.shader_buffer_float16_atomic_add,
+            )
+            .field(
+                "shader_buffer_float16_atomic_min_max",
+                &self.shader_buffer_float16_atomic_min_max,
+            )
+            .field(
+                "shader_buffer_float32_atomic_min_max",
+                &self.shader_buffer_float32_atomic_min_max,
+            )
+            .field(
+                "shader_buffer_float64_atomic_min_max",
+                &self.shader_buffer_float64_atomic_min_max,
+            )
+            .field("shader_shared_float16_atomics", &self.shader_shared_float16_atomics)
+            .field(
+                "shader_shared_float16_atomic_add",
+                &self.shader_shared_float16_atomic_add,
+            )
+            .field(
+                "shader_shared_float16_atomic_min_max",
+                &self.shader_shared_float16_atomic_min_max,
+            )
+            .field(
+                "shader_shared_float32_atomic_min_max",
+                &self.shader_shared_float32_atomic_min_max,
+            )
+            .field(
+                "shader_shared_float64_atomic_min_max",
+                &self.shader_shared_float64_atomic_min_max,
+            )
+            .field(
+                "shader_image_float32_atomic_min_max",
+                &self.shader_image_float32_atomic_min_max,
+            )
+            .field(
+                "sparse_image_float32_atomic_min_max",
+                &self.sparse_image_float32_atomic_min_max,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -31115,6 +31309,31 @@ impl fmt::Debug for PhysicalDeviceShadingRateImagePropertiesNV {
             .field("shading_rate_texel_size", &self.shading_rate_texel_size)
             .field("shading_rate_palette_size", &self.shading_rate_palette_size)
             .field("shading_rate_max_coarse_samples", &self.shading_rate_max_coarse_samples)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceInvocationMaskFeaturesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub invocation_mask: Bool32,
+}
+impl default::Default for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI,
+            p_next: ptr::null_mut(),
+            invocation_mask: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceInvocationMaskFeaturesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("invocation_mask", &self.invocation_mask)
             .finish()
     }
 }
@@ -40102,7 +40321,7 @@ pub type FnGetMemoryZirconHandlePropertiesFUCHSIA = unsafe extern "system" fn(
 ) -> Result;
 pub type FnGetMemoryRemoteAddressNV = unsafe extern "system" fn(
     device: Option<Device>,
-    get_memory_remote_address_info: *const MemoryGetRemoteAddressInfoNV,
+    p_memory_get_remote_address_info: *const MemoryGetRemoteAddressInfoNV,
     p_address: *mut RemoteAddressNV,
 ) -> Result;
 pub type FnGetPhysicalDeviceExternalSemaphoreProperties = unsafe extern "system" fn(
@@ -40648,6 +40867,11 @@ pub type FnCreateAccelerationStructureNV = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_acceleration_structure: *mut AccelerationStructureNV,
 ) -> Result;
+pub type FnCmdBindInvocationMaskHUAWEI = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    image_view: Option<ImageView>,
+    image_layout: ImageLayout,
+);
 pub type FnDestroyAccelerationStructureKHR = unsafe extern "system" fn(
     device: Option<Device>,
     acceleration_structure: Option<AccelerationStructureKHR>,
@@ -41188,4 +41412,10 @@ pub type FnGetDrmDisplayEXT = unsafe extern "system" fn(
     drm_fd: i32,
     connector_id: u32,
     display: *mut DisplayKHR,
+) -> Result;
+pub type FnWaitForPresentKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    present_id: u64,
+    timeout: u64,
 ) -> Result;

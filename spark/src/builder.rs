@@ -6744,6 +6744,108 @@ impl<'a> Deref for DescriptorUpdateTemplateCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDevicePresentIdFeaturesKHR {
+    type Type = PhysicalDevicePresentIdFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentIdFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePresentIdFeaturesKHR,
+}
+impl PhysicalDevicePresentIdFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: bool) -> Self {
+        self.inner.present_id = if present_id { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentIdFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePresentIdFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentIdFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentIdFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentIdFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentIdFeaturesKHR {}
+impl<'a> Builder<'a> for vk::PresentIdKHR {
+    type Type = PresentIdKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PresentIdKHRBuilder<'a> {
+    inner: vk::PresentIdKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PresentIdKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_present_ids(mut self, p_present_ids: &'a [u64]) -> Self {
+        self.inner.swapchain_count = p_present_ids.len() as u32;
+        self.inner.p_present_ids = p_present_ids.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PresentIdKHRBuilder<'a> {
+    type Target = vk::PresentIdKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PresentInfoKHRNext for PresentIdKHRBuilder<'a> {}
+impl PresentInfoKHRNext for vk::PresentIdKHR {}
+impl Builder<'_> for vk::PhysicalDevicePresentWaitFeaturesKHR {
+    type Type = PhysicalDevicePresentWaitFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentWaitFeaturesKHRBuilder {
+    inner: vk::PhysicalDevicePresentWaitFeaturesKHR,
+}
+impl PhysicalDevicePresentWaitFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_wait(mut self, present_wait: bool) -> Self {
+        self.inner.present_wait = if present_wait { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentWaitFeaturesKHRBuilder {
+    type Target = vk::PhysicalDevicePresentWaitFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentWaitFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentWaitFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentWaitFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentWaitFeaturesKHR {}
 impl Builder<'_> for vk::HdrMetadataEXT {
     type Type = HdrMetadataEXTBuilder;
     fn builder() -> Self::Type {
@@ -10539,6 +10641,132 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicFloatFeaturesEXTB
 impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
+    type Type = PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT,
+}
+impl PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_buffer_float16_atomics(mut self, shader_buffer_float16_atomics: bool) -> Self {
+        self.inner.shader_buffer_float16_atomics = if shader_buffer_float16_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float16_atomic_add(mut self, shader_buffer_float16_atomic_add: bool) -> Self {
+        self.inner.shader_buffer_float16_atomic_add = if shader_buffer_float16_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float16_atomic_min_max(mut self, shader_buffer_float16_atomic_min_max: bool) -> Self {
+        self.inner.shader_buffer_float16_atomic_min_max = if shader_buffer_float16_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float32_atomic_min_max(mut self, shader_buffer_float32_atomic_min_max: bool) -> Self {
+        self.inner.shader_buffer_float32_atomic_min_max = if shader_buffer_float32_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_buffer_float64_atomic_min_max(mut self, shader_buffer_float64_atomic_min_max: bool) -> Self {
+        self.inner.shader_buffer_float64_atomic_min_max = if shader_buffer_float64_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float16_atomics(mut self, shader_shared_float16_atomics: bool) -> Self {
+        self.inner.shader_shared_float16_atomics = if shader_shared_float16_atomics {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float16_atomic_add(mut self, shader_shared_float16_atomic_add: bool) -> Self {
+        self.inner.shader_shared_float16_atomic_add = if shader_shared_float16_atomic_add {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float16_atomic_min_max(mut self, shader_shared_float16_atomic_min_max: bool) -> Self {
+        self.inner.shader_shared_float16_atomic_min_max = if shader_shared_float16_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float32_atomic_min_max(mut self, shader_shared_float32_atomic_min_max: bool) -> Self {
+        self.inner.shader_shared_float32_atomic_min_max = if shader_shared_float32_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_shared_float64_atomic_min_max(mut self, shader_shared_float64_atomic_min_max: bool) -> Self {
+        self.inner.shader_shared_float64_atomic_min_max = if shader_shared_float64_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_image_float32_atomic_min_max(mut self, shader_image_float32_atomic_min_max: bool) -> Self {
+        self.inner.shader_image_float32_atomic_min_max = if shader_image_float32_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn sparse_image_float32_atomic_min_max(mut self, sparse_image_float32_atomic_min_max: bool) -> Self {
+        self.inner.sparse_image_float32_atomic_min_max = if sparse_image_float32_atomic_min_max {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     type Type = PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -11221,6 +11449,40 @@ impl DeviceCreateInfoNext for PhysicalDeviceShadingRateImageFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShadingRateImageFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShadingRateImageFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShadingRateImagePropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI {
+    type Type = PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {
+    inner: vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI,
+}
+impl PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn invocation_mask(mut self, invocation_mask: bool) -> Self {
+        self.inner.invocation_mask = if invocation_mask { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {
+    type Target = vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
 impl<'a> Builder<'a> for vk::CoarseSampleOrderCustomNV {
     type Type = CoarseSampleOrderCustomNVBuilder<'a>;
     fn builder() -> Self::Type {

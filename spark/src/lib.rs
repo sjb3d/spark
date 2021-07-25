@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 184
+//! Generated from vk.xml with `VK_HEADER_VERSION` 185
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -874,6 +874,12 @@ impl InstanceExtensions {
     pub fn enable_khr_shader_clock(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_calibrated_timestamps(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_calibrated_timestamps(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_amd_shader_core_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1071,6 +1077,12 @@ impl InstanceExtensions {
     pub fn enable_ext_validation_features(&mut self) {
         self.ext_validation_features = true;
     }
+    pub fn supports_khr_present_wait(&self) -> bool {
+        self.supports_khr_surface()
+    }
+    pub fn enable_khr_present_wait(&mut self) {
+        self.enable_khr_surface();
+    }
     pub fn supports_nv_cooperative_matrix(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1154,6 +1166,12 @@ impl InstanceExtensions {
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_shader_atomic_float2(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_atomic_float2(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1188,6 +1206,12 @@ impl InstanceExtensions {
         self.ext_acquire_drm_display = true;
         self.enable_ext_direct_mode_display();
         self.enable_khr_display();
+        self.enable_khr_surface();
+    }
+    pub fn supports_khr_present_id(&self) -> bool {
+        self.supports_khr_surface()
+    }
+    pub fn enable_khr_present_id(&mut self) {
         self.enable_khr_surface();
     }
     pub fn supports_nv_device_diagnostics_config(&self) -> bool {
@@ -1307,6 +1331,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_huawei_subpass_shading(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_huawei_invocation_mask(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_huawei_invocation_mask(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_external_memory_rdma(&self) -> bool {
@@ -3859,6 +3889,7 @@ pub struct DeviceExtensions {
     pub ext_buffer_device_address: bool,
     pub ext_tooling_info: bool,
     pub ext_separate_stencil_usage: bool,
+    pub khr_present_wait: bool,
     pub nv_cooperative_matrix: bool,
     pub nv_coverage_reduction_mode: bool,
     pub ext_fragment_shader_interlock: bool,
@@ -3874,6 +3905,7 @@ pub struct DeviceExtensions {
     pub ext_extended_dynamic_state: bool,
     pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
+    pub ext_shader_atomic_float2: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub nv_device_generated_commands: bool,
     pub nv_inherited_viewport_scissor: bool,
@@ -3885,6 +3917,7 @@ pub struct DeviceExtensions {
     pub google_user_type: bool,
     pub khr_pipeline_library: bool,
     pub khr_shader_non_semantic_info: bool,
+    pub khr_present_id: bool,
     pub ext_private_data: bool,
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
@@ -3908,6 +3941,7 @@ pub struct DeviceExtensions {
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
     pub huawei_subpass_shading: bool,
+    pub huawei_invocation_mask: bool,
     pub nv_external_memory_rdma: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
@@ -4074,6 +4108,7 @@ impl DeviceExtensions {
             b"VK_EXT_buffer_device_address" => self.ext_buffer_device_address = true,
             b"VK_EXT_tooling_info" => self.ext_tooling_info = true,
             b"VK_EXT_separate_stencil_usage" => self.ext_separate_stencil_usage = true,
+            b"VK_KHR_present_wait" => self.khr_present_wait = true,
             b"VK_NV_cooperative_matrix" => self.nv_cooperative_matrix = true,
             b"VK_NV_coverage_reduction_mode" => self.nv_coverage_reduction_mode = true,
             b"VK_EXT_fragment_shader_interlock" => self.ext_fragment_shader_interlock = true,
@@ -4089,6 +4124,7 @@ impl DeviceExtensions {
             b"VK_EXT_extended_dynamic_state" => self.ext_extended_dynamic_state = true,
             b"VK_KHR_deferred_host_operations" => self.khr_deferred_host_operations = true,
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
+            b"VK_EXT_shader_atomic_float2" => self.ext_shader_atomic_float2 = true,
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
             b"VK_NV_device_generated_commands" => self.nv_device_generated_commands = true,
             b"VK_NV_inherited_viewport_scissor" => self.nv_inherited_viewport_scissor = true,
@@ -4100,6 +4136,7 @@ impl DeviceExtensions {
             b"VK_GOOGLE_user_type" => self.google_user_type = true,
             b"VK_KHR_pipeline_library" => self.khr_pipeline_library = true,
             b"VK_KHR_shader_non_semantic_info" => self.khr_shader_non_semantic_info = true,
+            b"VK_KHR_present_id" => self.khr_present_id = true,
             b"VK_EXT_private_data" => self.ext_private_data = true,
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
@@ -4123,6 +4160,7 @@ impl DeviceExtensions {
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
+            b"VK_HUAWEI_invocation_mask" => self.huawei_invocation_mask = true,
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
@@ -4289,6 +4327,7 @@ impl DeviceExtensions {
             ext_buffer_device_address: false,
             ext_tooling_info: false,
             ext_separate_stencil_usage: false,
+            khr_present_wait: false,
             nv_cooperative_matrix: false,
             nv_coverage_reduction_mode: false,
             ext_fragment_shader_interlock: false,
@@ -4304,6 +4343,7 @@ impl DeviceExtensions {
             ext_extended_dynamic_state: false,
             khr_deferred_host_operations: false,
             khr_pipeline_executable_properties: false,
+            ext_shader_atomic_float2: false,
             ext_shader_demote_to_helper_invocation: false,
             nv_device_generated_commands: false,
             nv_inherited_viewport_scissor: false,
@@ -4315,6 +4355,7 @@ impl DeviceExtensions {
             google_user_type: false,
             khr_pipeline_library: false,
             khr_shader_non_semantic_info: false,
+            khr_present_id: false,
             ext_private_data: false,
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
@@ -4338,6 +4379,7 @@ impl DeviceExtensions {
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
             huawei_subpass_shading: false,
+            huawei_invocation_mask: false,
             nv_external_memory_rdma: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
@@ -5510,6 +5552,14 @@ impl DeviceExtensions {
             self.ext_separate_stencil_usage = true;
         }
     }
+    pub fn supports_khr_present_wait(&self) -> bool {
+        self.khr_present_wait && self.supports_khr_swapchain() && self.supports_khr_present_id()
+    }
+    pub fn enable_khr_present_wait(&mut self) {
+        self.khr_present_wait = true;
+        self.enable_khr_swapchain();
+        self.enable_khr_present_id();
+    }
     pub fn supports_nv_cooperative_matrix(&self) -> bool {
         self.nv_cooperative_matrix
     }
@@ -5616,6 +5666,13 @@ impl DeviceExtensions {
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
         self.khr_pipeline_executable_properties = true;
     }
+    pub fn supports_ext_shader_atomic_float2(&self) -> bool {
+        self.ext_shader_atomic_float2 && self.supports_ext_shader_atomic_float()
+    }
+    pub fn enable_ext_shader_atomic_float2(&mut self) {
+        self.ext_shader_atomic_float2 = true;
+        self.enable_ext_shader_atomic_float();
+    }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
         self.ext_shader_demote_to_helper_invocation
     }
@@ -5682,6 +5739,13 @@ impl DeviceExtensions {
     }
     pub fn enable_khr_shader_non_semantic_info(&mut self) {
         self.khr_shader_non_semantic_info = true;
+    }
+    pub fn supports_khr_present_id(&self) -> bool {
+        self.khr_present_id && self.supports_khr_swapchain()
+    }
+    pub fn enable_khr_present_id(&mut self) {
+        self.khr_present_id = true;
+        self.enable_khr_swapchain();
     }
     pub fn supports_ext_private_data(&self) -> bool {
         self.ext_private_data
@@ -5866,6 +5930,30 @@ impl DeviceExtensions {
         self.enable_khr_synchronization2();
         self.enable_khr_multiview();
         self.enable_khr_maintenance2();
+    }
+    pub fn supports_huawei_invocation_mask(&self) -> bool {
+        self.huawei_invocation_mask
+            && self.supports_khr_ray_tracing_pipeline()
+            && self.supports_khr_synchronization2()
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_shader_float_controls()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_huawei_invocation_mask(&mut self) {
+        self.huawei_invocation_mask = true;
+        self.enable_khr_ray_tracing_pipeline();
+        self.enable_khr_synchronization2();
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_shader_float_controls();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_nv_external_memory_rdma(&self) -> bool {
         self.nv_external_memory_rdma && self.supports_khr_external_memory()
@@ -6368,6 +6456,9 @@ impl DeviceExtensions {
         if self.ext_separate_stencil_usage {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_separate_stencil_usage\0") })
         }
+        if self.khr_present_wait {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_present_wait\0") })
+        }
         if self.nv_cooperative_matrix {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_cooperative_matrix\0") })
         }
@@ -6413,6 +6504,9 @@ impl DeviceExtensions {
         if self.khr_pipeline_executable_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") })
         }
+        if self.ext_shader_atomic_float2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float2\0") })
+        }
         if self.ext_shader_demote_to_helper_invocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") })
         }
@@ -6445,6 +6539,9 @@ impl DeviceExtensions {
         }
         if self.khr_shader_non_semantic_info {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") })
+        }
+        if self.khr_present_id {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_present_id\0") })
         }
         if self.ext_private_data {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_private_data\0") })
@@ -6514,6 +6611,9 @@ impl DeviceExtensions {
         }
         if self.huawei_subpass_shading {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_subpass_shading\0") })
+        }
+        if self.huawei_invocation_mask {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_invocation_mask\0") })
         }
         if self.nv_external_memory_rdma {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_rdma\0") })
@@ -6775,6 +6875,7 @@ pub struct Device {
     pub fp_cmd_draw_mesh_tasks_indirect_count_nv: Option<vk::FnCmdDrawMeshTasksIndirectCountNV>,
     pub fp_compile_deferred_nv: Option<vk::FnCompileDeferredNV>,
     pub fp_create_acceleration_structure_nv: Option<vk::FnCreateAccelerationStructureNV>,
+    pub fp_cmd_bind_invocation_mask_huawei: Option<vk::FnCmdBindInvocationMaskHUAWEI>,
     pub fp_destroy_acceleration_structure_khr: Option<vk::FnDestroyAccelerationStructureKHR>,
     pub fp_destroy_acceleration_structure_nv: Option<vk::FnDestroyAccelerationStructureNV>,
     pub fp_get_acceleration_structure_memory_requirements_nv:
@@ -6895,6 +6996,7 @@ pub struct Device {
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
     pub fp_destroy_cu_function_nvx: Option<vk::FnDestroyCuFunctionNVX>,
     pub fp_cmd_cu_launch_kernel_nvx: Option<vk::FnCmdCuLaunchKernelNVX>,
+    pub fp_wait_for_present_khr: Option<vk::FnWaitForPresentKHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -8741,6 +8843,12 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_bind_invocation_mask_huawei: if extensions.huawei_invocation_mask {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindInvocationMaskHUAWEI\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_destroy_acceleration_structure_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkDestroyAccelerationStructureKHR\0",
@@ -9562,6 +9670,12 @@ impl Device {
             },
             fp_cmd_cu_launch_kernel_nvx: if extensions.nvx_binary_import {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCuLaunchKernelNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_wait_for_present_khr: if extensions.khr_present_wait {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitForPresentKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11975,13 +12089,13 @@ impl Device {
     }
     pub unsafe fn get_memory_remote_address_nv(
         &self,
-        get_memory_remote_address_info: &vk::MemoryGetRemoteAddressInfoNV,
+        p_memory_get_remote_address_info: &vk::MemoryGetRemoteAddressInfoNV,
     ) -> Result<vk::RemoteAddressNV> {
         let fp = self
             .fp_get_memory_remote_address_nv
             .expect("vkGetMemoryRemoteAddressNV is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
-        let err = (fp)(Some(self.handle), get_memory_remote_address_info, res.as_mut_ptr());
+        let err = (fp)(Some(self.handle), p_memory_get_remote_address_info, res.as_mut_ptr());
         match err {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
@@ -13645,6 +13759,17 @@ impl Device {
             vk::Result::SUCCESS => Ok(res.assume_init()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_bind_invocation_mask_huawei(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        image_view: Option<vk::ImageView>,
+        image_layout: vk::ImageLayout,
+    ) {
+        let fp = self
+            .fp_cmd_bind_invocation_mask_huawei
+            .expect("vkCmdBindInvocationMaskHUAWEI is not loaded");
+        (fp)(Some(command_buffer), image_view, image_layout);
     }
     pub unsafe fn destroy_acceleration_structure_khr(
         &self,
@@ -15484,6 +15609,19 @@ impl Device {
             .fp_cmd_cu_launch_kernel_nvx
             .expect("vkCmdCuLaunchKernelNVX is not loaded");
         (fp)(Some(command_buffer), p_launch_info);
+    }
+    pub unsafe fn wait_for_present_khr(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        present_id: u64,
+        timeout: u64,
+    ) -> Result<vk::Result> {
+        let fp = self.fp_wait_for_present_khr.expect("vkWaitForPresentKHR is not loaded");
+        let err = (fp)(Some(self.handle), Some(swapchain), present_id, timeout);
+        match err {
+            vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
+            _ => Err(err),
+        }
     }
 }
 
