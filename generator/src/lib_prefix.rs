@@ -20,8 +20,8 @@ pub use self::builder::*;
 pub type Result<T> = result::Result<T, vk::Result>;
 
 struct Lib {
-    pub lib: DynamicLibrary,
-    pub fp_get_instance_proc_addr: vk::FnGetInstanceProcAddr,
+    _lib: DynamicLibrary,
+    fp_get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 #[derive(Debug, Clone)]
@@ -50,13 +50,13 @@ const DL_PATH: &str = "libvulkan.so";
 
 impl Lib {
     pub fn new() -> LoaderResult<Self> {
-        match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
+        match DynamicLibrary::open(Some(Path::new(&DL_PATH))) {
             Ok(lib) => match unsafe {
                 lib.symbol("vkGetInstanceProcAddr")
                     .map(|f: *mut c_void| mem::transmute(f))
             } {
                 Ok(fp_get_instance_proc_addr) => Ok(Self {
-                    lib,
+                    _lib: lib,
                     fp_get_instance_proc_addr,
                 }),
                 Err(s) => Err(LoaderError::MissingSymbol(s)),

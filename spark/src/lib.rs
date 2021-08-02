@@ -25,8 +25,8 @@ pub use self::builder::*;
 pub type Result<T> = result::Result<T, vk::Result>;
 
 struct Lib {
-    pub lib: DynamicLibrary,
-    pub fp_get_instance_proc_addr: vk::FnGetInstanceProcAddr,
+    _lib: DynamicLibrary,
+    fp_get_instance_proc_addr: vk::FnGetInstanceProcAddr,
 }
 
 #[derive(Debug, Clone)]
@@ -55,13 +55,13 @@ const DL_PATH: &str = "libvulkan.so";
 
 impl Lib {
     pub fn new() -> LoaderResult<Self> {
-        match DynamicLibrary::open(Some(&Path::new(&DL_PATH))) {
+        match DynamicLibrary::open(Some(Path::new(&DL_PATH))) {
             Ok(lib) => match unsafe {
                 lib.symbol("vkGetInstanceProcAddr")
                     .map(|f: *mut c_void| mem::transmute(f))
             } {
                 Ok(fp_get_instance_proc_addr) => Ok(Self {
-                    lib,
+                    _lib: lib,
                     fp_get_instance_proc_addr,
                 }),
                 Err(s) => Err(LoaderError::MissingSymbol(s)),
@@ -129,7 +129,7 @@ impl Loader {
             _ => Err(err),
         }
         .map_err(LoaderError::Vulkan)
-        .and_then(|r| Instance::load(&self, r, p_create_info))
+        .and_then(|r| Instance::load(self, r, p_create_info))
     }
     pub unsafe fn get_instance_proc_addr(
         &self,
@@ -1575,7 +1575,7 @@ impl Instance {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                extensions.enable_by_name(&CStr::from_ptr(name_ptr));
+                extensions.enable_by_name(CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);
@@ -2410,7 +2410,7 @@ impl Instance {
             _ => Err(err),
         }
         .map_err(LoaderError::Vulkan)
-        .and_then(|r| Device::load(&self, r, p_create_info, version))
+        .and_then(|r| Device::load(self, r, p_create_info, version))
     }
     pub unsafe fn enumerate_device_layer_properties_to_vec(
         &self,
@@ -7012,7 +7012,7 @@ impl Device {
                 create_info.pp_enabled_extension_names,
                 create_info.enabled_extension_count as usize,
             ) {
-                extensions.enable_by_name(&CStr::from_ptr(name_ptr));
+                extensions.enable_by_name(CStr::from_ptr(name_ptr));
             }
         }
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);

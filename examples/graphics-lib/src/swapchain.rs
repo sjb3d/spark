@@ -90,7 +90,7 @@ impl Swapchain {
         let images = unsafe { context.device.get_swapchain_images_khr_to_vec(swapchain) }.unwrap();
 
         Swapchain {
-            context: Arc::clone(&context),
+            context: Arc::clone(context),
             swapchain,
             surface_format,
             extent,

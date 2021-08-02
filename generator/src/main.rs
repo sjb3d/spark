@@ -910,7 +910,7 @@ impl<'a> Generator<'a> {
     fn is_non_null_type(&self, base: CBaseType) -> bool {
         base.try_name()
             .and_then(|name| self.type_by_name.get(name))
-            .and_then(|ref ty| ty.category.as_deref())
+            .and_then(|ty| ty.category.as_deref())
             .map(|s| s == "funcpointer" || s == "handle")
             .unwrap_or(false)
     }
@@ -982,7 +982,7 @@ impl<'a> Generator<'a> {
                     if self
                         .type_by_name
                         .get(type_name)
-                        .and_then(|ref ty| ty.category.as_deref())
+                        .and_then(|ty| ty.category.as_deref())
                         .map(|s| s == "handle")
                         .unwrap_or(false)
                     {
@@ -1157,7 +1157,7 @@ impl<'a> Generator<'a> {
                 Some("bitmask") => {
                     let size = match &ty.spec {
                         vk::TypeSpec::Code(vk::TypeCode { code, .. }) => {
-                            let def = c_try_parse_typedef(&code).unwrap();
+                            let def = c_try_parse_typedef(code).unwrap();
                             match def.ty.base {
                                 CBaseType::Named("VkFlags") => BitMaskSize::N32,
                                 CBaseType::Named("VkFlags64") => BitMaskSize::N64,
@@ -1416,7 +1416,7 @@ impl<'a> Generator<'a> {
                 write!(
                     w,
                     "{}: {},",
-                    get_rust_variable_name(&decl.name),
+                    get_rust_variable_name(decl.name),
                     self.get_rust_parameter_type(&decl.ty.strip_array(), None),
                 )?;
             }
@@ -1523,7 +1523,7 @@ impl<'a> Generator<'a> {
                 AggregateType::Struct => {
                     write!(w, "Self {{")?;
                     for member in members.iter() {
-                        write!(w, "{}: ", get_rust_variable_name(&member.name()))?;
+                        write!(w, "{}: ", get_rust_variable_name(member.name()))?;
                         if let Some(values) = member.def.values.as_deref() {
                             // assume enum value for now
                             let member_type_name = member.decl.ty.base.try_name().unwrap();
@@ -1566,7 +1566,7 @@ impl<'a> Generator<'a> {
                 writeln!(w, "fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {{")?;
                 writeln!(w, r#"fmt.debug_struct("{}")"#, agg_name)?;
                 for member in members.iter() {
-                    let var_name = get_rust_variable_name(&member.name());
+                    let var_name = get_rust_variable_name(member.name());
                     let category = member
                         .decl
                         .ty
@@ -2452,7 +2452,7 @@ impl<'a> Generator<'a> {
         };
 
         let (return_type, return_transform, return_type_name) =
-            self.wrap_command_arguments(category, &cmd_def, cmd_return_value, &decl, &mut params);
+            self.wrap_command_arguments(category, cmd_def, cmd_return_value, &decl, &mut params);
 
         let fn_name = cmd_name.skip_prefix(FN_PREFIX).to_snake_case();
         let fp_name = cmd_info
@@ -2935,11 +2935,11 @@ impl<'a> Generator<'a> {
                         LibReturnTransform::ToBool => writeln!(w, ".map(|r| r != vk::FALSE)")?,
                         LibReturnTransform::ToInstance => writeln!(
                             w,
-                            ".map_err(LoaderError::Vulkan).and_then(|r| Instance::load(&self, r, p_create_info))"
+                            ".map_err(LoaderError::Vulkan).and_then(|r| Instance::load(self, r, p_create_info))"
                         )?,
                         LibReturnTransform::ToDevice => writeln!(
                             w,
-                            ".map_err(LoaderError::Vulkan).and_then(|r| Device::load(&self, r, p_create_info, version))"
+                            ".map_err(LoaderError::Vulkan).and_then(|r| Device::load(self, r, p_create_info, version))"
                         )?,
                     }
                 }
@@ -3218,7 +3218,7 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     extensions.enable_by_name(&CStr::from_ptr(name_ptr)); }} }}")?;
+                     extensions.enable_by_name(CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
                     "let f = |name: &CStr| loader.get_instance_proc_addr(Some(instance), name);\
@@ -3234,7 +3234,7 @@ impl<'a> Generator<'a> {
                 writeln!(w,
                     "if create_info.enabled_extension_count != 0 {{\
                      for &name_ptr in slice::from_raw_parts(create_info.pp_enabled_extension_names, create_info.enabled_extension_count as usize) {{\
-                     extensions.enable_by_name(&CStr::from_ptr(name_ptr)); }} }}")?;
+                     extensions.enable_by_name(CStr::from_ptr(name_ptr)); }} }}")?;
                 writeln!(
                     w,
                     "let f = |name: &CStr| instance.get_device_proc_addr(device, name);\

@@ -62,7 +62,7 @@ impl SwapTarget {
         let framebuffer = unsafe { context.device.create_framebuffer(&framebuffer_create_info, None) }.unwrap();
 
         Self {
-            context: Arc::clone(&context),
+            context: Arc::clone(context),
             image_view,
             framebuffer,
         }
@@ -114,7 +114,7 @@ impl App {
     const SWAPCHAIN_USAGE: vk::ImageUsageFlags = vk::ImageUsageFlags::COLOR_ATTACHMENT;
 
     fn new(window: &Window, version: vk::Version, is_debug: bool) -> Self {
-        let context = Arc::new(Context::new(&window, version, is_debug));
+        let context = Arc::new(Context::new(window, version, is_debug));
 
         println!(
             "physical device ({}): {:?}",
@@ -131,7 +131,7 @@ impl App {
         }]);
 
         let mut ui_platform = WinitPlatform::init(&mut ui_context);
-        ui_platform.attach_window(ui_context.io_mut(), &window, HiDpiMode::Default);
+        ui_platform.attach_window(ui_context.io_mut(), window, HiDpiMode::Default);
 
         let ui_renderer = spark_imgui::Renderer::new(
             &context.device,
@@ -311,13 +311,13 @@ impl App {
             }
             _ => {}
         }
-        self.ui_platform.handle_event(self.ui_context.io_mut(), &window, &event);
+        self.ui_platform.handle_event(self.ui_context.io_mut(), window, event);
     }
 
     fn render(&mut self, window: &Window, exit_requested: &mut bool) {
         // start creating UI for this frame
         self.ui_platform
-            .prepare_frame(self.ui_context.io_mut(), &window)
+            .prepare_frame(self.ui_context.io_mut(), window)
             .expect("failed to prepare frame");
         let ui = self.ui_context.frame();
 
@@ -454,7 +454,7 @@ impl App {
         }
 
         // draw imgui in the same render pass
-        self.ui_platform.prepare_render(&ui, &window);
+        self.ui_platform.prepare_render(&ui, window);
         self.ui_renderer
             .render(ui.render(), &self.context.device, cmd, self.ui_pipeline);
 
