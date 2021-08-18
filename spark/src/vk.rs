@@ -5332,9 +5332,10 @@ pub type GeometryFlagsNV = GeometryFlagsKHR;
 pub struct GeometryInstanceFlagsKHR(u32);
 impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FACING_CULL_DISABLE: Self = Self(0x1);
-    pub const TRIANGLE_FRONT_COUNTERCLOCKWISE: Self = Self(0x2);
+    pub const TRIANGLE_FLIP_FACING: Self = Self(0x2);
     pub const FORCE_OPAQUE: Self = Self(0x4);
     pub const FORCE_NO_OPAQUE: Self = Self(0x8);
+    pub const TRIANGLE_FRONT_COUNTERCLOCKWISE: Self = Self::TRIANGLE_FLIP_FACING;
     pub const TRIANGLE_CULL_DISABLE_NV: Self = Self::TRIANGLE_FACING_CULL_DISABLE;
     pub const TRIANGLE_FRONT_COUNTERCLOCKWISE_NV: Self = Self::TRIANGLE_FRONT_COUNTERCLOCKWISE;
     pub const FORCE_OPAQUE_NV: Self = Self::FORCE_OPAQUE;
@@ -5404,7 +5405,7 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
             self.0 as _,
             &[
                 (0x1, "TRIANGLE_FACING_CULL_DISABLE"),
-                (0x2, "TRIANGLE_FRONT_COUNTERCLOCKWISE"),
+                (0x2, "TRIANGLE_FLIP_FACING"),
                 (0x4, "FORCE_OPAQUE"),
                 (0x8, "FORCE_NO_OPAQUE"),
             ],
@@ -10948,6 +10949,8 @@ impl AttachmentLoadOp {
     pub const LOAD: Self = Self(0);
     pub const CLEAR: Self = Self(1);
     pub const DONT_CARE: Self = Self(2);
+    /// Added by extension VK_EXT_load_store_op_none.
+    pub const NONE_EXT: Self = Self(1000400000);
 }
 impl default::Default for AttachmentLoadOp {
     fn default() -> Self {
@@ -10960,6 +10963,7 @@ impl fmt::Display for AttachmentLoadOp {
             0 => Some(&"LOAD"),
             1 => Some(&"CLEAR"),
             2 => Some(&"DONT_CARE"),
+            1000400000 => Some(&"NONE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10975,8 +10979,9 @@ pub struct AttachmentStoreOp(i32);
 impl AttachmentStoreOp {
     pub const STORE: Self = Self(0);
     pub const DONT_CARE: Self = Self(1);
-    /// Added by extension VK_QCOM_render_pass_store_ops.
-    pub const NONE_QCOM: Self = Self(1000301000);
+    pub const NONE_QCOM: Self = Self::NONE_EXT;
+    /// Added by extension VK_EXT_load_store_op_none.
+    pub const NONE_EXT: Self = Self(1000301000);
 }
 impl default::Default for AttachmentStoreOp {
     fn default() -> Self {
@@ -10988,7 +10993,7 @@ impl fmt::Display for AttachmentStoreOp {
         let name = match self.0 {
             0 => Some(&"STORE"),
             1 => Some(&"DONT_CARE"),
-            1000301000 => Some(&"NONE_QCOM"),
+            1000301000 => Some(&"NONE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16650,6 +16655,8 @@ impl DriverId {
     pub const COREAVI_PROPRIETARY: Self = Self(15);
     /// Juice Technologies, Inc.
     pub const JUICE_PROPRIETARY: Self = Self(16);
+    /// Verisilicon, Inc.
+    pub const VERISILICON_PROPRIETARY: Self = Self(17);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -16687,6 +16694,7 @@ impl fmt::Display for DriverId {
             14 => Some(&"MOLTENVK"),
             15 => Some(&"COREAVI_PROPRIETARY"),
             16 => Some(&"JUICE_PROPRIETARY"),
+            17 => Some(&"VERISILICON_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {

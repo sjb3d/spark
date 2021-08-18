@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 185
+//! Generated from vk.xml with `VK_HEADER_VERSION` 189
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -3947,6 +3947,7 @@ pub struct DeviceExtensions {
     pub ext_color_write_enable: bool,
     pub ext_global_priority_query: bool,
     pub ext_multi_draw: bool,
+    pub ext_load_store_op_none: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4166,6 +4167,7 @@ impl DeviceExtensions {
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
+            b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             _ => {}
         }
     }
@@ -4385,6 +4387,7 @@ impl DeviceExtensions {
             ext_color_write_enable: false,
             ext_global_priority_query: false,
             ext_multi_draw: false,
+            ext_load_store_op_none: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5987,6 +5990,12 @@ impl DeviceExtensions {
     pub fn enable_ext_multi_draw(&mut self) {
         self.ext_multi_draw = true;
     }
+    pub fn supports_ext_load_store_op_none(&self) -> bool {
+        self.ext_load_store_op_none
+    }
+    pub fn enable_ext_load_store_op_none(&mut self) {
+        self.ext_load_store_op_none = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -6629,6 +6638,9 @@ impl DeviceExtensions {
         }
         if self.ext_multi_draw {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_multi_draw\0") })
+        }
+        if self.ext_load_store_op_none {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
         }
         v
     }
