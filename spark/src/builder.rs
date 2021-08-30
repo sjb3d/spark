@@ -14397,6 +14397,52 @@ impl Deref for AttachmentReferenceStencilLayoutBuilder {
 }
 impl AttachmentReference2Next for AttachmentReferenceStencilLayoutBuilder {}
 impl AttachmentReference2Next for vk::AttachmentReferenceStencilLayout {}
+impl Builder<'_> for vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
+    type Type = PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT,
+}
+impl PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn primitive_topology_list_restart(mut self, primitive_topology_list_restart: bool) -> Self {
+        self.inner.primitive_topology_list_restart = if primitive_topology_list_restart {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn primitive_topology_patch_list_restart(mut self, primitive_topology_patch_list_restart: bool) -> Self {
+        self.inner.primitive_topology_patch_list_restart = if primitive_topology_patch_list_restart {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
 impl Builder<'_> for vk::AttachmentDescriptionStencilLayout {
     type Type = AttachmentDescriptionStencilLayoutBuilder;
     fn builder() -> Self::Type {
@@ -18667,6 +18713,440 @@ impl<'a> Deref for CuLaunchInfoNVXBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
+    type Type = PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderIntegerDotProductFeaturesKHR,
+}
+impl PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_integer_dot_product(mut self, shader_integer_dot_product: bool) -> Self {
+        self.inner.shader_integer_dot_product = if shader_integer_dot_product {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderIntegerDotProductFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderIntegerDotProductFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderIntegerDotProductFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderIntegerDotProductFeaturesKHR {}
+impl Builder<'_> for vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
+    type Type = PhysicalDeviceShaderIntegerDotProductPropertiesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderIntegerDotProductPropertiesKHRBuilder {
+    inner: vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR,
+}
+impl PhysicalDeviceShaderIntegerDotProductPropertiesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn integer_dot_product8_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product8_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product8_bit_unsigned_accelerated = if integer_dot_product8_bit_unsigned_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product8_bit_signed_accelerated(
+        mut self,
+        integer_dot_product8_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product8_bit_signed_accelerated = if integer_dot_product8_bit_signed_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product8_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product8_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product8_bit_mixed_signedness_accelerated =
+            if integer_dot_product8_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product4x8_bit_packed_unsigned_accelerated(
+        mut self,
+        integer_dot_product4x8_bit_packed_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product4x8_bit_packed_unsigned_accelerated =
+            if integer_dot_product4x8_bit_packed_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product4x8_bit_packed_signed_accelerated(
+        mut self,
+        integer_dot_product4x8_bit_packed_signed_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product4x8_bit_packed_signed_accelerated =
+            if integer_dot_product4x8_bit_packed_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product4x8_bit_packed_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product4x8_bit_packed_mixed_signedness_accelerated =
+            if integer_dot_product4x8_bit_packed_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product16_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product16_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product16_bit_unsigned_accelerated = if integer_dot_product16_bit_unsigned_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product16_bit_signed_accelerated(
+        mut self,
+        integer_dot_product16_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product16_bit_signed_accelerated = if integer_dot_product16_bit_signed_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product16_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product16_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product16_bit_mixed_signedness_accelerated =
+            if integer_dot_product16_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product32_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product32_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product32_bit_unsigned_accelerated = if integer_dot_product32_bit_unsigned_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product32_bit_signed_accelerated(
+        mut self,
+        integer_dot_product32_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product32_bit_signed_accelerated = if integer_dot_product32_bit_signed_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product32_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product32_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product32_bit_mixed_signedness_accelerated =
+            if integer_dot_product32_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product64_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product64_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product64_bit_unsigned_accelerated = if integer_dot_product64_bit_unsigned_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product64_bit_signed_accelerated(
+        mut self,
+        integer_dot_product64_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product64_bit_signed_accelerated = if integer_dot_product64_bit_signed_accelerated {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn integer_dot_product64_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product64_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner.integer_dot_product64_bit_mixed_signedness_accelerated =
+            if integer_dot_product64_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated =
+            if integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating8_bit_signed_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating8_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating8_bit_signed_accelerated =
+            if integer_dot_product_accumulating_saturating8_bit_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated =
+            if integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated =
+            if integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated =
+            if integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated =
+            if integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated =
+            if integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating16_bit_signed_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating16_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating16_bit_signed_accelerated =
+            if integer_dot_product_accumulating_saturating16_bit_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated =
+            if integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated =
+            if integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating32_bit_signed_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating32_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating32_bit_signed_accelerated =
+            if integer_dot_product_accumulating_saturating32_bit_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated =
+            if integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated =
+            if integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating64_bit_signed_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating64_bit_signed_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating64_bit_signed_accelerated =
+            if integer_dot_product_accumulating_saturating64_bit_signed_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated(
+        mut self,
+        integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: bool,
+    ) -> Self {
+        self.inner
+            .integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated =
+            if integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderIntegerDotProductPropertiesKHRBuilder {
+    type Target = vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceShaderIntegerDotProductPropertiesKHRBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDrmPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     type Type = PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder;

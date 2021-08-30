@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 189
+//! Generated from vk.xml with `VK_HEADER_VERSION` 190
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1176,6 +1176,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_shader_integer_dot_product(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_shader_integer_dot_product(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
@@ -3909,6 +3915,7 @@ pub struct DeviceExtensions {
     pub ext_shader_demote_to_helper_invocation: bool,
     pub nv_device_generated_commands: bool,
     pub nv_inherited_viewport_scissor: bool,
+    pub khr_shader_integer_dot_product: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
     pub ext_device_memory_report: bool,
@@ -3938,6 +3945,7 @@ pub struct DeviceExtensions {
     pub valve_mutable_descriptor_type: bool,
     pub ext_vertex_input_dynamic_state: bool,
     pub ext_physical_device_drm: bool,
+    pub ext_primitive_topology_list_restart: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
     pub huawei_subpass_shading: bool,
@@ -4129,6 +4137,7 @@ impl DeviceExtensions {
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
             b"VK_NV_device_generated_commands" => self.nv_device_generated_commands = true,
             b"VK_NV_inherited_viewport_scissor" => self.nv_inherited_viewport_scissor = true,
+            b"VK_KHR_shader_integer_dot_product" => self.khr_shader_integer_dot_product = true,
             b"VK_EXT_texel_buffer_alignment" => self.ext_texel_buffer_alignment = true,
             b"VK_QCOM_render_pass_transform" => self.qcom_render_pass_transform = true,
             b"VK_EXT_device_memory_report" => self.ext_device_memory_report = true,
@@ -4158,6 +4167,7 @@ impl DeviceExtensions {
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_EXT_physical_device_drm" => self.ext_physical_device_drm = true,
+            b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
@@ -4349,6 +4359,7 @@ impl DeviceExtensions {
             ext_shader_demote_to_helper_invocation: false,
             nv_device_generated_commands: false,
             nv_inherited_viewport_scissor: false,
+            khr_shader_integer_dot_product: false,
             ext_texel_buffer_alignment: false,
             qcom_render_pass_transform: false,
             ext_device_memory_report: false,
@@ -4378,6 +4389,7 @@ impl DeviceExtensions {
             valve_mutable_descriptor_type: false,
             ext_vertex_input_dynamic_state: false,
             ext_physical_device_drm: false,
+            ext_primitive_topology_list_restart: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
             huawei_subpass_shading: false,
@@ -5694,6 +5706,12 @@ impl DeviceExtensions {
     pub fn enable_nv_inherited_viewport_scissor(&mut self) {
         self.nv_inherited_viewport_scissor = true;
     }
+    pub fn supports_khr_shader_integer_dot_product(&self) -> bool {
+        self.khr_shader_integer_dot_product
+    }
+    pub fn enable_khr_shader_integer_dot_product(&mut self) {
+        self.khr_shader_integer_dot_product = true;
+    }
     pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
         self.ext_texel_buffer_alignment
     }
@@ -5905,6 +5923,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
         self.ext_physical_device_drm = true;
+    }
+    pub fn supports_ext_primitive_topology_list_restart(&self) -> bool {
+        self.ext_primitive_topology_list_restart
+    }
+    pub fn enable_ext_primitive_topology_list_restart(&mut self) {
+        self.ext_primitive_topology_list_restart = true;
     }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.fuchsia_external_memory && self.supports_khr_external_memory()
@@ -6525,6 +6549,9 @@ impl DeviceExtensions {
         if self.nv_inherited_viewport_scissor {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_inherited_viewport_scissor\0") })
         }
+        if self.khr_shader_integer_dot_product {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_integer_dot_product\0") })
+        }
         if self.ext_texel_buffer_alignment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_texel_buffer_alignment\0") })
         }
@@ -6611,6 +6638,9 @@ impl DeviceExtensions {
         }
         if self.ext_physical_device_drm {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_physical_device_drm\0") })
+        }
+        if self.ext_primitive_topology_list_restart {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_primitive_topology_list_restart\0") })
         }
         if self.fuchsia_external_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })

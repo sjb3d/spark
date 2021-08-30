@@ -13722,6 +13722,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV: Self = Self(1000278000);
     /// Added by extension VK_NV_inherited_viewport_scissor.
     pub const COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV: Self = Self(1000278001);
+    /// Added by extension VK_KHR_shader_integer_dot_product.
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES_KHR: Self = Self(1000280000);
+    /// Added by extension VK_KHR_shader_integer_dot_product.
+    pub const PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES_KHR: Self = Self(1000280001);
     /// Added by extension VK_EXT_texel_buffer_alignment.
     pub const PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT: Self = Self(1000281000);
     /// Added by extension VK_EXT_texel_buffer_alignment.
@@ -13850,6 +13854,8 @@ impl StructureType {
     pub const VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT: Self = Self(1000352002);
     /// Added by extension VK_EXT_physical_device_drm.
     pub const PHYSICAL_DEVICE_DRM_PROPERTIES_EXT: Self = Self(1000353000);
+    /// Added by extension VK_EXT_primitive_topology_list_restart.
+    pub const PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT: Self = Self(1000356000);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     /// Added by extension VK_FUCHSIA_external_memory.
@@ -14335,6 +14341,8 @@ impl fmt::Display for StructureType {
             1000277007 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV"),
             1000278000 => Some(&"PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV"),
             1000278001 => Some(&"COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV"),
+            1000280000 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES_KHR"),
+            1000280001 => Some(&"PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES_KHR"),
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000281001 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
@@ -14399,6 +14407,7 @@ impl fmt::Display for StructureType {
             1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
             1000353000 => Some(&"PHYSICAL_DEVICE_DRM_PROPERTIES_EXT"),
+            1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
@@ -34471,6 +34480,37 @@ impl fmt::Debug for AttachmentReferenceStencilLayout {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub primitive_topology_list_restart: Bool32,
+    pub primitive_topology_patch_list_restart: Bool32,
+}
+impl default::Default for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            primitive_topology_list_restart: Bool32::default(),
+            primitive_topology_patch_list_restart: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("primitive_topology_list_restart", &self.primitive_topology_list_restart)
+            .field(
+                "primitive_topology_patch_list_restart",
+                &self.primitive_topology_patch_list_restart,
+            )
+            .finish()
+    }
+}
 pub type AttachmentReferenceStencilLayoutKHR = AttachmentReferenceStencilLayout;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -38886,6 +38926,233 @@ impl fmt::Debug for CuLaunchInfoNVX {
             .field("p_params", &self.p_params)
             .field("extra_count", &self.extra_count)
             .field("p_extras", &self.p_extras)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_integer_dot_product: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            shader_integer_dot_product: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderIntegerDotProductFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_integer_dot_product", &self.shader_integer_dot_product)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub integer_dot_product8_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product8_bit_signed_accelerated: Bool32,
+    pub integer_dot_product8_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product4x8_bit_packed_unsigned_accelerated: Bool32,
+    pub integer_dot_product4x8_bit_packed_signed_accelerated: Bool32,
+    pub integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product16_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product16_bit_signed_accelerated: Bool32,
+    pub integer_dot_product16_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product32_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product32_bit_signed_accelerated: Bool32,
+    pub integer_dot_product32_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product64_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product64_bit_signed_accelerated: Bool32,
+    pub integer_dot_product64_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Bool32,
+    pub integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Bool32,
+}
+impl default::Default for PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            integer_dot_product8_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product8_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product8_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product4x8_bit_packed_unsigned_accelerated: Bool32::default(),
+            integer_dot_product4x8_bit_packed_signed_accelerated: Bool32::default(),
+            integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product16_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product16_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product16_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product32_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product32_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product32_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product64_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product64_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product64_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Bool32::default(),
+            integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderIntegerDotProductPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "integer_dot_product8_bit_unsigned_accelerated",
+                &self.integer_dot_product8_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product8_bit_signed_accelerated",
+                &self.integer_dot_product8_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product8_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product8_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product4x8_bit_packed_unsigned_accelerated",
+                &self.integer_dot_product4x8_bit_packed_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product4x8_bit_packed_signed_accelerated",
+                &self.integer_dot_product4x8_bit_packed_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product4x8_bit_packed_mixed_signedness_accelerated",
+                &self.integer_dot_product4x8_bit_packed_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product16_bit_unsigned_accelerated",
+                &self.integer_dot_product16_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product16_bit_signed_accelerated",
+                &self.integer_dot_product16_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product16_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product16_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product32_bit_unsigned_accelerated",
+                &self.integer_dot_product32_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product32_bit_signed_accelerated",
+                &self.integer_dot_product32_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product32_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product32_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product64_bit_unsigned_accelerated",
+                &self.integer_dot_product64_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product64_bit_signed_accelerated",
+                &self.integer_dot_product64_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product64_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product64_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated",
+                &self.integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating8_bit_signed_accelerated",
+                &self.integer_dot_product_accumulating_saturating8_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated",
+                &self.integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated",
+                &self.integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated",
+                &self.integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated",
+                &self.integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating16_bit_signed_accelerated",
+                &self.integer_dot_product_accumulating_saturating16_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated",
+                &self.integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating32_bit_signed_accelerated",
+                &self.integer_dot_product_accumulating_saturating32_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated",
+                &self.integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating64_bit_signed_accelerated",
+                &self.integer_dot_product_accumulating_saturating64_bit_signed_accelerated,
+            )
+            .field(
+                "integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated",
+                &self.integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated,
+            )
             .finish()
     }
 }
