@@ -1518,6 +1518,10 @@ impl<'a> Generator<'a> {
                 )?;
             }
             writeln!(w, "}}")?;
+            if members.iter().any(|member| member.decl.ty.decoration.is_pointer()) {
+                writeln!(w, "unsafe impl Send for {} {{ }}", agg_name)?;
+                writeln!(w, "unsafe impl Sync for {} {{ }}", agg_name)?;
+            }
             writeln!(w, "impl default::Default for {} {{ fn default() -> Self {{", agg_name)?;
             match agg_type {
                 AggregateType::Struct => {

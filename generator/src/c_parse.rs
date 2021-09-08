@@ -21,6 +21,18 @@ pub enum CDecoration {
     PointerToConstPointerToConst,
 }
 
+impl CDecoration {
+    pub fn is_pointer(&self) -> bool {
+        match self {
+            CDecoration::None | CDecoration::Const => false,
+            CDecoration::Pointer
+            | CDecoration::PointerToConst
+            | CDecoration::PointerToPointer
+            | CDecoration::PointerToConstPointerToConst => true,
+        }
+    }
+}
+
 impl fmt::Display for CDecoration {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
@@ -88,10 +100,7 @@ pub struct CType<'a> {
 
 impl<'a> CType<'a> {
     pub fn is_base_type(&self, base: CBaseType) -> bool {
-        self.base == base
-            && matches!(self.decoration, CDecoration::None | CDecoration::Const)
-            && self.array_size.is_none()
-            && self.bit_count.is_none()
+        self.base == base && !self.decoration.is_pointer() && self.array_size.is_none() && self.bit_count.is_none()
     }
 
     pub fn strip_array(&self) -> CType<'a> {

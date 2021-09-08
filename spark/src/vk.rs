@@ -16874,6 +16874,8 @@ pub struct BaseOutStructure {
     pub s_type: StructureType,
     pub p_next: *mut BaseOutStructure,
 }
+unsafe impl Send for BaseOutStructure {}
+unsafe impl Sync for BaseOutStructure {}
 impl default::Default for BaseOutStructure {
     fn default() -> Self {
         Self {
@@ -16896,6 +16898,8 @@ pub struct BaseInStructure {
     pub s_type: StructureType,
     pub p_next: *const BaseInStructure,
 }
+unsafe impl Send for BaseInStructure {}
+unsafe impl Sync for BaseInStructure {}
 impl default::Default for BaseInStructure {
     fn default() -> Self {
         Self {
@@ -17227,6 +17231,8 @@ pub struct ApplicationInfo {
     pub engine_version: u32,
     pub api_version: Version,
 }
+unsafe impl Send for ApplicationInfo {}
+unsafe impl Sync for ApplicationInfo {}
 impl default::Default for ApplicationInfo {
     fn default() -> Self {
         Self {
@@ -17263,6 +17269,8 @@ pub struct AllocationCallbacks {
     pub pfn_internal_allocation: Option<FnInternalAllocationNotification>,
     pub pfn_internal_free: Option<FnInternalFreeNotification>,
 }
+unsafe impl Send for AllocationCallbacks {}
+unsafe impl Sync for AllocationCallbacks {}
 impl default::Default for AllocationCallbacks {
     fn default() -> Self {
         Self {
@@ -17325,6 +17333,8 @@ pub struct DeviceQueueCreateInfo {
     pub queue_count: u32,
     pub p_queue_priorities: *const f32,
 }
+unsafe impl Send for DeviceQueueCreateInfo {}
+unsafe impl Sync for DeviceQueueCreateInfo {}
 impl default::Default for DeviceQueueCreateInfo {
     fn default() -> Self {
         Self {
@@ -17364,6 +17374,8 @@ pub struct DeviceCreateInfo {
     pub pp_enabled_extension_names: *const *const c_char,
     pub p_enabled_features: *const PhysicalDeviceFeatures,
 }
+unsafe impl Send for DeviceCreateInfo {}
+unsafe impl Sync for DeviceCreateInfo {}
 impl default::Default for DeviceCreateInfo {
     fn default() -> Self {
         Self {
@@ -17410,6 +17422,8 @@ pub struct InstanceCreateInfo {
     /// Extension names to be enabled
     pub pp_enabled_extension_names: *const *const c_char,
 }
+unsafe impl Send for InstanceCreateInfo {}
+unsafe impl Sync for InstanceCreateInfo {}
 impl default::Default for InstanceCreateInfo {
     fn default() -> Self {
         Self {
@@ -17506,6 +17520,8 @@ pub struct MemoryAllocateInfo {
     /// Index of the of the memory type to allocate from
     pub memory_type_index: u32,
 }
+unsafe impl Send for MemoryAllocateInfo {}
+unsafe impl Sync for MemoryAllocateInfo {}
 impl default::Default for MemoryAllocateInfo {
     fn default() -> Self {
         Self {
@@ -17673,6 +17689,8 @@ pub struct MappedMemoryRange {
     /// Size of the range within the memory object
     pub size: DeviceSize,
 }
+unsafe impl Send for MappedMemoryRange {}
+unsafe impl Sync for MappedMemoryRange {}
 impl default::Default for MappedMemoryRange {
     fn default() -> Self {
         Self {
@@ -17837,6 +17855,8 @@ pub struct WriteDescriptorSet {
     /// Buffer view to write to the descriptor for {UNIFORM,STORAGE}_TEXEL_BUFFER descriptor types.
     pub p_texel_buffer_view: *const BufferView,
 }
+unsafe impl Send for WriteDescriptorSet {}
+unsafe impl Sync for WriteDescriptorSet {}
 impl default::Default for WriteDescriptorSet {
     fn default() -> Self {
         Self {
@@ -17889,6 +17909,8 @@ pub struct CopyDescriptorSet {
     /// Number of descriptors to write (determines the size of the array pointed by pDescriptors)
     pub descriptor_count: u32,
 }
+unsafe impl Send for CopyDescriptorSet {}
+unsafe impl Sync for CopyDescriptorSet {}
 impl default::Default for CopyDescriptorSet {
     fn default() -> Self {
         Self {
@@ -17934,6 +17956,8 @@ pub struct BufferCreateInfo {
     pub queue_family_index_count: u32,
     pub p_queue_family_indices: *const u32,
 }
+unsafe impl Send for BufferCreateInfo {}
+unsafe impl Sync for BufferCreateInfo {}
 impl default::Default for BufferCreateInfo {
     fn default() -> Self {
         Self {
@@ -17976,6 +18000,8 @@ pub struct BufferViewCreateInfo {
     /// View size specified in bytes
     pub range: DeviceSize,
 }
+unsafe impl Send for BufferViewCreateInfo {}
+unsafe impl Sync for BufferViewCreateInfo {}
 impl default::Default for BufferViewCreateInfo {
     fn default() -> Self {
         Self {
@@ -18096,6 +18122,8 @@ pub struct MemoryBarrier {
     /// Memory accesses from the destination of the dependency to synchronize
     pub dst_access_mask: AccessFlags,
 }
+unsafe impl Send for MemoryBarrier {}
+unsafe impl Sync for MemoryBarrier {}
 impl default::Default for MemoryBarrier {
     fn default() -> Self {
         Self {
@@ -18136,6 +18164,8 @@ pub struct BufferMemoryBarrier {
     /// Amount of bytes to sync
     pub size: DeviceSize,
 }
+unsafe impl Send for BufferMemoryBarrier {}
+unsafe impl Sync for BufferMemoryBarrier {}
 impl default::Default for BufferMemoryBarrier {
     fn default() -> Self {
         Self {
@@ -18188,6 +18218,8 @@ pub struct ImageMemoryBarrier {
     /// Subresource range to sync
     pub subresource_range: ImageSubresourceRange,
 }
+unsafe impl Send for ImageMemoryBarrier {}
+unsafe impl Sync for ImageMemoryBarrier {}
 impl default::Default for ImageMemoryBarrier {
     fn default() -> Self {
         Self {
@@ -18245,6 +18277,8 @@ pub struct ImageCreateInfo {
     /// Initial image layout for all subresources
     pub initial_layout: ImageLayout,
 }
+unsafe impl Send for ImageCreateInfo {}
+unsafe impl Sync for ImageCreateInfo {}
 impl default::Default for ImageCreateInfo {
     fn default() -> Self {
         Self {
@@ -18335,6 +18369,8 @@ pub struct ImageViewCreateInfo {
     pub components: ComponentMapping,
     pub subresource_range: ImageSubresourceRange,
 }
+unsafe impl Send for ImageViewCreateInfo {}
+unsafe impl Sync for ImageViewCreateInfo {}
 impl default::Default for ImageViewCreateInfo {
     fn default() -> Self {
         Self {
@@ -18467,6 +18503,8 @@ pub struct SparseBufferMemoryBindInfo {
     pub bind_count: u32,
     pub p_binds: *const SparseMemoryBind,
 }
+unsafe impl Send for SparseBufferMemoryBindInfo {}
+unsafe impl Sync for SparseBufferMemoryBindInfo {}
 impl default::Default for SparseBufferMemoryBindInfo {
     fn default() -> Self {
         Self {
@@ -18492,6 +18530,8 @@ pub struct SparseImageOpaqueMemoryBindInfo {
     pub bind_count: u32,
     pub p_binds: *const SparseMemoryBind,
 }
+unsafe impl Send for SparseImageOpaqueMemoryBindInfo {}
+unsafe impl Sync for SparseImageOpaqueMemoryBindInfo {}
 impl default::Default for SparseImageOpaqueMemoryBindInfo {
     fn default() -> Self {
         Self {
@@ -18517,6 +18557,8 @@ pub struct SparseImageMemoryBindInfo {
     pub bind_count: u32,
     pub p_binds: *const SparseImageMemoryBind,
 }
+unsafe impl Send for SparseImageMemoryBindInfo {}
+unsafe impl Sync for SparseImageMemoryBindInfo {}
 impl default::Default for SparseImageMemoryBindInfo {
     fn default() -> Self {
         Self {
@@ -18551,6 +18593,8 @@ pub struct BindSparseInfo {
     pub signal_semaphore_count: u32,
     pub p_signal_semaphores: *const Semaphore,
 }
+unsafe impl Send for BindSparseInfo {}
+unsafe impl Sync for BindSparseInfo {}
 impl default::Default for BindSparseInfo {
     fn default() -> Self {
         Self {
@@ -18731,6 +18775,8 @@ pub struct ShaderModuleCreateInfo {
     /// Binary code of size codeSize
     pub p_code: *const u32,
 }
+unsafe impl Send for ShaderModuleCreateInfo {}
+unsafe impl Sync for ShaderModuleCreateInfo {}
 impl default::Default for ShaderModuleCreateInfo {
     fn default() -> Self {
         Self {
@@ -18767,6 +18813,8 @@ pub struct DescriptorSetLayoutBinding {
     /// Immutable samplers (used if descriptor type is SAMPLER or COMBINED_IMAGE_SAMPLER, is either NULL or contains count number of elements)
     pub p_immutable_samplers: *const Sampler,
 }
+unsafe impl Send for DescriptorSetLayoutBinding {}
+unsafe impl Sync for DescriptorSetLayoutBinding {}
 impl default::Default for DescriptorSetLayoutBinding {
     fn default() -> Self {
         Self {
@@ -18800,6 +18848,8 @@ pub struct DescriptorSetLayoutCreateInfo {
     /// Array of descriptor set layout bindings
     pub p_bindings: *const DescriptorSetLayoutBinding,
 }
+unsafe impl Send for DescriptorSetLayoutCreateInfo {}
+unsafe impl Sync for DescriptorSetLayoutCreateInfo {}
 impl default::Default for DescriptorSetLayoutCreateInfo {
     fn default() -> Self {
         Self {
@@ -18854,6 +18904,8 @@ pub struct DescriptorPoolCreateInfo {
     pub pool_size_count: u32,
     pub p_pool_sizes: *const DescriptorPoolSize,
 }
+unsafe impl Send for DescriptorPoolCreateInfo {}
+unsafe impl Sync for DescriptorPoolCreateInfo {}
 impl default::Default for DescriptorPoolCreateInfo {
     fn default() -> Self {
         Self {
@@ -18887,6 +18939,8 @@ pub struct DescriptorSetAllocateInfo {
     pub descriptor_set_count: u32,
     pub p_set_layouts: *const DescriptorSetLayout,
 }
+unsafe impl Send for DescriptorSetAllocateInfo {}
+unsafe impl Sync for DescriptorSetAllocateInfo {}
 impl default::Default for DescriptorSetAllocateInfo {
     fn default() -> Self {
         Self {
@@ -18949,6 +19003,8 @@ pub struct SpecializationInfo {
     /// Pointer to SpecConstant data
     pub p_data: *const c_void,
 }
+unsafe impl Send for SpecializationInfo {}
+unsafe impl Sync for SpecializationInfo {}
 impl default::Default for SpecializationInfo {
     fn default() -> Self {
         Self {
@@ -18983,6 +19039,8 @@ pub struct PipelineShaderStageCreateInfo {
     pub p_name: *const c_char,
     pub p_specialization_info: *const SpecializationInfo,
 }
+unsafe impl Send for PipelineShaderStageCreateInfo {}
+unsafe impl Sync for PipelineShaderStageCreateInfo {}
 impl default::Default for PipelineShaderStageCreateInfo {
     fn default() -> Self {
         Self {
@@ -19024,6 +19082,8 @@ pub struct ComputePipelineCreateInfo {
     /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is not -1, it specifies an index into pCreateInfos of the base pipeline this is a derivative of
     pub base_pipeline_index: i32,
 }
+unsafe impl Send for ComputePipelineCreateInfo {}
+unsafe impl Sync for ComputePipelineCreateInfo {}
 impl default::Default for ComputePipelineCreateInfo {
     fn default() -> Self {
         Self {
@@ -19123,6 +19183,8 @@ pub struct PipelineVertexInputStateCreateInfo {
     pub vertex_attribute_description_count: u32,
     pub p_vertex_attribute_descriptions: *const VertexInputAttributeDescription,
 }
+unsafe impl Send for PipelineVertexInputStateCreateInfo {}
+unsafe impl Sync for PipelineVertexInputStateCreateInfo {}
 impl default::Default for PipelineVertexInputStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19164,6 +19226,8 @@ pub struct PipelineInputAssemblyStateCreateInfo {
     pub topology: PrimitiveTopology,
     pub primitive_restart_enable: Bool32,
 }
+unsafe impl Send for PipelineInputAssemblyStateCreateInfo {}
+unsafe impl Sync for PipelineInputAssemblyStateCreateInfo {}
 impl default::Default for PipelineInputAssemblyStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19194,6 +19258,8 @@ pub struct PipelineTessellationStateCreateInfo {
     pub flags: PipelineTessellationStateCreateFlags,
     pub patch_control_points: u32,
 }
+unsafe impl Send for PipelineTessellationStateCreateInfo {}
+unsafe impl Sync for PipelineTessellationStateCreateInfo {}
 impl default::Default for PipelineTessellationStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19225,6 +19291,8 @@ pub struct PipelineViewportStateCreateInfo {
     pub scissor_count: u32,
     pub p_scissors: *const Rect2D,
 }
+unsafe impl Send for PipelineViewportStateCreateInfo {}
+unsafe impl Sync for PipelineViewportStateCreateInfo {}
 impl default::Default for PipelineViewportStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19269,6 +19337,8 @@ pub struct PipelineRasterizationStateCreateInfo {
     pub depth_bias_slope_factor: f32,
     pub line_width: f32,
 }
+unsafe impl Send for PipelineRasterizationStateCreateInfo {}
+unsafe impl Sync for PipelineRasterizationStateCreateInfo {}
 impl default::Default for PipelineRasterizationStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19324,6 +19394,8 @@ pub struct PipelineMultisampleStateCreateInfo {
     pub alpha_to_coverage_enable: Bool32,
     pub alpha_to_one_enable: Bool32,
 }
+unsafe impl Send for PipelineMultisampleStateCreateInfo {}
+unsafe impl Sync for PipelineMultisampleStateCreateInfo {}
 impl default::Default for PipelineMultisampleStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19407,6 +19479,8 @@ pub struct PipelineColorBlendStateCreateInfo {
     pub p_attachments: *const PipelineColorBlendAttachmentState,
     pub blend_constants: [f32; 4],
 }
+unsafe impl Send for PipelineColorBlendStateCreateInfo {}
+unsafe impl Sync for PipelineColorBlendStateCreateInfo {}
 impl default::Default for PipelineColorBlendStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19444,6 +19518,8 @@ pub struct PipelineDynamicStateCreateInfo {
     pub dynamic_state_count: u32,
     pub p_dynamic_states: *const DynamicState,
 }
+unsafe impl Send for PipelineDynamicStateCreateInfo {}
+unsafe impl Sync for PipelineDynamicStateCreateInfo {}
 impl default::Default for PipelineDynamicStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19520,6 +19596,8 @@ pub struct PipelineDepthStencilStateCreateInfo {
     pub min_depth_bounds: f32,
     pub max_depth_bounds: f32,
 }
+unsafe impl Send for PipelineDepthStencilStateCreateInfo {}
+unsafe impl Sync for PipelineDepthStencilStateCreateInfo {}
 impl default::Default for PipelineDepthStencilStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -19584,6 +19662,8 @@ pub struct GraphicsPipelineCreateInfo {
     /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is not -1, it specifies an index into pCreateInfos of the base pipeline this is a derivative of
     pub base_pipeline_index: i32,
 }
+unsafe impl Send for GraphicsPipelineCreateInfo {}
+unsafe impl Sync for GraphicsPipelineCreateInfo {}
 impl default::Default for GraphicsPipelineCreateInfo {
     fn default() -> Self {
         Self {
@@ -19645,6 +19725,8 @@ pub struct PipelineCacheCreateInfo {
     /// Initial data to populate cache
     pub p_initial_data: *const c_void,
 }
+unsafe impl Send for PipelineCacheCreateInfo {}
+unsafe impl Sync for PipelineCacheCreateInfo {}
 impl default::Default for PipelineCacheCreateInfo {
     fn default() -> Self {
         Self {
@@ -19741,6 +19823,8 @@ pub struct PipelineLayoutCreateInfo {
     /// Array of pushConstantRangeCount number of ranges used by various shader stages
     pub p_push_constant_ranges: *const PushConstantRange,
 }
+unsafe impl Send for PipelineLayoutCreateInfo {}
+unsafe impl Sync for PipelineLayoutCreateInfo {}
 impl default::Default for PipelineLayoutCreateInfo {
     fn default() -> Self {
         Self {
@@ -19792,6 +19876,8 @@ pub struct SamplerCreateInfo {
     pub border_color: BorderColor,
     pub unnormalized_coordinates: Bool32,
 }
+unsafe impl Send for SamplerCreateInfo {}
+unsafe impl Sync for SamplerCreateInfo {}
 impl default::Default for SamplerCreateInfo {
     fn default() -> Self {
         Self {
@@ -19849,6 +19935,8 @@ pub struct CommandPoolCreateInfo {
     pub flags: CommandPoolCreateFlags,
     pub queue_family_index: u32,
 }
+unsafe impl Send for CommandPoolCreateInfo {}
+unsafe impl Sync for CommandPoolCreateInfo {}
 impl default::Default for CommandPoolCreateInfo {
     fn default() -> Self {
         Self {
@@ -19878,6 +19966,8 @@ pub struct CommandBufferAllocateInfo {
     pub level: CommandBufferLevel,
     pub command_buffer_count: u32,
 }
+unsafe impl Send for CommandBufferAllocateInfo {}
+unsafe impl Sync for CommandBufferAllocateInfo {}
 impl default::Default for CommandBufferAllocateInfo {
     fn default() -> Self {
         Self {
@@ -19917,6 +20007,8 @@ pub struct CommandBufferInheritanceInfo {
     /// Pipeline statistics that may be counted for this secondary command buffer
     pub pipeline_statistics: QueryPipelineStatisticFlags,
 }
+unsafe impl Send for CommandBufferInheritanceInfo {}
+unsafe impl Sync for CommandBufferInheritanceInfo {}
 impl default::Default for CommandBufferInheritanceInfo {
     fn default() -> Self {
         Self {
@@ -19955,6 +20047,8 @@ pub struct CommandBufferBeginInfo {
     /// Pointer to inheritance info for secondary command buffers
     pub p_inheritance_info: *const CommandBufferInheritanceInfo,
 }
+unsafe impl Send for CommandBufferBeginInfo {}
+unsafe impl Sync for CommandBufferBeginInfo {}
 impl default::Default for CommandBufferBeginInfo {
     fn default() -> Self {
         Self {
@@ -19986,6 +20080,8 @@ pub struct RenderPassBeginInfo {
     pub clear_value_count: u32,
     pub p_clear_values: *const ClearValue,
 }
+unsafe impl Send for RenderPassBeginInfo {}
+unsafe impl Sync for RenderPassBeginInfo {}
 impl default::Default for RenderPassBeginInfo {
     fn default() -> Self {
         Self {
@@ -20185,6 +20281,8 @@ pub struct SubpassDescription {
     pub preserve_attachment_count: u32,
     pub p_preserve_attachments: *const u32,
 }
+unsafe impl Send for SubpassDescription {}
+unsafe impl Sync for SubpassDescription {}
 impl default::Default for SubpassDescription {
     fn default() -> Self {
         Self {
@@ -20269,6 +20367,8 @@ pub struct RenderPassCreateInfo {
     pub dependency_count: u32,
     pub p_dependencies: *const SubpassDependency,
 }
+unsafe impl Send for RenderPassCreateInfo {}
+unsafe impl Sync for RenderPassCreateInfo {}
 impl default::Default for RenderPassCreateInfo {
     fn default() -> Self {
         Self {
@@ -20307,6 +20407,8 @@ pub struct EventCreateInfo {
     /// Event creation flags
     pub flags: EventCreateFlags,
 }
+unsafe impl Send for EventCreateInfo {}
+unsafe impl Sync for EventCreateInfo {}
 impl default::Default for EventCreateInfo {
     fn default() -> Self {
         Self {
@@ -20333,6 +20435,8 @@ pub struct FenceCreateInfo {
     /// Fence creation flags
     pub flags: FenceCreateFlags,
 }
+unsafe impl Send for FenceCreateInfo {}
+unsafe impl Sync for FenceCreateInfo {}
 impl default::Default for FenceCreateInfo {
     fn default() -> Self {
         Self {
@@ -21224,6 +21328,8 @@ pub struct SemaphoreCreateInfo {
     /// Semaphore creation flags
     pub flags: SemaphoreCreateFlags,
 }
+unsafe impl Send for SemaphoreCreateInfo {}
+unsafe impl Sync for SemaphoreCreateInfo {}
 impl default::Default for SemaphoreCreateInfo {
     fn default() -> Self {
         Self {
@@ -21253,6 +21359,8 @@ pub struct QueryPoolCreateInfo {
     /// Optional
     pub pipeline_statistics: QueryPipelineStatisticFlags,
 }
+unsafe impl Send for QueryPoolCreateInfo {}
+unsafe impl Sync for QueryPoolCreateInfo {}
 impl default::Default for QueryPoolCreateInfo {
     fn default() -> Self {
         Self {
@@ -21290,6 +21398,8 @@ pub struct FramebufferCreateInfo {
     pub height: u32,
     pub layers: u32,
 }
+unsafe impl Send for FramebufferCreateInfo {}
+unsafe impl Sync for FramebufferCreateInfo {}
 impl default::Default for FramebufferCreateInfo {
     fn default() -> Self {
         Self {
@@ -21464,6 +21574,8 @@ pub struct SubmitInfo {
     pub signal_semaphore_count: u32,
     pub p_signal_semaphores: *const Semaphore,
 }
+unsafe impl Send for SubmitInfo {}
+unsafe impl Sync for SubmitInfo {}
 impl default::Default for SubmitInfo {
     fn default() -> Self {
         Self {
@@ -21512,6 +21624,8 @@ pub struct DisplayPropertiesKHR {
     /// VK_TRUE if this is a "smart" display that supports self-refresh/internal buffering.
     pub persistent_content: Bool32,
 }
+unsafe impl Send for DisplayPropertiesKHR {}
+unsafe impl Sync for DisplayPropertiesKHR {}
 impl default::Default for DisplayPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -21619,6 +21733,8 @@ pub struct DisplayModeCreateInfoKHR {
     /// The parameters this mode uses.
     pub parameters: DisplayModeParametersKHR,
 }
+unsafe impl Send for DisplayModeCreateInfoKHR {}
+unsafe impl Sync for DisplayModeCreateInfoKHR {}
 impl default::Default for DisplayModeCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21705,6 +21821,8 @@ pub struct DisplaySurfaceCreateInfoKHR {
     /// size of the images to use with this surface
     pub image_extent: Extent2D,
 }
+unsafe impl Send for DisplaySurfaceCreateInfoKHR {}
+unsafe impl Sync for DisplaySurfaceCreateInfoKHR {}
 impl default::Default for DisplaySurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21749,6 +21867,8 @@ pub struct DisplayPresentInfoKHR {
     /// For smart displays, use buffered mode.  If the display properties member "persistentMode" is VK_FALSE, this member must always be VK_FALSE.
     pub persistent: Bool32,
 }
+unsafe impl Send for DisplayPresentInfoKHR {}
+unsafe impl Sync for DisplayPresentInfoKHR {}
 impl default::Default for DisplayPresentInfoKHR {
     fn default() -> Self {
         Self {
@@ -21835,6 +21955,8 @@ pub struct AndroidSurfaceCreateInfoKHR {
     pub flags: AndroidSurfaceCreateFlagsKHR,
     pub window: *mut ANativeWindow,
 }
+unsafe impl Send for AndroidSurfaceCreateInfoKHR {}
+unsafe impl Sync for AndroidSurfaceCreateInfoKHR {}
 impl default::Default for AndroidSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21863,6 +21985,8 @@ pub struct ViSurfaceCreateInfoNN {
     pub flags: ViSurfaceCreateFlagsNN,
     pub window: *mut c_void,
 }
+unsafe impl Send for ViSurfaceCreateInfoNN {}
+unsafe impl Sync for ViSurfaceCreateInfoNN {}
 impl default::Default for ViSurfaceCreateInfoNN {
     fn default() -> Self {
         Self {
@@ -21892,6 +22016,8 @@ pub struct WaylandSurfaceCreateInfoKHR {
     pub display: *mut wl_display,
     pub surface: *mut wl_surface,
 }
+unsafe impl Send for WaylandSurfaceCreateInfoKHR {}
+unsafe impl Sync for WaylandSurfaceCreateInfoKHR {}
 impl default::Default for WaylandSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21923,6 +22049,8 @@ pub struct Win32SurfaceCreateInfoKHR {
     pub hinstance: HINSTANCE,
     pub hwnd: HWND,
 }
+unsafe impl Send for Win32SurfaceCreateInfoKHR {}
+unsafe impl Sync for Win32SurfaceCreateInfoKHR {}
 impl default::Default for Win32SurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21954,6 +22082,8 @@ pub struct XlibSurfaceCreateInfoKHR {
     pub dpy: *mut Display,
     pub window: Window,
 }
+unsafe impl Send for XlibSurfaceCreateInfoKHR {}
+unsafe impl Sync for XlibSurfaceCreateInfoKHR {}
 impl default::Default for XlibSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -21985,6 +22115,8 @@ pub struct XcbSurfaceCreateInfoKHR {
     pub connection: *mut xcb_connection_t,
     pub window: xcb_window_t,
 }
+unsafe impl Send for XcbSurfaceCreateInfoKHR {}
+unsafe impl Sync for XcbSurfaceCreateInfoKHR {}
 impl default::Default for XcbSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -22016,6 +22148,8 @@ pub struct DirectFBSurfaceCreateInfoEXT {
     pub dfb: *mut IDirectFB,
     pub surface: *mut IDirectFBSurface,
 }
+unsafe impl Send for DirectFBSurfaceCreateInfoEXT {}
+unsafe impl Sync for DirectFBSurfaceCreateInfoEXT {}
 impl default::Default for DirectFBSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -22046,6 +22180,8 @@ pub struct ImagePipeSurfaceCreateInfoFUCHSIA {
     pub flags: ImagePipeSurfaceCreateFlagsFUCHSIA,
     pub image_pipe_handle: zx_handle_t,
 }
+unsafe impl Send for ImagePipeSurfaceCreateInfoFUCHSIA {}
+unsafe impl Sync for ImagePipeSurfaceCreateInfoFUCHSIA {}
 impl default::Default for ImagePipeSurfaceCreateInfoFUCHSIA {
     fn default() -> Self {
         Self {
@@ -22127,6 +22263,8 @@ pub struct SwapchainCreateInfoKHR {
     /// Existing swap chain to replace, if any
     pub old_swapchain: Option<SwapchainKHR>,
 }
+unsafe impl Send for SwapchainCreateInfoKHR {}
+unsafe impl Sync for SwapchainCreateInfoKHR {}
 impl default::Default for SwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -22193,6 +22331,8 @@ pub struct PresentInfoKHR {
     /// Optional (i.e. if non-NULL) VkResult for each swapchain
     pub p_results: *mut Result,
 }
+unsafe impl Send for PresentInfoKHR {}
+unsafe impl Sync for PresentInfoKHR {}
 impl default::Default for PresentInfoKHR {
     fn default() -> Self {
         Self {
@@ -22233,6 +22373,8 @@ pub struct DebugReportCallbackCreateInfoEXT {
     /// User data provided to callback function
     pub p_user_data: *mut c_void,
 }
+unsafe impl Send for DebugReportCallbackCreateInfoEXT {}
+unsafe impl Sync for DebugReportCallbackCreateInfoEXT {}
 impl default::Default for DebugReportCallbackCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -22269,6 +22411,8 @@ pub struct ValidationFlagsEXT {
     /// Validation checks to disable
     pub p_disabled_validation_checks: *const ValidationCheckEXT,
 }
+unsafe impl Send for ValidationFlagsEXT {}
+unsafe impl Sync for ValidationFlagsEXT {}
 impl default::Default for ValidationFlagsEXT {
     fn default() -> Self {
         Self {
@@ -22304,6 +22448,8 @@ pub struct ValidationFeaturesEXT {
     /// Validation features to disable
     pub p_disabled_validation_features: *const ValidationFeatureDisableEXT,
 }
+unsafe impl Send for ValidationFeaturesEXT {}
+unsafe impl Sync for ValidationFeaturesEXT {}
 impl default::Default for ValidationFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -22342,6 +22488,8 @@ pub struct PipelineRasterizationStateRasterizationOrderAMD {
     /// Rasterization order to use for the pipeline
     pub rasterization_order: RasterizationOrderAMD,
 }
+unsafe impl Send for PipelineRasterizationStateRasterizationOrderAMD {}
+unsafe impl Sync for PipelineRasterizationStateRasterizationOrderAMD {}
 impl default::Default for PipelineRasterizationStateRasterizationOrderAMD {
     fn default() -> Self {
         Self {
@@ -22372,6 +22520,8 @@ pub struct DebugMarkerObjectNameInfoEXT {
     /// Name to apply to the object
     pub p_object_name: *const c_char,
 }
+unsafe impl Send for DebugMarkerObjectNameInfoEXT {}
+unsafe impl Sync for DebugMarkerObjectNameInfoEXT {}
 impl default::Default for DebugMarkerObjectNameInfoEXT {
     fn default() -> Self {
         Self {
@@ -22410,6 +22560,8 @@ pub struct DebugMarkerObjectTagInfoEXT {
     /// Tag data to attach to the object
     pub p_tag: *const c_void,
 }
+unsafe impl Send for DebugMarkerObjectTagInfoEXT {}
+unsafe impl Sync for DebugMarkerObjectTagInfoEXT {}
 impl default::Default for DebugMarkerObjectTagInfoEXT {
     fn default() -> Self {
         Self {
@@ -22446,6 +22598,8 @@ pub struct DebugMarkerMarkerInfoEXT {
     /// Optional color for debug marker
     pub color: [f32; 4],
 }
+unsafe impl Send for DebugMarkerMarkerInfoEXT {}
+unsafe impl Sync for DebugMarkerMarkerInfoEXT {}
 impl default::Default for DebugMarkerMarkerInfoEXT {
     fn default() -> Self {
         Self {
@@ -22474,6 +22628,8 @@ pub struct DedicatedAllocationImageCreateInfoNV {
     /// Whether this image uses a dedicated allocation
     pub dedicated_allocation: Bool32,
 }
+unsafe impl Send for DedicatedAllocationImageCreateInfoNV {}
+unsafe impl Sync for DedicatedAllocationImageCreateInfoNV {}
 impl default::Default for DedicatedAllocationImageCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -22500,6 +22656,8 @@ pub struct DedicatedAllocationBufferCreateInfoNV {
     /// Whether this buffer uses a dedicated allocation
     pub dedicated_allocation: Bool32,
 }
+unsafe impl Send for DedicatedAllocationBufferCreateInfoNV {}
+unsafe impl Sync for DedicatedAllocationBufferCreateInfoNV {}
 impl default::Default for DedicatedAllocationBufferCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -22528,6 +22686,8 @@ pub struct DedicatedAllocationMemoryAllocateInfoNV {
     /// Buffer that this allocation will be bound to
     pub buffer: Option<Buffer>,
 }
+unsafe impl Send for DedicatedAllocationMemoryAllocateInfoNV {}
+unsafe impl Sync for DedicatedAllocationMemoryAllocateInfoNV {}
 impl default::Default for DedicatedAllocationMemoryAllocateInfoNV {
     fn default() -> Self {
         Self {
@@ -22586,6 +22746,8 @@ pub struct ExternalMemoryImageCreateInfoNV {
     pub p_next: *const c_void,
     pub handle_types: ExternalMemoryHandleTypeFlagsNV,
 }
+unsafe impl Send for ExternalMemoryImageCreateInfoNV {}
+unsafe impl Sync for ExternalMemoryImageCreateInfoNV {}
 impl default::Default for ExternalMemoryImageCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -22611,6 +22773,8 @@ pub struct ExportMemoryAllocateInfoNV {
     pub p_next: *const c_void,
     pub handle_types: ExternalMemoryHandleTypeFlagsNV,
 }
+unsafe impl Send for ExportMemoryAllocateInfoNV {}
+unsafe impl Sync for ExportMemoryAllocateInfoNV {}
 impl default::Default for ExportMemoryAllocateInfoNV {
     fn default() -> Self {
         Self {
@@ -22637,6 +22801,8 @@ pub struct ImportMemoryWin32HandleInfoNV {
     pub handle_type: ExternalMemoryHandleTypeFlagsNV,
     pub handle: HANDLE,
 }
+unsafe impl Send for ImportMemoryWin32HandleInfoNV {}
+unsafe impl Sync for ImportMemoryWin32HandleInfoNV {}
 impl default::Default for ImportMemoryWin32HandleInfoNV {
     fn default() -> Self {
         Self {
@@ -22665,6 +22831,8 @@ pub struct ExportMemoryWin32HandleInfoNV {
     pub p_attributes: *const SECURITY_ATTRIBUTES,
     pub dw_access: DWORD,
 }
+unsafe impl Send for ExportMemoryWin32HandleInfoNV {}
+unsafe impl Sync for ExportMemoryWin32HandleInfoNV {}
 impl default::Default for ExportMemoryWin32HandleInfoNV {
     fn default() -> Self {
         Self {
@@ -22698,6 +22866,8 @@ pub struct Win32KeyedMutexAcquireReleaseInfoNV {
     pub p_release_syncs: *const DeviceMemory,
     pub p_release_keys: *const u64,
 }
+unsafe impl Send for Win32KeyedMutexAcquireReleaseInfoNV {}
+unsafe impl Sync for Win32KeyedMutexAcquireReleaseInfoNV {}
 impl default::Default for Win32KeyedMutexAcquireReleaseInfoNV {
     fn default() -> Self {
         Self {
@@ -22735,6 +22905,8 @@ pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     pub p_next: *mut c_void,
     pub device_generated_commands: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
 impl default::Default for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     fn default() -> Self {
         Self {
@@ -22760,6 +22932,8 @@ pub struct DevicePrivateDataCreateInfoEXT {
     pub p_next: *const c_void,
     pub private_data_slot_request_count: u32,
 }
+unsafe impl Send for DevicePrivateDataCreateInfoEXT {}
+unsafe impl Sync for DevicePrivateDataCreateInfoEXT {}
 impl default::Default for DevicePrivateDataCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -22785,6 +22959,8 @@ pub struct PrivateDataSlotCreateInfoEXT {
     pub p_next: *const c_void,
     pub flags: PrivateDataSlotCreateFlagsEXT,
 }
+unsafe impl Send for PrivateDataSlotCreateInfoEXT {}
+unsafe impl Sync for PrivateDataSlotCreateInfoEXT {}
 impl default::Default for PrivateDataSlotCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -22810,6 +22986,8 @@ pub struct PhysicalDevicePrivateDataFeaturesEXT {
     pub p_next: *mut c_void,
     pub private_data: Bool32,
 }
+unsafe impl Send for PhysicalDevicePrivateDataFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePrivateDataFeaturesEXT {}
 impl default::Default for PhysicalDevicePrivateDataFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -22843,6 +23021,8 @@ pub struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     pub min_sequences_index_buffer_offset_alignment: u32,
     pub min_indirect_commands_buffer_offset_alignment: u32,
 }
+unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
 impl default::Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     fn default() -> Self {
         Self {
@@ -22905,6 +23085,8 @@ pub struct PhysicalDeviceMultiDrawPropertiesEXT {
     pub p_next: *mut c_void,
     pub max_multi_draw_count: u32,
 }
+unsafe impl Send for PhysicalDeviceMultiDrawPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceMultiDrawPropertiesEXT {}
 impl default::Default for PhysicalDeviceMultiDrawPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -22933,6 +23115,8 @@ pub struct GraphicsShaderGroupCreateInfoNV {
     pub p_vertex_input_state: *const PipelineVertexInputStateCreateInfo,
     pub p_tessellation_state: *const PipelineTessellationStateCreateInfo,
 }
+unsafe impl Send for GraphicsShaderGroupCreateInfoNV {}
+unsafe impl Sync for GraphicsShaderGroupCreateInfoNV {}
 impl default::Default for GraphicsShaderGroupCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -22967,6 +23151,8 @@ pub struct GraphicsPipelineShaderGroupsCreateInfoNV {
     pub pipeline_count: u32,
     pub p_pipelines: *const Pipeline,
 }
+unsafe impl Send for GraphicsPipelineShaderGroupsCreateInfoNV {}
+unsafe impl Sync for GraphicsPipelineShaderGroupsCreateInfoNV {}
 impl default::Default for GraphicsPipelineShaderGroupsCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -23118,6 +23304,8 @@ pub struct IndirectCommandsLayoutTokenNV {
     pub p_index_types: *const IndexType,
     pub p_index_type_values: *const u32,
 }
+unsafe impl Send for IndirectCommandsLayoutTokenNV {}
+unsafe impl Sync for IndirectCommandsLayoutTokenNV {}
 impl default::Default for IndirectCommandsLayoutTokenNV {
     fn default() -> Self {
         Self {
@@ -23172,6 +23360,8 @@ pub struct IndirectCommandsLayoutCreateInfoNV {
     pub stream_count: u32,
     pub p_stream_strides: *const u32,
 }
+unsafe impl Send for IndirectCommandsLayoutCreateInfoNV {}
+unsafe impl Sync for IndirectCommandsLayoutCreateInfoNV {}
 impl default::Default for IndirectCommandsLayoutCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -23219,6 +23409,8 @@ pub struct GeneratedCommandsInfoNV {
     pub sequences_index_buffer: Option<Buffer>,
     pub sequences_index_offset: DeviceSize,
 }
+unsafe impl Send for GeneratedCommandsInfoNV {}
+unsafe impl Sync for GeneratedCommandsInfoNV {}
 impl default::Default for GeneratedCommandsInfoNV {
     fn default() -> Self {
         Self {
@@ -23271,6 +23463,8 @@ pub struct GeneratedCommandsMemoryRequirementsInfoNV {
     pub indirect_commands_layout: Option<IndirectCommandsLayoutNV>,
     pub max_sequences_count: u32,
 }
+unsafe impl Send for GeneratedCommandsMemoryRequirementsInfoNV {}
+unsafe impl Sync for GeneratedCommandsMemoryRequirementsInfoNV {}
 impl default::Default for GeneratedCommandsMemoryRequirementsInfoNV {
     fn default() -> Self {
         Self {
@@ -23302,6 +23496,8 @@ pub struct PhysicalDeviceFeatures2 {
     pub p_next: *mut c_void,
     pub features: PhysicalDeviceFeatures,
 }
+unsafe impl Send for PhysicalDeviceFeatures2 {}
+unsafe impl Sync for PhysicalDeviceFeatures2 {}
 impl default::Default for PhysicalDeviceFeatures2 {
     fn default() -> Self {
         Self {
@@ -23328,6 +23524,8 @@ pub struct PhysicalDeviceProperties2 {
     pub p_next: *mut c_void,
     pub properties: PhysicalDeviceProperties,
 }
+unsafe impl Send for PhysicalDeviceProperties2 {}
+unsafe impl Sync for PhysicalDeviceProperties2 {}
 impl default::Default for PhysicalDeviceProperties2 {
     fn default() -> Self {
         Self {
@@ -23354,6 +23552,8 @@ pub struct FormatProperties2 {
     pub p_next: *mut c_void,
     pub format_properties: FormatProperties,
 }
+unsafe impl Send for FormatProperties2 {}
+unsafe impl Sync for FormatProperties2 {}
 impl default::Default for FormatProperties2 {
     fn default() -> Self {
         Self {
@@ -23380,6 +23580,8 @@ pub struct ImageFormatProperties2 {
     pub p_next: *mut c_void,
     pub image_format_properties: ImageFormatProperties,
 }
+unsafe impl Send for ImageFormatProperties2 {}
+unsafe impl Sync for ImageFormatProperties2 {}
 impl default::Default for ImageFormatProperties2 {
     fn default() -> Self {
         Self {
@@ -23410,6 +23612,8 @@ pub struct PhysicalDeviceImageFormatInfo2 {
     pub usage: ImageUsageFlags,
     pub flags: ImageCreateFlags,
 }
+unsafe impl Send for PhysicalDeviceImageFormatInfo2 {}
+unsafe impl Sync for PhysicalDeviceImageFormatInfo2 {}
 impl default::Default for PhysicalDeviceImageFormatInfo2 {
     fn default() -> Self {
         Self {
@@ -23444,6 +23648,8 @@ pub struct QueueFamilyProperties2 {
     pub p_next: *mut c_void,
     pub queue_family_properties: QueueFamilyProperties,
 }
+unsafe impl Send for QueueFamilyProperties2 {}
+unsafe impl Sync for QueueFamilyProperties2 {}
 impl default::Default for QueueFamilyProperties2 {
     fn default() -> Self {
         Self {
@@ -23470,6 +23676,8 @@ pub struct PhysicalDeviceMemoryProperties2 {
     pub p_next: *mut c_void,
     pub memory_properties: PhysicalDeviceMemoryProperties,
 }
+unsafe impl Send for PhysicalDeviceMemoryProperties2 {}
+unsafe impl Sync for PhysicalDeviceMemoryProperties2 {}
 impl default::Default for PhysicalDeviceMemoryProperties2 {
     fn default() -> Self {
         Self {
@@ -23496,6 +23704,8 @@ pub struct SparseImageFormatProperties2 {
     pub p_next: *mut c_void,
     pub properties: SparseImageFormatProperties,
 }
+unsafe impl Send for SparseImageFormatProperties2 {}
+unsafe impl Sync for SparseImageFormatProperties2 {}
 impl default::Default for SparseImageFormatProperties2 {
     fn default() -> Self {
         Self {
@@ -23526,6 +23736,8 @@ pub struct PhysicalDeviceSparseImageFormatInfo2 {
     pub usage: ImageUsageFlags,
     pub tiling: ImageTiling,
 }
+unsafe impl Send for PhysicalDeviceSparseImageFormatInfo2 {}
+unsafe impl Sync for PhysicalDeviceSparseImageFormatInfo2 {}
 impl default::Default for PhysicalDeviceSparseImageFormatInfo2 {
     fn default() -> Self {
         Self {
@@ -23560,6 +23772,8 @@ pub struct PhysicalDevicePushDescriptorPropertiesKHR {
     pub p_next: *mut c_void,
     pub max_push_descriptors: u32,
 }
+unsafe impl Send for PhysicalDevicePushDescriptorPropertiesKHR {}
+unsafe impl Sync for PhysicalDevicePushDescriptorPropertiesKHR {}
 impl default::Default for PhysicalDevicePushDescriptorPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -23617,6 +23831,8 @@ pub struct PhysicalDeviceDriverProperties {
     pub driver_info: [c_char; MAX_DRIVER_INFO_SIZE],
     pub conformance_version: ConformanceVersion,
 }
+unsafe impl Send for PhysicalDeviceDriverProperties {}
+unsafe impl Sync for PhysicalDeviceDriverProperties {}
 impl default::Default for PhysicalDeviceDriverProperties {
     fn default() -> Self {
         Self {
@@ -23652,6 +23868,8 @@ pub struct PresentRegionsKHR {
     /// The regions that have changed
     pub p_regions: *const PresentRegionKHR,
 }
+unsafe impl Send for PresentRegionsKHR {}
+unsafe impl Sync for PresentRegionsKHR {}
 impl default::Default for PresentRegionsKHR {
     fn default() -> Self {
         Self {
@@ -23680,6 +23898,8 @@ pub struct PresentRegionKHR {
     /// Array of rectangles that have changed in a swapchain's image(s)
     pub p_rectangles: *const RectLayerKHR,
 }
+unsafe impl Send for PresentRegionKHR {}
+unsafe impl Sync for PresentRegionKHR {}
 impl default::Default for PresentRegionKHR {
     fn default() -> Self {
         Self {
@@ -23732,6 +23952,8 @@ pub struct PhysicalDeviceVariablePointersFeatures {
     pub variable_pointers_storage_buffer: Bool32,
     pub variable_pointers: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVariablePointersFeatures {}
+unsafe impl Sync for PhysicalDeviceVariablePointersFeatures {}
 impl default::Default for PhysicalDeviceVariablePointersFeatures {
     fn default() -> Self {
         Self {
@@ -23794,6 +24016,8 @@ pub struct PhysicalDeviceExternalImageFormatInfo {
     pub p_next: *const c_void,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for PhysicalDeviceExternalImageFormatInfo {}
+unsafe impl Sync for PhysicalDeviceExternalImageFormatInfo {}
 impl default::Default for PhysicalDeviceExternalImageFormatInfo {
     fn default() -> Self {
         Self {
@@ -23820,6 +24044,8 @@ pub struct ExternalImageFormatProperties {
     pub p_next: *mut c_void,
     pub external_memory_properties: ExternalMemoryProperties,
 }
+unsafe impl Send for ExternalImageFormatProperties {}
+unsafe impl Sync for ExternalImageFormatProperties {}
 impl default::Default for ExternalImageFormatProperties {
     fn default() -> Self {
         Self {
@@ -23848,6 +24074,8 @@ pub struct PhysicalDeviceExternalBufferInfo {
     pub usage: BufferUsageFlags,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for PhysicalDeviceExternalBufferInfo {}
+unsafe impl Sync for PhysicalDeviceExternalBufferInfo {}
 impl default::Default for PhysicalDeviceExternalBufferInfo {
     fn default() -> Self {
         Self {
@@ -23878,6 +24106,8 @@ pub struct ExternalBufferProperties {
     pub p_next: *mut c_void,
     pub external_memory_properties: ExternalMemoryProperties,
 }
+unsafe impl Send for ExternalBufferProperties {}
+unsafe impl Sync for ExternalBufferProperties {}
 impl default::Default for ExternalBufferProperties {
     fn default() -> Self {
         Self {
@@ -23908,6 +24138,8 @@ pub struct PhysicalDeviceIDProperties {
     pub device_node_mask: u32,
     pub device_luid_valid: Bool32,
 }
+unsafe impl Send for PhysicalDeviceIDProperties {}
+unsafe impl Sync for PhysicalDeviceIDProperties {}
 impl default::Default for PhysicalDeviceIDProperties {
     fn default() -> Self {
         Self {
@@ -23942,6 +24174,8 @@ pub struct ExternalMemoryImageCreateInfo {
     pub p_next: *const c_void,
     pub handle_types: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for ExternalMemoryImageCreateInfo {}
+unsafe impl Sync for ExternalMemoryImageCreateInfo {}
 impl default::Default for ExternalMemoryImageCreateInfo {
     fn default() -> Self {
         Self {
@@ -23968,6 +24202,8 @@ pub struct ExternalMemoryBufferCreateInfo {
     pub p_next: *const c_void,
     pub handle_types: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for ExternalMemoryBufferCreateInfo {}
+unsafe impl Sync for ExternalMemoryBufferCreateInfo {}
 impl default::Default for ExternalMemoryBufferCreateInfo {
     fn default() -> Self {
         Self {
@@ -23994,6 +24230,8 @@ pub struct ExportMemoryAllocateInfo {
     pub p_next: *const c_void,
     pub handle_types: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for ExportMemoryAllocateInfo {}
+unsafe impl Sync for ExportMemoryAllocateInfo {}
 impl default::Default for ExportMemoryAllocateInfo {
     fn default() -> Self {
         Self {
@@ -24022,6 +24260,8 @@ pub struct ImportMemoryWin32HandleInfoKHR {
     pub handle: HANDLE,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ImportMemoryWin32HandleInfoKHR {}
+unsafe impl Sync for ImportMemoryWin32HandleInfoKHR {}
 impl default::Default for ImportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24053,6 +24293,8 @@ pub struct ExportMemoryWin32HandleInfoKHR {
     pub dw_access: DWORD,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ExportMemoryWin32HandleInfoKHR {}
+unsafe impl Sync for ExportMemoryWin32HandleInfoKHR {}
 impl default::Default for ExportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24083,6 +24325,8 @@ pub struct ImportMemoryZirconHandleInfoFUCHSIA {
     pub handle_type: ExternalMemoryHandleTypeFlags,
     pub handle: zx_handle_t,
 }
+unsafe impl Send for ImportMemoryZirconHandleInfoFUCHSIA {}
+unsafe impl Sync for ImportMemoryZirconHandleInfoFUCHSIA {}
 impl default::Default for ImportMemoryZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
@@ -24110,6 +24354,8 @@ pub struct MemoryZirconHandlePropertiesFUCHSIA {
     pub p_next: *mut c_void,
     pub memory_type_bits: u32,
 }
+unsafe impl Send for MemoryZirconHandlePropertiesFUCHSIA {}
+unsafe impl Sync for MemoryZirconHandlePropertiesFUCHSIA {}
 impl default::Default for MemoryZirconHandlePropertiesFUCHSIA {
     fn default() -> Self {
         Self {
@@ -24136,6 +24382,8 @@ pub struct MemoryGetZirconHandleInfoFUCHSIA {
     pub memory: Option<DeviceMemory>,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for MemoryGetZirconHandleInfoFUCHSIA {}
+unsafe impl Sync for MemoryGetZirconHandleInfoFUCHSIA {}
 impl default::Default for MemoryGetZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
@@ -24163,6 +24411,8 @@ pub struct MemoryWin32HandlePropertiesKHR {
     pub p_next: *mut c_void,
     pub memory_type_bits: u32,
 }
+unsafe impl Send for MemoryWin32HandlePropertiesKHR {}
+unsafe impl Sync for MemoryWin32HandlePropertiesKHR {}
 impl default::Default for MemoryWin32HandlePropertiesKHR {
     fn default() -> Self {
         Self {
@@ -24189,6 +24439,8 @@ pub struct MemoryGetWin32HandleInfoKHR {
     pub memory: Option<DeviceMemory>,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for MemoryGetWin32HandleInfoKHR {}
+unsafe impl Sync for MemoryGetWin32HandleInfoKHR {}
 impl default::Default for MemoryGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24217,6 +24469,8 @@ pub struct ImportMemoryFdInfoKHR {
     pub handle_type: ExternalMemoryHandleTypeFlags,
     pub fd: c_int,
 }
+unsafe impl Send for ImportMemoryFdInfoKHR {}
+unsafe impl Sync for ImportMemoryFdInfoKHR {}
 impl default::Default for ImportMemoryFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24244,6 +24498,8 @@ pub struct MemoryFdPropertiesKHR {
     pub p_next: *mut c_void,
     pub memory_type_bits: u32,
 }
+unsafe impl Send for MemoryFdPropertiesKHR {}
+unsafe impl Sync for MemoryFdPropertiesKHR {}
 impl default::Default for MemoryFdPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -24270,6 +24526,8 @@ pub struct MemoryGetFdInfoKHR {
     pub memory: Option<DeviceMemory>,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for MemoryGetFdInfoKHR {}
+unsafe impl Sync for MemoryGetFdInfoKHR {}
 impl default::Default for MemoryGetFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24303,6 +24561,8 @@ pub struct Win32KeyedMutexAcquireReleaseInfoKHR {
     pub p_release_syncs: *const DeviceMemory,
     pub p_release_keys: *const u64,
 }
+unsafe impl Send for Win32KeyedMutexAcquireReleaseInfoKHR {}
+unsafe impl Sync for Win32KeyedMutexAcquireReleaseInfoKHR {}
 impl default::Default for Win32KeyedMutexAcquireReleaseInfoKHR {
     fn default() -> Self {
         Self {
@@ -24340,6 +24600,8 @@ pub struct PhysicalDeviceExternalSemaphoreInfo {
     pub p_next: *const c_void,
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
 }
+unsafe impl Send for PhysicalDeviceExternalSemaphoreInfo {}
+unsafe impl Sync for PhysicalDeviceExternalSemaphoreInfo {}
 impl default::Default for PhysicalDeviceExternalSemaphoreInfo {
     fn default() -> Self {
         Self {
@@ -24368,6 +24630,8 @@ pub struct ExternalSemaphoreProperties {
     pub compatible_handle_types: ExternalSemaphoreHandleTypeFlags,
     pub external_semaphore_features: ExternalSemaphoreFeatureFlags,
 }
+unsafe impl Send for ExternalSemaphoreProperties {}
+unsafe impl Sync for ExternalSemaphoreProperties {}
 impl default::Default for ExternalSemaphoreProperties {
     fn default() -> Self {
         Self {
@@ -24401,6 +24665,8 @@ pub struct ExportSemaphoreCreateInfo {
     pub p_next: *const c_void,
     pub handle_types: ExternalSemaphoreHandleTypeFlags,
 }
+unsafe impl Send for ExportSemaphoreCreateInfo {}
+unsafe impl Sync for ExportSemaphoreCreateInfo {}
 impl default::Default for ExportSemaphoreCreateInfo {
     fn default() -> Self {
         Self {
@@ -24431,6 +24697,8 @@ pub struct ImportSemaphoreWin32HandleInfoKHR {
     pub handle: HANDLE,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ImportSemaphoreWin32HandleInfoKHR {}
+unsafe impl Sync for ImportSemaphoreWin32HandleInfoKHR {}
 impl default::Default for ImportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24466,6 +24734,8 @@ pub struct ExportSemaphoreWin32HandleInfoKHR {
     pub dw_access: DWORD,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ExportSemaphoreWin32HandleInfoKHR {}
+unsafe impl Sync for ExportSemaphoreWin32HandleInfoKHR {}
 impl default::Default for ExportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24498,6 +24768,8 @@ pub struct D3D12FenceSubmitInfoKHR {
     pub signal_semaphore_values_count: u32,
     pub p_signal_semaphore_values: *const u64,
 }
+unsafe impl Send for D3D12FenceSubmitInfoKHR {}
+unsafe impl Sync for D3D12FenceSubmitInfoKHR {}
 impl default::Default for D3D12FenceSubmitInfoKHR {
     fn default() -> Self {
         Self {
@@ -24530,6 +24802,8 @@ pub struct SemaphoreGetWin32HandleInfoKHR {
     pub semaphore: Option<Semaphore>,
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
 }
+unsafe impl Send for SemaphoreGetWin32HandleInfoKHR {}
+unsafe impl Sync for SemaphoreGetWin32HandleInfoKHR {}
 impl default::Default for SemaphoreGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24560,6 +24834,8 @@ pub struct ImportSemaphoreFdInfoKHR {
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
     pub fd: c_int,
 }
+unsafe impl Send for ImportSemaphoreFdInfoKHR {}
+unsafe impl Sync for ImportSemaphoreFdInfoKHR {}
 impl default::Default for ImportSemaphoreFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24592,6 +24868,8 @@ pub struct SemaphoreGetFdInfoKHR {
     pub semaphore: Option<Semaphore>,
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
 }
+unsafe impl Send for SemaphoreGetFdInfoKHR {}
+unsafe impl Sync for SemaphoreGetFdInfoKHR {}
 impl default::Default for SemaphoreGetFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24622,6 +24900,8 @@ pub struct ImportSemaphoreZirconHandleInfoFUCHSIA {
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
     pub zircon_handle: zx_handle_t,
 }
+unsafe impl Send for ImportSemaphoreZirconHandleInfoFUCHSIA {}
+unsafe impl Sync for ImportSemaphoreZirconHandleInfoFUCHSIA {}
 impl default::Default for ImportSemaphoreZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
@@ -24654,6 +24934,8 @@ pub struct SemaphoreGetZirconHandleInfoFUCHSIA {
     pub semaphore: Option<Semaphore>,
     pub handle_type: ExternalSemaphoreHandleTypeFlags,
 }
+unsafe impl Send for SemaphoreGetZirconHandleInfoFUCHSIA {}
+unsafe impl Sync for SemaphoreGetZirconHandleInfoFUCHSIA {}
 impl default::Default for SemaphoreGetZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
@@ -24681,6 +24963,8 @@ pub struct PhysicalDeviceExternalFenceInfo {
     pub p_next: *const c_void,
     pub handle_type: ExternalFenceHandleTypeFlags,
 }
+unsafe impl Send for PhysicalDeviceExternalFenceInfo {}
+unsafe impl Sync for PhysicalDeviceExternalFenceInfo {}
 impl default::Default for PhysicalDeviceExternalFenceInfo {
     fn default() -> Self {
         Self {
@@ -24709,6 +24993,8 @@ pub struct ExternalFenceProperties {
     pub compatible_handle_types: ExternalFenceHandleTypeFlags,
     pub external_fence_features: ExternalFenceFeatureFlags,
 }
+unsafe impl Send for ExternalFenceProperties {}
+unsafe impl Sync for ExternalFenceProperties {}
 impl default::Default for ExternalFenceProperties {
     fn default() -> Self {
         Self {
@@ -24742,6 +25028,8 @@ pub struct ExportFenceCreateInfo {
     pub p_next: *const c_void,
     pub handle_types: ExternalFenceHandleTypeFlags,
 }
+unsafe impl Send for ExportFenceCreateInfo {}
+unsafe impl Sync for ExportFenceCreateInfo {}
 impl default::Default for ExportFenceCreateInfo {
     fn default() -> Self {
         Self {
@@ -24772,6 +25060,8 @@ pub struct ImportFenceWin32HandleInfoKHR {
     pub handle: HANDLE,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ImportFenceWin32HandleInfoKHR {}
+unsafe impl Sync for ImportFenceWin32HandleInfoKHR {}
 impl default::Default for ImportFenceWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24807,6 +25097,8 @@ pub struct ExportFenceWin32HandleInfoKHR {
     pub dw_access: DWORD,
     pub name: LPCWSTR,
 }
+unsafe impl Send for ExportFenceWin32HandleInfoKHR {}
+unsafe impl Sync for ExportFenceWin32HandleInfoKHR {}
 impl default::Default for ExportFenceWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24837,6 +25129,8 @@ pub struct FenceGetWin32HandleInfoKHR {
     pub fence: Option<Fence>,
     pub handle_type: ExternalFenceHandleTypeFlags,
 }
+unsafe impl Send for FenceGetWin32HandleInfoKHR {}
+unsafe impl Sync for FenceGetWin32HandleInfoKHR {}
 impl default::Default for FenceGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
@@ -24867,6 +25161,8 @@ pub struct ImportFenceFdInfoKHR {
     pub handle_type: ExternalFenceHandleTypeFlags,
     pub fd: c_int,
 }
+unsafe impl Send for ImportFenceFdInfoKHR {}
+unsafe impl Sync for ImportFenceFdInfoKHR {}
 impl default::Default for ImportFenceFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24899,6 +25195,8 @@ pub struct FenceGetFdInfoKHR {
     pub fence: Option<Fence>,
     pub handle_type: ExternalFenceHandleTypeFlags,
 }
+unsafe impl Send for FenceGetFdInfoKHR {}
+unsafe impl Sync for FenceGetFdInfoKHR {}
 impl default::Default for FenceGetFdInfoKHR {
     fn default() -> Self {
         Self {
@@ -24931,6 +25229,8 @@ pub struct PhysicalDeviceMultiviewFeatures {
     /// Multiple views in a renderpass w/ tessellation shader
     pub multiview_tessellation_shader: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMultiviewFeatures {}
+unsafe impl Sync for PhysicalDeviceMultiviewFeatures {}
 impl default::Default for PhysicalDeviceMultiviewFeatures {
     fn default() -> Self {
         Self {
@@ -24964,6 +25264,8 @@ pub struct PhysicalDeviceMultiviewProperties {
     /// max instance index for a draw in a multiview subpass
     pub max_multiview_instance_index: u32,
 }
+unsafe impl Send for PhysicalDeviceMultiviewProperties {}
+unsafe impl Sync for PhysicalDeviceMultiviewProperties {}
 impl default::Default for PhysicalDeviceMultiviewProperties {
     fn default() -> Self {
         Self {
@@ -24997,6 +25299,8 @@ pub struct RenderPassMultiviewCreateInfo {
     pub correlation_mask_count: u32,
     pub p_correlation_masks: *const u32,
 }
+unsafe impl Send for RenderPassMultiviewCreateInfo {}
+unsafe impl Sync for RenderPassMultiviewCreateInfo {}
 impl default::Default for RenderPassMultiviewCreateInfo {
     fn default() -> Self {
         Self {
@@ -25053,6 +25357,8 @@ pub struct SurfaceCapabilities2EXT {
     pub supported_usage_flags: ImageUsageFlags,
     pub supported_surface_counters: SurfaceCounterFlagsEXT,
 }
+unsafe impl Send for SurfaceCapabilities2EXT {}
+unsafe impl Sync for SurfaceCapabilities2EXT {}
 impl default::Default for SurfaceCapabilities2EXT {
     fn default() -> Self {
         Self {
@@ -25098,6 +25404,8 @@ pub struct DisplayPowerInfoEXT {
     pub p_next: *const c_void,
     pub power_state: DisplayPowerStateEXT,
 }
+unsafe impl Send for DisplayPowerInfoEXT {}
+unsafe impl Sync for DisplayPowerInfoEXT {}
 impl default::Default for DisplayPowerInfoEXT {
     fn default() -> Self {
         Self {
@@ -25123,6 +25431,8 @@ pub struct DeviceEventInfoEXT {
     pub p_next: *const c_void,
     pub device_event: DeviceEventTypeEXT,
 }
+unsafe impl Send for DeviceEventInfoEXT {}
+unsafe impl Sync for DeviceEventInfoEXT {}
 impl default::Default for DeviceEventInfoEXT {
     fn default() -> Self {
         Self {
@@ -25148,6 +25458,8 @@ pub struct DisplayEventInfoEXT {
     pub p_next: *const c_void,
     pub display_event: DisplayEventTypeEXT,
 }
+unsafe impl Send for DisplayEventInfoEXT {}
+unsafe impl Sync for DisplayEventInfoEXT {}
 impl default::Default for DisplayEventInfoEXT {
     fn default() -> Self {
         Self {
@@ -25173,6 +25485,8 @@ pub struct SwapchainCounterCreateInfoEXT {
     pub p_next: *const c_void,
     pub surface_counters: SurfaceCounterFlagsEXT,
 }
+unsafe impl Send for SwapchainCounterCreateInfoEXT {}
+unsafe impl Sync for SwapchainCounterCreateInfoEXT {}
 impl default::Default for SwapchainCounterCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -25200,6 +25514,8 @@ pub struct PhysicalDeviceGroupProperties {
     pub physical_devices: [Option<PhysicalDevice>; MAX_DEVICE_GROUP_SIZE],
     pub subset_allocation: Bool32,
 }
+unsafe impl Send for PhysicalDeviceGroupProperties {}
+unsafe impl Sync for PhysicalDeviceGroupProperties {}
 impl default::Default for PhysicalDeviceGroupProperties {
     fn default() -> Self {
         Self {
@@ -25231,6 +25547,8 @@ pub struct MemoryAllocateFlagsInfo {
     pub flags: MemoryAllocateFlags,
     pub device_mask: u32,
 }
+unsafe impl Send for MemoryAllocateFlagsInfo {}
+unsafe impl Sync for MemoryAllocateFlagsInfo {}
 impl default::Default for MemoryAllocateFlagsInfo {
     fn default() -> Self {
         Self {
@@ -25261,6 +25579,8 @@ pub struct BindBufferMemoryInfo {
     pub memory: Option<DeviceMemory>,
     pub memory_offset: DeviceSize,
 }
+unsafe impl Send for BindBufferMemoryInfo {}
+unsafe impl Sync for BindBufferMemoryInfo {}
 impl default::Default for BindBufferMemoryInfo {
     fn default() -> Self {
         Self {
@@ -25292,6 +25612,8 @@ pub struct BindBufferMemoryDeviceGroupInfo {
     pub device_index_count: u32,
     pub p_device_indices: *const u32,
 }
+unsafe impl Send for BindBufferMemoryDeviceGroupInfo {}
+unsafe impl Sync for BindBufferMemoryDeviceGroupInfo {}
 impl default::Default for BindBufferMemoryDeviceGroupInfo {
     fn default() -> Self {
         Self {
@@ -25322,6 +25644,8 @@ pub struct BindImageMemoryInfo {
     pub memory: Option<DeviceMemory>,
     pub memory_offset: DeviceSize,
 }
+unsafe impl Send for BindImageMemoryInfo {}
+unsafe impl Sync for BindImageMemoryInfo {}
 impl default::Default for BindImageMemoryInfo {
     fn default() -> Self {
         Self {
@@ -25355,6 +25679,8 @@ pub struct BindImageMemoryDeviceGroupInfo {
     pub split_instance_bind_region_count: u32,
     pub p_split_instance_bind_regions: *const Rect2D,
 }
+unsafe impl Send for BindImageMemoryDeviceGroupInfo {}
+unsafe impl Sync for BindImageMemoryDeviceGroupInfo {}
 impl default::Default for BindImageMemoryDeviceGroupInfo {
     fn default() -> Self {
         Self {
@@ -25392,6 +25718,8 @@ pub struct DeviceGroupRenderPassBeginInfo {
     pub device_render_area_count: u32,
     pub p_device_render_areas: *const Rect2D,
 }
+unsafe impl Send for DeviceGroupRenderPassBeginInfo {}
+unsafe impl Sync for DeviceGroupRenderPassBeginInfo {}
 impl default::Default for DeviceGroupRenderPassBeginInfo {
     fn default() -> Self {
         Self {
@@ -25422,6 +25750,8 @@ pub struct DeviceGroupCommandBufferBeginInfo {
     pub p_next: *const c_void,
     pub device_mask: u32,
 }
+unsafe impl Send for DeviceGroupCommandBufferBeginInfo {}
+unsafe impl Sync for DeviceGroupCommandBufferBeginInfo {}
 impl default::Default for DeviceGroupCommandBufferBeginInfo {
     fn default() -> Self {
         Self {
@@ -25453,6 +25783,8 @@ pub struct DeviceGroupSubmitInfo {
     pub signal_semaphore_count: u32,
     pub p_signal_semaphore_device_indices: *const u32,
 }
+unsafe impl Send for DeviceGroupSubmitInfo {}
+unsafe impl Sync for DeviceGroupSubmitInfo {}
 impl default::Default for DeviceGroupSubmitInfo {
     fn default() -> Self {
         Self {
@@ -25493,6 +25825,8 @@ pub struct DeviceGroupBindSparseInfo {
     pub resource_device_index: u32,
     pub memory_device_index: u32,
 }
+unsafe impl Send for DeviceGroupBindSparseInfo {}
+unsafe impl Sync for DeviceGroupBindSparseInfo {}
 impl default::Default for DeviceGroupBindSparseInfo {
     fn default() -> Self {
         Self {
@@ -25522,6 +25856,8 @@ pub struct DeviceGroupPresentCapabilitiesKHR {
     pub present_mask: [u32; MAX_DEVICE_GROUP_SIZE],
     pub modes: DeviceGroupPresentModeFlagsKHR,
 }
+unsafe impl Send for DeviceGroupPresentCapabilitiesKHR {}
+unsafe impl Sync for DeviceGroupPresentCapabilitiesKHR {}
 impl default::Default for DeviceGroupPresentCapabilitiesKHR {
     fn default() -> Self {
         Self {
@@ -25549,6 +25885,8 @@ pub struct ImageSwapchainCreateInfoKHR {
     pub p_next: *const c_void,
     pub swapchain: Option<SwapchainKHR>,
 }
+unsafe impl Send for ImageSwapchainCreateInfoKHR {}
+unsafe impl Sync for ImageSwapchainCreateInfoKHR {}
 impl default::Default for ImageSwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -25575,6 +25913,8 @@ pub struct BindImageMemorySwapchainInfoKHR {
     pub swapchain: Option<SwapchainKHR>,
     pub image_index: u32,
 }
+unsafe impl Send for BindImageMemorySwapchainInfoKHR {}
+unsafe impl Sync for BindImageMemorySwapchainInfoKHR {}
 impl default::Default for BindImageMemorySwapchainInfoKHR {
     fn default() -> Self {
         Self {
@@ -25606,6 +25946,8 @@ pub struct AcquireNextImageInfoKHR {
     pub fence: Option<Fence>,
     pub device_mask: u32,
 }
+unsafe impl Send for AcquireNextImageInfoKHR {}
+unsafe impl Sync for AcquireNextImageInfoKHR {}
 impl default::Default for AcquireNextImageInfoKHR {
     fn default() -> Self {
         Self {
@@ -25641,6 +25983,8 @@ pub struct DeviceGroupPresentInfoKHR {
     pub p_device_masks: *const u32,
     pub mode: DeviceGroupPresentModeFlagsKHR,
 }
+unsafe impl Send for DeviceGroupPresentInfoKHR {}
+unsafe impl Sync for DeviceGroupPresentInfoKHR {}
 impl default::Default for DeviceGroupPresentInfoKHR {
     fn default() -> Self {
         Self {
@@ -25671,6 +26015,8 @@ pub struct DeviceGroupDeviceCreateInfo {
     pub physical_device_count: u32,
     pub p_physical_devices: *const PhysicalDevice,
 }
+unsafe impl Send for DeviceGroupDeviceCreateInfo {}
+unsafe impl Sync for DeviceGroupDeviceCreateInfo {}
 impl default::Default for DeviceGroupDeviceCreateInfo {
     fn default() -> Self {
         Self {
@@ -25699,6 +26045,8 @@ pub struct DeviceGroupSwapchainCreateInfoKHR {
     pub p_next: *const c_void,
     pub modes: DeviceGroupPresentModeFlagsKHR,
 }
+unsafe impl Send for DeviceGroupSwapchainCreateInfoKHR {}
+unsafe impl Sync for DeviceGroupSwapchainCreateInfoKHR {}
 impl default::Default for DeviceGroupSwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -25775,6 +26123,8 @@ pub struct DescriptorUpdateTemplateCreateInfo {
     pub pipeline_layout: Option<PipelineLayout>,
     pub set: u32,
 }
+unsafe impl Send for DescriptorUpdateTemplateCreateInfo {}
+unsafe impl Sync for DescriptorUpdateTemplateCreateInfo {}
 impl default::Default for DescriptorUpdateTemplateCreateInfo {
     fn default() -> Self {
         Self {
@@ -25839,6 +26189,8 @@ pub struct PhysicalDevicePresentIdFeaturesKHR {
     /// Present ID in VkPresentInfoKHR
     pub present_id: Bool32,
 }
+unsafe impl Send for PhysicalDevicePresentIdFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePresentIdFeaturesKHR {}
 impl default::Default for PhysicalDevicePresentIdFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -25867,6 +26219,8 @@ pub struct PresentIdKHR {
     /// Present ID values for each swapchain
     pub p_present_ids: *const u64,
 }
+unsafe impl Send for PresentIdKHR {}
+unsafe impl Sync for PresentIdKHR {}
 impl default::Default for PresentIdKHR {
     fn default() -> Self {
         Self {
@@ -25895,6 +26249,8 @@ pub struct PhysicalDevicePresentWaitFeaturesKHR {
     /// vkWaitForPresentKHR is supported
     pub present_wait: Bool32,
 }
+unsafe impl Send for PhysicalDevicePresentWaitFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePresentWaitFeaturesKHR {}
 impl default::Default for PhysicalDevicePresentWaitFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -25934,6 +26290,8 @@ pub struct HdrMetadataEXT {
     pub max_content_light_level: f32,
     pub max_frame_average_light_level: f32,
 }
+unsafe impl Send for HdrMetadataEXT {}
+unsafe impl Sync for HdrMetadataEXT {}
 impl default::Default for HdrMetadataEXT {
     fn default() -> Self {
         Self {
@@ -25973,6 +26331,8 @@ pub struct DisplayNativeHdrSurfaceCapabilitiesAMD {
     pub p_next: *mut c_void,
     pub local_dimming_support: Bool32,
 }
+unsafe impl Send for DisplayNativeHdrSurfaceCapabilitiesAMD {}
+unsafe impl Sync for DisplayNativeHdrSurfaceCapabilitiesAMD {}
 impl default::Default for DisplayNativeHdrSurfaceCapabilitiesAMD {
     fn default() -> Self {
         Self {
@@ -25998,6 +26358,8 @@ pub struct SwapchainDisplayNativeHdrCreateInfoAMD {
     pub p_next: *const c_void,
     pub local_dimming_enable: Bool32,
 }
+unsafe impl Send for SwapchainDisplayNativeHdrCreateInfoAMD {}
+unsafe impl Sync for SwapchainDisplayNativeHdrCreateInfoAMD {}
 impl default::Default for SwapchainDisplayNativeHdrCreateInfoAMD {
     fn default() -> Self {
         Self {
@@ -26082,6 +26444,8 @@ pub struct PresentTimesInfoGOOGLE {
     /// The earliest times to present images
     pub p_times: *const PresentTimeGOOGLE,
 }
+unsafe impl Send for PresentTimesInfoGOOGLE {}
+unsafe impl Sync for PresentTimesInfoGOOGLE {}
 impl default::Default for PresentTimesInfoGOOGLE {
     fn default() -> Self {
         Self {
@@ -26134,6 +26498,8 @@ pub struct IOSSurfaceCreateInfoMVK {
     pub flags: IOSSurfaceCreateFlagsMVK,
     pub p_view: *const c_void,
 }
+unsafe impl Send for IOSSurfaceCreateInfoMVK {}
+unsafe impl Sync for IOSSurfaceCreateInfoMVK {}
 impl default::Default for IOSSurfaceCreateInfoMVK {
     fn default() -> Self {
         Self {
@@ -26162,6 +26528,8 @@ pub struct MacOSSurfaceCreateInfoMVK {
     pub flags: MacOSSurfaceCreateFlagsMVK,
     pub p_view: *const c_void,
 }
+unsafe impl Send for MacOSSurfaceCreateInfoMVK {}
+unsafe impl Sync for MacOSSurfaceCreateInfoMVK {}
 impl default::Default for MacOSSurfaceCreateInfoMVK {
     fn default() -> Self {
         Self {
@@ -26190,6 +26558,8 @@ pub struct MetalSurfaceCreateInfoEXT {
     pub flags: MetalSurfaceCreateFlagsEXT,
     pub p_layer: *const CAMetalLayer,
 }
+unsafe impl Send for MetalSurfaceCreateInfoEXT {}
+unsafe impl Sync for MetalSurfaceCreateInfoEXT {}
 impl default::Default for MetalSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -26241,6 +26611,8 @@ pub struct PipelineViewportWScalingStateCreateInfoNV {
     pub viewport_count: u32,
     pub p_viewport_w_scalings: *const ViewportWScalingNV,
 }
+unsafe impl Send for PipelineViewportWScalingStateCreateInfoNV {}
+unsafe impl Sync for PipelineViewportWScalingStateCreateInfoNV {}
 impl default::Default for PipelineViewportWScalingStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -26300,6 +26672,8 @@ pub struct PipelineViewportSwizzleStateCreateInfoNV {
     pub viewport_count: u32,
     pub p_viewport_swizzles: *const ViewportSwizzleNV,
 }
+unsafe impl Send for PipelineViewportSwizzleStateCreateInfoNV {}
+unsafe impl Sync for PipelineViewportSwizzleStateCreateInfoNV {}
 impl default::Default for PipelineViewportSwizzleStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -26330,6 +26704,8 @@ pub struct PhysicalDeviceDiscardRectanglePropertiesEXT {
     /// max number of active discard rectangles
     pub max_discard_rectangles: u32,
 }
+unsafe impl Send for PhysicalDeviceDiscardRectanglePropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDiscardRectanglePropertiesEXT {}
 impl default::Default for PhysicalDeviceDiscardRectanglePropertiesEXT {
     fn default() -> Self {
         Self {
@@ -26358,6 +26734,8 @@ pub struct PipelineDiscardRectangleStateCreateInfoEXT {
     pub discard_rectangle_count: u32,
     pub p_discard_rectangles: *const Rect2D,
 }
+unsafe impl Send for PipelineDiscardRectangleStateCreateInfoEXT {}
+unsafe impl Sync for PipelineDiscardRectangleStateCreateInfoEXT {}
 impl default::Default for PipelineDiscardRectangleStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -26389,6 +26767,8 @@ pub struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     pub p_next: *mut c_void,
     pub per_view_position_all_components: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {}
+unsafe impl Sync for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {}
 impl default::Default for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     fn default() -> Self {
         Self {
@@ -26444,6 +26824,8 @@ pub struct RenderPassInputAttachmentAspectCreateInfo {
     pub aspect_reference_count: u32,
     pub p_aspect_references: *const InputAttachmentAspectReference,
 }
+unsafe impl Send for RenderPassInputAttachmentAspectCreateInfo {}
+unsafe impl Sync for RenderPassInputAttachmentAspectCreateInfo {}
 impl default::Default for RenderPassInputAttachmentAspectCreateInfo {
     fn default() -> Self {
         Self {
@@ -26472,6 +26854,8 @@ pub struct PhysicalDeviceSurfaceInfo2KHR {
     pub p_next: *const c_void,
     pub surface: Option<SurfaceKHR>,
 }
+unsafe impl Send for PhysicalDeviceSurfaceInfo2KHR {}
+unsafe impl Sync for PhysicalDeviceSurfaceInfo2KHR {}
 impl default::Default for PhysicalDeviceSurfaceInfo2KHR {
     fn default() -> Self {
         Self {
@@ -26497,6 +26881,8 @@ pub struct SurfaceCapabilities2KHR {
     pub p_next: *mut c_void,
     pub surface_capabilities: SurfaceCapabilitiesKHR,
 }
+unsafe impl Send for SurfaceCapabilities2KHR {}
+unsafe impl Sync for SurfaceCapabilities2KHR {}
 impl default::Default for SurfaceCapabilities2KHR {
     fn default() -> Self {
         Self {
@@ -26522,6 +26908,8 @@ pub struct SurfaceFormat2KHR {
     pub p_next: *mut c_void,
     pub surface_format: SurfaceFormatKHR,
 }
+unsafe impl Send for SurfaceFormat2KHR {}
+unsafe impl Sync for SurfaceFormat2KHR {}
 impl default::Default for SurfaceFormat2KHR {
     fn default() -> Self {
         Self {
@@ -26547,6 +26935,8 @@ pub struct DisplayProperties2KHR {
     pub p_next: *mut c_void,
     pub display_properties: DisplayPropertiesKHR,
 }
+unsafe impl Send for DisplayProperties2KHR {}
+unsafe impl Sync for DisplayProperties2KHR {}
 impl default::Default for DisplayProperties2KHR {
     fn default() -> Self {
         Self {
@@ -26572,6 +26962,8 @@ pub struct DisplayPlaneProperties2KHR {
     pub p_next: *mut c_void,
     pub display_plane_properties: DisplayPlanePropertiesKHR,
 }
+unsafe impl Send for DisplayPlaneProperties2KHR {}
+unsafe impl Sync for DisplayPlaneProperties2KHR {}
 impl default::Default for DisplayPlaneProperties2KHR {
     fn default() -> Self {
         Self {
@@ -26597,6 +26989,8 @@ pub struct DisplayModeProperties2KHR {
     pub p_next: *mut c_void,
     pub display_mode_properties: DisplayModePropertiesKHR,
 }
+unsafe impl Send for DisplayModeProperties2KHR {}
+unsafe impl Sync for DisplayModeProperties2KHR {}
 impl default::Default for DisplayModeProperties2KHR {
     fn default() -> Self {
         Self {
@@ -26623,6 +27017,8 @@ pub struct DisplayPlaneInfo2KHR {
     pub mode: Option<DisplayModeKHR>,
     pub plane_index: u32,
 }
+unsafe impl Send for DisplayPlaneInfo2KHR {}
+unsafe impl Sync for DisplayPlaneInfo2KHR {}
 impl default::Default for DisplayPlaneInfo2KHR {
     fn default() -> Self {
         Self {
@@ -26650,6 +27046,8 @@ pub struct DisplayPlaneCapabilities2KHR {
     pub p_next: *mut c_void,
     pub capabilities: DisplayPlaneCapabilitiesKHR,
 }
+unsafe impl Send for DisplayPlaneCapabilities2KHR {}
+unsafe impl Sync for DisplayPlaneCapabilities2KHR {}
 impl default::Default for DisplayPlaneCapabilities2KHR {
     fn default() -> Self {
         Self {
@@ -26676,6 +27074,8 @@ pub struct SharedPresentSurfaceCapabilitiesKHR {
     /// Supported image usage flags if swapchain created using a shared present mode
     pub shared_present_supported_usage_flags: ImageUsageFlags,
 }
+unsafe impl Send for SharedPresentSurfaceCapabilitiesKHR {}
+unsafe impl Sync for SharedPresentSurfaceCapabilitiesKHR {}
 impl default::Default for SharedPresentSurfaceCapabilitiesKHR {
     fn default() -> Self {
         Self {
@@ -26711,6 +27111,8 @@ pub struct PhysicalDevice16BitStorageFeatures {
     /// 16-bit integer/floating-point variables supported in shader inputs and outputs
     pub storage_input_output16: Bool32,
 }
+unsafe impl Send for PhysicalDevice16BitStorageFeatures {}
+unsafe impl Sync for PhysicalDevice16BitStorageFeatures {}
 impl default::Default for PhysicalDevice16BitStorageFeatures {
     fn default() -> Self {
         Self {
@@ -26753,6 +27155,8 @@ pub struct PhysicalDeviceSubgroupProperties {
     /// Flag to specify whether quad operations are available in all stages.
     pub quad_operations_in_all_stages: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSubgroupProperties {}
+unsafe impl Sync for PhysicalDeviceSubgroupProperties {}
 impl default::Default for PhysicalDeviceSubgroupProperties {
     fn default() -> Self {
         Self {
@@ -26785,6 +27189,8 @@ pub struct PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
     /// Flag to specify whether subgroup operations with extended types are supported
     pub shader_subgroup_extended_types: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
+unsafe impl Sync for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
 impl default::Default for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
     fn default() -> Self {
         Self {
@@ -26811,6 +27217,8 @@ pub struct BufferMemoryRequirementsInfo2 {
     pub p_next: *const c_void,
     pub buffer: Option<Buffer>,
 }
+unsafe impl Send for BufferMemoryRequirementsInfo2 {}
+unsafe impl Sync for BufferMemoryRequirementsInfo2 {}
 impl default::Default for BufferMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
@@ -26837,6 +27245,8 @@ pub struct ImageMemoryRequirementsInfo2 {
     pub p_next: *const c_void,
     pub image: Option<Image>,
 }
+unsafe impl Send for ImageMemoryRequirementsInfo2 {}
+unsafe impl Sync for ImageMemoryRequirementsInfo2 {}
 impl default::Default for ImageMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
@@ -26863,6 +27273,8 @@ pub struct ImageSparseMemoryRequirementsInfo2 {
     pub p_next: *const c_void,
     pub image: Option<Image>,
 }
+unsafe impl Send for ImageSparseMemoryRequirementsInfo2 {}
+unsafe impl Sync for ImageSparseMemoryRequirementsInfo2 {}
 impl default::Default for ImageSparseMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
@@ -26889,6 +27301,8 @@ pub struct MemoryRequirements2 {
     pub p_next: *mut c_void,
     pub memory_requirements: MemoryRequirements,
 }
+unsafe impl Send for MemoryRequirements2 {}
+unsafe impl Sync for MemoryRequirements2 {}
 impl default::Default for MemoryRequirements2 {
     fn default() -> Self {
         Self {
@@ -26915,6 +27329,8 @@ pub struct SparseImageMemoryRequirements2 {
     pub p_next: *mut c_void,
     pub memory_requirements: SparseImageMemoryRequirements,
 }
+unsafe impl Send for SparseImageMemoryRequirements2 {}
+unsafe impl Sync for SparseImageMemoryRequirements2 {}
 impl default::Default for SparseImageMemoryRequirements2 {
     fn default() -> Self {
         Self {
@@ -26941,6 +27357,8 @@ pub struct PhysicalDevicePointClippingProperties {
     pub p_next: *mut c_void,
     pub point_clipping_behavior: PointClippingBehavior,
 }
+unsafe impl Send for PhysicalDevicePointClippingProperties {}
+unsafe impl Sync for PhysicalDevicePointClippingProperties {}
 impl default::Default for PhysicalDevicePointClippingProperties {
     fn default() -> Self {
         Self {
@@ -26968,6 +27386,8 @@ pub struct MemoryDedicatedRequirements {
     pub prefers_dedicated_allocation: Bool32,
     pub requires_dedicated_allocation: Bool32,
 }
+unsafe impl Send for MemoryDedicatedRequirements {}
+unsafe impl Sync for MemoryDedicatedRequirements {}
 impl default::Default for MemoryDedicatedRequirements {
     fn default() -> Self {
         Self {
@@ -26999,6 +27419,8 @@ pub struct MemoryDedicatedAllocateInfo {
     /// Buffer that this allocation will be bound to
     pub buffer: Option<Buffer>,
 }
+unsafe impl Send for MemoryDedicatedAllocateInfo {}
+unsafe impl Sync for MemoryDedicatedAllocateInfo {}
 impl default::Default for MemoryDedicatedAllocateInfo {
     fn default() -> Self {
         Self {
@@ -27027,6 +27449,8 @@ pub struct ImageViewUsageCreateInfo {
     pub p_next: *const c_void,
     pub usage: ImageUsageFlags,
 }
+unsafe impl Send for ImageViewUsageCreateInfo {}
+unsafe impl Sync for ImageViewUsageCreateInfo {}
 impl default::Default for ImageViewUsageCreateInfo {
     fn default() -> Self {
         Self {
@@ -27053,6 +27477,8 @@ pub struct PipelineTessellationDomainOriginStateCreateInfo {
     pub p_next: *const c_void,
     pub domain_origin: TessellationDomainOrigin,
 }
+unsafe impl Send for PipelineTessellationDomainOriginStateCreateInfo {}
+unsafe impl Sync for PipelineTessellationDomainOriginStateCreateInfo {}
 impl default::Default for PipelineTessellationDomainOriginStateCreateInfo {
     fn default() -> Self {
         Self {
@@ -27079,6 +27505,8 @@ pub struct SamplerYcbcrConversionInfo {
     pub p_next: *const c_void,
     pub conversion: Option<SamplerYcbcrConversion>,
 }
+unsafe impl Send for SamplerYcbcrConversionInfo {}
+unsafe impl Sync for SamplerYcbcrConversionInfo {}
 impl default::Default for SamplerYcbcrConversionInfo {
     fn default() -> Self {
         Self {
@@ -27112,6 +27540,8 @@ pub struct SamplerYcbcrConversionCreateInfo {
     pub chroma_filter: Filter,
     pub force_explicit_reconstruction: Bool32,
 }
+unsafe impl Send for SamplerYcbcrConversionCreateInfo {}
+unsafe impl Sync for SamplerYcbcrConversionCreateInfo {}
 impl default::Default for SamplerYcbcrConversionCreateInfo {
     fn default() -> Self {
         Self {
@@ -27152,6 +27582,8 @@ pub struct BindImagePlaneMemoryInfo {
     pub p_next: *const c_void,
     pub plane_aspect: ImageAspectFlags,
 }
+unsafe impl Send for BindImagePlaneMemoryInfo {}
+unsafe impl Sync for BindImagePlaneMemoryInfo {}
 impl default::Default for BindImagePlaneMemoryInfo {
     fn default() -> Self {
         Self {
@@ -27178,6 +27610,8 @@ pub struct ImagePlaneMemoryRequirementsInfo {
     pub p_next: *const c_void,
     pub plane_aspect: ImageAspectFlags,
 }
+unsafe impl Send for ImagePlaneMemoryRequirementsInfo {}
+unsafe impl Sync for ImagePlaneMemoryRequirementsInfo {}
 impl default::Default for ImagePlaneMemoryRequirementsInfo {
     fn default() -> Self {
         Self {
@@ -27205,6 +27639,8 @@ pub struct PhysicalDeviceSamplerYcbcrConversionFeatures {
     /// Sampler color conversion supported
     pub sampler_ycbcr_conversion: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSamplerYcbcrConversionFeatures {}
+unsafe impl Sync for PhysicalDeviceSamplerYcbcrConversionFeatures {}
 impl default::Default for PhysicalDeviceSamplerYcbcrConversionFeatures {
     fn default() -> Self {
         Self {
@@ -27231,6 +27667,8 @@ pub struct SamplerYcbcrConversionImageFormatProperties {
     pub p_next: *mut c_void,
     pub combined_image_sampler_descriptor_count: u32,
 }
+unsafe impl Send for SamplerYcbcrConversionImageFormatProperties {}
+unsafe impl Sync for SamplerYcbcrConversionImageFormatProperties {}
 impl default::Default for SamplerYcbcrConversionImageFormatProperties {
     fn default() -> Self {
         Self {
@@ -27260,6 +27698,8 @@ pub struct TextureLODGatherFormatPropertiesAMD {
     pub p_next: *mut c_void,
     pub supports_texture_gather_lod_bias_amd: Bool32,
 }
+unsafe impl Send for TextureLODGatherFormatPropertiesAMD {}
+unsafe impl Sync for TextureLODGatherFormatPropertiesAMD {}
 impl default::Default for TextureLODGatherFormatPropertiesAMD {
     fn default() -> Self {
         Self {
@@ -27290,6 +27730,8 @@ pub struct ConditionalRenderingBeginInfoEXT {
     pub offset: DeviceSize,
     pub flags: ConditionalRenderingFlagsEXT,
 }
+unsafe impl Send for ConditionalRenderingBeginInfoEXT {}
+unsafe impl Sync for ConditionalRenderingBeginInfoEXT {}
 impl default::Default for ConditionalRenderingBeginInfoEXT {
     fn default() -> Self {
         Self {
@@ -27320,6 +27762,8 @@ pub struct ProtectedSubmitInfo {
     /// Submit protected command buffers
     pub protected_submit: Bool32,
 }
+unsafe impl Send for ProtectedSubmitInfo {}
+unsafe impl Sync for ProtectedSubmitInfo {}
 impl default::Default for ProtectedSubmitInfo {
     fn default() -> Self {
         Self {
@@ -27345,6 +27789,8 @@ pub struct PhysicalDeviceProtectedMemoryFeatures {
     pub p_next: *mut c_void,
     pub protected_memory: Bool32,
 }
+unsafe impl Send for PhysicalDeviceProtectedMemoryFeatures {}
+unsafe impl Sync for PhysicalDeviceProtectedMemoryFeatures {}
 impl default::Default for PhysicalDeviceProtectedMemoryFeatures {
     fn default() -> Self {
         Self {
@@ -27370,6 +27816,8 @@ pub struct PhysicalDeviceProtectedMemoryProperties {
     pub p_next: *mut c_void,
     pub protected_no_fault: Bool32,
 }
+unsafe impl Send for PhysicalDeviceProtectedMemoryProperties {}
+unsafe impl Sync for PhysicalDeviceProtectedMemoryProperties {}
 impl default::Default for PhysicalDeviceProtectedMemoryProperties {
     fn default() -> Self {
         Self {
@@ -27397,6 +27845,8 @@ pub struct DeviceQueueInfo2 {
     pub queue_family_index: u32,
     pub queue_index: u32,
 }
+unsafe impl Send for DeviceQueueInfo2 {}
+unsafe impl Sync for DeviceQueueInfo2 {}
 impl default::Default for DeviceQueueInfo2 {
     fn default() -> Self {
         Self {
@@ -27428,6 +27878,8 @@ pub struct PipelineCoverageToColorStateCreateInfoNV {
     pub coverage_to_color_enable: Bool32,
     pub coverage_to_color_location: u32,
 }
+unsafe impl Send for PipelineCoverageToColorStateCreateInfoNV {}
+unsafe impl Sync for PipelineCoverageToColorStateCreateInfoNV {}
 impl default::Default for PipelineCoverageToColorStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -27458,6 +27910,8 @@ pub struct PhysicalDeviceSamplerFilterMinmaxProperties {
     pub filter_minmax_single_component_formats: Bool32,
     pub filter_minmax_image_component_mapping: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSamplerFilterMinmaxProperties {}
+unsafe impl Sync for PhysicalDeviceSamplerFilterMinmaxProperties {}
 impl default::Default for PhysicalDeviceSamplerFilterMinmaxProperties {
     fn default() -> Self {
         Self {
@@ -27517,6 +27971,8 @@ pub struct SampleLocationsInfoEXT {
     pub sample_locations_count: u32,
     pub p_sample_locations: *const SampleLocationEXT,
 }
+unsafe impl Send for SampleLocationsInfoEXT {}
+unsafe impl Sync for SampleLocationsInfoEXT {}
 impl default::Default for SampleLocationsInfoEXT {
     fn default() -> Self {
         Self {
@@ -27595,6 +28051,8 @@ pub struct RenderPassSampleLocationsBeginInfoEXT {
     pub post_subpass_sample_locations_count: u32,
     pub p_post_subpass_sample_locations: *const SubpassSampleLocationsEXT,
 }
+unsafe impl Send for RenderPassSampleLocationsBeginInfoEXT {}
+unsafe impl Sync for RenderPassSampleLocationsBeginInfoEXT {}
 impl default::Default for RenderPassSampleLocationsBeginInfoEXT {
     fn default() -> Self {
         Self {
@@ -27636,6 +28094,8 @@ pub struct PipelineSampleLocationsStateCreateInfoEXT {
     pub sample_locations_enable: Bool32,
     pub sample_locations_info: SampleLocationsInfoEXT,
 }
+unsafe impl Send for PipelineSampleLocationsStateCreateInfoEXT {}
+unsafe impl Sync for PipelineSampleLocationsStateCreateInfoEXT {}
 impl default::Default for PipelineSampleLocationsStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -27667,6 +28127,8 @@ pub struct PhysicalDeviceSampleLocationsPropertiesEXT {
     pub sample_location_sub_pixel_bits: u32,
     pub variable_sample_locations: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSampleLocationsPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceSampleLocationsPropertiesEXT {}
 impl default::Default for PhysicalDeviceSampleLocationsPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -27703,6 +28165,8 @@ pub struct MultisamplePropertiesEXT {
     pub p_next: *mut c_void,
     pub max_sample_location_grid_size: Extent2D,
 }
+unsafe impl Send for MultisamplePropertiesEXT {}
+unsafe impl Sync for MultisamplePropertiesEXT {}
 impl default::Default for MultisamplePropertiesEXT {
     fn default() -> Self {
         Self {
@@ -27728,6 +28192,8 @@ pub struct SamplerReductionModeCreateInfo {
     pub p_next: *const c_void,
     pub reduction_mode: SamplerReductionMode,
 }
+unsafe impl Send for SamplerReductionModeCreateInfo {}
+unsafe impl Sync for SamplerReductionModeCreateInfo {}
 impl default::Default for SamplerReductionModeCreateInfo {
     fn default() -> Self {
         Self {
@@ -27754,6 +28220,8 @@ pub struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     pub p_next: *mut c_void,
     pub advanced_blend_coherent_operations: Bool32,
 }
+unsafe impl Send for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
 impl default::Default for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -27782,6 +28250,8 @@ pub struct PhysicalDeviceMultiDrawFeaturesEXT {
     pub p_next: *mut c_void,
     pub multi_draw: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMultiDrawFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMultiDrawFeaturesEXT {}
 impl default::Default for PhysicalDeviceMultiDrawFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -27812,6 +28282,8 @@ pub struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     pub advanced_blend_correlated_overlap: Bool32,
     pub advanced_blend_all_operations: Bool32,
 }
+unsafe impl Send for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
 impl default::Default for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -27864,6 +28336,8 @@ pub struct PipelineColorBlendAdvancedStateCreateInfoEXT {
     pub dst_premultiplied: Bool32,
     pub blend_overlap: BlendOverlapEXT,
 }
+unsafe impl Send for PipelineColorBlendAdvancedStateCreateInfoEXT {}
+unsafe impl Sync for PipelineColorBlendAdvancedStateCreateInfoEXT {}
 impl default::Default for PipelineColorBlendAdvancedStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -27894,6 +28368,8 @@ pub struct PhysicalDeviceInlineUniformBlockFeaturesEXT {
     pub inline_uniform_block: Bool32,
     pub descriptor_binding_inline_uniform_block_update_after_bind: Bool32,
 }
+unsafe impl Send for PhysicalDeviceInlineUniformBlockFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceInlineUniformBlockFeaturesEXT {}
 impl default::Default for PhysicalDeviceInlineUniformBlockFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -27928,6 +28404,8 @@ pub struct PhysicalDeviceInlineUniformBlockPropertiesEXT {
     pub max_descriptor_set_inline_uniform_blocks: u32,
     pub max_descriptor_set_update_after_bind_inline_uniform_blocks: u32,
 }
+unsafe impl Send for PhysicalDeviceInlineUniformBlockPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceInlineUniformBlockPropertiesEXT {}
 impl default::Default for PhysicalDeviceInlineUniformBlockPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -27974,6 +28452,8 @@ pub struct WriteDescriptorSetInlineUniformBlockEXT {
     pub data_size: u32,
     pub p_data: *const c_void,
 }
+unsafe impl Send for WriteDescriptorSetInlineUniformBlockEXT {}
+unsafe impl Sync for WriteDescriptorSetInlineUniformBlockEXT {}
 impl default::Default for WriteDescriptorSetInlineUniformBlockEXT {
     fn default() -> Self {
         Self {
@@ -28001,6 +28481,8 @@ pub struct DescriptorPoolInlineUniformBlockCreateInfoEXT {
     pub p_next: *const c_void,
     pub max_inline_uniform_block_bindings: u32,
 }
+unsafe impl Send for DescriptorPoolInlineUniformBlockCreateInfoEXT {}
+unsafe impl Sync for DescriptorPoolInlineUniformBlockCreateInfoEXT {}
 impl default::Default for DescriptorPoolInlineUniformBlockCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28033,6 +28515,8 @@ pub struct PipelineCoverageModulationStateCreateInfoNV {
     pub coverage_modulation_table_count: u32,
     pub p_coverage_modulation_table: *const f32,
 }
+unsafe impl Send for PipelineCoverageModulationStateCreateInfoNV {}
+unsafe impl Sync for PipelineCoverageModulationStateCreateInfoNV {}
 impl default::Default for PipelineCoverageModulationStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -28070,6 +28554,8 @@ pub struct ImageFormatListCreateInfo {
     pub view_format_count: u32,
     pub p_view_formats: *const Format,
 }
+unsafe impl Send for ImageFormatListCreateInfo {}
+unsafe impl Sync for ImageFormatListCreateInfo {}
 impl default::Default for ImageFormatListCreateInfo {
     fn default() -> Self {
         Self {
@@ -28100,6 +28586,8 @@ pub struct ValidationCacheCreateInfoEXT {
     pub initial_data_size: usize,
     pub p_initial_data: *const c_void,
 }
+unsafe impl Send for ValidationCacheCreateInfoEXT {}
+unsafe impl Sync for ValidationCacheCreateInfoEXT {}
 impl default::Default for ValidationCacheCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28129,6 +28617,8 @@ pub struct ShaderModuleValidationCacheCreateInfoEXT {
     pub p_next: *const c_void,
     pub validation_cache: Option<ValidationCacheEXT>,
 }
+unsafe impl Send for ShaderModuleValidationCacheCreateInfoEXT {}
+unsafe impl Sync for ShaderModuleValidationCacheCreateInfoEXT {}
 impl default::Default for ShaderModuleValidationCacheCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28155,6 +28645,8 @@ pub struct PhysicalDeviceMaintenance3Properties {
     pub max_per_set_descriptors: u32,
     pub max_memory_allocation_size: DeviceSize,
 }
+unsafe impl Send for PhysicalDeviceMaintenance3Properties {}
+unsafe impl Sync for PhysicalDeviceMaintenance3Properties {}
 impl default::Default for PhysicalDeviceMaintenance3Properties {
     fn default() -> Self {
         Self {
@@ -28183,6 +28675,8 @@ pub struct DescriptorSetLayoutSupport {
     pub p_next: *mut c_void,
     pub supported: Bool32,
 }
+unsafe impl Send for DescriptorSetLayoutSupport {}
+unsafe impl Sync for DescriptorSetLayoutSupport {}
 impl default::Default for DescriptorSetLayoutSupport {
     fn default() -> Self {
         Self {
@@ -28209,6 +28703,8 @@ pub struct PhysicalDeviceShaderDrawParametersFeatures {
     pub p_next: *mut c_void,
     pub shader_draw_parameters: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderDrawParametersFeatures {}
+unsafe impl Sync for PhysicalDeviceShaderDrawParametersFeatures {}
 impl default::Default for PhysicalDeviceShaderDrawParametersFeatures {
     fn default() -> Self {
         Self {
@@ -28238,6 +28734,8 @@ pub struct PhysicalDeviceShaderFloat16Int8Features {
     /// 8-bit integers in shaders
     pub shader_int8: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderFloat16Int8Features {}
+unsafe impl Sync for PhysicalDeviceShaderFloat16Int8Features {}
 impl default::Default for PhysicalDeviceShaderFloat16Int8Features {
     fn default() -> Self {
         Self {
@@ -28298,6 +28796,8 @@ pub struct PhysicalDeviceFloatControlsProperties {
     /// An implementation can support RTZ
     pub shader_rounding_mode_rtz_float64: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFloatControlsProperties {}
+unsafe impl Sync for PhysicalDeviceFloatControlsProperties {}
 impl default::Default for PhysicalDeviceFloatControlsProperties {
     fn default() -> Self {
         Self {
@@ -28392,6 +28892,8 @@ pub struct PhysicalDeviceHostQueryResetFeatures {
     pub p_next: *mut c_void,
     pub host_query_reset: Bool32,
 }
+unsafe impl Send for PhysicalDeviceHostQueryResetFeatures {}
+unsafe impl Sync for PhysicalDeviceHostQueryResetFeatures {}
 impl default::Default for PhysicalDeviceHostQueryResetFeatures {
     fn default() -> Self {
         Self {
@@ -28486,6 +28988,8 @@ pub struct DeviceQueueGlobalPriorityCreateInfoEXT {
     pub p_next: *const c_void,
     pub global_priority: QueueGlobalPriorityEXT,
 }
+unsafe impl Send for DeviceQueueGlobalPriorityCreateInfoEXT {}
+unsafe impl Sync for DeviceQueueGlobalPriorityCreateInfoEXT {}
 impl default::Default for DeviceQueueGlobalPriorityCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28511,6 +29015,8 @@ pub struct PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
     pub p_next: *mut c_void,
     pub global_priority_query: Bool32,
 }
+unsafe impl Send for PhysicalDeviceGlobalPriorityQueryFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceGlobalPriorityQueryFeaturesEXT {}
 impl default::Default for PhysicalDeviceGlobalPriorityQueryFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -28537,6 +29043,8 @@ pub struct QueueFamilyGlobalPriorityPropertiesEXT {
     pub priority_count: u32,
     pub priorities: [QueueGlobalPriorityEXT; MAX_GLOBAL_PRIORITY_SIZE_EXT],
 }
+unsafe impl Send for QueueFamilyGlobalPriorityPropertiesEXT {}
+unsafe impl Sync for QueueFamilyGlobalPriorityPropertiesEXT {}
 impl default::Default for QueueFamilyGlobalPriorityPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -28566,6 +29074,8 @@ pub struct DebugUtilsObjectNameInfoEXT {
     pub object_handle: u64,
     pub p_object_name: *const c_char,
 }
+unsafe impl Send for DebugUtilsObjectNameInfoEXT {}
+unsafe impl Sync for DebugUtilsObjectNameInfoEXT {}
 impl default::Default for DebugUtilsObjectNameInfoEXT {
     fn default() -> Self {
         Self {
@@ -28599,6 +29109,8 @@ pub struct DebugUtilsObjectTagInfoEXT {
     pub tag_size: usize,
     pub p_tag: *const c_void,
 }
+unsafe impl Send for DebugUtilsObjectTagInfoEXT {}
+unsafe impl Sync for DebugUtilsObjectTagInfoEXT {}
 impl default::Default for DebugUtilsObjectTagInfoEXT {
     fn default() -> Self {
         Self {
@@ -28633,6 +29145,8 @@ pub struct DebugUtilsLabelEXT {
     pub p_label_name: *const c_char,
     pub color: [f32; 4],
 }
+unsafe impl Send for DebugUtilsLabelEXT {}
+unsafe impl Sync for DebugUtilsLabelEXT {}
 impl default::Default for DebugUtilsLabelEXT {
     fn default() -> Self {
         Self {
@@ -28664,6 +29178,8 @@ pub struct DebugUtilsMessengerCreateInfoEXT {
     pub pfn_user_callback: Option<FnDebugUtilsMessengerCallbackEXT>,
     pub p_user_data: *mut c_void,
 }
+unsafe impl Send for DebugUtilsMessengerCreateInfoEXT {}
+unsafe impl Sync for DebugUtilsMessengerCreateInfoEXT {}
 impl default::Default for DebugUtilsMessengerCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28713,6 +29229,8 @@ pub struct DebugUtilsMessengerCallbackDataEXT {
     pub object_count: u32,
     pub p_objects: *const DebugUtilsObjectNameInfoEXT,
 }
+unsafe impl Send for DebugUtilsMessengerCallbackDataEXT {}
+unsafe impl Sync for DebugUtilsMessengerCallbackDataEXT {}
 impl default::Default for DebugUtilsMessengerCallbackDataEXT {
     fn default() -> Self {
         Self {
@@ -28756,6 +29274,8 @@ pub struct PhysicalDeviceDeviceMemoryReportFeaturesEXT {
     pub p_next: *mut c_void,
     pub device_memory_report: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
 impl default::Default for PhysicalDeviceDeviceMemoryReportFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -28783,6 +29303,8 @@ pub struct DeviceDeviceMemoryReportCreateInfoEXT {
     pub pfn_user_callback: Option<FnDeviceMemoryReportCallbackEXT>,
     pub p_user_data: *mut c_void,
 }
+unsafe impl Send for DeviceDeviceMemoryReportCreateInfoEXT {}
+unsafe impl Sync for DeviceDeviceMemoryReportCreateInfoEXT {}
 impl default::Default for DeviceDeviceMemoryReportCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -28825,6 +29347,8 @@ pub struct DeviceMemoryReportCallbackDataEXT {
     pub object_handle: u64,
     pub heap_index: u32,
 }
+unsafe impl Send for DeviceMemoryReportCallbackDataEXT {}
+unsafe impl Sync for DeviceMemoryReportCallbackDataEXT {}
 impl default::Default for DeviceMemoryReportCallbackDataEXT {
     fn default() -> Self {
         Self {
@@ -28863,6 +29387,8 @@ pub struct ImportMemoryHostPointerInfoEXT {
     pub handle_type: ExternalMemoryHandleTypeFlags,
     pub p_host_pointer: *mut c_void,
 }
+unsafe impl Send for ImportMemoryHostPointerInfoEXT {}
+unsafe impl Sync for ImportMemoryHostPointerInfoEXT {}
 impl default::Default for ImportMemoryHostPointerInfoEXT {
     fn default() -> Self {
         Self {
@@ -28890,6 +29416,8 @@ pub struct MemoryHostPointerPropertiesEXT {
     pub p_next: *mut c_void,
     pub memory_type_bits: u32,
 }
+unsafe impl Send for MemoryHostPointerPropertiesEXT {}
+unsafe impl Sync for MemoryHostPointerPropertiesEXT {}
 impl default::Default for MemoryHostPointerPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -28915,6 +29443,8 @@ pub struct PhysicalDeviceExternalMemoryHostPropertiesEXT {
     pub p_next: *mut c_void,
     pub min_imported_host_pointer_alignment: DeviceSize,
 }
+unsafe impl Send for PhysicalDeviceExternalMemoryHostPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceExternalMemoryHostPropertiesEXT {}
 impl default::Default for PhysicalDeviceExternalMemoryHostPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -28960,6 +29490,8 @@ pub struct PhysicalDeviceConservativeRasterizationPropertiesEXT {
     /// true if the implementation supports both conservative rasterization and post depth coverage sample coverage mask
     pub conservative_rasterization_post_depth_coverage: Bool32,
 }
+unsafe impl Send for PhysicalDeviceConservativeRasterizationPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceConservativeRasterizationPropertiesEXT {}
 impl default::Default for PhysicalDeviceConservativeRasterizationPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -29016,6 +29548,8 @@ pub struct CalibratedTimestampInfoEXT {
     pub p_next: *const c_void,
     pub time_domain: TimeDomainEXT,
 }
+unsafe impl Send for CalibratedTimestampInfoEXT {}
+unsafe impl Sync for CalibratedTimestampInfoEXT {}
 impl default::Default for CalibratedTimestampInfoEXT {
     fn default() -> Self {
         Self {
@@ -29068,6 +29602,8 @@ pub struct PhysicalDeviceShaderCorePropertiesAMD {
     /// VGPRs are allocated in groups of this size
     pub vgpr_allocation_granularity: u32,
 }
+unsafe impl Send for PhysicalDeviceShaderCorePropertiesAMD {}
+unsafe impl Sync for PhysicalDeviceShaderCorePropertiesAMD {}
 impl default::Default for PhysicalDeviceShaderCorePropertiesAMD {
     fn default() -> Self {
         Self {
@@ -29123,6 +29659,8 @@ pub struct PhysicalDeviceShaderCoreProperties2AMD {
     /// number of active compute units across all shader engines/arrays
     pub active_compute_unit_count: u32,
 }
+unsafe impl Send for PhysicalDeviceShaderCoreProperties2AMD {}
+unsafe impl Sync for PhysicalDeviceShaderCoreProperties2AMD {}
 impl default::Default for PhysicalDeviceShaderCoreProperties2AMD {
     fn default() -> Self {
         Self {
@@ -29155,6 +29693,8 @@ pub struct PipelineRasterizationConservativeStateCreateInfoEXT {
     /// Extra overestimation to add to the primitive
     pub extra_primitive_overestimation_size: f32,
 }
+unsafe impl Send for PipelineRasterizationConservativeStateCreateInfoEXT {}
+unsafe impl Sync for PipelineRasterizationConservativeStateCreateInfoEXT {}
 impl default::Default for PipelineRasterizationConservativeStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -29206,6 +29746,8 @@ pub struct PhysicalDeviceDescriptorIndexingFeatures {
     pub descriptor_binding_variable_descriptor_count: Bool32,
     pub runtime_descriptor_array: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDescriptorIndexingFeatures {}
+unsafe impl Sync for PhysicalDeviceDescriptorIndexingFeatures {}
 impl default::Default for PhysicalDeviceDescriptorIndexingFeatures {
     fn default() -> Self {
         Self {
@@ -29349,6 +29891,8 @@ pub struct PhysicalDeviceDescriptorIndexingProperties {
     pub max_descriptor_set_update_after_bind_storage_images: u32,
     pub max_descriptor_set_update_after_bind_input_attachments: u32,
 }
+unsafe impl Send for PhysicalDeviceDescriptorIndexingProperties {}
+unsafe impl Sync for PhysicalDeviceDescriptorIndexingProperties {}
 impl default::Default for PhysicalDeviceDescriptorIndexingProperties {
     fn default() -> Self {
         Self {
@@ -29486,6 +30030,8 @@ pub struct DescriptorSetLayoutBindingFlagsCreateInfo {
     pub binding_count: u32,
     pub p_binding_flags: *const DescriptorBindingFlags,
 }
+unsafe impl Send for DescriptorSetLayoutBindingFlagsCreateInfo {}
+unsafe impl Sync for DescriptorSetLayoutBindingFlagsCreateInfo {}
 impl default::Default for DescriptorSetLayoutBindingFlagsCreateInfo {
     fn default() -> Self {
         Self {
@@ -29515,6 +30061,8 @@ pub struct DescriptorSetVariableDescriptorCountAllocateInfo {
     pub descriptor_set_count: u32,
     pub p_descriptor_counts: *const u32,
 }
+unsafe impl Send for DescriptorSetVariableDescriptorCountAllocateInfo {}
+unsafe impl Sync for DescriptorSetVariableDescriptorCountAllocateInfo {}
 impl default::Default for DescriptorSetVariableDescriptorCountAllocateInfo {
     fn default() -> Self {
         Self {
@@ -29543,6 +30091,8 @@ pub struct DescriptorSetVariableDescriptorCountLayoutSupport {
     pub p_next: *mut c_void,
     pub max_variable_descriptor_count: u32,
 }
+unsafe impl Send for DescriptorSetVariableDescriptorCountLayoutSupport {}
+unsafe impl Sync for DescriptorSetVariableDescriptorCountLayoutSupport {}
 impl default::Default for DescriptorSetVariableDescriptorCountLayoutSupport {
     fn default() -> Self {
         Self {
@@ -29581,6 +30131,8 @@ pub struct AttachmentDescription2 {
     pub initial_layout: ImageLayout,
     pub final_layout: ImageLayout,
 }
+unsafe impl Send for AttachmentDescription2 {}
+unsafe impl Sync for AttachmentDescription2 {}
 impl default::Default for AttachmentDescription2 {
     fn default() -> Self {
         Self {
@@ -29625,6 +30177,8 @@ pub struct AttachmentReference2 {
     pub layout: ImageLayout,
     pub aspect_mask: ImageAspectFlags,
 }
+unsafe impl Send for AttachmentReference2 {}
+unsafe impl Sync for AttachmentReference2 {}
 impl default::Default for AttachmentReference2 {
     fn default() -> Self {
         Self {
@@ -29665,6 +30219,8 @@ pub struct SubpassDescription2 {
     pub preserve_attachment_count: u32,
     pub p_preserve_attachments: *const u32,
 }
+unsafe impl Send for SubpassDescription2 {}
+unsafe impl Sync for SubpassDescription2 {}
 impl default::Default for SubpassDescription2 {
     fn default() -> Self {
         Self {
@@ -29718,6 +30274,8 @@ pub struct SubpassDependency2 {
     pub dependency_flags: DependencyFlags,
     pub view_offset: i32,
 }
+unsafe impl Send for SubpassDependency2 {}
+unsafe impl Sync for SubpassDependency2 {}
 impl default::Default for SubpassDependency2 {
     fn default() -> Self {
         Self {
@@ -29766,6 +30324,8 @@ pub struct RenderPassCreateInfo2 {
     pub correlated_view_mask_count: u32,
     pub p_correlated_view_masks: *const u32,
 }
+unsafe impl Send for RenderPassCreateInfo2 {}
+unsafe impl Sync for RenderPassCreateInfo2 {}
 impl default::Default for RenderPassCreateInfo2 {
     fn default() -> Self {
         Self {
@@ -29808,6 +30368,8 @@ pub struct SubpassBeginInfo {
     pub p_next: *const c_void,
     pub contents: SubpassContents,
 }
+unsafe impl Send for SubpassBeginInfo {}
+unsafe impl Sync for SubpassBeginInfo {}
 impl default::Default for SubpassBeginInfo {
     fn default() -> Self {
         Self {
@@ -29833,6 +30395,8 @@ pub struct SubpassEndInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
 }
+unsafe impl Send for SubpassEndInfo {}
+unsafe impl Sync for SubpassEndInfo {}
 impl default::Default for SubpassEndInfo {
     fn default() -> Self {
         Self {
@@ -29857,6 +30421,8 @@ pub struct PhysicalDeviceTimelineSemaphoreFeatures {
     pub p_next: *mut c_void,
     pub timeline_semaphore: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTimelineSemaphoreFeatures {}
+unsafe impl Sync for PhysicalDeviceTimelineSemaphoreFeatures {}
 impl default::Default for PhysicalDeviceTimelineSemaphoreFeatures {
     fn default() -> Self {
         Self {
@@ -29883,6 +30449,8 @@ pub struct PhysicalDeviceTimelineSemaphoreProperties {
     pub p_next: *mut c_void,
     pub max_timeline_semaphore_value_difference: u64,
 }
+unsafe impl Send for PhysicalDeviceTimelineSemaphoreProperties {}
+unsafe impl Sync for PhysicalDeviceTimelineSemaphoreProperties {}
 impl default::Default for PhysicalDeviceTimelineSemaphoreProperties {
     fn default() -> Self {
         Self {
@@ -29913,6 +30481,8 @@ pub struct SemaphoreTypeCreateInfo {
     pub semaphore_type: SemaphoreType,
     pub initial_value: u64,
 }
+unsafe impl Send for SemaphoreTypeCreateInfo {}
+unsafe impl Sync for SemaphoreTypeCreateInfo {}
 impl default::Default for SemaphoreTypeCreateInfo {
     fn default() -> Self {
         Self {
@@ -29944,6 +30514,8 @@ pub struct TimelineSemaphoreSubmitInfo {
     pub signal_semaphore_value_count: u32,
     pub p_signal_semaphore_values: *const u64,
 }
+unsafe impl Send for TimelineSemaphoreSubmitInfo {}
+unsafe impl Sync for TimelineSemaphoreSubmitInfo {}
 impl default::Default for TimelineSemaphoreSubmitInfo {
     fn default() -> Self {
         Self {
@@ -29979,6 +30551,8 @@ pub struct SemaphoreWaitInfo {
     pub p_semaphores: *const Semaphore,
     pub p_values: *const u64,
 }
+unsafe impl Send for SemaphoreWaitInfo {}
+unsafe impl Sync for SemaphoreWaitInfo {}
 impl default::Default for SemaphoreWaitInfo {
     fn default() -> Self {
         Self {
@@ -30012,6 +30586,8 @@ pub struct SemaphoreSignalInfo {
     pub semaphore: Option<Semaphore>,
     pub value: u64,
 }
+unsafe impl Send for SemaphoreSignalInfo {}
+unsafe impl Sync for SemaphoreSignalInfo {}
 impl default::Default for SemaphoreSignalInfo {
     fn default() -> Self {
         Self {
@@ -30063,6 +30639,8 @@ pub struct PipelineVertexInputDivisorStateCreateInfoEXT {
     pub vertex_binding_divisor_count: u32,
     pub p_vertex_binding_divisors: *const VertexInputBindingDivisorDescriptionEXT,
 }
+unsafe impl Send for PipelineVertexInputDivisorStateCreateInfoEXT {}
+unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfoEXT {}
 impl default::Default for PipelineVertexInputDivisorStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -30091,6 +30669,8 @@ pub struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
     /// max value of vertex attribute divisor
     pub max_vertex_attrib_divisor: u32,
 }
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
 impl default::Default for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -30119,6 +30699,8 @@ pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
     pub pci_device: u32,
     pub pci_function: u32,
 }
+unsafe impl Send for PhysicalDevicePCIBusInfoPropertiesEXT {}
+unsafe impl Sync for PhysicalDevicePCIBusInfoPropertiesEXT {}
 impl default::Default for PhysicalDevicePCIBusInfoPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -30150,6 +30732,8 @@ pub struct ImportAndroidHardwareBufferInfoANDROID {
     pub p_next: *const c_void,
     pub buffer: *mut AHardwareBuffer,
 }
+unsafe impl Send for ImportAndroidHardwareBufferInfoANDROID {}
+unsafe impl Sync for ImportAndroidHardwareBufferInfoANDROID {}
 impl default::Default for ImportAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
         Self {
@@ -30175,6 +30759,8 @@ pub struct AndroidHardwareBufferUsageANDROID {
     pub p_next: *mut c_void,
     pub android_hardware_buffer_usage: u64,
 }
+unsafe impl Send for AndroidHardwareBufferUsageANDROID {}
+unsafe impl Sync for AndroidHardwareBufferUsageANDROID {}
 impl default::Default for AndroidHardwareBufferUsageANDROID {
     fn default() -> Self {
         Self {
@@ -30201,6 +30787,8 @@ pub struct AndroidHardwareBufferPropertiesANDROID {
     pub allocation_size: DeviceSize,
     pub memory_type_bits: u32,
 }
+unsafe impl Send for AndroidHardwareBufferPropertiesANDROID {}
+unsafe impl Sync for AndroidHardwareBufferPropertiesANDROID {}
 impl default::Default for AndroidHardwareBufferPropertiesANDROID {
     fn default() -> Self {
         Self {
@@ -30228,6 +30816,8 @@ pub struct MemoryGetAndroidHardwareBufferInfoANDROID {
     pub p_next: *const c_void,
     pub memory: Option<DeviceMemory>,
 }
+unsafe impl Send for MemoryGetAndroidHardwareBufferInfoANDROID {}
+unsafe impl Sync for MemoryGetAndroidHardwareBufferInfoANDROID {}
 impl default::Default for MemoryGetAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
         Self {
@@ -30260,6 +30850,8 @@ pub struct AndroidHardwareBufferFormatPropertiesANDROID {
     pub suggested_x_chroma_offset: ChromaLocation,
     pub suggested_y_chroma_offset: ChromaLocation,
 }
+unsafe impl Send for AndroidHardwareBufferFormatPropertiesANDROID {}
+unsafe impl Sync for AndroidHardwareBufferFormatPropertiesANDROID {}
 impl default::Default for AndroidHardwareBufferFormatPropertiesANDROID {
     fn default() -> Self {
         Self {
@@ -30303,6 +30895,8 @@ pub struct CommandBufferInheritanceConditionalRenderingInfoEXT {
     /// Whether this secondary command buffer may be executed during an active conditional rendering
     pub conditional_rendering_enable: Bool32,
 }
+unsafe impl Send for CommandBufferInheritanceConditionalRenderingInfoEXT {}
+unsafe impl Sync for CommandBufferInheritanceConditionalRenderingInfoEXT {}
 impl default::Default for CommandBufferInheritanceConditionalRenderingInfoEXT {
     fn default() -> Self {
         Self {
@@ -30328,6 +30922,8 @@ pub struct ExternalFormatANDROID {
     pub p_next: *mut c_void,
     pub external_format: u64,
 }
+unsafe impl Send for ExternalFormatANDROID {}
+unsafe impl Sync for ExternalFormatANDROID {}
 impl default::Default for ExternalFormatANDROID {
     fn default() -> Self {
         Self {
@@ -30358,6 +30954,8 @@ pub struct PhysicalDevice8BitStorageFeatures {
     /// 8-bit integer variables supported in PushConstant
     pub storage_push_constant8: Bool32,
 }
+unsafe impl Send for PhysicalDevice8BitStorageFeatures {}
+unsafe impl Sync for PhysicalDevice8BitStorageFeatures {}
 impl default::Default for PhysicalDevice8BitStorageFeatures {
     fn default() -> Self {
         Self {
@@ -30392,6 +30990,8 @@ pub struct PhysicalDeviceConditionalRenderingFeaturesEXT {
     pub conditional_rendering: Bool32,
     pub inherited_conditional_rendering: Bool32,
 }
+unsafe impl Send for PhysicalDeviceConditionalRenderingFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceConditionalRenderingFeaturesEXT {}
 impl default::Default for PhysicalDeviceConditionalRenderingFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30421,6 +31021,8 @@ pub struct PhysicalDeviceVulkanMemoryModelFeatures {
     pub vulkan_memory_model_device_scope: Bool32,
     pub vulkan_memory_model_availability_visibility_chains: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVulkanMemoryModelFeatures {}
+unsafe impl Sync for PhysicalDeviceVulkanMemoryModelFeatures {}
 impl default::Default for PhysicalDeviceVulkanMemoryModelFeatures {
     fn default() -> Self {
         Self {
@@ -30458,6 +31060,8 @@ pub struct PhysicalDeviceShaderAtomicInt64Features {
     pub shader_buffer_int64_atomics: Bool32,
     pub shader_shared_int64_atomics: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderAtomicInt64Features {}
+unsafe impl Sync for PhysicalDeviceShaderAtomicInt64Features {}
 impl default::Default for PhysicalDeviceShaderAtomicInt64Features {
     fn default() -> Self {
         Self {
@@ -30497,6 +31101,8 @@ pub struct PhysicalDeviceShaderAtomicFloatFeaturesEXT {
     pub sparse_image_float32_atomics: Bool32,
     pub sparse_image_float32_atomic_add: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
 impl default::Default for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30567,6 +31173,8 @@ pub struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
     pub shader_image_float32_atomic_min_max: Bool32,
     pub sparse_image_float32_atomic_min_max: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
 impl default::Default for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30645,6 +31253,8 @@ pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     pub vertex_attribute_instance_rate_divisor: Bool32,
     pub vertex_attribute_instance_rate_zero_divisor: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
 impl default::Default for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30678,6 +31288,8 @@ pub struct QueueFamilyCheckpointPropertiesNV {
     pub p_next: *mut c_void,
     pub checkpoint_execution_stage_mask: PipelineStageFlags,
 }
+unsafe impl Send for QueueFamilyCheckpointPropertiesNV {}
+unsafe impl Sync for QueueFamilyCheckpointPropertiesNV {}
 impl default::Default for QueueFamilyCheckpointPropertiesNV {
     fn default() -> Self {
         Self {
@@ -30704,6 +31316,8 @@ pub struct CheckpointDataNV {
     pub stage: PipelineStageFlags,
     pub p_checkpoint_marker: *mut c_void,
 }
+unsafe impl Send for CheckpointDataNV {}
+unsafe impl Sync for CheckpointDataNV {}
 impl default::Default for CheckpointDataNV {
     fn default() -> Self {
         Self {
@@ -30738,6 +31352,8 @@ pub struct PhysicalDeviceDepthStencilResolveProperties {
     /// depth and stencil resolve modes can be set independently
     pub independent_resolve: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDepthStencilResolveProperties {}
+unsafe impl Sync for PhysicalDeviceDepthStencilResolveProperties {}
 impl default::Default for PhysicalDeviceDepthStencilResolveProperties {
     fn default() -> Self {
         Self {
@@ -30775,6 +31391,8 @@ pub struct SubpassDescriptionDepthStencilResolve {
     /// depth/stencil resolve attachment
     pub p_depth_stencil_resolve_attachment: *const AttachmentReference2,
 }
+unsafe impl Send for SubpassDescriptionDepthStencilResolve {}
+unsafe impl Sync for SubpassDescriptionDepthStencilResolve {}
 impl default::Default for SubpassDescriptionDepthStencilResolve {
     fn default() -> Self {
         Self {
@@ -30808,6 +31426,8 @@ pub struct ImageViewASTCDecodeModeEXT {
     pub p_next: *const c_void,
     pub decode_mode: Format,
 }
+unsafe impl Send for ImageViewASTCDecodeModeEXT {}
+unsafe impl Sync for ImageViewASTCDecodeModeEXT {}
 impl default::Default for ImageViewASTCDecodeModeEXT {
     fn default() -> Self {
         Self {
@@ -30833,6 +31453,8 @@ pub struct PhysicalDeviceASTCDecodeFeaturesEXT {
     pub p_next: *mut c_void,
     pub decode_mode_shared_exponent: Bool32,
 }
+unsafe impl Send for PhysicalDeviceASTCDecodeFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceASTCDecodeFeaturesEXT {}
 impl default::Default for PhysicalDeviceASTCDecodeFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30859,6 +31481,8 @@ pub struct PhysicalDeviceTransformFeedbackFeaturesEXT {
     pub transform_feedback: Bool32,
     pub geometry_streams: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTransformFeedbackFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceTransformFeedbackFeaturesEXT {}
 impl default::Default for PhysicalDeviceTransformFeedbackFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -30895,6 +31519,8 @@ pub struct PhysicalDeviceTransformFeedbackPropertiesEXT {
     pub transform_feedback_rasterization_stream_select: Bool32,
     pub transform_feedback_draw: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTransformFeedbackPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceTransformFeedbackPropertiesEXT {}
 impl default::Default for PhysicalDeviceTransformFeedbackPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -30957,6 +31583,8 @@ pub struct PipelineRasterizationStateStreamCreateInfoEXT {
     pub flags: PipelineRasterizationStateStreamCreateFlagsEXT,
     pub rasterization_stream: u32,
 }
+unsafe impl Send for PipelineRasterizationStateStreamCreateInfoEXT {}
+unsafe impl Sync for PipelineRasterizationStateStreamCreateInfoEXT {}
 impl default::Default for PipelineRasterizationStateStreamCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -30984,6 +31612,8 @@ pub struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     pub p_next: *mut c_void,
     pub representative_fragment_test: Bool32,
 }
+unsafe impl Send for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
 impl default::Default for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31009,6 +31639,8 @@ pub struct PipelineRepresentativeFragmentTestStateCreateInfoNV {
     pub p_next: *const c_void,
     pub representative_fragment_test_enable: Bool32,
 }
+unsafe impl Send for PipelineRepresentativeFragmentTestStateCreateInfoNV {}
+unsafe impl Sync for PipelineRepresentativeFragmentTestStateCreateInfoNV {}
 impl default::Default for PipelineRepresentativeFragmentTestStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31037,6 +31669,8 @@ pub struct PhysicalDeviceExclusiveScissorFeaturesNV {
     pub p_next: *mut c_void,
     pub exclusive_scissor: Bool32,
 }
+unsafe impl Send for PhysicalDeviceExclusiveScissorFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceExclusiveScissorFeaturesNV {}
 impl default::Default for PhysicalDeviceExclusiveScissorFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31063,6 +31697,8 @@ pub struct PipelineViewportExclusiveScissorStateCreateInfoNV {
     pub exclusive_scissor_count: u32,
     pub p_exclusive_scissors: *const Rect2D,
 }
+unsafe impl Send for PipelineViewportExclusiveScissorStateCreateInfoNV {}
+unsafe impl Sync for PipelineViewportExclusiveScissorStateCreateInfoNV {}
 impl default::Default for PipelineViewportExclusiveScissorStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31090,6 +31726,8 @@ pub struct PhysicalDeviceCornerSampledImageFeaturesNV {
     pub p_next: *mut c_void,
     pub corner_sampled_image: Bool32,
 }
+unsafe impl Send for PhysicalDeviceCornerSampledImageFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCornerSampledImageFeaturesNV {}
 impl default::Default for PhysicalDeviceCornerSampledImageFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31116,6 +31754,8 @@ pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     pub compute_derivative_group_quads: Bool32,
     pub compute_derivative_group_linear: Bool32,
 }
+unsafe impl Send for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
 impl default::Default for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31143,6 +31783,8 @@ pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     pub p_next: *mut c_void,
     pub fragment_shader_barycentric: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
 impl default::Default for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31168,6 +31810,8 @@ pub struct PhysicalDeviceShaderImageFootprintFeaturesNV {
     pub p_next: *mut c_void,
     pub image_footprint: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderImageFootprintFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceShaderImageFootprintFeaturesNV {}
 impl default::Default for PhysicalDeviceShaderImageFootprintFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31193,6 +31837,8 @@ pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     pub p_next: *mut c_void,
     pub dedicated_allocation_image_aliasing: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
 impl default::Default for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31220,6 +31866,8 @@ pub struct ShadingRatePaletteNV {
     pub shading_rate_palette_entry_count: u32,
     pub p_shading_rate_palette_entries: *const ShadingRatePaletteEntryNV,
 }
+unsafe impl Send for ShadingRatePaletteNV {}
+unsafe impl Sync for ShadingRatePaletteNV {}
 impl default::Default for ShadingRatePaletteNV {
     fn default() -> Self {
         Self {
@@ -31248,6 +31896,8 @@ pub struct PipelineViewportShadingRateImageStateCreateInfoNV {
     pub viewport_count: u32,
     pub p_shading_rate_palettes: *const ShadingRatePaletteNV,
 }
+unsafe impl Send for PipelineViewportShadingRateImageStateCreateInfoNV {}
+unsafe impl Sync for PipelineViewportShadingRateImageStateCreateInfoNV {}
 impl default::Default for PipelineViewportShadingRateImageStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31278,6 +31928,8 @@ pub struct PhysicalDeviceShadingRateImageFeaturesNV {
     pub shading_rate_image: Bool32,
     pub shading_rate_coarse_sample_order: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShadingRateImageFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceShadingRateImageFeaturesNV {}
 impl default::Default for PhysicalDeviceShadingRateImageFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31310,6 +31962,8 @@ pub struct PhysicalDeviceShadingRateImagePropertiesNV {
     pub shading_rate_palette_size: u32,
     pub shading_rate_max_coarse_samples: u32,
 }
+unsafe impl Send for PhysicalDeviceShadingRateImagePropertiesNV {}
+unsafe impl Sync for PhysicalDeviceShadingRateImagePropertiesNV {}
 impl default::Default for PhysicalDeviceShadingRateImagePropertiesNV {
     fn default() -> Self {
         Self {
@@ -31339,6 +31993,8 @@ pub struct PhysicalDeviceInvocationMaskFeaturesHUAWEI {
     pub p_next: *mut c_void,
     pub invocation_mask: Bool32,
 }
+unsafe impl Send for PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
 impl default::Default for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
     fn default() -> Self {
         Self {
@@ -31390,6 +32046,8 @@ pub struct CoarseSampleOrderCustomNV {
     pub sample_location_count: u32,
     pub p_sample_locations: *const CoarseSampleLocationNV,
 }
+unsafe impl Send for CoarseSampleOrderCustomNV {}
+unsafe impl Sync for CoarseSampleOrderCustomNV {}
 impl default::Default for CoarseSampleOrderCustomNV {
     fn default() -> Self {
         Self {
@@ -31419,6 +32077,8 @@ pub struct PipelineViewportCoarseSampleOrderStateCreateInfoNV {
     pub custom_sample_order_count: u32,
     pub p_custom_sample_orders: *const CoarseSampleOrderCustomNV,
 }
+unsafe impl Send for PipelineViewportCoarseSampleOrderStateCreateInfoNV {}
+unsafe impl Sync for PipelineViewportCoarseSampleOrderStateCreateInfoNV {}
 impl default::Default for PipelineViewportCoarseSampleOrderStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31449,6 +32109,8 @@ pub struct PhysicalDeviceMeshShaderFeaturesNV {
     pub task_shader: Bool32,
     pub mesh_shader: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMeshShaderFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceMeshShaderFeaturesNV {}
 impl default::Default for PhysicalDeviceMeshShaderFeaturesNV {
     fn default() -> Self {
         Self {
@@ -31488,6 +32150,8 @@ pub struct PhysicalDeviceMeshShaderPropertiesNV {
     pub mesh_output_per_vertex_granularity: u32,
     pub mesh_output_per_primitive_granularity: u32,
 }
+unsafe impl Send for PhysicalDeviceMeshShaderPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceMeshShaderPropertiesNV {}
 impl default::Default for PhysicalDeviceMeshShaderPropertiesNV {
     fn default() -> Self {
         Self {
@@ -31569,6 +32233,8 @@ pub struct RayTracingShaderGroupCreateInfoNV {
     pub any_hit_shader: u32,
     pub intersection_shader: u32,
 }
+unsafe impl Send for RayTracingShaderGroupCreateInfoNV {}
+unsafe impl Sync for RayTracingShaderGroupCreateInfoNV {}
 impl default::Default for RayTracingShaderGroupCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31607,6 +32273,8 @@ pub struct RayTracingShaderGroupCreateInfoKHR {
     pub intersection_shader: u32,
     pub p_shader_group_capture_replay_handle: *const c_void,
 }
+unsafe impl Send for RayTracingShaderGroupCreateInfoKHR {}
+unsafe impl Sync for RayTracingShaderGroupCreateInfoKHR {}
 impl default::Default for RayTracingShaderGroupCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -31658,6 +32326,8 @@ pub struct RayTracingPipelineCreateInfoNV {
     /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is not -1, it specifies an index into pCreateInfos of the base pipeline this is a derivative of
     pub base_pipeline_index: i32,
 }
+unsafe impl Send for RayTracingPipelineCreateInfoNV {}
+unsafe impl Sync for RayTracingPipelineCreateInfoNV {}
 impl default::Default for RayTracingPipelineCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31715,6 +32385,8 @@ pub struct RayTracingPipelineCreateInfoKHR {
     /// If VK_PIPELINE_CREATE_DERIVATIVE_BIT is set and this value is not -1, it specifies an index into pCreateInfos of the base pipeline this is a derivative of
     pub base_pipeline_index: i32,
 }
+unsafe impl Send for RayTracingPipelineCreateInfoKHR {}
+unsafe impl Sync for RayTracingPipelineCreateInfoKHR {}
 impl default::Default for RayTracingPipelineCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -31776,6 +32448,8 @@ pub struct GeometryTrianglesNV {
     pub transform_data: Option<Buffer>,
     pub transform_offset: DeviceSize,
 }
+unsafe impl Send for GeometryTrianglesNV {}
+unsafe impl Sync for GeometryTrianglesNV {}
 impl default::Default for GeometryTrianglesNV {
     fn default() -> Self {
         Self {
@@ -31826,6 +32500,8 @@ pub struct GeometryAABBNV {
     /// Offset in bytes of the first AABB in aabbData
     pub offset: DeviceSize,
 }
+unsafe impl Send for GeometryAABBNV {}
+unsafe impl Sync for GeometryAABBNV {}
 impl default::Default for GeometryAABBNV {
     fn default() -> Self {
         Self {
@@ -31881,6 +32557,8 @@ pub struct GeometryNV {
     pub geometry: GeometryDataNV,
     pub flags: GeometryFlagsKHR,
 }
+unsafe impl Send for GeometryNV {}
+unsafe impl Sync for GeometryNV {}
 impl default::Default for GeometryNV {
     fn default() -> Self {
         Self {
@@ -31914,6 +32592,8 @@ pub struct AccelerationStructureInfoNV {
     pub geometry_count: u32,
     pub p_geometries: *const GeometryNV,
 }
+unsafe impl Send for AccelerationStructureInfoNV {}
+unsafe impl Sync for AccelerationStructureInfoNV {}
 impl default::Default for AccelerationStructureInfoNV {
     fn default() -> Self {
         Self {
@@ -31948,6 +32628,8 @@ pub struct AccelerationStructureCreateInfoNV {
     pub compacted_size: DeviceSize,
     pub info: AccelerationStructureInfoNV,
 }
+unsafe impl Send for AccelerationStructureCreateInfoNV {}
+unsafe impl Sync for AccelerationStructureCreateInfoNV {}
 impl default::Default for AccelerationStructureCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -31979,6 +32661,8 @@ pub struct BindAccelerationStructureMemoryInfoNV {
     pub device_index_count: u32,
     pub p_device_indices: *const u32,
 }
+unsafe impl Send for BindAccelerationStructureMemoryInfoNV {}
+unsafe impl Sync for BindAccelerationStructureMemoryInfoNV {}
 impl default::Default for BindAccelerationStructureMemoryInfoNV {
     fn default() -> Self {
         Self {
@@ -32013,6 +32697,8 @@ pub struct WriteDescriptorSetAccelerationStructureKHR {
     pub acceleration_structure_count: u32,
     pub p_acceleration_structures: *const AccelerationStructureKHR,
 }
+unsafe impl Send for WriteDescriptorSetAccelerationStructureKHR {}
+unsafe impl Sync for WriteDescriptorSetAccelerationStructureKHR {}
 impl default::Default for WriteDescriptorSetAccelerationStructureKHR {
     fn default() -> Self {
         Self {
@@ -32041,6 +32727,8 @@ pub struct WriteDescriptorSetAccelerationStructureNV {
     pub acceleration_structure_count: u32,
     pub p_acceleration_structures: *const AccelerationStructureNV,
 }
+unsafe impl Send for WriteDescriptorSetAccelerationStructureNV {}
+unsafe impl Sync for WriteDescriptorSetAccelerationStructureNV {}
 impl default::Default for WriteDescriptorSetAccelerationStructureNV {
     fn default() -> Self {
         Self {
@@ -32069,6 +32757,8 @@ pub struct AccelerationStructureMemoryRequirementsInfoNV {
     pub ty: AccelerationStructureMemoryRequirementsTypeNV,
     pub acceleration_structure: Option<AccelerationStructureNV>,
 }
+unsafe impl Send for AccelerationStructureMemoryRequirementsInfoNV {}
+unsafe impl Sync for AccelerationStructureMemoryRequirementsInfoNV {}
 impl default::Default for AccelerationStructureMemoryRequirementsInfoNV {
     fn default() -> Self {
         Self {
@@ -32100,6 +32790,8 @@ pub struct PhysicalDeviceAccelerationStructureFeaturesKHR {
     pub acceleration_structure_host_commands: Bool32,
     pub descriptor_binding_acceleration_structure_update_after_bind: Bool32,
 }
+unsafe impl Send for PhysicalDeviceAccelerationStructureFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceAccelerationStructureFeaturesKHR {}
 impl default::Default for PhysicalDeviceAccelerationStructureFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -32149,6 +32841,8 @@ pub struct PhysicalDeviceRayTracingPipelineFeaturesKHR {
     pub ray_tracing_pipeline_trace_rays_indirect: Bool32,
     pub ray_traversal_primitive_culling: Bool32,
 }
+unsafe impl Send for PhysicalDeviceRayTracingPipelineFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceRayTracingPipelineFeaturesKHR {}
 impl default::Default for PhysicalDeviceRayTracingPipelineFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -32191,6 +32885,8 @@ pub struct PhysicalDeviceRayQueryFeaturesKHR {
     pub p_next: *mut c_void,
     pub ray_query: Bool32,
 }
+unsafe impl Send for PhysicalDeviceRayQueryFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceRayQueryFeaturesKHR {}
 impl default::Default for PhysicalDeviceRayQueryFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -32223,6 +32919,8 @@ pub struct PhysicalDeviceAccelerationStructurePropertiesKHR {
     pub max_descriptor_set_update_after_bind_acceleration_structures: u32,
     pub min_acceleration_structure_scratch_offset_alignment: u32,
 }
+unsafe impl Send for PhysicalDeviceAccelerationStructurePropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceAccelerationStructurePropertiesKHR {}
 impl default::Default for PhysicalDeviceAccelerationStructurePropertiesKHR {
     fn default() -> Self {
         Self {
@@ -32284,6 +32982,8 @@ pub struct PhysicalDeviceRayTracingPipelinePropertiesKHR {
     pub shader_group_handle_alignment: u32,
     pub max_ray_hit_attribute_size: u32,
 }
+unsafe impl Send for PhysicalDeviceRayTracingPipelinePropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceRayTracingPipelinePropertiesKHR {}
 impl default::Default for PhysicalDeviceRayTracingPipelinePropertiesKHR {
     fn default() -> Self {
         Self {
@@ -32336,6 +33036,8 @@ pub struct PhysicalDeviceRayTracingPropertiesNV {
     pub max_triangle_count: u64,
     pub max_descriptor_set_acceleration_structures: u32,
 }
+unsafe impl Send for PhysicalDeviceRayTracingPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingPropertiesNV {}
 impl default::Default for PhysicalDeviceRayTracingPropertiesNV {
     fn default() -> Self {
         Self {
@@ -32429,6 +33131,8 @@ pub struct DrmFormatModifierPropertiesListEXT {
     pub drm_format_modifier_count: u32,
     pub p_drm_format_modifier_properties: *mut DrmFormatModifierPropertiesEXT,
 }
+unsafe impl Send for DrmFormatModifierPropertiesListEXT {}
+unsafe impl Sync for DrmFormatModifierPropertiesListEXT {}
 impl default::Default for DrmFormatModifierPropertiesListEXT {
     fn default() -> Self {
         Self {
@@ -32490,6 +33194,8 @@ pub struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
     pub queue_family_index_count: u32,
     pub p_queue_family_indices: *const u32,
 }
+unsafe impl Send for PhysicalDeviceImageDrmFormatModifierInfoEXT {}
+unsafe impl Sync for PhysicalDeviceImageDrmFormatModifierInfoEXT {}
 impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
     fn default() -> Self {
         Self {
@@ -32522,6 +33228,8 @@ pub struct ImageDrmFormatModifierListCreateInfoEXT {
     pub drm_format_modifier_count: u32,
     pub p_drm_format_modifiers: *const u64,
 }
+unsafe impl Send for ImageDrmFormatModifierListCreateInfoEXT {}
+unsafe impl Sync for ImageDrmFormatModifierListCreateInfoEXT {}
 impl default::Default for ImageDrmFormatModifierListCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -32551,6 +33259,8 @@ pub struct ImageDrmFormatModifierExplicitCreateInfoEXT {
     pub drm_format_modifier_plane_count: u32,
     pub p_plane_layouts: *const SubresourceLayout,
 }
+unsafe impl Send for ImageDrmFormatModifierExplicitCreateInfoEXT {}
+unsafe impl Sync for ImageDrmFormatModifierExplicitCreateInfoEXT {}
 impl default::Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -32580,6 +33290,8 @@ pub struct ImageDrmFormatModifierPropertiesEXT {
     pub p_next: *mut c_void,
     pub drm_format_modifier: u64,
 }
+unsafe impl Send for ImageDrmFormatModifierPropertiesEXT {}
+unsafe impl Sync for ImageDrmFormatModifierPropertiesEXT {}
 impl default::Default for ImageDrmFormatModifierPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -32605,6 +33317,8 @@ pub struct ImageStencilUsageCreateInfo {
     pub p_next: *const c_void,
     pub stencil_usage: ImageUsageFlags,
 }
+unsafe impl Send for ImageStencilUsageCreateInfo {}
+unsafe impl Sync for ImageStencilUsageCreateInfo {}
 impl default::Default for ImageStencilUsageCreateInfo {
     fn default() -> Self {
         Self {
@@ -32631,6 +33345,8 @@ pub struct DeviceMemoryOverallocationCreateInfoAMD {
     pub p_next: *const c_void,
     pub overallocation_behavior: MemoryOverallocationBehaviorAMD,
 }
+unsafe impl Send for DeviceMemoryOverallocationCreateInfoAMD {}
+unsafe impl Sync for DeviceMemoryOverallocationCreateInfoAMD {}
 impl default::Default for DeviceMemoryOverallocationCreateInfoAMD {
     fn default() -> Self {
         Self {
@@ -32658,6 +33374,8 @@ pub struct PhysicalDeviceFragmentDensityMapFeaturesEXT {
     pub fragment_density_map_dynamic: Bool32,
     pub fragment_density_map_non_subsampled_images: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentDensityMapFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapFeaturesEXT {}
 impl default::Default for PhysicalDeviceFragmentDensityMapFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -32690,6 +33408,8 @@ pub struct PhysicalDeviceFragmentDensityMap2FeaturesEXT {
     pub p_next: *mut c_void,
     pub fragment_density_map_deferred: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
 impl default::Default for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -32717,6 +33437,8 @@ pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
     pub max_fragment_density_texel_size: Extent2D,
     pub fragment_density_invocations: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentDensityMapPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMapPropertiesEXT {}
 impl default::Default for PhysicalDeviceFragmentDensityMapPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -32749,6 +33471,8 @@ pub struct PhysicalDeviceFragmentDensityMap2PropertiesEXT {
     pub max_subsampled_array_layers: u32,
     pub max_descriptor_set_subsampled_samplers: u32,
 }
+unsafe impl Send for PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
 impl default::Default for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
     fn default() -> Self {
         Self {
@@ -32786,6 +33510,8 @@ pub struct RenderPassFragmentDensityMapCreateInfoEXT {
     pub p_next: *const c_void,
     pub fragment_density_map_attachment: AttachmentReference,
 }
+unsafe impl Send for RenderPassFragmentDensityMapCreateInfoEXT {}
+unsafe impl Sync for RenderPassFragmentDensityMapCreateInfoEXT {}
 impl default::Default for RenderPassFragmentDensityMapCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -32811,6 +33537,8 @@ pub struct PhysicalDeviceScalarBlockLayoutFeatures {
     pub p_next: *mut c_void,
     pub scalar_block_layout: Bool32,
 }
+unsafe impl Send for PhysicalDeviceScalarBlockLayoutFeatures {}
+unsafe impl Sync for PhysicalDeviceScalarBlockLayoutFeatures {}
 impl default::Default for PhysicalDeviceScalarBlockLayoutFeatures {
     fn default() -> Self {
         Self {
@@ -32838,6 +33566,8 @@ pub struct SurfaceProtectedCapabilitiesKHR {
     /// Represents if surface can be protected
     pub supports_protected: Bool32,
 }
+unsafe impl Send for SurfaceProtectedCapabilitiesKHR {}
+unsafe impl Sync for SurfaceProtectedCapabilitiesKHR {}
 impl default::Default for SurfaceProtectedCapabilitiesKHR {
     fn default() -> Self {
         Self {
@@ -32863,6 +33593,8 @@ pub struct PhysicalDeviceUniformBufferStandardLayoutFeatures {
     pub p_next: *mut c_void,
     pub uniform_buffer_standard_layout: Bool32,
 }
+unsafe impl Send for PhysicalDeviceUniformBufferStandardLayoutFeatures {}
+unsafe impl Sync for PhysicalDeviceUniformBufferStandardLayoutFeatures {}
 impl default::Default for PhysicalDeviceUniformBufferStandardLayoutFeatures {
     fn default() -> Self {
         Self {
@@ -32889,6 +33621,8 @@ pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
     pub p_next: *mut c_void,
     pub depth_clip_enable: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDepthClipEnableFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDepthClipEnableFeaturesEXT {}
 impl default::Default for PhysicalDeviceDepthClipEnableFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -32916,6 +33650,8 @@ pub struct PipelineRasterizationDepthClipStateCreateInfoEXT {
     pub flags: PipelineRasterizationDepthClipStateCreateFlagsEXT,
     pub depth_clip_enable: Bool32,
 }
+unsafe impl Send for PipelineRasterizationDepthClipStateCreateInfoEXT {}
+unsafe impl Sync for PipelineRasterizationDepthClipStateCreateInfoEXT {}
 impl default::Default for PipelineRasterizationDepthClipStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -32944,6 +33680,8 @@ pub struct PhysicalDeviceMemoryBudgetPropertiesEXT {
     pub heap_budget: [DeviceSize; MAX_MEMORY_HEAPS],
     pub heap_usage: [DeviceSize; MAX_MEMORY_HEAPS],
 }
+unsafe impl Send for PhysicalDeviceMemoryBudgetPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceMemoryBudgetPropertiesEXT {}
 impl default::Default for PhysicalDeviceMemoryBudgetPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -32971,6 +33709,8 @@ pub struct PhysicalDeviceMemoryPriorityFeaturesEXT {
     pub p_next: *mut c_void,
     pub memory_priority: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMemoryPriorityFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMemoryPriorityFeaturesEXT {}
 impl default::Default for PhysicalDeviceMemoryPriorityFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -32996,6 +33736,8 @@ pub struct MemoryPriorityAllocateInfoEXT {
     pub p_next: *const c_void,
     pub priority: f32,
 }
+unsafe impl Send for MemoryPriorityAllocateInfoEXT {}
+unsafe impl Sync for MemoryPriorityAllocateInfoEXT {}
 impl default::Default for MemoryPriorityAllocateInfoEXT {
     fn default() -> Self {
         Self {
@@ -33021,6 +33763,8 @@ pub struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
     pub p_next: *mut c_void,
     pub pageable_device_local_memory: Bool32,
 }
+unsafe impl Send for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
 impl default::Default for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -33048,6 +33792,8 @@ pub struct PhysicalDeviceBufferDeviceAddressFeatures {
     pub buffer_device_address_capture_replay: Bool32,
     pub buffer_device_address_multi_device: Bool32,
 }
+unsafe impl Send for PhysicalDeviceBufferDeviceAddressFeatures {}
+unsafe impl Sync for PhysicalDeviceBufferDeviceAddressFeatures {}
 impl default::Default for PhysicalDeviceBufferDeviceAddressFeatures {
     fn default() -> Self {
         Self {
@@ -33086,6 +33832,8 @@ pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     pub buffer_device_address_capture_replay: Bool32,
     pub buffer_device_address_multi_device: Bool32,
 }
+unsafe impl Send for PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
 impl default::Default for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -33122,6 +33870,8 @@ pub struct BufferDeviceAddressInfo {
     pub p_next: *const c_void,
     pub buffer: Option<Buffer>,
 }
+unsafe impl Send for BufferDeviceAddressInfo {}
+unsafe impl Sync for BufferDeviceAddressInfo {}
 impl default::Default for BufferDeviceAddressInfo {
     fn default() -> Self {
         Self {
@@ -33149,6 +33899,8 @@ pub struct BufferOpaqueCaptureAddressCreateInfo {
     pub p_next: *const c_void,
     pub opaque_capture_address: u64,
 }
+unsafe impl Send for BufferOpaqueCaptureAddressCreateInfo {}
+unsafe impl Sync for BufferOpaqueCaptureAddressCreateInfo {}
 impl default::Default for BufferOpaqueCaptureAddressCreateInfo {
     fn default() -> Self {
         Self {
@@ -33175,6 +33927,8 @@ pub struct BufferDeviceAddressCreateInfoEXT {
     pub p_next: *const c_void,
     pub device_address: DeviceAddress,
 }
+unsafe impl Send for BufferDeviceAddressCreateInfoEXT {}
+unsafe impl Sync for BufferDeviceAddressCreateInfoEXT {}
 impl default::Default for BufferDeviceAddressCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -33200,6 +33954,8 @@ pub struct PhysicalDeviceImageViewImageFormatInfoEXT {
     pub p_next: *mut c_void,
     pub image_view_type: ImageViewType,
 }
+unsafe impl Send for PhysicalDeviceImageViewImageFormatInfoEXT {}
+unsafe impl Sync for PhysicalDeviceImageViewImageFormatInfoEXT {}
 impl default::Default for PhysicalDeviceImageViewImageFormatInfoEXT {
     fn default() -> Self {
         Self {
@@ -33228,6 +33984,8 @@ pub struct FilterCubicImageViewImageFormatPropertiesEXT {
     /// The combination of format, image type (and image view type if provided) can be filtered with VK_FILTER_CUBIC_EXT and ReductionMode of Min or Max
     pub filter_cubic_minmax: Bool32,
 }
+unsafe impl Send for FilterCubicImageViewImageFormatPropertiesEXT {}
+unsafe impl Sync for FilterCubicImageViewImageFormatPropertiesEXT {}
 impl default::Default for FilterCubicImageViewImageFormatPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -33255,6 +34013,8 @@ pub struct PhysicalDeviceImagelessFramebufferFeatures {
     pub p_next: *mut c_void,
     pub imageless_framebuffer: Bool32,
 }
+unsafe impl Send for PhysicalDeviceImagelessFramebufferFeatures {}
+unsafe impl Sync for PhysicalDeviceImagelessFramebufferFeatures {}
 impl default::Default for PhysicalDeviceImagelessFramebufferFeatures {
     fn default() -> Self {
         Self {
@@ -33282,6 +34042,8 @@ pub struct FramebufferAttachmentsCreateInfo {
     pub attachment_image_info_count: u32,
     pub p_attachment_image_infos: *const FramebufferAttachmentImageInfo,
 }
+unsafe impl Send for FramebufferAttachmentsCreateInfo {}
+unsafe impl Sync for FramebufferAttachmentsCreateInfo {}
 impl default::Default for FramebufferAttachmentsCreateInfo {
     fn default() -> Self {
         Self {
@@ -33318,6 +34080,8 @@ pub struct FramebufferAttachmentImageInfo {
     pub view_format_count: u32,
     pub p_view_formats: *const Format,
 }
+unsafe impl Send for FramebufferAttachmentImageInfo {}
+unsafe impl Sync for FramebufferAttachmentImageInfo {}
 impl default::Default for FramebufferAttachmentImageInfo {
     fn default() -> Self {
         Self {
@@ -33357,6 +34121,8 @@ pub struct RenderPassAttachmentBeginInfo {
     pub attachment_count: u32,
     pub p_attachments: *const ImageView,
 }
+unsafe impl Send for RenderPassAttachmentBeginInfo {}
+unsafe impl Sync for RenderPassAttachmentBeginInfo {}
 impl default::Default for RenderPassAttachmentBeginInfo {
     fn default() -> Self {
         Self {
@@ -33385,6 +34151,8 @@ pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     pub p_next: *mut c_void,
     pub texture_compression_astc_hdr: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {}
 impl default::Default for PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -33411,6 +34179,8 @@ pub struct PhysicalDeviceCooperativeMatrixFeaturesNV {
     pub cooperative_matrix: Bool32,
     pub cooperative_matrix_robust_buffer_access: Bool32,
 }
+unsafe impl Send for PhysicalDeviceCooperativeMatrixFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixFeaturesNV {}
 impl default::Default for PhysicalDeviceCooperativeMatrixFeaturesNV {
     fn default() -> Self {
         Self {
@@ -33441,6 +34211,8 @@ pub struct PhysicalDeviceCooperativeMatrixPropertiesNV {
     pub p_next: *mut c_void,
     pub cooperative_matrix_supported_stages: ShaderStageFlags,
 }
+unsafe impl Send for PhysicalDeviceCooperativeMatrixPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixPropertiesNV {}
 impl default::Default for PhysicalDeviceCooperativeMatrixPropertiesNV {
     fn default() -> Self {
         Self {
@@ -33476,6 +34248,8 @@ pub struct CooperativeMatrixPropertiesNV {
     pub d_type: ComponentTypeNV,
     pub scope: ScopeNV,
 }
+unsafe impl Send for CooperativeMatrixPropertiesNV {}
+unsafe impl Sync for CooperativeMatrixPropertiesNV {}
 impl default::Default for CooperativeMatrixPropertiesNV {
     fn default() -> Self {
         Self {
@@ -33515,6 +34289,8 @@ pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXT {
     pub p_next: *mut c_void,
     pub ycbcr_image_arrays: Bool32,
 }
+unsafe impl Send for PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
 impl default::Default for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -33542,6 +34318,8 @@ pub struct ImageViewHandleInfoNVX {
     pub descriptor_type: DescriptorType,
     pub sampler: Option<Sampler>,
 }
+unsafe impl Send for ImageViewHandleInfoNVX {}
+unsafe impl Sync for ImageViewHandleInfoNVX {}
 impl default::Default for ImageViewHandleInfoNVX {
     fn default() -> Self {
         Self {
@@ -33572,6 +34350,8 @@ pub struct ImageViewAddressPropertiesNVX {
     pub device_address: DeviceAddress,
     pub size: DeviceSize,
 }
+unsafe impl Send for ImageViewAddressPropertiesNVX {}
+unsafe impl Sync for ImageViewAddressPropertiesNVX {}
 impl default::Default for ImageViewAddressPropertiesNVX {
     fn default() -> Self {
         Self {
@@ -33625,6 +34405,8 @@ pub struct PipelineCreationFeedbackCreateInfoEXT {
     /// One entry for each shader stage specified in the parent Vk*PipelineCreateInfo struct
     pub p_pipeline_stage_creation_feedbacks: *mut PipelineCreationFeedbackEXT,
 }
+unsafe impl Send for PipelineCreationFeedbackCreateInfoEXT {}
+unsafe impl Sync for PipelineCreationFeedbackCreateInfoEXT {}
 impl default::Default for PipelineCreationFeedbackCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -33660,6 +34442,8 @@ pub struct SurfaceFullScreenExclusiveInfoEXT {
     pub p_next: *mut c_void,
     pub full_screen_exclusive: FullScreenExclusiveEXT,
 }
+unsafe impl Send for SurfaceFullScreenExclusiveInfoEXT {}
+unsafe impl Sync for SurfaceFullScreenExclusiveInfoEXT {}
 impl default::Default for SurfaceFullScreenExclusiveInfoEXT {
     fn default() -> Self {
         Self {
@@ -33685,6 +34469,8 @@ pub struct SurfaceFullScreenExclusiveWin32InfoEXT {
     pub p_next: *const c_void,
     pub hmonitor: HMONITOR,
 }
+unsafe impl Send for SurfaceFullScreenExclusiveWin32InfoEXT {}
+unsafe impl Sync for SurfaceFullScreenExclusiveWin32InfoEXT {}
 impl default::Default for SurfaceFullScreenExclusiveWin32InfoEXT {
     fn default() -> Self {
         Self {
@@ -33710,6 +34496,8 @@ pub struct SurfaceCapabilitiesFullScreenExclusiveEXT {
     pub p_next: *mut c_void,
     pub full_screen_exclusive_supported: Bool32,
 }
+unsafe impl Send for SurfaceCapabilitiesFullScreenExclusiveEXT {}
+unsafe impl Sync for SurfaceCapabilitiesFullScreenExclusiveEXT {}
 impl default::Default for SurfaceCapabilitiesFullScreenExclusiveEXT {
     fn default() -> Self {
         Self {
@@ -33738,6 +34526,8 @@ pub struct PhysicalDevicePerformanceQueryFeaturesKHR {
     /// performance counters from multiple query pools can be accessed in the same primary command buffer
     pub performance_counter_multiple_query_pools: Bool32,
 }
+unsafe impl Send for PhysicalDevicePerformanceQueryFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePerformanceQueryFeaturesKHR {}
 impl default::Default for PhysicalDevicePerformanceQueryFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -33769,6 +34559,8 @@ pub struct PhysicalDevicePerformanceQueryPropertiesKHR {
     /// Flag to specify whether performance queries are allowed to be used in vkCmdCopyQueryPoolResults
     pub allow_command_buffer_query_copies: Bool32,
 }
+unsafe impl Send for PhysicalDevicePerformanceQueryPropertiesKHR {}
+unsafe impl Sync for PhysicalDevicePerformanceQueryPropertiesKHR {}
 impl default::Default for PhysicalDevicePerformanceQueryPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -33800,6 +34592,8 @@ pub struct PerformanceCounterKHR {
     pub storage: PerformanceCounterStorageKHR,
     pub uuid: [u8; UUID_SIZE],
 }
+unsafe impl Send for PerformanceCounterKHR {}
+unsafe impl Sync for PerformanceCounterKHR {}
 impl default::Default for PerformanceCounterKHR {
     fn default() -> Self {
         Self {
@@ -33834,6 +34628,8 @@ pub struct PerformanceCounterDescriptionKHR {
     pub category: [c_char; MAX_DESCRIPTION_SIZE],
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
 }
+unsafe impl Send for PerformanceCounterDescriptionKHR {}
+unsafe impl Sync for PerformanceCounterDescriptionKHR {}
 impl default::Default for PerformanceCounterDescriptionKHR {
     fn default() -> Self {
         Self {
@@ -33867,6 +34663,8 @@ pub struct QueryPoolPerformanceCreateInfoKHR {
     pub counter_index_count: u32,
     pub p_counter_indices: *const u32,
 }
+unsafe impl Send for QueryPoolPerformanceCreateInfoKHR {}
+unsafe impl Sync for QueryPoolPerformanceCreateInfoKHR {}
 impl default::Default for QueryPoolPerformanceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -33926,6 +34724,8 @@ pub struct AcquireProfilingLockInfoKHR {
     pub flags: AcquireProfilingLockFlagsKHR,
     pub timeout: u64,
 }
+unsafe impl Send for AcquireProfilingLockInfoKHR {}
+unsafe impl Sync for AcquireProfilingLockInfoKHR {}
 impl default::Default for AcquireProfilingLockInfoKHR {
     fn default() -> Self {
         Self {
@@ -33954,6 +34754,8 @@ pub struct PerformanceQuerySubmitInfoKHR {
     /// Index for which counter pass to submit
     pub counter_pass_index: u32,
 }
+unsafe impl Send for PerformanceQuerySubmitInfoKHR {}
+unsafe impl Sync for PerformanceQuerySubmitInfoKHR {}
 impl default::Default for PerformanceQuerySubmitInfoKHR {
     fn default() -> Self {
         Self {
@@ -33979,6 +34781,8 @@ pub struct HeadlessSurfaceCreateInfoEXT {
     pub p_next: *const c_void,
     pub flags: HeadlessSurfaceCreateFlagsEXT,
 }
+unsafe impl Send for HeadlessSurfaceCreateInfoEXT {}
+unsafe impl Sync for HeadlessSurfaceCreateInfoEXT {}
 impl default::Default for HeadlessSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -34004,6 +34808,8 @@ pub struct PhysicalDeviceCoverageReductionModeFeaturesNV {
     pub p_next: *mut c_void,
     pub coverage_reduction_mode: Bool32,
 }
+unsafe impl Send for PhysicalDeviceCoverageReductionModeFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCoverageReductionModeFeaturesNV {}
 impl default::Default for PhysicalDeviceCoverageReductionModeFeaturesNV {
     fn default() -> Self {
         Self {
@@ -34030,6 +34836,8 @@ pub struct PipelineCoverageReductionStateCreateInfoNV {
     pub flags: PipelineCoverageReductionStateCreateFlagsNV,
     pub coverage_reduction_mode: CoverageReductionModeNV,
 }
+unsafe impl Send for PipelineCoverageReductionStateCreateInfoNV {}
+unsafe impl Sync for PipelineCoverageReductionStateCreateInfoNV {}
 impl default::Default for PipelineCoverageReductionStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -34060,6 +34868,8 @@ pub struct FramebufferMixedSamplesCombinationNV {
     pub depth_stencil_samples: SampleCountFlags,
     pub color_samples: SampleCountFlags,
 }
+unsafe impl Send for FramebufferMixedSamplesCombinationNV {}
+unsafe impl Sync for FramebufferMixedSamplesCombinationNV {}
 impl default::Default for FramebufferMixedSamplesCombinationNV {
     fn default() -> Self {
         Self {
@@ -34091,6 +34901,8 @@ pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     pub p_next: *mut c_void,
     pub shader_integer_functions2: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
+unsafe impl Sync for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
 impl default::Default for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     fn default() -> Self {
         Self {
@@ -34118,6 +34930,8 @@ pub union PerformanceValueDataINTEL {
     pub value_bool: Bool32,
     pub value_string: *const c_char,
 }
+unsafe impl Send for PerformanceValueDataINTEL {}
+unsafe impl Sync for PerformanceValueDataINTEL {}
 impl default::Default for PerformanceValueDataINTEL {
     fn default() -> Self {
         unsafe { mem::zeroed() }
@@ -34163,6 +34977,8 @@ pub struct InitializePerformanceApiInfoINTEL {
     pub p_next: *const c_void,
     pub p_user_data: *mut c_void,
 }
+unsafe impl Send for InitializePerformanceApiInfoINTEL {}
+unsafe impl Sync for InitializePerformanceApiInfoINTEL {}
 impl default::Default for InitializePerformanceApiInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34188,6 +35004,8 @@ pub struct QueryPoolPerformanceQueryCreateInfoINTEL {
     pub p_next: *const c_void,
     pub performance_counters_sampling: QueryPoolSamplingModeINTEL,
 }
+unsafe impl Send for QueryPoolPerformanceQueryCreateInfoINTEL {}
+unsafe impl Sync for QueryPoolPerformanceQueryCreateInfoINTEL {}
 impl default::Default for QueryPoolPerformanceQueryCreateInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34214,6 +35032,8 @@ pub struct PerformanceMarkerInfoINTEL {
     pub p_next: *const c_void,
     pub marker: u64,
 }
+unsafe impl Send for PerformanceMarkerInfoINTEL {}
+unsafe impl Sync for PerformanceMarkerInfoINTEL {}
 impl default::Default for PerformanceMarkerInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34239,6 +35059,8 @@ pub struct PerformanceStreamMarkerInfoINTEL {
     pub p_next: *const c_void,
     pub marker: u32,
 }
+unsafe impl Send for PerformanceStreamMarkerInfoINTEL {}
+unsafe impl Sync for PerformanceStreamMarkerInfoINTEL {}
 impl default::Default for PerformanceStreamMarkerInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34266,6 +35088,8 @@ pub struct PerformanceOverrideInfoINTEL {
     pub enable: Bool32,
     pub parameter: u64,
 }
+unsafe impl Send for PerformanceOverrideInfoINTEL {}
+unsafe impl Sync for PerformanceOverrideInfoINTEL {}
 impl default::Default for PerformanceOverrideInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34295,6 +35119,8 @@ pub struct PerformanceConfigurationAcquireInfoINTEL {
     pub p_next: *const c_void,
     pub ty: PerformanceConfigurationTypeINTEL,
 }
+unsafe impl Send for PerformanceConfigurationAcquireInfoINTEL {}
+unsafe impl Sync for PerformanceConfigurationAcquireInfoINTEL {}
 impl default::Default for PerformanceConfigurationAcquireInfoINTEL {
     fn default() -> Self {
         Self {
@@ -34321,6 +35147,8 @@ pub struct PhysicalDeviceShaderClockFeaturesKHR {
     pub shader_subgroup_clock: Bool32,
     pub shader_device_clock: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderClockFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderClockFeaturesKHR {}
 impl default::Default for PhysicalDeviceShaderClockFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -34348,6 +35176,8 @@ pub struct PhysicalDeviceIndexTypeUint8FeaturesEXT {
     pub p_next: *mut c_void,
     pub index_type_uint8: Bool32,
 }
+unsafe impl Send for PhysicalDeviceIndexTypeUint8FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceIndexTypeUint8FeaturesEXT {}
 impl default::Default for PhysicalDeviceIndexTypeUint8FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34374,6 +35204,8 @@ pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
     pub shader_sm_count: u32,
     pub shader_warps_per_sm: u32,
 }
+unsafe impl Send for PhysicalDeviceShaderSMBuiltinsPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceShaderSMBuiltinsPropertiesNV {}
 impl default::Default for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
     fn default() -> Self {
         Self {
@@ -34401,6 +35233,8 @@ pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     pub p_next: *mut c_void,
     pub shader_sm_builtins: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
 impl default::Default for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     fn default() -> Self {
         Self {
@@ -34429,6 +35263,8 @@ pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     pub fragment_shader_pixel_interlock: Bool32,
     pub fragment_shader_shading_rate_interlock: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
 impl default::Default for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34464,6 +35300,8 @@ pub struct PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
     pub p_next: *mut c_void,
     pub separate_depth_stencil_layouts: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
+unsafe impl Sync for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
 impl default::Default for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
     fn default() -> Self {
         Self {
@@ -34490,6 +35328,8 @@ pub struct AttachmentReferenceStencilLayout {
     pub p_next: *mut c_void,
     pub stencil_layout: ImageLayout,
 }
+unsafe impl Send for AttachmentReferenceStencilLayout {}
+unsafe impl Sync for AttachmentReferenceStencilLayout {}
 impl default::Default for AttachmentReferenceStencilLayout {
     fn default() -> Self {
         Self {
@@ -34516,6 +35356,8 @@ pub struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
     pub primitive_topology_list_restart: Bool32,
     pub primitive_topology_patch_list_restart: Bool32,
 }
+unsafe impl Send for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
 impl default::Default for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34548,6 +35390,8 @@ pub struct AttachmentDescriptionStencilLayout {
     pub stencil_initial_layout: ImageLayout,
     pub stencil_final_layout: ImageLayout,
 }
+unsafe impl Send for AttachmentDescriptionStencilLayout {}
+unsafe impl Sync for AttachmentDescriptionStencilLayout {}
 impl default::Default for AttachmentDescriptionStencilLayout {
     fn default() -> Self {
         Self {
@@ -34576,6 +35420,8 @@ pub struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     pub p_next: *mut c_void,
     pub pipeline_executable_info: Bool32,
 }
+unsafe impl Send for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
 impl default::Default for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -34601,6 +35447,8 @@ pub struct PipelineInfoKHR {
     pub p_next: *const c_void,
     pub pipeline: Option<Pipeline>,
 }
+unsafe impl Send for PipelineInfoKHR {}
+unsafe impl Sync for PipelineInfoKHR {}
 impl default::Default for PipelineInfoKHR {
     fn default() -> Self {
         Self {
@@ -34629,6 +35477,8 @@ pub struct PipelineExecutablePropertiesKHR {
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
     pub subgroup_size: u32,
 }
+unsafe impl Send for PipelineExecutablePropertiesKHR {}
+unsafe impl Sync for PipelineExecutablePropertiesKHR {}
 impl default::Default for PipelineExecutablePropertiesKHR {
     fn default() -> Self {
         Self {
@@ -34661,6 +35511,8 @@ pub struct PipelineExecutableInfoKHR {
     pub pipeline: Option<Pipeline>,
     pub executable_index: u32,
 }
+unsafe impl Send for PipelineExecutableInfoKHR {}
+unsafe impl Sync for PipelineExecutableInfoKHR {}
 impl default::Default for PipelineExecutableInfoKHR {
     fn default() -> Self {
         Self {
@@ -34714,6 +35566,8 @@ pub struct PipelineExecutableStatisticKHR {
     pub format: PipelineExecutableStatisticFormatKHR,
     pub value: PipelineExecutableStatisticValueKHR,
 }
+unsafe impl Send for PipelineExecutableStatisticKHR {}
+unsafe impl Sync for PipelineExecutableStatisticKHR {}
 impl default::Default for PipelineExecutableStatisticKHR {
     fn default() -> Self {
         Self {
@@ -34749,6 +35603,8 @@ pub struct PipelineExecutableInternalRepresentationKHR {
     pub data_size: usize,
     pub p_data: *mut c_void,
 }
+unsafe impl Send for PipelineExecutableInternalRepresentationKHR {}
+unsafe impl Sync for PipelineExecutableInternalRepresentationKHR {}
 impl default::Default for PipelineExecutableInternalRepresentationKHR {
     fn default() -> Self {
         Self {
@@ -34782,6 +35638,8 @@ pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     pub p_next: *mut c_void,
     pub shader_demote_to_helper_invocation: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {}
 impl default::Default for PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34810,6 +35668,8 @@ pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     pub p_next: *mut c_void,
     pub texel_buffer_alignment: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
 impl default::Default for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34838,6 +35698,8 @@ pub struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
     pub uniform_texel_buffer_offset_alignment_bytes: DeviceSize,
     pub uniform_texel_buffer_offset_single_texel_alignment: Bool32,
 }
+unsafe impl Send for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {}
 impl default::Default for PhysicalDeviceTexelBufferAlignmentPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -34882,6 +35744,8 @@ pub struct PhysicalDeviceSubgroupSizeControlFeaturesEXT {
     pub subgroup_size_control: Bool32,
     pub compute_full_subgroups: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSubgroupSizeControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceSubgroupSizeControlFeaturesEXT {}
 impl default::Default for PhysicalDeviceSubgroupSizeControlFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -34916,6 +35780,8 @@ pub struct PhysicalDeviceSubgroupSizeControlPropertiesEXT {
     /// The shader stages that support specifying a subgroup size
     pub required_subgroup_size_stages: ShaderStageFlags,
 }
+unsafe impl Send for PhysicalDeviceSubgroupSizeControlPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceSubgroupSizeControlPropertiesEXT {}
 impl default::Default for PhysicalDeviceSubgroupSizeControlPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -34947,6 +35813,8 @@ pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
     pub p_next: *mut c_void,
     pub required_subgroup_size: u32,
 }
+unsafe impl Send for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {}
+unsafe impl Sync for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {}
 impl default::Default for PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -34973,6 +35841,8 @@ pub struct SubpassShadingPipelineCreateInfoHUAWEI {
     pub render_pass: Option<RenderPass>,
     pub subpass: u32,
 }
+unsafe impl Send for SubpassShadingPipelineCreateInfoHUAWEI {}
+unsafe impl Sync for SubpassShadingPipelineCreateInfoHUAWEI {}
 impl default::Default for SubpassShadingPipelineCreateInfoHUAWEI {
     fn default() -> Self {
         Self {
@@ -35000,6 +35870,8 @@ pub struct PhysicalDeviceSubpassShadingPropertiesHUAWEI {
     pub p_next: *mut c_void,
     pub max_subpass_shading_workgroup_size_aspect_ratio: u32,
 }
+unsafe impl Send for PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
 impl default::Default for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
     fn default() -> Self {
         Self {
@@ -35028,6 +35900,8 @@ pub struct MemoryOpaqueCaptureAddressAllocateInfo {
     pub p_next: *const c_void,
     pub opaque_capture_address: u64,
 }
+unsafe impl Send for MemoryOpaqueCaptureAddressAllocateInfo {}
+unsafe impl Sync for MemoryOpaqueCaptureAddressAllocateInfo {}
 impl default::Default for MemoryOpaqueCaptureAddressAllocateInfo {
     fn default() -> Self {
         Self {
@@ -35054,6 +35928,8 @@ pub struct DeviceMemoryOpaqueCaptureAddressInfo {
     pub p_next: *const c_void,
     pub memory: Option<DeviceMemory>,
 }
+unsafe impl Send for DeviceMemoryOpaqueCaptureAddressInfo {}
+unsafe impl Sync for DeviceMemoryOpaqueCaptureAddressInfo {}
 impl default::Default for DeviceMemoryOpaqueCaptureAddressInfo {
     fn default() -> Self {
         Self {
@@ -35085,6 +35961,8 @@ pub struct PhysicalDeviceLineRasterizationFeaturesEXT {
     pub stippled_bresenham_lines: Bool32,
     pub stippled_smooth_lines: Bool32,
 }
+unsafe impl Send for PhysicalDeviceLineRasterizationFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceLineRasterizationFeaturesEXT {}
 impl default::Default for PhysicalDeviceLineRasterizationFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -35120,6 +35998,8 @@ pub struct PhysicalDeviceLineRasterizationPropertiesEXT {
     pub p_next: *mut c_void,
     pub line_sub_pixel_precision_bits: u32,
 }
+unsafe impl Send for PhysicalDeviceLineRasterizationPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceLineRasterizationPropertiesEXT {}
 impl default::Default for PhysicalDeviceLineRasterizationPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -35148,6 +36028,8 @@ pub struct PipelineRasterizationLineStateCreateInfoEXT {
     pub line_stipple_factor: u32,
     pub line_stipple_pattern: u16,
 }
+unsafe impl Send for PipelineRasterizationLineStateCreateInfoEXT {}
+unsafe impl Sync for PipelineRasterizationLineStateCreateInfoEXT {}
 impl default::Default for PipelineRasterizationLineStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -35179,6 +36061,8 @@ pub struct PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
     pub p_next: *mut c_void,
     pub pipeline_creation_cache_control: Bool32,
 }
+unsafe impl Send for PhysicalDevicePipelineCreationCacheControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePipelineCreationCacheControlFeaturesEXT {}
 impl default::Default for PhysicalDevicePipelineCreationCacheControlFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -35223,6 +36107,8 @@ pub struct PhysicalDeviceVulkan11Features {
     pub sampler_ycbcr_conversion: Bool32,
     pub shader_draw_parameters: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVulkan11Features {}
+unsafe impl Sync for PhysicalDeviceVulkan11Features {}
 impl default::Default for PhysicalDeviceVulkan11Features {
     fn default() -> Self {
         Self {
@@ -35296,6 +36182,8 @@ pub struct PhysicalDeviceVulkan11Properties {
     pub max_per_set_descriptors: u32,
     pub max_memory_allocation_size: DeviceSize,
 }
+unsafe impl Send for PhysicalDeviceVulkan11Properties {}
+unsafe impl Sync for PhysicalDeviceVulkan11Properties {}
 impl default::Default for PhysicalDeviceVulkan11Properties {
     fn default() -> Self {
         Self {
@@ -35403,6 +36291,8 @@ pub struct PhysicalDeviceVulkan12Features {
     pub shader_output_layer: Bool32,
     pub subgroup_broadcast_dynamic_id: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVulkan12Features {}
+unsafe impl Sync for PhysicalDeviceVulkan12Features {}
 impl default::Default for PhysicalDeviceVulkan12Features {
     fn default() -> Self {
         Self {
@@ -35662,6 +36552,8 @@ pub struct PhysicalDeviceVulkan12Properties {
     pub max_timeline_semaphore_value_difference: u64,
     pub framebuffer_integer_color_sample_counts: SampleCountFlags,
 }
+unsafe impl Send for PhysicalDeviceVulkan12Properties {}
+unsafe impl Sync for PhysicalDeviceVulkan12Properties {}
 impl default::Default for PhysicalDeviceVulkan12Properties {
     fn default() -> Self {
         Self {
@@ -35903,6 +36795,8 @@ pub struct PipelineCompilerControlCreateInfoAMD {
     pub p_next: *const c_void,
     pub compiler_control_flags: PipelineCompilerControlFlagsAMD,
 }
+unsafe impl Send for PipelineCompilerControlCreateInfoAMD {}
+unsafe impl Sync for PipelineCompilerControlCreateInfoAMD {}
 impl default::Default for PipelineCompilerControlCreateInfoAMD {
     fn default() -> Self {
         Self {
@@ -35928,6 +36822,8 @@ pub struct PhysicalDeviceCoherentMemoryFeaturesAMD {
     pub p_next: *mut c_void,
     pub device_coherent_memory: Bool32,
 }
+unsafe impl Send for PhysicalDeviceCoherentMemoryFeaturesAMD {}
+unsafe impl Sync for PhysicalDeviceCoherentMemoryFeaturesAMD {}
 impl default::Default for PhysicalDeviceCoherentMemoryFeaturesAMD {
     fn default() -> Self {
         Self {
@@ -35957,6 +36853,8 @@ pub struct PhysicalDeviceToolPropertiesEXT {
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
     pub layer: [c_char; MAX_EXTENSION_NAME_SIZE],
 }
+unsafe impl Send for PhysicalDeviceToolPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceToolPropertiesEXT {}
 impl default::Default for PhysicalDeviceToolPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -35991,6 +36889,8 @@ pub struct SamplerCustomBorderColorCreateInfoEXT {
     pub custom_border_color: ClearColorValue,
     pub format: Format,
 }
+unsafe impl Send for SamplerCustomBorderColorCreateInfoEXT {}
+unsafe impl Sync for SamplerCustomBorderColorCreateInfoEXT {}
 impl default::Default for SamplerCustomBorderColorCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -36018,6 +36918,8 @@ pub struct PhysicalDeviceCustomBorderColorPropertiesEXT {
     pub p_next: *mut c_void,
     pub max_custom_border_color_samplers: u32,
 }
+unsafe impl Send for PhysicalDeviceCustomBorderColorPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceCustomBorderColorPropertiesEXT {}
 impl default::Default for PhysicalDeviceCustomBorderColorPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -36047,6 +36949,8 @@ pub struct PhysicalDeviceCustomBorderColorFeaturesEXT {
     pub custom_border_colors: Bool32,
     pub custom_border_color_without_format: Bool32,
 }
+unsafe impl Send for PhysicalDeviceCustomBorderColorFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceCustomBorderColorFeaturesEXT {}
 impl default::Default for PhysicalDeviceCustomBorderColorFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -36076,6 +36980,8 @@ pub union DeviceOrHostAddressKHR {
     pub device_address: DeviceAddress,
     pub host_address: *mut c_void,
 }
+unsafe impl Send for DeviceOrHostAddressKHR {}
+unsafe impl Sync for DeviceOrHostAddressKHR {}
 impl default::Default for DeviceOrHostAddressKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
@@ -36095,6 +37001,8 @@ pub union DeviceOrHostAddressConstKHR {
     pub device_address: DeviceAddress,
     pub host_address: *const c_void,
 }
+unsafe impl Send for DeviceOrHostAddressConstKHR {}
+unsafe impl Sync for DeviceOrHostAddressConstKHR {}
 impl default::Default for DeviceOrHostAddressConstKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
@@ -36121,6 +37029,8 @@ pub struct AccelerationStructureGeometryTrianglesDataKHR {
     pub index_data: DeviceOrHostAddressConstKHR,
     pub transform_data: DeviceOrHostAddressConstKHR,
 }
+unsafe impl Send for AccelerationStructureGeometryTrianglesDataKHR {}
+unsafe impl Sync for AccelerationStructureGeometryTrianglesDataKHR {}
 impl default::Default for AccelerationStructureGeometryTrianglesDataKHR {
     fn default() -> Self {
         Self {
@@ -36159,6 +37069,8 @@ pub struct AccelerationStructureGeometryAabbsDataKHR {
     pub data: DeviceOrHostAddressConstKHR,
     pub stride: DeviceSize,
 }
+unsafe impl Send for AccelerationStructureGeometryAabbsDataKHR {}
+unsafe impl Sync for AccelerationStructureGeometryAabbsDataKHR {}
 impl default::Default for AccelerationStructureGeometryAabbsDataKHR {
     fn default() -> Self {
         Self {
@@ -36187,6 +37099,8 @@ pub struct AccelerationStructureGeometryInstancesDataKHR {
     pub array_of_pointers: Bool32,
     pub data: DeviceOrHostAddressConstKHR,
 }
+unsafe impl Send for AccelerationStructureGeometryInstancesDataKHR {}
+unsafe impl Sync for AccelerationStructureGeometryInstancesDataKHR {}
 impl default::Default for AccelerationStructureGeometryInstancesDataKHR {
     fn default() -> Self {
         Self {
@@ -36237,6 +37151,8 @@ pub struct AccelerationStructureGeometryKHR {
     pub geometry: AccelerationStructureGeometryDataKHR,
     pub flags: GeometryFlagsKHR,
 }
+unsafe impl Send for AccelerationStructureGeometryKHR {}
+unsafe impl Sync for AccelerationStructureGeometryKHR {}
 impl default::Default for AccelerationStructureGeometryKHR {
     fn default() -> Self {
         Self {
@@ -36274,6 +37190,8 @@ pub struct AccelerationStructureBuildGeometryInfoKHR {
     pub pp_geometries: *const *const AccelerationStructureGeometryKHR,
     pub scratch_data: DeviceOrHostAddressKHR,
 }
+unsafe impl Send for AccelerationStructureBuildGeometryInfoKHR {}
+unsafe impl Sync for AccelerationStructureBuildGeometryInfoKHR {}
 impl default::Default for AccelerationStructureBuildGeometryInfoKHR {
     fn default() -> Self {
         Self {
@@ -36349,6 +37267,8 @@ pub struct AccelerationStructureCreateInfoKHR {
     pub ty: AccelerationStructureTypeKHR,
     pub device_address: DeviceAddress,
 }
+unsafe impl Send for AccelerationStructureCreateInfoKHR {}
+unsafe impl Sync for AccelerationStructureCreateInfoKHR {}
 impl default::Default for AccelerationStructureCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -36474,6 +37394,8 @@ pub struct AccelerationStructureDeviceAddressInfoKHR {
     pub p_next: *const c_void,
     pub acceleration_structure: Option<AccelerationStructureKHR>,
 }
+unsafe impl Send for AccelerationStructureDeviceAddressInfoKHR {}
+unsafe impl Sync for AccelerationStructureDeviceAddressInfoKHR {}
 impl default::Default for AccelerationStructureDeviceAddressInfoKHR {
     fn default() -> Self {
         Self {
@@ -36499,6 +37421,8 @@ pub struct AccelerationStructureVersionInfoKHR {
     pub p_next: *const c_void,
     pub p_version_data: *const u8,
 }
+unsafe impl Send for AccelerationStructureVersionInfoKHR {}
+unsafe impl Sync for AccelerationStructureVersionInfoKHR {}
 impl default::Default for AccelerationStructureVersionInfoKHR {
     fn default() -> Self {
         Self {
@@ -36526,6 +37450,8 @@ pub struct CopyAccelerationStructureInfoKHR {
     pub dst: Option<AccelerationStructureKHR>,
     pub mode: CopyAccelerationStructureModeKHR,
 }
+unsafe impl Send for CopyAccelerationStructureInfoKHR {}
+unsafe impl Sync for CopyAccelerationStructureInfoKHR {}
 impl default::Default for CopyAccelerationStructureInfoKHR {
     fn default() -> Self {
         Self {
@@ -36557,6 +37483,8 @@ pub struct CopyAccelerationStructureToMemoryInfoKHR {
     pub dst: DeviceOrHostAddressKHR,
     pub mode: CopyAccelerationStructureModeKHR,
 }
+unsafe impl Send for CopyAccelerationStructureToMemoryInfoKHR {}
+unsafe impl Sync for CopyAccelerationStructureToMemoryInfoKHR {}
 impl default::Default for CopyAccelerationStructureToMemoryInfoKHR {
     fn default() -> Self {
         Self {
@@ -36588,6 +37516,8 @@ pub struct CopyMemoryToAccelerationStructureInfoKHR {
     pub dst: Option<AccelerationStructureKHR>,
     pub mode: CopyAccelerationStructureModeKHR,
 }
+unsafe impl Send for CopyMemoryToAccelerationStructureInfoKHR {}
+unsafe impl Sync for CopyMemoryToAccelerationStructureInfoKHR {}
 impl default::Default for CopyMemoryToAccelerationStructureInfoKHR {
     fn default() -> Self {
         Self {
@@ -36618,6 +37548,8 @@ pub struct RayTracingPipelineInterfaceCreateInfoKHR {
     pub max_pipeline_ray_payload_size: u32,
     pub max_pipeline_ray_hit_attribute_size: u32,
 }
+unsafe impl Send for RayTracingPipelineInterfaceCreateInfoKHR {}
+unsafe impl Sync for RayTracingPipelineInterfaceCreateInfoKHR {}
 impl default::Default for RayTracingPipelineInterfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -36649,6 +37581,8 @@ pub struct PipelineLibraryCreateInfoKHR {
     pub library_count: u32,
     pub p_libraries: *const Pipeline,
 }
+unsafe impl Send for PipelineLibraryCreateInfoKHR {}
+unsafe impl Sync for PipelineLibraryCreateInfoKHR {}
 impl default::Default for PipelineLibraryCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -36676,6 +37610,8 @@ pub struct PhysicalDeviceExtendedDynamicStateFeaturesEXT {
     pub p_next: *mut c_void,
     pub extended_dynamic_state: Bool32,
 }
+unsafe impl Send for PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
 impl default::Default for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -36703,6 +37639,8 @@ pub struct PhysicalDeviceExtendedDynamicState2FeaturesEXT {
     pub extended_dynamic_state2_logic_op: Bool32,
     pub extended_dynamic_state2_patch_control_points: Bool32,
 }
+unsafe impl Send for PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
 impl default::Default for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -36739,6 +37677,8 @@ pub struct RenderPassTransformBeginInfoQCOM {
     pub p_next: *mut c_void,
     pub transform: SurfaceTransformFlagsKHR,
 }
+unsafe impl Send for RenderPassTransformBeginInfoQCOM {}
+unsafe impl Sync for RenderPassTransformBeginInfoQCOM {}
 impl default::Default for RenderPassTransformBeginInfoQCOM {
     fn default() -> Self {
         Self {
@@ -36764,6 +37704,8 @@ pub struct CopyCommandTransformInfoQCOM {
     pub p_next: *const c_void,
     pub transform: SurfaceTransformFlagsKHR,
 }
+unsafe impl Send for CopyCommandTransformInfoQCOM {}
+unsafe impl Sync for CopyCommandTransformInfoQCOM {}
 impl default::Default for CopyCommandTransformInfoQCOM {
     fn default() -> Self {
         Self {
@@ -36791,6 +37733,8 @@ pub struct CommandBufferInheritanceRenderPassTransformInfoQCOM {
     pub transform: SurfaceTransformFlagsKHR,
     pub render_area: Rect2D,
 }
+unsafe impl Send for CommandBufferInheritanceRenderPassTransformInfoQCOM {}
+unsafe impl Sync for CommandBufferInheritanceRenderPassTransformInfoQCOM {}
 impl default::Default for CommandBufferInheritanceRenderPassTransformInfoQCOM {
     fn default() -> Self {
         Self {
@@ -36818,6 +37762,8 @@ pub struct PhysicalDeviceDiagnosticsConfigFeaturesNV {
     pub p_next: *mut c_void,
     pub diagnostics_config: Bool32,
 }
+unsafe impl Send for PhysicalDeviceDiagnosticsConfigFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDiagnosticsConfigFeaturesNV {}
 impl default::Default for PhysicalDeviceDiagnosticsConfigFeaturesNV {
     fn default() -> Self {
         Self {
@@ -36843,6 +37789,8 @@ pub struct DeviceDiagnosticsConfigCreateInfoNV {
     pub p_next: *const c_void,
     pub flags: DeviceDiagnosticsConfigFlagsNV,
 }
+unsafe impl Send for DeviceDiagnosticsConfigCreateInfoNV {}
+unsafe impl Sync for DeviceDiagnosticsConfigCreateInfoNV {}
 impl default::Default for DeviceDiagnosticsConfigCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -36868,6 +37816,8 @@ pub struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
     pub p_next: *mut c_void,
     pub shader_zero_initialize_workgroup_memory: Bool32,
 }
+unsafe impl Send for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {}
 impl default::Default for PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -36896,6 +37846,8 @@ pub struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
     pub p_next: *mut c_void,
     pub shader_subgroup_uniform_control_flow: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
 impl default::Default for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -36926,6 +37878,8 @@ pub struct PhysicalDeviceRobustness2FeaturesEXT {
     pub robust_image_access2: Bool32,
     pub null_descriptor: Bool32,
 }
+unsafe impl Send for PhysicalDeviceRobustness2FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceRobustness2FeaturesEXT {}
 impl default::Default for PhysicalDeviceRobustness2FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -36956,6 +37910,8 @@ pub struct PhysicalDeviceRobustness2PropertiesEXT {
     pub robust_storage_buffer_access_size_alignment: DeviceSize,
     pub robust_uniform_buffer_access_size_alignment: DeviceSize,
 }
+unsafe impl Send for PhysicalDeviceRobustness2PropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceRobustness2PropertiesEXT {}
 impl default::Default for PhysicalDeviceRobustness2PropertiesEXT {
     fn default() -> Self {
         Self {
@@ -36989,6 +37945,8 @@ pub struct PhysicalDeviceImageRobustnessFeaturesEXT {
     pub p_next: *mut c_void,
     pub robust_image_access: Bool32,
 }
+unsafe impl Send for PhysicalDeviceImageRobustnessFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageRobustnessFeaturesEXT {}
 impl default::Default for PhysicalDeviceImageRobustnessFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -37017,6 +37975,8 @@ pub struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
     pub workgroup_memory_explicit_layout8_bit_access: Bool32,
     pub workgroup_memory_explicit_layout16_bit_access: Bool32,
 }
+unsafe impl Send for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
 impl default::Default for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -37074,6 +38034,8 @@ pub struct PhysicalDevicePortabilitySubsetFeaturesKHR {
     pub triangle_fans: Bool32,
     pub vertex_attribute_access_beyond_stride: Bool32,
 }
+unsafe impl Send for PhysicalDevicePortabilitySubsetFeaturesKHR {}
+unsafe impl Sync for PhysicalDevicePortabilitySubsetFeaturesKHR {}
 impl default::Default for PhysicalDevicePortabilitySubsetFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -37139,6 +38101,8 @@ pub struct PhysicalDevicePortabilitySubsetPropertiesKHR {
     pub p_next: *mut c_void,
     pub min_vertex_input_binding_stride_alignment: u32,
 }
+unsafe impl Send for PhysicalDevicePortabilitySubsetPropertiesKHR {}
+unsafe impl Sync for PhysicalDevicePortabilitySubsetPropertiesKHR {}
 impl default::Default for PhysicalDevicePortabilitySubsetPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -37168,6 +38132,8 @@ pub struct PhysicalDevice4444FormatsFeaturesEXT {
     pub format_a4r4g4b4: Bool32,
     pub format_a4b4g4r4: Bool32,
 }
+unsafe impl Send for PhysicalDevice4444FormatsFeaturesEXT {}
+unsafe impl Sync for PhysicalDevice4444FormatsFeaturesEXT {}
 impl default::Default for PhysicalDevice4444FormatsFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -37195,6 +38161,8 @@ pub struct PhysicalDeviceSubpassShadingFeaturesHUAWEI {
     pub p_next: *mut c_void,
     pub subpass_shading: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
 impl default::Default for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
     fn default() -> Self {
         Self {
@@ -37225,6 +38193,8 @@ pub struct BufferCopy2KHR {
     /// Specified in bytes
     pub size: DeviceSize,
 }
+unsafe impl Send for BufferCopy2KHR {}
+unsafe impl Sync for BufferCopy2KHR {}
 impl default::Default for BufferCopy2KHR {
     fn default() -> Self {
         Self {
@@ -37261,6 +38231,8 @@ pub struct ImageCopy2KHR {
     /// Specified in pixels for both compressed and uncompressed images
     pub extent: Extent3D,
 }
+unsafe impl Send for ImageCopy2KHR {}
+unsafe impl Sync for ImageCopy2KHR {}
 impl default::Default for ImageCopy2KHR {
     fn default() -> Self {
         Self {
@@ -37299,6 +38271,8 @@ pub struct ImageBlit2KHR {
     /// Specified in pixels for both compressed and uncompressed images
     pub dst_offsets: [Offset3D; 2],
 }
+unsafe impl Send for ImageBlit2KHR {}
+unsafe impl Sync for ImageBlit2KHR {}
 impl default::Default for ImageBlit2KHR {
     fn default() -> Self {
         Self {
@@ -37339,6 +38313,8 @@ pub struct BufferImageCopy2KHR {
     /// Specified in pixels for both compressed and uncompressed images
     pub image_extent: Extent3D,
 }
+unsafe impl Send for BufferImageCopy2KHR {}
+unsafe impl Sync for BufferImageCopy2KHR {}
 impl default::Default for BufferImageCopy2KHR {
     fn default() -> Self {
         Self {
@@ -37378,6 +38354,8 @@ pub struct ImageResolve2KHR {
     pub dst_offset: Offset3D,
     pub extent: Extent3D,
 }
+unsafe impl Send for ImageResolve2KHR {}
+unsafe impl Sync for ImageResolve2KHR {}
 impl default::Default for ImageResolve2KHR {
     fn default() -> Self {
         Self {
@@ -37414,6 +38392,8 @@ pub struct CopyBufferInfo2KHR {
     pub region_count: u32,
     pub p_regions: *const BufferCopy2KHR,
 }
+unsafe impl Send for CopyBufferInfo2KHR {}
+unsafe impl Sync for CopyBufferInfo2KHR {}
 impl default::Default for CopyBufferInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37450,6 +38430,8 @@ pub struct CopyImageInfo2KHR {
     pub region_count: u32,
     pub p_regions: *const ImageCopy2KHR,
 }
+unsafe impl Send for CopyImageInfo2KHR {}
+unsafe impl Sync for CopyImageInfo2KHR {}
 impl default::Default for CopyImageInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37491,6 +38473,8 @@ pub struct BlitImageInfo2KHR {
     pub p_regions: *const ImageBlit2KHR,
     pub filter: Filter,
 }
+unsafe impl Send for BlitImageInfo2KHR {}
+unsafe impl Sync for BlitImageInfo2KHR {}
 impl default::Default for BlitImageInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37532,6 +38516,8 @@ pub struct CopyBufferToImageInfo2KHR {
     pub region_count: u32,
     pub p_regions: *const BufferImageCopy2KHR,
 }
+unsafe impl Send for CopyBufferToImageInfo2KHR {}
+unsafe impl Sync for CopyBufferToImageInfo2KHR {}
 impl default::Default for CopyBufferToImageInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37569,6 +38555,8 @@ pub struct CopyImageToBufferInfo2KHR {
     pub region_count: u32,
     pub p_regions: *const BufferImageCopy2KHR,
 }
+unsafe impl Send for CopyImageToBufferInfo2KHR {}
+unsafe impl Sync for CopyImageToBufferInfo2KHR {}
 impl default::Default for CopyImageToBufferInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37607,6 +38595,8 @@ pub struct ResolveImageInfo2KHR {
     pub region_count: u32,
     pub p_regions: *const ImageResolve2KHR,
 }
+unsafe impl Send for ResolveImageInfo2KHR {}
+unsafe impl Sync for ResolveImageInfo2KHR {}
 impl default::Default for ResolveImageInfo2KHR {
     fn default() -> Self {
         Self {
@@ -37643,6 +38633,8 @@ pub struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
     pub shader_image_int64_atomics: Bool32,
     pub sparse_image_int64_atomics: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
 impl default::Default for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
     fn default() -> Self {
         Self {
@@ -37671,6 +38663,8 @@ pub struct FragmentShadingRateAttachmentInfoKHR {
     pub p_fragment_shading_rate_attachment: *const AttachmentReference2,
     pub shading_rate_attachment_texel_size: Extent2D,
 }
+unsafe impl Send for FragmentShadingRateAttachmentInfoKHR {}
+unsafe impl Sync for FragmentShadingRateAttachmentInfoKHR {}
 impl default::Default for FragmentShadingRateAttachmentInfoKHR {
     fn default() -> Self {
         Self {
@@ -37705,6 +38699,8 @@ pub struct PipelineFragmentShadingRateStateCreateInfoKHR {
     pub fragment_size: Extent2D,
     pub combiner_ops: [FragmentShadingRateCombinerOpKHR; 2],
 }
+unsafe impl Send for PipelineFragmentShadingRateStateCreateInfoKHR {}
+unsafe impl Sync for PipelineFragmentShadingRateStateCreateInfoKHR {}
 impl default::Default for PipelineFragmentShadingRateStateCreateInfoKHR {
     fn default() -> Self {
         Self {
@@ -37734,6 +38730,8 @@ pub struct PhysicalDeviceFragmentShadingRateFeaturesKHR {
     pub primitive_fragment_shading_rate: Bool32,
     pub attachment_fragment_shading_rate: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentShadingRateFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceFragmentShadingRateFeaturesKHR {}
 impl default::Default for PhysicalDeviceFragmentShadingRateFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -37782,6 +38780,8 @@ pub struct PhysicalDeviceFragmentShadingRatePropertiesKHR {
     pub fragment_shading_rate_with_custom_sample_locations: Bool32,
     pub fragment_shading_rate_strict_multiply_combiner: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentShadingRatePropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceFragmentShadingRatePropertiesKHR {}
 impl default::Default for PhysicalDeviceFragmentShadingRatePropertiesKHR {
     fn default() -> Self {
         Self {
@@ -37885,6 +38885,8 @@ pub struct PhysicalDeviceFragmentShadingRateKHR {
     pub sample_counts: SampleCountFlags,
     pub fragment_size: Extent2D,
 }
+unsafe impl Send for PhysicalDeviceFragmentShadingRateKHR {}
+unsafe impl Sync for PhysicalDeviceFragmentShadingRateKHR {}
 impl default::Default for PhysicalDeviceFragmentShadingRateKHR {
     fn default() -> Self {
         Self {
@@ -37912,6 +38914,8 @@ pub struct PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
     pub p_next: *mut c_void,
     pub shader_terminate_invocation: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {}
 impl default::Default for PhysicalDeviceShaderTerminateInvocationFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -37939,6 +38943,8 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
     pub supersample_fragment_shading_rates: Bool32,
     pub no_invocation_fragment_shading_rates: Bool32,
 }
+unsafe impl Send for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
 impl default::Default for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
     fn default() -> Self {
         Self {
@@ -37974,6 +38980,8 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
     pub p_next: *mut c_void,
     pub max_fragment_shading_rate_invocation_count: SampleCountFlags,
 }
+unsafe impl Send for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {}
 impl default::Default for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
     fn default() -> Self {
         Self {
@@ -38004,6 +39012,8 @@ pub struct PipelineFragmentShadingRateEnumStateCreateInfoNV {
     pub shading_rate: FragmentShadingRateNV,
     pub combiner_ops: [FragmentShadingRateCombinerOpKHR; 2],
 }
+unsafe impl Send for PipelineFragmentShadingRateEnumStateCreateInfoNV {}
+unsafe impl Sync for PipelineFragmentShadingRateEnumStateCreateInfoNV {}
 impl default::Default for PipelineFragmentShadingRateEnumStateCreateInfoNV {
     fn default() -> Self {
         Self {
@@ -38035,6 +39045,8 @@ pub struct AccelerationStructureBuildSizesInfoKHR {
     pub update_scratch_size: DeviceSize,
     pub build_scratch_size: DeviceSize,
 }
+unsafe impl Send for AccelerationStructureBuildSizesInfoKHR {}
+unsafe impl Sync for AccelerationStructureBuildSizesInfoKHR {}
 impl default::Default for AccelerationStructureBuildSizesInfoKHR {
     fn default() -> Self {
         Self {
@@ -38064,6 +39076,8 @@ pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
     pub p_next: *mut c_void,
     pub mutable_descriptor_type: Bool32,
 }
+unsafe impl Send for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
+unsafe impl Sync for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
 impl default::Default for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
     fn default() -> Self {
         Self {
@@ -38088,6 +39102,8 @@ pub struct MutableDescriptorTypeListVALVE {
     pub descriptor_type_count: u32,
     pub p_descriptor_types: *const DescriptorType,
 }
+unsafe impl Send for MutableDescriptorTypeListVALVE {}
+unsafe impl Sync for MutableDescriptorTypeListVALVE {}
 impl default::Default for MutableDescriptorTypeListVALVE {
     fn default() -> Self {
         Self {
@@ -38112,6 +39128,8 @@ pub struct MutableDescriptorTypeCreateInfoVALVE {
     pub mutable_descriptor_type_list_count: u32,
     pub p_mutable_descriptor_type_lists: *const MutableDescriptorTypeListVALVE,
 }
+unsafe impl Send for MutableDescriptorTypeCreateInfoVALVE {}
+unsafe impl Sync for MutableDescriptorTypeCreateInfoVALVE {}
 impl default::Default for MutableDescriptorTypeCreateInfoVALVE {
     fn default() -> Self {
         Self {
@@ -38142,6 +39160,8 @@ pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     pub p_next: *mut c_void,
     pub vertex_input_dynamic_state: Bool32,
 }
+unsafe impl Send for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
 impl default::Default for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -38167,6 +39187,8 @@ pub struct PhysicalDeviceExternalMemoryRDMAFeaturesNV {
     pub p_next: *mut c_void,
     pub external_memory_rdma: Bool32,
 }
+unsafe impl Send for PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
 impl default::Default for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
     fn default() -> Self {
         Self {
@@ -38195,6 +39217,8 @@ pub struct VertexInputBindingDescription2EXT {
     pub input_rate: VertexInputRate,
     pub divisor: u32,
 }
+unsafe impl Send for VertexInputBindingDescription2EXT {}
+unsafe impl Sync for VertexInputBindingDescription2EXT {}
 impl default::Default for VertexInputBindingDescription2EXT {
     fn default() -> Self {
         Self {
@@ -38233,6 +39257,8 @@ pub struct VertexInputAttributeDescription2EXT {
     /// Offset of first element in bytes from base of vertex
     pub offset: u32,
 }
+unsafe impl Send for VertexInputAttributeDescription2EXT {}
+unsafe impl Sync for VertexInputAttributeDescription2EXT {}
 impl default::Default for VertexInputAttributeDescription2EXT {
     fn default() -> Self {
         Self {
@@ -38264,6 +39290,8 @@ pub struct PhysicalDeviceColorWriteEnableFeaturesEXT {
     pub p_next: *mut c_void,
     pub color_write_enable: Bool32,
 }
+unsafe impl Send for PhysicalDeviceColorWriteEnableFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceColorWriteEnableFeaturesEXT {}
 impl default::Default for PhysicalDeviceColorWriteEnableFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -38291,6 +39319,8 @@ pub struct PipelineColorWriteCreateInfoEXT {
     pub attachment_count: u32,
     pub p_color_write_enables: *const Bool32,
 }
+unsafe impl Send for PipelineColorWriteCreateInfoEXT {}
+unsafe impl Sync for PipelineColorWriteCreateInfoEXT {}
 impl default::Default for PipelineColorWriteCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -38321,6 +39351,8 @@ pub struct MemoryBarrier2KHR {
     pub dst_stage_mask: PipelineStageFlags2KHR,
     pub dst_access_mask: AccessFlags2KHR,
 }
+unsafe impl Send for MemoryBarrier2KHR {}
+unsafe impl Sync for MemoryBarrier2KHR {}
 impl default::Default for MemoryBarrier2KHR {
     fn default() -> Self {
         Self {
@@ -38361,6 +39393,8 @@ pub struct ImageMemoryBarrier2KHR {
     pub image: Option<Image>,
     pub subresource_range: ImageSubresourceRange,
 }
+unsafe impl Send for ImageMemoryBarrier2KHR {}
+unsafe impl Sync for ImageMemoryBarrier2KHR {}
 impl default::Default for ImageMemoryBarrier2KHR {
     fn default() -> Self {
         Self {
@@ -38412,6 +39446,8 @@ pub struct BufferMemoryBarrier2KHR {
     pub offset: DeviceSize,
     pub size: DeviceSize,
 }
+unsafe impl Send for BufferMemoryBarrier2KHR {}
+unsafe impl Sync for BufferMemoryBarrier2KHR {}
 impl default::Default for BufferMemoryBarrier2KHR {
     fn default() -> Self {
         Self {
@@ -38459,6 +39495,8 @@ pub struct DependencyInfoKHR {
     pub image_memory_barrier_count: u32,
     pub p_image_memory_barriers: *const ImageMemoryBarrier2KHR,
 }
+unsafe impl Send for DependencyInfoKHR {}
+unsafe impl Sync for DependencyInfoKHR {}
 impl default::Default for DependencyInfoKHR {
     fn default() -> Self {
         Self {
@@ -38499,6 +39537,8 @@ pub struct SemaphoreSubmitInfoKHR {
     pub stage_mask: PipelineStageFlags2KHR,
     pub device_index: u32,
 }
+unsafe impl Send for SemaphoreSubmitInfoKHR {}
+unsafe impl Sync for SemaphoreSubmitInfoKHR {}
 impl default::Default for SemaphoreSubmitInfoKHR {
     fn default() -> Self {
         Self {
@@ -38531,6 +39571,8 @@ pub struct CommandBufferSubmitInfoKHR {
     pub command_buffer: Option<CommandBuffer>,
     pub device_mask: u32,
 }
+unsafe impl Send for CommandBufferSubmitInfoKHR {}
+unsafe impl Sync for CommandBufferSubmitInfoKHR {}
 impl default::Default for CommandBufferSubmitInfoKHR {
     fn default() -> Self {
         Self {
@@ -38564,6 +39606,8 @@ pub struct SubmitInfo2KHR {
     pub signal_semaphore_info_count: u32,
     pub p_signal_semaphore_infos: *const SemaphoreSubmitInfoKHR,
 }
+unsafe impl Send for SubmitInfo2KHR {}
+unsafe impl Sync for SubmitInfo2KHR {}
 impl default::Default for SubmitInfo2KHR {
     fn default() -> Self {
         Self {
@@ -38601,6 +39645,8 @@ pub struct QueueFamilyCheckpointProperties2NV {
     pub p_next: *mut c_void,
     pub checkpoint_execution_stage_mask: PipelineStageFlags2KHR,
 }
+unsafe impl Send for QueueFamilyCheckpointProperties2NV {}
+unsafe impl Sync for QueueFamilyCheckpointProperties2NV {}
 impl default::Default for QueueFamilyCheckpointProperties2NV {
     fn default() -> Self {
         Self {
@@ -38627,6 +39673,8 @@ pub struct CheckpointData2NV {
     pub stage: PipelineStageFlags2KHR,
     pub p_checkpoint_marker: *mut c_void,
 }
+unsafe impl Send for CheckpointData2NV {}
+unsafe impl Sync for CheckpointData2NV {}
 impl default::Default for CheckpointData2NV {
     fn default() -> Self {
         Self {
@@ -38654,6 +39702,8 @@ pub struct PhysicalDeviceSynchronization2FeaturesKHR {
     pub p_next: *mut c_void,
     pub synchronization2: Bool32,
 }
+unsafe impl Send for PhysicalDeviceSynchronization2FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceSynchronization2FeaturesKHR {}
 impl default::Default for PhysicalDeviceSynchronization2FeaturesKHR {
     fn default() -> Self {
         Self {
@@ -38679,6 +39729,8 @@ pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
     pub p_next: *mut c_void,
     pub inherited_viewport_scissor2_d: Bool32,
 }
+unsafe impl Send for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
 impl default::Default for PhysicalDeviceInheritedViewportScissorFeaturesNV {
     fn default() -> Self {
         Self {
@@ -38706,6 +39758,8 @@ pub struct CommandBufferInheritanceViewportScissorInfoNV {
     pub viewport_depth_count: u32,
     pub p_viewport_depths: *const Viewport,
 }
+unsafe impl Send for CommandBufferInheritanceViewportScissorInfoNV {}
+unsafe impl Sync for CommandBufferInheritanceViewportScissorInfoNV {}
 impl default::Default for CommandBufferInheritanceViewportScissorInfoNV {
     fn default() -> Self {
         Self {
@@ -38735,6 +39789,8 @@ pub struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
     pub p_next: *mut c_void,
     pub ycbcr2plane444_formats: Bool32,
 }
+unsafe impl Send for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
 impl default::Default for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -38761,6 +39817,8 @@ pub struct PhysicalDeviceProvokingVertexFeaturesEXT {
     pub provoking_vertex_last: Bool32,
     pub transform_feedback_preserves_provoking_vertex: Bool32,
 }
+unsafe impl Send for PhysicalDeviceProvokingVertexFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceProvokingVertexFeaturesEXT {}
 impl default::Default for PhysicalDeviceProvokingVertexFeaturesEXT {
     fn default() -> Self {
         Self {
@@ -38792,6 +39850,8 @@ pub struct PhysicalDeviceProvokingVertexPropertiesEXT {
     pub provoking_vertex_mode_per_pipeline: Bool32,
     pub transform_feedback_preserves_triangle_fan_provoking_vertex: Bool32,
 }
+unsafe impl Send for PhysicalDeviceProvokingVertexPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceProvokingVertexPropertiesEXT {}
 impl default::Default for PhysicalDeviceProvokingVertexPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -38825,6 +39885,8 @@ pub struct PipelineRasterizationProvokingVertexStateCreateInfoEXT {
     pub p_next: *const c_void,
     pub provoking_vertex_mode: ProvokingVertexModeEXT,
 }
+unsafe impl Send for PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
+unsafe impl Sync for PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
 impl default::Default for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
     fn default() -> Self {
         Self {
@@ -38851,6 +39913,8 @@ pub struct CuModuleCreateInfoNVX {
     pub data_size: usize,
     pub p_data: *const c_void,
 }
+unsafe impl Send for CuModuleCreateInfoNVX {}
+unsafe impl Sync for CuModuleCreateInfoNVX {}
 impl default::Default for CuModuleCreateInfoNVX {
     fn default() -> Self {
         Self {
@@ -38879,6 +39943,8 @@ pub struct CuFunctionCreateInfoNVX {
     pub module: Option<CuModuleNVX>,
     pub p_name: *const c_char,
 }
+unsafe impl Send for CuFunctionCreateInfoNVX {}
+unsafe impl Sync for CuFunctionCreateInfoNVX {}
 impl default::Default for CuFunctionCreateInfoNVX {
     fn default() -> Self {
         Self {
@@ -38917,6 +39983,8 @@ pub struct CuLaunchInfoNVX {
     pub extra_count: usize,
     pub p_extras: *const *const c_void,
 }
+unsafe impl Send for CuLaunchInfoNVX {}
+unsafe impl Sync for CuLaunchInfoNVX {}
 impl default::Default for CuLaunchInfoNVX {
     fn default() -> Self {
         Self {
@@ -38964,6 +40032,8 @@ pub struct PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
     pub p_next: *mut c_void,
     pub shader_integer_dot_product: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderIntegerDotProductFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderIntegerDotProductFeaturesKHR {}
 impl default::Default for PhysicalDeviceShaderIntegerDotProductFeaturesKHR {
     fn default() -> Self {
         Self {
@@ -39018,6 +40088,8 @@ pub struct PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
     pub integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Bool32,
     pub integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Bool32,
 }
+unsafe impl Send for PhysicalDeviceShaderIntegerDotProductPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceShaderIntegerDotProductPropertiesKHR {}
 impl default::Default for PhysicalDeviceShaderIntegerDotProductPropertiesKHR {
     fn default() -> Self {
         Self {
@@ -39196,6 +40268,8 @@ pub struct PhysicalDeviceDrmPropertiesEXT {
     pub render_major: i64,
     pub render_minor: i64,
 }
+unsafe impl Send for PhysicalDeviceDrmPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDrmPropertiesEXT {}
 impl default::Default for PhysicalDeviceDrmPropertiesEXT {
     fn default() -> Self {
         Self {
@@ -39232,6 +40306,8 @@ pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     pub ray_tracing_motion_blur: Bool32,
     pub ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32,
 }
+unsafe impl Send for PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
 impl default::Default for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     fn default() -> Self {
         Self {
@@ -39290,6 +40366,8 @@ pub struct AccelerationStructureGeometryMotionTrianglesDataNV {
     pub p_next: *const c_void,
     pub vertex_data: DeviceOrHostAddressConstKHR,
 }
+unsafe impl Send for AccelerationStructureGeometryMotionTrianglesDataNV {}
+unsafe impl Sync for AccelerationStructureGeometryMotionTrianglesDataNV {}
 impl default::Default for AccelerationStructureGeometryMotionTrianglesDataNV {
     fn default() -> Self {
         Self {
@@ -39316,6 +40394,8 @@ pub struct AccelerationStructureMotionInfoNV {
     pub max_instances: u32,
     pub flags: AccelerationStructureMotionInfoFlagsNV,
 }
+unsafe impl Send for AccelerationStructureMotionInfoNV {}
+unsafe impl Sync for AccelerationStructureMotionInfoNV {}
 impl default::Default for AccelerationStructureMotionInfoNV {
     fn default() -> Self {
         Self {
@@ -39529,6 +40609,8 @@ pub struct MemoryGetRemoteAddressInfoNV {
     pub memory: Option<DeviceMemory>,
     pub handle_type: ExternalMemoryHandleTypeFlags,
 }
+unsafe impl Send for MemoryGetRemoteAddressInfoNV {}
+unsafe impl Sync for MemoryGetRemoteAddressInfoNV {}
 impl default::Default for MemoryGetRemoteAddressInfoNV {
     fn default() -> Self {
         Self {
