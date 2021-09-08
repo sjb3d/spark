@@ -12935,6 +12935,44 @@ impl Deref for MemoryPriorityAllocateInfoEXTBuilder {
 }
 impl MemoryAllocateInfoNext for MemoryPriorityAllocateInfoEXTBuilder {}
 impl MemoryAllocateInfoNext for vk::MemoryPriorityAllocateInfoEXT {}
+impl Builder<'_> for vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
+    type Type = PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT,
+}
+impl PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pageable_device_local_memory(mut self, pageable_device_local_memory: bool) -> Self {
+        self.inner.pageable_device_local_memory = if pageable_device_local_memory {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceBufferDeviceAddressFeatures {
     type Type = PhysicalDeviceBufferDeviceAddressFeaturesBuilder;
     fn builder() -> Self::Type {

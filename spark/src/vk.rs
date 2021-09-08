@@ -13892,6 +13892,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT: Self = Self(1000392000);
     /// Added by extension VK_EXT_multi_draw.
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
+    /// Added by extension VK_EXT_pageable_device_local_memory.
+    pub const PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT: Self = Self(1000412000);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14426,6 +14428,7 @@ impl fmt::Display for StructureType {
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
+            1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -33013,6 +33016,31 @@ impl fmt::Debug for MemoryPriorityAllocateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pageable_device_local_memory: Bool32,
+}
+impl default::Default for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pageable_device_local_memory: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pageable_device_local_memory", &self.pageable_device_local_memory)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceBufferDeviceAddressFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -41677,6 +41705,8 @@ pub type FnDestroyCuFunctionNVX = unsafe extern "system" fn(
 );
 pub type FnCmdCuLaunchKernelNVX =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_launch_info: *const CuLaunchInfoNVX);
+pub type FnSetDeviceMemoryPriorityEXT =
+    unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>, priority: f32);
 pub type FnAcquireDrmDisplayEXT = unsafe extern "system" fn(
     physical_device: Option<PhysicalDevice>,
     drm_fd: i32,

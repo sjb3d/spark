@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 190
+//! Generated from vk.xml with `VK_HEADER_VERSION` 191
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1368,6 +1368,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_global_priority_query(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_pageable_device_local_memory(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -3956,6 +3962,7 @@ pub struct DeviceExtensions {
     pub ext_global_priority_query: bool,
     pub ext_multi_draw: bool,
     pub ext_load_store_op_none: bool,
+    pub ext_pageable_device_local_memory: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4178,6 +4185,7 @@ impl DeviceExtensions {
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
+            b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             _ => {}
         }
     }
@@ -4400,6 +4408,7 @@ impl DeviceExtensions {
             ext_global_priority_query: false,
             ext_multi_draw: false,
             ext_load_store_op_none: false,
+            ext_pageable_device_local_memory: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6020,6 +6029,13 @@ impl DeviceExtensions {
     pub fn enable_ext_load_store_op_none(&mut self) {
         self.ext_load_store_op_none = true;
     }
+    pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
+        self.ext_pageable_device_local_memory && self.supports_ext_memory_priority()
+    }
+    pub fn enable_ext_pageable_device_local_memory(&mut self) {
+        self.ext_pageable_device_local_memory = true;
+        self.enable_ext_memory_priority();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -6672,6 +6688,9 @@ impl DeviceExtensions {
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
         }
+        if self.ext_pageable_device_local_memory {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pageable_device_local_memory\0") })
+        }
         v
     }
 }
@@ -7038,6 +7057,7 @@ pub struct Device {
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
     pub fp_destroy_cu_function_nvx: Option<vk::FnDestroyCuFunctionNVX>,
     pub fp_cmd_cu_launch_kernel_nvx: Option<vk::FnCmdCuLaunchKernelNVX>,
+    pub fp_set_device_memory_priority_ext: Option<vk::FnSetDeviceMemoryPriorityEXT>,
     pub fp_wait_for_present_khr: Option<vk::FnWaitForPresentKHR>,
 }
 impl Device {
@@ -9712,6 +9732,12 @@ impl Device {
             },
             fp_cmd_cu_launch_kernel_nvx: if extensions.nvx_binary_import {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCuLaunchKernelNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_device_memory_priority_ext: if extensions.ext_pageable_device_local_memory {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSetDeviceMemoryPriorityEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -15651,6 +15677,12 @@ impl Device {
             .fp_cmd_cu_launch_kernel_nvx
             .expect("vkCmdCuLaunchKernelNVX is not loaded");
         (fp)(Some(command_buffer), p_launch_info);
+    }
+    pub unsafe fn set_device_memory_priority_ext(&self, memory: vk::DeviceMemory, priority: f32) {
+        let fp = self
+            .fp_set_device_memory_priority_ext
+            .expect("vkSetDeviceMemoryPriorityEXT is not loaded");
+        (fp)(Some(self.handle), Some(memory), priority);
     }
     pub unsafe fn wait_for_present_khr(
         &self,
