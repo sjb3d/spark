@@ -10,11 +10,10 @@ The library is similar in scope to [`ash`](https://github.com/MaikKlein/ash).  A
 
 Since `ash` widely used, I'll just list the ways this library currently differs from `ash`.  These are just alternatives I personally found interesting to explore:
 
-### Extensions Are Part Of `Instance` And `Device`
+### Helpers To Manage Extensions
 
-To simplify the handling of extensions and core Vulkan versions, the library manages all Vulkan function pointers directly on the `Instance` or `Device`.  When the `Instance` or `Device` is created, the core version and list of extensions is checked, and all Vulkan commands are loaded that are enabled for that combination.  This handles complex cases such as commands that are loaded only when a combination of extensions are present.
-
-The structs `InstanceExtensions` and `DeviceExtensions` can be used to simplify code that loads extensions, providing helper functions to check if a particular extension is supported either directly or via promotion.
+The structs `InstanceExtensions` and `DeviceExtensions` can be used to simplify code that manages extensions.
+These expose a method per extension that checks for support, which handles checking for dependencies and the core Vulkan version:
 
 ```rust
 // parse physical device extension properties into DeviceExtensions
@@ -30,7 +29,7 @@ if available_extensions.supports_khr_draw_indirect_count() {
 }
 ```
 
-The structs also provide functions to enable extensions and dependencies that are not already promoted to the given core version of Vulkan.
+These structs also expose a method per extension to enable that extension and all of its dependencies.  Extensions that have been promoted to the given core Vulkan version are skipped.
 
 ```rust
 let mut extensions = DeviceExtensions::new(core_version);
@@ -45,16 +44,24 @@ extensions.enable_khr_draw_indirect_count();
 //  VK_EXT_buffer_device_address (unless core_version >= 1.2)
 //  VK_KHR_deferred_host_operations
 extensions.enable_khr_acceleration_structure();
+```
 
+Once all extensions have been enabled, the set can be passed to `Instance` or `Device` creation as a list of names:
+
+```rust
 // for passing to device creation
 let extension_names = extensions.to_name_vec();
 ```
 
-An instance of these structs is available on `Instance` or `Device` to query which extensions were loaded when it was created.
+### Extensions Are Part Of `Instance` And `Device`
+
+To simplify the use of extensions and core Vulkan versions, the library manages all Vulkan function pointers directly on the `Instance` or `Device`.
+
+When the `Instance` or `Device` is created, the core version and list of extensions is checked, and all Vulkan commands are loaded that are enabled for that combination.  This handles complex cases such as commands that are loaded only when a combination of extensions are present.  The `extensions` struct on `Instance` or `Device` can be used to query which extensions are supported.
 
 ```rust
 // emit a marker if EXT_debug_utils was loaded
-if instance.extensions.ext_debug_utils {
+if instance.extensions.supports_ext_debug_utils() {
     let label = vk::DebugUtilsLabelEXT {
         p_label_name: name.as_ptr(),
         ..Default::default()
