@@ -5,7 +5,6 @@ mod window_surface;
 
 use command_buffer::*;
 use context::*;
-use imgui::im_str;
 use imgui::Key;
 use imgui_winit_support::{HiDpiMode, WinitPlatform};
 use spark::{vk, Builder};
@@ -324,10 +323,10 @@ impl App {
         {
             // show some test UI
             let frame_index = self.frame_index;
-            imgui::Window::new(im_str!("Debug"))
+            imgui::Window::new("Debug")
                 .size([300.0, 100.0], imgui::Condition::FirstUseEver)
                 .build(&ui, || {
-                    if ui.button(im_str!("Close Window"), [0.0, 0.0]) {
+                    if ui.button("Close Window") {
                         *exit_requested = true;
                     }
                     ui.text(format!("Frame: {}", frame_index));
