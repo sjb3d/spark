@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 191
+//! Generated from vk.xml with `VK_HEADER_VERSION` 194
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1178,6 +1178,12 @@ impl InstanceExtensions {
     pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_nv_device_generated_commands(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_device_generated_commands(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_khr_shader_integer_dot_product(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1331,6 +1337,13 @@ impl InstanceExtensions {
     }
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.enable_khr_external_semaphore_capabilities();
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_fuchsia_buffer_collection(&self) -> bool {
+        self.supports_khr_external_memory_capabilities() && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_fuchsia_buffer_collection(&mut self) {
+        self.enable_khr_external_memory_capabilities();
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_huawei_subpass_shading(&self) -> bool {
@@ -3954,6 +3967,7 @@ pub struct DeviceExtensions {
     pub ext_primitive_topology_list_restart: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
+    pub fuchsia_buffer_collection: bool,
     pub huawei_subpass_shading: bool,
     pub huawei_invocation_mask: bool,
     pub nv_external_memory_rdma: bool,
@@ -4177,6 +4191,7 @@ impl DeviceExtensions {
             b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
+            b"VK_FUCHSIA_buffer_collection" => self.fuchsia_buffer_collection = true,
             b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
             b"VK_HUAWEI_invocation_mask" => self.huawei_invocation_mask = true,
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
@@ -4400,6 +4415,7 @@ impl DeviceExtensions {
             ext_primitive_topology_list_restart: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
+            fuchsia_buffer_collection: false,
             huawei_subpass_shading: false,
             huawei_invocation_mask: false,
             nv_external_memory_rdma: false,
@@ -5704,10 +5720,13 @@ impl DeviceExtensions {
         self.ext_shader_demote_to_helper_invocation = true;
     }
     pub fn supports_nv_device_generated_commands(&self) -> bool {
-        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.nv_device_generated_commands
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.nv_device_generated_commands
+            && self.supports_khr_buffer_device_address()
     }
     pub fn enable_nv_device_generated_commands(&mut self) {
         self.nv_device_generated_commands = true;
+        self.enable_khr_buffer_device_address();
     }
     pub fn supports_nv_inherited_viewport_scissor(&self) -> bool {
         self.nv_inherited_viewport_scissor
@@ -5952,6 +5971,24 @@ impl DeviceExtensions {
     pub fn enable_fuchsia_external_semaphore(&mut self) {
         self.fuchsia_external_semaphore = true;
         self.enable_khr_external_semaphore();
+    }
+    pub fn supports_fuchsia_buffer_collection(&self) -> bool {
+        self.fuchsia_buffer_collection
+            && self.supports_fuchsia_external_memory()
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_external_memory()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
+    }
+    pub fn enable_fuchsia_buffer_collection(&mut self) {
+        self.fuchsia_buffer_collection = true;
+        self.enable_fuchsia_external_memory();
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_external_memory();
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
     }
     pub fn supports_huawei_subpass_shading(&self) -> bool {
         self.huawei_subpass_shading
@@ -6664,6 +6701,9 @@ impl DeviceExtensions {
         if self.fuchsia_external_semaphore {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_semaphore\0") })
         }
+        if self.fuchsia_buffer_collection {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_buffer_collection\0") })
+        }
         if self.huawei_subpass_shading {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_subpass_shading\0") })
         }
@@ -7059,6 +7099,11 @@ pub struct Device {
     pub fp_cmd_cu_launch_kernel_nvx: Option<vk::FnCmdCuLaunchKernelNVX>,
     pub fp_set_device_memory_priority_ext: Option<vk::FnSetDeviceMemoryPriorityEXT>,
     pub fp_wait_for_present_khr: Option<vk::FnWaitForPresentKHR>,
+    pub fp_create_buffer_collection_fuchsia: Option<vk::FnCreateBufferCollectionFUCHSIA>,
+    pub fp_set_buffer_collection_buffer_constraints_fuchsia: Option<vk::FnSetBufferCollectionBufferConstraintsFUCHSIA>,
+    pub fp_set_buffer_collection_image_constraints_fuchsia: Option<vk::FnSetBufferCollectionImageConstraintsFUCHSIA>,
+    pub fp_destroy_buffer_collection_fuchsia: Option<vk::FnDestroyBufferCollectionFUCHSIA>,
+    pub fp_get_buffer_collection_properties_fuchsia: Option<vk::FnGetBufferCollectionPropertiesFUCHSIA>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -9744,6 +9789,46 @@ impl Device {
             },
             fp_wait_for_present_khr: if extensions.khr_present_wait {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWaitForPresentKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_buffer_collection_fuchsia: if extensions.fuchsia_buffer_collection {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateBufferCollectionFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_buffer_collection_buffer_constraints_fuchsia: if extensions.fuchsia_buffer_collection {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkSetBufferCollectionBufferConstraintsFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_buffer_collection_image_constraints_fuchsia: if extensions.fuchsia_buffer_collection {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkSetBufferCollectionImageConstraintsFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_buffer_collection_fuchsia: if extensions.fuchsia_buffer_collection {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkDestroyBufferCollectionFUCHSIA\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_collection_properties_fuchsia: if extensions.fuchsia_buffer_collection {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetBufferCollectionPropertiesFUCHSIA\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -15694,6 +15779,82 @@ impl Device {
         let err = (fp)(Some(self.handle), Some(swapchain), present_id, timeout);
         match err {
             vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_buffer_collection_fuchsia(
+        &self,
+        p_create_info: &vk::BufferCollectionCreateInfoFUCHSIA,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::BufferCollectionFUCHSIA> {
+        let fp = self
+            .fp_create_buffer_collection_fuchsia
+            .expect("vkCreateBufferCollectionFUCHSIA is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn set_buffer_collection_buffer_constraints_fuchsia(
+        &self,
+        collection: vk::BufferCollectionFUCHSIA,
+        p_buffer_constraints_info: &vk::BufferConstraintsInfoFUCHSIA,
+    ) -> Result<()> {
+        let fp = self
+            .fp_set_buffer_collection_buffer_constraints_fuchsia
+            .expect("vkSetBufferCollectionBufferConstraintsFUCHSIA is not loaded");
+        let err = (fp)(Some(self.handle), Some(collection), p_buffer_constraints_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn set_buffer_collection_image_constraints_fuchsia(
+        &self,
+        collection: vk::BufferCollectionFUCHSIA,
+        p_image_constraints_info: &vk::ImageConstraintsInfoFUCHSIA,
+    ) -> Result<()> {
+        let fp = self
+            .fp_set_buffer_collection_image_constraints_fuchsia
+            .expect("vkSetBufferCollectionImageConstraintsFUCHSIA is not loaded");
+        let err = (fp)(Some(self.handle), Some(collection), p_image_constraints_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_buffer_collection_fuchsia(
+        &self,
+        collection: vk::BufferCollectionFUCHSIA,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_buffer_collection_fuchsia
+            .expect("vkDestroyBufferCollectionFUCHSIA is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(collection),
+            p_allocator.map_or(ptr::null(), |r| r),
+        );
+    }
+    pub unsafe fn get_buffer_collection_properties_fuchsia(
+        &self,
+        collection: vk::BufferCollectionFUCHSIA,
+        p_properties: &mut vk::BufferCollectionPropertiesFUCHSIA,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_buffer_collection_properties_fuchsia
+            .expect("vkGetBufferCollectionPropertiesFUCHSIA is not loaded");
+        let err = (fp)(Some(self.handle), Some(collection), p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
     }

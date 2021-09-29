@@ -18613,17 +18613,18 @@ impl Deref for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
 }
 impl PipelineRasterizationStateCreateInfoNext for PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {}
 impl PipelineRasterizationStateCreateInfoNext for vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
-impl Builder<'_> for vk::CuModuleCreateInfoNVX {
-    type Type = CuModuleCreateInfoNVXBuilder;
+impl<'a> Builder<'a> for vk::CuModuleCreateInfoNVX {
+    type Type = CuModuleCreateInfoNVXBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct CuModuleCreateInfoNVXBuilder {
+pub struct CuModuleCreateInfoNVXBuilder<'a> {
     inner: vk::CuModuleCreateInfoNVX,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl CuModuleCreateInfoNVXBuilder {
+impl<'a> CuModuleCreateInfoNVXBuilder<'a> {
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self
@@ -18632,16 +18633,13 @@ impl CuModuleCreateInfoNVXBuilder {
         self.inner.p_next = p_next;
         self
     }
-    pub fn data_size(mut self, data_size: usize) -> Self {
-        self.inner.data_size = data_size;
-        self
-    }
-    pub fn p_data(mut self, p_data: *const c_void) -> Self {
-        self.inner.p_data = p_data;
+    pub fn p_data<T>(mut self, p_data: &'a [T]) -> Self {
+        self.inner.data_size = mem::size_of_val(p_data) as usize;
+        self.inner.p_data = p_data.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
-impl Deref for CuModuleCreateInfoNVXBuilder {
+impl<'a> Deref for CuModuleCreateInfoNVXBuilder<'a> {
     type Target = vk::CuModuleCreateInfoNVX;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -19330,6 +19328,428 @@ impl MemoryGetRemoteAddressInfoNVBuilder {
 }
 impl Deref for MemoryGetRemoteAddressInfoNVBuilder {
     type Target = vk::MemoryGetRemoteAddressInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImportMemoryBufferCollectionFUCHSIA {
+    type Type = ImportMemoryBufferCollectionFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMemoryBufferCollectionFUCHSIABuilder {
+    inner: vk::ImportMemoryBufferCollectionFUCHSIA,
+}
+impl ImportMemoryBufferCollectionFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn collection(mut self, collection: vk::BufferCollectionFUCHSIA) -> Self {
+        self.inner.collection = Some(collection);
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+}
+impl Deref for ImportMemoryBufferCollectionFUCHSIABuilder {
+    type Target = vk::ImportMemoryBufferCollectionFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for ImportMemoryBufferCollectionFUCHSIABuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMemoryBufferCollectionFUCHSIA {}
+impl Builder<'_> for vk::BufferCollectionImageCreateInfoFUCHSIA {
+    type Type = BufferCollectionImageCreateInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCollectionImageCreateInfoFUCHSIABuilder {
+    inner: vk::BufferCollectionImageCreateInfoFUCHSIA,
+}
+impl BufferCollectionImageCreateInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn collection(mut self, collection: vk::BufferCollectionFUCHSIA) -> Self {
+        self.inner.collection = Some(collection);
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+}
+impl Deref for BufferCollectionImageCreateInfoFUCHSIABuilder {
+    type Target = vk::BufferCollectionImageCreateInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for BufferCollectionImageCreateInfoFUCHSIABuilder {}
+impl ImageCreateInfoNext for vk::BufferCollectionImageCreateInfoFUCHSIA {}
+impl Builder<'_> for vk::BufferCollectionBufferCreateInfoFUCHSIA {
+    type Type = BufferCollectionBufferCreateInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCollectionBufferCreateInfoFUCHSIABuilder {
+    inner: vk::BufferCollectionBufferCreateInfoFUCHSIA,
+}
+impl BufferCollectionBufferCreateInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn collection(mut self, collection: vk::BufferCollectionFUCHSIA) -> Self {
+        self.inner.collection = Some(collection);
+        self
+    }
+    pub fn index(mut self, index: u32) -> Self {
+        self.inner.index = index;
+        self
+    }
+}
+impl Deref for BufferCollectionBufferCreateInfoFUCHSIABuilder {
+    type Target = vk::BufferCollectionBufferCreateInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BufferCreateInfoNext for BufferCollectionBufferCreateInfoFUCHSIABuilder {}
+impl BufferCreateInfoNext for vk::BufferCollectionBufferCreateInfoFUCHSIA {}
+impl Builder<'_> for vk::BufferCollectionCreateInfoFUCHSIA {
+    type Type = BufferCollectionCreateInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCollectionCreateInfoFUCHSIABuilder {
+    inner: vk::BufferCollectionCreateInfoFUCHSIA,
+}
+impl BufferCollectionCreateInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn collection_token(mut self, collection_token: vk::zx_handle_t) -> Self {
+        self.inner.collection_token = collection_token;
+        self
+    }
+}
+impl Deref for BufferCollectionCreateInfoFUCHSIABuilder {
+    type Target = vk::BufferCollectionCreateInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferCollectionPropertiesFUCHSIA {
+    type Type = BufferCollectionPropertiesFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCollectionPropertiesFUCHSIABuilder {
+    inner: vk::BufferCollectionPropertiesFUCHSIA,
+}
+impl BufferCollectionPropertiesFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory_type_bits(mut self, memory_type_bits: u32) -> Self {
+        self.inner.memory_type_bits = memory_type_bits;
+        self
+    }
+    pub fn buffer_count(mut self, buffer_count: u32) -> Self {
+        self.inner.buffer_count = buffer_count;
+        self
+    }
+    pub fn create_info_index(mut self, create_info_index: u32) -> Self {
+        self.inner.create_info_index = create_info_index;
+        self
+    }
+    pub fn sysmem_pixel_format(mut self, sysmem_pixel_format: u64) -> Self {
+        self.inner.sysmem_pixel_format = sysmem_pixel_format;
+        self
+    }
+    pub fn format_features(mut self, format_features: vk::FormatFeatureFlags) -> Self {
+        self.inner.format_features = format_features;
+        self
+    }
+    pub fn sysmem_color_space_index(mut self, sysmem_color_space_index: vk::SysmemColorSpaceFUCHSIA) -> Self {
+        self.inner.sysmem_color_space_index = sysmem_color_space_index;
+        self
+    }
+    pub fn sampler_ycbcr_conversion_components(
+        mut self,
+        sampler_ycbcr_conversion_components: vk::ComponentMapping,
+    ) -> Self {
+        self.inner.sampler_ycbcr_conversion_components = sampler_ycbcr_conversion_components;
+        self
+    }
+    pub fn suggested_ycbcr_model(mut self, suggested_ycbcr_model: vk::SamplerYcbcrModelConversion) -> Self {
+        self.inner.suggested_ycbcr_model = suggested_ycbcr_model;
+        self
+    }
+    pub fn suggested_ycbcr_range(mut self, suggested_ycbcr_range: vk::SamplerYcbcrRange) -> Self {
+        self.inner.suggested_ycbcr_range = suggested_ycbcr_range;
+        self
+    }
+    pub fn suggested_x_chroma_offset(mut self, suggested_x_chroma_offset: vk::ChromaLocation) -> Self {
+        self.inner.suggested_x_chroma_offset = suggested_x_chroma_offset;
+        self
+    }
+    pub fn suggested_y_chroma_offset(mut self, suggested_y_chroma_offset: vk::ChromaLocation) -> Self {
+        self.inner.suggested_y_chroma_offset = suggested_y_chroma_offset;
+        self
+    }
+}
+impl Deref for BufferCollectionPropertiesFUCHSIABuilder {
+    type Target = vk::BufferCollectionPropertiesFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferConstraintsInfoFUCHSIA {
+    type Type = BufferConstraintsInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferConstraintsInfoFUCHSIABuilder {
+    inner: vk::BufferConstraintsInfoFUCHSIA,
+}
+impl BufferConstraintsInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn create_info(mut self, create_info: vk::BufferCreateInfo) -> Self {
+        self.inner.create_info = create_info;
+        self
+    }
+    pub fn required_format_features(mut self, required_format_features: vk::FormatFeatureFlags) -> Self {
+        self.inner.required_format_features = required_format_features;
+        self
+    }
+    pub fn buffer_collection_constraints(
+        mut self,
+        buffer_collection_constraints: vk::BufferCollectionConstraintsInfoFUCHSIA,
+    ) -> Self {
+        self.inner.buffer_collection_constraints = buffer_collection_constraints;
+        self
+    }
+}
+impl Deref for BufferConstraintsInfoFUCHSIABuilder {
+    type Target = vk::BufferConstraintsInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::SysmemColorSpaceFUCHSIA {
+    type Type = SysmemColorSpaceFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SysmemColorSpaceFUCHSIABuilder {
+    inner: vk::SysmemColorSpaceFUCHSIA,
+}
+impl SysmemColorSpaceFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn color_space(mut self, color_space: u32) -> Self {
+        self.inner.color_space = color_space;
+        self
+    }
+}
+impl Deref for SysmemColorSpaceFUCHSIABuilder {
+    type Target = vk::SysmemColorSpaceFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageFormatConstraintsInfoFUCHSIA {
+    type Type = ImageFormatConstraintsInfoFUCHSIABuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
+    inner: vk::ImageFormatConstraintsInfoFUCHSIA,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_create_info(mut self, image_create_info: vk::ImageCreateInfo) -> Self {
+        self.inner.image_create_info = image_create_info;
+        self
+    }
+    pub fn required_format_features(mut self, required_format_features: vk::FormatFeatureFlags) -> Self {
+        self.inner.required_format_features = required_format_features;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ImageFormatConstraintsFlagsFUCHSIA) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn sysmem_pixel_format(mut self, sysmem_pixel_format: u64) -> Self {
+        self.inner.sysmem_pixel_format = sysmem_pixel_format;
+        self
+    }
+    pub fn color_space_count(mut self, color_space_count: u32) -> Self {
+        self.inner.color_space_count = color_space_count;
+        self
+    }
+    pub fn p_color_spaces(mut self, p_color_spaces: &'a vk::SysmemColorSpaceFUCHSIA) -> Self {
+        self.inner.p_color_spaces = p_color_spaces;
+        self
+    }
+}
+impl<'a> Deref for ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
+    type Target = vk::ImageFormatConstraintsInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::ImageConstraintsInfoFUCHSIA {
+    type Type = ImageConstraintsInfoFUCHSIABuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageConstraintsInfoFUCHSIABuilder<'a> {
+    inner: vk::ImageConstraintsInfoFUCHSIA,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ImageConstraintsInfoFUCHSIABuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_format_constraints(mut self, p_format_constraints: &'a [vk::ImageFormatConstraintsInfoFUCHSIA]) -> Self {
+        self.inner.format_constraints_count = p_format_constraints.len() as u32;
+        self.inner.p_format_constraints = p_format_constraints.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn buffer_collection_constraints(
+        mut self,
+        buffer_collection_constraints: vk::BufferCollectionConstraintsInfoFUCHSIA,
+    ) -> Self {
+        self.inner.buffer_collection_constraints = buffer_collection_constraints;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ImageConstraintsInfoFlagsFUCHSIA) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for ImageConstraintsInfoFUCHSIABuilder<'a> {
+    type Target = vk::ImageConstraintsInfoFUCHSIA;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferCollectionConstraintsInfoFUCHSIA {
+    type Type = BufferCollectionConstraintsInfoFUCHSIABuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCollectionConstraintsInfoFUCHSIABuilder {
+    inner: vk::BufferCollectionConstraintsInfoFUCHSIA,
+}
+impl BufferCollectionConstraintsInfoFUCHSIABuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn min_buffer_count(mut self, min_buffer_count: u32) -> Self {
+        self.inner.min_buffer_count = min_buffer_count;
+        self
+    }
+    pub fn max_buffer_count(mut self, max_buffer_count: u32) -> Self {
+        self.inner.max_buffer_count = max_buffer_count;
+        self
+    }
+    pub fn min_buffer_count_for_camping(mut self, min_buffer_count_for_camping: u32) -> Self {
+        self.inner.min_buffer_count_for_camping = min_buffer_count_for_camping;
+        self
+    }
+    pub fn min_buffer_count_for_dedicated_slack(mut self, min_buffer_count_for_dedicated_slack: u32) -> Self {
+        self.inner.min_buffer_count_for_dedicated_slack = min_buffer_count_for_dedicated_slack;
+        self
+    }
+    pub fn min_buffer_count_for_shared_slack(mut self, min_buffer_count_for_shared_slack: u32) -> Self {
+        self.inner.min_buffer_count_for_shared_slack = min_buffer_count_for_shared_slack;
+        self
+    }
+}
+impl Deref for BufferCollectionConstraintsInfoFUCHSIABuilder {
+    type Target = vk::BufferCollectionConstraintsInfoFUCHSIA;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }

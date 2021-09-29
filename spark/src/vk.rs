@@ -10590,6 +10590,156 @@ impl fmt::Display for SubmitFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ImageFormatConstraintsFlagsFUCHSIA(u32);
+impl ImageFormatConstraintsFlagsFUCHSIA {}
+impl default::Default for ImageFormatConstraintsFlagsFUCHSIA {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl ImageFormatConstraintsFlagsFUCHSIA {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x0)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x0
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ImageFormatConstraintsFlagsFUCHSIA {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ImageFormatConstraintsFlagsFUCHSIA {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ImageFormatConstraintsFlagsFUCHSIA {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ImageFormatConstraintsFlagsFUCHSIA {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ImageFormatConstraintsFlagsFUCHSIA {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ImageFormatConstraintsFlagsFUCHSIA {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ImageConstraintsInfoFlagsFUCHSIA(u32);
+impl ImageConstraintsInfoFlagsFUCHSIA {
+    pub const CPU_READ_RARELY: Self = Self(0x1);
+    pub const CPU_READ_OFTEN: Self = Self(0x2);
+    pub const CPU_WRITE_RARELY: Self = Self(0x4);
+    pub const CPU_WRITE_OFTEN: Self = Self(0x8);
+    pub const PROTECTED_OPTIONAL: Self = Self(0x10);
+}
+impl default::Default for ImageConstraintsInfoFlagsFUCHSIA {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl ImageConstraintsInfoFlagsFUCHSIA {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x1f)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x1f
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for ImageConstraintsInfoFlagsFUCHSIA {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for ImageConstraintsInfoFlagsFUCHSIA {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for ImageConstraintsInfoFlagsFUCHSIA {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for ImageConstraintsInfoFlagsFUCHSIA {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for ImageConstraintsInfoFlagsFUCHSIA {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for ImageConstraintsInfoFlagsFUCHSIA {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for ImageConstraintsInfoFlagsFUCHSIA {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "CPU_READ_RARELY"),
+                (0x2, "CPU_READ_OFTEN"),
+                (0x4, "CPU_WRITE_RARELY"),
+                (0x8, "CPU_WRITE_OFTEN"),
+                (0x10, "PROTECTED_OPTIONAL"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
     pub fn from_raw(x: usize) -> Option<Self> {
@@ -10842,6 +10992,14 @@ impl AccelerationStructureNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PerformanceConfigurationINTEL(num::NonZeroU64);
 impl PerformanceConfigurationINTEL {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct BufferCollectionFUCHSIA(num::NonZeroU64);
+impl BufferCollectionFUCHSIA {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -13866,6 +14024,26 @@ impl StructureType {
     pub const IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365000);
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000365001);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_CREATE_INFO_FUCHSIA: Self = Self(1000366000);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366001);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA: Self = Self(1000366002);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_PROPERTIES_FUCHSIA: Self = Self(1000366003);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_CONSTRAINTS_INFO_FUCHSIA: Self = Self(1000366004);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA: Self = Self(1000366005);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const IMAGE_CONSTRAINTS_INFO_FUCHSIA: Self = Self(1000366006);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA: Self = Self(1000366007);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const SYSMEM_COLOR_SPACE_FUCHSIA: Self = Self(1000366008);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA: Self = Self(1000366009);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI: Self = Self(1000369000);
     /// Added by extension VK_HUAWEI_subpass_shading.
@@ -14415,6 +14593,16 @@ impl fmt::Display for StructureType {
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365000 => Some(&"IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000365001 => Some(&"SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
+            1000366000 => Some(&"BUFFER_COLLECTION_CREATE_INFO_FUCHSIA"),
+            1000366001 => Some(&"IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA"),
+            1000366002 => Some(&"BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA"),
+            1000366003 => Some(&"BUFFER_COLLECTION_PROPERTIES_FUCHSIA"),
+            1000366004 => Some(&"BUFFER_CONSTRAINTS_INFO_FUCHSIA"),
+            1000366005 => Some(&"BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA"),
+            1000366006 => Some(&"IMAGE_CONSTRAINTS_INFO_FUCHSIA"),
+            1000366007 => Some(&"IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA"),
+            1000366008 => Some(&"SYSMEM_COLOR_SPACE_FUCHSIA"),
+            1000366009 => Some(&"BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA"),
             1000369000 => Some(&"SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI"),
             1000369001 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI"),
             1000369002 => Some(&"PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI"),
@@ -14677,6 +14865,9 @@ impl ObjectType {
     pub const INDIRECT_COMMANDS_LAYOUT_NV: Self = Self(1000277000);
     /// Added by extension VK_EXT_private_data.
     pub const PRIVATE_DATA_SLOT_EXT: Self = Self(1000295000);
+    /// VkBufferCollectionFUCHSIA
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
 }
 impl default::Default for ObjectType {
     fn default() -> Self {
@@ -14729,6 +14920,7 @@ impl fmt::Display for ObjectType {
             1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
             1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
             1000295000 => Some(&"PRIVATE_DATA_SLOT_EXT"),
+            1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16020,6 +16212,8 @@ impl DebugReportObjectTypeEXT {
     pub const SAMPLER_YCBCR_CONVERSION_KHR: Self = Self::SAMPLER_YCBCR_CONVERSION;
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
+    /// Added by extension VK_FUCHSIA_buffer_collection.
+    pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
 }
 impl default::Default for DebugReportObjectTypeEXT {
     fn default() -> Self {
@@ -16067,6 +16261,7 @@ impl fmt::Display for DebugReportObjectTypeEXT {
             1000029001 => Some(&"CU_FUNCTION_NVX"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
+            1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -16669,6 +16864,12 @@ impl DriverId {
     pub const JUICE_PROPRIETARY: Self = Self(16);
     /// Verisilicon, Inc.
     pub const VERISILICON_PROPRIETARY: Self = Self(17);
+    /// Mesa open source project
+    pub const MESA_TURNIP: Self = Self(18);
+    /// Mesa open source project
+    pub const MESA_V3DV: Self = Self(19);
+    /// Mesa open source project
+    pub const MESA_PANVK: Self = Self(20);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -16707,6 +16908,9 @@ impl fmt::Display for DriverId {
             15 => Some(&"COREAVI_PROPRIETARY"),
             16 => Some(&"JUICE_PROPRIETARY"),
             17 => Some(&"VERISILICON_PROPRIETARY"),
+            18 => Some(&"MESA_TURNIP"),
+            19 => Some(&"MESA_V3DV"),
+            20 => Some(&"MESA_PANVK"),
             _ => None,
         };
         if let Some(name) = name {
@@ -40631,6 +40835,366 @@ impl fmt::Debug for MemoryGetRemoteAddressInfoNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMemoryBufferCollectionFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub collection: Option<BufferCollectionFUCHSIA>,
+    pub index: u32,
+}
+unsafe impl Send for ImportMemoryBufferCollectionFUCHSIA {}
+unsafe impl Sync for ImportMemoryBufferCollectionFUCHSIA {}
+impl default::Default for ImportMemoryBufferCollectionFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA,
+            p_next: ptr::null(),
+            collection: None,
+            index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for ImportMemoryBufferCollectionFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMemoryBufferCollectionFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("collection", &self.collection)
+            .field("index", &self.index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCollectionImageCreateInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub collection: Option<BufferCollectionFUCHSIA>,
+    pub index: u32,
+}
+unsafe impl Send for BufferCollectionImageCreateInfoFUCHSIA {}
+unsafe impl Sync for BufferCollectionImageCreateInfoFUCHSIA {}
+impl default::Default for BufferCollectionImageCreateInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            collection: None,
+            index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCollectionImageCreateInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCollectionImageCreateInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("collection", &self.collection)
+            .field("index", &self.index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCollectionBufferCreateInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub collection: Option<BufferCollectionFUCHSIA>,
+    pub index: u32,
+}
+unsafe impl Send for BufferCollectionBufferCreateInfoFUCHSIA {}
+unsafe impl Sync for BufferCollectionBufferCreateInfoFUCHSIA {}
+impl default::Default for BufferCollectionBufferCreateInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            collection: None,
+            index: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCollectionBufferCreateInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCollectionBufferCreateInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("collection", &self.collection)
+            .field("index", &self.index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCollectionCreateInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub collection_token: zx_handle_t,
+}
+unsafe impl Send for BufferCollectionCreateInfoFUCHSIA {}
+unsafe impl Sync for BufferCollectionCreateInfoFUCHSIA {}
+impl default::Default for BufferCollectionCreateInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COLLECTION_CREATE_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            collection_token: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for BufferCollectionCreateInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCollectionCreateInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("collection_token", &self.collection_token)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCollectionPropertiesFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_type_bits: u32,
+    pub buffer_count: u32,
+    pub create_info_index: u32,
+    pub sysmem_pixel_format: u64,
+    pub format_features: FormatFeatureFlags,
+    pub sysmem_color_space_index: SysmemColorSpaceFUCHSIA,
+    pub sampler_ycbcr_conversion_components: ComponentMapping,
+    pub suggested_ycbcr_model: SamplerYcbcrModelConversion,
+    pub suggested_ycbcr_range: SamplerYcbcrRange,
+    pub suggested_x_chroma_offset: ChromaLocation,
+    pub suggested_y_chroma_offset: ChromaLocation,
+}
+unsafe impl Send for BufferCollectionPropertiesFUCHSIA {}
+unsafe impl Sync for BufferCollectionPropertiesFUCHSIA {}
+impl default::Default for BufferCollectionPropertiesFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COLLECTION_PROPERTIES_FUCHSIA,
+            p_next: ptr::null_mut(),
+            memory_type_bits: u32::default(),
+            buffer_count: u32::default(),
+            create_info_index: u32::default(),
+            sysmem_pixel_format: u64::default(),
+            format_features: FormatFeatureFlags::default(),
+            sysmem_color_space_index: SysmemColorSpaceFUCHSIA::default(),
+            sampler_ycbcr_conversion_components: ComponentMapping::default(),
+            suggested_ycbcr_model: SamplerYcbcrModelConversion::default(),
+            suggested_ycbcr_range: SamplerYcbcrRange::default(),
+            suggested_x_chroma_offset: ChromaLocation::default(),
+            suggested_y_chroma_offset: ChromaLocation::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCollectionPropertiesFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCollectionPropertiesFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_type_bits", &self.memory_type_bits)
+            .field("buffer_count", &self.buffer_count)
+            .field("create_info_index", &self.create_info_index)
+            .field("sysmem_pixel_format", &self.sysmem_pixel_format)
+            .field("format_features", &self.format_features)
+            .field("sysmem_color_space_index", &self.sysmem_color_space_index)
+            .field(
+                "sampler_ycbcr_conversion_components",
+                &self.sampler_ycbcr_conversion_components,
+            )
+            .field("suggested_ycbcr_model", &self.suggested_ycbcr_model)
+            .field("suggested_ycbcr_range", &self.suggested_ycbcr_range)
+            .field("suggested_x_chroma_offset", &self.suggested_x_chroma_offset)
+            .field("suggested_y_chroma_offset", &self.suggested_y_chroma_offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferConstraintsInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub create_info: BufferCreateInfo,
+    pub required_format_features: FormatFeatureFlags,
+    pub buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA,
+}
+unsafe impl Send for BufferConstraintsInfoFUCHSIA {}
+unsafe impl Sync for BufferConstraintsInfoFUCHSIA {}
+impl default::Default for BufferConstraintsInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_CONSTRAINTS_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            create_info: BufferCreateInfo::default(),
+            required_format_features: FormatFeatureFlags::default(),
+            buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferConstraintsInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferConstraintsInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("create_info", &self.create_info)
+            .field("required_format_features", &self.required_format_features)
+            .field("buffer_collection_constraints", &self.buffer_collection_constraints)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SysmemColorSpaceFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub color_space: u32,
+}
+unsafe impl Send for SysmemColorSpaceFUCHSIA {}
+unsafe impl Sync for SysmemColorSpaceFUCHSIA {}
+impl default::Default for SysmemColorSpaceFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SYSMEM_COLOR_SPACE_FUCHSIA,
+            p_next: ptr::null(),
+            color_space: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for SysmemColorSpaceFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SysmemColorSpaceFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("color_space", &self.color_space)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageFormatConstraintsInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_create_info: ImageCreateInfo,
+    pub required_format_features: FormatFeatureFlags,
+    pub flags: ImageFormatConstraintsFlagsFUCHSIA,
+    pub sysmem_pixel_format: u64,
+    pub color_space_count: u32,
+    pub p_color_spaces: *const SysmemColorSpaceFUCHSIA,
+}
+unsafe impl Send for ImageFormatConstraintsInfoFUCHSIA {}
+unsafe impl Sync for ImageFormatConstraintsInfoFUCHSIA {}
+impl default::Default for ImageFormatConstraintsInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            image_create_info: ImageCreateInfo::default(),
+            required_format_features: FormatFeatureFlags::default(),
+            flags: ImageFormatConstraintsFlagsFUCHSIA::default(),
+            sysmem_pixel_format: u64::default(),
+            color_space_count: u32::default(),
+            p_color_spaces: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ImageFormatConstraintsInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageFormatConstraintsInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_create_info", &self.image_create_info)
+            .field("required_format_features", &self.required_format_features)
+            .field("flags", &self.flags)
+            .field("sysmem_pixel_format", &self.sysmem_pixel_format)
+            .field("color_space_count", &self.color_space_count)
+            .field("p_color_spaces", &self.p_color_spaces)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageConstraintsInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub format_constraints_count: u32,
+    pub p_format_constraints: *const ImageFormatConstraintsInfoFUCHSIA,
+    pub buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA,
+    pub flags: ImageConstraintsInfoFlagsFUCHSIA,
+}
+unsafe impl Send for ImageConstraintsInfoFUCHSIA {}
+unsafe impl Sync for ImageConstraintsInfoFUCHSIA {}
+impl default::Default for ImageConstraintsInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_CONSTRAINTS_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            format_constraints_count: u32::default(),
+            p_format_constraints: ptr::null(),
+            buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA::default(),
+            flags: ImageConstraintsInfoFlagsFUCHSIA::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageConstraintsInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageConstraintsInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format_constraints_count", &self.format_constraints_count)
+            .field("p_format_constraints", &self.p_format_constraints)
+            .field("buffer_collection_constraints", &self.buffer_collection_constraints)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCollectionConstraintsInfoFUCHSIA {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub min_buffer_count: u32,
+    pub max_buffer_count: u32,
+    pub min_buffer_count_for_camping: u32,
+    pub min_buffer_count_for_dedicated_slack: u32,
+    pub min_buffer_count_for_shared_slack: u32,
+}
+unsafe impl Send for BufferCollectionConstraintsInfoFUCHSIA {}
+unsafe impl Sync for BufferCollectionConstraintsInfoFUCHSIA {}
+impl default::Default for BufferCollectionConstraintsInfoFUCHSIA {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA,
+            p_next: ptr::null(),
+            min_buffer_count: u32::default(),
+            max_buffer_count: u32::default(),
+            min_buffer_count_for_camping: u32::default(),
+            min_buffer_count_for_dedicated_slack: u32::default(),
+            min_buffer_count_for_shared_slack: u32::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCollectionConstraintsInfoFUCHSIA {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCollectionConstraintsInfoFUCHSIA")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_buffer_count", &self.min_buffer_count)
+            .field("max_buffer_count", &self.max_buffer_count)
+            .field("min_buffer_count_for_camping", &self.min_buffer_count_for_camping)
+            .field(
+                "min_buffer_count_for_dedicated_slack",
+                &self.min_buffer_count_for_dedicated_slack,
+            )
+            .field(
+                "min_buffer_count_for_shared_slack",
+                &self.min_buffer_count_for_shared_slack,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -42805,4 +43369,30 @@ pub type FnWaitForPresentKHR = unsafe extern "system" fn(
     swapchain: Option<SwapchainKHR>,
     present_id: u64,
     timeout: u64,
+) -> Result;
+pub type FnCreateBufferCollectionFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const BufferCollectionCreateInfoFUCHSIA,
+    p_allocator: *const AllocationCallbacks,
+    p_collection: *mut BufferCollectionFUCHSIA,
+) -> Result;
+pub type FnSetBufferCollectionBufferConstraintsFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    collection: Option<BufferCollectionFUCHSIA>,
+    p_buffer_constraints_info: *const BufferConstraintsInfoFUCHSIA,
+) -> Result;
+pub type FnSetBufferCollectionImageConstraintsFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    collection: Option<BufferCollectionFUCHSIA>,
+    p_image_constraints_info: *const ImageConstraintsInfoFUCHSIA,
+) -> Result;
+pub type FnDestroyBufferCollectionFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    collection: Option<BufferCollectionFUCHSIA>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnGetBufferCollectionPropertiesFUCHSIA = unsafe extern "system" fn(
+    device: Option<Device>,
+    collection: Option<BufferCollectionFUCHSIA>,
+    p_properties: *mut BufferCollectionPropertiesFUCHSIA,
 ) -> Result;
