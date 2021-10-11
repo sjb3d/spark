@@ -6670,6 +6670,148 @@ impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct FormatFeatureFlags2KHR(u64);
+impl FormatFeatureFlags2KHR {
+    pub const SAMPLED_IMAGE: Self = Self(0x1);
+    pub const STORAGE_IMAGE: Self = Self(0x2);
+    pub const STORAGE_IMAGE_ATOMIC: Self = Self(0x4);
+    pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x8);
+    pub const STORAGE_TEXEL_BUFFER: Self = Self(0x10);
+    pub const STORAGE_TEXEL_BUFFER_ATOMIC: Self = Self(0x20);
+    pub const VERTEX_BUFFER: Self = Self(0x40);
+    pub const COLOR_ATTACHMENT: Self = Self(0x80);
+    pub const COLOR_ATTACHMENT_BLEND: Self = Self(0x100);
+    pub const DEPTH_STENCIL_ATTACHMENT: Self = Self(0x200);
+    pub const BLIT_SRC: Self = Self(0x400);
+    pub const BLIT_DST: Self = Self(0x800);
+    pub const SAMPLED_IMAGE_FILTER_LINEAR: Self = Self(0x1000);
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self(0x2000);
+    pub const TRANSFER_SRC: Self = Self(0x4000);
+    pub const TRANSFER_DST: Self = Self(0x8000);
+    pub const SAMPLED_IMAGE_FILTER_MINMAX: Self = Self(0x10000);
+    pub const MIDPOINT_CHROMA_SAMPLES: Self = Self(0x20000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER: Self = Self(0x40000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER: Self = Self(0x80000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT: Self = Self(0x100000);
+    pub const SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE: Self = Self(0x200000);
+    pub const DISJOINT: Self = Self(0x400000);
+    pub const COSITED_CHROMA_SAMPLES: Self = Self(0x800000);
+    pub const STORAGE_READ_WITHOUT_FORMAT: Self = Self(0x80000000);
+    pub const STORAGE_WRITE_WITHOUT_FORMAT: Self = Self(0x100000000);
+    pub const SAMPLED_IMAGE_DEPTH_COMPARISON: Self = Self(0x200000000);
+    /// Added by extension VK_KHR_acceleration_structure.
+    pub const ACCELERATION_STRUCTURE_VERTEX_BUFFER: Self = Self(0x20000000);
+    /// Added by extension VK_EXT_fragment_density_map.
+    pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_KHR_fragment_shading_rate.
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x40000000);
+}
+impl default::Default for FormatFeatureFlags2KHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl FormatFeatureFlags2KHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x3e1ffffff)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x3e1ffffff
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for FormatFeatureFlags2KHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for FormatFeatureFlags2KHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for FormatFeatureFlags2KHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for FormatFeatureFlags2KHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for FormatFeatureFlags2KHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for FormatFeatureFlags2KHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for FormatFeatureFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "SAMPLED_IMAGE"),
+                (0x2, "STORAGE_IMAGE"),
+                (0x4, "STORAGE_IMAGE_ATOMIC"),
+                (0x8, "UNIFORM_TEXEL_BUFFER"),
+                (0x10, "STORAGE_TEXEL_BUFFER"),
+                (0x20, "STORAGE_TEXEL_BUFFER_ATOMIC"),
+                (0x40, "VERTEX_BUFFER"),
+                (0x80, "COLOR_ATTACHMENT"),
+                (0x100, "COLOR_ATTACHMENT_BLEND"),
+                (0x200, "DEPTH_STENCIL_ATTACHMENT"),
+                (0x400, "BLIT_SRC"),
+                (0x800, "BLIT_DST"),
+                (0x1000, "SAMPLED_IMAGE_FILTER_LINEAR"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_EXT"),
+                (0x4000, "TRANSFER_SRC"),
+                (0x8000, "TRANSFER_DST"),
+                (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX"),
+                (0x20000, "MIDPOINT_CHROMA_SAMPLES"),
+                (0x40000, "SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER"),
+                (0x80000, "SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER"),
+                (
+                    0x100000,
+                    "SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT",
+                ),
+                (
+                    0x200000,
+                    "SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE",
+                ),
+                (0x400000, "DISJOINT"),
+                (0x800000, "COSITED_CHROMA_SAMPLES"),
+                (0x80000000, "STORAGE_READ_WITHOUT_FORMAT"),
+                (0x100000000, "STORAGE_WRITE_WITHOUT_FORMAT"),
+                (0x200000000, "SAMPLED_IMAGE_DEPTH_COMPARISON"),
+                (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER"),
+                (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
+                (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
@@ -13484,6 +13626,8 @@ impl StructureType {
     pub const MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID: Self = Self(1000129004);
     /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
     pub const EXTERNAL_FORMAT_ANDROID: Self = Self(1000129005);
+    /// Added by extension VK_ANDROID_external_memory_android_hardware_buffer.
+    pub const ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID: Self = Self(1000129006);
     pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self =
         Self::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES;
     pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = Self::SAMPLER_REDUCTION_MODE_CREATE_INFO;
@@ -13587,6 +13731,8 @@ impl StructureType {
     pub const IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT: Self = Self(1000158004);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT: Self = Self(1000158005);
+    /// Added by extension VK_EXT_image_drm_format_modifier.
+    pub const DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT: Self = Self(1000158006);
     /// Added by extension VK_EXT_validation_cache.
     pub const VALIDATION_CACHE_CREATE_INFO_EXT: Self = Self(1000160000);
     /// Added by extension VK_EXT_validation_cache.
@@ -13998,6 +14144,8 @@ impl StructureType {
     pub const IMAGE_RESOLVE_2_KHR: Self = Self(1000337010);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
+    /// Added by extension VK_EXT_rgba10x6_formats.
+    pub const PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT: Self = Self(1000344000);
     /// Added by extension VK_EXT_directfb_surface.
     pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
@@ -14014,6 +14162,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DRM_PROPERTIES_EXT: Self = Self(1000353000);
     /// Added by extension VK_EXT_primitive_topology_list_restart.
     pub const PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT: Self = Self(1000356000);
+    /// Added by extension VK_KHR_format_feature_flags2.
+    pub const FORMAT_PROPERTIES_3_KHR: Self = Self(1000360000);
     /// Added by extension VK_FUCHSIA_external_memory.
     pub const IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA: Self = Self(1000364000);
     /// Added by extension VK_FUCHSIA_external_memory.
@@ -14072,6 +14222,14 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
     /// Added by extension VK_EXT_pageable_device_local_memory.
     pub const PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT: Self = Self(1000412000);
+    /// Added by extension VK_KHR_maintenance4.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES_KHR: Self = Self(1000413000);
+    /// Added by extension VK_KHR_maintenance4.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR: Self = Self(1000413001);
+    /// Added by extension VK_KHR_maintenance4.
+    pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR: Self = Self(1000413002);
+    /// Added by extension VK_KHR_maintenance4.
+    pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR: Self = Self(1000413003);
 }
 impl default::Default for StructureType {
     fn default() -> Self {
@@ -14358,6 +14516,7 @@ impl fmt::Display for StructureType {
             1000129003 => Some(&"IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
             1000129004 => Some(&"MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
             1000129005 => Some(&"EXTERNAL_FORMAT_ANDROID"),
+            1000129006 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID"),
             1000138000 => Some(&"PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT"),
             1000138001 => Some(&"PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT"),
             1000138002 => Some(&"WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT"),
@@ -14400,6 +14559,7 @@ impl fmt::Display for StructureType {
             1000158003 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT"),
             1000158004 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT"),
             1000158005 => Some(&"IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT"),
+            1000158006 => Some(&"DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT"),
             1000160000 => Some(&"VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000160001 => Some(&"SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT"),
             1000163000 => Some(&"PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR"),
@@ -14580,6 +14740,7 @@ impl fmt::Display for StructureType {
             1000337009 => Some(&"BUFFER_IMAGE_COPY_2_KHR"),
             1000337010 => Some(&"IMAGE_RESOLVE_2_KHR"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
+            1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
@@ -14588,6 +14749,7 @@ impl fmt::Display for StructureType {
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
             1000353000 => Some(&"PHYSICAL_DEVICE_DRM_PROPERTIES_EXT"),
             1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
+            1000360000 => Some(&"FORMAT_PROPERTIES_3_KHR"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
             1000364001 => Some(&"MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA"),
             1000364002 => Some(&"MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA"),
@@ -14617,6 +14779,10 @@ impl fmt::Display for StructureType {
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
+            1000413000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES_KHR"),
+            1000413001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR"),
+            1000413002 => Some(&"DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR"),
+            1000413003 => Some(&"DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -27444,6 +27610,33 @@ impl fmt::Debug for BufferMemoryRequirementsInfo2 {
 pub type BufferMemoryRequirementsInfo2KHR = BufferMemoryRequirementsInfo2;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct DeviceBufferMemoryRequirementsKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_create_info: *const BufferCreateInfo,
+}
+unsafe impl Send for DeviceBufferMemoryRequirementsKHR {}
+unsafe impl Sync for DeviceBufferMemoryRequirementsKHR {}
+impl default::Default for DeviceBufferMemoryRequirementsKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR,
+            p_next: ptr::null(),
+            p_create_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DeviceBufferMemoryRequirementsKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceBufferMemoryRequirementsKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_create_info", &self.p_create_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct ImageMemoryRequirementsInfo2 {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -27498,6 +27691,36 @@ impl fmt::Debug for ImageSparseMemoryRequirementsInfo2 {
     }
 }
 pub type ImageSparseMemoryRequirementsInfo2KHR = ImageSparseMemoryRequirementsInfo2;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceImageMemoryRequirementsKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_create_info: *const ImageCreateInfo,
+    pub plane_aspect: ImageAspectFlags,
+}
+unsafe impl Send for DeviceImageMemoryRequirementsKHR {}
+unsafe impl Sync for DeviceImageMemoryRequirementsKHR {}
+impl default::Default for DeviceImageMemoryRequirementsKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR,
+            p_next: ptr::null(),
+            p_create_info: ptr::null(),
+            plane_aspect: ImageAspectFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceImageMemoryRequirementsKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceImageMemoryRequirementsKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_create_info", &self.p_create_info)
+            .field("plane_aspect", &self.plane_aspect)
+            .finish()
+    }
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct MemoryRequirements2 {
@@ -28872,6 +29095,60 @@ impl fmt::Debug for PhysicalDeviceMaintenance3Properties {
     }
 }
 pub type PhysicalDeviceMaintenance3PropertiesKHR = PhysicalDeviceMaintenance3Properties;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance4FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance4: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance4FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance4FeaturesKHR {}
+impl default::Default for PhysicalDeviceMaintenance4FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance4: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance4FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance4FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance4", &self.maintenance4)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance4PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_buffer_size: DeviceSize,
+}
+unsafe impl Send for PhysicalDeviceMaintenance4PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance4PropertiesKHR {}
+impl default::Default for PhysicalDeviceMaintenance4PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            max_buffer_size: DeviceSize::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance4PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance4PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_buffer_size", &self.max_buffer_size)
+            .finish()
+    }
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DescriptorSetLayoutSupport {
@@ -41195,6 +41472,181 @@ impl fmt::Debug for BufferCollectionConstraintsInfoFUCHSIA {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format_rgba10x6_without_y_cb_cr_sampler: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
+impl default::Default for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            format_rgba10x6_without_y_cb_cr_sampler: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRGBA10X6FormatsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "format_rgba10x6_without_y_cb_cr_sampler",
+                &self.format_rgba10x6_without_y_cb_cr_sampler,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FormatProperties3KHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub linear_tiling_features: FormatFeatureFlags2KHR,
+    pub optimal_tiling_features: FormatFeatureFlags2KHR,
+    pub buffer_features: FormatFeatureFlags2KHR,
+}
+unsafe impl Send for FormatProperties3KHR {}
+unsafe impl Sync for FormatProperties3KHR {}
+impl default::Default for FormatProperties3KHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::FORMAT_PROPERTIES_3_KHR,
+            p_next: ptr::null_mut(),
+            linear_tiling_features: FormatFeatureFlags2KHR::default(),
+            optimal_tiling_features: FormatFeatureFlags2KHR::default(),
+            buffer_features: FormatFeatureFlags2KHR::default(),
+        }
+    }
+}
+impl fmt::Debug for FormatProperties3KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FormatProperties3KHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("linear_tiling_features", &self.linear_tiling_features)
+            .field("optimal_tiling_features", &self.optimal_tiling_features)
+            .field("buffer_features", &self.buffer_features)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DrmFormatModifierPropertiesList2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub drm_format_modifier_count: u32,
+    pub p_drm_format_modifier_properties: *mut DrmFormatModifierProperties2EXT,
+}
+unsafe impl Send for DrmFormatModifierPropertiesList2EXT {}
+unsafe impl Sync for DrmFormatModifierPropertiesList2EXT {}
+impl default::Default for DrmFormatModifierPropertiesList2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT,
+            p_next: ptr::null_mut(),
+            drm_format_modifier_count: u32::default(),
+            p_drm_format_modifier_properties: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DrmFormatModifierPropertiesList2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrmFormatModifierPropertiesList2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("drm_format_modifier_count", &self.drm_format_modifier_count)
+            .field(
+                "p_drm_format_modifier_properties",
+                &self.p_drm_format_modifier_properties,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+pub struct DrmFormatModifierProperties2EXT {
+    pub drm_format_modifier: u64,
+    pub drm_format_modifier_plane_count: u32,
+    pub drm_format_modifier_tiling_features: FormatFeatureFlags2KHR,
+}
+impl default::Default for DrmFormatModifierProperties2EXT {
+    fn default() -> Self {
+        Self {
+            drm_format_modifier: u64::default(),
+            drm_format_modifier_plane_count: u32::default(),
+            drm_format_modifier_tiling_features: FormatFeatureFlags2KHR::default(),
+        }
+    }
+}
+impl fmt::Debug for DrmFormatModifierProperties2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrmFormatModifierProperties2EXT")
+            .field("drm_format_modifier", &self.drm_format_modifier)
+            .field("drm_format_modifier_plane_count", &self.drm_format_modifier_plane_count)
+            .field(
+                "drm_format_modifier_tiling_features",
+                &self.drm_format_modifier_tiling_features,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AndroidHardwareBufferFormatProperties2ANDROID {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub format: Format,
+    pub external_format: u64,
+    pub format_features: FormatFeatureFlags2KHR,
+    pub sampler_ycbcr_conversion_components: ComponentMapping,
+    pub suggested_ycbcr_model: SamplerYcbcrModelConversion,
+    pub suggested_ycbcr_range: SamplerYcbcrRange,
+    pub suggested_x_chroma_offset: ChromaLocation,
+    pub suggested_y_chroma_offset: ChromaLocation,
+}
+unsafe impl Send for AndroidHardwareBufferFormatProperties2ANDROID {}
+unsafe impl Sync for AndroidHardwareBufferFormatProperties2ANDROID {}
+impl default::Default for AndroidHardwareBufferFormatProperties2ANDROID {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID,
+            p_next: ptr::null_mut(),
+            format: Format::default(),
+            external_format: u64::default(),
+            format_features: FormatFeatureFlags2KHR::default(),
+            sampler_ycbcr_conversion_components: ComponentMapping::default(),
+            suggested_ycbcr_model: SamplerYcbcrModelConversion::default(),
+            suggested_ycbcr_range: SamplerYcbcrRange::default(),
+            suggested_x_chroma_offset: ChromaLocation::default(),
+            suggested_y_chroma_offset: ChromaLocation::default(),
+        }
+    }
+}
+impl fmt::Debug for AndroidHardwareBufferFormatProperties2ANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AndroidHardwareBufferFormatProperties2ANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format", &self.format)
+            .field("external_format", &self.external_format)
+            .field("format_features", &self.format_features)
+            .field(
+                "sampler_ycbcr_conversion_components",
+                &self.sampler_ycbcr_conversion_components,
+            )
+            .field("suggested_ycbcr_model", &self.suggested_ycbcr_model)
+            .field("suggested_ycbcr_range", &self.suggested_ycbcr_range)
+            .field("suggested_x_chroma_offset", &self.suggested_x_chroma_offset)
+            .field("suggested_y_chroma_offset", &self.suggested_y_chroma_offset)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -42554,6 +43006,22 @@ pub type FnGetImageMemoryRequirements2 = unsafe extern "system" fn(
 pub type FnGetImageSparseMemoryRequirements2 = unsafe extern "system" fn(
     device: Option<Device>,
     p_info: *const ImageSparseMemoryRequirementsInfo2,
+    p_sparse_memory_requirement_count: *mut u32,
+    p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
+);
+pub type FnGetDeviceBufferMemoryRequirementsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const DeviceBufferMemoryRequirementsKHR,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnGetDeviceImageMemoryRequirementsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const DeviceImageMemoryRequirementsKHR,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnGetDeviceImageSparseMemoryRequirementsKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const DeviceImageMemoryRequirementsKHR,
     p_sparse_memory_requirement_count: *mut u32,
     p_sparse_memory_requirements: *mut SparseImageMemoryRequirements2,
 );

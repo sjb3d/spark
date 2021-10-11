@@ -7457,6 +7457,37 @@ impl Deref for BufferMemoryRequirementsInfo2Builder {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::DeviceBufferMemoryRequirementsKHR {
+    type Type = DeviceBufferMemoryRequirementsKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceBufferMemoryRequirementsKHRBuilder<'a> {
+    inner: vk::DeviceBufferMemoryRequirementsKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DeviceBufferMemoryRequirementsKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_create_info(mut self, p_create_info: &'a vk::BufferCreateInfo) -> Self {
+        self.inner.p_create_info = p_create_info;
+        self
+    }
+}
+impl<'a> Deref for DeviceBufferMemoryRequirementsKHRBuilder<'a> {
+    type Target = vk::DeviceBufferMemoryRequirementsKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::ImageMemoryRequirementsInfo2 {
     type Type = ImageMemoryRequirementsInfo2Builder<'a>;
     fn builder() -> Self::Type {
@@ -7521,6 +7552,41 @@ impl ImageSparseMemoryRequirementsInfo2Builder {
 }
 impl Deref for ImageSparseMemoryRequirementsInfo2Builder {
     type Target = vk::ImageSparseMemoryRequirementsInfo2;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DeviceImageMemoryRequirementsKHR {
+    type Type = DeviceImageMemoryRequirementsKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceImageMemoryRequirementsKHRBuilder<'a> {
+    inner: vk::DeviceImageMemoryRequirementsKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DeviceImageMemoryRequirementsKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_create_info(mut self, p_create_info: &'a vk::ImageCreateInfo) -> Self {
+        self.inner.p_create_info = p_create_info;
+        self
+    }
+    pub fn plane_aspect(mut self, plane_aspect: vk::ImageAspectFlags) -> Self {
+        self.inner.plane_aspect = plane_aspect;
+        self
+    }
+}
+impl<'a> Deref for DeviceImageMemoryRequirementsKHRBuilder<'a> {
+    type Target = vk::DeviceImageMemoryRequirementsKHR;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -8595,6 +8661,41 @@ impl Deref for ShaderModuleValidationCacheCreateInfoEXTBuilder {
 impl ShaderModuleCreateInfoNext for ShaderModuleValidationCacheCreateInfoEXTBuilder {}
 impl ShaderModuleCreateInfoNext for vk::ShaderModuleValidationCacheCreateInfoEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance3Properties {}
+impl Builder<'_> for vk::PhysicalDeviceMaintenance4FeaturesKHR {
+    type Type = PhysicalDeviceMaintenance4FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMaintenance4FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceMaintenance4FeaturesKHR,
+}
+impl PhysicalDeviceMaintenance4FeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn maintenance4(mut self, maintenance4: bool) -> Self {
+        self.inner.maintenance4 = if maintenance4 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMaintenance4FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceMaintenance4FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMaintenance4FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMaintenance4FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMaintenance4FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMaintenance4FeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance4PropertiesKHR {}
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutSupport {
     type Type = DescriptorSetLayoutSupportBuilder<'a>;
     fn builder() -> Self::Type {
@@ -19754,3 +19855,44 @@ impl Deref for BufferCollectionConstraintsInfoFUCHSIABuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
+    type Type = PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT,
+}
+impl PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn format_rgba10x6_without_y_cb_cr_sampler(mut self, format_rgba10x6_without_y_cb_cr_sampler: bool) -> Self {
+        self.inner.format_rgba10x6_without_y_cb_cr_sampler = if format_rgba10x6_without_y_cb_cr_sampler {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
+impl FormatProperties2Next for vk::FormatProperties3KHR {}
+impl FormatProperties2Next for vk::DrmFormatModifierPropertiesList2EXT {}
+impl AndroidHardwareBufferPropertiesANDROIDNext for vk::AndroidHardwareBufferFormatProperties2ANDROID {}

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 194
+//! Generated from vk.xml with `VK_HEADER_VERSION` 195
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1292,6 +1292,12 @@ impl InstanceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_rgba10x6_formats(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_rgba10x6_formats(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_nv_acquire_winrt_display(&self) -> bool {
         self.supports_ext_direct_mode_display() && self.supports_khr_display() && self.supports_khr_surface()
     }
@@ -1323,6 +1329,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_format_feature_flags2(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_format_feature_flags2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
@@ -3960,11 +3972,13 @@ pub struct DeviceExtensions {
     pub khr_workgroup_memory_explicit_layout: bool,
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
+    pub ext_rgba10x6_formats: bool,
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
     pub ext_vertex_input_dynamic_state: bool,
     pub ext_physical_device_drm: bool,
     pub ext_primitive_topology_list_restart: bool,
+    pub khr_format_feature_flags2: bool,
     pub fuchsia_external_memory: bool,
     pub fuchsia_external_semaphore: bool,
     pub fuchsia_buffer_collection: bool,
@@ -3977,6 +3991,7 @@ pub struct DeviceExtensions {
     pub ext_multi_draw: bool,
     pub ext_load_store_op_none: bool,
     pub ext_pageable_device_local_memory: bool,
+    pub khr_maintenance4: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4184,11 +4199,13 @@ impl DeviceExtensions {
             b"VK_KHR_workgroup_memory_explicit_layout" => self.khr_workgroup_memory_explicit_layout = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
+            b"VK_EXT_rgba10x6_formats" => self.ext_rgba10x6_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_EXT_physical_device_drm" => self.ext_physical_device_drm = true,
             b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
+            b"VK_KHR_format_feature_flags2" => self.khr_format_feature_flags2 = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
             b"VK_FUCHSIA_external_semaphore" => self.fuchsia_external_semaphore = true,
             b"VK_FUCHSIA_buffer_collection" => self.fuchsia_buffer_collection = true,
@@ -4201,6 +4218,7 @@ impl DeviceExtensions {
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
+            b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             _ => {}
         }
     }
@@ -4408,11 +4426,13 @@ impl DeviceExtensions {
             khr_workgroup_memory_explicit_layout: false,
             khr_copy_commands2: false,
             ext_4444_formats: false,
+            ext_rgba10x6_formats: false,
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
             ext_vertex_input_dynamic_state: false,
             ext_physical_device_drm: false,
             ext_primitive_topology_list_restart: false,
+            khr_format_feature_flags2: false,
             fuchsia_external_memory: false,
             fuchsia_external_semaphore: false,
             fuchsia_buffer_collection: false,
@@ -4425,6 +4445,7 @@ impl DeviceExtensions {
             ext_multi_draw: false,
             ext_load_store_op_none: false,
             ext_pageable_device_local_memory: false,
+            khr_maintenance4: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -5927,6 +5948,20 @@ impl DeviceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.ext_4444_formats = true;
     }
+    pub fn supports_ext_rgba10x6_formats(&self) -> bool {
+        self.ext_rgba10x6_formats
+            && self.supports_khr_sampler_ycbcr_conversion()
+            && self.supports_khr_maintenance1()
+            && self.supports_khr_bind_memory2()
+            && self.supports_khr_get_memory_requirements2()
+    }
+    pub fn enable_ext_rgba10x6_formats(&mut self) {
+        self.ext_rgba10x6_formats = true;
+        self.enable_khr_sampler_ycbcr_conversion();
+        self.enable_khr_maintenance1();
+        self.enable_khr_bind_memory2();
+        self.enable_khr_get_memory_requirements2();
+    }
     pub fn supports_nv_acquire_winrt_display(&self) -> bool {
         self.nv_acquire_winrt_display
     }
@@ -5957,6 +5992,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_primitive_topology_list_restart(&mut self) {
         self.ext_primitive_topology_list_restart = true;
+    }
+    pub fn supports_khr_format_feature_flags2(&self) -> bool {
+        self.khr_format_feature_flags2
+    }
+    pub fn enable_khr_format_feature_flags2(&mut self) {
+        self.khr_format_feature_flags2 = true;
     }
     pub fn supports_fuchsia_external_memory(&self) -> bool {
         self.fuchsia_external_memory && self.supports_khr_external_memory()
@@ -6072,6 +6113,12 @@ impl DeviceExtensions {
     pub fn enable_ext_pageable_device_local_memory(&mut self) {
         self.ext_pageable_device_local_memory = true;
         self.enable_ext_memory_priority();
+    }
+    pub fn supports_khr_maintenance4(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.khr_maintenance4
+    }
+    pub fn enable_khr_maintenance4(&mut self) {
+        self.khr_maintenance4 = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6680,6 +6727,9 @@ impl DeviceExtensions {
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
+        if self.ext_rgba10x6_formats {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_rgba10x6_formats\0") })
+        }
         if self.nv_acquire_winrt_display {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_acquire_winrt_display\0") })
         }
@@ -6694,6 +6744,9 @@ impl DeviceExtensions {
         }
         if self.ext_primitive_topology_list_restart {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_primitive_topology_list_restart\0") })
+        }
+        if self.khr_format_feature_flags2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_format_feature_flags2\0") })
         }
         if self.fuchsia_external_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_FUCHSIA_external_memory\0") })
@@ -6730,6 +6783,9 @@ impl DeviceExtensions {
         }
         if self.ext_pageable_device_local_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pageable_device_local_memory\0") })
+        }
+        if self.khr_maintenance4 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance4\0") })
         }
         v
     }
@@ -6933,6 +6989,9 @@ pub struct Device {
     pub fp_get_buffer_memory_requirements2: Option<vk::FnGetBufferMemoryRequirements2>,
     pub fp_get_image_memory_requirements2: Option<vk::FnGetImageMemoryRequirements2>,
     pub fp_get_image_sparse_memory_requirements2: Option<vk::FnGetImageSparseMemoryRequirements2>,
+    pub fp_get_device_buffer_memory_requirements_khr: Option<vk::FnGetDeviceBufferMemoryRequirementsKHR>,
+    pub fp_get_device_image_memory_requirements_khr: Option<vk::FnGetDeviceImageMemoryRequirementsKHR>,
+    pub fp_get_device_image_sparse_memory_requirements_khr: Option<vk::FnGetDeviceImageSparseMemoryRequirementsKHR>,
     pub fp_create_sampler_ycbcr_conversion: Option<vk::FnCreateSamplerYcbcrConversion>,
     pub fp_destroy_sampler_ycbcr_conversion: Option<vk::FnDestroySamplerYcbcrConversion>,
     pub fp_get_device_queue2: Option<vk::FnGetDeviceQueue2>,
@@ -8575,6 +8634,30 @@ impl Device {
             } else if extensions.khr_get_memory_requirements2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetImageSparseMemoryRequirements2KHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_buffer_memory_requirements_khr: if extensions.khr_maintenance4 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceBufferMemoryRequirementsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_image_memory_requirements_khr: if extensions.khr_maintenance4 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceImageMemoryRequirementsKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_image_sparse_memory_requirements_khr: if extensions.khr_maintenance4 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceImageSparseMemoryRequirementsKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -12958,6 +13041,41 @@ impl Device {
         let fp = self
             .fp_get_image_sparse_memory_requirements2
             .expect("vkGetImageSparseMemoryRequirements2 is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_info, len.as_mut_ptr(), ptr::null_mut());
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        (fp)(Some(self.handle), p_info, &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        v
+    }
+    pub unsafe fn get_device_buffer_memory_requirements_khr(
+        &self,
+        p_info: &vk::DeviceBufferMemoryRequirementsKHR,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_device_buffer_memory_requirements_khr
+            .expect("vkGetDeviceBufferMemoryRequirementsKHR is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn get_device_image_memory_requirements_khr(
+        &self,
+        p_info: &vk::DeviceImageMemoryRequirementsKHR,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_device_image_memory_requirements_khr
+            .expect("vkGetDeviceImageMemoryRequirementsKHR is not loaded");
+        (fp)(Some(self.handle), p_info, p_memory_requirements);
+    }
+    pub unsafe fn get_device_image_sparse_memory_requirements_khr_to_vec(
+        &self,
+        p_info: &vk::DeviceImageMemoryRequirementsKHR,
+    ) -> Vec<vk::SparseImageMemoryRequirements2> {
+        let fp = self
+            .fp_get_device_image_sparse_memory_requirements_khr
+            .expect("vkGetDeviceImageSparseMemoryRequirementsKHR is not loaded");
         let mut len = MaybeUninit::<_>::uninit();
         (fp)(Some(self.handle), p_info, len.as_mut_ptr(), ptr::null_mut());
         let mut len = len.assume_init();
