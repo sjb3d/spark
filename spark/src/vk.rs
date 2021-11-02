@@ -2694,6 +2694,10 @@ impl PipelineCreateFlags {
     pub const DERIVATIVE: Self = Self(0x4);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     pub const DISPATCH_BASE: Self = Self(0x10);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x200000);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_KHR_ray_tracing_pipeline.
@@ -2737,13 +2741,13 @@ impl PipelineCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x1ffbff)
+        Self(0x7ffbff)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x1ffbff
+        self.0 == 0x7ffbff
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -2795,6 +2799,14 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4, "DERIVATIVE"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
+                (
+                    0x200000,
+                    "RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR",
+                ),
+                (
+                    0x400000,
+                    "RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT",
+                ),
                 (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR"),
                 (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR"),
                 (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS_KHR"),
@@ -6805,6 +6817,85 @@ impl fmt::Display for FormatFeatureFlags2KHR {
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct RenderingFlagsKHR(u32);
+impl RenderingFlagsKHR {
+    pub const CONTENTS_SECONDARY_COMMAND_BUFFERS: Self = Self(0x1);
+    pub const SUSPENDING: Self = Self(0x2);
+    pub const RESUMING: Self = Self(0x4);
+}
+impl default::Default for RenderingFlagsKHR {
+    fn default() -> Self {
+        Self(0)
+    }
+}
+impl RenderingFlagsKHR {
+    pub fn empty() -> Self {
+        Self(0)
+    }
+    pub fn all() -> Self {
+        Self(0x7)
+    }
+    pub fn is_empty(self) -> bool {
+        self.0 == 0
+    }
+    pub fn is_all(self) -> bool {
+        self.0 == 0x7
+    }
+    pub fn intersects(self, other: Self) -> bool {
+        (self.0 & other.0) != 0
+    }
+    pub fn contains(self, other: Self) -> bool {
+        (self.0 & other.0) == other.0
+    }
+}
+impl ops::BitOr for RenderingFlagsKHR {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self {
+        Self(self.0 | rhs.0)
+    }
+}
+impl ops::BitOrAssign for RenderingFlagsKHR {
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0 |= rhs.0;
+    }
+}
+impl ops::BitAnd for RenderingFlagsKHR {
+    type Output = Self;
+    fn bitand(self, rhs: Self) -> Self {
+        Self(self.0 & rhs.0)
+    }
+}
+impl ops::BitAndAssign for RenderingFlagsKHR {
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0 &= rhs.0;
+    }
+}
+impl ops::BitXor for RenderingFlagsKHR {
+    type Output = Self;
+    fn bitxor(self, rhs: Self) -> Self {
+        Self(self.0 ^ rhs.0)
+    }
+}
+impl ops::BitXorAssign for RenderingFlagsKHR {
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0 ^= rhs.0;
+    }
+}
+impl fmt::Display for RenderingFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "CONTENTS_SECONDARY_COMMAND_BUFFERS"),
+                (0x2, "SUSPENDING"),
+                (0x4, "RESUMING"),
             ],
             f,
         )
@@ -11279,9 +11370,10 @@ pub struct AttachmentStoreOp(i32);
 impl AttachmentStoreOp {
     pub const STORE: Self = Self(0);
     pub const DONT_CARE: Self = Self(1);
-    pub const NONE_QCOM: Self = Self::NONE_EXT;
-    /// Added by extension VK_EXT_load_store_op_none.
-    pub const NONE_EXT: Self = Self(1000301000);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const NONE_KHR: Self = Self(1000301000);
+    pub const NONE_QCOM: Self = Self::NONE_KHR;
+    pub const NONE_EXT: Self = Self::NONE_KHR;
 }
 impl default::Default for AttachmentStoreOp {
     fn default() -> Self {
@@ -11293,7 +11385,7 @@ impl fmt::Display for AttachmentStoreOp {
         let name = match self.0 {
             0 => Some(&"STORE"),
             1 => Some(&"DONT_CARE"),
-            1000301000 => Some(&"NONE_EXT"),
+            1000301000 => Some(&"NONE_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13402,6 +13494,25 @@ impl StructureType {
     pub const IMAGE_VIEW_ADDRESS_PROPERTIES_NVX: Self = Self(1000030001);
     /// Added by extension VK_AMD_texture_gather_bias_lod.
     pub const TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD: Self = Self(1000041000);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RENDERING_INFO_KHR: Self = Self(1000044000);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RENDERING_ATTACHMENT_INFO_KHR: Self = Self(1000044001);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const PIPELINE_RENDERING_CREATE_INFO_KHR: Self = Self(1000044002);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR: Self = Self(1000044003);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR: Self = Self(1000044004);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR: Self = Self(1000044006);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT: Self = Self(1000044007);
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const ATTACHMENT_SAMPLE_COUNT_INFO_AMD: Self = Self(1000044008);
+    pub const ATTACHMENT_SAMPLE_COUNT_INFO_NV: Self = Self::ATTACHMENT_SAMPLE_COUNT_INFO_AMD;
+    /// Added by extension VK_KHR_dynamic_rendering.
+    pub const MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX: Self = Self(1000044009);
     /// Added by extension VK_NV_corner_sampled_image.
     pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = Self(1000050000);
     pub const RENDER_PASS_MULTIVIEW_CREATE_INFO_KHR: Self = Self::RENDER_PASS_MULTIVIEW_CREATE_INFO;
@@ -14220,6 +14331,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT: Self = Self(1000392000);
     /// Added by extension VK_EXT_multi_draw.
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
+    /// Added by extension VK_EXT_border_color_swizzle.
+    pub const PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT: Self = Self(1000411000);
+    /// Added by extension VK_EXT_border_color_swizzle.
+    pub const SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT: Self = Self(1000411001);
     /// Added by extension VK_EXT_pageable_device_local_memory.
     pub const PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT: Self = Self(1000412000);
     /// Added by extension VK_KHR_maintenance4.
@@ -14436,6 +14551,15 @@ impl fmt::Display for StructureType {
             1000030000 => Some(&"IMAGE_VIEW_HANDLE_INFO_NVX"),
             1000030001 => Some(&"IMAGE_VIEW_ADDRESS_PROPERTIES_NVX"),
             1000041000 => Some(&"TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD"),
+            1000044000 => Some(&"RENDERING_INFO_KHR"),
+            1000044001 => Some(&"RENDERING_ATTACHMENT_INFO_KHR"),
+            1000044002 => Some(&"PIPELINE_RENDERING_CREATE_INFO_KHR"),
+            1000044003 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR"),
+            1000044004 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR"),
+            1000044006 => Some(&"RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR"),
+            1000044007 => Some(&"RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT"),
+            1000044008 => Some(&"ATTACHMENT_SAMPLE_COUNT_INFO_AMD"),
+            1000044009 => Some(&"MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX"),
             1000050000 => Some(&"PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV"),
             1000056000 => Some(&"EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV"),
             1000056001 => Some(&"EXPORT_MEMORY_ALLOCATE_INFO_NV"),
@@ -14778,6 +14902,8 @@ impl fmt::Display for StructureType {
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
+            1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
+            1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
             1000413000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES_KHR"),
             1000413001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR"),
@@ -37457,6 +37583,66 @@ impl fmt::Debug for PhysicalDeviceCustomBorderColorFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SamplerBorderColorComponentMappingCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub components: ComponentMapping,
+    pub srgb: Bool32,
+}
+unsafe impl Send for SamplerBorderColorComponentMappingCreateInfoEXT {}
+unsafe impl Sync for SamplerBorderColorComponentMappingCreateInfoEXT {}
+impl default::Default for SamplerBorderColorComponentMappingCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            components: ComponentMapping::default(),
+            srgb: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerBorderColorComponentMappingCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerBorderColorComponentMappingCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("components", &self.components)
+            .field("srgb", &self.srgb)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceBorderColorSwizzleFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub border_color_swizzle: Bool32,
+    pub border_color_swizzle_from_image: Bool32,
+}
+unsafe impl Send for PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
+impl default::Default for PhysicalDeviceBorderColorSwizzleFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            border_color_swizzle: Bool32::default(),
+            border_color_swizzle_from_image: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceBorderColorSwizzleFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceBorderColorSwizzleFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("border_color_swizzle", &self.border_color_swizzle)
+            .field("border_color_swizzle_from_image", &self.border_color_swizzle_from_image)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub union DeviceOrHostAddressKHR {
     pub device_address: DeviceAddress,
     pub host_address: *mut c_void,
@@ -41647,6 +41833,349 @@ impl fmt::Debug for AndroidHardwareBufferFormatProperties2ANDROID {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRenderingCreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub view_mask: u32,
+    pub color_attachment_count: u32,
+    pub p_color_attachment_formats: *const Format,
+    pub depth_attachment_format: Format,
+    pub stencil_attachment_format: Format,
+}
+unsafe impl Send for PipelineRenderingCreateInfoKHR {}
+unsafe impl Sync for PipelineRenderingCreateInfoKHR {}
+impl default::Default for PipelineRenderingCreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_RENDERING_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            view_mask: u32::default(),
+            color_attachment_count: u32::default(),
+            p_color_attachment_formats: ptr::null(),
+            depth_attachment_format: Format::default(),
+            stencil_attachment_format: Format::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRenderingCreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRenderingCreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("view_mask", &self.view_mask)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachment_formats", &self.p_color_attachment_formats)
+            .field("depth_attachment_format", &self.depth_attachment_format)
+            .field("stencil_attachment_format", &self.stencil_attachment_format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderingInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: RenderingFlagsKHR,
+    pub render_area: Rect2D,
+    pub layer_count: u32,
+    pub view_mask: u32,
+    pub color_attachment_count: u32,
+    pub p_color_attachments: *const RenderingAttachmentInfoKHR,
+    pub p_depth_attachment: *const RenderingAttachmentInfoKHR,
+    pub p_stencil_attachment: *const RenderingAttachmentInfoKHR,
+}
+unsafe impl Send for RenderingInfoKHR {}
+unsafe impl Sync for RenderingInfoKHR {}
+impl default::Default for RenderingInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_INFO_KHR,
+            p_next: ptr::null(),
+            flags: RenderingFlagsKHR::default(),
+            render_area: Rect2D::default(),
+            layer_count: u32::default(),
+            view_mask: u32::default(),
+            color_attachment_count: u32::default(),
+            p_color_attachments: ptr::null(),
+            p_depth_attachment: ptr::null(),
+            p_stencil_attachment: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for RenderingInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("render_area", &self.render_area)
+            .field("layer_count", &self.layer_count)
+            .field("view_mask", &self.view_mask)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachments", &self.p_color_attachments)
+            .field("p_depth_attachment", &self.p_depth_attachment)
+            .field("p_stencil_attachment", &self.p_stencil_attachment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderingAttachmentInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_view: Option<ImageView>,
+    pub image_layout: ImageLayout,
+    pub resolve_mode: ResolveModeFlags,
+    pub resolve_image_view: Option<ImageView>,
+    pub resolve_image_layout: ImageLayout,
+    pub load_op: AttachmentLoadOp,
+    pub store_op: AttachmentStoreOp,
+    pub clear_value: ClearValue,
+}
+unsafe impl Send for RenderingAttachmentInfoKHR {}
+unsafe impl Sync for RenderingAttachmentInfoKHR {}
+impl default::Default for RenderingAttachmentInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_ATTACHMENT_INFO_KHR,
+            p_next: ptr::null(),
+            image_view: None,
+            image_layout: ImageLayout::default(),
+            resolve_mode: ResolveModeFlags::default(),
+            resolve_image_view: None,
+            resolve_image_layout: ImageLayout::default(),
+            load_op: AttachmentLoadOp::default(),
+            store_op: AttachmentStoreOp::default(),
+            clear_value: ClearValue::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderingAttachmentInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingAttachmentInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view", &self.image_view)
+            .field("image_layout", &self.image_layout)
+            .field("resolve_mode", &self.resolve_mode)
+            .field("resolve_image_view", &self.resolve_image_view)
+            .field("resolve_image_layout", &self.resolve_image_layout)
+            .field("load_op", &self.load_op)
+            .field("store_op", &self.store_op)
+            .field("clear_value", &self.clear_value)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderingFragmentShadingRateAttachmentInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_view: Option<ImageView>,
+    pub image_layout: ImageLayout,
+    pub shading_rate_attachment_texel_size: Extent2D,
+}
+unsafe impl Send for RenderingFragmentShadingRateAttachmentInfoKHR {}
+unsafe impl Sync for RenderingFragmentShadingRateAttachmentInfoKHR {}
+impl default::Default for RenderingFragmentShadingRateAttachmentInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
+            p_next: ptr::null(),
+            image_view: None,
+            image_layout: ImageLayout::default(),
+            shading_rate_attachment_texel_size: Extent2D::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderingFragmentShadingRateAttachmentInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingFragmentShadingRateAttachmentInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view", &self.image_view)
+            .field("image_layout", &self.image_layout)
+            .field(
+                "shading_rate_attachment_texel_size",
+                &self.shading_rate_attachment_texel_size,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderingFragmentDensityMapAttachmentInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_view: Option<ImageView>,
+    pub image_layout: ImageLayout,
+}
+unsafe impl Send for RenderingFragmentDensityMapAttachmentInfoEXT {}
+unsafe impl Sync for RenderingFragmentDensityMapAttachmentInfoEXT {}
+impl default::Default for RenderingFragmentDensityMapAttachmentInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT,
+            p_next: ptr::null(),
+            image_view: None,
+            image_layout: ImageLayout::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderingFragmentDensityMapAttachmentInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingFragmentDensityMapAttachmentInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view", &self.image_view)
+            .field("image_layout", &self.image_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDynamicRenderingFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub dynamic_rendering: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDynamicRenderingFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceDynamicRenderingFeaturesKHR {}
+impl default::Default for PhysicalDeviceDynamicRenderingFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            dynamic_rendering: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDynamicRenderingFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDynamicRenderingFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("dynamic_rendering", &self.dynamic_rendering)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CommandBufferInheritanceRenderingInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: RenderingFlagsKHR,
+    pub view_mask: u32,
+    pub color_attachment_count: u32,
+    pub p_color_attachment_formats: *const Format,
+    pub depth_attachment_format: Format,
+    pub stencil_attachment_format: Format,
+    pub rasterization_samples: SampleCountFlags,
+}
+unsafe impl Send for CommandBufferInheritanceRenderingInfoKHR {}
+unsafe impl Sync for CommandBufferInheritanceRenderingInfoKHR {}
+impl default::Default for CommandBufferInheritanceRenderingInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
+            p_next: ptr::null(),
+            flags: RenderingFlagsKHR::default(),
+            view_mask: u32::default(),
+            color_attachment_count: u32::default(),
+            p_color_attachment_formats: ptr::null(),
+            depth_attachment_format: Format::default(),
+            stencil_attachment_format: Format::default(),
+            rasterization_samples: SampleCountFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for CommandBufferInheritanceRenderingInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CommandBufferInheritanceRenderingInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("view_mask", &self.view_mask)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachment_formats", &self.p_color_attachment_formats)
+            .field("depth_attachment_format", &self.depth_attachment_format)
+            .field("stencil_attachment_format", &self.stencil_attachment_format)
+            .field("rasterization_samples", &self.rasterization_samples)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AttachmentSampleCountInfoAMD {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub color_attachment_count: u32,
+    pub p_color_attachment_samples: *const SampleCountFlags,
+    pub depth_stencil_attachment_samples: SampleCountFlags,
+}
+unsafe impl Send for AttachmentSampleCountInfoAMD {}
+unsafe impl Sync for AttachmentSampleCountInfoAMD {}
+impl default::Default for AttachmentSampleCountInfoAMD {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ATTACHMENT_SAMPLE_COUNT_INFO_AMD,
+            p_next: ptr::null(),
+            color_attachment_count: u32::default(),
+            p_color_attachment_samples: ptr::null(),
+            depth_stencil_attachment_samples: SampleCountFlags::default(),
+        }
+    }
+}
+impl fmt::Debug for AttachmentSampleCountInfoAMD {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AttachmentSampleCountInfoAMD")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachment_samples", &self.p_color_attachment_samples)
+            .field(
+                "depth_stencil_attachment_samples",
+                &self.depth_stencil_attachment_samples,
+            )
+            .finish()
+    }
+}
+pub type AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MultiviewPerViewAttributesInfoNVX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub per_view_attributes: Bool32,
+    pub per_view_attributes_position_x_only: Bool32,
+}
+unsafe impl Send for MultiviewPerViewAttributesInfoNVX {}
+unsafe impl Sync for MultiviewPerViewAttributesInfoNVX {}
+impl default::Default for MultiviewPerViewAttributesInfoNVX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX,
+            p_next: ptr::null(),
+            per_view_attributes: Bool32::default(),
+            per_view_attributes_position_x_only: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for MultiviewPerViewAttributesInfoNVX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MultiviewPerViewAttributesInfoNVX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("per_view_attributes", &self.per_view_attributes)
+            .field(
+                "per_view_attributes_position_x_only",
+                &self.per_view_attributes_position_x_only,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -43864,3 +44393,6 @@ pub type FnGetBufferCollectionPropertiesFUCHSIA = unsafe extern "system" fn(
     collection: Option<BufferCollectionFUCHSIA>,
     p_properties: *mut BufferCollectionPropertiesFUCHSIA,
 ) -> Result;
+pub type FnCmdBeginRenderingKHR =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_rendering_info: *const RenderingInfoKHR);
+pub type FnCmdEndRenderingKHR = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);

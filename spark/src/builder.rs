@@ -2002,8 +2002,8 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         self.inner.layout = Some(layout);
         self
     }
-    pub fn render_pass(mut self, render_pass: vk::RenderPass) -> Self {
-        self.inner.render_pass = Some(render_pass);
+    pub fn render_pass(mut self, render_pass: Option<vk::RenderPass>) -> Self {
+        self.inner.render_pass = render_pass;
         self
     }
     pub fn subpass(mut self, subpass: u32) -> Self {
@@ -6346,7 +6346,9 @@ impl<'a> Deref for DeviceGroupRenderPassBeginInfoBuilder<'a> {
     }
 }
 impl<'a> RenderPassBeginInfoNext for DeviceGroupRenderPassBeginInfoBuilder<'a> {}
+impl<'a> RenderingInfoKHRNext for DeviceGroupRenderPassBeginInfoBuilder<'a> {}
 impl RenderPassBeginInfoNext for vk::DeviceGroupRenderPassBeginInfo {}
+impl RenderingInfoKHRNext for vk::DeviceGroupRenderPassBeginInfo {}
 impl Builder<'_> for vk::DeviceGroupCommandBufferBeginInfo {
     type Type = DeviceGroupCommandBufferBeginInfoBuilder;
     fn builder() -> Self::Type {
@@ -15700,6 +15702,84 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceCustomBorderColorFeaturesEXTB
 impl DeviceCreateInfoNext for PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceCustomBorderColorFeaturesEXT {}
+impl Builder<'_> for vk::SamplerBorderColorComponentMappingCreateInfoEXT {
+    type Type = SamplerBorderColorComponentMappingCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerBorderColorComponentMappingCreateInfoEXTBuilder {
+    inner: vk::SamplerBorderColorComponentMappingCreateInfoEXT,
+}
+impl SamplerBorderColorComponentMappingCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn components(mut self, components: vk::ComponentMapping) -> Self {
+        self.inner.components = components;
+        self
+    }
+    pub fn srgb(mut self, srgb: bool) -> Self {
+        self.inner.srgb = if srgb { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SamplerBorderColorComponentMappingCreateInfoEXTBuilder {
+    type Target = vk::SamplerBorderColorComponentMappingCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SamplerCreateInfoNext for SamplerBorderColorComponentMappingCreateInfoEXTBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerBorderColorComponentMappingCreateInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT {
+    type Type = PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT,
+}
+impl PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn border_color_swizzle(mut self, border_color_swizzle: bool) -> Self {
+        self.inner.border_color_swizzle = if border_color_swizzle { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn border_color_swizzle_from_image(mut self, border_color_swizzle_from_image: bool) -> Self {
+        self.inner.border_color_swizzle_from_image = if border_color_swizzle_from_image {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
 impl<'a> Builder<'a> for vk::AccelerationStructureGeometryTrianglesDataKHR {
     type Type = AccelerationStructureGeometryTrianglesDataKHRBuilder<'a>;
     fn builder() -> Self::Type {
@@ -19896,3 +19976,424 @@ impl DeviceCreateInfoNext for vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
 impl FormatProperties2Next for vk::FormatProperties3KHR {}
 impl FormatProperties2Next for vk::DrmFormatModifierPropertiesList2EXT {}
 impl AndroidHardwareBufferPropertiesANDROIDNext for vk::AndroidHardwareBufferFormatProperties2ANDROID {}
+impl<'a> Builder<'a> for vk::PipelineRenderingCreateInfoKHR {
+    type Type = PipelineRenderingCreateInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineRenderingCreateInfoKHRBuilder<'a> {
+    inner: vk::PipelineRenderingCreateInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineRenderingCreateInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn view_mask(mut self, view_mask: u32) -> Self {
+        self.inner.view_mask = view_mask;
+        self
+    }
+    pub fn p_color_attachment_formats(mut self, p_color_attachment_formats: &'a [vk::Format]) -> Self {
+        self.inner.color_attachment_count = p_color_attachment_formats.len() as u32;
+        self.inner.p_color_attachment_formats = p_color_attachment_formats
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn depth_attachment_format(mut self, depth_attachment_format: vk::Format) -> Self {
+        self.inner.depth_attachment_format = depth_attachment_format;
+        self
+    }
+    pub fn stencil_attachment_format(mut self, stencil_attachment_format: vk::Format) -> Self {
+        self.inner.stencil_attachment_format = stencil_attachment_format;
+        self
+    }
+}
+impl<'a> Deref for PipelineRenderingCreateInfoKHRBuilder<'a> {
+    type Target = vk::PipelineRenderingCreateInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> GraphicsPipelineCreateInfoNext for PipelineRenderingCreateInfoKHRBuilder<'a> {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineRenderingCreateInfoKHR {}
+impl<'a> Builder<'a> for vk::RenderingInfoKHR {
+    type Type = RenderingInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait RenderingInfoKHRNext {}
+#[derive(Default)]
+pub struct RenderingInfoKHRBuilder<'a> {
+    inner: vk::RenderingInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> RenderingInfoKHRBuilder<'a> {
+    pub fn insert_next<T: RenderingInfoKHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::RenderingFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn render_area(mut self, render_area: vk::Rect2D) -> Self {
+        self.inner.render_area = render_area;
+        self
+    }
+    pub fn layer_count(mut self, layer_count: u32) -> Self {
+        self.inner.layer_count = layer_count;
+        self
+    }
+    pub fn view_mask(mut self, view_mask: u32) -> Self {
+        self.inner.view_mask = view_mask;
+        self
+    }
+    pub fn p_color_attachments(mut self, p_color_attachments: &'a [vk::RenderingAttachmentInfoKHR]) -> Self {
+        self.inner.color_attachment_count = p_color_attachments.len() as u32;
+        self.inner.p_color_attachments = p_color_attachments.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_depth_attachment(mut self, p_depth_attachment: Option<&'a vk::RenderingAttachmentInfoKHR>) -> Self {
+        self.inner.p_depth_attachment = p_depth_attachment.map_or(ptr::null(), |p| p);
+        self
+    }
+    pub fn p_stencil_attachment(mut self, p_stencil_attachment: Option<&'a vk::RenderingAttachmentInfoKHR>) -> Self {
+        self.inner.p_stencil_attachment = p_stencil_attachment.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for RenderingInfoKHRBuilder<'a> {
+    type Target = vk::RenderingInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::RenderingAttachmentInfoKHR {
+    type Type = RenderingAttachmentInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderingAttachmentInfoKHRBuilder {
+    inner: vk::RenderingAttachmentInfoKHR,
+}
+impl RenderingAttachmentInfoKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view(mut self, image_view: Option<vk::ImageView>) -> Self {
+        self.inner.image_view = image_view;
+        self
+    }
+    pub fn image_layout(mut self, image_layout: vk::ImageLayout) -> Self {
+        self.inner.image_layout = image_layout;
+        self
+    }
+    pub fn resolve_mode(mut self, resolve_mode: vk::ResolveModeFlags) -> Self {
+        self.inner.resolve_mode = resolve_mode;
+        self
+    }
+    pub fn resolve_image_view(mut self, resolve_image_view: Option<vk::ImageView>) -> Self {
+        self.inner.resolve_image_view = resolve_image_view;
+        self
+    }
+    pub fn resolve_image_layout(mut self, resolve_image_layout: vk::ImageLayout) -> Self {
+        self.inner.resolve_image_layout = resolve_image_layout;
+        self
+    }
+    pub fn load_op(mut self, load_op: vk::AttachmentLoadOp) -> Self {
+        self.inner.load_op = load_op;
+        self
+    }
+    pub fn store_op(mut self, store_op: vk::AttachmentStoreOp) -> Self {
+        self.inner.store_op = store_op;
+        self
+    }
+    pub fn clear_value(mut self, clear_value: vk::ClearValue) -> Self {
+        self.inner.clear_value = clear_value;
+        self
+    }
+}
+impl Deref for RenderingAttachmentInfoKHRBuilder {
+    type Target = vk::RenderingAttachmentInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::RenderingFragmentShadingRateAttachmentInfoKHR {
+    type Type = RenderingFragmentShadingRateAttachmentInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderingFragmentShadingRateAttachmentInfoKHRBuilder {
+    inner: vk::RenderingFragmentShadingRateAttachmentInfoKHR,
+}
+impl RenderingFragmentShadingRateAttachmentInfoKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view(mut self, image_view: Option<vk::ImageView>) -> Self {
+        self.inner.image_view = image_view;
+        self
+    }
+    pub fn image_layout(mut self, image_layout: vk::ImageLayout) -> Self {
+        self.inner.image_layout = image_layout;
+        self
+    }
+    pub fn shading_rate_attachment_texel_size(mut self, shading_rate_attachment_texel_size: vk::Extent2D) -> Self {
+        self.inner.shading_rate_attachment_texel_size = shading_rate_attachment_texel_size;
+        self
+    }
+}
+impl Deref for RenderingFragmentShadingRateAttachmentInfoKHRBuilder {
+    type Target = vk::RenderingFragmentShadingRateAttachmentInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderingInfoKHRNext for RenderingFragmentShadingRateAttachmentInfoKHRBuilder {}
+impl RenderingInfoKHRNext for vk::RenderingFragmentShadingRateAttachmentInfoKHR {}
+impl Builder<'_> for vk::RenderingFragmentDensityMapAttachmentInfoEXT {
+    type Type = RenderingFragmentDensityMapAttachmentInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderingFragmentDensityMapAttachmentInfoEXTBuilder {
+    inner: vk::RenderingFragmentDensityMapAttachmentInfoEXT,
+}
+impl RenderingFragmentDensityMapAttachmentInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view(mut self, image_view: vk::ImageView) -> Self {
+        self.inner.image_view = Some(image_view);
+        self
+    }
+    pub fn image_layout(mut self, image_layout: vk::ImageLayout) -> Self {
+        self.inner.image_layout = image_layout;
+        self
+    }
+}
+impl Deref for RenderingFragmentDensityMapAttachmentInfoEXTBuilder {
+    type Target = vk::RenderingFragmentDensityMapAttachmentInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderingInfoKHRNext for RenderingFragmentDensityMapAttachmentInfoEXTBuilder {}
+impl RenderingInfoKHRNext for vk::RenderingFragmentDensityMapAttachmentInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDynamicRenderingFeaturesKHR {
+    type Type = PhysicalDeviceDynamicRenderingFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDynamicRenderingFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceDynamicRenderingFeaturesKHR,
+}
+impl PhysicalDeviceDynamicRenderingFeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dynamic_rendering(mut self, dynamic_rendering: bool) -> Self {
+        self.inner.dynamic_rendering = if dynamic_rendering { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDynamicRenderingFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceDynamicRenderingFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDynamicRenderingFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDynamicRenderingFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDynamicRenderingFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDynamicRenderingFeaturesKHR {}
+impl<'a> Builder<'a> for vk::CommandBufferInheritanceRenderingInfoKHR {
+    type Type = CommandBufferInheritanceRenderingInfoKHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CommandBufferInheritanceRenderingInfoKHRBuilder<'a> {
+    inner: vk::CommandBufferInheritanceRenderingInfoKHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CommandBufferInheritanceRenderingInfoKHRBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::RenderingFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn view_mask(mut self, view_mask: u32) -> Self {
+        self.inner.view_mask = view_mask;
+        self
+    }
+    pub fn p_color_attachment_formats(mut self, p_color_attachment_formats: &'a [vk::Format]) -> Self {
+        self.inner.color_attachment_count = p_color_attachment_formats.len() as u32;
+        self.inner.p_color_attachment_formats = p_color_attachment_formats
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn depth_attachment_format(mut self, depth_attachment_format: vk::Format) -> Self {
+        self.inner.depth_attachment_format = depth_attachment_format;
+        self
+    }
+    pub fn stencil_attachment_format(mut self, stencil_attachment_format: vk::Format) -> Self {
+        self.inner.stencil_attachment_format = stencil_attachment_format;
+        self
+    }
+    pub fn rasterization_samples(mut self, rasterization_samples: vk::SampleCountFlags) -> Self {
+        self.inner.rasterization_samples = rasterization_samples;
+        self
+    }
+}
+impl<'a> Deref for CommandBufferInheritanceRenderingInfoKHRBuilder<'a> {
+    type Target = vk::CommandBufferInheritanceRenderingInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> CommandBufferInheritanceInfoNext for CommandBufferInheritanceRenderingInfoKHRBuilder<'a> {}
+impl CommandBufferInheritanceInfoNext for vk::CommandBufferInheritanceRenderingInfoKHR {}
+impl<'a> Builder<'a> for vk::AttachmentSampleCountInfoAMD {
+    type Type = AttachmentSampleCountInfoAMDBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AttachmentSampleCountInfoAMDBuilder<'a> {
+    inner: vk::AttachmentSampleCountInfoAMD,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> AttachmentSampleCountInfoAMDBuilder<'a> {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_color_attachment_samples(mut self, p_color_attachment_samples: &'a [vk::SampleCountFlags]) -> Self {
+        self.inner.color_attachment_count = p_color_attachment_samples.len() as u32;
+        self.inner.p_color_attachment_samples = p_color_attachment_samples
+            .first()
+            .map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn depth_stencil_attachment_samples(mut self, depth_stencil_attachment_samples: vk::SampleCountFlags) -> Self {
+        self.inner.depth_stencil_attachment_samples = depth_stencil_attachment_samples;
+        self
+    }
+}
+impl<'a> Deref for AttachmentSampleCountInfoAMDBuilder<'a> {
+    type Target = vk::AttachmentSampleCountInfoAMD;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> CommandBufferInheritanceInfoNext for AttachmentSampleCountInfoAMDBuilder<'a> {}
+impl<'a> GraphicsPipelineCreateInfoNext for AttachmentSampleCountInfoAMDBuilder<'a> {}
+impl CommandBufferInheritanceInfoNext for vk::AttachmentSampleCountInfoAMD {}
+impl GraphicsPipelineCreateInfoNext for vk::AttachmentSampleCountInfoAMD {}
+impl Builder<'_> for vk::MultiviewPerViewAttributesInfoNVX {
+    type Type = MultiviewPerViewAttributesInfoNVXBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MultiviewPerViewAttributesInfoNVXBuilder {
+    inner: vk::MultiviewPerViewAttributesInfoNVX,
+}
+impl MultiviewPerViewAttributesInfoNVXBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn per_view_attributes(mut self, per_view_attributes: bool) -> Self {
+        self.inner.per_view_attributes = if per_view_attributes { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn per_view_attributes_position_x_only(mut self, per_view_attributes_position_x_only: bool) -> Self {
+        self.inner.per_view_attributes_position_x_only = if per_view_attributes_position_x_only {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for MultiviewPerViewAttributesInfoNVXBuilder {
+    type Target = vk::MultiviewPerViewAttributesInfoNVX;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl CommandBufferInheritanceInfoNext for MultiviewPerViewAttributesInfoNVXBuilder {}
+impl GraphicsPipelineCreateInfoNext for MultiviewPerViewAttributesInfoNVXBuilder {}
+impl RenderingInfoKHRNext for MultiviewPerViewAttributesInfoNVXBuilder {}
+impl CommandBufferInheritanceInfoNext for vk::MultiviewPerViewAttributesInfoNVX {}
+impl GraphicsPipelineCreateInfoNext for vk::MultiviewPerViewAttributesInfoNVX {}
+impl RenderingInfoKHRNext for vk::MultiviewPerViewAttributesInfoNVX {}

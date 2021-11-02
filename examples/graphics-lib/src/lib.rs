@@ -262,7 +262,7 @@ impl App {
                 .p_color_blend_state(Some(&color_blend_state_create_info))
                 .p_dynamic_state(Some(&pipeline_dynamic_state_create_info))
                 .layout(pipeline_layout)
-                .render_pass(render_pass);
+                .render_pass(Some(render_pass));
 
             unsafe {
                 context

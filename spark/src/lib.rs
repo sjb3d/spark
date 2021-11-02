@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 195
+//! Generated from vk.xml with `VK_HEADER_VERSION` 197
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -405,6 +405,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_amd_texture_gather_bias_lod(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_dynamic_rendering(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_dynamic_rendering(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_nv_corner_sampled_image(&self) -> bool {
@@ -3792,6 +3798,7 @@ pub struct DeviceExtensions {
     pub amd_shader_ballot: bool,
     pub amd_texture_gather_bias_lod: bool,
     pub amd_shader_info: bool,
+    pub khr_dynamic_rendering: bool,
     pub amd_shader_image_load_store_lod: bool,
     pub nv_corner_sampled_image: bool,
     pub khr_multiview: bool,
@@ -3990,6 +3997,7 @@ pub struct DeviceExtensions {
     pub ext_global_priority_query: bool,
     pub ext_multi_draw: bool,
     pub ext_load_store_op_none: bool,
+    pub ext_border_color_swizzle: bool,
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
 }
@@ -4017,6 +4025,7 @@ impl DeviceExtensions {
             b"VK_AMD_shader_ballot" => self.amd_shader_ballot = true,
             b"VK_AMD_texture_gather_bias_lod" => self.amd_texture_gather_bias_lod = true,
             b"VK_AMD_shader_info" => self.amd_shader_info = true,
+            b"VK_KHR_dynamic_rendering" => self.khr_dynamic_rendering = true,
             b"VK_AMD_shader_image_load_store_lod" => self.amd_shader_image_load_store_lod = true,
             b"VK_NV_corner_sampled_image" => self.nv_corner_sampled_image = true,
             b"VK_KHR_multiview" => self.khr_multiview = true,
@@ -4217,6 +4226,7 @@ impl DeviceExtensions {
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
+            b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             _ => {}
@@ -4246,6 +4256,7 @@ impl DeviceExtensions {
             amd_shader_ballot: false,
             amd_texture_gather_bias_lod: false,
             amd_shader_info: false,
+            khr_dynamic_rendering: false,
             amd_shader_image_load_store_lod: false,
             nv_corner_sampled_image: false,
             khr_multiview: false,
@@ -4444,6 +4455,7 @@ impl DeviceExtensions {
             ext_global_priority_query: false,
             ext_multi_draw: false,
             ext_load_store_op_none: false,
+            ext_border_color_swizzle: false,
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
         }
@@ -4586,6 +4598,12 @@ impl DeviceExtensions {
     }
     pub fn enable_amd_shader_info(&mut self) {
         self.amd_shader_info = true;
+    }
+    pub fn supports_khr_dynamic_rendering(&self) -> bool {
+        self.khr_dynamic_rendering
+    }
+    pub fn enable_khr_dynamic_rendering(&mut self) {
+        self.khr_dynamic_rendering = true;
     }
     pub fn supports_amd_shader_image_load_store_lod(&self) -> bool {
         self.amd_shader_image_load_store_lod
@@ -6107,6 +6125,13 @@ impl DeviceExtensions {
     pub fn enable_ext_load_store_op_none(&mut self) {
         self.ext_load_store_op_none = true;
     }
+    pub fn supports_ext_border_color_swizzle(&self) -> bool {
+        self.ext_border_color_swizzle && self.supports_ext_custom_border_color()
+    }
+    pub fn enable_ext_border_color_swizzle(&mut self) {
+        self.ext_border_color_swizzle = true;
+        self.enable_ext_custom_border_color();
+    }
     pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
         self.ext_pageable_device_local_memory && self.supports_ext_memory_priority()
     }
@@ -6184,6 +6209,9 @@ impl DeviceExtensions {
         }
         if self.amd_shader_info {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_info\0") })
+        }
+        if self.khr_dynamic_rendering {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_dynamic_rendering\0") })
         }
         if self.amd_shader_image_load_store_lod {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_image_load_store_lod\0") })
@@ -6781,6 +6809,9 @@ impl DeviceExtensions {
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
         }
+        if self.ext_border_color_swizzle {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_border_color_swizzle\0") })
+        }
         if self.ext_pageable_device_local_memory {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pageable_device_local_memory\0") })
         }
@@ -7163,6 +7194,8 @@ pub struct Device {
     pub fp_set_buffer_collection_image_constraints_fuchsia: Option<vk::FnSetBufferCollectionImageConstraintsFUCHSIA>,
     pub fp_destroy_buffer_collection_fuchsia: Option<vk::FnDestroyBufferCollectionFUCHSIA>,
     pub fp_get_buffer_collection_properties_fuchsia: Option<vk::FnGetBufferCollectionPropertiesFUCHSIA>,
+    pub fp_cmd_begin_rendering_khr: Option<vk::FnCmdBeginRenderingKHR>,
+    pub fp_cmd_end_rendering_khr: Option<vk::FnCmdEndRenderingKHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -9912,6 +9945,18 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetBufferCollectionPropertiesFUCHSIA\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_begin_rendering_khr: if extensions.khr_dynamic_rendering {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBeginRenderingKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_end_rendering_khr: if extensions.khr_dynamic_rendering {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderingKHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -15975,6 +16020,22 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_begin_rendering_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_rendering_info: &vk::RenderingInfoKHR,
+    ) {
+        let fp = self
+            .fp_cmd_begin_rendering_khr
+            .expect("vkCmdBeginRenderingKHR is not loaded");
+        (fp)(Some(command_buffer), p_rendering_info);
+    }
+    pub unsafe fn cmd_end_rendering_khr(&self, command_buffer: vk::CommandBuffer) {
+        let fp = self
+            .fp_cmd_end_rendering_khr
+            .expect("vkCmdEndRenderingKHR is not loaded");
+        (fp)(Some(command_buffer));
     }
 }
 
