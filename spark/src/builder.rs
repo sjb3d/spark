@@ -20397,3 +20397,69 @@ impl RenderingInfoKHRNext for MultiviewPerViewAttributesInfoNVXBuilder {}
 impl CommandBufferInheritanceInfoNext for vk::MultiviewPerViewAttributesInfoNVX {}
 impl GraphicsPipelineCreateInfoNext for vk::MultiviewPerViewAttributesInfoNVX {}
 impl RenderingInfoKHRNext for vk::MultiviewPerViewAttributesInfoNVX {}
+impl Builder<'_> for vk::PhysicalDeviceImageViewMinLodFeaturesEXT {
+    type Type = PhysicalDeviceImageViewMinLodFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageViewMinLodFeaturesEXT,
+}
+impl PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn min_lod(mut self, min_lod: bool) -> Self {
+        self.inner.min_lod = if min_lod { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageViewMinLodFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageViewMinLodFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageViewMinLodFeaturesEXT {}
+impl Builder<'_> for vk::ImageViewMinLodCreateInfoEXT {
+    type Type = ImageViewMinLodCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageViewMinLodCreateInfoEXTBuilder {
+    inner: vk::ImageViewMinLodCreateInfoEXT,
+}
+impl ImageViewMinLodCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn min_lod(mut self, min_lod: f32) -> Self {
+        self.inner.min_lod = min_lod;
+        self
+    }
+}
+impl Deref for ImageViewMinLodCreateInfoEXTBuilder {
+    type Target = vk::ImageViewMinLodCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageViewCreateInfoNext for ImageViewMinLodCreateInfoEXTBuilder {}
+impl ImageViewCreateInfoNext for vk::ImageViewMinLodCreateInfoEXT {}

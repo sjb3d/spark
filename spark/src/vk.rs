@@ -14327,6 +14327,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self = Self(1000388000);
     /// Added by extension VK_EXT_global_priority_query.
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self(1000388001);
+    /// Added by extension VK_EXT_image_view_min_lod.
+    pub const PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT: Self = Self(1000391000);
+    /// Added by extension VK_EXT_image_view_min_lod.
+    pub const IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT: Self = Self(1000391001);
     /// Added by extension VK_EXT_multi_draw.
     pub const PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT: Self = Self(1000392000);
     /// Added by extension VK_EXT_multi_draw.
@@ -14900,6 +14904,8 @@ impl fmt::Display for StructureType {
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             1000388000 => Some(&"PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT"),
             1000388001 => Some(&"QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT"),
+            1000391000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT"),
+            1000391001 => Some(&"IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
@@ -17162,6 +17168,8 @@ impl DriverId {
     pub const MESA_V3DV: Self = Self(19);
     /// Mesa open source project
     pub const MESA_PANVK: Self = Self(20);
+    /// Samsung Electronics Co., Ltd.
+    pub const SAMSUNG_PROPRIETARY: Self = Self(21);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -17203,6 +17211,7 @@ impl fmt::Display for DriverId {
             18 => Some(&"MESA_TURNIP"),
             19 => Some(&"MESA_V3DV"),
             20 => Some(&"MESA_PANVK"),
+            21 => Some(&"SAMSUNG_PROPRIETARY"),
             _ => None,
         };
         if let Some(name) = name {
@@ -42173,6 +42182,60 @@ impl fmt::Debug for MultiviewPerViewAttributesInfoNVX {
                 "per_view_attributes_position_x_only",
                 &self.per_view_attributes_position_x_only,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageViewMinLodFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub min_lod: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageViewMinLodFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageViewMinLodFeaturesEXT {}
+impl default::Default for PhysicalDeviceImageViewMinLodFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            min_lod: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageViewMinLodFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageViewMinLodFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_lod", &self.min_lod)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewMinLodCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub min_lod: f32,
+}
+unsafe impl Send for ImageViewMinLodCreateInfoEXT {}
+unsafe impl Sync for ImageViewMinLodCreateInfoEXT {}
+impl default::Default for ImageViewMinLodCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            min_lod: f32::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewMinLodCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewMinLodCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("min_lod", &self.min_lod)
             .finish()
     }
 }
