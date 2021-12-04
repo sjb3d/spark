@@ -17989,6 +17989,72 @@ impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoVA
 impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
 impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
 impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
+impl Builder<'_> for vk::PhysicalDeviceDepthClipControlFeaturesEXT {
+    type Type = PhysicalDeviceDepthClipControlFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDepthClipControlFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDepthClipControlFeaturesEXT,
+}
+impl PhysicalDeviceDepthClipControlFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clip_control(mut self, depth_clip_control: bool) -> Self {
+        self.inner.depth_clip_control = if depth_clip_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDepthClipControlFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDepthClipControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClipControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthClipControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClipControlFeaturesEXT {}
+impl Builder<'_> for vk::PipelineViewportDepthClipControlCreateInfoEXT {
+    type Type = PipelineViewportDepthClipControlCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineViewportDepthClipControlCreateInfoEXTBuilder {
+    inner: vk::PipelineViewportDepthClipControlCreateInfoEXT,
+}
+impl PipelineViewportDepthClipControlCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn negative_one_to_one(mut self, negative_one_to_one: bool) -> Self {
+        self.inner.negative_one_to_one = if negative_one_to_one { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PipelineViewportDepthClipControlCreateInfoEXTBuilder {
+    type Target = vk::PipelineViewportDepthClipControlCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PipelineViewportStateCreateInfoNext for PipelineViewportDepthClipControlCreateInfoEXTBuilder {}
+impl PipelineViewportStateCreateInfoNext for vk::PipelineViewportDepthClipControlCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     type Type = PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -20463,3 +20529,66 @@ impl Deref for ImageViewMinLodCreateInfoEXTBuilder {
 }
 impl ImageViewCreateInfoNext for ImageViewMinLodCreateInfoEXTBuilder {}
 impl ImageViewCreateInfoNext for vk::ImageViewMinLodCreateInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+    type Type = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM,
+}
+impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn rasterization_order_color_attachment_access(
+        mut self,
+        rasterization_order_color_attachment_access: bool,
+    ) -> Self {
+        self.inner.rasterization_order_color_attachment_access = if rasterization_order_color_attachment_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn rasterization_order_depth_attachment_access(
+        mut self,
+        rasterization_order_depth_attachment_access: bool,
+    ) -> Self {
+        self.inner.rasterization_order_depth_attachment_access = if rasterization_order_depth_attachment_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn rasterization_order_stencil_attachment_access(
+        mut self,
+        rasterization_order_stencil_attachment_access: bool,
+    ) -> Self {
+        self.inner.rasterization_order_stencil_attachment_access = if rasterization_order_stencil_attachment_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}

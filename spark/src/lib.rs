@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 199
+//! Generated from vk.xml with `VK_HEADER_VERSION` 201
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1298,6 +1298,12 @@ impl InstanceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_arm_rasterization_order_attachment_access(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_arm_rasterization_order_attachment_access(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_rgba10x6_formats(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1335,6 +1341,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_depth_clip_control(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_depth_clip_control(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_format_feature_flags2(&self) -> bool {
@@ -3985,11 +3997,13 @@ pub struct DeviceExtensions {
     pub khr_workgroup_memory_explicit_layout: bool,
     pub khr_copy_commands2: bool,
     pub ext_4444_formats: bool,
+    pub arm_rasterization_order_attachment_access: bool,
     pub ext_rgba10x6_formats: bool,
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
     pub ext_vertex_input_dynamic_state: bool,
     pub ext_physical_device_drm: bool,
+    pub ext_depth_clip_control: bool,
     pub ext_primitive_topology_list_restart: bool,
     pub khr_format_feature_flags2: bool,
     pub fuchsia_external_memory: bool,
@@ -4215,11 +4229,13 @@ impl DeviceExtensions {
             b"VK_KHR_workgroup_memory_explicit_layout" => self.khr_workgroup_memory_explicit_layout = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
+            b"VK_ARM_rasterization_order_attachment_access" => self.arm_rasterization_order_attachment_access = true,
             b"VK_EXT_rgba10x6_formats" => self.ext_rgba10x6_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_EXT_physical_device_drm" => self.ext_physical_device_drm = true,
+            b"VK_EXT_depth_clip_control" => self.ext_depth_clip_control = true,
             b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
             b"VK_KHR_format_feature_flags2" => self.khr_format_feature_flags2 = true,
             b"VK_FUCHSIA_external_memory" => self.fuchsia_external_memory = true,
@@ -4445,11 +4461,13 @@ impl DeviceExtensions {
             khr_workgroup_memory_explicit_layout: false,
             khr_copy_commands2: false,
             ext_4444_formats: false,
+            arm_rasterization_order_attachment_access: false,
             ext_rgba10x6_formats: false,
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
             ext_vertex_input_dynamic_state: false,
             ext_physical_device_drm: false,
+            ext_depth_clip_control: false,
             ext_primitive_topology_list_restart: false,
             khr_format_feature_flags2: false,
             fuchsia_external_memory: false,
@@ -5975,6 +5993,12 @@ impl DeviceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.ext_4444_formats = true;
     }
+    pub fn supports_arm_rasterization_order_attachment_access(&self) -> bool {
+        self.arm_rasterization_order_attachment_access
+    }
+    pub fn enable_arm_rasterization_order_attachment_access(&mut self) {
+        self.arm_rasterization_order_attachment_access = true;
+    }
     pub fn supports_ext_rgba10x6_formats(&self) -> bool {
         self.ext_rgba10x6_formats
             && self.supports_khr_sampler_ycbcr_conversion()
@@ -6013,6 +6037,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
         self.ext_physical_device_drm = true;
+    }
+    pub fn supports_ext_depth_clip_control(&self) -> bool {
+        self.ext_depth_clip_control
+    }
+    pub fn enable_ext_depth_clip_control(&mut self) {
+        self.ext_depth_clip_control = true;
     }
     pub fn supports_ext_primitive_topology_list_restart(&self) -> bool {
         self.ext_primitive_topology_list_restart
@@ -6770,6 +6800,9 @@ impl DeviceExtensions {
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
+        if self.arm_rasterization_order_attachment_access {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_rasterization_order_attachment_access\0") })
+        }
         if self.ext_rgba10x6_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_rgba10x6_formats\0") })
         }
@@ -6784,6 +6817,9 @@ impl DeviceExtensions {
         }
         if self.ext_physical_device_drm {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_physical_device_drm\0") })
+        }
+        if self.ext_depth_clip_control {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clip_control\0") })
         }
         if self.ext_primitive_topology_list_restart {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_primitive_topology_list_restart\0") })

@@ -587,7 +587,12 @@ impl fmt::Display for PipelineCacheCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineDepthStencilStateCreateFlags(u32);
-impl PipelineDepthStencilStateCreateFlags {}
+impl PipelineDepthStencilStateCreateFlags {
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x1);
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x2);
+}
 impl default::Default for PipelineDepthStencilStateCreateFlags {
     fn default() -> Self {
         Self(0)
@@ -598,13 +603,13 @@ impl PipelineDepthStencilStateCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x0)
+        Self(0x3)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x3
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -648,7 +653,14 @@ impl ops::BitXorAssign for PipelineDepthStencilStateCreateFlags {
 }
 impl fmt::Display for PipelineDepthStencilStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM"),
+                (0x2, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -721,7 +733,10 @@ impl fmt::Display for PipelineDynamicStateCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct PipelineColorBlendStateCreateFlags(u32);
-impl PipelineColorBlendStateCreateFlags {}
+impl PipelineColorBlendStateCreateFlags {
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM: Self = Self(0x1);
+}
 impl default::Default for PipelineColorBlendStateCreateFlags {
     fn default() -> Self {
         Self(0)
@@ -732,13 +747,13 @@ impl PipelineColorBlendStateCreateFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0x0)
+        Self(0x1)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0x0
+        self.0 == 0x1
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -782,7 +797,7 @@ impl ops::BitXorAssign for PipelineColorBlendStateCreateFlags {
 }
 impl fmt::Display for PipelineColorBlendStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM")], f)
     }
 }
 #[repr(transparent)]
@@ -2695,9 +2710,13 @@ impl PipelineCreateFlags {
     pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     pub const DISPATCH_BASE: Self = Self(0x10);
     /// Added by extension VK_KHR_dynamic_rendering.
-    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x200000);
+    pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x200000);
+    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self =
+        Self::RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
     /// Added by extension VK_KHR_dynamic_rendering.
-    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
+    pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
+    pub const RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self =
+        Self::RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT;
     pub const VIEW_INDEX_FROM_DEVICE_INDEX_KHR: Self = Self::VIEW_INDEX_FROM_DEVICE_INDEX;
     pub const DISPATCH_BASE_KHR: Self = Self::DISPATCH_BASE;
     /// Added by extension VK_KHR_ray_tracing_pipeline.
@@ -2799,14 +2818,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x4, "DERIVATIVE"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
-                (
-                    0x200000,
-                    "RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR",
-                ),
-                (
-                    0x400000,
-                    "RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT",
-                ),
+                (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT"),
                 (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_KHR"),
                 (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_KHR"),
                 (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS_KHR"),
@@ -4238,6 +4251,12 @@ impl SubpassDescriptionFlags {
     pub const FRAGMENT_REGION_QCOM: Self = Self(0x4);
     /// Added by extension VK_QCOM_render_pass_shader_resolve.
     pub const SHADER_RESOLVE_QCOM: Self = Self(0x8);
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM: Self = Self(0x10);
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x20);
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x40);
 }
 impl default::Default for SubpassDescriptionFlags {
     fn default() -> Self {
@@ -4249,13 +4268,13 @@ impl SubpassDescriptionFlags {
         Self(0)
     }
     pub fn all() -> Self {
-        Self(0xf)
+        Self(0x7f)
     }
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
     pub fn is_all(self) -> bool {
-        self.0 == 0xf
+        self.0 == 0x7f
     }
     pub fn intersects(self, other: Self) -> bool {
         (self.0 & other.0) != 0
@@ -4306,6 +4325,9 @@ impl fmt::Display for SubpassDescriptionFlags {
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
                 (0x4, "FRAGMENT_REGION_QCOM"),
                 (0x8, "SHADER_RESOLVE_QCOM"),
+                (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM"),
+                (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM"),
+                (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM"),
             ],
             f,
         )
@@ -14255,6 +14277,8 @@ impl StructureType {
     pub const IMAGE_RESOLVE_2_KHR: Self = Self(1000337010);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
+    /// Added by extension VK_ARM_rasterization_order_attachment_access.
+    pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM: Self = Self(1000342000);
     /// Added by extension VK_EXT_rgba10x6_formats.
     pub const PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT: Self = Self(1000344000);
     /// Added by extension VK_EXT_directfb_surface.
@@ -14271,6 +14295,10 @@ impl StructureType {
     pub const VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT: Self = Self(1000352002);
     /// Added by extension VK_EXT_physical_device_drm.
     pub const PHYSICAL_DEVICE_DRM_PROPERTIES_EXT: Self = Self(1000353000);
+    /// Added by extension VK_EXT_depth_clip_control.
+    pub const PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT: Self = Self(1000355000);
+    /// Added by extension VK_EXT_depth_clip_control.
+    pub const PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT: Self = Self(1000355001);
     /// Added by extension VK_EXT_primitive_topology_list_restart.
     pub const PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT: Self = Self(1000356000);
     /// Added by extension VK_KHR_format_feature_flags2.
@@ -14868,6 +14896,7 @@ impl fmt::Display for StructureType {
             1000337009 => Some(&"BUFFER_IMAGE_COPY_2_KHR"),
             1000337010 => Some(&"IMAGE_RESOLVE_2_KHR"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
+            1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM"),
             1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
@@ -14876,6 +14905,8 @@ impl fmt::Display for StructureType {
             1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
             1000353000 => Some(&"PHYSICAL_DEVICE_DRM_PROPERTIES_EXT"),
+            1000355000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT"),
+            1000355001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT"),
             1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
             1000360000 => Some(&"FORMAT_PROPERTIES_3_KHR"),
             1000364000 => Some(&"IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA"),
@@ -20983,7 +21014,7 @@ pub struct PhysicalDeviceFeatures {
     pub logic_op: Bool32,
     /// multi draw indirect
     pub multi_draw_indirect: Bool32,
-    /// indirect draws can use non-zero firstInstance
+    /// indirect drawing can use non-zero firstInstance
     pub draw_indirect_first_instance: Bool32,
     /// depth clamping
     pub depth_clamp: Bool32,
@@ -21392,7 +21423,7 @@ pub struct PhysicalDeviceLimits {
     pub mipmap_precision_bits: u32,
     /// max index value for indexed draw calls (for 32-bit indices)
     pub max_draw_indexed_index_value: u32,
-    /// max draw count for indirect draw calls
+    /// max draw count for indirect drawing calls
     pub max_draw_indirect_count: u32,
     /// max absolute sampler LOD bias
     pub max_sampler_lod_bias: f32,
@@ -39831,6 +39862,60 @@ impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthClipControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub depth_clip_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDepthClipControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDepthClipControlFeaturesEXT {}
+impl default::Default for PhysicalDeviceDepthClipControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            depth_clip_control: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthClipControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthClipControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clip_control", &self.depth_clip_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineViewportDepthClipControlCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub negative_one_to_one: Bool32,
+}
+unsafe impl Send for PipelineViewportDepthClipControlCreateInfoEXT {}
+unsafe impl Sync for PipelineViewportDepthClipControlCreateInfoEXT {}
+impl default::Default for PipelineViewportDepthClipControlCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            negative_one_to_one: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineViewportDepthClipControlCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineViewportDepthClipControlCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("negative_one_to_one", &self.negative_one_to_one)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -42236,6 +42321,48 @@ impl fmt::Debug for ImageViewMinLodCreateInfoEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("min_lod", &self.min_lod)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub rasterization_order_color_attachment_access: Bool32,
+    pub rasterization_order_depth_attachment_access: Bool32,
+    pub rasterization_order_stencil_attachment_access: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
+impl default::Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM,
+            p_next: ptr::null(),
+            rasterization_order_color_attachment_access: Bool32::default(),
+            rasterization_order_depth_attachment_access: Bool32::default(),
+            rasterization_order_stencil_attachment_access: Bool32::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "rasterization_order_color_attachment_access",
+                &self.rasterization_order_color_attachment_access,
+            )
+            .field(
+                "rasterization_order_depth_attachment_access",
+                &self.rasterization_order_depth_attachment_access,
+            )
+            .field(
+                "rasterization_order_stencil_attachment_access",
+                &self.rasterization_order_stencil_attachment_access,
+            )
             .finish()
     }
 }
