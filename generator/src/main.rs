@@ -220,12 +220,12 @@ fn get_rust_variable_name(camel_case: &str) -> String {
     }
 }
 
-trait GetCommandCategory {
-    fn get_command_category(&self) -> Category;
+trait GuessCommandCategory {
+    fn guess_command_category(&self) -> Category;
 }
 
-impl GetCommandCategory for vk::CommandDefinition {
-    fn get_command_category(&self) -> Category {
+impl GuessCommandCategory for vk::CommandDefinition {
+    fn guess_command_category(&self) -> Category {
         match self.proto.name.as_str() {
             "vkGetInstanceProcAddr"
             | "vkCreateInstance"
@@ -832,10 +832,6 @@ impl<'a> Generator<'a> {
                     {
                         let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
 
-                        let cmd_category = Some(info.cmd_def.get_command_category());
-                        info.category = info.category.or(cmd_category);
-                        assert_eq!(info.category, cmd_category);
-
                         info.refs.push(CommandRefPair {
                             primary: CommandRef::Feature(Version::try_from_feature(&feature.name).unwrap()),
                             secondary: None,
@@ -848,7 +844,7 @@ impl<'a> Generator<'a> {
                         .iter()
                         .filter(|ext| ext.is_supported() && !ext.is_blacklisted())
                     {
-                        let ext_category = Some(ext.get_category());
+                        let ext_category = ext.get_category();
 
                         for (cmd_ref, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
                             vk::ExtensionChild::Require {
@@ -872,8 +868,11 @@ impl<'a> Generator<'a> {
                             }) {
                                 let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
 
-                                info.category = info.category.or(ext_category);
-                                assert_eq!(info.category, ext_category);
+                                if let Some(category) = info.category {
+                                    assert_eq!(category, ext_category);
+                                } else {
+                                    info.category = Some(ext_category);
+                                }
 
                                 let ref_pair = CommandRefPair {
                                     primary: CommandRef::Extension(ext.name.as_str()),
@@ -887,6 +886,46 @@ impl<'a> Generator<'a> {
                     }
                 }
                 _ => {}
+            }
+        }
+
+        // propagate command category between aliases
+        loop {
+            let mut updates = Vec::new();
+            for (name, info) in self.cmd_info_by_name.iter() {
+                if let Some(alias_name) = info.alias {
+                    let alias_info = self.cmd_info_by_name.get(alias_name).unwrap();
+                    match (info.category, alias_info.category) {
+                        (Some(category), Some(alias_category)) => {
+                            assert_eq!(category, alias_category);
+                        }
+                        (Some(category), None) => {
+                            updates.push((alias_name, category));
+                        }
+                        (None, Some(alias_category)) => {
+                            updates.push((name, alias_category));
+                        }
+                        (None, None) => {}
+                    }
+                }
+            }
+            if updates.is_empty() {
+                break;
+            }
+            for (name, category) in updates.drain(..) {
+                let info = self.cmd_info_by_name.get_mut(name).unwrap();
+                if let Some(old) = info.category.replace(category) {
+                    assert_eq!(old, category);
+                }
+            }
+        }
+
+        // fill in missing command categories
+        for info in self.cmd_info_by_name.values_mut() {
+            if info.refs.is_empty() {
+                info.category = None;
+            } else if info.category.is_none() {
+                info.category = Some(info.cmd_def.guess_command_category());
             }
         }
     }
@@ -1600,7 +1639,7 @@ impl<'a> Generator<'a> {
     }
 
     fn write_command_types(&self, w: &mut impl IoWrite) -> WriteResult {
-        for info in self.cmd_names.iter().filter_map(|name| {
+        for info in self.cmd_names.iter().copied().filter_map(|name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
             info.category.and(Some(info))
         }) {
@@ -3152,7 +3191,7 @@ impl<'a> Generator<'a> {
         if !extensions.is_empty() {
             writeln!(w, "pub extensions: {}Extensions,", category)?;
         }
-        for name in self.cmd_names.iter().filter(|&name| {
+        for name in self.cmd_names.iter().copied().filter(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
             info.alias.is_none() && info.category == Some(category)
         }) {
@@ -3209,7 +3248,7 @@ impl<'a> Generator<'a> {
             }
         }
 
-        for (name, info) in self.cmd_names.iter().filter_map(|&name| {
+        for (name, info) in self.cmd_names.iter().copied().filter_map(|name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
             if info.alias.is_none() && info.category == Some(category) {
                 Some((name, info))
@@ -3245,7 +3284,7 @@ impl<'a> Generator<'a> {
                 }
                 writeln!(w, "fp.map(|f| mem::transmute(f)) }}")?;
                 if !always_load {
-                    for (other_name, other_info) in self.cmd_names.iter().filter_map(|&other_name| {
+                    for (other_name, other_info) in self.cmd_names.iter().copied().filter_map(|other_name| {
                         let other_info = self.cmd_info_by_name.get(other_name).expect("missing command info");
                         if other_info.alias == Some(name) {
                             Some((other_name, other_info))
@@ -3275,7 +3314,7 @@ impl<'a> Generator<'a> {
                 writeln!(w, "}}) }}")?;
             }
         }
-        for name in self.cmd_names.iter().filter(|&name| {
+        for name in self.cmd_names.iter().copied().filter(|&name| {
             let info = self.cmd_info_by_name.get(name).expect("missing command info");
             info.category == Some(category)
         }) {
