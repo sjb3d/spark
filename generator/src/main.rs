@@ -518,6 +518,13 @@ impl<'a> Generator<'a> {
             })
     }
 
+    fn non_alias_type_name(&self, mut type_name: &'a str) -> &'a str {
+        while let Some(alias) = self.type_by_name.get(type_name).and_then(|ty| ty.alias.as_deref()) {
+            type_name = alias;
+        }
+        type_name
+    }
+
     fn collect_extensions(&mut self) {
         for registry_child in &self.registry.0 {
             if let vk::RegistryChild::Extensions(extensions) = registry_child {
@@ -1782,7 +1789,7 @@ impl<'a> Generator<'a> {
                     .get_type_iterator()
                     .filter_map(|ty| ty.structextends.as_deref())
                     .flat_map(|s| s.split(','))
-                    .any(|s| s == type_name);
+                    .any(|s| self.non_alias_type_name(s) == type_name);
                 let needs_lifetime = is_extended
                     || params.iter().any(|rparam| {
                         matches!(
@@ -2020,7 +2027,8 @@ impl<'a> Generator<'a> {
                     if let Some(structextends) = ty.structextends.as_deref() {
                         for base_type_name in structextends
                             .split(',')
-                            .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
+                            .map(|type_name| self.non_alias_type_name(type_name))
+                            .filter(|type_name| !self.type_name_blacklist.contains(type_name))
                         {
                             writeln!(
                                 w,
@@ -2037,7 +2045,8 @@ impl<'a> Generator<'a> {
                 if let Some(structextends) = ty.structextends.as_deref() {
                     for base_type_name in structextends
                         .split(',')
-                        .filter(|base_type_name| !self.type_name_blacklist.contains(base_type_name))
+                        .map(|type_name| self.non_alias_type_name(type_name))
+                        .filter(|type_name| !self.type_name_blacklist.contains(type_name))
                     {
                         writeln!(
                             w,
