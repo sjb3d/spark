@@ -129,3 +129,61 @@ fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter)
     }
     Ok(())
 }
+
+macro_rules! impl_bitmask {
+    ($name:ident, $all_bits:literal) => {
+        impl $name {
+            pub fn empty() -> Self {
+                Self(0)
+            }
+            pub fn all() -> Self {
+                Self($all_bits)
+            }
+            pub fn is_empty(self) -> bool {
+                self.0 == 0
+            }
+            pub fn is_all(self) -> bool {
+                self.0 == $all_bits
+            }
+            pub fn intersects(self, other: Self) -> bool {
+                (self.0 & other.0) != 0
+            }
+            pub fn contains(self, other: Self) -> bool {
+                (self.0 & other.0) == other.0
+            }
+        }
+        impl ops::BitOr for $name {
+            type Output = Self;
+            fn bitor(self, rhs: Self) -> Self {
+                Self(self.0 | rhs.0)
+            }
+        }
+        impl ops::BitOrAssign for $name {
+            fn bitor_assign(&mut self, rhs: Self) {
+                self.0 |= rhs.0;
+            }
+        }
+        impl ops::BitAnd for $name {
+            type Output = Self;
+            fn bitand(self, rhs: Self) -> Self {
+                Self(self.0 & rhs.0)
+            }
+        }
+        impl ops::BitAndAssign for $name {
+            fn bitand_assign(&mut self, rhs: Self) {
+                self.0 &= rhs.0; 
+            }
+        }
+        impl ops::BitXor for $name {
+            type Output = Self;
+            fn bitxor(self, rhs: Self) -> Self {
+                Self(self.0 ^ rhs.0)
+            }
+        }
+        impl ops::BitXorAssign for $name {
+            fn bitxor_assign(&mut self, rhs: Self) {
+                self.0 ^= rhs.0;
+            }
+        }
+    }
+}

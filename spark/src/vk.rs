@@ -129,6 +129,64 @@ fn display_bitmask(bits: u64, bit_names: &[(u64, &str)], f: &mut fmt::Formatter)
     }
     Ok(())
 }
+
+macro_rules! impl_bitmask {
+    ($name:ident, $all_bits:literal) => {
+        impl $name {
+            pub fn empty() -> Self {
+                Self(0)
+            }
+            pub fn all() -> Self {
+                Self($all_bits)
+            }
+            pub fn is_empty(self) -> bool {
+                self.0 == 0
+            }
+            pub fn is_all(self) -> bool {
+                self.0 == $all_bits
+            }
+            pub fn intersects(self, other: Self) -> bool {
+                (self.0 & other.0) != 0
+            }
+            pub fn contains(self, other: Self) -> bool {
+                (self.0 & other.0) == other.0
+            }
+        }
+        impl ops::BitOr for $name {
+            type Output = Self;
+            fn bitor(self, rhs: Self) -> Self {
+                Self(self.0 | rhs.0)
+            }
+        }
+        impl ops::BitOrAssign for $name {
+            fn bitor_assign(&mut self, rhs: Self) {
+                self.0 |= rhs.0;
+            }
+        }
+        impl ops::BitAnd for $name {
+            type Output = Self;
+            fn bitand(self, rhs: Self) -> Self {
+                Self(self.0 & rhs.0)
+            }
+        }
+        impl ops::BitAndAssign for $name {
+            fn bitand_assign(&mut self, rhs: Self) {
+                self.0 &= rhs.0;
+            }
+        }
+        impl ops::BitXor for $name {
+            type Output = Self;
+            fn bitxor(self, rhs: Self) -> Self {
+                Self(self.0 ^ rhs.0)
+            }
+        }
+        impl ops::BitXorAssign for $name {
+            fn bitxor_assign(&mut self, rhs: Self) {
+                self.0 ^= rhs.0;
+            }
+        }
+    };
+}
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE: usize = 256;
 pub const UUID_SIZE: usize = 16;
 pub const LUID_SIZE: usize = 8;
@@ -176,59 +234,7 @@ impl default::Default for FramebufferCreateFlags {
         Self(0)
     }
 }
-impl FramebufferCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for FramebufferCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for FramebufferCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for FramebufferCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for FramebufferCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for FramebufferCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for FramebufferCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(FramebufferCreateFlags, 0x1);
 impl fmt::Display for FramebufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "IMAGELESS")], f)
@@ -243,59 +249,7 @@ impl default::Default for QueryPoolCreateFlags {
         Self(0)
     }
 }
-impl QueryPoolCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for QueryPoolCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for QueryPoolCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for QueryPoolCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for QueryPoolCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for QueryPoolCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for QueryPoolCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(QueryPoolCreateFlags, 0x0);
 impl fmt::Display for QueryPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -313,59 +267,7 @@ impl default::Default for RenderPassCreateFlags {
         Self(0)
     }
 }
-impl RenderPassCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x2)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x2
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for RenderPassCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for RenderPassCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for RenderPassCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for RenderPassCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for RenderPassCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for RenderPassCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(RenderPassCreateFlags, 0x2);
 impl fmt::Display for RenderPassCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x2, "TRANSFORM_QCOM")], f)
@@ -385,59 +287,7 @@ impl default::Default for SamplerCreateFlags {
         Self(0)
     }
 }
-impl SamplerCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SamplerCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SamplerCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SamplerCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SamplerCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SamplerCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SamplerCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SamplerCreateFlags, 0x3);
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -456,59 +306,7 @@ impl default::Default for PipelineLayoutCreateFlags {
         Self(0)
     }
 }
-impl PipelineLayoutCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineLayoutCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineLayoutCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineLayoutCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineLayoutCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineLayoutCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineLayoutCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineLayoutCreateFlags, 0x0);
 impl fmt::Display for PipelineLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -526,59 +324,7 @@ impl default::Default for PipelineCacheCreateFlags {
         Self(0)
     }
 }
-impl PipelineCacheCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCacheCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCacheCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCacheCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCacheCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCacheCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCacheCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCacheCreateFlags, 0x1);
 impl fmt::Display for PipelineCacheCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "EXTERNALLY_SYNCHRONIZED_EXT")], f)
@@ -598,59 +344,7 @@ impl default::Default for PipelineDepthStencilStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineDepthStencilStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineDepthStencilStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineDepthStencilStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineDepthStencilStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineDepthStencilStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineDepthStencilStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineDepthStencilStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineDepthStencilStateCreateFlags, 0x3);
 impl fmt::Display for PipelineDepthStencilStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -672,59 +366,7 @@ impl default::Default for PipelineDynamicStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineDynamicStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineDynamicStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineDynamicStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineDynamicStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineDynamicStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineDynamicStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineDynamicStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineDynamicStateCreateFlags, 0x0);
 impl fmt::Display for PipelineDynamicStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -742,59 +384,7 @@ impl default::Default for PipelineColorBlendStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineColorBlendStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineColorBlendStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineColorBlendStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineColorBlendStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineColorBlendStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineColorBlendStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineColorBlendStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineColorBlendStateCreateFlags, 0x1);
 impl fmt::Display for PipelineColorBlendStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM")], f)
@@ -809,59 +399,7 @@ impl default::Default for PipelineMultisampleStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineMultisampleStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineMultisampleStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineMultisampleStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineMultisampleStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineMultisampleStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineMultisampleStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineMultisampleStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineMultisampleStateCreateFlags, 0x0);
 impl fmt::Display for PipelineMultisampleStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -876,59 +414,7 @@ impl default::Default for PipelineRasterizationStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineRasterizationStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineRasterizationStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineRasterizationStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineRasterizationStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineRasterizationStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineRasterizationStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineRasterizationStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineRasterizationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineRasterizationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -943,59 +429,7 @@ impl default::Default for PipelineViewportStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineViewportStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineViewportStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineViewportStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineViewportStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineViewportStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineViewportStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineViewportStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineViewportStateCreateFlags, 0x0);
 impl fmt::Display for PipelineViewportStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1010,59 +444,7 @@ impl default::Default for PipelineTessellationStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineTessellationStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineTessellationStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineTessellationStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineTessellationStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineTessellationStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineTessellationStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineTessellationStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineTessellationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineTessellationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1077,59 +459,7 @@ impl default::Default for PipelineInputAssemblyStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineInputAssemblyStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineInputAssemblyStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineInputAssemblyStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineInputAssemblyStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineInputAssemblyStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineInputAssemblyStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineInputAssemblyStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineInputAssemblyStateCreateFlags, 0x0);
 impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1144,59 +474,7 @@ impl default::Default for PipelineVertexInputStateCreateFlags {
         Self(0)
     }
 }
-impl PipelineVertexInputStateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineVertexInputStateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineVertexInputStateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineVertexInputStateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineVertexInputStateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineVertexInputStateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineVertexInputStateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineVertexInputStateCreateFlags, 0x0);
 impl fmt::Display for PipelineVertexInputStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1216,59 +494,7 @@ impl default::Default for PipelineShaderStageCreateFlags {
         Self(0)
     }
 }
-impl PipelineShaderStageCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineShaderStageCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineShaderStageCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineShaderStageCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineShaderStageCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineShaderStageCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineShaderStageCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineShaderStageCreateFlags, 0x3);
 impl fmt::Display for PipelineShaderStageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1298,59 +524,7 @@ impl default::Default for DescriptorSetLayoutCreateFlags {
         Self(0)
     }
 }
-impl DescriptorSetLayoutCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DescriptorSetLayoutCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DescriptorSetLayoutCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DescriptorSetLayoutCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DescriptorSetLayoutCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DescriptorSetLayoutCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DescriptorSetLayoutCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x7);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1373,59 +547,7 @@ impl default::Default for BufferViewCreateFlags {
         Self(0)
     }
 }
-impl BufferViewCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for BufferViewCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for BufferViewCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for BufferViewCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for BufferViewCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for BufferViewCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for BufferViewCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(BufferViewCreateFlags, 0x0);
 impl fmt::Display for BufferViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1440,59 +562,7 @@ impl default::Default for InstanceCreateFlags {
         Self(0)
     }
 }
-impl InstanceCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for InstanceCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for InstanceCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for InstanceCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for InstanceCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for InstanceCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for InstanceCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(InstanceCreateFlags, 0x0);
 impl fmt::Display for InstanceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1507,59 +577,7 @@ impl default::Default for DeviceCreateFlags {
         Self(0)
     }
 }
-impl DeviceCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DeviceCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DeviceCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DeviceCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DeviceCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DeviceCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DeviceCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DeviceCreateFlags, 0x0);
 impl fmt::Display for DeviceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -1577,59 +595,7 @@ impl default::Default for DeviceQueueCreateFlags {
         Self(0)
     }
 }
-impl DeviceQueueCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DeviceQueueCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DeviceQueueCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DeviceQueueCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DeviceQueueCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DeviceQueueCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DeviceQueueCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DeviceQueueCreateFlags, 0x1);
 impl fmt::Display for DeviceQueueCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
@@ -1655,59 +621,7 @@ impl default::Default for QueueFlags {
         Self(0)
     }
 }
-impl QueueFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for QueueFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for QueueFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for QueueFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for QueueFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for QueueFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for QueueFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(QueueFlags, 0x1f);
 impl fmt::Display for QueueFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1751,59 +665,7 @@ impl default::Default for MemoryPropertyFlags {
         Self(0)
     }
 }
-impl MemoryPropertyFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MemoryPropertyFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MemoryPropertyFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MemoryPropertyFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MemoryPropertyFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MemoryPropertyFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MemoryPropertyFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MemoryPropertyFlags, 0x1ff);
 impl fmt::Display for MemoryPropertyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1838,59 +700,7 @@ impl default::Default for MemoryHeapFlags {
         Self(0)
     }
 }
-impl MemoryHeapFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MemoryHeapFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MemoryHeapFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MemoryHeapFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MemoryHeapFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MemoryHeapFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MemoryHeapFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MemoryHeapFlags, 0x3);
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "DEVICE_LOCAL"), (0x2, "MULTI_INSTANCE")], f)
@@ -1968,59 +778,7 @@ impl default::Default for AccessFlags {
         Self(0)
     }
 }
-impl AccessFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xfffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xfffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AccessFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AccessFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AccessFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AccessFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AccessFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AccessFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AccessFlags, 0xfffffff);
 impl fmt::Display for AccessFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2104,59 +862,7 @@ impl default::Default for BufferUsageFlags {
         Self(0)
     }
 }
-impl BufferUsageFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1a1fff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1a1fff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for BufferUsageFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for BufferUsageFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for BufferUsageFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for BufferUsageFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for BufferUsageFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for BufferUsageFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(BufferUsageFlags, 0x1a1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2204,59 +910,7 @@ impl default::Default for BufferCreateFlags {
         Self(0)
     }
 }
-impl BufferCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for BufferCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for BufferCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for BufferCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for BufferCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for BufferCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for BufferCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(BufferCreateFlags, 0x1f);
 impl fmt::Display for BufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2314,59 +968,7 @@ impl default::Default for ShaderStageFlags {
         Self(0)
     }
 }
-impl ShaderStageFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7fffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7fffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ShaderStageFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ShaderStageFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ShaderStageFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ShaderStageFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ShaderStageFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ShaderStageFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ShaderStageFlags, 0x7fffffff);
 impl fmt::Display for ShaderStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2427,59 +1029,7 @@ impl default::Default for ImageUsageFlags {
         Self(0)
     }
 }
-impl ImageUsageFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x403ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x403ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageUsageFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageUsageFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageUsageFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageUsageFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageUsageFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageUsageFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageUsageFlags, 0x403ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2543,59 +1093,7 @@ impl default::Default for ImageCreateFlags {
         Self(0)
     }
 }
-impl ImageCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7fff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7fff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageCreateFlags, 0x7fff);
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2635,59 +1133,7 @@ impl default::Default for ImageViewCreateFlags {
         Self(0)
     }
 }
-impl ImageViewCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageViewCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageViewCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageViewCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageViewCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageViewCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageViewCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageViewCreateFlags, 0x3);
 impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2755,59 +1201,7 @@ impl default::Default for PipelineCreateFlags {
         Self(0)
     }
 }
-impl PipelineCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7ffbff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7ffbff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCreateFlags, 0x7ffbff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2854,59 +1248,7 @@ impl default::Default for ColorComponentFlags {
         Self(0)
     }
 }
-impl ColorComponentFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ColorComponentFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ColorComponentFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ColorComponentFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ColorComponentFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ColorComponentFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ColorComponentFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ColorComponentFlags, 0xf);
 impl fmt::Display for ColorComponentFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "R"), (0x2, "G"), (0x4, "B"), (0x8, "A")], f)
@@ -2923,59 +1265,7 @@ impl default::Default for FenceCreateFlags {
         Self(0)
     }
 }
-impl FenceCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for FenceCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for FenceCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for FenceCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for FenceCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for FenceCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for FenceCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(FenceCreateFlags, 0x1);
 impl fmt::Display for FenceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "SIGNALED")], f)
@@ -2990,59 +1280,7 @@ impl default::Default for SemaphoreCreateFlags {
         Self(0)
     }
 }
-impl SemaphoreCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SemaphoreCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SemaphoreCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SemaphoreCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SemaphoreCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SemaphoreCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SemaphoreCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SemaphoreCreateFlags, 0x0);
 impl fmt::Display for SemaphoreCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -3126,59 +1364,7 @@ impl default::Default for FormatFeatureFlags {
         Self(0)
     }
 }
-impl FormatFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x61ffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x61ffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for FormatFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for FormatFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for FormatFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for FormatFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for FormatFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for FormatFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(FormatFeatureFlags, 0x61ffffff);
 impl fmt::Display for FormatFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3234,59 +1420,7 @@ impl default::Default for QueryControlFlags {
         Self(0)
     }
 }
-impl QueryControlFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for QueryControlFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for QueryControlFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for QueryControlFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for QueryControlFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for QueryControlFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for QueryControlFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(QueryControlFlags, 0x1);
 impl fmt::Display for QueryControlFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "PRECISE")], f)
@@ -3310,59 +1444,7 @@ impl default::Default for QueryResultFlags {
         Self(0)
     }
 }
-impl QueryResultFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for QueryResultFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for QueryResultFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for QueryResultFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for QueryResultFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for QueryResultFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for QueryResultFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(QueryResultFlags, 0xf);
 impl fmt::Display for QueryResultFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3386,59 +1468,7 @@ impl default::Default for ShaderModuleCreateFlags {
         Self(0)
     }
 }
-impl ShaderModuleCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ShaderModuleCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ShaderModuleCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ShaderModuleCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ShaderModuleCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ShaderModuleCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ShaderModuleCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ShaderModuleCreateFlags, 0x0);
 impl fmt::Display for ShaderModuleCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -3456,59 +1486,7 @@ impl default::Default for EventCreateFlags {
         Self(0)
     }
 }
-impl EventCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for EventCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for EventCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for EventCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for EventCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for EventCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for EventCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(EventCreateFlags, 0x1);
 impl fmt::Display for EventCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "DEVICE_ONLY_KHR")], f)
@@ -3530,59 +1508,7 @@ impl default::Default for CommandPoolCreateFlags {
         Self(0)
     }
 }
-impl CommandPoolCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CommandPoolCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CommandPoolCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CommandPoolCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CommandPoolCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CommandPoolCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CommandPoolCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CommandPoolCreateFlags, 0x7);
 impl fmt::Display for CommandPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3604,59 +1530,7 @@ impl default::Default for CommandPoolResetFlags {
         Self(0)
     }
 }
-impl CommandPoolResetFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CommandPoolResetFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CommandPoolResetFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CommandPoolResetFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CommandPoolResetFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CommandPoolResetFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CommandPoolResetFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CommandPoolResetFlags, 0x1);
 impl fmt::Display for CommandPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "RELEASE_RESOURCES")], f)
@@ -3674,59 +1548,7 @@ impl default::Default for CommandBufferResetFlags {
         Self(0)
     }
 }
-impl CommandBufferResetFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CommandBufferResetFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CommandBufferResetFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CommandBufferResetFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CommandBufferResetFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CommandBufferResetFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CommandBufferResetFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CommandBufferResetFlags, 0x1);
 impl fmt::Display for CommandBufferResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "RELEASE_RESOURCES")], f)
@@ -3746,59 +1568,7 @@ impl default::Default for CommandBufferUsageFlags {
         Self(0)
     }
 }
-impl CommandBufferUsageFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CommandBufferUsageFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CommandBufferUsageFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CommandBufferUsageFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CommandBufferUsageFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CommandBufferUsageFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CommandBufferUsageFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CommandBufferUsageFlags, 0x7);
 impl fmt::Display for CommandBufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3844,59 +1614,7 @@ impl default::Default for QueryPipelineStatisticFlags {
         Self(0)
     }
 }
-impl QueryPipelineStatisticFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for QueryPipelineStatisticFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for QueryPipelineStatisticFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for QueryPipelineStatisticFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for QueryPipelineStatisticFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for QueryPipelineStatisticFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for QueryPipelineStatisticFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(QueryPipelineStatisticFlags, 0x7ff);
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -3927,59 +1645,7 @@ impl default::Default for MemoryMapFlags {
         Self(0)
     }
 }
-impl MemoryMapFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MemoryMapFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MemoryMapFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MemoryMapFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MemoryMapFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MemoryMapFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MemoryMapFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MemoryMapFlags, 0x0);
 impl fmt::Display for MemoryMapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -4013,59 +1679,7 @@ impl default::Default for ImageAspectFlags {
         Self(0)
     }
 }
-impl ImageAspectFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageAspectFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageAspectFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageAspectFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageAspectFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageAspectFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageAspectFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageAspectFlags, 0x7ff);
 impl fmt::Display for ImageAspectFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4099,59 +1713,7 @@ impl default::Default for SparseMemoryBindFlags {
         Self(0)
     }
 }
-impl SparseMemoryBindFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SparseMemoryBindFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SparseMemoryBindFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SparseMemoryBindFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SparseMemoryBindFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SparseMemoryBindFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SparseMemoryBindFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SparseMemoryBindFlags, 0x1);
 impl fmt::Display for SparseMemoryBindFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "METADATA")], f)
@@ -4173,59 +1735,7 @@ impl default::Default for SparseImageFormatFlags {
         Self(0)
     }
 }
-impl SparseImageFormatFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SparseImageFormatFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SparseImageFormatFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SparseImageFormatFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SparseImageFormatFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SparseImageFormatFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SparseImageFormatFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SparseImageFormatFlags, 0x7);
 impl fmt::Display for SparseImageFormatFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4263,59 +1773,7 @@ impl default::Default for SubpassDescriptionFlags {
         Self(0)
     }
 }
-impl SubpassDescriptionFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SubpassDescriptionFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SubpassDescriptionFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SubpassDescriptionFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SubpassDescriptionFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SubpassDescriptionFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SubpassDescriptionFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SubpassDescriptionFlags, 0x7f);
 impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4401,59 +1859,7 @@ impl default::Default for PipelineStageFlags {
         Self(0)
     }
 }
-impl PipelineStageFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3ffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3ffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineStageFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineStageFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineStageFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineStageFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineStageFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineStageFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineStageFlags, 0x3ffffff);
 impl fmt::Display for PipelineStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4514,59 +1920,7 @@ impl default::Default for SampleCountFlags {
         Self(0)
     }
 }
-impl SampleCountFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SampleCountFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SampleCountFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SampleCountFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SampleCountFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SampleCountFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SampleCountFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SampleCountFlags, 0x7f);
 impl fmt::Display for SampleCountFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4596,59 +1950,7 @@ impl default::Default for AttachmentDescriptionFlags {
         Self(0)
     }
 }
-impl AttachmentDescriptionFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AttachmentDescriptionFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AttachmentDescriptionFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AttachmentDescriptionFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AttachmentDescriptionFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AttachmentDescriptionFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AttachmentDescriptionFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AttachmentDescriptionFlags, 0x1);
 impl fmt::Display for AttachmentDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "MAY_ALIAS")], f)
@@ -4670,59 +1972,7 @@ impl default::Default for StencilFaceFlags {
         Self(0)
     }
 }
-impl StencilFaceFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for StencilFaceFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for StencilFaceFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for StencilFaceFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for StencilFaceFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for StencilFaceFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for StencilFaceFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(StencilFaceFlags, 0x3);
 impl fmt::Display for StencilFaceFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4746,59 +1996,7 @@ impl default::Default for CullModeFlags {
         Self(0)
     }
 }
-impl CullModeFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CullModeFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CullModeFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CullModeFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CullModeFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CullModeFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CullModeFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CullModeFlags, 0x3);
 impl fmt::Display for CullModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4824,59 +2022,7 @@ impl default::Default for DescriptorPoolCreateFlags {
         Self(0)
     }
 }
-impl DescriptorPoolCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DescriptorPoolCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DescriptorPoolCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DescriptorPoolCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DescriptorPoolCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DescriptorPoolCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DescriptorPoolCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DescriptorPoolCreateFlags, 0x7);
 impl fmt::Display for DescriptorPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -4899,59 +2045,7 @@ impl default::Default for DescriptorPoolResetFlags {
         Self(0)
     }
 }
-impl DescriptorPoolResetFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DescriptorPoolResetFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DescriptorPoolResetFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DescriptorPoolResetFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DescriptorPoolResetFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DescriptorPoolResetFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DescriptorPoolResetFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DescriptorPoolResetFlags, 0x0);
 impl fmt::Display for DescriptorPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -4974,59 +2068,7 @@ impl default::Default for DependencyFlags {
         Self(0)
     }
 }
-impl DependencyFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DependencyFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DependencyFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DependencyFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DependencyFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DependencyFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DependencyFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DependencyFlags, 0x7);
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5064,59 +2106,7 @@ impl default::Default for SubgroupFeatureFlags {
         Self(0)
     }
 }
-impl SubgroupFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SubgroupFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SubgroupFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SubgroupFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SubgroupFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SubgroupFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SubgroupFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SubgroupFeatureFlags, 0x1ff);
 impl fmt::Display for SubgroupFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5149,59 +2139,7 @@ impl default::Default for IndirectCommandsLayoutUsageFlagsNV {
         Self(0)
     }
 }
-impl IndirectCommandsLayoutUsageFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for IndirectCommandsLayoutUsageFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for IndirectCommandsLayoutUsageFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for IndirectCommandsLayoutUsageFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for IndirectCommandsLayoutUsageFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for IndirectCommandsLayoutUsageFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for IndirectCommandsLayoutUsageFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(IndirectCommandsLayoutUsageFlagsNV, 0x7);
 impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5226,59 +2164,7 @@ impl default::Default for IndirectStateFlagsNV {
         Self(0)
     }
 }
-impl IndirectStateFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for IndirectStateFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for IndirectStateFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for IndirectStateFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for IndirectStateFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for IndirectStateFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for IndirectStateFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(IndirectStateFlagsNV, 0x1);
 impl fmt::Display for IndirectStateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "FRONTFACE")], f)
@@ -5298,59 +2184,7 @@ impl default::Default for GeometryFlagsKHR {
         Self(0)
     }
 }
-impl GeometryFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for GeometryFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for GeometryFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for GeometryFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for GeometryFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for GeometryFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for GeometryFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(GeometryFlagsKHR, 0x3);
 impl fmt::Display for GeometryFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5380,59 +2214,7 @@ impl default::Default for GeometryInstanceFlagsKHR {
         Self(0)
     }
 }
-impl GeometryInstanceFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for GeometryInstanceFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for GeometryInstanceFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for GeometryInstanceFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for GeometryInstanceFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for GeometryInstanceFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for GeometryInstanceFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(GeometryInstanceFlagsKHR, 0xf);
 impl fmt::Display for GeometryInstanceFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5470,59 +2252,7 @@ impl default::Default for BuildAccelerationStructureFlagsKHR {
         Self(0)
     }
 }
-impl BuildAccelerationStructureFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for BuildAccelerationStructureFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for BuildAccelerationStructureFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for BuildAccelerationStructureFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for BuildAccelerationStructureFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for BuildAccelerationStructureFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for BuildAccelerationStructureFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x3f);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5549,59 +2279,7 @@ impl default::Default for PrivateDataSlotCreateFlagsEXT {
         Self(0)
     }
 }
-impl PrivateDataSlotCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PrivateDataSlotCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PrivateDataSlotCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PrivateDataSlotCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PrivateDataSlotCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PrivateDataSlotCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PrivateDataSlotCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PrivateDataSlotCreateFlagsEXT, 0x0);
 impl fmt::Display for PrivateDataSlotCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -5620,59 +2298,7 @@ impl default::Default for AccelerationStructureCreateFlagsKHR {
         Self(0)
     }
 }
-impl AccelerationStructureCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x5)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x5
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AccelerationStructureCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AccelerationStructureCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AccelerationStructureCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AccelerationStructureCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AccelerationStructureCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AccelerationStructureCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AccelerationStructureCreateFlagsKHR, 0x5);
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5691,59 +2317,7 @@ impl default::Default for DescriptorUpdateTemplateCreateFlags {
         Self(0)
     }
 }
-impl DescriptorUpdateTemplateCreateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DescriptorUpdateTemplateCreateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DescriptorUpdateTemplateCreateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DescriptorUpdateTemplateCreateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DescriptorUpdateTemplateCreateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DescriptorUpdateTemplateCreateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DescriptorUpdateTemplateCreateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DescriptorUpdateTemplateCreateFlags, 0x0);
 impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -5763,59 +2337,7 @@ impl default::Default for PipelineCreationFeedbackFlagsEXT {
         Self(0)
     }
 }
-impl PipelineCreationFeedbackFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCreationFeedbackFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCreationFeedbackFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCreationFeedbackFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCreationFeedbackFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCreationFeedbackFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCreationFeedbackFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCreationFeedbackFlagsEXT, 0x7);
 impl fmt::Display for PipelineCreationFeedbackFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5841,59 +2363,7 @@ impl default::Default for PerformanceCounterDescriptionFlagsKHR {
         Self(0)
     }
 }
-impl PerformanceCounterDescriptionFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PerformanceCounterDescriptionFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PerformanceCounterDescriptionFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PerformanceCounterDescriptionFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PerformanceCounterDescriptionFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PerformanceCounterDescriptionFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PerformanceCounterDescriptionFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PerformanceCounterDescriptionFlagsKHR, 0x3);
 impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -5912,59 +2382,7 @@ impl default::Default for AcquireProfilingLockFlagsKHR {
         Self(0)
     }
 }
-impl AcquireProfilingLockFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AcquireProfilingLockFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AcquireProfilingLockFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AcquireProfilingLockFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AcquireProfilingLockFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AcquireProfilingLockFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AcquireProfilingLockFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AcquireProfilingLockFlagsKHR, 0x0);
 impl fmt::Display for AcquireProfilingLockFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -5982,59 +2400,7 @@ impl default::Default for SemaphoreWaitFlags {
         Self(0)
     }
 }
-impl SemaphoreWaitFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SemaphoreWaitFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SemaphoreWaitFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SemaphoreWaitFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SemaphoreWaitFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SemaphoreWaitFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SemaphoreWaitFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SemaphoreWaitFlags, 0x1);
 impl fmt::Display for SemaphoreWaitFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "ANY")], f)
@@ -6050,59 +2416,7 @@ impl default::Default for PipelineCompilerControlFlagsAMD {
         Self(0)
     }
 }
-impl PipelineCompilerControlFlagsAMD {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCompilerControlFlagsAMD {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCompilerControlFlagsAMD {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCompilerControlFlagsAMD {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCompilerControlFlagsAMD {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCompilerControlFlagsAMD {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCompilerControlFlagsAMD {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCompilerControlFlagsAMD, 0x0);
 impl fmt::Display for PipelineCompilerControlFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -6117,59 +2431,7 @@ impl default::Default for ShaderCorePropertiesFlagsAMD {
         Self(0)
     }
 }
-impl ShaderCorePropertiesFlagsAMD {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ShaderCorePropertiesFlagsAMD {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ShaderCorePropertiesFlagsAMD {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ShaderCorePropertiesFlagsAMD {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ShaderCorePropertiesFlagsAMD {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ShaderCorePropertiesFlagsAMD {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ShaderCorePropertiesFlagsAMD {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ShaderCorePropertiesFlagsAMD, 0x0);
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -6188,59 +2450,7 @@ impl default::Default for DeviceDiagnosticsConfigFlagsNV {
         Self(0)
     }
 }
-impl DeviceDiagnosticsConfigFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DeviceDiagnosticsConfigFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DeviceDiagnosticsConfigFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DeviceDiagnosticsConfigFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DeviceDiagnosticsConfigFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DeviceDiagnosticsConfigFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DeviceDiagnosticsConfigFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DeviceDiagnosticsConfigFlagsNV, 0x7);
 impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -6313,59 +2523,7 @@ impl default::Default for AccessFlags2KHR {
         Self(0)
     }
 }
-impl AccessFlags2KHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x870fffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x870fffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AccessFlags2KHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AccessFlags2KHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AccessFlags2KHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AccessFlags2KHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AccessFlags2KHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AccessFlags2KHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AccessFlags2KHR, 0x870fffffff);
 impl fmt::Display for AccessFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -6470,59 +2628,7 @@ impl default::Default for PipelineStageFlags2KHR {
         Self(0)
     }
 }
-impl PipelineStageFlags2KHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1ff03ffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1ff03ffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineStageFlags2KHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineStageFlags2KHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineStageFlags2KHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineStageFlags2KHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineStageFlags2KHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineStageFlags2KHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineStageFlags2KHR, 0x1ff03ffffff);
 impl fmt::Display for PipelineStageFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -6577,59 +2683,7 @@ impl default::Default for AccelerationStructureMotionInfoFlagsNV {
         Self(0)
     }
 }
-impl AccelerationStructureMotionInfoFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AccelerationStructureMotionInfoFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AccelerationStructureMotionInfoFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AccelerationStructureMotionInfoFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AccelerationStructureMotionInfoFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AccelerationStructureMotionInfoFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AccelerationStructureMotionInfoFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AccelerationStructureMotionInfoFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -6644,59 +2698,7 @@ impl default::Default for AccelerationStructureMotionInstanceFlagsNV {
         Self(0)
     }
 }
-impl AccelerationStructureMotionInstanceFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AccelerationStructureMotionInstanceFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AccelerationStructureMotionInstanceFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AccelerationStructureMotionInstanceFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AccelerationStructureMotionInstanceFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AccelerationStructureMotionInstanceFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AccelerationStructureMotionInstanceFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AccelerationStructureMotionInstanceFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -6745,59 +2747,7 @@ impl default::Default for FormatFeatureFlags2KHR {
         Self(0)
     }
 }
-impl FormatFeatureFlags2KHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3e1ffffff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3e1ffffff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for FormatFeatureFlags2KHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for FormatFeatureFlags2KHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for FormatFeatureFlags2KHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for FormatFeatureFlags2KHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for FormatFeatureFlags2KHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for FormatFeatureFlags2KHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(FormatFeatureFlags2KHR, 0x3e1ffffff);
 impl fmt::Display for FormatFeatureFlags2KHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -6857,59 +2807,7 @@ impl default::Default for RenderingFlagsKHR {
         Self(0)
     }
 }
-impl RenderingFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for RenderingFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for RenderingFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for RenderingFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for RenderingFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for RenderingFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for RenderingFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(RenderingFlagsKHR, 0x7);
 impl fmt::Display for RenderingFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -6937,59 +2835,7 @@ impl default::Default for CompositeAlphaFlagsKHR {
         Self(0)
     }
 }
-impl CompositeAlphaFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CompositeAlphaFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CompositeAlphaFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CompositeAlphaFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CompositeAlphaFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CompositeAlphaFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CompositeAlphaFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CompositeAlphaFlagsKHR, 0xf);
 impl fmt::Display for CompositeAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -7018,59 +2864,7 @@ impl default::Default for DisplayPlaneAlphaFlagsKHR {
         Self(0)
     }
 }
-impl DisplayPlaneAlphaFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DisplayPlaneAlphaFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DisplayPlaneAlphaFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DisplayPlaneAlphaFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DisplayPlaneAlphaFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DisplayPlaneAlphaFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DisplayPlaneAlphaFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DisplayPlaneAlphaFlagsKHR, 0xf);
 impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -7104,59 +2898,7 @@ impl default::Default for SurfaceTransformFlagsKHR {
         Self(0)
     }
 }
-impl SurfaceTransformFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1ff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1ff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SurfaceTransformFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SurfaceTransformFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SurfaceTransformFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SurfaceTransformFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SurfaceTransformFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SurfaceTransformFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SurfaceTransformFlagsKHR, 0x1ff);
 impl fmt::Display for SurfaceTransformFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -7194,59 +2936,7 @@ impl default::Default for SwapchainCreateFlagsKHR {
         Self(0)
     }
 }
-impl SwapchainCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SwapchainCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SwapchainCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SwapchainCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SwapchainCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SwapchainCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SwapchainCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SwapchainCreateFlagsKHR, 0x7);
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -7269,59 +2959,7 @@ impl default::Default for DisplayModeCreateFlagsKHR {
         Self(0)
     }
 }
-impl DisplayModeCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DisplayModeCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DisplayModeCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DisplayModeCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DisplayModeCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DisplayModeCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DisplayModeCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DisplayModeCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplayModeCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7336,59 +2974,7 @@ impl default::Default for DisplaySurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl DisplaySurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DisplaySurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DisplaySurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DisplaySurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DisplaySurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DisplaySurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DisplaySurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DisplaySurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7403,59 +2989,7 @@ impl default::Default for AndroidSurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl AndroidSurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for AndroidSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for AndroidSurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for AndroidSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for AndroidSurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for AndroidSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for AndroidSurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(AndroidSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7470,59 +3004,7 @@ impl default::Default for ViSurfaceCreateFlagsNN {
         Self(0)
     }
 }
-impl ViSurfaceCreateFlagsNN {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ViSurfaceCreateFlagsNN {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ViSurfaceCreateFlagsNN {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ViSurfaceCreateFlagsNN {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ViSurfaceCreateFlagsNN {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ViSurfaceCreateFlagsNN {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ViSurfaceCreateFlagsNN {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ViSurfaceCreateFlagsNN, 0x0);
 impl fmt::Display for ViSurfaceCreateFlagsNN {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7537,59 +3019,7 @@ impl default::Default for WaylandSurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl WaylandSurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for WaylandSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for WaylandSurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for WaylandSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for WaylandSurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for WaylandSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for WaylandSurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(WaylandSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7604,59 +3034,7 @@ impl default::Default for Win32SurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl Win32SurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for Win32SurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for Win32SurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for Win32SurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for Win32SurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for Win32SurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for Win32SurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(Win32SurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for Win32SurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7671,59 +3049,7 @@ impl default::Default for XlibSurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl XlibSurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for XlibSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for XlibSurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for XlibSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for XlibSurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for XlibSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for XlibSurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(XlibSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XlibSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7738,59 +3064,7 @@ impl default::Default for XcbSurfaceCreateFlagsKHR {
         Self(0)
     }
 }
-impl XcbSurfaceCreateFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for XcbSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for XcbSurfaceCreateFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for XcbSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for XcbSurfaceCreateFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for XcbSurfaceCreateFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for XcbSurfaceCreateFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(XcbSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XcbSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7805,59 +3079,7 @@ impl default::Default for DirectFBSurfaceCreateFlagsEXT {
         Self(0)
     }
 }
-impl DirectFBSurfaceCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DirectFBSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DirectFBSurfaceCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DirectFBSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DirectFBSurfaceCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DirectFBSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DirectFBSurfaceCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DirectFBSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7872,59 +3094,7 @@ impl default::Default for IOSSurfaceCreateFlagsMVK {
         Self(0)
     }
 }
-impl IOSSurfaceCreateFlagsMVK {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for IOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for IOSSurfaceCreateFlagsMVK {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for IOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for IOSSurfaceCreateFlagsMVK {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for IOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for IOSSurfaceCreateFlagsMVK {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(IOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for IOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -7939,59 +3109,7 @@ impl default::Default for MacOSSurfaceCreateFlagsMVK {
         Self(0)
     }
 }
-impl MacOSSurfaceCreateFlagsMVK {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MacOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MacOSSurfaceCreateFlagsMVK {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MacOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MacOSSurfaceCreateFlagsMVK {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MacOSSurfaceCreateFlagsMVK {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MacOSSurfaceCreateFlagsMVK {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MacOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -8006,59 +3124,7 @@ impl default::Default for MetalSurfaceCreateFlagsEXT {
         Self(0)
     }
 }
-impl MetalSurfaceCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MetalSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MetalSurfaceCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MetalSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MetalSurfaceCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MetalSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MetalSurfaceCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MetalSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for MetalSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -8073,59 +3139,7 @@ impl default::Default for ImagePipeSurfaceCreateFlagsFUCHSIA {
         Self(0)
     }
 }
-impl ImagePipeSurfaceCreateFlagsFUCHSIA {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImagePipeSurfaceCreateFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -8140,59 +3154,7 @@ impl default::Default for HeadlessSurfaceCreateFlagsEXT {
         Self(0)
     }
 }
-impl HeadlessSurfaceCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for HeadlessSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for HeadlessSurfaceCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for HeadlessSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for HeadlessSurfaceCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for HeadlessSurfaceCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for HeadlessSurfaceCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(HeadlessSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -8220,59 +3182,7 @@ impl default::Default for PeerMemoryFeatureFlags {
         Self(0)
     }
 }
-impl PeerMemoryFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PeerMemoryFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PeerMemoryFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PeerMemoryFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PeerMemoryFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PeerMemoryFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PeerMemoryFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PeerMemoryFeatureFlags, 0xf);
 impl fmt::Display for PeerMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8305,59 +3215,7 @@ impl default::Default for MemoryAllocateFlags {
         Self(0)
     }
 }
-impl MemoryAllocateFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for MemoryAllocateFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for MemoryAllocateFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for MemoryAllocateFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for MemoryAllocateFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for MemoryAllocateFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for MemoryAllocateFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(MemoryAllocateFlags, 0x7);
 impl fmt::Display for MemoryAllocateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8390,59 +3248,7 @@ impl default::Default for DeviceGroupPresentModeFlagsKHR {
         Self(0)
     }
 }
-impl DeviceGroupPresentModeFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DeviceGroupPresentModeFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DeviceGroupPresentModeFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DeviceGroupPresentModeFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DeviceGroupPresentModeFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DeviceGroupPresentModeFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DeviceGroupPresentModeFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DeviceGroupPresentModeFlagsKHR, 0xf);
 impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8472,59 +3278,7 @@ impl default::Default for DebugReportFlagsEXT {
         Self(0)
     }
 }
-impl DebugReportFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DebugReportFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DebugReportFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DebugReportFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DebugReportFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DebugReportFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DebugReportFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DebugReportFlagsEXT, 0x1f);
 impl fmt::Display for DebugReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8549,59 +3303,7 @@ impl default::Default for CommandPoolTrimFlags {
         Self(0)
     }
 }
-impl CommandPoolTrimFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for CommandPoolTrimFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for CommandPoolTrimFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for CommandPoolTrimFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for CommandPoolTrimFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for CommandPoolTrimFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for CommandPoolTrimFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(CommandPoolTrimFlags, 0x0);
 impl fmt::Display for CommandPoolTrimFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -8622,59 +3324,7 @@ impl default::Default for ExternalMemoryHandleTypeFlagsNV {
         Self(0)
     }
 }
-impl ExternalMemoryHandleTypeFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalMemoryHandleTypeFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalMemoryHandleTypeFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalMemoryHandleTypeFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalMemoryHandleTypeFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalMemoryHandleTypeFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalMemoryHandleTypeFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalMemoryHandleTypeFlagsNV, 0xf);
 impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8702,59 +3352,7 @@ impl default::Default for ExternalMemoryFeatureFlagsNV {
         Self(0)
     }
 }
-impl ExternalMemoryFeatureFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalMemoryFeatureFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalMemoryFeatureFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalMemoryFeatureFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalMemoryFeatureFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalMemoryFeatureFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalMemoryFeatureFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalMemoryFeatureFlagsNV, 0x7);
 impl fmt::Display for ExternalMemoryFeatureFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8800,59 +3398,7 @@ impl default::Default for ExternalMemoryHandleTypeFlags {
         Self(0)
     }
 }
-impl ExternalMemoryHandleTypeFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1fff)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1fff
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalMemoryHandleTypeFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalMemoryHandleTypeFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalMemoryHandleTypeFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalMemoryHandleTypeFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalMemoryHandleTypeFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalMemoryHandleTypeFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalMemoryHandleTypeFlags, 0x1fff);
 impl fmt::Display for ExternalMemoryHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8893,59 +3439,7 @@ impl default::Default for ExternalMemoryFeatureFlags {
         Self(0)
     }
 }
-impl ExternalMemoryFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalMemoryFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalMemoryFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalMemoryFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalMemoryFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalMemoryFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalMemoryFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalMemoryFeatureFlags, 0x7);
 impl fmt::Display for ExternalMemoryFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -8979,59 +3473,7 @@ impl default::Default for ExternalSemaphoreHandleTypeFlags {
         Self(0)
     }
 }
-impl ExternalSemaphoreHandleTypeFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x9f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x9f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalSemaphoreHandleTypeFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalSemaphoreHandleTypeFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalSemaphoreHandleTypeFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalSemaphoreHandleTypeFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalSemaphoreHandleTypeFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalSemaphoreHandleTypeFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalSemaphoreHandleTypeFlags, 0x9f);
 impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -9063,59 +3505,7 @@ impl default::Default for ExternalSemaphoreFeatureFlags {
         Self(0)
     }
 }
-impl ExternalSemaphoreFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalSemaphoreFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalSemaphoreFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalSemaphoreFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalSemaphoreFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalSemaphoreFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalSemaphoreFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalSemaphoreFeatureFlags, 0x3);
 impl fmt::Display for ExternalSemaphoreFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
@@ -9134,59 +3524,7 @@ impl default::Default for SemaphoreImportFlags {
         Self(0)
     }
 }
-impl SemaphoreImportFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SemaphoreImportFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SemaphoreImportFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SemaphoreImportFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SemaphoreImportFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SemaphoreImportFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SemaphoreImportFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SemaphoreImportFlags, 0x1);
 impl fmt::Display for SemaphoreImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "TEMPORARY")], f)
@@ -9211,59 +3549,7 @@ impl default::Default for ExternalFenceHandleTypeFlags {
         Self(0)
     }
 }
-impl ExternalFenceHandleTypeFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalFenceHandleTypeFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalFenceHandleTypeFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalFenceHandleTypeFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalFenceHandleTypeFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalFenceHandleTypeFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalFenceHandleTypeFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalFenceHandleTypeFlags, 0xf);
 impl fmt::Display for ExternalFenceHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -9293,59 +3579,7 @@ impl default::Default for ExternalFenceFeatureFlags {
         Self(0)
     }
 }
-impl ExternalFenceFeatureFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x3)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x3
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ExternalFenceFeatureFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ExternalFenceFeatureFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ExternalFenceFeatureFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ExternalFenceFeatureFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ExternalFenceFeatureFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ExternalFenceFeatureFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ExternalFenceFeatureFlags, 0x3);
 impl fmt::Display for ExternalFenceFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "EXPORTABLE"), (0x2, "IMPORTABLE")], f)
@@ -9364,59 +3598,7 @@ impl default::Default for FenceImportFlags {
         Self(0)
     }
 }
-impl FenceImportFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for FenceImportFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for FenceImportFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for FenceImportFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for FenceImportFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for FenceImportFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for FenceImportFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(FenceImportFlags, 0x1);
 impl fmt::Display for FenceImportFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "TEMPORARY")], f)
@@ -9434,59 +3616,7 @@ impl default::Default for SurfaceCounterFlagsEXT {
         Self(0)
     }
 }
-impl SurfaceCounterFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SurfaceCounterFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SurfaceCounterFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SurfaceCounterFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SurfaceCounterFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SurfaceCounterFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SurfaceCounterFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SurfaceCounterFlagsEXT, 0x1);
 impl fmt::Display for SurfaceCounterFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "VBLANK")], f)
@@ -9501,59 +3631,7 @@ impl default::Default for PipelineViewportSwizzleStateCreateFlagsNV {
         Self(0)
     }
 }
-impl PipelineViewportSwizzleStateCreateFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineViewportSwizzleStateCreateFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineViewportSwizzleStateCreateFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineViewportSwizzleStateCreateFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineViewportSwizzleStateCreateFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineViewportSwizzleStateCreateFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineViewportSwizzleStateCreateFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineViewportSwizzleStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9568,59 +3646,7 @@ impl default::Default for PipelineDiscardRectangleStateCreateFlagsEXT {
         Self(0)
     }
 }
-impl PipelineDiscardRectangleStateCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineDiscardRectangleStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineDiscardRectangleStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineDiscardRectangleStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineDiscardRectangleStateCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineDiscardRectangleStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9635,59 +3661,7 @@ impl default::Default for PipelineCoverageToColorStateCreateFlagsNV {
         Self(0)
     }
 }
-impl PipelineCoverageToColorStateCreateFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCoverageToColorStateCreateFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCoverageToColorStateCreateFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCoverageToColorStateCreateFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCoverageToColorStateCreateFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCoverageToColorStateCreateFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCoverageToColorStateCreateFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCoverageToColorStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9702,59 +3676,7 @@ impl default::Default for PipelineCoverageModulationStateCreateFlagsNV {
         Self(0)
     }
 }
-impl PipelineCoverageModulationStateCreateFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCoverageModulationStateCreateFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCoverageModulationStateCreateFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCoverageModulationStateCreateFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCoverageModulationStateCreateFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCoverageModulationStateCreateFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCoverageModulationStateCreateFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCoverageModulationStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9769,59 +3691,7 @@ impl default::Default for PipelineCoverageReductionStateCreateFlagsNV {
         Self(0)
     }
 }
-impl PipelineCoverageReductionStateCreateFlagsNV {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineCoverageReductionStateCreateFlagsNV {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineCoverageReductionStateCreateFlagsNV {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineCoverageReductionStateCreateFlagsNV {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineCoverageReductionStateCreateFlagsNV {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineCoverageReductionStateCreateFlagsNV {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineCoverageReductionStateCreateFlagsNV {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineCoverageReductionStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9836,59 +3706,7 @@ impl default::Default for ValidationCacheCreateFlagsEXT {
         Self(0)
     }
 }
-impl ValidationCacheCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ValidationCacheCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ValidationCacheCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ValidationCacheCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ValidationCacheCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ValidationCacheCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ValidationCacheCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ValidationCacheCreateFlagsEXT, 0x0);
 impl fmt::Display for ValidationCacheCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -9908,59 +3726,7 @@ impl default::Default for DebugUtilsMessageSeverityFlagsEXT {
         Self(0)
     }
 }
-impl DebugUtilsMessageSeverityFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1111)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1111
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DebugUtilsMessageSeverityFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DebugUtilsMessageSeverityFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DebugUtilsMessageSeverityFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DebugUtilsMessageSeverityFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DebugUtilsMessageSeverityFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DebugUtilsMessageSeverityFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DebugUtilsMessageSeverityFlagsEXT, 0x1111);
 impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -9983,59 +3749,7 @@ impl default::Default for DebugUtilsMessageTypeFlagsEXT {
         Self(0)
     }
 }
-impl DebugUtilsMessageTypeFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DebugUtilsMessageTypeFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DebugUtilsMessageTypeFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DebugUtilsMessageTypeFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DebugUtilsMessageTypeFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DebugUtilsMessageTypeFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DebugUtilsMessageTypeFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DebugUtilsMessageTypeFlagsEXT, 0x7);
 impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -10054,59 +3768,7 @@ impl default::Default for DebugUtilsMessengerCreateFlagsEXT {
         Self(0)
     }
 }
-impl DebugUtilsMessengerCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DebugUtilsMessengerCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DebugUtilsMessengerCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DebugUtilsMessengerCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DebugUtilsMessengerCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DebugUtilsMessengerCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DebugUtilsMessengerCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DebugUtilsMessengerCreateFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10121,59 +3783,7 @@ impl default::Default for DebugUtilsMessengerCallbackDataFlagsEXT {
         Self(0)
     }
 }
-impl DebugUtilsMessengerCallbackDataFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DebugUtilsMessengerCallbackDataFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DebugUtilsMessengerCallbackDataFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DebugUtilsMessengerCallbackDataFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DebugUtilsMessengerCallbackDataFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DebugUtilsMessengerCallbackDataFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10188,59 +3798,7 @@ impl default::Default for DeviceMemoryReportFlagsEXT {
         Self(0)
     }
 }
-impl DeviceMemoryReportFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DeviceMemoryReportFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DeviceMemoryReportFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DeviceMemoryReportFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DeviceMemoryReportFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DeviceMemoryReportFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DeviceMemoryReportFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DeviceMemoryReportFlagsEXT, 0x0);
 impl fmt::Display for DeviceMemoryReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10255,59 +3813,7 @@ impl default::Default for PipelineRasterizationConservativeStateCreateFlagsEXT {
         Self(0)
     }
 }
-impl PipelineRasterizationConservativeStateCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineRasterizationConservativeStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10331,59 +3837,7 @@ impl default::Default for DescriptorBindingFlags {
         Self(0)
     }
 }
-impl DescriptorBindingFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for DescriptorBindingFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for DescriptorBindingFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for DescriptorBindingFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for DescriptorBindingFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for DescriptorBindingFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for DescriptorBindingFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(DescriptorBindingFlags, 0xf);
 impl fmt::Display for DescriptorBindingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -10410,59 +3864,7 @@ impl default::Default for ConditionalRenderingFlagsEXT {
         Self(0)
     }
 }
-impl ConditionalRenderingFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ConditionalRenderingFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ConditionalRenderingFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ConditionalRenderingFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ConditionalRenderingFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ConditionalRenderingFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ConditionalRenderingFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ConditionalRenderingFlagsEXT, 0x1);
 impl fmt::Display for ConditionalRenderingFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "INVERTED")], f)
@@ -10488,59 +3890,7 @@ impl default::Default for ResolveModeFlags {
         Self(0)
     }
 }
-impl ResolveModeFlags {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0xf)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0xf
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ResolveModeFlags {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ResolveModeFlags {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ResolveModeFlags {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ResolveModeFlags {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ResolveModeFlags {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ResolveModeFlags {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ResolveModeFlags, 0xf);
 impl fmt::Display for ResolveModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -10560,59 +3910,7 @@ impl default::Default for PipelineRasterizationStateStreamCreateFlagsEXT {
         Self(0)
     }
 }
-impl PipelineRasterizationStateStreamCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineRasterizationStateStreamCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineRasterizationStateStreamCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineRasterizationStateStreamCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineRasterizationStateStreamCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineRasterizationStateStreamCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10627,59 +3925,7 @@ impl default::Default for PipelineRasterizationDepthClipStateCreateFlagsEXT {
         Self(0)
     }
 }
-impl PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(PipelineRasterizationDepthClipStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10704,59 +3950,7 @@ impl default::Default for ToolPurposeFlagsEXT {
         Self(0)
     }
 }
-impl ToolPurposeFlagsEXT {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x7f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x7f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ToolPurposeFlagsEXT {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ToolPurposeFlagsEXT {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ToolPurposeFlagsEXT {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ToolPurposeFlagsEXT {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ToolPurposeFlagsEXT {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ToolPurposeFlagsEXT {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ToolPurposeFlagsEXT, 0x7f);
 impl fmt::Display for ToolPurposeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -10785,59 +3979,7 @@ impl default::Default for SubmitFlagsKHR {
         Self(0)
     }
 }
-impl SubmitFlagsKHR {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for SubmitFlagsKHR {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for SubmitFlagsKHR {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for SubmitFlagsKHR {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for SubmitFlagsKHR {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for SubmitFlagsKHR {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for SubmitFlagsKHR {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(SubmitFlagsKHR, 0x1);
 impl fmt::Display for SubmitFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "PROTECTED")], f)
@@ -10852,59 +3994,7 @@ impl default::Default for ImageFormatConstraintsFlagsFUCHSIA {
         Self(0)
     }
 }
-impl ImageFormatConstraintsFlagsFUCHSIA {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x0)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x0
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageFormatConstraintsFlagsFUCHSIA {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageFormatConstraintsFlagsFUCHSIA {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageFormatConstraintsFlagsFUCHSIA {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageFormatConstraintsFlagsFUCHSIA {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageFormatConstraintsFlagsFUCHSIA {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageFormatConstraintsFlagsFUCHSIA {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageFormatConstraintsFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
@@ -10925,59 +4015,7 @@ impl default::Default for ImageConstraintsInfoFlagsFUCHSIA {
         Self(0)
     }
 }
-impl ImageConstraintsInfoFlagsFUCHSIA {
-    pub fn empty() -> Self {
-        Self(0)
-    }
-    pub fn all() -> Self {
-        Self(0x1f)
-    }
-    pub fn is_empty(self) -> bool {
-        self.0 == 0
-    }
-    pub fn is_all(self) -> bool {
-        self.0 == 0x1f
-    }
-    pub fn intersects(self, other: Self) -> bool {
-        (self.0 & other.0) != 0
-    }
-    pub fn contains(self, other: Self) -> bool {
-        (self.0 & other.0) == other.0
-    }
-}
-impl ops::BitOr for ImageConstraintsInfoFlagsFUCHSIA {
-    type Output = Self;
-    fn bitor(self, rhs: Self) -> Self {
-        Self(self.0 | rhs.0)
-    }
-}
-impl ops::BitOrAssign for ImageConstraintsInfoFlagsFUCHSIA {
-    fn bitor_assign(&mut self, rhs: Self) {
-        self.0 |= rhs.0;
-    }
-}
-impl ops::BitAnd for ImageConstraintsInfoFlagsFUCHSIA {
-    type Output = Self;
-    fn bitand(self, rhs: Self) -> Self {
-        Self(self.0 & rhs.0)
-    }
-}
-impl ops::BitAndAssign for ImageConstraintsInfoFlagsFUCHSIA {
-    fn bitand_assign(&mut self, rhs: Self) {
-        self.0 &= rhs.0;
-    }
-}
-impl ops::BitXor for ImageConstraintsInfoFlagsFUCHSIA {
-    type Output = Self;
-    fn bitxor(self, rhs: Self) -> Self {
-        Self(self.0 ^ rhs.0)
-    }
-}
-impl ops::BitXorAssign for ImageConstraintsInfoFlagsFUCHSIA {
-    fn bitxor_assign(&mut self, rhs: Self) {
-        self.0 ^= rhs.0;
-    }
-}
+impl_bitmask!(ImageConstraintsInfoFlagsFUCHSIA, 0x1f);
 impl fmt::Display for ImageConstraintsInfoFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(

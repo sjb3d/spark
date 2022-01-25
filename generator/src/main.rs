@@ -1207,7 +1207,7 @@ impl<'a> Generator<'a> {
                 "#[repr(transparent)] #[derive({derives})] pub struct {enum_name}({interior_type});\nimpl {enum_name} {{",
                 derives=derives, enum_name=enum_name, interior_type=interior_type
             )?;
-            let mut all = 0;
+            let mut all_bits = 0;
             for (ref name, value, ref ext) in &entries {
                 match value {
                     EnumEntryValue::Number { value, ref comment } => {
@@ -1227,7 +1227,7 @@ impl<'a> Generator<'a> {
                                 EnumType::Value => format!("{}", *value as i32),
                             },
                         )?;
-                        all |= value;
+                        all_bits |= value;
                     }
                     EnumEntryValue::Alias(ref alias) => {
                         if name != alias {
@@ -1244,54 +1244,7 @@ impl<'a> Generator<'a> {
             )?;
             match enum_type {
                 EnumType::Bitmask(_) => {
-                    writeln!(
-                        w,
-                        "impl {0} {{\
-                         pub fn empty() -> Self {{ Self(0) }}\
-                         pub fn all() -> Self {{ Self({1:#x}) }}\
-                         pub fn is_empty(self) -> bool {{ self.0 == 0 }}\
-                         pub fn is_all(self) -> bool {{ self.0 == {1:#x} }}\
-                         pub fn intersects(self, other: Self) -> bool {{ (self.0 & other.0) != 0 }}\
-                         pub fn contains(self, other: Self) -> bool {{ (self.0 & other.0) == other.0 }}\
-                         }}",
-                        enum_name, all
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitOr for {} {{ type Output = Self;\
-                         fn bitor(self, rhs: Self) -> Self {{ Self(self.0 | rhs.0) }} }}",
-                        enum_name
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitOrAssign for {} {{\
-                         fn bitor_assign(&mut self, rhs: Self) {{ self.0 |= rhs.0; }} }}",
-                        enum_name
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitAnd for {} {{ type Output = Self;\
-                         fn bitand(self, rhs: Self) -> Self {{ Self(self.0 & rhs.0) }} }}",
-                        enum_name
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitAndAssign for {} {{\
-                         fn bitand_assign(&mut self, rhs: Self) {{ self.0 &= rhs.0; }} }}",
-                        enum_name
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitXor for {} {{ type Output = Self;\
-                         fn bitxor(self, rhs: Self) -> Self {{ Self(self.0 ^ rhs.0) }} }}",
-                        enum_name
-                    )?;
-                    writeln!(
-                        w,
-                        "impl ops::BitXorAssign for {} {{\
-                         fn bitxor_assign(&mut self, rhs: Self) {{ self.0 ^= rhs.0; }} }}",
-                        enum_name
-                    )?;
+                    writeln!(w, "impl_bitmask!({}, {1:#x});", enum_name, all_bits)?;
                     writeln!(
                         w,
                         "impl fmt::Display for {} {{\
