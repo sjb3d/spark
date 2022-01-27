@@ -487,11 +487,28 @@ enum LibCommandStyle {
     Single,
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+struct TypeUsage {
+    is_mutable: bool,
+}
+
+impl Default for TypeUsage {
+    fn default() -> Self {
+        TypeUsage { is_mutable: false }
+    }
+}
+
+impl TypeUsage {
+    fn record_mutable(&mut self, is_mutable: bool) {
+        self.is_mutable |= is_mutable;
+    }
+}
+
 struct Generator<'a> {
     registry: &'a vk::Registry,
     extension_by_name: HashMap<&'a str, &'a vk::Extension>,
     type_by_name: HashMap<&'a str, &'a vk::Type>,
-    used_type_names: HashSet<&'a str>,
+    used_type_names: HashMap<&'a str, TypeUsage>,
     type_name_blacklist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
     bitmask_from_value: HashMap<String, &'a str>,
@@ -602,11 +619,14 @@ impl<'a> Generator<'a> {
                     if let vk::TypeSpec::Code(ref code) = ty.spec {
                         let decl = c_parse_func_pointer_typedef(code.code.as_str());
                         if let CBaseType::Named(name) = decl.proto.ty.base {
-                            self.used_type_names.insert(name);
+                            self.used_type_names.entry(name).or_default();
                         }
                         for param in decl.parameters.iter() {
                             if let CBaseType::Named(name) = param.ty.base {
-                                self.used_type_names.insert(name);
+                                self.used_type_names
+                                    .entry(name)
+                                    .or_default()
+                                    .record_mutable(param.ty.decoration.is_mutable());
                             }
                         }
                     }
@@ -619,7 +639,7 @@ impl<'a> Generator<'a> {
                         }) {
                             let decl = c_parse_variable_decl(member_def.code.as_str());
                             if let CBaseType::Named(name) = decl.ty.base {
-                                self.used_type_names.insert(name);
+                                self.used_type_names.entry(name).or_default();
                             }
                         }
                     }
@@ -724,7 +744,7 @@ impl<'a> Generator<'a> {
                     {
                         match item {
                             vk::InterfaceItem::Type { name, .. } => {
-                                self.used_type_names.insert(name.as_str());
+                                self.used_type_names.entry(name.as_str()).or_default();
                             }
                             vk::InterfaceItem::Enum(en) => {
                                 self.collect_extension_enum(en);
@@ -746,7 +766,7 @@ impl<'a> Generator<'a> {
                         {
                             match item {
                                 vk::InterfaceItem::Type { name, .. } => {
-                                    self.used_type_names.insert(name.as_str());
+                                    self.used_type_names.entry(name.as_str()).or_default();
                                 }
                                 vk::InterfaceItem::Enum(en) => {
                                     self.collect_extension_enum(en);
@@ -785,11 +805,14 @@ impl<'a> Generator<'a> {
                             );
                             let decl = c_parse_function_decl(cmd_def.code.as_str());
                             if let CBaseType::Named(name) = decl.proto.ty.base {
-                                self.used_type_names.insert(name);
+                                self.used_type_names.entry(name).or_default();
                             }
                             for param in decl.parameters.iter() {
                                 if let CBaseType::Named(name) = param.ty.base {
-                                    self.used_type_names.insert(name);
+                                    self.used_type_names
+                                        .entry(name)
+                                        .or_default()
+                                        .record_mutable(param.ty.decoration.is_mutable());
                                 }
                             }
                         }
@@ -935,7 +958,7 @@ impl<'a> Generator<'a> {
             registry,
             extension_by_name: HashMap::new(),
             type_by_name: HashMap::new(),
-            used_type_names: HashSet::new(),
+            used_type_names: HashMap::new(),
             type_name_blacklist: HashSet::new(),
             tag_names: HashSet::new(),
             bitmask_from_value: HashMap::new(),
@@ -1841,6 +1864,7 @@ impl<'a> Generator<'a> {
                     });
                 let needs_setters =
                     ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
+                let is_mutable_parameter = self.used_type_names.get(type_name).unwrap().is_mutable;
                 if is_extended || needs_setters {
                     let generics_decl = if needs_lifetime { "<'a>" } else { "" };
 
@@ -1886,7 +1910,7 @@ impl<'a> Generator<'a> {
                             "unsafe {{ insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _); }}"
                         )?;
                         writeln!(w, "self }}")?;
-                        if ty.returnedonly.is_some() {
+                        if is_mutable_parameter {
                             writeln!(
                                 w,
                                 "pub fn get_mut(&mut self) -> &mut vk::{} {{ &mut self.inner }}",

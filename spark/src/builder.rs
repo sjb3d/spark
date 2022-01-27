@@ -4409,6 +4409,9 @@ impl<'a> PhysicalDeviceFeatures2Builder<'a> {
         }
         self
     }
+    pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceFeatures2 {
+        &mut self.inner
+    }
     pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
         self.inner.s_type = s_type;
         self

@@ -31,6 +31,16 @@ impl CDecoration {
             | CDecoration::PointerToConstPointerToConst => true,
         }
     }
+
+    pub fn is_mutable(&self) -> bool {
+        match self {
+            CDecoration::None
+            | CDecoration::Const
+            | CDecoration::PointerToConst
+            | CDecoration::PointerToConstPointerToConst => false,
+            CDecoration::Pointer | CDecoration::PointerToPointer => true,
+        }
+    }
 }
 
 impl fmt::Display for CDecoration {
