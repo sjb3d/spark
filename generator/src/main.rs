@@ -3233,7 +3233,7 @@ impl<'a> Generator<'a> {
                     "pub fn new() -> LoaderResult<Self> {{\
                      let lib = LIB.as_ref().map_err(|e| e.clone())?;\
                      unsafe {{\
-                     let f = |name: &CStr| lib.get_instance_proc_addr(name);\
+                     let f = |name: &CStr| lib.get_instance_proc_addr(None, name);\
                      Ok(Self {{"
                 )?;
             }
@@ -3267,6 +3267,8 @@ impl<'a> Generator<'a> {
                 writeln!(
                     w,
                     "let f = |name: &CStr| instance.get_device_proc_addr(device, name);\
+                     let lib = LIB.as_ref().map_err(|e| e.clone())?;\
+                     let f_instance = |name: &CStr| lib.get_instance_proc_addr(Some(instance.handle), name);\
                      Ok(Self {{ handle: device, extensions,"
                 )?;
             }
@@ -3283,6 +3285,7 @@ impl<'a> Generator<'a> {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
             let always_load = info.is_core_vulkan_1_0() || category == Category::Loader;
+            let load_on_instance = name == "vkGetPhysicalDeviceToolProperties";
             if name == "vkGetInstanceProcAddr" {
                 writeln!(w, "Some(lib.fp_{})", fn_name)?;
             } else {
@@ -3292,7 +3295,8 @@ impl<'a> Generator<'a> {
                 }
                 writeln!(
                     w,
-                    r#"{{ let fp = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
+                    r#"{{ let fp = {}(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
+                    if load_on_instance { "f_instance" } else { "f" },
                     name
                 )?;
                 let is_core = info

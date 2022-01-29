@@ -65,8 +65,12 @@ impl Lib {
         }
     }
 
-    pub unsafe fn get_instance_proc_addr(&self, name: &CStr) -> Option<vk::FnVoidFunction> {
-        (self.fp_get_instance_proc_addr)(None, name.as_ptr())
+    pub unsafe fn get_instance_proc_addr(
+        &self,
+        instance: Option<vk::Instance>,
+        name: &CStr,
+    ) -> Option<vk::FnVoidFunction> {
+        (self.fp_get_instance_proc_addr)(instance, name.as_ptr())
     }
 }
 

@@ -70,8 +70,12 @@ impl Lib {
         }
     }
 
-    pub unsafe fn get_instance_proc_addr(&self, name: &CStr) -> Option<vk::FnVoidFunction> {
-        (self.fp_get_instance_proc_addr)(None, name.as_ptr())
+    pub unsafe fn get_instance_proc_addr(
+        &self,
+        instance: Option<vk::Instance>,
+        name: &CStr,
+    ) -> Option<vk::FnVoidFunction> {
+        (self.fp_get_instance_proc_addr)(instance, name.as_ptr())
     }
 }
 
@@ -90,7 +94,7 @@ impl Loader {
     pub fn new() -> LoaderResult<Self> {
         let lib = LIB.as_ref().map_err(|e| e.clone())?;
         unsafe {
-            let f = |name: &CStr| lib.get_instance_proc_addr(name);
+            let f = |name: &CStr| lib.get_instance_proc_addr(None, name);
             Ok(Self {
                 fp_create_instance: {
                     let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateInstance\0"));
@@ -7374,6 +7378,8 @@ impl Device {
             }
         }
         let f = |name: &CStr| instance.get_device_proc_addr(device, name);
+        let lib = LIB.as_ref().map_err(|e| e.clone())?;
+        let f_instance = |name: &CStr| lib.get_instance_proc_addr(Some(instance.handle), name);
         Ok(Self {
             handle: device,
             extensions,
@@ -9715,7 +9721,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_tool_properties: if version >= vk::Version::from_raw_parts(1, 3, 0) {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceToolProperties\0",
                 ));
                 if fp.is_none() {
