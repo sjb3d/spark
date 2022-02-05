@@ -1663,6 +1663,7 @@ impl ImageAspectFlags {
     pub const PLANE_0: Self = Self(0x10);
     pub const PLANE_1: Self = Self(0x20);
     pub const PLANE_2: Self = Self(0x40);
+    pub const NONE: Self = Self(0x0);
     pub const PLANE_0_KHR: Self = Self::PLANE_0;
     pub const PLANE_1_KHR: Self = Self::PLANE_1;
     pub const PLANE_2_KHR: Self = Self::PLANE_2;
@@ -1674,8 +1675,7 @@ impl ImageAspectFlags {
     pub const MEMORY_PLANE_2_EXT: Self = Self(0x200);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const MEMORY_PLANE_3_EXT: Self = Self(0x400);
-    /// Added by extension VK_KHR_maintenance4.
-    pub const NONE_KHR: Self = Self(0x0);
+    pub const NONE_KHR: Self = Self::NONE;
 }
 impl default::Default for ImageAspectFlags {
     fn default() -> Self {
@@ -36016,7 +36016,7 @@ impl fmt::Debug for ImageViewMinLodCreateInfoEXT {
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
     pub s_type: StructureType,
-    pub p_next: *const c_void,
+    pub p_next: *mut c_void,
     pub rasterization_order_color_attachment_access: Bool32,
     pub rasterization_order_depth_attachment_access: Bool32,
     pub rasterization_order_stencil_attachment_access: Bool32,
@@ -36027,7 +36027,7 @@ impl default::Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeatur
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM,
-            p_next: ptr::null(),
+            p_next: ptr::null_mut(),
             rasterization_order_color_attachment_access: Bool32::default(),
             rasterization_order_depth_attachment_access: Bool32::default(),
             rasterization_order_stencil_attachment_access: Bool32::default(),

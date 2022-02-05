@@ -20106,12 +20106,9 @@ impl<'a> ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
         self.inner.sysmem_pixel_format = sysmem_pixel_format;
         self
     }
-    pub fn color_space_count(mut self, color_space_count: u32) -> Self {
-        self.inner.color_space_count = color_space_count;
-        self
-    }
-    pub fn p_color_spaces(mut self, p_color_spaces: &'a vk::SysmemColorSpaceFUCHSIA) -> Self {
-        self.inner.p_color_spaces = p_color_spaces;
+    pub fn p_color_spaces(mut self, p_color_spaces: &'a [vk::SysmemColorSpaceFUCHSIA]) -> Self {
+        self.inner.color_space_count = p_color_spaces.len() as u32;
+        self.inner.p_color_spaces = p_color_spaces.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
@@ -20753,7 +20750,7 @@ impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
         self.inner.s_type = s_type;
         self
     }
-    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
