@@ -487,15 +487,9 @@ enum LibCommandStyle {
     Single,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct TypeUsage {
     is_mutable: bool,
-}
-
-impl Default for TypeUsage {
-    fn default() -> Self {
-        TypeUsage { is_mutable: false }
-    }
 }
 
 impl TypeUsage {
@@ -880,7 +874,7 @@ impl<'a> Generator<'a> {
                                     .as_deref()
                                     .and_then(Version::try_from_feature)
                                     .map(CommandRef::Feature)
-                                    .or_else(|| extension.as_deref().map(|s| CommandRef::Extension(s)));
+                                    .or_else(|| extension.as_deref().map(CommandRef::Extension));
                                 Some((cmd_ref, items))
                             }
                             _ => None,
@@ -2574,20 +2568,16 @@ impl<'a> Generator<'a> {
                     } => {
                         let type_name = slice_type_name(inner_type_name);
                         let mutability = if is_mutable { "mut" } else { "" };
-                        if let LibCommandStyle::Single = style {
-                            // bit of a hack: assume all slices share this length, so can be references
-                            if is_optional {
-                                write!(w, "{}: Option<&{}{}>,", rparam.name, mutability, type_name)?;
-                            } else {
-                                write!(w, "{}: &{}{},", rparam.name, mutability, type_name)?;
+                        match (style, is_optional) {
+                            (LibCommandStyle::Single, true) => {
+                                write!(w, "{}: Option<&{}{}>,", rparam.name, mutability, type_name)
                             }
-                        } else {
-                            if is_optional {
-                                write!(w, "{}: Option<&{}[{}]>,", rparam.name, mutability, type_name)?;
-                            } else {
-                                write!(w, "{}: &{}[{}],", rparam.name, mutability, type_name)?;
+                            (LibCommandStyle::Single, false) => {
+                                write!(w, "{}: &{}{},", rparam.name, mutability, type_name)
                             }
-                        }
+                            (_, true) => write!(w, "{}: Option<&{}[{}]>,", rparam.name, mutability, type_name),
+                            (_, false) => write!(w, "{}: &{}[{}],", rparam.name, mutability, type_name),
+                        }?;
                     }
                     LibParamType::Ref {
                         ref inner_type_name,
@@ -3125,8 +3115,8 @@ impl<'a> Generator<'a> {
 
                 if ext.get_category() == category || !dependencies.is_empty() {
                     let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                    let promoted_to_version = ext.promotedto.as_deref().and_then(|s| c_try_parse_version(s));
-                    let min_version = ext.requires_core.as_deref().map(|s| c_parse_version_decimal(s));
+                    let promoted_to_version = ext.promotedto.as_deref().and_then(c_try_parse_version);
+                    let min_version = ext.requires_core.as_deref().map(c_parse_version_decimal);
 
                     let mut support_checks = Vec::new();
                     if let Some(version) = min_version {
