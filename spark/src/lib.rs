@@ -10,14 +10,13 @@ pub mod vk;
 
 use lazy_static::lazy_static;
 use shared_library::dynamic_library::DynamicLibrary;
-use std::ffi::CStr;
-use std::mem;
-use std::mem::MaybeUninit;
-use std::os::raw::{c_int, c_void};
-use std::path::Path;
-use std::ptr;
-use std::result;
-use std::slice;
+use std::{
+    ffi::CStr,
+    mem::{self, MaybeUninit},
+    os::raw::{c_int, c_void},
+    path::Path,
+    ptr, result, slice,
+};
 
 #[doc(no_inline)]
 pub use self::builder::*;

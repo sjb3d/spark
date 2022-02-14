@@ -1,12 +1,14 @@
 #![allow(clippy::wrong_self_convention)]
 
 use super::vk;
-use std::ffi::CStr;
-use std::marker::PhantomData;
-use std::mem;
-use std::ops::Deref;
-use std::os::raw::{c_char, c_int, c_void};
-use std::ptr;
+use std::{
+    ffi::CStr,
+    marker::PhantomData,
+    mem,
+    ops::Deref,
+    os::raw::{c_char, c_int, c_void},
+    ptr,
+};
 
 pub trait Builder<'a> {
     type Type;

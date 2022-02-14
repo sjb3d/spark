@@ -1,13 +1,15 @@
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
-use std::default;
-use std::os::raw::{c_void, c_char, c_int, c_ulong};
-use std::ptr;
-use std::ffi::CStr;
-use std::mem;
-use std::num;
-use std::fmt;
-use std::ops;
+use std::{
+    default::Default,
+    os::raw::{c_void, c_char, c_int, c_ulong},
+    ptr,
+    ffi::CStr,
+    mem,
+    num,
+    fmt,
+    ops,
+};
 
 /// Wrapper around Vulkan API version number
 #[repr(transparent)]
@@ -42,7 +44,7 @@ impl Version {
         self.0 & 0xfff
     }
 }
-impl default::Default for Version {
+impl Default for Version {
     fn default() -> Self {
         Self::from_raw_parts(1, 0, 0)
     }

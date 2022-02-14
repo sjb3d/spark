@@ -1,13 +1,12 @@
 #![allow(clippy::too_many_arguments, clippy::unreadable_literal)]
 
-use std::default;
-use std::ffi::CStr;
-use std::fmt;
-use std::mem;
-use std::num;
-use std::ops;
-use std::os::raw::{c_char, c_int, c_ulong, c_void};
-use std::ptr;
+use std::{
+    default::Default,
+    ffi::CStr,
+    fmt, mem, num, ops,
+    os::raw::{c_char, c_int, c_ulong, c_void},
+    ptr,
+};
 
 /// Wrapper around Vulkan API version number
 #[repr(transparent)]
@@ -42,7 +41,7 @@ impl Version {
         self.0 & 0xfff
     }
 }
-impl default::Default for Version {
+impl Default for Version {
     fn default() -> Self {
         Self::from_raw_parts(1, 0, 0)
     }
@@ -224,16 +223,11 @@ pub type Flags64 = u64;
 pub type DeviceSize = u64;
 pub type DeviceAddress = u64;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FramebufferCreateFlags(u32);
 impl FramebufferCreateFlags {
     pub const IMAGELESS: Self = Self(0x1);
     pub const IMAGELESS_KHR: Self = Self::IMAGELESS;
-}
-impl default::Default for FramebufferCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(FramebufferCreateFlags, 0x1);
 impl fmt::Display for FramebufferCreateFlags {
@@ -242,14 +236,9 @@ impl fmt::Display for FramebufferCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueryPoolCreateFlags(u32);
 impl QueryPoolCreateFlags {}
-impl default::Default for QueryPoolCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(QueryPoolCreateFlags, 0x0);
 impl fmt::Display for QueryPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -257,16 +246,11 @@ impl fmt::Display for QueryPoolCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RenderPassCreateFlags(u32);
 impl RenderPassCreateFlags {
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const TRANSFORM_QCOM: Self = Self(0x2);
-}
-impl default::Default for RenderPassCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(RenderPassCreateFlags, 0x2);
 impl fmt::Display for RenderPassCreateFlags {
@@ -275,18 +259,13 @@ impl fmt::Display for RenderPassCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SamplerCreateFlags(u32);
 impl SamplerCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = Self(0x2);
-}
-impl default::Default for SamplerCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SamplerCreateFlags, 0x3);
 impl fmt::Display for SamplerCreateFlags {
@@ -299,14 +278,9 @@ impl fmt::Display for SamplerCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineLayoutCreateFlags(u32);
 impl PipelineLayoutCreateFlags {}
-impl default::Default for PipelineLayoutCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineLayoutCreateFlags, 0x0);
 impl fmt::Display for PipelineLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -314,16 +288,11 @@ impl fmt::Display for PipelineLayoutCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCacheCreateFlags(u32);
 impl PipelineCacheCreateFlags {
     pub const EXTERNALLY_SYNCHRONIZED: Self = Self(0x1);
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self::EXTERNALLY_SYNCHRONIZED;
-}
-impl default::Default for PipelineCacheCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PipelineCacheCreateFlags, 0x1);
 impl fmt::Display for PipelineCacheCreateFlags {
@@ -332,18 +301,13 @@ impl fmt::Display for PipelineCacheCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineDepthStencilStateCreateFlags(u32);
 impl PipelineDepthStencilStateCreateFlags {
     /// Added by extension VK_ARM_rasterization_order_attachment_access.
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x1);
     /// Added by extension VK_ARM_rasterization_order_attachment_access.
     pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x2);
-}
-impl default::Default for PipelineDepthStencilStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PipelineDepthStencilStateCreateFlags, 0x3);
 impl fmt::Display for PipelineDepthStencilStateCreateFlags {
@@ -359,14 +323,9 @@ impl fmt::Display for PipelineDepthStencilStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineDynamicStateCreateFlags(u32);
 impl PipelineDynamicStateCreateFlags {}
-impl default::Default for PipelineDynamicStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineDynamicStateCreateFlags, 0x0);
 impl fmt::Display for PipelineDynamicStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -374,16 +333,11 @@ impl fmt::Display for PipelineDynamicStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineColorBlendStateCreateFlags(u32);
 impl PipelineColorBlendStateCreateFlags {
     /// Added by extension VK_ARM_rasterization_order_attachment_access.
     pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM: Self = Self(0x1);
-}
-impl default::Default for PipelineColorBlendStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PipelineColorBlendStateCreateFlags, 0x1);
 impl fmt::Display for PipelineColorBlendStateCreateFlags {
@@ -392,14 +346,9 @@ impl fmt::Display for PipelineColorBlendStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineMultisampleStateCreateFlags(u32);
 impl PipelineMultisampleStateCreateFlags {}
-impl default::Default for PipelineMultisampleStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineMultisampleStateCreateFlags, 0x0);
 impl fmt::Display for PipelineMultisampleStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -407,14 +356,9 @@ impl fmt::Display for PipelineMultisampleStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationStateCreateFlags(u32);
 impl PipelineRasterizationStateCreateFlags {}
-impl default::Default for PipelineRasterizationStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineRasterizationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineRasterizationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -422,14 +366,9 @@ impl fmt::Display for PipelineRasterizationStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineViewportStateCreateFlags(u32);
 impl PipelineViewportStateCreateFlags {}
-impl default::Default for PipelineViewportStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineViewportStateCreateFlags, 0x0);
 impl fmt::Display for PipelineViewportStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -437,14 +376,9 @@ impl fmt::Display for PipelineViewportStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineTessellationStateCreateFlags(u32);
 impl PipelineTessellationStateCreateFlags {}
-impl default::Default for PipelineTessellationStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineTessellationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineTessellationStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -452,14 +386,9 @@ impl fmt::Display for PipelineTessellationStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineInputAssemblyStateCreateFlags(u32);
 impl PipelineInputAssemblyStateCreateFlags {}
-impl default::Default for PipelineInputAssemblyStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineInputAssemblyStateCreateFlags, 0x0);
 impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -467,14 +396,9 @@ impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineVertexInputStateCreateFlags(u32);
 impl PipelineVertexInputStateCreateFlags {}
-impl default::Default for PipelineVertexInputStateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineVertexInputStateCreateFlags, 0x0);
 impl fmt::Display for PipelineVertexInputStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -482,18 +406,13 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineShaderStageCreateFlags(u32);
 impl PipelineShaderStageCreateFlags {
     pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x1);
     pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x2);
     pub const ALLOW_VARYING_SUBGROUP_SIZE_EXT: Self = Self::ALLOW_VARYING_SUBGROUP_SIZE;
     pub const REQUIRE_FULL_SUBGROUPS_EXT: Self = Self::REQUIRE_FULL_SUBGROUPS;
-}
-impl default::Default for PipelineShaderStageCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PipelineShaderStageCreateFlags, 0x3);
 impl fmt::Display for PipelineShaderStageCreateFlags {
@@ -506,7 +425,7 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorSetLayoutCreateFlags(u32);
 impl DescriptorSetLayoutCreateFlags {
     pub const UPDATE_AFTER_BIND_POOL: Self = Self(0x2);
@@ -516,11 +435,6 @@ impl DescriptorSetLayoutCreateFlags {
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self::UPDATE_AFTER_BIND_POOL;
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const HOST_ONLY_POOL_VALVE: Self = Self(0x4);
-}
-impl default::Default for DescriptorSetLayoutCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x7);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
@@ -537,14 +451,9 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BufferViewCreateFlags(u32);
 impl BufferViewCreateFlags {}
-impl default::Default for BufferViewCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(BufferViewCreateFlags, 0x0);
 impl fmt::Display for BufferViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -552,14 +461,9 @@ impl fmt::Display for BufferViewCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct InstanceCreateFlags(u32);
 impl InstanceCreateFlags {}
-impl default::Default for InstanceCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(InstanceCreateFlags, 0x0);
 impl fmt::Display for InstanceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -567,14 +471,9 @@ impl fmt::Display for InstanceCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceCreateFlags(u32);
 impl DeviceCreateFlags {}
-impl default::Default for DeviceCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DeviceCreateFlags, 0x0);
 impl fmt::Display for DeviceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -582,16 +481,11 @@ impl fmt::Display for DeviceCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceQueueCreateFlags(u32);
 impl DeviceQueueCreateFlags {
     /// Queue is a protected-capable device queue
     pub const PROTECTED: Self = Self(0x1);
-}
-impl default::Default for DeviceQueueCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DeviceQueueCreateFlags, 0x1);
 impl fmt::Display for DeviceQueueCreateFlags {
@@ -600,7 +494,7 @@ impl fmt::Display for DeviceQueueCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueueFlags(u32);
 impl QueueFlags {
     /// Queue supports graphics operations
@@ -613,11 +507,6 @@ impl QueueFlags {
     pub const SPARSE_BINDING: Self = Self(0x8);
     /// Queues may support protected operations
     pub const PROTECTED: Self = Self(0x10);
-}
-impl default::Default for QueueFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(QueueFlags, 0x1f);
 impl fmt::Display for QueueFlags {
@@ -636,7 +525,7 @@ impl fmt::Display for QueueFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryPropertyFlags(u32);
 impl MemoryPropertyFlags {
     /// If otherwise stated, then allocate memory on device
@@ -657,11 +546,6 @@ impl MemoryPropertyFlags {
     pub const DEVICE_UNCACHED_AMD: Self = Self(0x80);
     /// Added by extension VK_NV_external_memory_rdma.
     pub const RDMA_CAPABLE_NV: Self = Self(0x100);
-}
-impl default::Default for MemoryPropertyFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(MemoryPropertyFlags, 0x1ff);
 impl fmt::Display for MemoryPropertyFlags {
@@ -684,7 +568,7 @@ impl fmt::Display for MemoryPropertyFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryHeapFlags(u32);
 impl MemoryHeapFlags {
     /// If set, heap represents device memory
@@ -693,11 +577,6 @@ impl MemoryHeapFlags {
     pub const MULTI_INSTANCE: Self = Self(0x2);
     pub const MULTI_INSTANCE_KHR: Self = Self::MULTI_INSTANCE;
 }
-impl default::Default for MemoryHeapFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(MemoryHeapFlags, 0x3);
 impl fmt::Display for MemoryHeapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -705,7 +584,7 @@ impl fmt::Display for MemoryHeapFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccessFlags(u32);
 impl AccessFlags {
     /// Controls coherency of indirect command reads
@@ -771,11 +650,6 @@ impl AccessFlags {
     pub const COMMAND_PREPROCESS_WRITE_NV: Self = Self(0x40000);
     pub const NONE_KHR: Self = Self::NONE;
 }
-impl default::Default for AccessFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AccessFlags, 0xfffffff);
 impl fmt::Display for AccessFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -816,7 +690,7 @@ impl fmt::Display for AccessFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BufferUsageFlags(u32);
 impl BufferUsageFlags {
     /// Can be used as a source of transfer operations
@@ -855,11 +729,6 @@ impl BufferUsageFlags {
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
     pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self::SHADER_DEVICE_ADDRESS;
 }
-impl default::Default for BufferUsageFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(BufferUsageFlags, 0x1a1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -888,7 +757,7 @@ impl fmt::Display for BufferUsageFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BufferCreateFlags(u32);
 impl BufferCreateFlags {
     /// Buffer should support sparse backing
@@ -902,11 +771,6 @@ impl BufferCreateFlags {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x10);
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
-}
-impl default::Default for BufferCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(BufferCreateFlags, 0x1f);
 impl fmt::Display for BufferCreateFlags {
@@ -925,7 +789,7 @@ impl fmt::Display for BufferCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ShaderStageFlags(u32);
 impl ShaderStageFlags {
     pub const VERTEX: Self = Self(0x1);
@@ -961,11 +825,6 @@ impl ShaderStageFlags {
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x4000);
 }
-impl default::Default for ShaderStageFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ShaderStageFlags, 0x7fffffff);
 impl fmt::Display for ShaderStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -995,7 +854,7 @@ impl fmt::Display for ShaderStageFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageUsageFlags(u32);
 impl ImageUsageFlags {
     /// Can be used as a source of transfer operations
@@ -1022,11 +881,6 @@ impl ImageUsageFlags {
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x40000);
 }
-impl default::Default for ImageUsageFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ImageUsageFlags, 0x403ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1050,7 +904,7 @@ impl fmt::Display for ImageUsageFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageCreateFlags(u32);
 impl ImageCreateFlags {
     /// Image should support sparse backing
@@ -1088,11 +942,6 @@ impl ImageCreateFlags {
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self(0x8000);
 }
-impl default::Default for ImageCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ImageCreateFlags, 0xffff);
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1121,18 +970,13 @@ impl fmt::Display for ImageCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageViewCreateFlags(u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const FRAGMENT_DENSITY_MAP_DEFERRED_EXT: Self = Self(0x2);
-}
-impl default::Default for ImageViewCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ImageViewCreateFlags, 0x3);
 impl fmt::Display for ImageViewCreateFlags {
@@ -1148,7 +992,7 @@ impl fmt::Display for ImageViewCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCreateFlags(u32);
 impl PipelineCreateFlags {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
@@ -1197,11 +1041,6 @@ impl PipelineCreateFlags {
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
 }
-impl default::Default for PipelineCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineCreateFlags, 0x7ffbff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1236,18 +1075,13 @@ impl fmt::Display for PipelineCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ColorComponentFlags(u32);
 impl ColorComponentFlags {
     pub const R: Self = Self(0x1);
     pub const G: Self = Self(0x2);
     pub const B: Self = Self(0x4);
     pub const A: Self = Self(0x8);
-}
-impl default::Default for ColorComponentFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ColorComponentFlags, 0xf);
 impl fmt::Display for ColorComponentFlags {
@@ -1256,15 +1090,10 @@ impl fmt::Display for ColorComponentFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FenceCreateFlags(u32);
 impl FenceCreateFlags {
     pub const SIGNALED: Self = Self(0x1);
-}
-impl default::Default for FenceCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(FenceCreateFlags, 0x1);
 impl fmt::Display for FenceCreateFlags {
@@ -1273,14 +1102,9 @@ impl fmt::Display for FenceCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SemaphoreCreateFlags(u32);
 impl SemaphoreCreateFlags {}
-impl default::Default for SemaphoreCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(SemaphoreCreateFlags, 0x0);
 impl fmt::Display for SemaphoreCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1288,7 +1112,7 @@ impl fmt::Display for SemaphoreCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FormatFeatureFlags(u32);
 impl FormatFeatureFlags {
     /// Format can be used for sampled images (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
@@ -1360,11 +1184,6 @@ impl FormatFeatureFlags {
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x40000000);
 }
-impl default::Default for FormatFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(FormatFeatureFlags, 0x61ffffff);
 impl fmt::Display for FormatFeatureFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1410,16 +1229,11 @@ impl fmt::Display for FormatFeatureFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueryControlFlags(u32);
 impl QueryControlFlags {
     /// Require precise results to be collected by the query
     pub const PRECISE: Self = Self(0x1);
-}
-impl default::Default for QueryControlFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(QueryControlFlags, 0x1);
 impl fmt::Display for QueryControlFlags {
@@ -1428,7 +1242,7 @@ impl fmt::Display for QueryControlFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueryResultFlags(u32);
 impl QueryResultFlags {
     /// Results of the queries are written to the destination buffer as 64-bit values
@@ -1439,11 +1253,6 @@ impl QueryResultFlags {
     pub const WITH_AVAILABILITY: Self = Self(0x4);
     /// Copy the partial results of the query even if the final results are not available
     pub const PARTIAL: Self = Self(0x8);
-}
-impl default::Default for QueryResultFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(QueryResultFlags, 0xf);
 impl fmt::Display for QueryResultFlags {
@@ -1461,14 +1270,9 @@ impl fmt::Display for QueryResultFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ShaderModuleCreateFlags(u32);
 impl ShaderModuleCreateFlags {}
-impl default::Default for ShaderModuleCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ShaderModuleCreateFlags, 0x0);
 impl fmt::Display for ShaderModuleCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1476,16 +1280,11 @@ impl fmt::Display for ShaderModuleCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct EventCreateFlags(u32);
 impl EventCreateFlags {
     pub const DEVICE_ONLY: Self = Self(0x1);
     pub const DEVICE_ONLY_KHR: Self = Self::DEVICE_ONLY;
-}
-impl default::Default for EventCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(EventCreateFlags, 0x1);
 impl fmt::Display for EventCreateFlags {
@@ -1494,7 +1293,7 @@ impl fmt::Display for EventCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CommandPoolCreateFlags(u32);
 impl CommandPoolCreateFlags {
     /// Command buffers have a short lifetime
@@ -1503,11 +1302,6 @@ impl CommandPoolCreateFlags {
     pub const RESET_COMMAND_BUFFER: Self = Self(0x2);
     /// Command buffers allocated from pool are protected command buffers
     pub const PROTECTED: Self = Self(0x4);
-}
-impl default::Default for CommandPoolCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CommandPoolCreateFlags, 0x7);
 impl fmt::Display for CommandPoolCreateFlags {
@@ -1520,16 +1314,11 @@ impl fmt::Display for CommandPoolCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CommandPoolResetFlags(u32);
 impl CommandPoolResetFlags {
     /// Release resources owned by the pool
     pub const RELEASE_RESOURCES: Self = Self(0x1);
-}
-impl default::Default for CommandPoolResetFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CommandPoolResetFlags, 0x1);
 impl fmt::Display for CommandPoolResetFlags {
@@ -1538,16 +1327,11 @@ impl fmt::Display for CommandPoolResetFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CommandBufferResetFlags(u32);
 impl CommandBufferResetFlags {
     /// Release resources owned by the buffer
     pub const RELEASE_RESOURCES: Self = Self(0x1);
-}
-impl default::Default for CommandBufferResetFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CommandBufferResetFlags, 0x1);
 impl fmt::Display for CommandBufferResetFlags {
@@ -1556,18 +1340,13 @@ impl fmt::Display for CommandBufferResetFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CommandBufferUsageFlags(u32);
 impl CommandBufferUsageFlags {
     pub const ONE_TIME_SUBMIT: Self = Self(0x1);
     pub const RENDER_PASS_CONTINUE: Self = Self(0x2);
     /// Command buffer may be submitted/executed more than once simultaneously
     pub const SIMULTANEOUS_USE: Self = Self(0x4);
-}
-impl default::Default for CommandBufferUsageFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CommandBufferUsageFlags, 0x7);
 impl fmt::Display for CommandBufferUsageFlags {
@@ -1584,7 +1363,7 @@ impl fmt::Display for CommandBufferUsageFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueryPipelineStatisticFlags(u32);
 impl QueryPipelineStatisticFlags {
     /// Optional
@@ -1610,11 +1389,6 @@ impl QueryPipelineStatisticFlags {
     /// Optional
     pub const COMPUTE_SHADER_INVOCATIONS: Self = Self(0x400);
 }
-impl default::Default for QueryPipelineStatisticFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(QueryPipelineStatisticFlags, 0x7ff);
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1638,14 +1412,9 @@ impl fmt::Display for QueryPipelineStatisticFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryMapFlags(u32);
 impl MemoryMapFlags {}
-impl default::Default for MemoryMapFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(MemoryMapFlags, 0x0);
 impl fmt::Display for MemoryMapFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1653,7 +1422,7 @@ impl fmt::Display for MemoryMapFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageAspectFlags(u32);
 impl ImageAspectFlags {
     pub const COLOR: Self = Self(0x1);
@@ -1676,11 +1445,6 @@ impl ImageAspectFlags {
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const MEMORY_PLANE_3_EXT: Self = Self(0x400);
     pub const NONE_KHR: Self = Self::NONE;
-}
-impl default::Default for ImageAspectFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ImageAspectFlags, 0x7ff);
 impl fmt::Display for ImageAspectFlags {
@@ -1705,16 +1469,11 @@ impl fmt::Display for ImageAspectFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SparseMemoryBindFlags(u32);
 impl SparseMemoryBindFlags {
     /// Operation binds resource metadata to memory
     pub const METADATA: Self = Self(0x1);
-}
-impl default::Default for SparseMemoryBindFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SparseMemoryBindFlags, 0x1);
 impl fmt::Display for SparseMemoryBindFlags {
@@ -1723,7 +1482,7 @@ impl fmt::Display for SparseMemoryBindFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SparseImageFormatFlags(u32);
 impl SparseImageFormatFlags {
     /// Image uses a single mip tail region for all array layers
@@ -1732,11 +1491,6 @@ impl SparseImageFormatFlags {
     pub const ALIGNED_MIP_SIZE: Self = Self(0x2);
     /// Image uses a non-standard sparse image block dimensions
     pub const NONSTANDARD_BLOCK_SIZE: Self = Self(0x4);
-}
-impl default::Default for SparseImageFormatFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SparseImageFormatFlags, 0x7);
 impl fmt::Display for SparseImageFormatFlags {
@@ -1753,7 +1507,7 @@ impl fmt::Display for SparseImageFormatFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SubpassDescriptionFlags(u32);
 impl SubpassDescriptionFlags {
     /// Added by extension VK_NVX_multiview_per_view_attributes.
@@ -1770,11 +1524,6 @@ impl SubpassDescriptionFlags {
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x20);
     /// Added by extension VK_ARM_rasterization_order_attachment_access.
     pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x40);
-}
-impl default::Default for SubpassDescriptionFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SubpassDescriptionFlags, 0x7f);
 impl fmt::Display for SubpassDescriptionFlags {
@@ -1795,7 +1544,7 @@ impl fmt::Display for SubpassDescriptionFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineStageFlags(u32);
 impl PipelineStageFlags {
     /// Before subsequent commands are processed
@@ -1857,11 +1606,6 @@ impl PipelineStageFlags {
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
     pub const NONE_KHR: Self = Self::NONE;
 }
-impl default::Default for PipelineStageFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineStageFlags, 0x3ffffff);
 impl fmt::Display for PipelineStageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1900,7 +1644,7 @@ impl fmt::Display for PipelineStageFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SampleCountFlags(u32);
 impl SampleCountFlags {
     /// Sample count 1 supported
@@ -1917,11 +1661,6 @@ impl SampleCountFlags {
     pub const N32: Self = Self(0x20);
     /// Sample count 64 supported
     pub const N64: Self = Self(0x40);
-}
-impl default::Default for SampleCountFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SampleCountFlags, 0x7f);
 impl fmt::Display for SampleCountFlags {
@@ -1942,16 +1681,11 @@ impl fmt::Display for SampleCountFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AttachmentDescriptionFlags(u32);
 impl AttachmentDescriptionFlags {
     /// The attachment may alias physical memory of another attachment in the same render pass
     pub const MAY_ALIAS: Self = Self(0x1);
-}
-impl default::Default for AttachmentDescriptionFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(AttachmentDescriptionFlags, 0x1);
 impl fmt::Display for AttachmentDescriptionFlags {
@@ -1960,7 +1694,7 @@ impl fmt::Display for AttachmentDescriptionFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct StencilFaceFlags(u32);
 impl StencilFaceFlags {
     /// Front face
@@ -1969,11 +1703,6 @@ impl StencilFaceFlags {
     pub const BACK: Self = Self(0x2);
     /// Front and back faces
     pub const FRONT_AND_BACK: Self = Self(0x3);
-}
-impl default::Default for StencilFaceFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(StencilFaceFlags, 0x3);
 impl fmt::Display for StencilFaceFlags {
@@ -1986,18 +1715,13 @@ impl fmt::Display for StencilFaceFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CullModeFlags(u32);
 impl CullModeFlags {
     pub const NONE: Self = Self(0x0);
     pub const FRONT: Self = Self(0x1);
     pub const BACK: Self = Self(0x2);
     pub const FRONT_AND_BACK: Self = Self(0x3);
-}
-impl default::Default for CullModeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CullModeFlags, 0x3);
 impl fmt::Display for CullModeFlags {
@@ -2010,7 +1734,7 @@ impl fmt::Display for CullModeFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorPoolCreateFlags(u32);
 impl DescriptorPoolCreateFlags {
     /// Descriptor sets may be freed individually
@@ -2019,11 +1743,6 @@ impl DescriptorPoolCreateFlags {
     pub const UPDATE_AFTER_BIND_EXT: Self = Self::UPDATE_AFTER_BIND;
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const HOST_ONLY_VALVE: Self = Self(0x4);
-}
-impl default::Default for DescriptorPoolCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DescriptorPoolCreateFlags, 0x7);
 impl fmt::Display for DescriptorPoolCreateFlags {
@@ -2040,14 +1759,9 @@ impl fmt::Display for DescriptorPoolCreateFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorPoolResetFlags(u32);
 impl DescriptorPoolResetFlags {}
-impl default::Default for DescriptorPoolResetFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DescriptorPoolResetFlags, 0x0);
 impl fmt::Display for DescriptorPoolResetFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2055,7 +1769,7 @@ impl fmt::Display for DescriptorPoolResetFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DependencyFlags(u32);
 impl DependencyFlags {
     /// Dependency is per pixel region
@@ -2065,11 +1779,6 @@ impl DependencyFlags {
     pub const VIEW_LOCAL: Self = Self(0x2);
     pub const VIEW_LOCAL_KHR: Self = Self::VIEW_LOCAL;
     pub const DEVICE_GROUP_KHR: Self = Self::DEVICE_GROUP;
-}
-impl default::Default for DependencyFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DependencyFlags, 0x7);
 impl fmt::Display for DependencyFlags {
@@ -2082,7 +1791,7 @@ impl fmt::Display for DependencyFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SubgroupFeatureFlags(u32);
 impl SubgroupFeatureFlags {
     /// Basic subgroup operations
@@ -2103,11 +1812,6 @@ impl SubgroupFeatureFlags {
     pub const QUAD: Self = Self(0x80);
     /// Added by extension VK_NV_shader_subgroup_partitioned.
     pub const PARTITIONED_NV: Self = Self(0x100);
-}
-impl default::Default for SubgroupFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SubgroupFeatureFlags, 0x1ff);
 impl fmt::Display for SubgroupFeatureFlags {
@@ -2130,17 +1834,12 @@ impl fmt::Display for SubgroupFeatureFlags {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsLayoutUsageFlagsNV(u32);
 impl IndirectCommandsLayoutUsageFlagsNV {
     pub const EXPLICIT_PREPROCESS: Self = Self(0x1);
     pub const INDEXED_SEQUENCES: Self = Self(0x2);
     pub const UNORDERED_SEQUENCES: Self = Self(0x4);
-}
-impl default::Default for IndirectCommandsLayoutUsageFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(IndirectCommandsLayoutUsageFlagsNV, 0x7);
 impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
@@ -2157,15 +1856,10 @@ impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct IndirectStateFlagsNV(u32);
 impl IndirectStateFlagsNV {
     pub const FRONTFACE: Self = Self(0x1);
-}
-impl default::Default for IndirectStateFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(IndirectStateFlagsNV, 0x1);
 impl fmt::Display for IndirectStateFlagsNV {
@@ -2174,18 +1868,13 @@ impl fmt::Display for IndirectStateFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct GeometryFlagsKHR(u32);
 impl GeometryFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const NO_DUPLICATE_ANY_HIT_INVOCATION: Self = Self(0x2);
     pub const OPAQUE_NV: Self = Self::OPAQUE;
     pub const NO_DUPLICATE_ANY_HIT_INVOCATION_NV: Self = Self::NO_DUPLICATE_ANY_HIT_INVOCATION;
-}
-impl default::Default for GeometryFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(GeometryFlagsKHR, 0x3);
 impl fmt::Display for GeometryFlagsKHR {
@@ -2199,7 +1888,7 @@ impl fmt::Display for GeometryFlagsKHR {
 }
 pub type GeometryFlagsNV = GeometryFlagsKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct GeometryInstanceFlagsKHR(u32);
 impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FACING_CULL_DISABLE: Self = Self(0x1);
@@ -2211,11 +1900,6 @@ impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FRONT_COUNTERCLOCKWISE_NV: Self = Self::TRIANGLE_FRONT_COUNTERCLOCKWISE;
     pub const FORCE_OPAQUE_NV: Self = Self::FORCE_OPAQUE;
     pub const FORCE_NO_OPAQUE_NV: Self = Self::FORCE_NO_OPAQUE;
-}
-impl default::Default for GeometryInstanceFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(GeometryInstanceFlagsKHR, 0xf);
 impl fmt::Display for GeometryInstanceFlagsKHR {
@@ -2234,7 +1918,7 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
 }
 pub type GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BuildAccelerationStructureFlagsKHR(u32);
 impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_UPDATE: Self = Self(0x1);
@@ -2249,11 +1933,6 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const MOTION_NV: Self = Self(0x20);
-}
-impl default::Default for BuildAccelerationStructureFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x3f);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
@@ -2274,14 +1953,9 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
 }
 pub type BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PrivateDataSlotCreateFlags(u32);
 impl PrivateDataSlotCreateFlags {}
-impl default::Default for PrivateDataSlotCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PrivateDataSlotCreateFlags, 0x0);
 impl fmt::Display for PrivateDataSlotCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2290,17 +1964,12 @@ impl fmt::Display for PrivateDataSlotCreateFlags {
 }
 pub type PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureCreateFlagsKHR(u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const MOTION_NV: Self = Self(0x4);
-}
-impl default::Default for AccelerationStructureCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(AccelerationStructureCreateFlagsKHR, 0x5);
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
@@ -2313,14 +1982,9 @@ impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateCreateFlags(u32);
 impl DescriptorUpdateTemplateCreateFlags {}
-impl default::Default for DescriptorUpdateTemplateCreateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DescriptorUpdateTemplateCreateFlags, 0x0);
 impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2329,7 +1993,7 @@ impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
 }
 pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCreationFeedbackFlags(u32);
 impl PipelineCreationFeedbackFlags {
     pub const VALID: Self = Self(0x1);
@@ -2338,11 +2002,6 @@ impl PipelineCreationFeedbackFlags {
     pub const APPLICATION_PIPELINE_CACHE_HIT_EXT: Self = Self::APPLICATION_PIPELINE_CACHE_HIT;
     pub const BASE_PIPELINE_ACCELERATION: Self = Self(0x4);
     pub const BASE_PIPELINE_ACCELERATION_EXT: Self = Self::BASE_PIPELINE_ACCELERATION;
-}
-impl default::Default for PipelineCreationFeedbackFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PipelineCreationFeedbackFlags, 0x7);
 impl fmt::Display for PipelineCreationFeedbackFlags {
@@ -2360,16 +2019,11 @@ impl fmt::Display for PipelineCreationFeedbackFlags {
 }
 pub type PipelineCreationFeedbackFlagsEXT = PipelineCreationFeedbackFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterDescriptionFlagsKHR(u32);
 impl PerformanceCounterDescriptionFlagsKHR {
     pub const PERFORMANCE_IMPACTING: Self = Self(0x1);
     pub const CONCURRENTLY_IMPACTED: Self = Self(0x2);
-}
-impl default::Default for PerformanceCounterDescriptionFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PerformanceCounterDescriptionFlagsKHR, 0x3);
 impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
@@ -2382,14 +2036,9 @@ impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AcquireProfilingLockFlagsKHR(u32);
 impl AcquireProfilingLockFlagsKHR {}
-impl default::Default for AcquireProfilingLockFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AcquireProfilingLockFlagsKHR, 0x0);
 impl fmt::Display for AcquireProfilingLockFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2397,16 +2046,11 @@ impl fmt::Display for AcquireProfilingLockFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SemaphoreWaitFlags(u32);
 impl SemaphoreWaitFlags {
     pub const ANY: Self = Self(0x1);
     pub const ANY_KHR: Self = Self::ANY;
-}
-impl default::Default for SemaphoreWaitFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SemaphoreWaitFlags, 0x1);
 impl fmt::Display for SemaphoreWaitFlags {
@@ -2416,14 +2060,9 @@ impl fmt::Display for SemaphoreWaitFlags {
 }
 pub type SemaphoreWaitFlagsKHR = SemaphoreWaitFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCompilerControlFlagsAMD(u32);
 impl PipelineCompilerControlFlagsAMD {}
-impl default::Default for PipelineCompilerControlFlagsAMD {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineCompilerControlFlagsAMD, 0x0);
 impl fmt::Display for PipelineCompilerControlFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2431,14 +2070,9 @@ impl fmt::Display for PipelineCompilerControlFlagsAMD {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ShaderCorePropertiesFlagsAMD(u32);
 impl ShaderCorePropertiesFlagsAMD {}
-impl default::Default for ShaderCorePropertiesFlagsAMD {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ShaderCorePropertiesFlagsAMD, 0x0);
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2446,17 +2080,12 @@ impl fmt::Display for ShaderCorePropertiesFlagsAMD {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceDiagnosticsConfigFlagsNV(u32);
 impl DeviceDiagnosticsConfigFlagsNV {
     pub const ENABLE_SHADER_DEBUG_INFO: Self = Self(0x1);
     pub const ENABLE_RESOURCE_TRACKING: Self = Self(0x2);
     pub const ENABLE_AUTOMATIC_CHECKPOINTS: Self = Self(0x4);
-}
-impl default::Default for DeviceDiagnosticsConfigFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DeviceDiagnosticsConfigFlagsNV, 0x7);
 impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
@@ -2473,7 +2102,7 @@ impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccessFlags2(u64);
 impl AccessFlags2 {
     pub const NONE: Self = Self(0x0);
@@ -2547,11 +2176,6 @@ impl AccessFlags2 {
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_READ_HUAWEI: Self = Self(0x8000000000);
 }
-impl default::Default for AccessFlags2 {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AccessFlags2, 0x870fffffff);
 impl fmt::Display for AccessFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2597,7 +2221,7 @@ impl fmt::Display for AccessFlags2 {
 }
 pub type AccessFlags2KHR = AccessFlags2;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineStageFlags2(u64);
 impl PipelineStageFlags2 {
     pub const NONE: Self = Self(0x0);
@@ -2679,11 +2303,6 @@ impl PipelineStageFlags2 {
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x10000000000);
 }
-impl default::Default for PipelineStageFlags2 {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineStageFlags2, 0x1ff03ffffff);
 impl fmt::Display for PipelineStageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2732,14 +2351,9 @@ impl fmt::Display for PipelineStageFlags2 {
 }
 pub type PipelineStageFlags2KHR = PipelineStageFlags2;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureMotionInfoFlagsNV(u32);
 impl AccelerationStructureMotionInfoFlagsNV {}
-impl default::Default for AccelerationStructureMotionInfoFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AccelerationStructureMotionInfoFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2747,14 +2361,9 @@ impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureMotionInstanceFlagsNV(u32);
 impl AccelerationStructureMotionInstanceFlagsNV {}
-impl default::Default for AccelerationStructureMotionInstanceFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AccelerationStructureMotionInstanceFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2762,7 +2371,7 @@ impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FormatFeatureFlags2(u64);
 impl FormatFeatureFlags2 {
     pub const SAMPLED_IMAGE: Self = Self(0x1);
@@ -2833,11 +2442,6 @@ impl FormatFeatureFlags2 {
     /// Added by extension VK_NV_linear_color_attachment.
     pub const LINEAR_COLOR_ATTACHMENT_NV: Self = Self(0x4000000000);
 }
-impl default::Default for FormatFeatureFlags2 {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(FormatFeatureFlags2, 0x43e1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -2888,7 +2492,7 @@ impl fmt::Display for FormatFeatureFlags2 {
 }
 pub type FormatFeatureFlags2KHR = FormatFeatureFlags2;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RenderingFlags(u32);
 impl RenderingFlags {
     pub const CONTENTS_SECONDARY_COMMAND_BUFFERS: Self = Self(0x1);
@@ -2897,11 +2501,6 @@ impl RenderingFlags {
     pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING: Self = Self(0x4);
     pub const RESUMING_KHR: Self = Self::RESUMING;
-}
-impl default::Default for RenderingFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(RenderingFlags, 0x7);
 impl fmt::Display for RenderingFlags {
@@ -2919,18 +2518,13 @@ impl fmt::Display for RenderingFlags {
 }
 pub type RenderingFlagsKHR = RenderingFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const PRE_MULTIPLIED: Self = Self(0x2);
     pub const POST_MULTIPLIED: Self = Self(0x4);
     pub const INHERIT: Self = Self(0x8);
-}
-impl default::Default for CompositeAlphaFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(CompositeAlphaFlagsKHR, 0xf);
 impl fmt::Display for CompositeAlphaFlagsKHR {
@@ -2948,18 +2542,13 @@ impl fmt::Display for CompositeAlphaFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DisplayPlaneAlphaFlagsKHR(u32);
 impl DisplayPlaneAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const GLOBAL: Self = Self(0x2);
     pub const PER_PIXEL: Self = Self(0x4);
     pub const PER_PIXEL_PREMULTIPLIED: Self = Self(0x8);
-}
-impl default::Default for DisplayPlaneAlphaFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DisplayPlaneAlphaFlagsKHR, 0xf);
 impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
@@ -2977,7 +2566,7 @@ impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SurfaceTransformFlagsKHR(u32);
 impl SurfaceTransformFlagsKHR {
     pub const IDENTITY: Self = Self(0x1);
@@ -2989,11 +2578,6 @@ impl SurfaceTransformFlagsKHR {
     pub const HORIZONTAL_MIRROR_ROTATE_180: Self = Self(0x40);
     pub const HORIZONTAL_MIRROR_ROTATE_270: Self = Self(0x80);
     pub const INHERIT: Self = Self(0x100);
-}
-impl default::Default for SurfaceTransformFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SurfaceTransformFlagsKHR, 0x1ff);
 impl fmt::Display for SurfaceTransformFlagsKHR {
@@ -3016,7 +2600,7 @@ impl fmt::Display for SurfaceTransformFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SwapchainCreateFlagsKHR(u32);
 impl SwapchainCreateFlagsKHR {
     /// Allow images with VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT
@@ -3027,11 +2611,6 @@ impl SwapchainCreateFlagsKHR {
     pub const PROTECTED: Self = Self(0x2);
     /// Added by extension VK_KHR_swapchain_mutable_format.
     pub const MUTABLE_FORMAT: Self = Self(0x4);
-}
-impl default::Default for SwapchainCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SwapchainCreateFlagsKHR, 0x7);
 impl fmt::Display for SwapchainCreateFlagsKHR {
@@ -3048,14 +2627,9 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DisplayModeCreateFlagsKHR(u32);
 impl DisplayModeCreateFlagsKHR {}
-impl default::Default for DisplayModeCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DisplayModeCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplayModeCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3063,14 +2637,9 @@ impl fmt::Display for DisplayModeCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DisplaySurfaceCreateFlagsKHR(u32);
 impl DisplaySurfaceCreateFlagsKHR {}
-impl default::Default for DisplaySurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DisplaySurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3078,14 +2647,9 @@ impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AndroidSurfaceCreateFlagsKHR(u32);
 impl AndroidSurfaceCreateFlagsKHR {}
-impl default::Default for AndroidSurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(AndroidSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3093,14 +2657,9 @@ impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ViSurfaceCreateFlagsNN(u32);
 impl ViSurfaceCreateFlagsNN {}
-impl default::Default for ViSurfaceCreateFlagsNN {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ViSurfaceCreateFlagsNN, 0x0);
 impl fmt::Display for ViSurfaceCreateFlagsNN {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3108,14 +2667,9 @@ impl fmt::Display for ViSurfaceCreateFlagsNN {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct WaylandSurfaceCreateFlagsKHR(u32);
 impl WaylandSurfaceCreateFlagsKHR {}
-impl default::Default for WaylandSurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(WaylandSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3123,14 +2677,9 @@ impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Win32SurfaceCreateFlagsKHR(u32);
 impl Win32SurfaceCreateFlagsKHR {}
-impl default::Default for Win32SurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(Win32SurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for Win32SurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3138,14 +2687,9 @@ impl fmt::Display for Win32SurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct XlibSurfaceCreateFlagsKHR(u32);
 impl XlibSurfaceCreateFlagsKHR {}
-impl default::Default for XlibSurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(XlibSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XlibSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3153,14 +2697,9 @@ impl fmt::Display for XlibSurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct XcbSurfaceCreateFlagsKHR(u32);
 impl XcbSurfaceCreateFlagsKHR {}
-impl default::Default for XcbSurfaceCreateFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(XcbSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XcbSurfaceCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3168,14 +2707,9 @@ impl fmt::Display for XcbSurfaceCreateFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DirectFBSurfaceCreateFlagsEXT(u32);
 impl DirectFBSurfaceCreateFlagsEXT {}
-impl default::Default for DirectFBSurfaceCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DirectFBSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3183,14 +2717,9 @@ impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct IOSSurfaceCreateFlagsMVK(u32);
 impl IOSSurfaceCreateFlagsMVK {}
-impl default::Default for IOSSurfaceCreateFlagsMVK {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(IOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for IOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3198,14 +2727,9 @@ impl fmt::Display for IOSSurfaceCreateFlagsMVK {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MacOSSurfaceCreateFlagsMVK(u32);
 impl MacOSSurfaceCreateFlagsMVK {}
-impl default::Default for MacOSSurfaceCreateFlagsMVK {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(MacOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3213,14 +2737,9 @@ impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MetalSurfaceCreateFlagsEXT(u32);
 impl MetalSurfaceCreateFlagsEXT {}
-impl default::Default for MetalSurfaceCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(MetalSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for MetalSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3228,14 +2747,9 @@ impl fmt::Display for MetalSurfaceCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(u32);
 impl ImagePipeSurfaceCreateFlagsFUCHSIA {}
-impl default::Default for ImagePipeSurfaceCreateFlagsFUCHSIA {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ImagePipeSurfaceCreateFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3243,14 +2757,9 @@ impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct HeadlessSurfaceCreateFlagsEXT(u32);
 impl HeadlessSurfaceCreateFlagsEXT {}
-impl default::Default for HeadlessSurfaceCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(HeadlessSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3258,7 +2767,7 @@ impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PeerMemoryFeatureFlags(u32);
 impl PeerMemoryFeatureFlags {
     /// Can read with vkCmdCopy commands
@@ -3273,11 +2782,6 @@ impl PeerMemoryFeatureFlags {
     pub const COPY_DST_KHR: Self = Self::COPY_DST;
     pub const GENERIC_SRC_KHR: Self = Self::GENERIC_SRC;
     pub const GENERIC_DST_KHR: Self = Self::GENERIC_DST;
-}
-impl default::Default for PeerMemoryFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(PeerMemoryFeatureFlags, 0xf);
 impl fmt::Display for PeerMemoryFeatureFlags {
@@ -3296,7 +2800,7 @@ impl fmt::Display for PeerMemoryFeatureFlags {
 }
 pub type PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryAllocateFlags(u32);
 impl MemoryAllocateFlags {
     /// Force allocation on specific devices
@@ -3306,11 +2810,6 @@ impl MemoryAllocateFlags {
     pub const DEVICE_MASK_KHR: Self = Self::DEVICE_MASK;
     pub const DEVICE_ADDRESS_KHR: Self = Self::DEVICE_ADDRESS;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
-}
-impl default::Default for MemoryAllocateFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(MemoryAllocateFlags, 0x7);
 impl fmt::Display for MemoryAllocateFlags {
@@ -3328,7 +2827,7 @@ impl fmt::Display for MemoryAllocateFlags {
 }
 pub type MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceGroupPresentModeFlagsKHR(u32);
 impl DeviceGroupPresentModeFlagsKHR {
     /// Present from local memory
@@ -3339,11 +2838,6 @@ impl DeviceGroupPresentModeFlagsKHR {
     pub const SUM: Self = Self(0x4);
     /// Each physical device presents from local memory
     pub const LOCAL_MULTI_DEVICE: Self = Self(0x8);
-}
-impl default::Default for DeviceGroupPresentModeFlagsKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DeviceGroupPresentModeFlagsKHR, 0xf);
 impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
@@ -3361,7 +2855,7 @@ impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DebugReportFlagsEXT(u32);
 impl DebugReportFlagsEXT {
     pub const INFORMATION: Self = Self(0x1);
@@ -3369,11 +2863,6 @@ impl DebugReportFlagsEXT {
     pub const PERFORMANCE_WARNING: Self = Self(0x4);
     pub const ERROR: Self = Self(0x8);
     pub const DEBUG: Self = Self(0x10);
-}
-impl default::Default for DebugReportFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DebugReportFlagsEXT, 0x1f);
 impl fmt::Display for DebugReportFlagsEXT {
@@ -3392,14 +2881,9 @@ impl fmt::Display for DebugReportFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CommandPoolTrimFlags(u32);
 impl CommandPoolTrimFlags {}
-impl default::Default for CommandPoolTrimFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(CommandPoolTrimFlags, 0x0);
 impl fmt::Display for CommandPoolTrimFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3408,18 +2892,13 @@ impl fmt::Display for CommandPoolTrimFlags {
 }
 pub type CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryHandleTypeFlagsNV(u32);
 impl ExternalMemoryHandleTypeFlagsNV {
     pub const OPAQUE_WIN32: Self = Self(0x1);
     pub const OPAQUE_WIN32_KMT: Self = Self(0x2);
     pub const D3D11_IMAGE: Self = Self(0x4);
     pub const D3D11_IMAGE_KMT: Self = Self(0x8);
-}
-impl default::Default for ExternalMemoryHandleTypeFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalMemoryHandleTypeFlagsNV, 0xf);
 impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
@@ -3437,17 +2916,12 @@ impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryFeatureFlagsNV(u32);
 impl ExternalMemoryFeatureFlagsNV {
     pub const DEDICATED_ONLY: Self = Self(0x1);
     pub const EXPORTABLE: Self = Self(0x2);
     pub const IMPORTABLE: Self = Self(0x4);
-}
-impl default::Default for ExternalMemoryFeatureFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalMemoryFeatureFlagsNV, 0x7);
 impl fmt::Display for ExternalMemoryFeatureFlagsNV {
@@ -3460,7 +2934,7 @@ impl fmt::Display for ExternalMemoryFeatureFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryHandleTypeFlags(u32);
 impl ExternalMemoryHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
@@ -3490,11 +2964,6 @@ impl ExternalMemoryHandleTypeFlags {
     /// Added by extension VK_NV_external_memory_rdma.
     pub const RDMA_ADDRESS_NV: Self = Self(0x1000);
 }
-impl default::Default for ExternalMemoryHandleTypeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ExternalMemoryHandleTypeFlags, 0x1fff);
 impl fmt::Display for ExternalMemoryHandleTypeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3521,7 +2990,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
 }
 pub type ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryFeatureFlags(u32);
 impl ExternalMemoryFeatureFlags {
     pub const DEDICATED_ONLY: Self = Self(0x1);
@@ -3530,11 +2999,6 @@ impl ExternalMemoryFeatureFlags {
     pub const DEDICATED_ONLY_KHR: Self = Self::DEDICATED_ONLY;
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
-}
-impl default::Default for ExternalMemoryFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalMemoryFeatureFlags, 0x7);
 impl fmt::Display for ExternalMemoryFeatureFlags {
@@ -3548,7 +3012,7 @@ impl fmt::Display for ExternalMemoryFeatureFlags {
 }
 pub type ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalSemaphoreHandleTypeFlags(u32);
 impl ExternalSemaphoreHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
@@ -3564,11 +3028,6 @@ impl ExternalSemaphoreHandleTypeFlags {
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
     /// Added by extension VK_FUCHSIA_external_semaphore.
     pub const ZIRCON_EVENT_FUCHSIA: Self = Self(0x80);
-}
-impl default::Default for ExternalSemaphoreHandleTypeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalSemaphoreHandleTypeFlags, 0x9f);
 impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
@@ -3589,18 +3048,13 @@ impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
 }
 pub type ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalSemaphoreFeatureFlags(u32);
 impl ExternalSemaphoreFeatureFlags {
     pub const EXPORTABLE: Self = Self(0x1);
     pub const IMPORTABLE: Self = Self(0x2);
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
-}
-impl default::Default for ExternalSemaphoreFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalSemaphoreFeatureFlags, 0x3);
 impl fmt::Display for ExternalSemaphoreFeatureFlags {
@@ -3610,16 +3064,11 @@ impl fmt::Display for ExternalSemaphoreFeatureFlags {
 }
 pub type ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SemaphoreImportFlags(u32);
 impl SemaphoreImportFlags {
     pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
-}
-impl default::Default for SemaphoreImportFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SemaphoreImportFlags, 0x1);
 impl fmt::Display for SemaphoreImportFlags {
@@ -3629,7 +3078,7 @@ impl fmt::Display for SemaphoreImportFlags {
 }
 pub type SemaphoreImportFlagsKHR = SemaphoreImportFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalFenceHandleTypeFlags(u32);
 impl ExternalFenceHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
@@ -3640,11 +3089,6 @@ impl ExternalFenceHandleTypeFlags {
     pub const OPAQUE_WIN32_KHR: Self = Self::OPAQUE_WIN32;
     pub const OPAQUE_WIN32_KMT_KHR: Self = Self::OPAQUE_WIN32_KMT;
     pub const SYNC_FD_KHR: Self = Self::SYNC_FD;
-}
-impl default::Default for ExternalFenceHandleTypeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalFenceHandleTypeFlags, 0xf);
 impl fmt::Display for ExternalFenceHandleTypeFlags {
@@ -3663,18 +3107,13 @@ impl fmt::Display for ExternalFenceHandleTypeFlags {
 }
 pub type ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalFenceFeatureFlags(u32);
 impl ExternalFenceFeatureFlags {
     pub const EXPORTABLE: Self = Self(0x1);
     pub const IMPORTABLE: Self = Self(0x2);
     pub const EXPORTABLE_KHR: Self = Self::EXPORTABLE;
     pub const IMPORTABLE_KHR: Self = Self::IMPORTABLE;
-}
-impl default::Default for ExternalFenceFeatureFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ExternalFenceFeatureFlags, 0x3);
 impl fmt::Display for ExternalFenceFeatureFlags {
@@ -3684,16 +3123,11 @@ impl fmt::Display for ExternalFenceFeatureFlags {
 }
 pub type ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FenceImportFlags(u32);
 impl FenceImportFlags {
     pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
-}
-impl default::Default for FenceImportFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(FenceImportFlags, 0x1);
 impl fmt::Display for FenceImportFlags {
@@ -3703,15 +3137,10 @@ impl fmt::Display for FenceImportFlags {
 }
 pub type FenceImportFlagsKHR = FenceImportFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SurfaceCounterFlagsEXT(u32);
 impl SurfaceCounterFlagsEXT {
     pub const VBLANK: Self = Self(0x1);
-}
-impl default::Default for SurfaceCounterFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SurfaceCounterFlagsEXT, 0x1);
 impl fmt::Display for SurfaceCounterFlagsEXT {
@@ -3720,14 +3149,9 @@ impl fmt::Display for SurfaceCounterFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineViewportSwizzleStateCreateFlagsNV(u32);
 impl PipelineViewportSwizzleStateCreateFlagsNV {}
-impl default::Default for PipelineViewportSwizzleStateCreateFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineViewportSwizzleStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3735,14 +3159,9 @@ impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineDiscardRectangleStateCreateFlagsEXT(u32);
 impl PipelineDiscardRectangleStateCreateFlagsEXT {}
-impl default::Default for PipelineDiscardRectangleStateCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineDiscardRectangleStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3750,14 +3169,9 @@ impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCoverageToColorStateCreateFlagsNV(u32);
 impl PipelineCoverageToColorStateCreateFlagsNV {}
-impl default::Default for PipelineCoverageToColorStateCreateFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineCoverageToColorStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3765,14 +3179,9 @@ impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCoverageModulationStateCreateFlagsNV(u32);
 impl PipelineCoverageModulationStateCreateFlagsNV {}
-impl default::Default for PipelineCoverageModulationStateCreateFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineCoverageModulationStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3780,14 +3189,9 @@ impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCoverageReductionStateCreateFlagsNV(u32);
 impl PipelineCoverageReductionStateCreateFlagsNV {}
-impl default::Default for PipelineCoverageReductionStateCreateFlagsNV {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineCoverageReductionStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3795,14 +3199,9 @@ impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ValidationCacheCreateFlagsEXT(u32);
 impl ValidationCacheCreateFlagsEXT {}
-impl default::Default for ValidationCacheCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ValidationCacheCreateFlagsEXT, 0x0);
 impl fmt::Display for ValidationCacheCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3810,18 +3209,13 @@ impl fmt::Display for ValidationCacheCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessageSeverityFlagsEXT(u32);
 impl DebugUtilsMessageSeverityFlagsEXT {
     pub const VERBOSE: Self = Self(0x1);
     pub const INFO: Self = Self(0x10);
     pub const WARNING: Self = Self(0x100);
     pub const ERROR: Self = Self(0x1000);
-}
-impl default::Default for DebugUtilsMessageSeverityFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DebugUtilsMessageSeverityFlagsEXT, 0x1111);
 impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
@@ -3834,17 +3228,12 @@ impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessageTypeFlagsEXT(u32);
 impl DebugUtilsMessageTypeFlagsEXT {
     pub const GENERAL: Self = Self(0x1);
     pub const VALIDATION: Self = Self(0x2);
     pub const PERFORMANCE: Self = Self(0x4);
-}
-impl default::Default for DebugUtilsMessageTypeFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DebugUtilsMessageTypeFlagsEXT, 0x7);
 impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
@@ -3857,14 +3246,9 @@ impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessengerCreateFlagsEXT(u32);
 impl DebugUtilsMessengerCreateFlagsEXT {}
-impl default::Default for DebugUtilsMessengerCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DebugUtilsMessengerCreateFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3872,14 +3256,9 @@ impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DebugUtilsMessengerCallbackDataFlagsEXT(u32);
 impl DebugUtilsMessengerCallbackDataFlagsEXT {}
-impl default::Default for DebugUtilsMessengerCallbackDataFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DebugUtilsMessengerCallbackDataFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3887,14 +3266,9 @@ impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DeviceMemoryReportFlagsEXT(u32);
 impl DeviceMemoryReportFlagsEXT {}
-impl default::Default for DeviceMemoryReportFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(DeviceMemoryReportFlagsEXT, 0x0);
 impl fmt::Display for DeviceMemoryReportFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3902,14 +3276,9 @@ impl fmt::Display for DeviceMemoryReportFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationConservativeStateCreateFlagsEXT(u32);
 impl PipelineRasterizationConservativeStateCreateFlagsEXT {}
-impl default::Default for PipelineRasterizationConservativeStateCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineRasterizationConservativeStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3917,7 +3286,7 @@ impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorBindingFlags(u32);
 impl DescriptorBindingFlags {
     pub const UPDATE_AFTER_BIND: Self = Self(0x1);
@@ -3928,11 +3297,6 @@ impl DescriptorBindingFlags {
     pub const UPDATE_UNUSED_WHILE_PENDING_EXT: Self = Self::UPDATE_UNUSED_WHILE_PENDING;
     pub const PARTIALLY_BOUND_EXT: Self = Self::PARTIALLY_BOUND;
     pub const VARIABLE_DESCRIPTOR_COUNT_EXT: Self = Self::VARIABLE_DESCRIPTOR_COUNT;
-}
-impl default::Default for DescriptorBindingFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(DescriptorBindingFlags, 0xf);
 impl fmt::Display for DescriptorBindingFlags {
@@ -3951,15 +3315,10 @@ impl fmt::Display for DescriptorBindingFlags {
 }
 pub type DescriptorBindingFlagsEXT = DescriptorBindingFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ConditionalRenderingFlagsEXT(u32);
 impl ConditionalRenderingFlagsEXT {
     pub const INVERTED: Self = Self(0x1);
-}
-impl default::Default for ConditionalRenderingFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ConditionalRenderingFlagsEXT, 0x1);
 impl fmt::Display for ConditionalRenderingFlagsEXT {
@@ -3968,7 +3327,7 @@ impl fmt::Display for ConditionalRenderingFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ResolveModeFlags(u32);
 impl ResolveModeFlags {
     pub const NONE: Self = Self(0x0);
@@ -3982,11 +3341,6 @@ impl ResolveModeFlags {
     pub const MIN_KHR: Self = Self::MIN;
     pub const MAX_KHR: Self = Self::MAX;
 }
-impl default::Default for ResolveModeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ResolveModeFlags, 0xf);
 impl fmt::Display for ResolveModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -3999,14 +3353,9 @@ impl fmt::Display for ResolveModeFlags {
 }
 pub type ResolveModeFlagsKHR = ResolveModeFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationStateStreamCreateFlagsEXT(u32);
 impl PipelineRasterizationStateStreamCreateFlagsEXT {}
-impl default::Default for PipelineRasterizationStateStreamCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineRasterizationStateStreamCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4014,14 +3363,9 @@ impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineRasterizationDepthClipStateCreateFlagsEXT(u32);
 impl PipelineRasterizationDepthClipStateCreateFlagsEXT {}
-impl default::Default for PipelineRasterizationDepthClipStateCreateFlagsEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(PipelineRasterizationDepthClipStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4029,7 +3373,7 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ToolPurposeFlags(u32);
 impl ToolPurposeFlags {
     pub const VALIDATION: Self = Self(0x1);
@@ -4046,11 +3390,6 @@ impl ToolPurposeFlags {
     pub const DEBUG_REPORTING_EXT: Self = Self(0x20);
     /// Added by extension VK_EXT_tooling_info.
     pub const DEBUG_MARKERS_EXT: Self = Self(0x40);
-}
-impl default::Default for ToolPurposeFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ToolPurposeFlags, 0x7f);
 impl fmt::Display for ToolPurposeFlags {
@@ -4072,16 +3411,11 @@ impl fmt::Display for ToolPurposeFlags {
 }
 pub type ToolPurposeFlagsEXT = ToolPurposeFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SubmitFlags(u32);
 impl SubmitFlags {
     pub const PROTECTED: Self = Self(0x1);
     pub const PROTECTED_KHR: Self = Self::PROTECTED;
-}
-impl default::Default for SubmitFlags {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(SubmitFlags, 0x1);
 impl fmt::Display for SubmitFlags {
@@ -4091,14 +3425,9 @@ impl fmt::Display for SubmitFlags {
 }
 pub type SubmitFlagsKHR = SubmitFlags;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageFormatConstraintsFlagsFUCHSIA(u32);
 impl ImageFormatConstraintsFlagsFUCHSIA {}
-impl default::Default for ImageFormatConstraintsFlagsFUCHSIA {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl_bitmask!(ImageFormatConstraintsFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4106,7 +3435,7 @@ impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageConstraintsInfoFlagsFUCHSIA(u32);
 impl ImageConstraintsInfoFlagsFUCHSIA {
     pub const CPU_READ_RARELY: Self = Self(0x1);
@@ -4114,11 +3443,6 @@ impl ImageConstraintsInfoFlagsFUCHSIA {
     pub const CPU_WRITE_RARELY: Self = Self(0x4);
     pub const CPU_WRITE_OFTEN: Self = Self(0x8);
     pub const PROTECTED_OPTIONAL: Self = Self(0x10);
-}
-impl default::Default for ImageConstraintsInfoFlagsFUCHSIA {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl_bitmask!(ImageConstraintsInfoFlagsFUCHSIA, 0x1f);
 impl fmt::Display for ImageConstraintsInfoFlagsFUCHSIA {
@@ -4500,7 +3824,7 @@ impl VideoSessionParametersKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentLoadOp(i32);
 impl AttachmentLoadOp {
     pub const LOAD: Self = Self(0);
@@ -4508,11 +3832,6 @@ impl AttachmentLoadOp {
     pub const DONT_CARE: Self = Self(2);
     /// Added by extension VK_EXT_load_store_op_none.
     pub const NONE_EXT: Self = Self(1000400000);
-}
-impl default::Default for AttachmentLoadOp {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AttachmentLoadOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4531,7 +3850,7 @@ impl fmt::Display for AttachmentLoadOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentStoreOp(i32);
 impl AttachmentStoreOp {
     pub const STORE: Self = Self(0);
@@ -4540,11 +3859,6 @@ impl AttachmentStoreOp {
     pub const NONE_KHR: Self = Self::NONE;
     pub const NONE_QCOM: Self = Self::NONE;
     pub const NONE_EXT: Self = Self::NONE;
-}
-impl default::Default for AttachmentStoreOp {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AttachmentStoreOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4562,7 +3876,7 @@ impl fmt::Display for AttachmentStoreOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendFactor(i32);
 impl BlendFactor {
     pub const ZERO: Self = Self(0);
@@ -4584,11 +3898,6 @@ impl BlendFactor {
     pub const ONE_MINUS_SRC1_COLOR: Self = Self(16);
     pub const SRC1_ALPHA: Self = Self(17);
     pub const ONE_MINUS_SRC1_ALPHA: Self = Self(18);
-}
-impl default::Default for BlendFactor {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for BlendFactor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4622,7 +3931,7 @@ impl fmt::Display for BlendFactor {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendOp(i32);
 impl BlendOp {
     pub const ADD: Self = Self(0);
@@ -4723,11 +4032,6 @@ impl BlendOp {
     /// Added by extension VK_EXT_blend_operation_advanced.
     pub const BLUE_EXT: Self = Self(1000148045);
 }
-impl default::Default for BlendOp {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for BlendOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -4792,7 +4096,7 @@ impl fmt::Display for BlendOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BorderColor(i32);
 impl BorderColor {
     pub const FLOAT_TRANSPARENT_BLACK: Self = Self(0);
@@ -4805,11 +4109,6 @@ impl BorderColor {
     pub const FLOAT_CUSTOM_EXT: Self = Self(1000287003);
     /// Added by extension VK_EXT_custom_border_color.
     pub const INT_CUSTOM_EXT: Self = Self(1000287004);
-}
-impl default::Default for BorderColor {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for BorderColor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4832,15 +4131,10 @@ impl fmt::Display for BorderColor {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineCacheHeaderVersion(i32);
 impl PipelineCacheHeaderVersion {
     pub const ONE: Self = Self(1);
-}
-impl default::Default for PipelineCacheHeaderVersion {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PipelineCacheHeaderVersion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4856,7 +4150,7 @@ impl fmt::Display for PipelineCacheHeaderVersion {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ComponentSwizzle(i32);
 impl ComponentSwizzle {
     pub const IDENTITY: Self = Self(0);
@@ -4866,11 +4160,6 @@ impl ComponentSwizzle {
     pub const G: Self = Self(4);
     pub const B: Self = Self(5);
     pub const A: Self = Self(6);
-}
-impl default::Default for ComponentSwizzle {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ComponentSwizzle {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4892,16 +4181,11 @@ impl fmt::Display for ComponentSwizzle {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CommandBufferLevel(i32);
 impl CommandBufferLevel {
     pub const PRIMARY: Self = Self(0);
     pub const SECONDARY: Self = Self(1);
-}
-impl default::Default for CommandBufferLevel {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CommandBufferLevel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4918,7 +4202,7 @@ impl fmt::Display for CommandBufferLevel {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CompareOp(i32);
 impl CompareOp {
     pub const NEVER: Self = Self(0);
@@ -4929,11 +4213,6 @@ impl CompareOp {
     pub const NOT_EQUAL: Self = Self(5);
     pub const GREATER_OR_EQUAL: Self = Self(6);
     pub const ALWAYS: Self = Self(7);
-}
-impl default::Default for CompareOp {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CompareOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4956,7 +4235,7 @@ impl fmt::Display for CompareOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DescriptorType(i32);
 impl DescriptorType {
     pub const SAMPLER: Self = Self(0);
@@ -4978,11 +4257,6 @@ impl DescriptorType {
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_VALVE: Self = Self(1000351000);
-}
-impl default::Default for DescriptorType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DescriptorType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5012,7 +4286,7 @@ impl fmt::Display for DescriptorType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DynamicState(i32);
 impl DynamicState {
     pub const VIEWPORT: Self = Self(0);
@@ -5083,11 +4357,6 @@ impl DynamicState {
     /// Added by extension VK_EXT_color_write_enable.
     pub const COLOR_WRITE_ENABLE_EXT: Self = Self(1000381000);
 }
-impl default::Default for DynamicState {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for DynamicState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -5138,7 +4407,7 @@ impl fmt::Display for DynamicState {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PolygonMode(i32);
 impl PolygonMode {
     pub const FILL: Self = Self(0);
@@ -5146,11 +4415,6 @@ impl PolygonMode {
     pub const POINT: Self = Self(2);
     /// Added by extension VK_NV_fill_rectangle.
     pub const FILL_RECTANGLE_NV: Self = Self(1000153000);
-}
-impl default::Default for PolygonMode {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PolygonMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5169,7 +4433,7 @@ impl fmt::Display for PolygonMode {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct Format(i32);
 impl Format {
     pub const UNDEFINED: Self = Self(0);
@@ -5482,11 +4746,6 @@ impl Format {
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self::A4R4G4B4_UNORM_PACK16;
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
 }
-impl default::Default for Format {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -5747,16 +5006,11 @@ impl fmt::Display for Format {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FrontFace(i32);
 impl FrontFace {
     pub const COUNTER_CLOCKWISE: Self = Self(0);
     pub const CLOCKWISE: Self = Self(1);
-}
-impl default::Default for FrontFace {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for FrontFace {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5773,7 +5027,7 @@ impl fmt::Display for FrontFace {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageLayout(i32);
 impl ImageLayout {
     /// Implicit layout an image is when its contents are undefined due to various reasons (e.g. right after creation)
@@ -5820,11 +5074,6 @@ impl ImageLayout {
     pub const READ_ONLY_OPTIMAL_KHR: Self = Self::READ_ONLY_OPTIMAL;
     pub const ATTACHMENT_OPTIMAL_KHR: Self = Self::ATTACHMENT_OPTIMAL;
 }
-impl default::Default for ImageLayout {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for ImageLayout {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -5859,18 +5108,13 @@ impl fmt::Display for ImageLayout {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageTiling(i32);
 impl ImageTiling {
     pub const OPTIMAL: Self = Self(0);
     pub const LINEAR: Self = Self(1);
     /// Added by extension VK_EXT_image_drm_format_modifier.
     pub const DRM_FORMAT_MODIFIER_EXT: Self = Self(1000158000);
-}
-impl default::Default for ImageTiling {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ImageTiling {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5888,17 +5132,12 @@ impl fmt::Display for ImageTiling {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageType(i32);
 impl ImageType {
     pub const N1D: Self = Self(0);
     pub const N2D: Self = Self(1);
     pub const N3D: Self = Self(2);
-}
-impl default::Default for ImageType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ImageType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5916,7 +5155,7 @@ impl fmt::Display for ImageType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ImageViewType(i32);
 impl ImageViewType {
     pub const N1D: Self = Self(0);
@@ -5926,11 +5165,6 @@ impl ImageViewType {
     pub const N1D_ARRAY: Self = Self(4);
     pub const N2D_ARRAY: Self = Self(5);
     pub const CUBE_ARRAY: Self = Self(6);
-}
-impl default::Default for ImageViewType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ImageViewType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5952,16 +5186,11 @@ impl fmt::Display for ImageViewType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SharingMode(i32);
 impl SharingMode {
     pub const EXCLUSIVE: Self = Self(0);
     pub const CONCURRENT: Self = Self(1);
-}
-impl default::Default for SharingMode {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SharingMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5978,7 +5207,7 @@ impl fmt::Display for SharingMode {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct IndexType(i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
@@ -5988,11 +5217,6 @@ impl IndexType {
     pub const NONE_NV: Self = Self::NONE_KHR;
     /// Added by extension VK_EXT_index_type_uint8.
     pub const UINT8_EXT: Self = Self(1000265000);
-}
-impl default::Default for IndexType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for IndexType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6011,7 +5235,7 @@ impl fmt::Display for IndexType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LogicOp(i32);
 impl LogicOp {
     pub const CLEAR: Self = Self(0);
@@ -6030,11 +5254,6 @@ impl LogicOp {
     pub const OR_INVERTED: Self = Self(13);
     pub const NAND: Self = Self(14);
     pub const SET: Self = Self(15);
-}
-impl default::Default for LogicOp {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for LogicOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6065,7 +5284,7 @@ impl fmt::Display for LogicOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceType(i32);
 impl PhysicalDeviceType {
     pub const OTHER: Self = Self(0);
@@ -6073,11 +5292,6 @@ impl PhysicalDeviceType {
     pub const DISCRETE_GPU: Self = Self(2);
     pub const VIRTUAL_GPU: Self = Self(3);
     pub const CPU: Self = Self(4);
-}
-impl default::Default for PhysicalDeviceType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PhysicalDeviceType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6097,7 +5311,7 @@ impl fmt::Display for PhysicalDeviceType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineBindPoint(i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
@@ -6107,11 +5321,6 @@ impl PipelineBindPoint {
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(1000369003);
-}
-impl default::Default for PipelineBindPoint {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PipelineBindPoint {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6130,7 +5339,7 @@ impl fmt::Display for PipelineBindPoint {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PrimitiveTopology(i32);
 impl PrimitiveTopology {
     pub const POINT_LIST: Self = Self(0);
@@ -6144,11 +5353,6 @@ impl PrimitiveTopology {
     pub const TRIANGLE_LIST_WITH_ADJACENCY: Self = Self(8);
     pub const TRIANGLE_STRIP_WITH_ADJACENCY: Self = Self(9);
     pub const PATCH_LIST: Self = Self(10);
-}
-impl default::Default for PrimitiveTopology {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PrimitiveTopology {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6174,7 +5378,7 @@ impl fmt::Display for PrimitiveTopology {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueryType(i32);
 impl QueryType {
     pub const OCCLUSION: Self = Self(0);
@@ -6193,11 +5397,6 @@ impl QueryType {
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
-}
-impl default::Default for QueryType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for QueryType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6221,16 +5420,11 @@ impl fmt::Display for QueryType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SubpassContents(i32);
 impl SubpassContents {
     pub const INLINE: Self = Self(0);
     pub const SECONDARY_COMMAND_BUFFERS: Self = Self(1);
-}
-impl default::Default for SubpassContents {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SubpassContents {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6247,7 +5441,7 @@ impl fmt::Display for SubpassContents {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct Result(i32);
 impl Result {
     /// Command completed successfully
@@ -6330,11 +5524,6 @@ impl Result {
     pub const PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED;
     pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED;
 }
-impl default::Default for Result {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -6386,7 +5575,7 @@ impl fmt::Display for Result {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct StencilOp(i32);
 impl StencilOp {
     pub const KEEP: Self = Self(0);
@@ -6397,11 +5586,6 @@ impl StencilOp {
     pub const INVERT: Self = Self(5);
     pub const INCREMENT_AND_WRAP: Self = Self(6);
     pub const DECREMENT_AND_WRAP: Self = Self(7);
-}
-impl default::Default for StencilOp {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for StencilOp {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6424,7 +5608,7 @@ impl fmt::Display for StencilOp {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct StructureType(i32);
 impl StructureType {
     pub const APPLICATION_INFO: Self = Self(0);
@@ -7556,11 +6740,6 @@ impl StructureType {
     /// Added by extension VK_NV_linear_color_attachment.
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
 }
-impl default::Default for StructureType {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -8140,7 +7319,7 @@ impl fmt::Display for StructureType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SystemAllocationScope(i32);
 impl SystemAllocationScope {
     pub const COMMAND: Self = Self(0);
@@ -8148,11 +7327,6 @@ impl SystemAllocationScope {
     pub const CACHE: Self = Self(2);
     pub const DEVICE: Self = Self(3);
     pub const INSTANCE: Self = Self(4);
-}
-impl default::Default for SystemAllocationScope {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SystemAllocationScope {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8172,15 +7346,10 @@ impl fmt::Display for SystemAllocationScope {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct InternalAllocationType(i32);
 impl InternalAllocationType {
     pub const EXECUTABLE: Self = Self(0);
-}
-impl default::Default for InternalAllocationType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for InternalAllocationType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8196,7 +7365,7 @@ impl fmt::Display for InternalAllocationType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerAddressMode(i32);
 impl SamplerAddressMode {
     pub const REPEAT: Self = Self(0);
@@ -8207,11 +7376,6 @@ impl SamplerAddressMode {
     /// Added by extension VK_KHR_sampler_mirror_clamp_to_edge.
     pub const MIRROR_CLAMP_TO_EDGE: Self = Self(4);
     pub const MIRROR_CLAMP_TO_EDGE_KHR: Self = Self::MIRROR_CLAMP_TO_EDGE;
-}
-impl default::Default for SamplerAddressMode {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SamplerAddressMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8231,7 +7395,7 @@ impl fmt::Display for SamplerAddressMode {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct Filter(i32);
 impl Filter {
     pub const NEAREST: Self = Self(0);
@@ -8239,11 +7403,6 @@ impl Filter {
     /// Added by extension VK_IMG_filter_cubic.
     pub const CUBIC_IMG: Self = Self(1000015000);
     pub const CUBIC_EXT: Self = Self::CUBIC_IMG;
-}
-impl default::Default for Filter {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for Filter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8261,18 +7420,13 @@ impl fmt::Display for Filter {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerMipmapMode(i32);
 impl SamplerMipmapMode {
     /// Choose nearest mip level
     pub const NEAREST: Self = Self(0);
     /// Linear filter between mip levels
     pub const LINEAR: Self = Self(1);
-}
-impl default::Default for SamplerMipmapMode {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SamplerMipmapMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8289,16 +7443,11 @@ impl fmt::Display for SamplerMipmapMode {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VertexInputRate(i32);
 impl VertexInputRate {
     pub const VERTEX: Self = Self(0);
     pub const INSTANCE: Self = Self(1);
-}
-impl default::Default for VertexInputRate {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for VertexInputRate {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8315,7 +7464,7 @@ impl fmt::Display for VertexInputRate {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ObjectType(i32);
 impl ObjectType {
     pub const UNKNOWN: Self = Self(0);
@@ -8382,11 +7531,6 @@ impl ObjectType {
     /// Added by extension VK_FUCHSIA_buffer_collection.
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
 }
-impl default::Default for ObjectType {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -8444,7 +7588,7 @@ impl fmt::Display for ObjectType {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct IndirectCommandsTokenTypeNV(i32);
 impl IndirectCommandsTokenTypeNV {
     pub const SHADER_GROUP: Self = Self(0);
@@ -8455,11 +7599,6 @@ impl IndirectCommandsTokenTypeNV {
     pub const DRAW_INDEXED: Self = Self(5);
     pub const DRAW: Self = Self(6);
     pub const DRAW_TASKS: Self = Self(7);
-}
-impl default::Default for IndirectCommandsTokenTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for IndirectCommandsTokenTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8482,7 +7621,7 @@ impl fmt::Display for IndirectCommandsTokenTypeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateType(i32);
 impl DescriptorUpdateTemplateType {
     /// Create descriptor update template for descriptor set updates
@@ -8491,11 +7630,6 @@ impl DescriptorUpdateTemplateType {
     /// Added by extension VK_KHR_descriptor_update_template.
     pub const PUSH_DESCRIPTORS_KHR: Self = Self(1);
     pub const DESCRIPTOR_SET_KHR: Self = Self::DESCRIPTOR_SET;
-}
-impl default::Default for DescriptorUpdateTemplateType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DescriptorUpdateTemplateType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8513,7 +7647,7 @@ impl fmt::Display for DescriptorUpdateTemplateType {
 }
 pub type DescriptorUpdateTemplateTypeKHR = DescriptorUpdateTemplateType;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ViewportCoordinateSwizzleNV(i32);
 impl ViewportCoordinateSwizzleNV {
     pub const POSITIVE_X: Self = Self(0);
@@ -8524,11 +7658,6 @@ impl ViewportCoordinateSwizzleNV {
     pub const NEGATIVE_Z: Self = Self(5);
     pub const POSITIVE_W: Self = Self(6);
     pub const NEGATIVE_W: Self = Self(7);
-}
-impl default::Default for ViewportCoordinateSwizzleNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ViewportCoordinateSwizzleNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8551,16 +7680,11 @@ impl fmt::Display for ViewportCoordinateSwizzleNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DiscardRectangleModeEXT(i32);
 impl DiscardRectangleModeEXT {
     pub const INCLUSIVE: Self = Self(0);
     pub const EXCLUSIVE: Self = Self(1);
-}
-impl default::Default for DiscardRectangleModeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DiscardRectangleModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8577,18 +7701,13 @@ impl fmt::Display for DiscardRectangleModeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PointClippingBehavior(i32);
 impl PointClippingBehavior {
     pub const ALL_CLIP_PLANES: Self = Self(0);
     pub const USER_CLIP_PLANES_ONLY: Self = Self(1);
     pub const ALL_CLIP_PLANES_KHR: Self = Self::ALL_CLIP_PLANES;
     pub const USER_CLIP_PLANES_ONLY_KHR: Self = Self::USER_CLIP_PLANES_ONLY;
-}
-impl default::Default for PointClippingBehavior {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PointClippingBehavior {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8606,18 +7725,13 @@ impl fmt::Display for PointClippingBehavior {
 }
 pub type PointClippingBehaviorKHR = PointClippingBehavior;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoverageModulationModeNV(i32);
 impl CoverageModulationModeNV {
     pub const NONE: Self = Self(0);
     pub const RGB: Self = Self(1);
     pub const ALPHA: Self = Self(2);
     pub const RGBA: Self = Self(3);
-}
-impl default::Default for CoverageModulationModeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CoverageModulationModeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8636,16 +7750,11 @@ impl fmt::Display for CoverageModulationModeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoverageReductionModeNV(i32);
 impl CoverageReductionModeNV {
     pub const MERGE: Self = Self(0);
     pub const TRUNCATE: Self = Self(1);
-}
-impl default::Default for CoverageReductionModeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CoverageReductionModeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8662,15 +7771,10 @@ impl fmt::Display for CoverageReductionModeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationCacheHeaderVersionEXT(i32);
 impl ValidationCacheHeaderVersionEXT {
     pub const ONE: Self = Self(1);
-}
-impl default::Default for ValidationCacheHeaderVersionEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ValidationCacheHeaderVersionEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8686,17 +7790,12 @@ impl fmt::Display for ValidationCacheHeaderVersionEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShaderInfoTypeAMD(i32);
 impl ShaderInfoTypeAMD {
     pub const STATISTICS: Self = Self(0);
     pub const BINARY: Self = Self(1);
     pub const DISASSEMBLY: Self = Self(2);
-}
-impl default::Default for ShaderInfoTypeAMD {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ShaderInfoTypeAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8714,7 +7813,7 @@ impl fmt::Display for ShaderInfoTypeAMD {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueueGlobalPriorityKHR(i32);
 impl QueueGlobalPriorityKHR {
     pub const LOW: Self = Self(128);
@@ -8725,11 +7824,6 @@ impl QueueGlobalPriorityKHR {
     pub const MEDIUM_EXT: Self = Self::MEDIUM;
     pub const HIGH_EXT: Self = Self::HIGH;
     pub const REALTIME_EXT: Self = Self::REALTIME;
-}
-impl default::Default for QueueGlobalPriorityKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for QueueGlobalPriorityKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8749,18 +7843,13 @@ impl fmt::Display for QueueGlobalPriorityKHR {
 }
 pub type QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct TimeDomainEXT(i32);
 impl TimeDomainEXT {
     pub const DEVICE: Self = Self(0);
     pub const CLOCK_MONOTONIC: Self = Self(1);
     pub const CLOCK_MONOTONIC_RAW: Self = Self(2);
     pub const QUERY_PERFORMANCE_COUNTER: Self = Self(3);
-}
-impl default::Default for TimeDomainEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for TimeDomainEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8779,17 +7868,12 @@ impl fmt::Display for TimeDomainEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ConservativeRasterizationModeEXT(i32);
 impl ConservativeRasterizationModeEXT {
     pub const DISABLED: Self = Self(0);
     pub const OVERESTIMATE: Self = Self(1);
     pub const UNDERESTIMATE: Self = Self(2);
-}
-impl default::Default for ConservativeRasterizationModeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ConservativeRasterizationModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8807,18 +7891,13 @@ impl fmt::Display for ConservativeRasterizationModeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SemaphoreType(i32);
 impl SemaphoreType {
     pub const BINARY: Self = Self(0);
     pub const TIMELINE: Self = Self(1);
     pub const BINARY_KHR: Self = Self::BINARY;
     pub const TIMELINE_KHR: Self = Self::TIMELINE;
-}
-impl default::Default for SemaphoreType {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SemaphoreType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8836,16 +7915,11 @@ impl fmt::Display for SemaphoreType {
 }
 pub type SemaphoreTypeKHR = SemaphoreType;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BuildAccelerationStructureModeKHR(i32);
 impl BuildAccelerationStructureModeKHR {
     pub const BUILD: Self = Self(0);
     pub const UPDATE: Self = Self(1);
-}
-impl default::Default for BuildAccelerationStructureModeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for BuildAccelerationStructureModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8862,7 +7936,7 @@ impl fmt::Display for BuildAccelerationStructureModeKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CopyAccelerationStructureModeKHR(i32);
 impl CopyAccelerationStructureModeKHR {
     pub const CLONE: Self = Self(0);
@@ -8871,11 +7945,6 @@ impl CopyAccelerationStructureModeKHR {
     pub const DESERIALIZE: Self = Self(3);
     pub const CLONE_NV: Self = Self::CLONE;
     pub const COMPACT_NV: Self = Self::COMPACT;
-}
-impl default::Default for CopyAccelerationStructureModeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CopyAccelerationStructureModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8895,7 +7964,7 @@ impl fmt::Display for CopyAccelerationStructureModeKHR {
 }
 pub type CopyAccelerationStructureModeNV = CopyAccelerationStructureModeKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureTypeKHR(i32);
 impl AccelerationStructureTypeKHR {
     pub const TOP_LEVEL: Self = Self(0);
@@ -8903,11 +7972,6 @@ impl AccelerationStructureTypeKHR {
     pub const GENERIC: Self = Self(2);
     pub const TOP_LEVEL_NV: Self = Self::TOP_LEVEL;
     pub const BOTTOM_LEVEL_NV: Self = Self::BOTTOM_LEVEL;
-}
-impl default::Default for AccelerationStructureTypeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AccelerationStructureTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8926,7 +7990,7 @@ impl fmt::Display for AccelerationStructureTypeKHR {
 }
 pub type AccelerationStructureTypeNV = AccelerationStructureTypeKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GeometryTypeKHR(i32);
 impl GeometryTypeKHR {
     pub const TRIANGLES: Self = Self(0);
@@ -8934,11 +7998,6 @@ impl GeometryTypeKHR {
     pub const INSTANCES: Self = Self(2);
     pub const TRIANGLES_NV: Self = Self::TRIANGLES;
     pub const AABBS_NV: Self = Self::AABBS;
-}
-impl default::Default for GeometryTypeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for GeometryTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8957,7 +8016,7 @@ impl fmt::Display for GeometryTypeKHR {
 }
 pub type GeometryTypeNV = GeometryTypeKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RayTracingShaderGroupTypeKHR(i32);
 impl RayTracingShaderGroupTypeKHR {
     pub const GENERAL: Self = Self(0);
@@ -8966,11 +8025,6 @@ impl RayTracingShaderGroupTypeKHR {
     pub const GENERAL_NV: Self = Self::GENERAL;
     pub const TRIANGLES_HIT_GROUP_NV: Self = Self::TRIANGLES_HIT_GROUP;
     pub const PROCEDURAL_HIT_GROUP_NV: Self = Self::PROCEDURAL_HIT_GROUP;
-}
-impl default::Default for RayTracingShaderGroupTypeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for RayTracingShaderGroupTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8989,17 +8043,12 @@ impl fmt::Display for RayTracingShaderGroupTypeKHR {
 }
 pub type RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureMemoryRequirementsTypeNV(i32);
 impl AccelerationStructureMemoryRequirementsTypeNV {
     pub const OBJECT: Self = Self(0);
     pub const BUILD_SCRATCH: Self = Self(1);
     pub const UPDATE_SCRATCH: Self = Self(2);
-}
-impl default::Default for AccelerationStructureMemoryRequirementsTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9017,17 +8066,12 @@ impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureBuildTypeKHR(i32);
 impl AccelerationStructureBuildTypeKHR {
     pub const HOST: Self = Self(0);
     pub const DEVICE: Self = Self(1);
     pub const HOST_OR_DEVICE: Self = Self(2);
-}
-impl default::Default for AccelerationStructureBuildTypeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AccelerationStructureBuildTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9045,16 +8089,11 @@ impl fmt::Display for AccelerationStructureBuildTypeKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureCompatibilityKHR(i32);
 impl AccelerationStructureCompatibilityKHR {
     pub const COMPATIBLE: Self = Self(0);
     pub const INCOMPATIBLE: Self = Self(1);
-}
-impl default::Default for AccelerationStructureCompatibilityKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AccelerationStructureCompatibilityKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9071,18 +8110,13 @@ impl fmt::Display for AccelerationStructureCompatibilityKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShaderGroupShaderKHR(i32);
 impl ShaderGroupShaderKHR {
     pub const GENERAL: Self = Self(0);
     pub const CLOSEST_HIT: Self = Self(1);
     pub const ANY_HIT: Self = Self(2);
     pub const INTERSECTION: Self = Self(3);
-}
-impl default::Default for ShaderGroupShaderKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ShaderGroupShaderKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9101,17 +8135,12 @@ impl fmt::Display for ShaderGroupShaderKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct MemoryOverallocationBehaviorAMD(i32);
 impl MemoryOverallocationBehaviorAMD {
     pub const DEFAULT: Self = Self(0);
     pub const ALLOWED: Self = Self(1);
     pub const DISALLOWED: Self = Self(2);
-}
-impl default::Default for MemoryOverallocationBehaviorAMD {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for MemoryOverallocationBehaviorAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9129,18 +8158,13 @@ impl fmt::Display for MemoryOverallocationBehaviorAMD {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ScopeNV(i32);
 impl ScopeNV {
     pub const DEVICE: Self = Self(1);
     pub const WORKGROUP: Self = Self(2);
     pub const SUBGROUP: Self = Self(3);
     pub const QUEUE_FAMILY: Self = Self(5);
-}
-impl default::Default for ScopeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ScopeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9159,7 +8183,7 @@ impl fmt::Display for ScopeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ComponentTypeNV(i32);
 impl ComponentTypeNV {
     pub const FLOAT16: Self = Self(0);
@@ -9173,11 +8197,6 @@ impl ComponentTypeNV {
     pub const UINT16: Self = Self(8);
     pub const UINT32: Self = Self(9);
     pub const UINT64: Self = Self(10);
-}
-impl default::Default for ComponentTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ComponentTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9203,7 +8222,7 @@ impl fmt::Display for ComponentTypeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterScopeKHR(i32);
 impl PerformanceCounterScopeKHR {
     pub const COMMAND_BUFFER: Self = Self(0);
@@ -9212,11 +8231,6 @@ impl PerformanceCounterScopeKHR {
     pub const QUERY_SCOPE_COMMAND_BUFFER: Self = Self::COMMAND_BUFFER;
     pub const QUERY_SCOPE_RENDER_PASS: Self = Self::RENDER_PASS;
     pub const QUERY_SCOPE_COMMAND: Self = Self::COMMAND;
-}
-impl default::Default for PerformanceCounterScopeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceCounterScopeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9234,7 +8248,7 @@ impl fmt::Display for PerformanceCounterScopeKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterUnitKHR(i32);
 impl PerformanceCounterUnitKHR {
     pub const GENERIC: Self = Self(0);
@@ -9248,11 +8262,6 @@ impl PerformanceCounterUnitKHR {
     pub const AMPS: Self = Self(8);
     pub const HERTZ: Self = Self(9);
     pub const CYCLES: Self = Self(10);
-}
-impl default::Default for PerformanceCounterUnitKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceCounterUnitKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9278,7 +8287,7 @@ impl fmt::Display for PerformanceCounterUnitKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterStorageKHR(i32);
 impl PerformanceCounterStorageKHR {
     pub const INT32: Self = Self(0);
@@ -9287,11 +8296,6 @@ impl PerformanceCounterStorageKHR {
     pub const UINT64: Self = Self(3);
     pub const FLOAT32: Self = Self(4);
     pub const FLOAT64: Self = Self(5);
-}
-impl default::Default for PerformanceCounterStorageKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceCounterStorageKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9312,15 +8316,10 @@ impl fmt::Display for PerformanceCounterStorageKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceConfigurationTypeINTEL(i32);
 impl PerformanceConfigurationTypeINTEL {
     pub const COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED: Self = Self(0);
-}
-impl default::Default for PerformanceConfigurationTypeINTEL {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceConfigurationTypeINTEL {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9336,15 +8335,10 @@ impl fmt::Display for PerformanceConfigurationTypeINTEL {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct QueryPoolSamplingModeINTEL(i32);
 impl QueryPoolSamplingModeINTEL {
     pub const MANUAL: Self = Self(0);
-}
-impl default::Default for QueryPoolSamplingModeINTEL {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for QueryPoolSamplingModeINTEL {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9360,16 +8354,11 @@ impl fmt::Display for QueryPoolSamplingModeINTEL {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceOverrideTypeINTEL(i32);
 impl PerformanceOverrideTypeINTEL {
     pub const NULL_HARDWARE: Self = Self(0);
     pub const FLUSH_GPU_CACHES: Self = Self(1);
-}
-impl default::Default for PerformanceOverrideTypeINTEL {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceOverrideTypeINTEL {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9386,16 +8375,11 @@ impl fmt::Display for PerformanceOverrideTypeINTEL {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceParameterTypeINTEL(i32);
 impl PerformanceParameterTypeINTEL {
     pub const HW_COUNTERS_SUPPORTED: Self = Self(0);
     pub const STREAM_MARKER_VALID_BITS: Self = Self(1);
-}
-impl default::Default for PerformanceParameterTypeINTEL {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceParameterTypeINTEL {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9412,7 +8396,7 @@ impl fmt::Display for PerformanceParameterTypeINTEL {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceValueTypeINTEL(i32);
 impl PerformanceValueTypeINTEL {
     pub const UINT32: Self = Self(0);
@@ -9420,11 +8404,6 @@ impl PerformanceValueTypeINTEL {
     pub const FLOAT: Self = Self(2);
     pub const BOOL: Self = Self(3);
     pub const STRING: Self = Self(4);
-}
-impl default::Default for PerformanceValueTypeINTEL {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PerformanceValueTypeINTEL {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9444,18 +8423,13 @@ impl fmt::Display for PerformanceValueTypeINTEL {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LineRasterizationModeEXT(i32);
 impl LineRasterizationModeEXT {
     pub const DEFAULT: Self = Self(0);
     pub const RECTANGULAR: Self = Self(1);
     pub const BRESENHAM: Self = Self(2);
     pub const RECTANGULAR_SMOOTH: Self = Self(3);
-}
-impl default::Default for LineRasterizationModeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for LineRasterizationModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9474,7 +8448,7 @@ impl fmt::Display for LineRasterizationModeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FragmentShadingRateNV(i32);
 impl FragmentShadingRateNV {
     pub const N1_INVOCATION_PER_PIXEL: Self = Self(0);
@@ -9489,11 +8463,6 @@ impl FragmentShadingRateNV {
     pub const N8_INVOCATIONS_PER_PIXEL: Self = Self(13);
     pub const N16_INVOCATIONS_PER_PIXEL: Self = Self(14);
     pub const NO_INVOCATIONS: Self = Self(15);
-}
-impl default::Default for FragmentShadingRateNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for FragmentShadingRateNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9520,16 +8489,11 @@ impl fmt::Display for FragmentShadingRateNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FragmentShadingRateTypeNV(i32);
 impl FragmentShadingRateTypeNV {
     pub const FRAGMENT_SIZE: Self = Self(0);
     pub const ENUMS: Self = Self(1);
-}
-impl default::Default for FragmentShadingRateTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for FragmentShadingRateTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9546,16 +8510,11 @@ impl fmt::Display for FragmentShadingRateTypeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ProvokingVertexModeEXT(i32);
 impl ProvokingVertexModeEXT {
     pub const FIRST_VERTEX: Self = Self(0);
     pub const LAST_VERTEX: Self = Self(1);
-}
-impl default::Default for ProvokingVertexModeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ProvokingVertexModeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9572,7 +8531,7 @@ impl fmt::Display for ProvokingVertexModeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = Self(0);
@@ -9609,11 +8568,6 @@ impl ColorSpaceKHR {
     /// Added by extension VK_AMD_display_native_hdr.
     pub const DISPLAY_NATIVE_AMD: Self = Self(1000213000);
 }
-impl default::Default for ColorSpaceKHR {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for ColorSpaceKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -9643,7 +8597,7 @@ impl fmt::Display for ColorSpaceKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PresentModeKHR(i32);
 impl PresentModeKHR {
     pub const IMMEDIATE: Self = Self(0);
@@ -9654,11 +8608,6 @@ impl PresentModeKHR {
     pub const SHARED_DEMAND_REFRESH: Self = Self(1000111000);
     /// Added by extension VK_KHR_shared_presentable_image.
     pub const SHARED_CONTINUOUS_REFRESH: Self = Self(1000111001);
-}
-impl default::Default for PresentModeKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PresentModeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9679,7 +8628,7 @@ impl fmt::Display for PresentModeKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DebugReportObjectTypeEXT(i32);
 impl DebugReportObjectTypeEXT {
     pub const UNKNOWN: Self = Self(0);
@@ -9733,11 +8682,6 @@ impl DebugReportObjectTypeEXT {
     /// Added by extension VK_FUCHSIA_buffer_collection.
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
 }
-impl default::Default for DebugReportObjectTypeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for DebugReportObjectTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -9790,7 +8734,7 @@ impl fmt::Display for DebugReportObjectTypeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DeviceMemoryReportEventTypeEXT(i32);
 impl DeviceMemoryReportEventTypeEXT {
     pub const ALLOCATE: Self = Self(0);
@@ -9798,11 +8742,6 @@ impl DeviceMemoryReportEventTypeEXT {
     pub const IMPORT: Self = Self(2);
     pub const UNIMPORT: Self = Self(3);
     pub const ALLOCATION_FAILED: Self = Self(4);
-}
-impl default::Default for DeviceMemoryReportEventTypeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DeviceMemoryReportEventTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9822,16 +8761,11 @@ impl fmt::Display for DeviceMemoryReportEventTypeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RasterizationOrderAMD(i32);
 impl RasterizationOrderAMD {
     pub const STRICT: Self = Self(0);
     pub const RELAXED: Self = Self(1);
-}
-impl default::Default for RasterizationOrderAMD {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for RasterizationOrderAMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9848,16 +8782,11 @@ impl fmt::Display for RasterizationOrderAMD {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationCheckEXT(i32);
 impl ValidationCheckEXT {
     pub const ALL: Self = Self(0);
     pub const SHADERS: Self = Self(1);
-}
-impl default::Default for ValidationCheckEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ValidationCheckEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9874,7 +8803,7 @@ impl fmt::Display for ValidationCheckEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationFeatureEnableEXT(i32);
 impl ValidationFeatureEnableEXT {
     pub const GPU_ASSISTED: Self = Self(0);
@@ -9882,11 +8811,6 @@ impl ValidationFeatureEnableEXT {
     pub const BEST_PRACTICES: Self = Self(2);
     pub const DEBUG_PRINTF: Self = Self(3);
     pub const SYNCHRONIZATION_VALIDATION: Self = Self(4);
-}
-impl default::Default for ValidationFeatureEnableEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ValidationFeatureEnableEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9906,7 +8830,7 @@ impl fmt::Display for ValidationFeatureEnableEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ValidationFeatureDisableEXT(i32);
 impl ValidationFeatureDisableEXT {
     pub const ALL: Self = Self(0);
@@ -9917,11 +8841,6 @@ impl ValidationFeatureDisableEXT {
     pub const CORE_CHECKS: Self = Self(5);
     pub const UNIQUE_HANDLES: Self = Self(6);
     pub const SHADER_VALIDATION_CACHE: Self = Self(7);
-}
-impl default::Default for ValidationFeatureDisableEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ValidationFeatureDisableEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9944,17 +8863,12 @@ impl fmt::Display for ValidationFeatureDisableEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayPowerStateEXT(i32);
 impl DisplayPowerStateEXT {
     pub const OFF: Self = Self(0);
     pub const SUSPEND: Self = Self(1);
     pub const ON: Self = Self(2);
-}
-impl default::Default for DisplayPowerStateEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DisplayPowerStateEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9972,15 +8886,10 @@ impl fmt::Display for DisplayPowerStateEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DeviceEventTypeEXT(i32);
 impl DeviceEventTypeEXT {
     pub const DISPLAY_HOTPLUG: Self = Self(0);
-}
-impl default::Default for DeviceEventTypeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DeviceEventTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -9996,15 +8905,10 @@ impl fmt::Display for DeviceEventTypeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayEventTypeEXT(i32);
 impl DisplayEventTypeEXT {
     pub const FIRST_PIXEL_OUT: Self = Self(0);
-}
-impl default::Default for DisplayEventTypeEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for DisplayEventTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10020,18 +8924,13 @@ impl fmt::Display for DisplayEventTypeEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct TessellationDomainOrigin(i32);
 impl TessellationDomainOrigin {
     pub const UPPER_LEFT: Self = Self(0);
     pub const LOWER_LEFT: Self = Self(1);
     pub const UPPER_LEFT_KHR: Self = Self::UPPER_LEFT;
     pub const LOWER_LEFT_KHR: Self = Self::LOWER_LEFT;
-}
-impl default::Default for TessellationDomainOrigin {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for TessellationDomainOrigin {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10049,7 +8948,7 @@ impl fmt::Display for TessellationDomainOrigin {
 }
 pub type TessellationDomainOriginKHR = TessellationDomainOrigin;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerYcbcrModelConversion(i32);
 impl SamplerYcbcrModelConversion {
     pub const RGB_IDENTITY: Self = Self(0);
@@ -10066,11 +8965,6 @@ impl SamplerYcbcrModelConversion {
     pub const YCBCR_709_KHR: Self = Self::YCBCR_709;
     pub const YCBCR_601_KHR: Self = Self::YCBCR_601;
     pub const YCBCR_2020_KHR: Self = Self::YCBCR_2020;
-}
-impl default::Default for SamplerYcbcrModelConversion {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SamplerYcbcrModelConversion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10091,7 +8985,7 @@ impl fmt::Display for SamplerYcbcrModelConversion {
 }
 pub type SamplerYcbcrModelConversionKHR = SamplerYcbcrModelConversion;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerYcbcrRange(i32);
 impl SamplerYcbcrRange {
     /// Luma 0..1 maps to 0..255, chroma -0.5..0.5 to 1..255 (clamped)
@@ -10100,11 +8994,6 @@ impl SamplerYcbcrRange {
     pub const ITU_NARROW: Self = Self(1);
     pub const ITU_FULL_KHR: Self = Self::ITU_FULL;
     pub const ITU_NARROW_KHR: Self = Self::ITU_NARROW;
-}
-impl default::Default for SamplerYcbcrRange {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SamplerYcbcrRange {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10122,18 +9011,13 @@ impl fmt::Display for SamplerYcbcrRange {
 }
 pub type SamplerYcbcrRangeKHR = SamplerYcbcrRange;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ChromaLocation(i32);
 impl ChromaLocation {
     pub const COSITED_EVEN: Self = Self(0);
     pub const MIDPOINT: Self = Self(1);
     pub const COSITED_EVEN_KHR: Self = Self::COSITED_EVEN;
     pub const MIDPOINT_KHR: Self = Self::MIDPOINT;
-}
-impl default::Default for ChromaLocation {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ChromaLocation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10151,7 +9035,7 @@ impl fmt::Display for ChromaLocation {
 }
 pub type ChromaLocationKHR = ChromaLocation;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SamplerReductionMode(i32);
 impl SamplerReductionMode {
     pub const WEIGHTED_AVERAGE: Self = Self(0);
@@ -10160,11 +9044,6 @@ impl SamplerReductionMode {
     pub const WEIGHTED_AVERAGE_EXT: Self = Self::WEIGHTED_AVERAGE;
     pub const MIN_EXT: Self = Self::MIN;
     pub const MAX_EXT: Self = Self::MAX;
-}
-impl default::Default for SamplerReductionMode {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for SamplerReductionMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10183,17 +9062,12 @@ impl fmt::Display for SamplerReductionMode {
 }
 pub type SamplerReductionModeEXT = SamplerReductionMode;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct BlendOverlapEXT(i32);
 impl BlendOverlapEXT {
     pub const UNCORRELATED: Self = Self(0);
     pub const DISJOINT: Self = Self(1);
     pub const CONJOINT: Self = Self(2);
-}
-impl default::Default for BlendOverlapEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for BlendOverlapEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10211,18 +9085,13 @@ impl fmt::Display for BlendOverlapEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FullScreenExclusiveEXT(i32);
 impl FullScreenExclusiveEXT {
     pub const DEFAULT: Self = Self(0);
     pub const ALLOWED: Self = Self(1);
     pub const DISALLOWED: Self = Self(2);
     pub const APPLICATION_CONTROLLED: Self = Self(3);
-}
-impl default::Default for FullScreenExclusiveEXT {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for FullScreenExclusiveEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10241,7 +9110,7 @@ impl fmt::Display for FullScreenExclusiveEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShaderFloatControlsIndependence(i32);
 impl ShaderFloatControlsIndependence {
     pub const N32_BIT_ONLY: Self = Self(0);
@@ -10250,11 +9119,6 @@ impl ShaderFloatControlsIndependence {
     pub const N32_BIT_ONLY_KHR: Self = Self::N32_BIT_ONLY;
     pub const ALL_KHR: Self = Self::ALL;
     pub const NONE_KHR: Self = Self::NONE;
-}
-impl default::Default for ShaderFloatControlsIndependence {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ShaderFloatControlsIndependence {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10273,7 +9137,7 @@ impl fmt::Display for ShaderFloatControlsIndependence {
 }
 pub type ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct FragmentShadingRateCombinerOpKHR(i32);
 impl FragmentShadingRateCombinerOpKHR {
     pub const KEEP: Self = Self(0);
@@ -10281,11 +9145,6 @@ impl FragmentShadingRateCombinerOpKHR {
     pub const MIN: Self = Self(2);
     pub const MAX: Self = Self(3);
     pub const MUL: Self = Self(4);
-}
-impl default::Default for FragmentShadingRateCombinerOpKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for FragmentShadingRateCombinerOpKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10305,7 +9164,7 @@ impl fmt::Display for FragmentShadingRateCombinerOpKHR {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VendorId(i32);
 impl VendorId {
     /// Vivante vendor ID
@@ -10320,11 +9179,6 @@ impl VendorId {
     pub const MESA: Self = Self(65541);
     /// PoCL vendor ID
     pub const POCL: Self = Self(65542);
-}
-impl default::Default for VendorId {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for VendorId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10345,7 +9199,7 @@ impl fmt::Display for VendorId {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DriverId(i32);
 impl DriverId {
     /// Advanced Micro Devices, Inc.
@@ -10405,11 +9259,6 @@ impl DriverId {
     pub const GGP_PROPRIETARY_KHR: Self = Self::GGP_PROPRIETARY;
     pub const BROADCOM_PROPRIETARY_KHR: Self = Self::BROADCOM_PROPRIETARY;
 }
-impl default::Default for DriverId {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 impl fmt::Display for DriverId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
@@ -10446,7 +9295,7 @@ impl fmt::Display for DriverId {
 }
 pub type DriverIdKHR = DriverId;
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ShadingRatePaletteEntryNV(i32);
 impl ShadingRatePaletteEntryNV {
     pub const NO_INVOCATIONS: Self = Self(0);
@@ -10461,11 +9310,6 @@ impl ShadingRatePaletteEntryNV {
     pub const N1_INVOCATION_PER_4X2_PIXELS: Self = Self(9);
     pub const N1_INVOCATION_PER_2X4_PIXELS: Self = Self(10);
     pub const N1_INVOCATION_PER_4X4_PIXELS: Self = Self(11);
-}
-impl default::Default for ShadingRatePaletteEntryNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for ShadingRatePaletteEntryNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10492,18 +9336,13 @@ impl fmt::Display for ShadingRatePaletteEntryNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoarseSampleOrderTypeNV(i32);
 impl CoarseSampleOrderTypeNV {
     pub const DEFAULT: Self = Self(0);
     pub const CUSTOM: Self = Self(1);
     pub const PIXEL_MAJOR: Self = Self(2);
     pub const SAMPLE_MAJOR: Self = Self(3);
-}
-impl default::Default for CoarseSampleOrderTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for CoarseSampleOrderTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10522,18 +9361,13 @@ impl fmt::Display for CoarseSampleOrderTypeNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PipelineExecutableStatisticFormatKHR(i32);
 impl PipelineExecutableStatisticFormatKHR {
     pub const BOOL32: Self = Self(0);
     pub const INT64: Self = Self(1);
     pub const UINT64: Self = Self(2);
     pub const FLOAT64: Self = Self(3);
-}
-impl default::Default for PipelineExecutableStatisticFormatKHR {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for PipelineExecutableStatisticFormatKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10604,10 +9438,10 @@ pub struct BaseOutStructure {
 }
 unsafe impl Send for BaseOutStructure {}
 unsafe impl Sync for BaseOutStructure {}
-impl default::Default for BaseOutStructure {
+impl Default for BaseOutStructure {
     fn default() -> Self {
         Self {
-            s_type: StructureType::default(),
+            s_type: Default::default(),
             p_next: ptr::null_mut(),
         }
     }
@@ -10628,10 +9462,10 @@ pub struct BaseInStructure {
 }
 unsafe impl Send for BaseInStructure {}
 unsafe impl Sync for BaseInStructure {}
-impl default::Default for BaseInStructure {
+impl Default for BaseInStructure {
     fn default() -> Self {
         Self {
-            s_type: StructureType::default(),
+            s_type: Default::default(),
             p_next: ptr::null(),
         }
     }
@@ -10645,18 +9479,10 @@ impl fmt::Debug for BaseInStructure {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Offset2D {
     pub x: i32,
     pub y: i32,
-}
-impl default::Default for Offset2D {
-    fn default() -> Self {
-        Self {
-            x: i32::default(),
-            y: i32::default(),
-        }
-    }
 }
 impl fmt::Debug for Offset2D {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10667,20 +9493,11 @@ impl fmt::Debug for Offset2D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Offset3D {
     pub x: i32,
     pub y: i32,
     pub z: i32,
-}
-impl default::Default for Offset3D {
-    fn default() -> Self {
-        Self {
-            x: i32::default(),
-            y: i32::default(),
-            z: i32::default(),
-        }
-    }
 }
 impl fmt::Debug for Offset3D {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10692,18 +9509,10 @@ impl fmt::Debug for Offset3D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Extent2D {
     pub width: u32,
     pub height: u32,
-}
-impl default::Default for Extent2D {
-    fn default() -> Self {
-        Self {
-            width: u32::default(),
-            height: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for Extent2D {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10714,20 +9523,11 @@ impl fmt::Debug for Extent2D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Extent3D {
     pub width: u32,
     pub height: u32,
     pub depth: u32,
-}
-impl default::Default for Extent3D {
-    fn default() -> Self {
-        Self {
-            width: u32::default(),
-            height: u32::default(),
-            depth: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for Extent3D {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10739,7 +9539,7 @@ impl fmt::Debug for Extent3D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Viewport {
     pub x: f32,
     pub y: f32,
@@ -10747,18 +9547,6 @@ pub struct Viewport {
     pub height: f32,
     pub min_depth: f32,
     pub max_depth: f32,
-}
-impl default::Default for Viewport {
-    fn default() -> Self {
-        Self {
-            x: f32::default(),
-            y: f32::default(),
-            width: f32::default(),
-            height: f32::default(),
-            min_depth: f32::default(),
-            max_depth: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for Viewport {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10773,18 +9561,10 @@ impl fmt::Debug for Viewport {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct Rect2D {
     pub offset: Offset2D,
     pub extent: Extent2D,
-}
-impl default::Default for Rect2D {
-    fn default() -> Self {
-        Self {
-            offset: Offset2D::default(),
-            extent: Extent2D::default(),
-        }
-    }
 }
 impl fmt::Debug for Rect2D {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10795,20 +9575,11 @@ impl fmt::Debug for Rect2D {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ClearRect {
     pub rect: Rect2D,
     pub base_array_layer: u32,
     pub layer_count: u32,
-}
-impl default::Default for ClearRect {
-    fn default() -> Self {
-        Self {
-            rect: Rect2D::default(),
-            base_array_layer: u32::default(),
-            layer_count: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for ClearRect {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10820,22 +9591,12 @@ impl fmt::Debug for ClearRect {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ComponentMapping {
     pub r: ComponentSwizzle,
     pub g: ComponentSwizzle,
     pub b: ComponentSwizzle,
     pub a: ComponentSwizzle,
-}
-impl default::Default for ComponentMapping {
-    fn default() -> Self {
-        Self {
-            r: ComponentSwizzle::default(),
-            g: ComponentSwizzle::default(),
-            b: ComponentSwizzle::default(),
-            a: ComponentSwizzle::default(),
-        }
-    }
 }
 impl fmt::Debug for ComponentMapping {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -10860,18 +9621,18 @@ pub struct PhysicalDeviceProperties {
     pub limits: PhysicalDeviceLimits,
     pub sparse_properties: PhysicalDeviceSparseProperties,
 }
-impl default::Default for PhysicalDeviceProperties {
+impl Default for PhysicalDeviceProperties {
     fn default() -> Self {
         Self {
-            api_version: Version::default(),
-            driver_version: u32::default(),
-            vendor_id: u32::default(),
-            device_id: u32::default(),
-            device_type: PhysicalDeviceType::default(),
-            device_name: [c_char::default(); MAX_PHYSICAL_DEVICE_NAME_SIZE],
-            pipeline_cache_uuid: [u8::default(); UUID_SIZE],
-            limits: PhysicalDeviceLimits::default(),
-            sparse_properties: PhysicalDeviceSparseProperties::default(),
+            api_version: Default::default(),
+            driver_version: Default::default(),
+            vendor_id: Default::default(),
+            device_id: Default::default(),
+            device_type: Default::default(),
+            device_name: [Default::default(); MAX_PHYSICAL_DEVICE_NAME_SIZE],
+            pipeline_cache_uuid: [Default::default(); UUID_SIZE],
+            limits: Default::default(),
+            sparse_properties: Default::default(),
         }
     }
 }
@@ -10898,11 +9659,11 @@ pub struct ExtensionProperties {
     /// version of the extension specification implemented
     pub spec_version: u32,
 }
-impl default::Default for ExtensionProperties {
+impl Default for ExtensionProperties {
     fn default() -> Self {
         Self {
-            extension_name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
-            spec_version: u32::default(),
+            extension_name: [Default::default(); MAX_EXTENSION_NAME_SIZE],
+            spec_version: Default::default(),
         }
     }
 }
@@ -10928,13 +9689,13 @@ pub struct LayerProperties {
     /// Free-form description of the layer
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
 }
-impl default::Default for LayerProperties {
+impl Default for LayerProperties {
     fn default() -> Self {
         Self {
-            layer_name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
-            spec_version: Version::default(),
-            implementation_version: u32::default(),
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            layer_name: [Default::default(); MAX_EXTENSION_NAME_SIZE],
+            spec_version: Default::default(),
+            implementation_version: Default::default(),
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
         }
     }
 }
@@ -10961,16 +9722,16 @@ pub struct ApplicationInfo {
 }
 unsafe impl Send for ApplicationInfo {}
 unsafe impl Sync for ApplicationInfo {}
-impl default::Default for ApplicationInfo {
+impl Default for ApplicationInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::APPLICATION_INFO,
             p_next: ptr::null(),
             p_application_name: ptr::null(),
-            application_version: u32::default(),
+            application_version: Default::default(),
             p_engine_name: ptr::null(),
-            engine_version: u32::default(),
-            api_version: Version::default(),
+            engine_version: Default::default(),
+            api_version: Default::default(),
         }
     }
 }
@@ -10999,15 +9760,15 @@ pub struct AllocationCallbacks {
 }
 unsafe impl Send for AllocationCallbacks {}
 unsafe impl Sync for AllocationCallbacks {}
-impl default::Default for AllocationCallbacks {
+impl Default for AllocationCallbacks {
     fn default() -> Self {
         Self {
             p_user_data: ptr::null_mut(),
-            pfn_allocation: None,
-            pfn_reallocation: None,
-            pfn_free: None,
-            pfn_internal_allocation: None,
-            pfn_internal_free: None,
+            pfn_allocation: Default::default(),
+            pfn_reallocation: Default::default(),
+            pfn_free: Default::default(),
+            pfn_internal_allocation: Default::default(),
+            pfn_internal_free: Default::default(),
         }
     }
 }
@@ -11063,14 +9824,14 @@ pub struct DeviceQueueCreateInfo {
 }
 unsafe impl Send for DeviceQueueCreateInfo {}
 unsafe impl Sync for DeviceQueueCreateInfo {}
-impl default::Default for DeviceQueueCreateInfo {
+impl Default for DeviceQueueCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_QUEUE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: DeviceQueueCreateFlags::default(),
-            queue_family_index: u32::default(),
-            queue_count: u32::default(),
+            flags: Default::default(),
+            queue_family_index: Default::default(),
+            queue_count: Default::default(),
             p_queue_priorities: ptr::null(),
         }
     }
@@ -11104,17 +9865,17 @@ pub struct DeviceCreateInfo {
 }
 unsafe impl Send for DeviceCreateInfo {}
 unsafe impl Sync for DeviceCreateInfo {}
-impl default::Default for DeviceCreateInfo {
+impl Default for DeviceCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: DeviceCreateFlags::default(),
-            queue_create_info_count: u32::default(),
+            flags: Default::default(),
+            queue_create_info_count: Default::default(),
             p_queue_create_infos: ptr::null(),
-            enabled_layer_count: u32::default(),
+            enabled_layer_count: Default::default(),
             pp_enabled_layer_names: ptr::null(),
-            enabled_extension_count: u32::default(),
+            enabled_extension_count: Default::default(),
             pp_enabled_extension_names: ptr::null(),
             p_enabled_features: ptr::null(),
         }
@@ -11152,16 +9913,16 @@ pub struct InstanceCreateInfo {
 }
 unsafe impl Send for InstanceCreateInfo {}
 unsafe impl Sync for InstanceCreateInfo {}
-impl default::Default for InstanceCreateInfo {
+impl Default for InstanceCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::INSTANCE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: InstanceCreateFlags::default(),
+            flags: Default::default(),
             p_application_info: ptr::null(),
-            enabled_layer_count: u32::default(),
+            enabled_layer_count: Default::default(),
             pp_enabled_layer_names: ptr::null(),
-            enabled_extension_count: u32::default(),
+            enabled_extension_count: Default::default(),
             pp_enabled_extension_names: ptr::null(),
         }
     }
@@ -11181,7 +9942,7 @@ impl fmt::Debug for InstanceCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct QueueFamilyProperties {
     /// Queue flags
     pub queue_flags: QueueFlags,
@@ -11189,16 +9950,6 @@ pub struct QueueFamilyProperties {
     pub timestamp_valid_bits: u32,
     /// Minimum alignment requirement for image transfers
     pub min_image_transfer_granularity: Extent3D,
-}
-impl default::Default for QueueFamilyProperties {
-    fn default() -> Self {
-        Self {
-            queue_flags: QueueFlags::default(),
-            queue_count: u32::default(),
-            timestamp_valid_bits: u32::default(),
-            min_image_transfer_granularity: Extent3D::default(),
-        }
-    }
 }
 impl fmt::Debug for QueueFamilyProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11218,13 +9969,13 @@ pub struct PhysicalDeviceMemoryProperties {
     pub memory_heap_count: u32,
     pub memory_heaps: [MemoryHeap; MAX_MEMORY_HEAPS],
 }
-impl default::Default for PhysicalDeviceMemoryProperties {
+impl Default for PhysicalDeviceMemoryProperties {
     fn default() -> Self {
         Self {
-            memory_type_count: u32::default(),
-            memory_types: [MemoryType::default(); MAX_MEMORY_TYPES],
-            memory_heap_count: u32::default(),
-            memory_heaps: [MemoryHeap::default(); MAX_MEMORY_HEAPS],
+            memory_type_count: Default::default(),
+            memory_types: [Default::default(); MAX_MEMORY_TYPES],
+            memory_heap_count: Default::default(),
+            memory_heaps: [Default::default(); MAX_MEMORY_HEAPS],
         }
     }
 }
@@ -11250,13 +10001,13 @@ pub struct MemoryAllocateInfo {
 }
 unsafe impl Send for MemoryAllocateInfo {}
 unsafe impl Sync for MemoryAllocateInfo {}
-impl default::Default for MemoryAllocateInfo {
+impl Default for MemoryAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_ALLOCATE_INFO,
             p_next: ptr::null(),
-            allocation_size: DeviceSize::default(),
-            memory_type_index: u32::default(),
+            allocation_size: Default::default(),
+            memory_type_index: Default::default(),
         }
     }
 }
@@ -11271,7 +10022,7 @@ impl fmt::Debug for MemoryAllocateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryRequirements {
     /// Specified in bytes
     pub size: DeviceSize,
@@ -11279,15 +10030,6 @@ pub struct MemoryRequirements {
     pub alignment: DeviceSize,
     /// Bitmask of the allowed memory type indices into memoryTypes[] for this object
     pub memory_type_bits: u32,
-}
-impl default::Default for MemoryRequirements {
-    fn default() -> Self {
-        Self {
-            size: DeviceSize::default(),
-            alignment: DeviceSize::default(),
-            memory_type_bits: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for MemoryRequirements {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11299,20 +10041,11 @@ impl fmt::Debug for MemoryRequirements {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SparseImageFormatProperties {
     pub aspect_mask: ImageAspectFlags,
     pub image_granularity: Extent3D,
     pub flags: SparseImageFormatFlags,
-}
-impl default::Default for SparseImageFormatProperties {
-    fn default() -> Self {
-        Self {
-            aspect_mask: ImageAspectFlags::default(),
-            image_granularity: Extent3D::default(),
-            flags: SparseImageFormatFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for SparseImageFormatProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11324,7 +10057,7 @@ impl fmt::Debug for SparseImageFormatProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SparseImageMemoryRequirements {
     pub format_properties: SparseImageFormatProperties,
     pub image_mip_tail_first_lod: u32,
@@ -11334,17 +10067,6 @@ pub struct SparseImageMemoryRequirements {
     pub image_mip_tail_offset: DeviceSize,
     /// Specified in bytes, must be a multiple of sparse block size in bytes / alignment
     pub image_mip_tail_stride: DeviceSize,
-}
-impl default::Default for SparseImageMemoryRequirements {
-    fn default() -> Self {
-        Self {
-            format_properties: SparseImageFormatProperties::default(),
-            image_mip_tail_first_lod: u32::default(),
-            image_mip_tail_size: DeviceSize::default(),
-            image_mip_tail_offset: DeviceSize::default(),
-            image_mip_tail_stride: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for SparseImageMemoryRequirements {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11358,20 +10080,12 @@ impl fmt::Debug for SparseImageMemoryRequirements {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryType {
     /// Memory properties of this memory type
     pub property_flags: MemoryPropertyFlags,
     /// Index of the memory heap allocations of this memory type are taken from
     pub heap_index: u32,
-}
-impl default::Default for MemoryType {
-    fn default() -> Self {
-        Self {
-            property_flags: MemoryPropertyFlags::default(),
-            heap_index: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for MemoryType {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11382,20 +10096,12 @@ impl fmt::Debug for MemoryType {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryHeap {
     /// Available memory in the heap
     pub size: DeviceSize,
     /// Flags for the heap
     pub flags: MemoryHeapFlags,
-}
-impl default::Default for MemoryHeap {
-    fn default() -> Self {
-        Self {
-            size: DeviceSize::default(),
-            flags: MemoryHeapFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for MemoryHeap {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11419,14 +10125,14 @@ pub struct MappedMemoryRange {
 }
 unsafe impl Send for MappedMemoryRange {}
 unsafe impl Sync for MappedMemoryRange {}
-impl default::Default for MappedMemoryRange {
+impl Default for MappedMemoryRange {
     fn default() -> Self {
         Self {
             s_type: StructureType::MAPPED_MEMORY_RANGE,
             p_next: ptr::null(),
-            memory: None,
-            offset: DeviceSize::default(),
-            size: DeviceSize::default(),
+            memory: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
         }
     }
 }
@@ -11442,7 +10148,7 @@ impl fmt::Debug for MappedMemoryRange {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct FormatProperties {
     /// Format features in case of linear tiling
     pub linear_tiling_features: FormatFeatureFlags,
@@ -11450,15 +10156,6 @@ pub struct FormatProperties {
     pub optimal_tiling_features: FormatFeatureFlags,
     /// Format features supported by buffers
     pub buffer_features: FormatFeatureFlags,
-}
-impl default::Default for FormatProperties {
-    fn default() -> Self {
-        Self {
-            linear_tiling_features: FormatFeatureFlags::default(),
-            optimal_tiling_features: FormatFeatureFlags::default(),
-            buffer_features: FormatFeatureFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for FormatProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11470,7 +10167,7 @@ impl fmt::Debug for FormatProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageFormatProperties {
     /// max image dimensions for this resource type
     pub max_extent: Extent3D,
@@ -11482,17 +10179,6 @@ pub struct ImageFormatProperties {
     pub sample_counts: SampleCountFlags,
     /// max size (in bytes) of this resource type
     pub max_resource_size: DeviceSize,
-}
-impl default::Default for ImageFormatProperties {
-    fn default() -> Self {
-        Self {
-            max_extent: Extent3D::default(),
-            max_mip_levels: u32::default(),
-            max_array_layers: u32::default(),
-            sample_counts: SampleCountFlags::default(),
-            max_resource_size: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageFormatProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11506,7 +10192,7 @@ impl fmt::Debug for ImageFormatProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct DescriptorBufferInfo {
     /// Buffer used for this descriptor slot.
     pub buffer: Option<Buffer>,
@@ -11514,15 +10200,6 @@ pub struct DescriptorBufferInfo {
     pub offset: DeviceSize,
     /// Size in bytes of the buffer resource for this descriptor update.
     pub range: DeviceSize,
-}
-impl default::Default for DescriptorBufferInfo {
-    fn default() -> Self {
-        Self {
-            buffer: None,
-            offset: DeviceSize::default(),
-            range: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for DescriptorBufferInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11534,7 +10211,7 @@ impl fmt::Debug for DescriptorBufferInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct DescriptorImageInfo {
     /// Sampler to write to the descriptor in case it is a SAMPLER or COMBINED_IMAGE_SAMPLER descriptor. Ignored otherwise.
     pub sampler: Option<Sampler>,
@@ -11542,15 +10219,6 @@ pub struct DescriptorImageInfo {
     pub image_view: Option<ImageView>,
     /// Layout the image is expected to be in when accessed using this descriptor (only used if imageView is not VK_NULL_HANDLE).
     pub image_layout: ImageLayout,
-}
-impl default::Default for DescriptorImageInfo {
-    fn default() -> Self {
-        Self {
-            sampler: None,
-            image_view: None,
-            image_layout: ImageLayout::default(),
-        }
-    }
 }
 impl fmt::Debug for DescriptorImageInfo {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11585,16 +10253,16 @@ pub struct WriteDescriptorSet {
 }
 unsafe impl Send for WriteDescriptorSet {}
 unsafe impl Sync for WriteDescriptorSet {}
-impl default::Default for WriteDescriptorSet {
+impl Default for WriteDescriptorSet {
     fn default() -> Self {
         Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET,
             p_next: ptr::null(),
-            dst_set: None,
-            dst_binding: u32::default(),
-            dst_array_element: u32::default(),
-            descriptor_count: u32::default(),
-            descriptor_type: DescriptorType::default(),
+            dst_set: Default::default(),
+            dst_binding: Default::default(),
+            dst_array_element: Default::default(),
+            descriptor_count: Default::default(),
+            descriptor_type: Default::default(),
             p_image_info: ptr::null(),
             p_buffer_info: ptr::null(),
             p_texel_buffer_view: ptr::null(),
@@ -11639,18 +10307,18 @@ pub struct CopyDescriptorSet {
 }
 unsafe impl Send for CopyDescriptorSet {}
 unsafe impl Sync for CopyDescriptorSet {}
-impl default::Default for CopyDescriptorSet {
+impl Default for CopyDescriptorSet {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_DESCRIPTOR_SET,
             p_next: ptr::null(),
-            src_set: None,
-            src_binding: u32::default(),
-            src_array_element: u32::default(),
-            dst_set: None,
-            dst_binding: u32::default(),
-            dst_array_element: u32::default(),
-            descriptor_count: u32::default(),
+            src_set: Default::default(),
+            src_binding: Default::default(),
+            src_array_element: Default::default(),
+            dst_set: Default::default(),
+            dst_binding: Default::default(),
+            dst_array_element: Default::default(),
+            descriptor_count: Default::default(),
         }
     }
 }
@@ -11686,16 +10354,16 @@ pub struct BufferCreateInfo {
 }
 unsafe impl Send for BufferCreateInfo {}
 unsafe impl Sync for BufferCreateInfo {}
-impl default::Default for BufferCreateInfo {
+impl Default for BufferCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_CREATE_INFO,
             p_next: ptr::null(),
-            flags: BufferCreateFlags::default(),
-            size: DeviceSize::default(),
-            usage: BufferUsageFlags::default(),
-            sharing_mode: SharingMode::default(),
-            queue_family_index_count: u32::default(),
+            flags: Default::default(),
+            size: Default::default(),
+            usage: Default::default(),
+            sharing_mode: Default::default(),
+            queue_family_index_count: Default::default(),
             p_queue_family_indices: ptr::null(),
         }
     }
@@ -11730,16 +10398,16 @@ pub struct BufferViewCreateInfo {
 }
 unsafe impl Send for BufferViewCreateInfo {}
 unsafe impl Sync for BufferViewCreateInfo {}
-impl default::Default for BufferViewCreateInfo {
+impl Default for BufferViewCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_VIEW_CREATE_INFO,
             p_next: ptr::null(),
-            flags: BufferViewCreateFlags::default(),
-            buffer: None,
-            format: Format::default(),
-            offset: DeviceSize::default(),
-            range: DeviceSize::default(),
+            flags: Default::default(),
+            buffer: Default::default(),
+            format: Default::default(),
+            offset: Default::default(),
+            range: Default::default(),
         }
     }
 }
@@ -11757,20 +10425,11 @@ impl fmt::Debug for BufferViewCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageSubresource {
     pub aspect_mask: ImageAspectFlags,
     pub mip_level: u32,
     pub array_layer: u32,
-}
-impl default::Default for ImageSubresource {
-    fn default() -> Self {
-        Self {
-            aspect_mask: ImageAspectFlags::default(),
-            mip_level: u32::default(),
-            array_layer: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageSubresource {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11782,22 +10441,12 @@ impl fmt::Debug for ImageSubresource {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageSubresourceLayers {
     pub aspect_mask: ImageAspectFlags,
     pub mip_level: u32,
     pub base_array_layer: u32,
     pub layer_count: u32,
-}
-impl default::Default for ImageSubresourceLayers {
-    fn default() -> Self {
-        Self {
-            aspect_mask: ImageAspectFlags::default(),
-            mip_level: u32::default(),
-            base_array_layer: u32::default(),
-            layer_count: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageSubresourceLayers {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11810,24 +10459,13 @@ impl fmt::Debug for ImageSubresourceLayers {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageSubresourceRange {
     pub aspect_mask: ImageAspectFlags,
     pub base_mip_level: u32,
     pub level_count: u32,
     pub base_array_layer: u32,
     pub layer_count: u32,
-}
-impl default::Default for ImageSubresourceRange {
-    fn default() -> Self {
-        Self {
-            aspect_mask: ImageAspectFlags::default(),
-            base_mip_level: u32::default(),
-            level_count: u32::default(),
-            base_array_layer: u32::default(),
-            layer_count: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageSubresourceRange {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -11852,13 +10490,13 @@ pub struct MemoryBarrier {
 }
 unsafe impl Send for MemoryBarrier {}
 unsafe impl Sync for MemoryBarrier {}
-impl default::Default for MemoryBarrier {
+impl Default for MemoryBarrier {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_BARRIER,
             p_next: ptr::null(),
-            src_access_mask: AccessFlags::default(),
-            dst_access_mask: AccessFlags::default(),
+            src_access_mask: Default::default(),
+            dst_access_mask: Default::default(),
         }
     }
 }
@@ -11894,18 +10532,18 @@ pub struct BufferMemoryBarrier {
 }
 unsafe impl Send for BufferMemoryBarrier {}
 unsafe impl Sync for BufferMemoryBarrier {}
-impl default::Default for BufferMemoryBarrier {
+impl Default for BufferMemoryBarrier {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_MEMORY_BARRIER,
             p_next: ptr::null(),
-            src_access_mask: AccessFlags::default(),
-            dst_access_mask: AccessFlags::default(),
-            src_queue_family_index: u32::default(),
-            dst_queue_family_index: u32::default(),
-            buffer: None,
-            offset: DeviceSize::default(),
-            size: DeviceSize::default(),
+            src_access_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            buffer: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
         }
     }
 }
@@ -11948,19 +10586,19 @@ pub struct ImageMemoryBarrier {
 }
 unsafe impl Send for ImageMemoryBarrier {}
 unsafe impl Sync for ImageMemoryBarrier {}
-impl default::Default for ImageMemoryBarrier {
+impl Default for ImageMemoryBarrier {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_MEMORY_BARRIER,
             p_next: ptr::null(),
-            src_access_mask: AccessFlags::default(),
-            dst_access_mask: AccessFlags::default(),
-            old_layout: ImageLayout::default(),
-            new_layout: ImageLayout::default(),
-            src_queue_family_index: u32::default(),
-            dst_queue_family_index: u32::default(),
-            image: None,
-            subresource_range: ImageSubresourceRange::default(),
+            src_access_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            old_layout: Default::default(),
+            new_layout: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            image: Default::default(),
+            subresource_range: Default::default(),
         }
     }
 }
@@ -12007,24 +10645,24 @@ pub struct ImageCreateInfo {
 }
 unsafe impl Send for ImageCreateInfo {}
 unsafe impl Sync for ImageCreateInfo {}
-impl default::Default for ImageCreateInfo {
+impl Default for ImageCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: ImageCreateFlags::default(),
-            image_type: ImageType::default(),
-            format: Format::default(),
-            extent: Extent3D::default(),
-            mip_levels: u32::default(),
-            array_layers: u32::default(),
-            samples: SampleCountFlags::default(),
-            tiling: ImageTiling::default(),
-            usage: ImageUsageFlags::default(),
-            sharing_mode: SharingMode::default(),
-            queue_family_index_count: u32::default(),
+            flags: Default::default(),
+            image_type: Default::default(),
+            format: Default::default(),
+            extent: Default::default(),
+            mip_levels: Default::default(),
+            array_layers: Default::default(),
+            samples: Default::default(),
+            tiling: Default::default(),
+            usage: Default::default(),
+            sharing_mode: Default::default(),
+            queue_family_index_count: Default::default(),
             p_queue_family_indices: ptr::null(),
-            initial_layout: ImageLayout::default(),
+            initial_layout: Default::default(),
         }
     }
 }
@@ -12050,7 +10688,7 @@ impl fmt::Debug for ImageCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SubresourceLayout {
     /// Specified in bytes
     pub offset: DeviceSize,
@@ -12062,17 +10700,6 @@ pub struct SubresourceLayout {
     pub array_pitch: DeviceSize,
     /// Specified in bytes
     pub depth_pitch: DeviceSize,
-}
-impl default::Default for SubresourceLayout {
-    fn default() -> Self {
-        Self {
-            offset: DeviceSize::default(),
-            size: DeviceSize::default(),
-            row_pitch: DeviceSize::default(),
-            array_pitch: DeviceSize::default(),
-            depth_pitch: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for SubresourceLayout {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12099,17 +10726,17 @@ pub struct ImageViewCreateInfo {
 }
 unsafe impl Send for ImageViewCreateInfo {}
 unsafe impl Sync for ImageViewCreateInfo {}
-impl default::Default for ImageViewCreateInfo {
+impl Default for ImageViewCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_CREATE_INFO,
             p_next: ptr::null(),
-            flags: ImageViewCreateFlags::default(),
-            image: None,
-            view_type: ImageViewType::default(),
-            format: Format::default(),
-            components: ComponentMapping::default(),
-            subresource_range: ImageSubresourceRange::default(),
+            flags: Default::default(),
+            image: Default::default(),
+            view_type: Default::default(),
+            format: Default::default(),
+            components: Default::default(),
+            subresource_range: Default::default(),
         }
     }
 }
@@ -12128,7 +10755,7 @@ impl fmt::Debug for ImageViewCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BufferCopy {
     /// Specified in bytes
     pub src_offset: DeviceSize,
@@ -12136,15 +10763,6 @@ pub struct BufferCopy {
     pub dst_offset: DeviceSize,
     /// Specified in bytes
     pub size: DeviceSize,
-}
-impl default::Default for BufferCopy {
-    fn default() -> Self {
-        Self {
-            src_offset: DeviceSize::default(),
-            dst_offset: DeviceSize::default(),
-            size: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for BufferCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12156,7 +10774,7 @@ impl fmt::Debug for BufferCopy {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct SparseMemoryBind {
     /// Specified in bytes
     pub resource_offset: DeviceSize,
@@ -12166,17 +10784,6 @@ pub struct SparseMemoryBind {
     /// Specified in bytes
     pub memory_offset: DeviceSize,
     pub flags: SparseMemoryBindFlags,
-}
-impl default::Default for SparseMemoryBind {
-    fn default() -> Self {
-        Self {
-            resource_offset: DeviceSize::default(),
-            size: DeviceSize::default(),
-            memory: None,
-            memory_offset: DeviceSize::default(),
-            flags: SparseMemoryBindFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for SparseMemoryBind {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12190,7 +10797,7 @@ impl fmt::Debug for SparseMemoryBind {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct SparseImageMemoryBind {
     pub subresource: ImageSubresource,
     pub offset: Offset3D,
@@ -12199,18 +10806,6 @@ pub struct SparseImageMemoryBind {
     /// Specified in bytes
     pub memory_offset: DeviceSize,
     pub flags: SparseMemoryBindFlags,
-}
-impl default::Default for SparseImageMemoryBind {
-    fn default() -> Self {
-        Self {
-            subresource: ImageSubresource::default(),
-            offset: Offset3D::default(),
-            extent: Extent3D::default(),
-            memory: None,
-            memory_offset: DeviceSize::default(),
-            flags: SparseMemoryBindFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for SparseImageMemoryBind {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12233,11 +10828,11 @@ pub struct SparseBufferMemoryBindInfo {
 }
 unsafe impl Send for SparseBufferMemoryBindInfo {}
 unsafe impl Sync for SparseBufferMemoryBindInfo {}
-impl default::Default for SparseBufferMemoryBindInfo {
+impl Default for SparseBufferMemoryBindInfo {
     fn default() -> Self {
         Self {
-            buffer: None,
-            bind_count: u32::default(),
+            buffer: Default::default(),
+            bind_count: Default::default(),
             p_binds: ptr::null(),
         }
     }
@@ -12260,11 +10855,11 @@ pub struct SparseImageOpaqueMemoryBindInfo {
 }
 unsafe impl Send for SparseImageOpaqueMemoryBindInfo {}
 unsafe impl Sync for SparseImageOpaqueMemoryBindInfo {}
-impl default::Default for SparseImageOpaqueMemoryBindInfo {
+impl Default for SparseImageOpaqueMemoryBindInfo {
     fn default() -> Self {
         Self {
-            image: None,
-            bind_count: u32::default(),
+            image: Default::default(),
+            bind_count: Default::default(),
             p_binds: ptr::null(),
         }
     }
@@ -12287,11 +10882,11 @@ pub struct SparseImageMemoryBindInfo {
 }
 unsafe impl Send for SparseImageMemoryBindInfo {}
 unsafe impl Sync for SparseImageMemoryBindInfo {}
-impl default::Default for SparseImageMemoryBindInfo {
+impl Default for SparseImageMemoryBindInfo {
     fn default() -> Self {
         Self {
-            image: None,
-            bind_count: u32::default(),
+            image: Default::default(),
+            bind_count: Default::default(),
             p_binds: ptr::null(),
         }
     }
@@ -12323,20 +10918,20 @@ pub struct BindSparseInfo {
 }
 unsafe impl Send for BindSparseInfo {}
 unsafe impl Sync for BindSparseInfo {}
-impl default::Default for BindSparseInfo {
+impl Default for BindSparseInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_SPARSE_INFO,
             p_next: ptr::null(),
-            wait_semaphore_count: u32::default(),
+            wait_semaphore_count: Default::default(),
             p_wait_semaphores: ptr::null(),
-            buffer_bind_count: u32::default(),
+            buffer_bind_count: Default::default(),
             p_buffer_binds: ptr::null(),
-            image_opaque_bind_count: u32::default(),
+            image_opaque_bind_count: Default::default(),
             p_image_opaque_binds: ptr::null(),
-            image_bind_count: u32::default(),
+            image_bind_count: Default::default(),
             p_image_binds: ptr::null(),
-            signal_semaphore_count: u32::default(),
+            signal_semaphore_count: Default::default(),
             p_signal_semaphores: ptr::null(),
         }
     }
@@ -12360,7 +10955,7 @@ impl fmt::Debug for BindSparseInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageCopy {
     pub src_subresource: ImageSubresourceLayers,
     /// Specified in pixels for both compressed and uncompressed images
@@ -12370,17 +10965,6 @@ pub struct ImageCopy {
     pub dst_offset: Offset3D,
     /// Specified in pixels for both compressed and uncompressed images
     pub extent: Extent3D,
-}
-impl default::Default for ImageCopy {
-    fn default() -> Self {
-        Self {
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offset: Offset3D::default(),
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offset: Offset3D::default(),
-            extent: Extent3D::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12394,7 +10978,7 @@ impl fmt::Debug for ImageCopy {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct ImageBlit {
     pub src_subresource: ImageSubresourceLayers,
     /// Specified in pixels for both compressed and uncompressed images
@@ -12402,16 +10986,6 @@ pub struct ImageBlit {
     pub dst_subresource: ImageSubresourceLayers,
     /// Specified in pixels for both compressed and uncompressed images
     pub dst_offsets: [Offset3D; 2],
-}
-impl default::Default for ImageBlit {
-    fn default() -> Self {
-        Self {
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offsets: [Offset3D::default(); 2],
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offsets: [Offset3D::default(); 2],
-        }
-    }
 }
 impl fmt::Debug for ImageBlit {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12424,7 +10998,7 @@ impl fmt::Debug for ImageBlit {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BufferImageCopy {
     /// Specified in bytes
     pub buffer_offset: DeviceSize,
@@ -12436,18 +11010,6 @@ pub struct BufferImageCopy {
     pub image_offset: Offset3D,
     /// Specified in pixels for both compressed and uncompressed images
     pub image_extent: Extent3D,
-}
-impl default::Default for BufferImageCopy {
-    fn default() -> Self {
-        Self {
-            buffer_offset: DeviceSize::default(),
-            buffer_row_length: u32::default(),
-            buffer_image_height: u32::default(),
-            image_subresource: ImageSubresourceLayers::default(),
-            image_offset: Offset3D::default(),
-            image_extent: Extent3D::default(),
-        }
-    }
 }
 impl fmt::Debug for BufferImageCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12462,24 +11024,13 @@ impl fmt::Debug for BufferImageCopy {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageResolve {
     pub src_subresource: ImageSubresourceLayers,
     pub src_offset: Offset3D,
     pub dst_subresource: ImageSubresourceLayers,
     pub dst_offset: Offset3D,
     pub extent: Extent3D,
-}
-impl default::Default for ImageResolve {
-    fn default() -> Self {
-        Self {
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offset: Offset3D::default(),
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offset: Offset3D::default(),
-            extent: Extent3D::default(),
-        }
-    }
 }
 impl fmt::Debug for ImageResolve {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12505,13 +11056,13 @@ pub struct ShaderModuleCreateInfo {
 }
 unsafe impl Send for ShaderModuleCreateInfo {}
 unsafe impl Sync for ShaderModuleCreateInfo {}
-impl default::Default for ShaderModuleCreateInfo {
+impl Default for ShaderModuleCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SHADER_MODULE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: ShaderModuleCreateFlags::default(),
-            code_size: usize::default(),
+            flags: Default::default(),
+            code_size: Default::default(),
             p_code: ptr::null(),
         }
     }
@@ -12543,13 +11094,13 @@ pub struct DescriptorSetLayoutBinding {
 }
 unsafe impl Send for DescriptorSetLayoutBinding {}
 unsafe impl Sync for DescriptorSetLayoutBinding {}
-impl default::Default for DescriptorSetLayoutBinding {
+impl Default for DescriptorSetLayoutBinding {
     fn default() -> Self {
         Self {
-            binding: u32::default(),
-            descriptor_type: DescriptorType::default(),
-            descriptor_count: u32::default(),
-            stage_flags: ShaderStageFlags::default(),
+            binding: Default::default(),
+            descriptor_type: Default::default(),
+            descriptor_count: Default::default(),
+            stage_flags: Default::default(),
             p_immutable_samplers: ptr::null(),
         }
     }
@@ -12578,13 +11129,13 @@ pub struct DescriptorSetLayoutCreateInfo {
 }
 unsafe impl Send for DescriptorSetLayoutCreateInfo {}
 unsafe impl Sync for DescriptorSetLayoutCreateInfo {}
-impl default::Default for DescriptorSetLayoutCreateInfo {
+impl Default for DescriptorSetLayoutCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
             p_next: ptr::null(),
-            flags: DescriptorSetLayoutCreateFlags::default(),
-            binding_count: u32::default(),
+            flags: Default::default(),
+            binding_count: Default::default(),
             p_bindings: ptr::null(),
         }
     }
@@ -12601,18 +11152,10 @@ impl fmt::Debug for DescriptorSetLayoutCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorPoolSize {
     pub ty: DescriptorType,
     pub descriptor_count: u32,
-}
-impl default::Default for DescriptorPoolSize {
-    fn default() -> Self {
-        Self {
-            ty: DescriptorType::default(),
-            descriptor_count: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DescriptorPoolSize {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12634,14 +11177,14 @@ pub struct DescriptorPoolCreateInfo {
 }
 unsafe impl Send for DescriptorPoolCreateInfo {}
 unsafe impl Sync for DescriptorPoolCreateInfo {}
-impl default::Default for DescriptorPoolCreateInfo {
+impl Default for DescriptorPoolCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_POOL_CREATE_INFO,
             p_next: ptr::null(),
-            flags: DescriptorPoolCreateFlags::default(),
-            max_sets: u32::default(),
-            pool_size_count: u32::default(),
+            flags: Default::default(),
+            max_sets: Default::default(),
+            pool_size_count: Default::default(),
             p_pool_sizes: ptr::null(),
         }
     }
@@ -12669,13 +11212,13 @@ pub struct DescriptorSetAllocateInfo {
 }
 unsafe impl Send for DescriptorSetAllocateInfo {}
 unsafe impl Sync for DescriptorSetAllocateInfo {}
-impl default::Default for DescriptorSetAllocateInfo {
+impl Default for DescriptorSetAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_ALLOCATE_INFO,
             p_next: ptr::null(),
-            descriptor_pool: None,
-            descriptor_set_count: u32::default(),
+            descriptor_pool: Default::default(),
+            descriptor_set_count: Default::default(),
             p_set_layouts: ptr::null(),
         }
     }
@@ -12692,7 +11235,7 @@ impl fmt::Debug for DescriptorSetAllocateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SpecializationMapEntry {
     /// The SpecConstant ID specified in the BIL
     pub constant_id: u32,
@@ -12700,15 +11243,6 @@ pub struct SpecializationMapEntry {
     pub offset: u32,
     /// Size in bytes of the SpecConstant
     pub size: usize,
-}
-impl default::Default for SpecializationMapEntry {
-    fn default() -> Self {
-        Self {
-            constant_id: u32::default(),
-            offset: u32::default(),
-            size: usize::default(),
-        }
-    }
 }
 impl fmt::Debug for SpecializationMapEntry {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12733,12 +11267,12 @@ pub struct SpecializationInfo {
 }
 unsafe impl Send for SpecializationInfo {}
 unsafe impl Sync for SpecializationInfo {}
-impl default::Default for SpecializationInfo {
+impl Default for SpecializationInfo {
     fn default() -> Self {
         Self {
-            map_entry_count: u32::default(),
+            map_entry_count: Default::default(),
             p_map_entries: ptr::null(),
-            data_size: usize::default(),
+            data_size: Default::default(),
             p_data: ptr::null(),
         }
     }
@@ -12769,14 +11303,14 @@ pub struct PipelineShaderStageCreateInfo {
 }
 unsafe impl Send for PipelineShaderStageCreateInfo {}
 unsafe impl Sync for PipelineShaderStageCreateInfo {}
-impl default::Default for PipelineShaderStageCreateInfo {
+impl Default for PipelineShaderStageCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_SHADER_STAGE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineShaderStageCreateFlags::default(),
-            stage: ShaderStageFlags::default(),
-            module: None,
+            flags: Default::default(),
+            stage: Default::default(),
+            module: Default::default(),
             p_name: ptr::null(),
             p_specialization_info: ptr::null(),
         }
@@ -12812,16 +11346,16 @@ pub struct ComputePipelineCreateInfo {
 }
 unsafe impl Send for ComputePipelineCreateInfo {}
 unsafe impl Sync for ComputePipelineCreateInfo {}
-impl default::Default for ComputePipelineCreateInfo {
+impl Default for ComputePipelineCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMPUTE_PIPELINE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineCreateFlags::default(),
-            stage: PipelineShaderStageCreateInfo::default(),
-            layout: None,
-            base_pipeline_handle: None,
-            base_pipeline_index: i32::default(),
+            flags: Default::default(),
+            stage: Default::default(),
+            layout: Default::default(),
+            base_pipeline_handle: Default::default(),
+            base_pipeline_index: Default::default(),
         }
     }
 }
@@ -12839,7 +11373,7 @@ impl fmt::Debug for ComputePipelineCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDescription {
     /// Vertex buffer binding id
     pub binding: u32,
@@ -12847,15 +11381,6 @@ pub struct VertexInputBindingDescription {
     pub stride: u32,
     /// The rate at which the vertex data is consumed
     pub input_rate: VertexInputRate,
-}
-impl default::Default for VertexInputBindingDescription {
-    fn default() -> Self {
-        Self {
-            binding: u32::default(),
-            stride: u32::default(),
-            input_rate: VertexInputRate::default(),
-        }
-    }
 }
 impl fmt::Debug for VertexInputBindingDescription {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12867,7 +11392,7 @@ impl fmt::Debug for VertexInputBindingDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct VertexInputAttributeDescription {
     /// location of the shader vertex attrib
     pub location: u32,
@@ -12877,16 +11402,6 @@ pub struct VertexInputAttributeDescription {
     pub format: Format,
     /// Offset of first element in bytes from base of vertex
     pub offset: u32,
-}
-impl default::Default for VertexInputAttributeDescription {
-    fn default() -> Self {
-        Self {
-            location: u32::default(),
-            binding: u32::default(),
-            format: Format::default(),
-            offset: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for VertexInputAttributeDescription {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -12913,15 +11428,15 @@ pub struct PipelineVertexInputStateCreateInfo {
 }
 unsafe impl Send for PipelineVertexInputStateCreateInfo {}
 unsafe impl Sync for PipelineVertexInputStateCreateInfo {}
-impl default::Default for PipelineVertexInputStateCreateInfo {
+impl Default for PipelineVertexInputStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineVertexInputStateCreateFlags::default(),
-            vertex_binding_description_count: u32::default(),
+            flags: Default::default(),
+            vertex_binding_description_count: Default::default(),
             p_vertex_binding_descriptions: ptr::null(),
-            vertex_attribute_description_count: u32::default(),
+            vertex_attribute_description_count: Default::default(),
             p_vertex_attribute_descriptions: ptr::null(),
         }
     }
@@ -12956,14 +11471,14 @@ pub struct PipelineInputAssemblyStateCreateInfo {
 }
 unsafe impl Send for PipelineInputAssemblyStateCreateInfo {}
 unsafe impl Sync for PipelineInputAssemblyStateCreateInfo {}
-impl default::Default for PipelineInputAssemblyStateCreateInfo {
+impl Default for PipelineInputAssemblyStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineInputAssemblyStateCreateFlags::default(),
-            topology: PrimitiveTopology::default(),
-            primitive_restart_enable: Bool32::default(),
+            flags: Default::default(),
+            topology: Default::default(),
+            primitive_restart_enable: Default::default(),
         }
     }
 }
@@ -12988,13 +11503,13 @@ pub struct PipelineTessellationStateCreateInfo {
 }
 unsafe impl Send for PipelineTessellationStateCreateInfo {}
 unsafe impl Sync for PipelineTessellationStateCreateInfo {}
-impl default::Default for PipelineTessellationStateCreateInfo {
+impl Default for PipelineTessellationStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_TESSELLATION_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineTessellationStateCreateFlags::default(),
-            patch_control_points: u32::default(),
+            flags: Default::default(),
+            patch_control_points: Default::default(),
         }
     }
 }
@@ -13021,15 +11536,15 @@ pub struct PipelineViewportStateCreateInfo {
 }
 unsafe impl Send for PipelineViewportStateCreateInfo {}
 unsafe impl Sync for PipelineViewportStateCreateInfo {}
-impl default::Default for PipelineViewportStateCreateInfo {
+impl Default for PipelineViewportStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineViewportStateCreateFlags::default(),
-            viewport_count: u32::default(),
+            flags: Default::default(),
+            viewport_count: Default::default(),
             p_viewports: ptr::null(),
-            scissor_count: u32::default(),
+            scissor_count: Default::default(),
             p_scissors: ptr::null(),
         }
     }
@@ -13067,22 +11582,22 @@ pub struct PipelineRasterizationStateCreateInfo {
 }
 unsafe impl Send for PipelineRasterizationStateCreateInfo {}
 unsafe impl Sync for PipelineRasterizationStateCreateInfo {}
-impl default::Default for PipelineRasterizationStateCreateInfo {
+impl Default for PipelineRasterizationStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineRasterizationStateCreateFlags::default(),
-            depth_clamp_enable: Bool32::default(),
-            rasterizer_discard_enable: Bool32::default(),
-            polygon_mode: PolygonMode::default(),
-            cull_mode: CullModeFlags::default(),
-            front_face: FrontFace::default(),
-            depth_bias_enable: Bool32::default(),
-            depth_bias_constant_factor: f32::default(),
-            depth_bias_clamp: f32::default(),
-            depth_bias_slope_factor: f32::default(),
-            line_width: f32::default(),
+            flags: Default::default(),
+            depth_clamp_enable: Default::default(),
+            rasterizer_discard_enable: Default::default(),
+            polygon_mode: Default::default(),
+            cull_mode: Default::default(),
+            front_face: Default::default(),
+            depth_bias_enable: Default::default(),
+            depth_bias_constant_factor: Default::default(),
+            depth_bias_clamp: Default::default(),
+            depth_bias_slope_factor: Default::default(),
+            line_width: Default::default(),
         }
     }
 }
@@ -13124,18 +11639,18 @@ pub struct PipelineMultisampleStateCreateInfo {
 }
 unsafe impl Send for PipelineMultisampleStateCreateInfo {}
 unsafe impl Sync for PipelineMultisampleStateCreateInfo {}
-impl default::Default for PipelineMultisampleStateCreateInfo {
+impl Default for PipelineMultisampleStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineMultisampleStateCreateFlags::default(),
-            rasterization_samples: SampleCountFlags::default(),
-            sample_shading_enable: Bool32::default(),
-            min_sample_shading: f32::default(),
+            flags: Default::default(),
+            rasterization_samples: Default::default(),
+            sample_shading_enable: Default::default(),
+            min_sample_shading: Default::default(),
             p_sample_mask: ptr::null(),
-            alpha_to_coverage_enable: Bool32::default(),
-            alpha_to_one_enable: Bool32::default(),
+            alpha_to_coverage_enable: Default::default(),
+            alpha_to_one_enable: Default::default(),
         }
     }
 }
@@ -13155,7 +11670,7 @@ impl fmt::Debug for PipelineMultisampleStateCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineColorBlendAttachmentState {
     pub blend_enable: Bool32,
     pub src_color_blend_factor: BlendFactor,
@@ -13165,20 +11680,6 @@ pub struct PipelineColorBlendAttachmentState {
     pub dst_alpha_blend_factor: BlendFactor,
     pub alpha_blend_op: BlendOp,
     pub color_write_mask: ColorComponentFlags,
-}
-impl default::Default for PipelineColorBlendAttachmentState {
-    fn default() -> Self {
-        Self {
-            blend_enable: Bool32::default(),
-            src_color_blend_factor: BlendFactor::default(),
-            dst_color_blend_factor: BlendFactor::default(),
-            color_blend_op: BlendOp::default(),
-            src_alpha_blend_factor: BlendFactor::default(),
-            dst_alpha_blend_factor: BlendFactor::default(),
-            alpha_blend_op: BlendOp::default(),
-            color_write_mask: ColorComponentFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for PipelineColorBlendAttachmentState {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13209,17 +11710,17 @@ pub struct PipelineColorBlendStateCreateInfo {
 }
 unsafe impl Send for PipelineColorBlendStateCreateInfo {}
 unsafe impl Sync for PipelineColorBlendStateCreateInfo {}
-impl default::Default for PipelineColorBlendStateCreateInfo {
+impl Default for PipelineColorBlendStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineColorBlendStateCreateFlags::default(),
-            logic_op_enable: Bool32::default(),
-            logic_op: LogicOp::default(),
-            attachment_count: u32::default(),
+            flags: Default::default(),
+            logic_op_enable: Default::default(),
+            logic_op: Default::default(),
+            attachment_count: Default::default(),
             p_attachments: ptr::null(),
-            blend_constants: [f32::default(); 4],
+            blend_constants: [Default::default(); 4],
         }
     }
 }
@@ -13248,13 +11749,13 @@ pub struct PipelineDynamicStateCreateInfo {
 }
 unsafe impl Send for PipelineDynamicStateCreateInfo {}
 unsafe impl Sync for PipelineDynamicStateCreateInfo {}
-impl default::Default for PipelineDynamicStateCreateInfo {
+impl Default for PipelineDynamicStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_DYNAMIC_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineDynamicStateCreateFlags::default(),
-            dynamic_state_count: u32::default(),
+            flags: Default::default(),
+            dynamic_state_count: Default::default(),
             p_dynamic_states: ptr::null(),
         }
     }
@@ -13271,7 +11772,7 @@ impl fmt::Debug for PipelineDynamicStateCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct StencilOpState {
     pub fail_op: StencilOp,
     pub pass_op: StencilOp,
@@ -13280,19 +11781,6 @@ pub struct StencilOpState {
     pub compare_mask: u32,
     pub write_mask: u32,
     pub reference: u32,
-}
-impl default::Default for StencilOpState {
-    fn default() -> Self {
-        Self {
-            fail_op: StencilOp::default(),
-            pass_op: StencilOp::default(),
-            depth_fail_op: StencilOp::default(),
-            compare_op: CompareOp::default(),
-            compare_mask: u32::default(),
-            write_mask: u32::default(),
-            reference: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for StencilOpState {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13326,21 +11814,21 @@ pub struct PipelineDepthStencilStateCreateInfo {
 }
 unsafe impl Send for PipelineDepthStencilStateCreateInfo {}
 unsafe impl Sync for PipelineDepthStencilStateCreateInfo {}
-impl default::Default for PipelineDepthStencilStateCreateInfo {
+impl Default for PipelineDepthStencilStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineDepthStencilStateCreateFlags::default(),
-            depth_test_enable: Bool32::default(),
-            depth_write_enable: Bool32::default(),
-            depth_compare_op: CompareOp::default(),
-            depth_bounds_test_enable: Bool32::default(),
-            stencil_test_enable: Bool32::default(),
-            front: StencilOpState::default(),
-            back: StencilOpState::default(),
-            min_depth_bounds: f32::default(),
-            max_depth_bounds: f32::default(),
+            flags: Default::default(),
+            depth_test_enable: Default::default(),
+            depth_write_enable: Default::default(),
+            depth_compare_op: Default::default(),
+            depth_bounds_test_enable: Default::default(),
+            stencil_test_enable: Default::default(),
+            front: Default::default(),
+            back: Default::default(),
+            min_depth_bounds: Default::default(),
+            max_depth_bounds: Default::default(),
         }
     }
 }
@@ -13392,13 +11880,13 @@ pub struct GraphicsPipelineCreateInfo {
 }
 unsafe impl Send for GraphicsPipelineCreateInfo {}
 unsafe impl Sync for GraphicsPipelineCreateInfo {}
-impl default::Default for GraphicsPipelineCreateInfo {
+impl Default for GraphicsPipelineCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::GRAPHICS_PIPELINE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineCreateFlags::default(),
-            stage_count: u32::default(),
+            flags: Default::default(),
+            stage_count: Default::default(),
             p_stages: ptr::null(),
             p_vertex_input_state: ptr::null(),
             p_input_assembly_state: ptr::null(),
@@ -13409,11 +11897,11 @@ impl default::Default for GraphicsPipelineCreateInfo {
             p_depth_stencil_state: ptr::null(),
             p_color_blend_state: ptr::null(),
             p_dynamic_state: ptr::null(),
-            layout: None,
-            render_pass: None,
-            subpass: u32::default(),
-            base_pipeline_handle: None,
-            base_pipeline_index: i32::default(),
+            layout: Default::default(),
+            render_pass: Default::default(),
+            subpass: Default::default(),
+            base_pipeline_handle: Default::default(),
+            base_pipeline_index: Default::default(),
         }
     }
 }
@@ -13455,13 +11943,13 @@ pub struct PipelineCacheCreateInfo {
 }
 unsafe impl Send for PipelineCacheCreateInfo {}
 unsafe impl Sync for PipelineCacheCreateInfo {}
-impl default::Default for PipelineCacheCreateInfo {
+impl Default for PipelineCacheCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_CACHE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineCacheCreateFlags::default(),
-            initial_data_size: usize::default(),
+            flags: Default::default(),
+            initial_data_size: Default::default(),
             p_initial_data: ptr::null(),
         }
     }
@@ -13486,14 +11974,14 @@ pub struct PipelineCacheHeaderVersionOne {
     pub device_id: u32,
     pub pipeline_cache_uuid: [u8; UUID_SIZE],
 }
-impl default::Default for PipelineCacheHeaderVersionOne {
+impl Default for PipelineCacheHeaderVersionOne {
     fn default() -> Self {
         Self {
-            header_size: u32::default(),
-            header_version: PipelineCacheHeaderVersion::default(),
-            vendor_id: u32::default(),
-            device_id: u32::default(),
-            pipeline_cache_uuid: [u8::default(); UUID_SIZE],
+            header_size: Default::default(),
+            header_version: Default::default(),
+            vendor_id: Default::default(),
+            device_id: Default::default(),
+            pipeline_cache_uuid: [Default::default(); UUID_SIZE],
         }
     }
 }
@@ -13509,7 +11997,7 @@ impl fmt::Debug for PipelineCacheHeaderVersionOne {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PushConstantRange {
     /// Which stages use the range
     pub stage_flags: ShaderStageFlags,
@@ -13517,15 +12005,6 @@ pub struct PushConstantRange {
     pub offset: u32,
     /// Size of the range, in bytes
     pub size: u32,
-}
-impl default::Default for PushConstantRange {
-    fn default() -> Self {
-        Self {
-            stage_flags: ShaderStageFlags::default(),
-            offset: u32::default(),
-            size: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for PushConstantRange {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13553,15 +12032,15 @@ pub struct PipelineLayoutCreateInfo {
 }
 unsafe impl Send for PipelineLayoutCreateInfo {}
 unsafe impl Sync for PipelineLayoutCreateInfo {}
-impl default::Default for PipelineLayoutCreateInfo {
+impl Default for PipelineLayoutCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_LAYOUT_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PipelineLayoutCreateFlags::default(),
-            set_layout_count: u32::default(),
+            flags: Default::default(),
+            set_layout_count: Default::default(),
             p_set_layouts: ptr::null(),
-            push_constant_range_count: u32::default(),
+            push_constant_range_count: Default::default(),
             p_push_constant_ranges: ptr::null(),
         }
     }
@@ -13606,27 +12085,27 @@ pub struct SamplerCreateInfo {
 }
 unsafe impl Send for SamplerCreateInfo {}
 unsafe impl Sync for SamplerCreateInfo {}
-impl default::Default for SamplerCreateInfo {
+impl Default for SamplerCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_CREATE_INFO,
             p_next: ptr::null(),
-            flags: SamplerCreateFlags::default(),
-            mag_filter: Filter::default(),
-            min_filter: Filter::default(),
-            mipmap_mode: SamplerMipmapMode::default(),
-            address_mode_u: SamplerAddressMode::default(),
-            address_mode_v: SamplerAddressMode::default(),
-            address_mode_w: SamplerAddressMode::default(),
-            mip_lod_bias: f32::default(),
-            anisotropy_enable: Bool32::default(),
-            max_anisotropy: f32::default(),
-            compare_enable: Bool32::default(),
-            compare_op: CompareOp::default(),
-            min_lod: f32::default(),
-            max_lod: f32::default(),
-            border_color: BorderColor::default(),
-            unnormalized_coordinates: Bool32::default(),
+            flags: Default::default(),
+            mag_filter: Default::default(),
+            min_filter: Default::default(),
+            mipmap_mode: Default::default(),
+            address_mode_u: Default::default(),
+            address_mode_v: Default::default(),
+            address_mode_w: Default::default(),
+            mip_lod_bias: Default::default(),
+            anisotropy_enable: Default::default(),
+            max_anisotropy: Default::default(),
+            compare_enable: Default::default(),
+            compare_op: Default::default(),
+            min_lod: Default::default(),
+            max_lod: Default::default(),
+            border_color: Default::default(),
+            unnormalized_coordinates: Default::default(),
         }
     }
 }
@@ -13665,13 +12144,13 @@ pub struct CommandPoolCreateInfo {
 }
 unsafe impl Send for CommandPoolCreateInfo {}
 unsafe impl Sync for CommandPoolCreateInfo {}
-impl default::Default for CommandPoolCreateInfo {
+impl Default for CommandPoolCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_POOL_CREATE_INFO,
             p_next: ptr::null(),
-            flags: CommandPoolCreateFlags::default(),
-            queue_family_index: u32::default(),
+            flags: Default::default(),
+            queue_family_index: Default::default(),
         }
     }
 }
@@ -13696,14 +12175,14 @@ pub struct CommandBufferAllocateInfo {
 }
 unsafe impl Send for CommandBufferAllocateInfo {}
 unsafe impl Sync for CommandBufferAllocateInfo {}
-impl default::Default for CommandBufferAllocateInfo {
+impl Default for CommandBufferAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_ALLOCATE_INFO,
             p_next: ptr::null(),
-            command_pool: None,
-            level: CommandBufferLevel::default(),
-            command_buffer_count: u32::default(),
+            command_pool: Default::default(),
+            level: Default::default(),
+            command_buffer_count: Default::default(),
         }
     }
 }
@@ -13737,17 +12216,17 @@ pub struct CommandBufferInheritanceInfo {
 }
 unsafe impl Send for CommandBufferInheritanceInfo {}
 unsafe impl Sync for CommandBufferInheritanceInfo {}
-impl default::Default for CommandBufferInheritanceInfo {
+impl Default for CommandBufferInheritanceInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_INFO,
             p_next: ptr::null(),
-            render_pass: None,
-            subpass: u32::default(),
-            framebuffer: None,
-            occlusion_query_enable: Bool32::default(),
-            query_flags: QueryControlFlags::default(),
-            pipeline_statistics: QueryPipelineStatisticFlags::default(),
+            render_pass: Default::default(),
+            subpass: Default::default(),
+            framebuffer: Default::default(),
+            occlusion_query_enable: Default::default(),
+            query_flags: Default::default(),
+            pipeline_statistics: Default::default(),
         }
     }
 }
@@ -13777,12 +12256,12 @@ pub struct CommandBufferBeginInfo {
 }
 unsafe impl Send for CommandBufferBeginInfo {}
 unsafe impl Sync for CommandBufferBeginInfo {}
-impl default::Default for CommandBufferBeginInfo {
+impl Default for CommandBufferBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_BEGIN_INFO,
             p_next: ptr::null(),
-            flags: CommandBufferUsageFlags::default(),
+            flags: Default::default(),
             p_inheritance_info: ptr::null(),
         }
     }
@@ -13810,15 +12289,15 @@ pub struct RenderPassBeginInfo {
 }
 unsafe impl Send for RenderPassBeginInfo {}
 unsafe impl Sync for RenderPassBeginInfo {}
-impl default::Default for RenderPassBeginInfo {
+impl Default for RenderPassBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_BEGIN_INFO,
             p_next: ptr::null(),
-            render_pass: None,
-            framebuffer: None,
-            render_area: Rect2D::default(),
-            clear_value_count: u32::default(),
+            render_pass: Default::default(),
+            framebuffer: Default::default(),
+            render_area: Default::default(),
+            clear_value_count: Default::default(),
             p_clear_values: ptr::null(),
         }
     }
@@ -13844,7 +12323,7 @@ pub union ClearColorValue {
     pub int32: [i32; 4],
     pub uint32: [u32; 4],
 }
-impl default::Default for ClearColorValue {
+impl Default for ClearColorValue {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -13859,18 +12338,10 @@ impl fmt::Debug for ClearColorValue {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct ClearDepthStencilValue {
     pub depth: f32,
     pub stencil: u32,
-}
-impl default::Default for ClearDepthStencilValue {
-    fn default() -> Self {
-        Self {
-            depth: f32::default(),
-            stencil: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for ClearDepthStencilValue {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13887,7 +12358,7 @@ pub union ClearValue {
     pub color: ClearColorValue,
     pub depth_stencil: ClearDepthStencilValue,
 }
-impl default::Default for ClearValue {
+impl Default for ClearValue {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -13901,20 +12372,11 @@ impl fmt::Debug for ClearValue {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct ClearAttachment {
     pub aspect_mask: ImageAspectFlags,
     pub color_attachment: u32,
     pub clear_value: ClearValue,
-}
-impl default::Default for ClearAttachment {
-    fn default() -> Self {
-        Self {
-            aspect_mask: ImageAspectFlags::default(),
-            color_attachment: u32::default(),
-            clear_value: ClearValue::default(),
-        }
-    }
 }
 impl fmt::Debug for ClearAttachment {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13926,7 +12388,7 @@ impl fmt::Debug for ClearAttachment {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AttachmentDescription {
     pub flags: AttachmentDescriptionFlags,
     pub format: Format,
@@ -13941,21 +12403,6 @@ pub struct AttachmentDescription {
     pub stencil_store_op: AttachmentStoreOp,
     pub initial_layout: ImageLayout,
     pub final_layout: ImageLayout,
-}
-impl default::Default for AttachmentDescription {
-    fn default() -> Self {
-        Self {
-            flags: AttachmentDescriptionFlags::default(),
-            format: Format::default(),
-            samples: SampleCountFlags::default(),
-            load_op: AttachmentLoadOp::default(),
-            store_op: AttachmentStoreOp::default(),
-            stencil_load_op: AttachmentLoadOp::default(),
-            stencil_store_op: AttachmentStoreOp::default(),
-            initial_layout: ImageLayout::default(),
-            final_layout: ImageLayout::default(),
-        }
-    }
 }
 impl fmt::Debug for AttachmentDescription {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -13973,18 +12420,10 @@ impl fmt::Debug for AttachmentDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AttachmentReference {
     pub attachment: u32,
     pub layout: ImageLayout,
-}
-impl default::Default for AttachmentReference {
-    fn default() -> Self {
-        Self {
-            attachment: u32::default(),
-            layout: ImageLayout::default(),
-        }
-    }
 }
 impl fmt::Debug for AttachmentReference {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -14011,18 +12450,18 @@ pub struct SubpassDescription {
 }
 unsafe impl Send for SubpassDescription {}
 unsafe impl Sync for SubpassDescription {}
-impl default::Default for SubpassDescription {
+impl Default for SubpassDescription {
     fn default() -> Self {
         Self {
-            flags: SubpassDescriptionFlags::default(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            input_attachment_count: u32::default(),
+            flags: Default::default(),
+            pipeline_bind_point: Default::default(),
+            input_attachment_count: Default::default(),
             p_input_attachments: ptr::null(),
-            color_attachment_count: u32::default(),
+            color_attachment_count: Default::default(),
             p_color_attachments: ptr::null(),
             p_resolve_attachments: ptr::null(),
             p_depth_stencil_attachment: ptr::null(),
-            preserve_attachment_count: u32::default(),
+            preserve_attachment_count: Default::default(),
             p_preserve_attachments: ptr::null(),
         }
     }
@@ -14044,7 +12483,7 @@ impl fmt::Debug for SubpassDescription {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SubpassDependency {
     pub src_subpass: u32,
     pub dst_subpass: u32,
@@ -14055,19 +12494,6 @@ pub struct SubpassDependency {
     /// Memory accesses from the destination of the dependency to synchronize
     pub dst_access_mask: AccessFlags,
     pub dependency_flags: DependencyFlags,
-}
-impl default::Default for SubpassDependency {
-    fn default() -> Self {
-        Self {
-            src_subpass: u32::default(),
-            dst_subpass: u32::default(),
-            src_stage_mask: PipelineStageFlags::default(),
-            dst_stage_mask: PipelineStageFlags::default(),
-            src_access_mask: AccessFlags::default(),
-            dst_access_mask: AccessFlags::default(),
-            dependency_flags: DependencyFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for SubpassDependency {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -14097,17 +12523,17 @@ pub struct RenderPassCreateInfo {
 }
 unsafe impl Send for RenderPassCreateInfo {}
 unsafe impl Sync for RenderPassCreateInfo {}
-impl default::Default for RenderPassCreateInfo {
+impl Default for RenderPassCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_CREATE_INFO,
             p_next: ptr::null(),
-            flags: RenderPassCreateFlags::default(),
-            attachment_count: u32::default(),
+            flags: Default::default(),
+            attachment_count: Default::default(),
             p_attachments: ptr::null(),
-            subpass_count: u32::default(),
+            subpass_count: Default::default(),
             p_subpasses: ptr::null(),
-            dependency_count: u32::default(),
+            dependency_count: Default::default(),
             p_dependencies: ptr::null(),
         }
     }
@@ -14137,12 +12563,12 @@ pub struct EventCreateInfo {
 }
 unsafe impl Send for EventCreateInfo {}
 unsafe impl Sync for EventCreateInfo {}
-impl default::Default for EventCreateInfo {
+impl Default for EventCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EVENT_CREATE_INFO,
             p_next: ptr::null(),
-            flags: EventCreateFlags::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -14165,12 +12591,12 @@ pub struct FenceCreateInfo {
 }
 unsafe impl Send for FenceCreateInfo {}
 unsafe impl Sync for FenceCreateInfo {}
-impl default::Default for FenceCreateInfo {
+impl Default for FenceCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::FENCE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: FenceCreateFlags::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -14184,7 +12610,7 @@ impl fmt::Debug for FenceCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceFeatures {
     /// out of bounds buffer accesses are well defined
     pub robust_buffer_access: Bool32,
@@ -14297,67 +12723,6 @@ pub struct PhysicalDeviceFeatures {
     /// Queries may be inherited from primary to secondary command buffers
     pub inherited_queries: Bool32,
 }
-impl default::Default for PhysicalDeviceFeatures {
-    fn default() -> Self {
-        Self {
-            robust_buffer_access: Bool32::default(),
-            full_draw_index_uint32: Bool32::default(),
-            image_cube_array: Bool32::default(),
-            independent_blend: Bool32::default(),
-            geometry_shader: Bool32::default(),
-            tessellation_shader: Bool32::default(),
-            sample_rate_shading: Bool32::default(),
-            dual_src_blend: Bool32::default(),
-            logic_op: Bool32::default(),
-            multi_draw_indirect: Bool32::default(),
-            draw_indirect_first_instance: Bool32::default(),
-            depth_clamp: Bool32::default(),
-            depth_bias_clamp: Bool32::default(),
-            fill_mode_non_solid: Bool32::default(),
-            depth_bounds: Bool32::default(),
-            wide_lines: Bool32::default(),
-            large_points: Bool32::default(),
-            alpha_to_one: Bool32::default(),
-            multi_viewport: Bool32::default(),
-            sampler_anisotropy: Bool32::default(),
-            texture_compression_etc2: Bool32::default(),
-            texture_compression_astc_ldr: Bool32::default(),
-            texture_compression_bc: Bool32::default(),
-            occlusion_query_precise: Bool32::default(),
-            pipeline_statistics_query: Bool32::default(),
-            vertex_pipeline_stores_and_atomics: Bool32::default(),
-            fragment_stores_and_atomics: Bool32::default(),
-            shader_tessellation_and_geometry_point_size: Bool32::default(),
-            shader_image_gather_extended: Bool32::default(),
-            shader_storage_image_extended_formats: Bool32::default(),
-            shader_storage_image_multisample: Bool32::default(),
-            shader_storage_image_read_without_format: Bool32::default(),
-            shader_storage_image_write_without_format: Bool32::default(),
-            shader_uniform_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_sampled_image_array_dynamic_indexing: Bool32::default(),
-            shader_storage_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_storage_image_array_dynamic_indexing: Bool32::default(),
-            shader_clip_distance: Bool32::default(),
-            shader_cull_distance: Bool32::default(),
-            shader_float64: Bool32::default(),
-            shader_int64: Bool32::default(),
-            shader_int16: Bool32::default(),
-            shader_resource_residency: Bool32::default(),
-            shader_resource_min_lod: Bool32::default(),
-            sparse_binding: Bool32::default(),
-            sparse_residency_buffer: Bool32::default(),
-            sparse_residency_image2_d: Bool32::default(),
-            sparse_residency_image3_d: Bool32::default(),
-            sparse_residency2_samples: Bool32::default(),
-            sparse_residency4_samples: Bool32::default(),
-            sparse_residency8_samples: Bool32::default(),
-            sparse_residency16_samples: Bool32::default(),
-            sparse_residency_aliased: Bool32::default(),
-            variable_multisample_rate: Bool32::default(),
-            inherited_queries: Bool32::default(),
-        }
-    }
-}
 impl fmt::Debug for PhysicalDeviceFeatures {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("PhysicalDeviceFeatures")
@@ -14450,7 +12815,7 @@ impl fmt::Debug for PhysicalDeviceFeatures {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceSparseProperties {
     /// Sparse resources support: GPU will access all 2D (single sample) sparse resources using the standard sparse image block shapes (based on pixel format)
     pub residency_standard2_d_block_shape: Bool32,
@@ -14462,17 +12827,6 @@ pub struct PhysicalDeviceSparseProperties {
     pub residency_aligned_mip_size: Bool32,
     /// Sparse resources support: GPU can consistently access non-resident regions of a resource, all reads return as if data is 0, writes are discarded
     pub residency_non_resident_strict: Bool32,
-}
-impl default::Default for PhysicalDeviceSparseProperties {
-    fn default() -> Self {
-        Self {
-            residency_standard2_d_block_shape: Bool32::default(),
-            residency_standard2_d_multisample_block_shape: Bool32::default(),
-            residency_standard3_d_block_shape: Bool32::default(),
-            residency_aligned_mip_size: Bool32::default(),
-            residency_non_resident_strict: Bool32::default(),
-        }
-    }
 }
 impl fmt::Debug for PhysicalDeviceSparseProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -14495,7 +12849,7 @@ impl fmt::Debug for PhysicalDeviceSparseProperties {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct PhysicalDeviceLimits {
     /// max 1D image dimension
     pub max_image_dimension1_d: u32,
@@ -14709,118 +13063,6 @@ pub struct PhysicalDeviceLimits {
     pub optimal_buffer_copy_row_pitch_alignment: DeviceSize,
     /// minimum size and alignment for non-coherent host-mapped device memory access
     pub non_coherent_atom_size: DeviceSize,
-}
-impl default::Default for PhysicalDeviceLimits {
-    fn default() -> Self {
-        Self {
-            max_image_dimension1_d: u32::default(),
-            max_image_dimension2_d: u32::default(),
-            max_image_dimension3_d: u32::default(),
-            max_image_dimension_cube: u32::default(),
-            max_image_array_layers: u32::default(),
-            max_texel_buffer_elements: u32::default(),
-            max_uniform_buffer_range: u32::default(),
-            max_storage_buffer_range: u32::default(),
-            max_push_constants_size: u32::default(),
-            max_memory_allocation_count: u32::default(),
-            max_sampler_allocation_count: u32::default(),
-            buffer_image_granularity: DeviceSize::default(),
-            sparse_address_space_size: DeviceSize::default(),
-            max_bound_descriptor_sets: u32::default(),
-            max_per_stage_descriptor_samplers: u32::default(),
-            max_per_stage_descriptor_uniform_buffers: u32::default(),
-            max_per_stage_descriptor_storage_buffers: u32::default(),
-            max_per_stage_descriptor_sampled_images: u32::default(),
-            max_per_stage_descriptor_storage_images: u32::default(),
-            max_per_stage_descriptor_input_attachments: u32::default(),
-            max_per_stage_resources: u32::default(),
-            max_descriptor_set_samplers: u32::default(),
-            max_descriptor_set_uniform_buffers: u32::default(),
-            max_descriptor_set_uniform_buffers_dynamic: u32::default(),
-            max_descriptor_set_storage_buffers: u32::default(),
-            max_descriptor_set_storage_buffers_dynamic: u32::default(),
-            max_descriptor_set_sampled_images: u32::default(),
-            max_descriptor_set_storage_images: u32::default(),
-            max_descriptor_set_input_attachments: u32::default(),
-            max_vertex_input_attributes: u32::default(),
-            max_vertex_input_bindings: u32::default(),
-            max_vertex_input_attribute_offset: u32::default(),
-            max_vertex_input_binding_stride: u32::default(),
-            max_vertex_output_components: u32::default(),
-            max_tessellation_generation_level: u32::default(),
-            max_tessellation_patch_size: u32::default(),
-            max_tessellation_control_per_vertex_input_components: u32::default(),
-            max_tessellation_control_per_vertex_output_components: u32::default(),
-            max_tessellation_control_per_patch_output_components: u32::default(),
-            max_tessellation_control_total_output_components: u32::default(),
-            max_tessellation_evaluation_input_components: u32::default(),
-            max_tessellation_evaluation_output_components: u32::default(),
-            max_geometry_shader_invocations: u32::default(),
-            max_geometry_input_components: u32::default(),
-            max_geometry_output_components: u32::default(),
-            max_geometry_output_vertices: u32::default(),
-            max_geometry_total_output_components: u32::default(),
-            max_fragment_input_components: u32::default(),
-            max_fragment_output_attachments: u32::default(),
-            max_fragment_dual_src_attachments: u32::default(),
-            max_fragment_combined_output_resources: u32::default(),
-            max_compute_shared_memory_size: u32::default(),
-            max_compute_work_group_count: [u32::default(); 3],
-            max_compute_work_group_invocations: u32::default(),
-            max_compute_work_group_size: [u32::default(); 3],
-            sub_pixel_precision_bits: u32::default(),
-            sub_texel_precision_bits: u32::default(),
-            mipmap_precision_bits: u32::default(),
-            max_draw_indexed_index_value: u32::default(),
-            max_draw_indirect_count: u32::default(),
-            max_sampler_lod_bias: f32::default(),
-            max_sampler_anisotropy: f32::default(),
-            max_viewports: u32::default(),
-            max_viewport_dimensions: [u32::default(); 2],
-            viewport_bounds_range: [f32::default(); 2],
-            viewport_sub_pixel_bits: u32::default(),
-            min_memory_map_alignment: usize::default(),
-            min_texel_buffer_offset_alignment: DeviceSize::default(),
-            min_uniform_buffer_offset_alignment: DeviceSize::default(),
-            min_storage_buffer_offset_alignment: DeviceSize::default(),
-            min_texel_offset: i32::default(),
-            max_texel_offset: u32::default(),
-            min_texel_gather_offset: i32::default(),
-            max_texel_gather_offset: u32::default(),
-            min_interpolation_offset: f32::default(),
-            max_interpolation_offset: f32::default(),
-            sub_pixel_interpolation_offset_bits: u32::default(),
-            max_framebuffer_width: u32::default(),
-            max_framebuffer_height: u32::default(),
-            max_framebuffer_layers: u32::default(),
-            framebuffer_color_sample_counts: SampleCountFlags::default(),
-            framebuffer_depth_sample_counts: SampleCountFlags::default(),
-            framebuffer_stencil_sample_counts: SampleCountFlags::default(),
-            framebuffer_no_attachments_sample_counts: SampleCountFlags::default(),
-            max_color_attachments: u32::default(),
-            sampled_image_color_sample_counts: SampleCountFlags::default(),
-            sampled_image_integer_sample_counts: SampleCountFlags::default(),
-            sampled_image_depth_sample_counts: SampleCountFlags::default(),
-            sampled_image_stencil_sample_counts: SampleCountFlags::default(),
-            storage_image_sample_counts: SampleCountFlags::default(),
-            max_sample_mask_words: u32::default(),
-            timestamp_compute_and_graphics: Bool32::default(),
-            timestamp_period: f32::default(),
-            max_clip_distances: u32::default(),
-            max_cull_distances: u32::default(),
-            max_combined_clip_and_cull_distances: u32::default(),
-            discrete_queue_priorities: u32::default(),
-            point_size_range: [f32::default(); 2],
-            line_width_range: [f32::default(); 2],
-            point_size_granularity: f32::default(),
-            line_width_granularity: f32::default(),
-            strict_lines: Bool32::default(),
-            standard_sample_locations: Bool32::default(),
-            optimal_buffer_copy_offset_alignment: DeviceSize::default(),
-            optimal_buffer_copy_row_pitch_alignment: DeviceSize::default(),
-            non_coherent_atom_size: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for PhysicalDeviceLimits {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15058,12 +13300,12 @@ pub struct SemaphoreCreateInfo {
 }
 unsafe impl Send for SemaphoreCreateInfo {}
 unsafe impl Sync for SemaphoreCreateInfo {}
-impl default::Default for SemaphoreCreateInfo {
+impl Default for SemaphoreCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: SemaphoreCreateFlags::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -15089,15 +13331,15 @@ pub struct QueryPoolCreateInfo {
 }
 unsafe impl Send for QueryPoolCreateInfo {}
 unsafe impl Sync for QueryPoolCreateInfo {}
-impl default::Default for QueryPoolCreateInfo {
+impl Default for QueryPoolCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUERY_POOL_CREATE_INFO,
             p_next: ptr::null(),
-            flags: QueryPoolCreateFlags::default(),
-            query_type: QueryType::default(),
-            query_count: u32::default(),
-            pipeline_statistics: QueryPipelineStatisticFlags::default(),
+            flags: Default::default(),
+            query_type: Default::default(),
+            query_count: Default::default(),
+            pipeline_statistics: Default::default(),
         }
     }
 }
@@ -15128,18 +13370,18 @@ pub struct FramebufferCreateInfo {
 }
 unsafe impl Send for FramebufferCreateInfo {}
 unsafe impl Sync for FramebufferCreateInfo {}
-impl default::Default for FramebufferCreateInfo {
+impl Default for FramebufferCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::FRAMEBUFFER_CREATE_INFO,
             p_next: ptr::null(),
-            flags: FramebufferCreateFlags::default(),
-            render_pass: None,
-            attachment_count: u32::default(),
+            flags: Default::default(),
+            render_pass: Default::default(),
+            attachment_count: Default::default(),
             p_attachments: ptr::null(),
-            width: u32::default(),
-            height: u32::default(),
-            layers: u32::default(),
+            width: Default::default(),
+            height: Default::default(),
+            layers: Default::default(),
         }
     }
 }
@@ -15159,22 +13401,12 @@ impl fmt::Debug for FramebufferCreateInfo {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DrawIndirectCommand {
     pub vertex_count: u32,
     pub instance_count: u32,
     pub first_vertex: u32,
     pub first_instance: u32,
-}
-impl default::Default for DrawIndirectCommand {
-    fn default() -> Self {
-        Self {
-            vertex_count: u32::default(),
-            instance_count: u32::default(),
-            first_vertex: u32::default(),
-            first_instance: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DrawIndirectCommand {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15187,24 +13419,13 @@ impl fmt::Debug for DrawIndirectCommand {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DrawIndexedIndirectCommand {
     pub index_count: u32,
     pub instance_count: u32,
     pub first_index: u32,
     pub vertex_offset: i32,
     pub first_instance: u32,
-}
-impl default::Default for DrawIndexedIndirectCommand {
-    fn default() -> Self {
-        Self {
-            index_count: u32::default(),
-            instance_count: u32::default(),
-            first_index: u32::default(),
-            vertex_offset: i32::default(),
-            first_instance: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DrawIndexedIndirectCommand {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15218,20 +13439,11 @@ impl fmt::Debug for DrawIndexedIndirectCommand {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DispatchIndirectCommand {
     pub x: u32,
     pub y: u32,
     pub z: u32,
-}
-impl default::Default for DispatchIndirectCommand {
-    fn default() -> Self {
-        Self {
-            x: u32::default(),
-            y: u32::default(),
-            z: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DispatchIndirectCommand {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15243,18 +13455,10 @@ impl fmt::Debug for DispatchIndirectCommand {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MultiDrawInfoEXT {
     pub first_vertex: u32,
     pub vertex_count: u32,
-}
-impl default::Default for MultiDrawInfoEXT {
-    fn default() -> Self {
-        Self {
-            first_vertex: u32::default(),
-            vertex_count: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for MultiDrawInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15265,20 +13469,11 @@ impl fmt::Debug for MultiDrawInfoEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MultiDrawIndexedInfoEXT {
     pub first_index: u32,
     pub index_count: u32,
     pub vertex_offset: i32,
-}
-impl default::Default for MultiDrawIndexedInfoEXT {
-    fn default() -> Self {
-        Self {
-            first_index: u32::default(),
-            index_count: u32::default(),
-            vertex_offset: i32::default(),
-        }
-    }
 }
 impl fmt::Debug for MultiDrawIndexedInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15304,17 +13499,17 @@ pub struct SubmitInfo {
 }
 unsafe impl Send for SubmitInfo {}
 unsafe impl Sync for SubmitInfo {}
-impl default::Default for SubmitInfo {
+impl Default for SubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBMIT_INFO,
             p_next: ptr::null(),
-            wait_semaphore_count: u32::default(),
+            wait_semaphore_count: Default::default(),
             p_wait_semaphores: ptr::null(),
             p_wait_dst_stage_mask: ptr::null(),
-            command_buffer_count: u32::default(),
+            command_buffer_count: Default::default(),
             p_command_buffers: ptr::null(),
-            signal_semaphore_count: u32::default(),
+            signal_semaphore_count: Default::default(),
             p_signal_semaphores: ptr::null(),
         }
     }
@@ -15354,16 +13549,16 @@ pub struct DisplayPropertiesKHR {
 }
 unsafe impl Send for DisplayPropertiesKHR {}
 unsafe impl Sync for DisplayPropertiesKHR {}
-impl default::Default for DisplayPropertiesKHR {
+impl Default for DisplayPropertiesKHR {
     fn default() -> Self {
         Self {
-            display: None,
+            display: Default::default(),
             display_name: ptr::null(),
-            physical_dimensions: Extent2D::default(),
-            physical_resolution: Extent2D::default(),
-            supported_transforms: SurfaceTransformFlagsKHR::default(),
-            plane_reorder_possible: Bool32::default(),
-            persistent_content: Bool32::default(),
+            physical_dimensions: Default::default(),
+            physical_resolution: Default::default(),
+            supported_transforms: Default::default(),
+            plane_reorder_possible: Default::default(),
+            persistent_content: Default::default(),
         }
     }
 }
@@ -15381,20 +13576,12 @@ impl fmt::Debug for DisplayPropertiesKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct DisplayPlanePropertiesKHR {
     /// Display the plane is currently associated with.  Will be VK_NULL_HANDLE if the plane is not in use.
     pub current_display: Option<DisplayKHR>,
     /// Current z-order of the plane.
     pub current_stack_index: u32,
-}
-impl default::Default for DisplayPlanePropertiesKHR {
-    fn default() -> Self {
-        Self {
-            current_display: None,
-            current_stack_index: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DisplayPlanePropertiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15405,20 +13592,12 @@ impl fmt::Debug for DisplayPlanePropertiesKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DisplayModeParametersKHR {
     /// Visible scanout region.
     pub visible_region: Extent2D,
     /// Number of times per second the display is updated.
     pub refresh_rate: u32,
-}
-impl default::Default for DisplayModeParametersKHR {
-    fn default() -> Self {
-        Self {
-            visible_region: Extent2D::default(),
-            refresh_rate: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DisplayModeParametersKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15429,20 +13608,12 @@ impl fmt::Debug for DisplayModeParametersKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct DisplayModePropertiesKHR {
     /// Handle of this display mode.
     pub display_mode: Option<DisplayModeKHR>,
     /// The parameters this mode uses.
     pub parameters: DisplayModeParametersKHR,
-}
-impl default::Default for DisplayModePropertiesKHR {
-    fn default() -> Self {
-        Self {
-            display_mode: None,
-            parameters: DisplayModeParametersKHR::default(),
-        }
-    }
 }
 impl fmt::Debug for DisplayModePropertiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15463,13 +13634,13 @@ pub struct DisplayModeCreateInfoKHR {
 }
 unsafe impl Send for DisplayModeCreateInfoKHR {}
 unsafe impl Sync for DisplayModeCreateInfoKHR {}
-impl default::Default for DisplayModeCreateInfoKHR {
+impl Default for DisplayModeCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_MODE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: DisplayModeCreateFlagsKHR::default(),
-            parameters: DisplayModeParametersKHR::default(),
+            flags: Default::default(),
+            parameters: Default::default(),
         }
     }
 }
@@ -15484,7 +13655,7 @@ impl fmt::Debug for DisplayModeCreateInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DisplayPlaneCapabilitiesKHR {
     /// Types of alpha blending supported, if any.
     pub supported_alpha: DisplayPlaneAlphaFlagsKHR,
@@ -15497,21 +13668,6 @@ pub struct DisplayPlaneCapabilitiesKHR {
     pub max_dst_position: Offset2D,
     pub min_dst_extent: Extent2D,
     pub max_dst_extent: Extent2D,
-}
-impl default::Default for DisplayPlaneCapabilitiesKHR {
-    fn default() -> Self {
-        Self {
-            supported_alpha: DisplayPlaneAlphaFlagsKHR::default(),
-            min_src_position: Offset2D::default(),
-            max_src_position: Offset2D::default(),
-            min_src_extent: Extent2D::default(),
-            max_src_extent: Extent2D::default(),
-            min_dst_position: Offset2D::default(),
-            max_dst_position: Offset2D::default(),
-            min_dst_extent: Extent2D::default(),
-            max_dst_extent: Extent2D::default(),
-        }
-    }
 }
 impl fmt::Debug for DisplayPlaneCapabilitiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15551,19 +13707,19 @@ pub struct DisplaySurfaceCreateInfoKHR {
 }
 unsafe impl Send for DisplaySurfaceCreateInfoKHR {}
 unsafe impl Sync for DisplaySurfaceCreateInfoKHR {}
-impl default::Default for DisplaySurfaceCreateInfoKHR {
+impl Default for DisplaySurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: DisplaySurfaceCreateFlagsKHR::default(),
-            display_mode: None,
-            plane_index: u32::default(),
-            plane_stack_index: u32::default(),
-            transform: SurfaceTransformFlagsKHR::default(),
-            global_alpha: f32::default(),
-            alpha_mode: DisplayPlaneAlphaFlagsKHR::default(),
-            image_extent: Extent2D::default(),
+            flags: Default::default(),
+            display_mode: Default::default(),
+            plane_index: Default::default(),
+            plane_stack_index: Default::default(),
+            transform: Default::default(),
+            global_alpha: Default::default(),
+            alpha_mode: Default::default(),
+            image_extent: Default::default(),
         }
     }
 }
@@ -15597,14 +13753,14 @@ pub struct DisplayPresentInfoKHR {
 }
 unsafe impl Send for DisplayPresentInfoKHR {}
 unsafe impl Sync for DisplayPresentInfoKHR {}
-impl default::Default for DisplayPresentInfoKHR {
+impl Default for DisplayPresentInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_PRESENT_INFO_KHR,
             p_next: ptr::null(),
-            src_rect: Rect2D::default(),
-            dst_rect: Rect2D::default(),
-            persistent: Bool32::default(),
+            src_rect: Default::default(),
+            dst_rect: Default::default(),
+            persistent: Default::default(),
         }
     }
 }
@@ -15620,7 +13776,7 @@ impl fmt::Debug for DisplayPresentInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SurfaceCapabilitiesKHR {
     /// Supported minimum number of images for the surface
     pub min_image_count: u32,
@@ -15642,22 +13798,6 @@ pub struct SurfaceCapabilitiesKHR {
     pub supported_composite_alpha: CompositeAlphaFlagsKHR,
     /// Supported image usage flags for the surface
     pub supported_usage_flags: ImageUsageFlags,
-}
-impl default::Default for SurfaceCapabilitiesKHR {
-    fn default() -> Self {
-        Self {
-            min_image_count: u32::default(),
-            max_image_count: u32::default(),
-            current_extent: Extent2D::default(),
-            min_image_extent: Extent2D::default(),
-            max_image_extent: Extent2D::default(),
-            max_image_array_layers: u32::default(),
-            supported_transforms: SurfaceTransformFlagsKHR::default(),
-            current_transform: SurfaceTransformFlagsKHR::default(),
-            supported_composite_alpha: CompositeAlphaFlagsKHR::default(),
-            supported_usage_flags: ImageUsageFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for SurfaceCapabilitiesKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15685,12 +13825,12 @@ pub struct AndroidSurfaceCreateInfoKHR {
 }
 unsafe impl Send for AndroidSurfaceCreateInfoKHR {}
 unsafe impl Sync for AndroidSurfaceCreateInfoKHR {}
-impl default::Default for AndroidSurfaceCreateInfoKHR {
+impl Default for AndroidSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ANDROID_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: AndroidSurfaceCreateFlagsKHR::default(),
+            flags: Default::default(),
             window: ptr::null_mut(),
         }
     }
@@ -15715,12 +13855,12 @@ pub struct ViSurfaceCreateInfoNN {
 }
 unsafe impl Send for ViSurfaceCreateInfoNN {}
 unsafe impl Sync for ViSurfaceCreateInfoNN {}
-impl default::Default for ViSurfaceCreateInfoNN {
+impl Default for ViSurfaceCreateInfoNN {
     fn default() -> Self {
         Self {
             s_type: StructureType::VI_SURFACE_CREATE_INFO_NN,
             p_next: ptr::null(),
-            flags: ViSurfaceCreateFlagsNN::default(),
+            flags: Default::default(),
             window: ptr::null_mut(),
         }
     }
@@ -15746,12 +13886,12 @@ pub struct WaylandSurfaceCreateInfoKHR {
 }
 unsafe impl Send for WaylandSurfaceCreateInfoKHR {}
 unsafe impl Sync for WaylandSurfaceCreateInfoKHR {}
-impl default::Default for WaylandSurfaceCreateInfoKHR {
+impl Default for WaylandSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::WAYLAND_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: WaylandSurfaceCreateFlagsKHR::default(),
+            flags: Default::default(),
             display: ptr::null_mut(),
             surface: ptr::null_mut(),
         }
@@ -15779,12 +13919,12 @@ pub struct Win32SurfaceCreateInfoKHR {
 }
 unsafe impl Send for Win32SurfaceCreateInfoKHR {}
 unsafe impl Sync for Win32SurfaceCreateInfoKHR {}
-impl default::Default for Win32SurfaceCreateInfoKHR {
+impl Default for Win32SurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::WIN32_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: Win32SurfaceCreateFlagsKHR::default(),
+            flags: Default::default(),
             hinstance: unsafe { mem::zeroed() },
             hwnd: unsafe { mem::zeroed() },
         }
@@ -15812,12 +13952,12 @@ pub struct XlibSurfaceCreateInfoKHR {
 }
 unsafe impl Send for XlibSurfaceCreateInfoKHR {}
 unsafe impl Sync for XlibSurfaceCreateInfoKHR {}
-impl default::Default for XlibSurfaceCreateInfoKHR {
+impl Default for XlibSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::XLIB_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: XlibSurfaceCreateFlagsKHR::default(),
+            flags: Default::default(),
             dpy: ptr::null_mut(),
             window: unsafe { mem::zeroed() },
         }
@@ -15845,12 +13985,12 @@ pub struct XcbSurfaceCreateInfoKHR {
 }
 unsafe impl Send for XcbSurfaceCreateInfoKHR {}
 unsafe impl Sync for XcbSurfaceCreateInfoKHR {}
-impl default::Default for XcbSurfaceCreateInfoKHR {
+impl Default for XcbSurfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::XCB_SURFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: XcbSurfaceCreateFlagsKHR::default(),
+            flags: Default::default(),
             connection: ptr::null_mut(),
             window: unsafe { mem::zeroed() },
         }
@@ -15878,12 +14018,12 @@ pub struct DirectFBSurfaceCreateInfoEXT {
 }
 unsafe impl Send for DirectFBSurfaceCreateInfoEXT {}
 unsafe impl Sync for DirectFBSurfaceCreateInfoEXT {}
-impl default::Default for DirectFBSurfaceCreateInfoEXT {
+impl Default for DirectFBSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DIRECTFB_SURFACE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: DirectFBSurfaceCreateFlagsEXT::default(),
+            flags: Default::default(),
             dfb: ptr::null_mut(),
             surface: ptr::null_mut(),
         }
@@ -15910,12 +14050,12 @@ pub struct ImagePipeSurfaceCreateInfoFUCHSIA {
 }
 unsafe impl Send for ImagePipeSurfaceCreateInfoFUCHSIA {}
 unsafe impl Sync for ImagePipeSurfaceCreateInfoFUCHSIA {}
-impl default::Default for ImagePipeSurfaceCreateInfoFUCHSIA {
+impl Default for ImagePipeSurfaceCreateInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGEPIPE_SURFACE_CREATE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            flags: ImagePipeSurfaceCreateFlagsFUCHSIA::default(),
+            flags: Default::default(),
             image_pipe_handle: unsafe { mem::zeroed() },
         }
     }
@@ -15931,20 +14071,12 @@ impl fmt::Debug for ImagePipeSurfaceCreateInfoFUCHSIA {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SurfaceFormatKHR {
     /// Supported pair of rendering format
     pub format: Format,
     /// and color space for the surface
     pub color_space: ColorSpaceKHR,
-}
-impl default::Default for SurfaceFormatKHR {
-    fn default() -> Self {
-        Self {
-            format: Format::default(),
-            color_space: ColorSpaceKHR::default(),
-        }
-    }
 }
 impl fmt::Debug for SurfaceFormatKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -15993,27 +14125,27 @@ pub struct SwapchainCreateInfoKHR {
 }
 unsafe impl Send for SwapchainCreateInfoKHR {}
 unsafe impl Sync for SwapchainCreateInfoKHR {}
-impl default::Default for SwapchainCreateInfoKHR {
+impl Default for SwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: SwapchainCreateFlagsKHR::default(),
-            surface: None,
-            min_image_count: u32::default(),
-            image_format: Format::default(),
-            image_color_space: ColorSpaceKHR::default(),
-            image_extent: Extent2D::default(),
-            image_array_layers: u32::default(),
-            image_usage: ImageUsageFlags::default(),
-            image_sharing_mode: SharingMode::default(),
-            queue_family_index_count: u32::default(),
+            flags: Default::default(),
+            surface: Default::default(),
+            min_image_count: Default::default(),
+            image_format: Default::default(),
+            image_color_space: Default::default(),
+            image_extent: Default::default(),
+            image_array_layers: Default::default(),
+            image_usage: Default::default(),
+            image_sharing_mode: Default::default(),
+            queue_family_index_count: Default::default(),
             p_queue_family_indices: ptr::null(),
-            pre_transform: SurfaceTransformFlagsKHR::default(),
-            composite_alpha: CompositeAlphaFlagsKHR::default(),
-            present_mode: PresentModeKHR::default(),
-            clipped: Bool32::default(),
-            old_swapchain: None,
+            pre_transform: Default::default(),
+            composite_alpha: Default::default(),
+            present_mode: Default::default(),
+            clipped: Default::default(),
+            old_swapchain: Default::default(),
         }
     }
 }
@@ -16061,14 +14193,14 @@ pub struct PresentInfoKHR {
 }
 unsafe impl Send for PresentInfoKHR {}
 unsafe impl Sync for PresentInfoKHR {}
-impl default::Default for PresentInfoKHR {
+impl Default for PresentInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PRESENT_INFO_KHR,
             p_next: ptr::null(),
-            wait_semaphore_count: u32::default(),
+            wait_semaphore_count: Default::default(),
             p_wait_semaphores: ptr::null(),
-            swapchain_count: u32::default(),
+            swapchain_count: Default::default(),
             p_swapchains: ptr::null(),
             p_image_indices: ptr::null(),
             p_results: ptr::null_mut(),
@@ -16103,13 +14235,13 @@ pub struct DebugReportCallbackCreateInfoEXT {
 }
 unsafe impl Send for DebugReportCallbackCreateInfoEXT {}
 unsafe impl Sync for DebugReportCallbackCreateInfoEXT {}
-impl default::Default for DebugReportCallbackCreateInfoEXT {
+impl Default for DebugReportCallbackCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: DebugReportFlagsEXT::default(),
-            pfn_callback: None,
+            flags: Default::default(),
+            pfn_callback: Default::default(),
             p_user_data: ptr::null_mut(),
         }
     }
@@ -16141,12 +14273,12 @@ pub struct ValidationFlagsEXT {
 }
 unsafe impl Send for ValidationFlagsEXT {}
 unsafe impl Sync for ValidationFlagsEXT {}
-impl default::Default for ValidationFlagsEXT {
+impl Default for ValidationFlagsEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::VALIDATION_FLAGS_EXT,
             p_next: ptr::null(),
-            disabled_validation_check_count: u32::default(),
+            disabled_validation_check_count: Default::default(),
             p_disabled_validation_checks: ptr::null(),
         }
     }
@@ -16178,14 +14310,14 @@ pub struct ValidationFeaturesEXT {
 }
 unsafe impl Send for ValidationFeaturesEXT {}
 unsafe impl Sync for ValidationFeaturesEXT {}
-impl default::Default for ValidationFeaturesEXT {
+impl Default for ValidationFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::VALIDATION_FEATURES_EXT,
             p_next: ptr::null(),
-            enabled_validation_feature_count: u32::default(),
+            enabled_validation_feature_count: Default::default(),
             p_enabled_validation_features: ptr::null(),
-            disabled_validation_feature_count: u32::default(),
+            disabled_validation_feature_count: Default::default(),
             p_disabled_validation_features: ptr::null(),
         }
     }
@@ -16218,12 +14350,12 @@ pub struct PipelineRasterizationStateRasterizationOrderAMD {
 }
 unsafe impl Send for PipelineRasterizationStateRasterizationOrderAMD {}
 unsafe impl Sync for PipelineRasterizationStateRasterizationOrderAMD {}
-impl default::Default for PipelineRasterizationStateRasterizationOrderAMD {
+impl Default for PipelineRasterizationStateRasterizationOrderAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_RASTERIZATION_ORDER_AMD,
             p_next: ptr::null(),
-            rasterization_order: RasterizationOrderAMD::default(),
+            rasterization_order: Default::default(),
         }
     }
 }
@@ -16250,13 +14382,13 @@ pub struct DebugMarkerObjectNameInfoEXT {
 }
 unsafe impl Send for DebugMarkerObjectNameInfoEXT {}
 unsafe impl Sync for DebugMarkerObjectNameInfoEXT {}
-impl default::Default for DebugMarkerObjectNameInfoEXT {
+impl Default for DebugMarkerObjectNameInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
             p_next: ptr::null(),
-            object_type: DebugReportObjectTypeEXT::default(),
-            object: u64::default(),
+            object_type: Default::default(),
+            object: Default::default(),
             p_object_name: ptr::null(),
         }
     }
@@ -16290,15 +14422,15 @@ pub struct DebugMarkerObjectTagInfoEXT {
 }
 unsafe impl Send for DebugMarkerObjectTagInfoEXT {}
 unsafe impl Sync for DebugMarkerObjectTagInfoEXT {}
-impl default::Default for DebugMarkerObjectTagInfoEXT {
+impl Default for DebugMarkerObjectTagInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
             p_next: ptr::null(),
-            object_type: DebugReportObjectTypeEXT::default(),
-            object: u64::default(),
-            tag_name: u64::default(),
-            tag_size: usize::default(),
+            object_type: Default::default(),
+            object: Default::default(),
+            tag_name: Default::default(),
+            tag_size: Default::default(),
             p_tag: ptr::null(),
         }
     }
@@ -16328,13 +14460,13 @@ pub struct DebugMarkerMarkerInfoEXT {
 }
 unsafe impl Send for DebugMarkerMarkerInfoEXT {}
 unsafe impl Sync for DebugMarkerMarkerInfoEXT {}
-impl default::Default for DebugMarkerMarkerInfoEXT {
+impl Default for DebugMarkerMarkerInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_MARKER_MARKER_INFO_EXT,
             p_next: ptr::null(),
             p_marker_name: ptr::null(),
-            color: [f32::default(); 4],
+            color: [Default::default(); 4],
         }
     }
 }
@@ -16358,12 +14490,12 @@ pub struct DedicatedAllocationImageCreateInfoNV {
 }
 unsafe impl Send for DedicatedAllocationImageCreateInfoNV {}
 unsafe impl Sync for DedicatedAllocationImageCreateInfoNV {}
-impl default::Default for DedicatedAllocationImageCreateInfoNV {
+impl Default for DedicatedAllocationImageCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEDICATED_ALLOCATION_IMAGE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            dedicated_allocation: Bool32::default(),
+            dedicated_allocation: Default::default(),
         }
     }
 }
@@ -16386,12 +14518,12 @@ pub struct DedicatedAllocationBufferCreateInfoNV {
 }
 unsafe impl Send for DedicatedAllocationBufferCreateInfoNV {}
 unsafe impl Sync for DedicatedAllocationBufferCreateInfoNV {}
-impl default::Default for DedicatedAllocationBufferCreateInfoNV {
+impl Default for DedicatedAllocationBufferCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEDICATED_ALLOCATION_BUFFER_CREATE_INFO_NV,
             p_next: ptr::null(),
-            dedicated_allocation: Bool32::default(),
+            dedicated_allocation: Default::default(),
         }
     }
 }
@@ -16416,13 +14548,13 @@ pub struct DedicatedAllocationMemoryAllocateInfoNV {
 }
 unsafe impl Send for DedicatedAllocationMemoryAllocateInfoNV {}
 unsafe impl Sync for DedicatedAllocationMemoryAllocateInfoNV {}
-impl default::Default for DedicatedAllocationMemoryAllocateInfoNV {
+impl Default for DedicatedAllocationMemoryAllocateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV,
             p_next: ptr::null(),
-            image: None,
-            buffer: None,
+            image: Default::default(),
+            buffer: Default::default(),
         }
     }
 }
@@ -16437,22 +14569,12 @@ impl fmt::Debug for DedicatedAllocationMemoryAllocateInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalImageFormatPropertiesNV {
     pub image_format_properties: ImageFormatProperties,
     pub external_memory_features: ExternalMemoryFeatureFlagsNV,
     pub export_from_imported_handle_types: ExternalMemoryHandleTypeFlagsNV,
     pub compatible_handle_types: ExternalMemoryHandleTypeFlagsNV,
-}
-impl default::Default for ExternalImageFormatPropertiesNV {
-    fn default() -> Self {
-        Self {
-            image_format_properties: ImageFormatProperties::default(),
-            external_memory_features: ExternalMemoryFeatureFlagsNV::default(),
-            export_from_imported_handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
-            compatible_handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
-        }
-    }
 }
 impl fmt::Debug for ExternalImageFormatPropertiesNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -16476,12 +14598,12 @@ pub struct ExternalMemoryImageCreateInfoNV {
 }
 unsafe impl Send for ExternalMemoryImageCreateInfoNV {}
 unsafe impl Sync for ExternalMemoryImageCreateInfoNV {}
-impl default::Default for ExternalMemoryImageCreateInfoNV {
+impl Default for ExternalMemoryImageCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -16503,12 +14625,12 @@ pub struct ExportMemoryAllocateInfoNV {
 }
 unsafe impl Send for ExportMemoryAllocateInfoNV {}
 unsafe impl Sync for ExportMemoryAllocateInfoNV {}
-impl default::Default for ExportMemoryAllocateInfoNV {
+impl Default for ExportMemoryAllocateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_MEMORY_ALLOCATE_INFO_NV,
             p_next: ptr::null(),
-            handle_types: ExternalMemoryHandleTypeFlagsNV::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -16531,12 +14653,12 @@ pub struct ImportMemoryWin32HandleInfoNV {
 }
 unsafe impl Send for ImportMemoryWin32HandleInfoNV {}
 unsafe impl Sync for ImportMemoryWin32HandleInfoNV {}
-impl default::Default for ImportMemoryWin32HandleInfoNV {
+impl Default for ImportMemoryWin32HandleInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_NV,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlagsNV::default(),
+            handle_type: Default::default(),
             handle: unsafe { mem::zeroed() },
         }
     }
@@ -16561,7 +14683,7 @@ pub struct ExportMemoryWin32HandleInfoNV {
 }
 unsafe impl Send for ExportMemoryWin32HandleInfoNV {}
 unsafe impl Sync for ExportMemoryWin32HandleInfoNV {}
-impl default::Default for ExportMemoryWin32HandleInfoNV {
+impl Default for ExportMemoryWin32HandleInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_NV,
@@ -16596,16 +14718,16 @@ pub struct Win32KeyedMutexAcquireReleaseInfoNV {
 }
 unsafe impl Send for Win32KeyedMutexAcquireReleaseInfoNV {}
 unsafe impl Sync for Win32KeyedMutexAcquireReleaseInfoNV {}
-impl default::Default for Win32KeyedMutexAcquireReleaseInfoNV {
+impl Default for Win32KeyedMutexAcquireReleaseInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_NV,
             p_next: ptr::null(),
-            acquire_count: u32::default(),
+            acquire_count: Default::default(),
             p_acquire_syncs: ptr::null(),
             p_acquire_keys: ptr::null(),
             p_acquire_timeout_milliseconds: ptr::null(),
-            release_count: u32::default(),
+            release_count: Default::default(),
             p_release_syncs: ptr::null(),
             p_release_keys: ptr::null(),
         }
@@ -16635,12 +14757,12 @@ pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
-impl default::Default for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
+impl Default for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_FEATURES_NV,
             p_next: ptr::null_mut(),
-            device_generated_commands: Bool32::default(),
+            device_generated_commands: Default::default(),
         }
     }
 }
@@ -16662,12 +14784,12 @@ pub struct DevicePrivateDataCreateInfo {
 }
 unsafe impl Send for DevicePrivateDataCreateInfo {}
 unsafe impl Sync for DevicePrivateDataCreateInfo {}
-impl default::Default for DevicePrivateDataCreateInfo {
+impl Default for DevicePrivateDataCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_PRIVATE_DATA_CREATE_INFO,
             p_next: ptr::null(),
-            private_data_slot_request_count: u32::default(),
+            private_data_slot_request_count: Default::default(),
         }
     }
 }
@@ -16690,12 +14812,12 @@ pub struct PrivateDataSlotCreateInfo {
 }
 unsafe impl Send for PrivateDataSlotCreateInfo {}
 unsafe impl Sync for PrivateDataSlotCreateInfo {}
-impl default::Default for PrivateDataSlotCreateInfo {
+impl Default for PrivateDataSlotCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PRIVATE_DATA_SLOT_CREATE_INFO,
             p_next: ptr::null(),
-            flags: PrivateDataSlotCreateFlags::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -16718,12 +14840,12 @@ pub struct PhysicalDevicePrivateDataFeatures {
 }
 unsafe impl Send for PhysicalDevicePrivateDataFeatures {}
 unsafe impl Sync for PhysicalDevicePrivateDataFeatures {}
-impl default::Default for PhysicalDevicePrivateDataFeatures {
+impl Default for PhysicalDevicePrivateDataFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES,
             p_next: ptr::null_mut(),
-            private_data: Bool32::default(),
+            private_data: Default::default(),
         }
     }
 }
@@ -16754,20 +14876,20 @@ pub struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {}
-impl default::Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
+impl Default for PhysicalDeviceDeviceGeneratedCommandsPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            max_graphics_shader_group_count: u32::default(),
-            max_indirect_sequence_count: u32::default(),
-            max_indirect_commands_token_count: u32::default(),
-            max_indirect_commands_stream_count: u32::default(),
-            max_indirect_commands_token_offset: u32::default(),
-            max_indirect_commands_stream_stride: u32::default(),
-            min_sequences_count_buffer_offset_alignment: u32::default(),
-            min_sequences_index_buffer_offset_alignment: u32::default(),
-            min_indirect_commands_buffer_offset_alignment: u32::default(),
+            max_graphics_shader_group_count: Default::default(),
+            max_indirect_sequence_count: Default::default(),
+            max_indirect_commands_token_count: Default::default(),
+            max_indirect_commands_stream_count: Default::default(),
+            max_indirect_commands_token_offset: Default::default(),
+            max_indirect_commands_stream_stride: Default::default(),
+            min_sequences_count_buffer_offset_alignment: Default::default(),
+            min_sequences_index_buffer_offset_alignment: Default::default(),
+            min_indirect_commands_buffer_offset_alignment: Default::default(),
         }
     }
 }
@@ -16818,12 +14940,12 @@ pub struct PhysicalDeviceMultiDrawPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceMultiDrawPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceMultiDrawPropertiesEXT {}
-impl default::Default for PhysicalDeviceMultiDrawPropertiesEXT {
+impl Default for PhysicalDeviceMultiDrawPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_multi_draw_count: u32::default(),
+            max_multi_draw_count: Default::default(),
         }
     }
 }
@@ -16848,12 +14970,12 @@ pub struct GraphicsShaderGroupCreateInfoNV {
 }
 unsafe impl Send for GraphicsShaderGroupCreateInfoNV {}
 unsafe impl Sync for GraphicsShaderGroupCreateInfoNV {}
-impl default::Default for GraphicsShaderGroupCreateInfoNV {
+impl Default for GraphicsShaderGroupCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GRAPHICS_SHADER_GROUP_CREATE_INFO_NV,
             p_next: ptr::null(),
-            stage_count: u32::default(),
+            stage_count: Default::default(),
             p_stages: ptr::null(),
             p_vertex_input_state: ptr::null(),
             p_tessellation_state: ptr::null(),
@@ -16884,14 +15006,14 @@ pub struct GraphicsPipelineShaderGroupsCreateInfoNV {
 }
 unsafe impl Send for GraphicsPipelineShaderGroupsCreateInfoNV {}
 unsafe impl Sync for GraphicsPipelineShaderGroupsCreateInfoNV {}
-impl default::Default for GraphicsPipelineShaderGroupsCreateInfoNV {
+impl Default for GraphicsPipelineShaderGroupsCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV,
             p_next: ptr::null(),
-            group_count: u32::default(),
+            group_count: Default::default(),
             p_groups: ptr::null(),
-            pipeline_count: u32::default(),
+            pipeline_count: Default::default(),
             p_pipelines: ptr::null(),
         }
     }
@@ -16909,16 +15031,9 @@ impl fmt::Debug for GraphicsPipelineShaderGroupsCreateInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BindShaderGroupIndirectCommandNV {
     pub group_index: u32,
-}
-impl default::Default for BindShaderGroupIndirectCommandNV {
-    fn default() -> Self {
-        Self {
-            group_index: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for BindShaderGroupIndirectCommandNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -16928,20 +15043,11 @@ impl fmt::Debug for BindShaderGroupIndirectCommandNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BindIndexBufferIndirectCommandNV {
     pub buffer_address: DeviceAddress,
     pub size: u32,
     pub index_type: IndexType,
-}
-impl default::Default for BindIndexBufferIndirectCommandNV {
-    fn default() -> Self {
-        Self {
-            buffer_address: DeviceAddress::default(),
-            size: u32::default(),
-            index_type: IndexType::default(),
-        }
-    }
 }
 impl fmt::Debug for BindIndexBufferIndirectCommandNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -16953,20 +15059,11 @@ impl fmt::Debug for BindIndexBufferIndirectCommandNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct BindVertexBufferIndirectCommandNV {
     pub buffer_address: DeviceAddress,
     pub size: u32,
     pub stride: u32,
-}
-impl default::Default for BindVertexBufferIndirectCommandNV {
-    fn default() -> Self {
-        Self {
-            buffer_address: DeviceAddress::default(),
-            size: u32::default(),
-            stride: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for BindVertexBufferIndirectCommandNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -16978,14 +15075,9 @@ impl fmt::Debug for BindVertexBufferIndirectCommandNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct SetStateFlagsIndirectCommandNV {
     pub data: u32,
-}
-impl default::Default for SetStateFlagsIndirectCommandNV {
-    fn default() -> Self {
-        Self { data: u32::default() }
-    }
 }
 impl fmt::Debug for SetStateFlagsIndirectCommandNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -16995,18 +15087,10 @@ impl fmt::Debug for SetStateFlagsIndirectCommandNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct IndirectCommandsStreamNV {
     pub buffer: Option<Buffer>,
     pub offset: DeviceSize,
-}
-impl default::Default for IndirectCommandsStreamNV {
-    fn default() -> Self {
-        Self {
-            buffer: None,
-            offset: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for IndirectCommandsStreamNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -17037,22 +15121,22 @@ pub struct IndirectCommandsLayoutTokenNV {
 }
 unsafe impl Send for IndirectCommandsLayoutTokenNV {}
 unsafe impl Sync for IndirectCommandsLayoutTokenNV {}
-impl default::Default for IndirectCommandsLayoutTokenNV {
+impl Default for IndirectCommandsLayoutTokenNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_TOKEN_NV,
             p_next: ptr::null(),
-            token_type: IndirectCommandsTokenTypeNV::default(),
-            stream: u32::default(),
-            offset: u32::default(),
-            vertex_binding_unit: u32::default(),
-            vertex_dynamic_stride: Bool32::default(),
-            pushconstant_pipeline_layout: None,
-            pushconstant_shader_stage_flags: ShaderStageFlags::default(),
-            pushconstant_offset: u32::default(),
-            pushconstant_size: u32::default(),
-            indirect_state_flags: IndirectStateFlagsNV::default(),
-            index_type_count: u32::default(),
+            token_type: Default::default(),
+            stream: Default::default(),
+            offset: Default::default(),
+            vertex_binding_unit: Default::default(),
+            vertex_dynamic_stride: Default::default(),
+            pushconstant_pipeline_layout: Default::default(),
+            pushconstant_shader_stage_flags: Default::default(),
+            pushconstant_offset: Default::default(),
+            pushconstant_size: Default::default(),
+            indirect_state_flags: Default::default(),
+            index_type_count: Default::default(),
             p_index_types: ptr::null(),
             p_index_type_values: ptr::null(),
         }
@@ -17093,16 +15177,16 @@ pub struct IndirectCommandsLayoutCreateInfoNV {
 }
 unsafe impl Send for IndirectCommandsLayoutCreateInfoNV {}
 unsafe impl Sync for IndirectCommandsLayoutCreateInfoNV {}
-impl default::Default for IndirectCommandsLayoutCreateInfoNV {
+impl Default for IndirectCommandsLayoutCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::INDIRECT_COMMANDS_LAYOUT_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: IndirectCommandsLayoutUsageFlagsNV::default(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            token_count: u32::default(),
+            flags: Default::default(),
+            pipeline_bind_point: Default::default(),
+            token_count: Default::default(),
             p_tokens: ptr::null(),
-            stream_count: u32::default(),
+            stream_count: Default::default(),
             p_stream_strides: ptr::null(),
         }
     }
@@ -17142,24 +15226,24 @@ pub struct GeneratedCommandsInfoNV {
 }
 unsafe impl Send for GeneratedCommandsInfoNV {}
 unsafe impl Sync for GeneratedCommandsInfoNV {}
-impl default::Default for GeneratedCommandsInfoNV {
+impl Default for GeneratedCommandsInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GENERATED_COMMANDS_INFO_NV,
             p_next: ptr::null(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            pipeline: None,
-            indirect_commands_layout: None,
-            stream_count: u32::default(),
+            pipeline_bind_point: Default::default(),
+            pipeline: Default::default(),
+            indirect_commands_layout: Default::default(),
+            stream_count: Default::default(),
             p_streams: ptr::null(),
-            sequences_count: u32::default(),
-            preprocess_buffer: None,
-            preprocess_offset: DeviceSize::default(),
-            preprocess_size: DeviceSize::default(),
-            sequences_count_buffer: None,
-            sequences_count_offset: DeviceSize::default(),
-            sequences_index_buffer: None,
-            sequences_index_offset: DeviceSize::default(),
+            sequences_count: Default::default(),
+            preprocess_buffer: Default::default(),
+            preprocess_offset: Default::default(),
+            preprocess_size: Default::default(),
+            sequences_count_buffer: Default::default(),
+            sequences_count_offset: Default::default(),
+            sequences_index_buffer: Default::default(),
+            sequences_index_offset: Default::default(),
         }
     }
 }
@@ -17196,15 +15280,15 @@ pub struct GeneratedCommandsMemoryRequirementsInfoNV {
 }
 unsafe impl Send for GeneratedCommandsMemoryRequirementsInfoNV {}
 unsafe impl Sync for GeneratedCommandsMemoryRequirementsInfoNV {}
-impl default::Default for GeneratedCommandsMemoryRequirementsInfoNV {
+impl Default for GeneratedCommandsMemoryRequirementsInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GENERATED_COMMANDS_MEMORY_REQUIREMENTS_INFO_NV,
             p_next: ptr::null(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            pipeline: None,
-            indirect_commands_layout: None,
-            max_sequences_count: u32::default(),
+            pipeline_bind_point: Default::default(),
+            pipeline: Default::default(),
+            indirect_commands_layout: Default::default(),
+            max_sequences_count: Default::default(),
         }
     }
 }
@@ -17229,12 +15313,12 @@ pub struct PhysicalDeviceFeatures2 {
 }
 unsafe impl Send for PhysicalDeviceFeatures2 {}
 unsafe impl Sync for PhysicalDeviceFeatures2 {}
-impl default::Default for PhysicalDeviceFeatures2 {
+impl Default for PhysicalDeviceFeatures2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FEATURES_2,
             p_next: ptr::null_mut(),
-            features: PhysicalDeviceFeatures::default(),
+            features: Default::default(),
         }
     }
 }
@@ -17257,12 +15341,12 @@ pub struct PhysicalDeviceProperties2 {
 }
 unsafe impl Send for PhysicalDeviceProperties2 {}
 unsafe impl Sync for PhysicalDeviceProperties2 {}
-impl default::Default for PhysicalDeviceProperties2 {
+impl Default for PhysicalDeviceProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            properties: PhysicalDeviceProperties::default(),
+            properties: Default::default(),
         }
     }
 }
@@ -17285,12 +15369,12 @@ pub struct FormatProperties2 {
 }
 unsafe impl Send for FormatProperties2 {}
 unsafe impl Sync for FormatProperties2 {}
-impl default::Default for FormatProperties2 {
+impl Default for FormatProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            format_properties: FormatProperties::default(),
+            format_properties: Default::default(),
         }
     }
 }
@@ -17313,12 +15397,12 @@ pub struct ImageFormatProperties2 {
 }
 unsafe impl Send for ImageFormatProperties2 {}
 unsafe impl Sync for ImageFormatProperties2 {}
-impl default::Default for ImageFormatProperties2 {
+impl Default for ImageFormatProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            image_format_properties: ImageFormatProperties::default(),
+            image_format_properties: Default::default(),
         }
     }
 }
@@ -17345,16 +15429,16 @@ pub struct PhysicalDeviceImageFormatInfo2 {
 }
 unsafe impl Send for PhysicalDeviceImageFormatInfo2 {}
 unsafe impl Sync for PhysicalDeviceImageFormatInfo2 {}
-impl default::Default for PhysicalDeviceImageFormatInfo2 {
+impl Default for PhysicalDeviceImageFormatInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2,
             p_next: ptr::null(),
-            format: Format::default(),
-            ty: ImageType::default(),
-            tiling: ImageTiling::default(),
-            usage: ImageUsageFlags::default(),
-            flags: ImageCreateFlags::default(),
+            format: Default::default(),
+            ty: Default::default(),
+            tiling: Default::default(),
+            usage: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -17381,12 +15465,12 @@ pub struct QueueFamilyProperties2 {
 }
 unsafe impl Send for QueueFamilyProperties2 {}
 unsafe impl Sync for QueueFamilyProperties2 {}
-impl default::Default for QueueFamilyProperties2 {
+impl Default for QueueFamilyProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            queue_family_properties: QueueFamilyProperties::default(),
+            queue_family_properties: Default::default(),
         }
     }
 }
@@ -17409,12 +15493,12 @@ pub struct PhysicalDeviceMemoryProperties2 {
 }
 unsafe impl Send for PhysicalDeviceMemoryProperties2 {}
 unsafe impl Sync for PhysicalDeviceMemoryProperties2 {}
-impl default::Default for PhysicalDeviceMemoryProperties2 {
+impl Default for PhysicalDeviceMemoryProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            memory_properties: PhysicalDeviceMemoryProperties::default(),
+            memory_properties: Default::default(),
         }
     }
 }
@@ -17437,12 +15521,12 @@ pub struct SparseImageFormatProperties2 {
 }
 unsafe impl Send for SparseImageFormatProperties2 {}
 unsafe impl Sync for SparseImageFormatProperties2 {}
-impl default::Default for SparseImageFormatProperties2 {
+impl Default for SparseImageFormatProperties2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::SPARSE_IMAGE_FORMAT_PROPERTIES_2,
             p_next: ptr::null_mut(),
-            properties: SparseImageFormatProperties::default(),
+            properties: Default::default(),
         }
     }
 }
@@ -17469,16 +15553,16 @@ pub struct PhysicalDeviceSparseImageFormatInfo2 {
 }
 unsafe impl Send for PhysicalDeviceSparseImageFormatInfo2 {}
 unsafe impl Sync for PhysicalDeviceSparseImageFormatInfo2 {}
-impl default::Default for PhysicalDeviceSparseImageFormatInfo2 {
+impl Default for PhysicalDeviceSparseImageFormatInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2,
             p_next: ptr::null(),
-            format: Format::default(),
-            ty: ImageType::default(),
-            samples: SampleCountFlags::default(),
-            usage: ImageUsageFlags::default(),
-            tiling: ImageTiling::default(),
+            format: Default::default(),
+            ty: Default::default(),
+            samples: Default::default(),
+            usage: Default::default(),
+            tiling: Default::default(),
         }
     }
 }
@@ -17505,12 +15589,12 @@ pub struct PhysicalDevicePushDescriptorPropertiesKHR {
 }
 unsafe impl Send for PhysicalDevicePushDescriptorPropertiesKHR {}
 unsafe impl Sync for PhysicalDevicePushDescriptorPropertiesKHR {}
-impl default::Default for PhysicalDevicePushDescriptorPropertiesKHR {
+impl Default for PhysicalDevicePushDescriptorPropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            max_push_descriptors: u32::default(),
+            max_push_descriptors: Default::default(),
         }
     }
 }
@@ -17524,22 +15608,12 @@ impl fmt::Debug for PhysicalDevicePushDescriptorPropertiesKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ConformanceVersion {
     pub major: u8,
     pub minor: u8,
     pub subminor: u8,
     pub patch: u8,
-}
-impl default::Default for ConformanceVersion {
-    fn default() -> Self {
-        Self {
-            major: u8::default(),
-            minor: u8::default(),
-            subminor: u8::default(),
-            patch: u8::default(),
-        }
-    }
 }
 impl fmt::Debug for ConformanceVersion {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -17564,15 +15638,15 @@ pub struct PhysicalDeviceDriverProperties {
 }
 unsafe impl Send for PhysicalDeviceDriverProperties {}
 unsafe impl Sync for PhysicalDeviceDriverProperties {}
-impl default::Default for PhysicalDeviceDriverProperties {
+impl Default for PhysicalDeviceDriverProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DRIVER_PROPERTIES,
             p_next: ptr::null_mut(),
-            driver_id: DriverId::default(),
-            driver_name: [c_char::default(); MAX_DRIVER_NAME_SIZE],
-            driver_info: [c_char::default(); MAX_DRIVER_INFO_SIZE],
-            conformance_version: ConformanceVersion::default(),
+            driver_id: Default::default(),
+            driver_name: [Default::default(); MAX_DRIVER_NAME_SIZE],
+            driver_info: [Default::default(); MAX_DRIVER_INFO_SIZE],
+            conformance_version: Default::default(),
         }
     }
 }
@@ -17601,12 +15675,12 @@ pub struct PresentRegionsKHR {
 }
 unsafe impl Send for PresentRegionsKHR {}
 unsafe impl Sync for PresentRegionsKHR {}
-impl default::Default for PresentRegionsKHR {
+impl Default for PresentRegionsKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PRESENT_REGIONS_KHR,
             p_next: ptr::null(),
-            swapchain_count: u32::default(),
+            swapchain_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -17631,10 +15705,10 @@ pub struct PresentRegionKHR {
 }
 unsafe impl Send for PresentRegionKHR {}
 unsafe impl Sync for PresentRegionKHR {}
-impl default::Default for PresentRegionKHR {
+impl Default for PresentRegionKHR {
     fn default() -> Self {
         Self {
-            rectangle_count: u32::default(),
+            rectangle_count: Default::default(),
             p_rectangles: ptr::null(),
         }
     }
@@ -17648,7 +15722,7 @@ impl fmt::Debug for PresentRegionKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RectLayerKHR {
     /// upper-left corner of a rectangle that has not changed, in pixels of a presentation images
     pub offset: Offset2D,
@@ -17656,15 +15730,6 @@ pub struct RectLayerKHR {
     pub extent: Extent2D,
     /// Layer of a swapchain's image(s), for stereoscopic-3D images
     pub layer: u32,
-}
-impl default::Default for RectLayerKHR {
-    fn default() -> Self {
-        Self {
-            offset: Offset2D::default(),
-            extent: Extent2D::default(),
-            layer: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for RectLayerKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -17685,13 +15750,13 @@ pub struct PhysicalDeviceVariablePointersFeatures {
 }
 unsafe impl Send for PhysicalDeviceVariablePointersFeatures {}
 unsafe impl Sync for PhysicalDeviceVariablePointersFeatures {}
-impl default::Default for PhysicalDeviceVariablePointersFeatures {
+impl Default for PhysicalDeviceVariablePointersFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VARIABLE_POINTERS_FEATURES,
             p_next: ptr::null_mut(),
-            variable_pointers_storage_buffer: Bool32::default(),
-            variable_pointers: Bool32::default(),
+            variable_pointers_storage_buffer: Default::default(),
+            variable_pointers: Default::default(),
         }
     }
 }
@@ -17712,20 +15777,11 @@ pub type PhysicalDeviceVariablePointersFeaturesKHR = PhysicalDeviceVariablePoint
 pub type PhysicalDeviceVariablePointerFeaturesKHR = PhysicalDeviceVariablePointersFeatures;
 pub type PhysicalDeviceVariablePointerFeatures = PhysicalDeviceVariablePointersFeatures;
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ExternalMemoryProperties {
     pub external_memory_features: ExternalMemoryFeatureFlags,
     pub export_from_imported_handle_types: ExternalMemoryHandleTypeFlags,
     pub compatible_handle_types: ExternalMemoryHandleTypeFlags,
-}
-impl default::Default for ExternalMemoryProperties {
-    fn default() -> Self {
-        Self {
-            external_memory_features: ExternalMemoryFeatureFlags::default(),
-            export_from_imported_handle_types: ExternalMemoryHandleTypeFlags::default(),
-            compatible_handle_types: ExternalMemoryHandleTypeFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for ExternalMemoryProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -17749,12 +15805,12 @@ pub struct PhysicalDeviceExternalImageFormatInfo {
 }
 unsafe impl Send for PhysicalDeviceExternalImageFormatInfo {}
 unsafe impl Sync for PhysicalDeviceExternalImageFormatInfo {}
-impl default::Default for PhysicalDeviceExternalImageFormatInfo {
+impl Default for PhysicalDeviceExternalImageFormatInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -17777,12 +15833,12 @@ pub struct ExternalImageFormatProperties {
 }
 unsafe impl Send for ExternalImageFormatProperties {}
 unsafe impl Sync for ExternalImageFormatProperties {}
-impl default::Default for ExternalImageFormatProperties {
+impl Default for ExternalImageFormatProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_IMAGE_FORMAT_PROPERTIES,
             p_next: ptr::null_mut(),
-            external_memory_properties: ExternalMemoryProperties::default(),
+            external_memory_properties: Default::default(),
         }
     }
 }
@@ -17807,14 +15863,14 @@ pub struct PhysicalDeviceExternalBufferInfo {
 }
 unsafe impl Send for PhysicalDeviceExternalBufferInfo {}
 unsafe impl Sync for PhysicalDeviceExternalBufferInfo {}
-impl default::Default for PhysicalDeviceExternalBufferInfo {
+impl Default for PhysicalDeviceExternalBufferInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_BUFFER_INFO,
             p_next: ptr::null(),
-            flags: BufferCreateFlags::default(),
-            usage: BufferUsageFlags::default(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            flags: Default::default(),
+            usage: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -17839,12 +15895,12 @@ pub struct ExternalBufferProperties {
 }
 unsafe impl Send for ExternalBufferProperties {}
 unsafe impl Sync for ExternalBufferProperties {}
-impl default::Default for ExternalBufferProperties {
+impl Default for ExternalBufferProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_BUFFER_PROPERTIES,
             p_next: ptr::null_mut(),
-            external_memory_properties: ExternalMemoryProperties::default(),
+            external_memory_properties: Default::default(),
         }
     }
 }
@@ -17871,16 +15927,16 @@ pub struct PhysicalDeviceIDProperties {
 }
 unsafe impl Send for PhysicalDeviceIDProperties {}
 unsafe impl Sync for PhysicalDeviceIDProperties {}
-impl default::Default for PhysicalDeviceIDProperties {
+impl Default for PhysicalDeviceIDProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ID_PROPERTIES,
             p_next: ptr::null_mut(),
-            device_uuid: [u8::default(); UUID_SIZE],
-            driver_uuid: [u8::default(); UUID_SIZE],
-            device_luid: [u8::default(); LUID_SIZE],
-            device_node_mask: u32::default(),
-            device_luid_valid: Bool32::default(),
+            device_uuid: [Default::default(); UUID_SIZE],
+            driver_uuid: [Default::default(); UUID_SIZE],
+            device_luid: [Default::default(); LUID_SIZE],
+            device_node_mask: Default::default(),
+            device_luid_valid: Default::default(),
         }
     }
 }
@@ -17907,12 +15963,12 @@ pub struct ExternalMemoryImageCreateInfo {
 }
 unsafe impl Send for ExternalMemoryImageCreateInfo {}
 unsafe impl Sync for ExternalMemoryImageCreateInfo {}
-impl default::Default for ExternalMemoryImageCreateInfo {
+impl Default for ExternalMemoryImageCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_MEMORY_IMAGE_CREATE_INFO,
             p_next: ptr::null(),
-            handle_types: ExternalMemoryHandleTypeFlags::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -17935,12 +15991,12 @@ pub struct ExternalMemoryBufferCreateInfo {
 }
 unsafe impl Send for ExternalMemoryBufferCreateInfo {}
 unsafe impl Sync for ExternalMemoryBufferCreateInfo {}
-impl default::Default for ExternalMemoryBufferCreateInfo {
+impl Default for ExternalMemoryBufferCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_MEMORY_BUFFER_CREATE_INFO,
             p_next: ptr::null(),
-            handle_types: ExternalMemoryHandleTypeFlags::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -17963,12 +16019,12 @@ pub struct ExportMemoryAllocateInfo {
 }
 unsafe impl Send for ExportMemoryAllocateInfo {}
 unsafe impl Sync for ExportMemoryAllocateInfo {}
-impl default::Default for ExportMemoryAllocateInfo {
+impl Default for ExportMemoryAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_MEMORY_ALLOCATE_INFO,
             p_next: ptr::null(),
-            handle_types: ExternalMemoryHandleTypeFlags::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -17993,12 +16049,12 @@ pub struct ImportMemoryWin32HandleInfoKHR {
 }
 unsafe impl Send for ImportMemoryWin32HandleInfoKHR {}
 unsafe impl Sync for ImportMemoryWin32HandleInfoKHR {}
-impl default::Default for ImportMemoryWin32HandleInfoKHR {
+impl Default for ImportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            handle_type: Default::default(),
             handle: unsafe { mem::zeroed() },
             name: unsafe { mem::zeroed() },
         }
@@ -18026,7 +16082,7 @@ pub struct ExportMemoryWin32HandleInfoKHR {
 }
 unsafe impl Send for ExportMemoryWin32HandleInfoKHR {}
 unsafe impl Sync for ExportMemoryWin32HandleInfoKHR {}
-impl default::Default for ExportMemoryWin32HandleInfoKHR {
+impl Default for ExportMemoryWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
@@ -18058,12 +16114,12 @@ pub struct ImportMemoryZirconHandleInfoFUCHSIA {
 }
 unsafe impl Send for ImportMemoryZirconHandleInfoFUCHSIA {}
 unsafe impl Sync for ImportMemoryZirconHandleInfoFUCHSIA {}
-impl default::Default for ImportMemoryZirconHandleInfoFUCHSIA {
+impl Default for ImportMemoryZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            handle_type: Default::default(),
             handle: unsafe { mem::zeroed() },
         }
     }
@@ -18087,12 +16143,12 @@ pub struct MemoryZirconHandlePropertiesFUCHSIA {
 }
 unsafe impl Send for MemoryZirconHandlePropertiesFUCHSIA {}
 unsafe impl Sync for MemoryZirconHandlePropertiesFUCHSIA {}
-impl default::Default for MemoryZirconHandlePropertiesFUCHSIA {
+impl Default for MemoryZirconHandlePropertiesFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA,
             p_next: ptr::null_mut(),
-            memory_type_bits: u32::default(),
+            memory_type_bits: Default::default(),
         }
     }
 }
@@ -18115,13 +16171,13 @@ pub struct MemoryGetZirconHandleInfoFUCHSIA {
 }
 unsafe impl Send for MemoryGetZirconHandleInfoFUCHSIA {}
 unsafe impl Sync for MemoryGetZirconHandleInfoFUCHSIA {}
-impl default::Default for MemoryGetZirconHandleInfoFUCHSIA {
+impl Default for MemoryGetZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            memory: None,
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            memory: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18144,12 +16200,12 @@ pub struct MemoryWin32HandlePropertiesKHR {
 }
 unsafe impl Send for MemoryWin32HandlePropertiesKHR {}
 unsafe impl Sync for MemoryWin32HandlePropertiesKHR {}
-impl default::Default for MemoryWin32HandlePropertiesKHR {
+impl Default for MemoryWin32HandlePropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_WIN32_HANDLE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            memory_type_bits: u32::default(),
+            memory_type_bits: Default::default(),
         }
     }
 }
@@ -18172,13 +16228,13 @@ pub struct MemoryGetWin32HandleInfoKHR {
 }
 unsafe impl Send for MemoryGetWin32HandleInfoKHR {}
 unsafe impl Sync for MemoryGetWin32HandleInfoKHR {}
-impl default::Default for MemoryGetWin32HandleInfoKHR {
+impl Default for MemoryGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            memory: None,
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            memory: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18202,13 +16258,13 @@ pub struct ImportMemoryFdInfoKHR {
 }
 unsafe impl Send for ImportMemoryFdInfoKHR {}
 unsafe impl Sync for ImportMemoryFdInfoKHR {}
-impl default::Default for ImportMemoryFdInfoKHR {
+impl Default for ImportMemoryFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_FD_INFO_KHR,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
-            fd: c_int::default(),
+            handle_type: Default::default(),
+            fd: Default::default(),
         }
     }
 }
@@ -18231,12 +16287,12 @@ pub struct MemoryFdPropertiesKHR {
 }
 unsafe impl Send for MemoryFdPropertiesKHR {}
 unsafe impl Sync for MemoryFdPropertiesKHR {}
-impl default::Default for MemoryFdPropertiesKHR {
+impl Default for MemoryFdPropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_FD_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            memory_type_bits: u32::default(),
+            memory_type_bits: Default::default(),
         }
     }
 }
@@ -18259,13 +16315,13 @@ pub struct MemoryGetFdInfoKHR {
 }
 unsafe impl Send for MemoryGetFdInfoKHR {}
 unsafe impl Sync for MemoryGetFdInfoKHR {}
-impl default::Default for MemoryGetFdInfoKHR {
+impl Default for MemoryGetFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_GET_FD_INFO_KHR,
             p_next: ptr::null(),
-            memory: None,
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            memory: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18294,16 +16350,16 @@ pub struct Win32KeyedMutexAcquireReleaseInfoKHR {
 }
 unsafe impl Send for Win32KeyedMutexAcquireReleaseInfoKHR {}
 unsafe impl Sync for Win32KeyedMutexAcquireReleaseInfoKHR {}
-impl default::Default for Win32KeyedMutexAcquireReleaseInfoKHR {
+impl Default for Win32KeyedMutexAcquireReleaseInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::WIN32_KEYED_MUTEX_ACQUIRE_RELEASE_INFO_KHR,
             p_next: ptr::null(),
-            acquire_count: u32::default(),
+            acquire_count: Default::default(),
             p_acquire_syncs: ptr::null(),
             p_acquire_keys: ptr::null(),
             p_acquire_timeouts: ptr::null(),
-            release_count: u32::default(),
+            release_count: Default::default(),
             p_release_syncs: ptr::null(),
             p_release_keys: ptr::null(),
         }
@@ -18333,12 +16389,12 @@ pub struct PhysicalDeviceExternalSemaphoreInfo {
 }
 unsafe impl Send for PhysicalDeviceExternalSemaphoreInfo {}
 unsafe impl Sync for PhysicalDeviceExternalSemaphoreInfo {}
-impl default::Default for PhysicalDeviceExternalSemaphoreInfo {
+impl Default for PhysicalDeviceExternalSemaphoreInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO,
             p_next: ptr::null(),
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18363,14 +16419,14 @@ pub struct ExternalSemaphoreProperties {
 }
 unsafe impl Send for ExternalSemaphoreProperties {}
 unsafe impl Sync for ExternalSemaphoreProperties {}
-impl default::Default for ExternalSemaphoreProperties {
+impl Default for ExternalSemaphoreProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_SEMAPHORE_PROPERTIES,
             p_next: ptr::null_mut(),
-            export_from_imported_handle_types: ExternalSemaphoreHandleTypeFlags::default(),
-            compatible_handle_types: ExternalSemaphoreHandleTypeFlags::default(),
-            external_semaphore_features: ExternalSemaphoreFeatureFlags::default(),
+            export_from_imported_handle_types: Default::default(),
+            compatible_handle_types: Default::default(),
+            external_semaphore_features: Default::default(),
         }
     }
 }
@@ -18398,12 +16454,12 @@ pub struct ExportSemaphoreCreateInfo {
 }
 unsafe impl Send for ExportSemaphoreCreateInfo {}
 unsafe impl Sync for ExportSemaphoreCreateInfo {}
-impl default::Default for ExportSemaphoreCreateInfo {
+impl Default for ExportSemaphoreCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_SEMAPHORE_CREATE_INFO,
             p_next: ptr::null(),
-            handle_types: ExternalSemaphoreHandleTypeFlags::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -18430,14 +16486,14 @@ pub struct ImportSemaphoreWin32HandleInfoKHR {
 }
 unsafe impl Send for ImportSemaphoreWin32HandleInfoKHR {}
 unsafe impl Sync for ImportSemaphoreWin32HandleInfoKHR {}
-impl default::Default for ImportSemaphoreWin32HandleInfoKHR {
+impl Default for ImportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            semaphore: None,
-            flags: SemaphoreImportFlags::default(),
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            semaphore: Default::default(),
+            flags: Default::default(),
+            handle_type: Default::default(),
             handle: unsafe { mem::zeroed() },
             name: unsafe { mem::zeroed() },
         }
@@ -18467,7 +16523,7 @@ pub struct ExportSemaphoreWin32HandleInfoKHR {
 }
 unsafe impl Send for ExportSemaphoreWin32HandleInfoKHR {}
 unsafe impl Sync for ExportSemaphoreWin32HandleInfoKHR {}
-impl default::Default for ExportSemaphoreWin32HandleInfoKHR {
+impl Default for ExportSemaphoreWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_SEMAPHORE_WIN32_HANDLE_INFO_KHR,
@@ -18501,14 +16557,14 @@ pub struct D3D12FenceSubmitInfoKHR {
 }
 unsafe impl Send for D3D12FenceSubmitInfoKHR {}
 unsafe impl Sync for D3D12FenceSubmitInfoKHR {}
-impl default::Default for D3D12FenceSubmitInfoKHR {
+impl Default for D3D12FenceSubmitInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::D3D12_FENCE_SUBMIT_INFO_KHR,
             p_next: ptr::null(),
-            wait_semaphore_values_count: u32::default(),
+            wait_semaphore_values_count: Default::default(),
             p_wait_semaphore_values: ptr::null(),
-            signal_semaphore_values_count: u32::default(),
+            signal_semaphore_values_count: Default::default(),
             p_signal_semaphore_values: ptr::null(),
         }
     }
@@ -18535,13 +16591,13 @@ pub struct SemaphoreGetWin32HandleInfoKHR {
 }
 unsafe impl Send for SemaphoreGetWin32HandleInfoKHR {}
 unsafe impl Sync for SemaphoreGetWin32HandleInfoKHR {}
-impl default::Default for SemaphoreGetWin32HandleInfoKHR {
+impl Default for SemaphoreGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            semaphore: None,
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            semaphore: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18567,15 +16623,15 @@ pub struct ImportSemaphoreFdInfoKHR {
 }
 unsafe impl Send for ImportSemaphoreFdInfoKHR {}
 unsafe impl Sync for ImportSemaphoreFdInfoKHR {}
-impl default::Default for ImportSemaphoreFdInfoKHR {
+impl Default for ImportSemaphoreFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_SEMAPHORE_FD_INFO_KHR,
             p_next: ptr::null(),
-            semaphore: None,
-            flags: SemaphoreImportFlags::default(),
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
-            fd: c_int::default(),
+            semaphore: Default::default(),
+            flags: Default::default(),
+            handle_type: Default::default(),
+            fd: Default::default(),
         }
     }
 }
@@ -18601,13 +16657,13 @@ pub struct SemaphoreGetFdInfoKHR {
 }
 unsafe impl Send for SemaphoreGetFdInfoKHR {}
 unsafe impl Sync for SemaphoreGetFdInfoKHR {}
-impl default::Default for SemaphoreGetFdInfoKHR {
+impl Default for SemaphoreGetFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_GET_FD_INFO_KHR,
             p_next: ptr::null(),
-            semaphore: None,
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            semaphore: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18633,14 +16689,14 @@ pub struct ImportSemaphoreZirconHandleInfoFUCHSIA {
 }
 unsafe impl Send for ImportSemaphoreZirconHandleInfoFUCHSIA {}
 unsafe impl Sync for ImportSemaphoreZirconHandleInfoFUCHSIA {}
-impl default::Default for ImportSemaphoreZirconHandleInfoFUCHSIA {
+impl Default for ImportSemaphoreZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            semaphore: None,
-            flags: SemaphoreImportFlags::default(),
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            semaphore: Default::default(),
+            flags: Default::default(),
+            handle_type: Default::default(),
             zircon_handle: unsafe { mem::zeroed() },
         }
     }
@@ -18667,13 +16723,13 @@ pub struct SemaphoreGetZirconHandleInfoFUCHSIA {
 }
 unsafe impl Send for SemaphoreGetZirconHandleInfoFUCHSIA {}
 unsafe impl Sync for SemaphoreGetZirconHandleInfoFUCHSIA {}
-impl default::Default for SemaphoreGetZirconHandleInfoFUCHSIA {
+impl Default for SemaphoreGetZirconHandleInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            semaphore: None,
-            handle_type: ExternalSemaphoreHandleTypeFlags::default(),
+            semaphore: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18696,12 +16752,12 @@ pub struct PhysicalDeviceExternalFenceInfo {
 }
 unsafe impl Send for PhysicalDeviceExternalFenceInfo {}
 unsafe impl Sync for PhysicalDeviceExternalFenceInfo {}
-impl default::Default for PhysicalDeviceExternalFenceInfo {
+impl Default for PhysicalDeviceExternalFenceInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO,
             p_next: ptr::null(),
-            handle_type: ExternalFenceHandleTypeFlags::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18726,14 +16782,14 @@ pub struct ExternalFenceProperties {
 }
 unsafe impl Send for ExternalFenceProperties {}
 unsafe impl Sync for ExternalFenceProperties {}
-impl default::Default for ExternalFenceProperties {
+impl Default for ExternalFenceProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_FENCE_PROPERTIES,
             p_next: ptr::null_mut(),
-            export_from_imported_handle_types: ExternalFenceHandleTypeFlags::default(),
-            compatible_handle_types: ExternalFenceHandleTypeFlags::default(),
-            external_fence_features: ExternalFenceFeatureFlags::default(),
+            export_from_imported_handle_types: Default::default(),
+            compatible_handle_types: Default::default(),
+            external_fence_features: Default::default(),
         }
     }
 }
@@ -18761,12 +16817,12 @@ pub struct ExportFenceCreateInfo {
 }
 unsafe impl Send for ExportFenceCreateInfo {}
 unsafe impl Sync for ExportFenceCreateInfo {}
-impl default::Default for ExportFenceCreateInfo {
+impl Default for ExportFenceCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_FENCE_CREATE_INFO,
             p_next: ptr::null(),
-            handle_types: ExternalFenceHandleTypeFlags::default(),
+            handle_types: Default::default(),
         }
     }
 }
@@ -18793,14 +16849,14 @@ pub struct ImportFenceWin32HandleInfoKHR {
 }
 unsafe impl Send for ImportFenceWin32HandleInfoKHR {}
 unsafe impl Sync for ImportFenceWin32HandleInfoKHR {}
-impl default::Default for ImportFenceWin32HandleInfoKHR {
+impl Default for ImportFenceWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_FENCE_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            fence: None,
-            flags: FenceImportFlags::default(),
-            handle_type: ExternalFenceHandleTypeFlags::default(),
+            fence: Default::default(),
+            flags: Default::default(),
+            handle_type: Default::default(),
             handle: unsafe { mem::zeroed() },
             name: unsafe { mem::zeroed() },
         }
@@ -18830,7 +16886,7 @@ pub struct ExportFenceWin32HandleInfoKHR {
 }
 unsafe impl Send for ExportFenceWin32HandleInfoKHR {}
 unsafe impl Sync for ExportFenceWin32HandleInfoKHR {}
-impl default::Default for ExportFenceWin32HandleInfoKHR {
+impl Default for ExportFenceWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXPORT_FENCE_WIN32_HANDLE_INFO_KHR,
@@ -18862,13 +16918,13 @@ pub struct FenceGetWin32HandleInfoKHR {
 }
 unsafe impl Send for FenceGetWin32HandleInfoKHR {}
 unsafe impl Sync for FenceGetWin32HandleInfoKHR {}
-impl default::Default for FenceGetWin32HandleInfoKHR {
+impl Default for FenceGetWin32HandleInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::FENCE_GET_WIN32_HANDLE_INFO_KHR,
             p_next: ptr::null(),
-            fence: None,
-            handle_type: ExternalFenceHandleTypeFlags::default(),
+            fence: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18894,15 +16950,15 @@ pub struct ImportFenceFdInfoKHR {
 }
 unsafe impl Send for ImportFenceFdInfoKHR {}
 unsafe impl Sync for ImportFenceFdInfoKHR {}
-impl default::Default for ImportFenceFdInfoKHR {
+impl Default for ImportFenceFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_FENCE_FD_INFO_KHR,
             p_next: ptr::null(),
-            fence: None,
-            flags: FenceImportFlags::default(),
-            handle_type: ExternalFenceHandleTypeFlags::default(),
-            fd: c_int::default(),
+            fence: Default::default(),
+            flags: Default::default(),
+            handle_type: Default::default(),
+            fd: Default::default(),
         }
     }
 }
@@ -18928,13 +16984,13 @@ pub struct FenceGetFdInfoKHR {
 }
 unsafe impl Send for FenceGetFdInfoKHR {}
 unsafe impl Sync for FenceGetFdInfoKHR {}
-impl default::Default for FenceGetFdInfoKHR {
+impl Default for FenceGetFdInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::FENCE_GET_FD_INFO_KHR,
             p_next: ptr::null(),
-            fence: None,
-            handle_type: ExternalFenceHandleTypeFlags::default(),
+            fence: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -18962,14 +17018,14 @@ pub struct PhysicalDeviceMultiviewFeatures {
 }
 unsafe impl Send for PhysicalDeviceMultiviewFeatures {}
 unsafe impl Sync for PhysicalDeviceMultiviewFeatures {}
-impl default::Default for PhysicalDeviceMultiviewFeatures {
+impl Default for PhysicalDeviceMultiviewFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_FEATURES,
             p_next: ptr::null_mut(),
-            multiview: Bool32::default(),
-            multiview_geometry_shader: Bool32::default(),
-            multiview_tessellation_shader: Bool32::default(),
+            multiview: Default::default(),
+            multiview_geometry_shader: Default::default(),
+            multiview_tessellation_shader: Default::default(),
         }
     }
 }
@@ -18997,13 +17053,13 @@ pub struct PhysicalDeviceMultiviewProperties {
 }
 unsafe impl Send for PhysicalDeviceMultiviewProperties {}
 unsafe impl Sync for PhysicalDeviceMultiviewProperties {}
-impl default::Default for PhysicalDeviceMultiviewProperties {
+impl Default for PhysicalDeviceMultiviewProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_multiview_view_count: u32::default(),
-            max_multiview_instance_index: u32::default(),
+            max_multiview_view_count: Default::default(),
+            max_multiview_instance_index: Default::default(),
         }
     }
 }
@@ -19032,16 +17088,16 @@ pub struct RenderPassMultiviewCreateInfo {
 }
 unsafe impl Send for RenderPassMultiviewCreateInfo {}
 unsafe impl Sync for RenderPassMultiviewCreateInfo {}
-impl default::Default for RenderPassMultiviewCreateInfo {
+impl Default for RenderPassMultiviewCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_MULTIVIEW_CREATE_INFO,
             p_next: ptr::null(),
-            subpass_count: u32::default(),
+            subpass_count: Default::default(),
             p_view_masks: ptr::null(),
-            dependency_count: u32::default(),
+            dependency_count: Default::default(),
             p_view_offsets: ptr::null(),
-            correlation_mask_count: u32::default(),
+            correlation_mask_count: Default::default(),
             p_correlation_masks: ptr::null(),
         }
     }
@@ -19090,22 +17146,22 @@ pub struct SurfaceCapabilities2EXT {
 }
 unsafe impl Send for SurfaceCapabilities2EXT {}
 unsafe impl Sync for SurfaceCapabilities2EXT {}
-impl default::Default for SurfaceCapabilities2EXT {
+impl Default for SurfaceCapabilities2EXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_CAPABILITIES_2_EXT,
             p_next: ptr::null_mut(),
-            min_image_count: u32::default(),
-            max_image_count: u32::default(),
-            current_extent: Extent2D::default(),
-            min_image_extent: Extent2D::default(),
-            max_image_extent: Extent2D::default(),
-            max_image_array_layers: u32::default(),
-            supported_transforms: SurfaceTransformFlagsKHR::default(),
-            current_transform: SurfaceTransformFlagsKHR::default(),
-            supported_composite_alpha: CompositeAlphaFlagsKHR::default(),
-            supported_usage_flags: ImageUsageFlags::default(),
-            supported_surface_counters: SurfaceCounterFlagsEXT::default(),
+            min_image_count: Default::default(),
+            max_image_count: Default::default(),
+            current_extent: Default::default(),
+            min_image_extent: Default::default(),
+            max_image_extent: Default::default(),
+            max_image_array_layers: Default::default(),
+            supported_transforms: Default::default(),
+            current_transform: Default::default(),
+            supported_composite_alpha: Default::default(),
+            supported_usage_flags: Default::default(),
+            supported_surface_counters: Default::default(),
         }
     }
 }
@@ -19137,12 +17193,12 @@ pub struct DisplayPowerInfoEXT {
 }
 unsafe impl Send for DisplayPowerInfoEXT {}
 unsafe impl Sync for DisplayPowerInfoEXT {}
-impl default::Default for DisplayPowerInfoEXT {
+impl Default for DisplayPowerInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_POWER_INFO_EXT,
             p_next: ptr::null(),
-            power_state: DisplayPowerStateEXT::default(),
+            power_state: Default::default(),
         }
     }
 }
@@ -19164,12 +17220,12 @@ pub struct DeviceEventInfoEXT {
 }
 unsafe impl Send for DeviceEventInfoEXT {}
 unsafe impl Sync for DeviceEventInfoEXT {}
-impl default::Default for DeviceEventInfoEXT {
+impl Default for DeviceEventInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_EVENT_INFO_EXT,
             p_next: ptr::null(),
-            device_event: DeviceEventTypeEXT::default(),
+            device_event: Default::default(),
         }
     }
 }
@@ -19191,12 +17247,12 @@ pub struct DisplayEventInfoEXT {
 }
 unsafe impl Send for DisplayEventInfoEXT {}
 unsafe impl Sync for DisplayEventInfoEXT {}
-impl default::Default for DisplayEventInfoEXT {
+impl Default for DisplayEventInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_EVENT_INFO_EXT,
             p_next: ptr::null(),
-            display_event: DisplayEventTypeEXT::default(),
+            display_event: Default::default(),
         }
     }
 }
@@ -19218,12 +17274,12 @@ pub struct SwapchainCounterCreateInfoEXT {
 }
 unsafe impl Send for SwapchainCounterCreateInfoEXT {}
 unsafe impl Sync for SwapchainCounterCreateInfoEXT {}
-impl default::Default for SwapchainCounterCreateInfoEXT {
+impl Default for SwapchainCounterCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_COUNTER_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            surface_counters: SurfaceCounterFlagsEXT::default(),
+            surface_counters: Default::default(),
         }
     }
 }
@@ -19247,14 +17303,14 @@ pub struct PhysicalDeviceGroupProperties {
 }
 unsafe impl Send for PhysicalDeviceGroupProperties {}
 unsafe impl Sync for PhysicalDeviceGroupProperties {}
-impl default::Default for PhysicalDeviceGroupProperties {
+impl Default for PhysicalDeviceGroupProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_GROUP_PROPERTIES,
             p_next: ptr::null_mut(),
-            physical_device_count: u32::default(),
-            physical_devices: [None; MAX_DEVICE_GROUP_SIZE],
-            subset_allocation: Bool32::default(),
+            physical_device_count: Default::default(),
+            physical_devices: [Default::default(); MAX_DEVICE_GROUP_SIZE],
+            subset_allocation: Default::default(),
         }
     }
 }
@@ -19280,13 +17336,13 @@ pub struct MemoryAllocateFlagsInfo {
 }
 unsafe impl Send for MemoryAllocateFlagsInfo {}
 unsafe impl Sync for MemoryAllocateFlagsInfo {}
-impl default::Default for MemoryAllocateFlagsInfo {
+impl Default for MemoryAllocateFlagsInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_ALLOCATE_FLAGS_INFO,
             p_next: ptr::null(),
-            flags: MemoryAllocateFlags::default(),
-            device_mask: u32::default(),
+            flags: Default::default(),
+            device_mask: Default::default(),
         }
     }
 }
@@ -19312,14 +17368,14 @@ pub struct BindBufferMemoryInfo {
 }
 unsafe impl Send for BindBufferMemoryInfo {}
 unsafe impl Sync for BindBufferMemoryInfo {}
-impl default::Default for BindBufferMemoryInfo {
+impl Default for BindBufferMemoryInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_BUFFER_MEMORY_INFO,
             p_next: ptr::null(),
-            buffer: None,
-            memory: None,
-            memory_offset: DeviceSize::default(),
+            buffer: Default::default(),
+            memory: Default::default(),
+            memory_offset: Default::default(),
         }
     }
 }
@@ -19345,12 +17401,12 @@ pub struct BindBufferMemoryDeviceGroupInfo {
 }
 unsafe impl Send for BindBufferMemoryDeviceGroupInfo {}
 unsafe impl Sync for BindBufferMemoryDeviceGroupInfo {}
-impl default::Default for BindBufferMemoryDeviceGroupInfo {
+impl Default for BindBufferMemoryDeviceGroupInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO,
             p_next: ptr::null(),
-            device_index_count: u32::default(),
+            device_index_count: Default::default(),
             p_device_indices: ptr::null(),
         }
     }
@@ -19377,14 +17433,14 @@ pub struct BindImageMemoryInfo {
 }
 unsafe impl Send for BindImageMemoryInfo {}
 unsafe impl Sync for BindImageMemoryInfo {}
-impl default::Default for BindImageMemoryInfo {
+impl Default for BindImageMemoryInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_INFO,
             p_next: ptr::null(),
-            image: None,
-            memory: None,
-            memory_offset: DeviceSize::default(),
+            image: Default::default(),
+            memory: Default::default(),
+            memory_offset: Default::default(),
         }
     }
 }
@@ -19412,14 +17468,14 @@ pub struct BindImageMemoryDeviceGroupInfo {
 }
 unsafe impl Send for BindImageMemoryDeviceGroupInfo {}
 unsafe impl Sync for BindImageMemoryDeviceGroupInfo {}
-impl default::Default for BindImageMemoryDeviceGroupInfo {
+impl Default for BindImageMemoryDeviceGroupInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO,
             p_next: ptr::null(),
-            device_index_count: u32::default(),
+            device_index_count: Default::default(),
             p_device_indices: ptr::null(),
-            split_instance_bind_region_count: u32::default(),
+            split_instance_bind_region_count: Default::default(),
             p_split_instance_bind_regions: ptr::null(),
         }
     }
@@ -19451,13 +17507,13 @@ pub struct DeviceGroupRenderPassBeginInfo {
 }
 unsafe impl Send for DeviceGroupRenderPassBeginInfo {}
 unsafe impl Sync for DeviceGroupRenderPassBeginInfo {}
-impl default::Default for DeviceGroupRenderPassBeginInfo {
+impl Default for DeviceGroupRenderPassBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_RENDER_PASS_BEGIN_INFO,
             p_next: ptr::null(),
-            device_mask: u32::default(),
-            device_render_area_count: u32::default(),
+            device_mask: Default::default(),
+            device_render_area_count: Default::default(),
             p_device_render_areas: ptr::null(),
         }
     }
@@ -19483,12 +17539,12 @@ pub struct DeviceGroupCommandBufferBeginInfo {
 }
 unsafe impl Send for DeviceGroupCommandBufferBeginInfo {}
 unsafe impl Sync for DeviceGroupCommandBufferBeginInfo {}
-impl default::Default for DeviceGroupCommandBufferBeginInfo {
+impl Default for DeviceGroupCommandBufferBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO,
             p_next: ptr::null(),
-            device_mask: u32::default(),
+            device_mask: Default::default(),
         }
     }
 }
@@ -19516,16 +17572,16 @@ pub struct DeviceGroupSubmitInfo {
 }
 unsafe impl Send for DeviceGroupSubmitInfo {}
 unsafe impl Sync for DeviceGroupSubmitInfo {}
-impl default::Default for DeviceGroupSubmitInfo {
+impl Default for DeviceGroupSubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_SUBMIT_INFO,
             p_next: ptr::null(),
-            wait_semaphore_count: u32::default(),
+            wait_semaphore_count: Default::default(),
             p_wait_semaphore_device_indices: ptr::null(),
-            command_buffer_count: u32::default(),
+            command_buffer_count: Default::default(),
             p_command_buffer_device_masks: ptr::null(),
-            signal_semaphore_count: u32::default(),
+            signal_semaphore_count: Default::default(),
             p_signal_semaphore_device_indices: ptr::null(),
         }
     }
@@ -19558,13 +17614,13 @@ pub struct DeviceGroupBindSparseInfo {
 }
 unsafe impl Send for DeviceGroupBindSparseInfo {}
 unsafe impl Sync for DeviceGroupBindSparseInfo {}
-impl default::Default for DeviceGroupBindSparseInfo {
+impl Default for DeviceGroupBindSparseInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_BIND_SPARSE_INFO,
             p_next: ptr::null(),
-            resource_device_index: u32::default(),
-            memory_device_index: u32::default(),
+            resource_device_index: Default::default(),
+            memory_device_index: Default::default(),
         }
     }
 }
@@ -19589,13 +17645,13 @@ pub struct DeviceGroupPresentCapabilitiesKHR {
 }
 unsafe impl Send for DeviceGroupPresentCapabilitiesKHR {}
 unsafe impl Sync for DeviceGroupPresentCapabilitiesKHR {}
-impl default::Default for DeviceGroupPresentCapabilitiesKHR {
+impl Default for DeviceGroupPresentCapabilitiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_PRESENT_CAPABILITIES_KHR,
             p_next: ptr::null_mut(),
-            present_mask: [u32::default(); MAX_DEVICE_GROUP_SIZE],
-            modes: DeviceGroupPresentModeFlagsKHR::default(),
+            present_mask: [Default::default(); MAX_DEVICE_GROUP_SIZE],
+            modes: Default::default(),
         }
     }
 }
@@ -19618,12 +17674,12 @@ pub struct ImageSwapchainCreateInfoKHR {
 }
 unsafe impl Send for ImageSwapchainCreateInfoKHR {}
 unsafe impl Sync for ImageSwapchainCreateInfoKHR {}
-impl default::Default for ImageSwapchainCreateInfoKHR {
+impl Default for ImageSwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            swapchain: None,
+            swapchain: Default::default(),
         }
     }
 }
@@ -19646,13 +17702,13 @@ pub struct BindImageMemorySwapchainInfoKHR {
 }
 unsafe impl Send for BindImageMemorySwapchainInfoKHR {}
 unsafe impl Sync for BindImageMemorySwapchainInfoKHR {}
-impl default::Default for BindImageMemorySwapchainInfoKHR {
+impl Default for BindImageMemorySwapchainInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_IMAGE_MEMORY_SWAPCHAIN_INFO_KHR,
             p_next: ptr::null(),
-            swapchain: None,
-            image_index: u32::default(),
+            swapchain: Default::default(),
+            image_index: Default::default(),
         }
     }
 }
@@ -19679,16 +17735,16 @@ pub struct AcquireNextImageInfoKHR {
 }
 unsafe impl Send for AcquireNextImageInfoKHR {}
 unsafe impl Sync for AcquireNextImageInfoKHR {}
-impl default::Default for AcquireNextImageInfoKHR {
+impl Default for AcquireNextImageInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACQUIRE_NEXT_IMAGE_INFO_KHR,
             p_next: ptr::null(),
-            swapchain: None,
-            timeout: u64::default(),
-            semaphore: None,
-            fence: None,
-            device_mask: u32::default(),
+            swapchain: Default::default(),
+            timeout: Default::default(),
+            semaphore: Default::default(),
+            fence: Default::default(),
+            device_mask: Default::default(),
         }
     }
 }
@@ -19716,14 +17772,14 @@ pub struct DeviceGroupPresentInfoKHR {
 }
 unsafe impl Send for DeviceGroupPresentInfoKHR {}
 unsafe impl Sync for DeviceGroupPresentInfoKHR {}
-impl default::Default for DeviceGroupPresentInfoKHR {
+impl Default for DeviceGroupPresentInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_PRESENT_INFO_KHR,
             p_next: ptr::null(),
-            swapchain_count: u32::default(),
+            swapchain_count: Default::default(),
             p_device_masks: ptr::null(),
-            mode: DeviceGroupPresentModeFlagsKHR::default(),
+            mode: Default::default(),
         }
     }
 }
@@ -19748,12 +17804,12 @@ pub struct DeviceGroupDeviceCreateInfo {
 }
 unsafe impl Send for DeviceGroupDeviceCreateInfo {}
 unsafe impl Sync for DeviceGroupDeviceCreateInfo {}
-impl default::Default for DeviceGroupDeviceCreateInfo {
+impl Default for DeviceGroupDeviceCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_DEVICE_CREATE_INFO,
             p_next: ptr::null(),
-            physical_device_count: u32::default(),
+            physical_device_count: Default::default(),
             p_physical_devices: ptr::null(),
         }
     }
@@ -19778,12 +17834,12 @@ pub struct DeviceGroupSwapchainCreateInfoKHR {
 }
 unsafe impl Send for DeviceGroupSwapchainCreateInfoKHR {}
 unsafe impl Sync for DeviceGroupSwapchainCreateInfoKHR {}
-impl default::Default for DeviceGroupSwapchainCreateInfoKHR {
+impl Default for DeviceGroupSwapchainCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_GROUP_SWAPCHAIN_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            modes: DeviceGroupPresentModeFlagsKHR::default(),
+            modes: Default::default(),
         }
     }
 }
@@ -19797,7 +17853,7 @@ impl fmt::Debug for DeviceGroupSwapchainCreateInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DescriptorUpdateTemplateEntry {
     /// Binding within the destination descriptor set to write
     pub dst_binding: u32,
@@ -19811,18 +17867,6 @@ pub struct DescriptorUpdateTemplateEntry {
     pub offset: usize,
     /// Stride between two descriptors in pData when writing more than one descriptor
     pub stride: usize,
-}
-impl default::Default for DescriptorUpdateTemplateEntry {
-    fn default() -> Self {
-        Self {
-            dst_binding: u32::default(),
-            dst_array_element: u32::default(),
-            descriptor_count: u32::default(),
-            descriptor_type: DescriptorType::default(),
-            offset: usize::default(),
-            stride: usize::default(),
-        }
-    }
 }
 impl fmt::Debug for DescriptorUpdateTemplateEntry {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -19856,19 +17900,19 @@ pub struct DescriptorUpdateTemplateCreateInfo {
 }
 unsafe impl Send for DescriptorUpdateTemplateCreateInfo {}
 unsafe impl Sync for DescriptorUpdateTemplateCreateInfo {}
-impl default::Default for DescriptorUpdateTemplateCreateInfo {
+impl Default for DescriptorUpdateTemplateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO,
             p_next: ptr::null(),
-            flags: DescriptorUpdateTemplateCreateFlags::default(),
-            descriptor_update_entry_count: u32::default(),
+            flags: Default::default(),
+            descriptor_update_entry_count: Default::default(),
             p_descriptor_update_entries: ptr::null(),
-            template_type: DescriptorUpdateTemplateType::default(),
-            descriptor_set_layout: None,
-            pipeline_bind_point: PipelineBindPoint::default(),
-            pipeline_layout: None,
-            set: u32::default(),
+            template_type: Default::default(),
+            descriptor_set_layout: Default::default(),
+            pipeline_bind_point: Default::default(),
+            pipeline_layout: Default::default(),
+            set: Default::default(),
         }
     }
 }
@@ -19891,18 +17935,10 @@ impl fmt::Debug for DescriptorUpdateTemplateCreateInfo {
 pub type DescriptorUpdateTemplateCreateInfoKHR = DescriptorUpdateTemplateCreateInfo;
 /// Chromaticity coordinate
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct XYColorEXT {
     pub x: f32,
     pub y: f32,
-}
-impl default::Default for XYColorEXT {
-    fn default() -> Self {
-        Self {
-            x: f32::default(),
-            y: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for XYColorEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -19922,12 +17958,12 @@ pub struct PhysicalDevicePresentIdFeaturesKHR {
 }
 unsafe impl Send for PhysicalDevicePresentIdFeaturesKHR {}
 unsafe impl Sync for PhysicalDevicePresentIdFeaturesKHR {}
-impl default::Default for PhysicalDevicePresentIdFeaturesKHR {
+impl Default for PhysicalDevicePresentIdFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            present_id: Bool32::default(),
+            present_id: Default::default(),
         }
     }
 }
@@ -19952,12 +17988,12 @@ pub struct PresentIdKHR {
 }
 unsafe impl Send for PresentIdKHR {}
 unsafe impl Sync for PresentIdKHR {}
-impl default::Default for PresentIdKHR {
+impl Default for PresentIdKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PRESENT_ID_KHR,
             p_next: ptr::null(),
-            swapchain_count: u32::default(),
+            swapchain_count: Default::default(),
             p_present_ids: ptr::null(),
         }
     }
@@ -19982,12 +18018,12 @@ pub struct PhysicalDevicePresentWaitFeaturesKHR {
 }
 unsafe impl Send for PhysicalDevicePresentWaitFeaturesKHR {}
 unsafe impl Sync for PhysicalDevicePresentWaitFeaturesKHR {}
-impl default::Default for PhysicalDevicePresentWaitFeaturesKHR {
+impl Default for PhysicalDevicePresentWaitFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            present_wait: Bool32::default(),
+            present_wait: Default::default(),
         }
     }
 }
@@ -20023,19 +18059,19 @@ pub struct HdrMetadataEXT {
 }
 unsafe impl Send for HdrMetadataEXT {}
 unsafe impl Sync for HdrMetadataEXT {}
-impl default::Default for HdrMetadataEXT {
+impl Default for HdrMetadataEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::HDR_METADATA_EXT,
             p_next: ptr::null(),
-            display_primary_red: XYColorEXT::default(),
-            display_primary_green: XYColorEXT::default(),
-            display_primary_blue: XYColorEXT::default(),
-            white_point: XYColorEXT::default(),
-            max_luminance: f32::default(),
-            min_luminance: f32::default(),
-            max_content_light_level: f32::default(),
-            max_frame_average_light_level: f32::default(),
+            display_primary_red: Default::default(),
+            display_primary_green: Default::default(),
+            display_primary_blue: Default::default(),
+            white_point: Default::default(),
+            max_luminance: Default::default(),
+            min_luminance: Default::default(),
+            max_content_light_level: Default::default(),
+            max_frame_average_light_level: Default::default(),
         }
     }
 }
@@ -20064,12 +18100,12 @@ pub struct DisplayNativeHdrSurfaceCapabilitiesAMD {
 }
 unsafe impl Send for DisplayNativeHdrSurfaceCapabilitiesAMD {}
 unsafe impl Sync for DisplayNativeHdrSurfaceCapabilitiesAMD {}
-impl default::Default for DisplayNativeHdrSurfaceCapabilitiesAMD {
+impl Default for DisplayNativeHdrSurfaceCapabilitiesAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_NATIVE_HDR_SURFACE_CAPABILITIES_AMD,
             p_next: ptr::null_mut(),
-            local_dimming_support: Bool32::default(),
+            local_dimming_support: Default::default(),
         }
     }
 }
@@ -20091,12 +18127,12 @@ pub struct SwapchainDisplayNativeHdrCreateInfoAMD {
 }
 unsafe impl Send for SwapchainDisplayNativeHdrCreateInfoAMD {}
 unsafe impl Sync for SwapchainDisplayNativeHdrCreateInfoAMD {}
-impl default::Default for SwapchainDisplayNativeHdrCreateInfoAMD {
+impl Default for SwapchainDisplayNativeHdrCreateInfoAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_DISPLAY_NATIVE_HDR_CREATE_INFO_AMD,
             p_next: ptr::null(),
-            local_dimming_enable: Bool32::default(),
+            local_dimming_enable: Default::default(),
         }
     }
 }
@@ -20110,17 +18146,10 @@ impl fmt::Debug for SwapchainDisplayNativeHdrCreateInfoAMD {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RefreshCycleDurationGOOGLE {
     /// Number of nanoseconds from the start of one refresh cycle to the next
     pub refresh_duration: u64,
-}
-impl default::Default for RefreshCycleDurationGOOGLE {
-    fn default() -> Self {
-        Self {
-            refresh_duration: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for RefreshCycleDurationGOOGLE {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20130,7 +18159,7 @@ impl fmt::Debug for RefreshCycleDurationGOOGLE {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PastPresentationTimingGOOGLE {
     /// Application-provided identifier, previously given to vkQueuePresentKHR
     pub present_id: u32,
@@ -20142,17 +18171,6 @@ pub struct PastPresentationTimingGOOGLE {
     pub earliest_present_time: u64,
     /// How early vkQueuePresentKHR was processed vs. how soon it needed to be and make earliestPresentTime
     pub present_margin: u64,
-}
-impl default::Default for PastPresentationTimingGOOGLE {
-    fn default() -> Self {
-        Self {
-            present_id: u32::default(),
-            desired_present_time: u64::default(),
-            actual_present_time: u64::default(),
-            earliest_present_time: u64::default(),
-            present_margin: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for PastPresentationTimingGOOGLE {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20177,12 +18195,12 @@ pub struct PresentTimesInfoGOOGLE {
 }
 unsafe impl Send for PresentTimesInfoGOOGLE {}
 unsafe impl Sync for PresentTimesInfoGOOGLE {}
-impl default::Default for PresentTimesInfoGOOGLE {
+impl Default for PresentTimesInfoGOOGLE {
     fn default() -> Self {
         Self {
             s_type: StructureType::PRESENT_TIMES_INFO_GOOGLE,
             p_next: ptr::null(),
-            swapchain_count: u32::default(),
+            swapchain_count: Default::default(),
             p_times: ptr::null(),
         }
     }
@@ -20198,20 +18216,12 @@ impl fmt::Debug for PresentTimesInfoGOOGLE {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PresentTimeGOOGLE {
     /// Application-provided identifier
     pub present_id: u32,
     /// Earliest time an image should be presented
     pub desired_present_time: u64,
-}
-impl default::Default for PresentTimeGOOGLE {
-    fn default() -> Self {
-        Self {
-            present_id: u32::default(),
-            desired_present_time: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for PresentTimeGOOGLE {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20231,12 +18241,12 @@ pub struct IOSSurfaceCreateInfoMVK {
 }
 unsafe impl Send for IOSSurfaceCreateInfoMVK {}
 unsafe impl Sync for IOSSurfaceCreateInfoMVK {}
-impl default::Default for IOSSurfaceCreateInfoMVK {
+impl Default for IOSSurfaceCreateInfoMVK {
     fn default() -> Self {
         Self {
             s_type: StructureType::IOS_SURFACE_CREATE_INFO_MVK,
             p_next: ptr::null(),
-            flags: IOSSurfaceCreateFlagsMVK::default(),
+            flags: Default::default(),
             p_view: ptr::null(),
         }
     }
@@ -20261,12 +18271,12 @@ pub struct MacOSSurfaceCreateInfoMVK {
 }
 unsafe impl Send for MacOSSurfaceCreateInfoMVK {}
 unsafe impl Sync for MacOSSurfaceCreateInfoMVK {}
-impl default::Default for MacOSSurfaceCreateInfoMVK {
+impl Default for MacOSSurfaceCreateInfoMVK {
     fn default() -> Self {
         Self {
             s_type: StructureType::MACOS_SURFACE_CREATE_INFO_MVK,
             p_next: ptr::null(),
-            flags: MacOSSurfaceCreateFlagsMVK::default(),
+            flags: Default::default(),
             p_view: ptr::null(),
         }
     }
@@ -20291,12 +18301,12 @@ pub struct MetalSurfaceCreateInfoEXT {
 }
 unsafe impl Send for MetalSurfaceCreateInfoEXT {}
 unsafe impl Sync for MetalSurfaceCreateInfoEXT {}
-impl default::Default for MetalSurfaceCreateInfoEXT {
+impl Default for MetalSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::METAL_SURFACE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: MetalSurfaceCreateFlagsEXT::default(),
+            flags: Default::default(),
             p_layer: ptr::null(),
         }
     }
@@ -20312,18 +18322,10 @@ impl fmt::Debug for MetalSurfaceCreateInfoEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct ViewportWScalingNV {
     pub xcoeff: f32,
     pub ycoeff: f32,
-}
-impl default::Default for ViewportWScalingNV {
-    fn default() -> Self {
-        Self {
-            xcoeff: f32::default(),
-            ycoeff: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for ViewportWScalingNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20344,13 +18346,13 @@ pub struct PipelineViewportWScalingStateCreateInfoNV {
 }
 unsafe impl Send for PipelineViewportWScalingStateCreateInfoNV {}
 unsafe impl Sync for PipelineViewportWScalingStateCreateInfoNV {}
-impl default::Default for PipelineViewportWScalingStateCreateInfoNV {
+impl Default for PipelineViewportWScalingStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_W_SCALING_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            viewport_w_scaling_enable: Bool32::default(),
-            viewport_count: u32::default(),
+            viewport_w_scaling_enable: Default::default(),
+            viewport_count: Default::default(),
             p_viewport_w_scalings: ptr::null(),
         }
     }
@@ -20367,22 +18369,12 @@ impl fmt::Debug for PipelineViewportWScalingStateCreateInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ViewportSwizzleNV {
     pub x: ViewportCoordinateSwizzleNV,
     pub y: ViewportCoordinateSwizzleNV,
     pub z: ViewportCoordinateSwizzleNV,
     pub w: ViewportCoordinateSwizzleNV,
-}
-impl default::Default for ViewportSwizzleNV {
-    fn default() -> Self {
-        Self {
-            x: ViewportCoordinateSwizzleNV::default(),
-            y: ViewportCoordinateSwizzleNV::default(),
-            z: ViewportCoordinateSwizzleNV::default(),
-            w: ViewportCoordinateSwizzleNV::default(),
-        }
-    }
 }
 impl fmt::Debug for ViewportSwizzleNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20405,13 +18397,13 @@ pub struct PipelineViewportSwizzleStateCreateInfoNV {
 }
 unsafe impl Send for PipelineViewportSwizzleStateCreateInfoNV {}
 unsafe impl Sync for PipelineViewportSwizzleStateCreateInfoNV {}
-impl default::Default for PipelineViewportSwizzleStateCreateInfoNV {
+impl Default for PipelineViewportSwizzleStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_SWIZZLE_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: PipelineViewportSwizzleStateCreateFlagsNV::default(),
-            viewport_count: u32::default(),
+            flags: Default::default(),
+            viewport_count: Default::default(),
             p_viewport_swizzles: ptr::null(),
         }
     }
@@ -20437,12 +18429,12 @@ pub struct PhysicalDeviceDiscardRectanglePropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceDiscardRectanglePropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceDiscardRectanglePropertiesEXT {}
-impl default::Default for PhysicalDeviceDiscardRectanglePropertiesEXT {
+impl Default for PhysicalDeviceDiscardRectanglePropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_discard_rectangles: u32::default(),
+            max_discard_rectangles: Default::default(),
         }
     }
 }
@@ -20467,14 +18459,14 @@ pub struct PipelineDiscardRectangleStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineDiscardRectangleStateCreateInfoEXT {}
 unsafe impl Sync for PipelineDiscardRectangleStateCreateInfoEXT {}
-impl default::Default for PipelineDiscardRectangleStateCreateInfoEXT {
+impl Default for PipelineDiscardRectangleStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_DISCARD_RECTANGLE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: PipelineDiscardRectangleStateCreateFlagsEXT::default(),
-            discard_rectangle_mode: DiscardRectangleModeEXT::default(),
-            discard_rectangle_count: u32::default(),
+            flags: Default::default(),
+            discard_rectangle_mode: Default::default(),
+            discard_rectangle_count: Default::default(),
             p_discard_rectangles: ptr::null(),
         }
     }
@@ -20500,12 +18492,12 @@ pub struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
 }
 unsafe impl Send for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {}
 unsafe impl Sync for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {}
-impl default::Default for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
+impl Default for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX,
             p_next: ptr::null_mut(),
-            per_view_position_all_components: Bool32::default(),
+            per_view_position_all_components: Default::default(),
         }
     }
 }
@@ -20522,20 +18514,11 @@ impl fmt::Debug for PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct InputAttachmentAspectReference {
     pub subpass: u32,
     pub input_attachment_index: u32,
     pub aspect_mask: ImageAspectFlags,
-}
-impl default::Default for InputAttachmentAspectReference {
-    fn default() -> Self {
-        Self {
-            subpass: u32::default(),
-            input_attachment_index: u32::default(),
-            aspect_mask: ImageAspectFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for InputAttachmentAspectReference {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -20557,12 +18540,12 @@ pub struct RenderPassInputAttachmentAspectCreateInfo {
 }
 unsafe impl Send for RenderPassInputAttachmentAspectCreateInfo {}
 unsafe impl Sync for RenderPassInputAttachmentAspectCreateInfo {}
-impl default::Default for RenderPassInputAttachmentAspectCreateInfo {
+impl Default for RenderPassInputAttachmentAspectCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO,
             p_next: ptr::null(),
-            aspect_reference_count: u32::default(),
+            aspect_reference_count: Default::default(),
             p_aspect_references: ptr::null(),
         }
     }
@@ -20587,12 +18570,12 @@ pub struct PhysicalDeviceSurfaceInfo2KHR {
 }
 unsafe impl Send for PhysicalDeviceSurfaceInfo2KHR {}
 unsafe impl Sync for PhysicalDeviceSurfaceInfo2KHR {}
-impl default::Default for PhysicalDeviceSurfaceInfo2KHR {
+impl Default for PhysicalDeviceSurfaceInfo2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SURFACE_INFO_2_KHR,
             p_next: ptr::null(),
-            surface: None,
+            surface: Default::default(),
         }
     }
 }
@@ -20614,12 +18597,12 @@ pub struct SurfaceCapabilities2KHR {
 }
 unsafe impl Send for SurfaceCapabilities2KHR {}
 unsafe impl Sync for SurfaceCapabilities2KHR {}
-impl default::Default for SurfaceCapabilities2KHR {
+impl Default for SurfaceCapabilities2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_CAPABILITIES_2_KHR,
             p_next: ptr::null_mut(),
-            surface_capabilities: SurfaceCapabilitiesKHR::default(),
+            surface_capabilities: Default::default(),
         }
     }
 }
@@ -20641,12 +18624,12 @@ pub struct SurfaceFormat2KHR {
 }
 unsafe impl Send for SurfaceFormat2KHR {}
 unsafe impl Sync for SurfaceFormat2KHR {}
-impl default::Default for SurfaceFormat2KHR {
+impl Default for SurfaceFormat2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_FORMAT_2_KHR,
             p_next: ptr::null_mut(),
-            surface_format: SurfaceFormatKHR::default(),
+            surface_format: Default::default(),
         }
     }
 }
@@ -20668,12 +18651,12 @@ pub struct DisplayProperties2KHR {
 }
 unsafe impl Send for DisplayProperties2KHR {}
 unsafe impl Sync for DisplayProperties2KHR {}
-impl default::Default for DisplayProperties2KHR {
+impl Default for DisplayProperties2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
-            display_properties: DisplayPropertiesKHR::default(),
+            display_properties: Default::default(),
         }
     }
 }
@@ -20695,12 +18678,12 @@ pub struct DisplayPlaneProperties2KHR {
 }
 unsafe impl Send for DisplayPlaneProperties2KHR {}
 unsafe impl Sync for DisplayPlaneProperties2KHR {}
-impl default::Default for DisplayPlaneProperties2KHR {
+impl Default for DisplayPlaneProperties2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_PLANE_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
-            display_plane_properties: DisplayPlanePropertiesKHR::default(),
+            display_plane_properties: Default::default(),
         }
     }
 }
@@ -20722,12 +18705,12 @@ pub struct DisplayModeProperties2KHR {
 }
 unsafe impl Send for DisplayModeProperties2KHR {}
 unsafe impl Sync for DisplayModeProperties2KHR {}
-impl default::Default for DisplayModeProperties2KHR {
+impl Default for DisplayModeProperties2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_MODE_PROPERTIES_2_KHR,
             p_next: ptr::null_mut(),
-            display_mode_properties: DisplayModePropertiesKHR::default(),
+            display_mode_properties: Default::default(),
         }
     }
 }
@@ -20750,13 +18733,13 @@ pub struct DisplayPlaneInfo2KHR {
 }
 unsafe impl Send for DisplayPlaneInfo2KHR {}
 unsafe impl Sync for DisplayPlaneInfo2KHR {}
-impl default::Default for DisplayPlaneInfo2KHR {
+impl Default for DisplayPlaneInfo2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_PLANE_INFO_2_KHR,
             p_next: ptr::null(),
-            mode: None,
-            plane_index: u32::default(),
+            mode: Default::default(),
+            plane_index: Default::default(),
         }
     }
 }
@@ -20779,12 +18762,12 @@ pub struct DisplayPlaneCapabilities2KHR {
 }
 unsafe impl Send for DisplayPlaneCapabilities2KHR {}
 unsafe impl Sync for DisplayPlaneCapabilities2KHR {}
-impl default::Default for DisplayPlaneCapabilities2KHR {
+impl Default for DisplayPlaneCapabilities2KHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DISPLAY_PLANE_CAPABILITIES_2_KHR,
             p_next: ptr::null_mut(),
-            capabilities: DisplayPlaneCapabilitiesKHR::default(),
+            capabilities: Default::default(),
         }
     }
 }
@@ -20807,12 +18790,12 @@ pub struct SharedPresentSurfaceCapabilitiesKHR {
 }
 unsafe impl Send for SharedPresentSurfaceCapabilitiesKHR {}
 unsafe impl Sync for SharedPresentSurfaceCapabilitiesKHR {}
-impl default::Default for SharedPresentSurfaceCapabilitiesKHR {
+impl Default for SharedPresentSurfaceCapabilitiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SHARED_PRESENT_SURFACE_CAPABILITIES_KHR,
             p_next: ptr::null_mut(),
-            shared_present_supported_usage_flags: ImageUsageFlags::default(),
+            shared_present_supported_usage_flags: Default::default(),
         }
     }
 }
@@ -20844,15 +18827,15 @@ pub struct PhysicalDevice16BitStorageFeatures {
 }
 unsafe impl Send for PhysicalDevice16BitStorageFeatures {}
 unsafe impl Sync for PhysicalDevice16BitStorageFeatures {}
-impl default::Default for PhysicalDevice16BitStorageFeatures {
+impl Default for PhysicalDevice16BitStorageFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES,
             p_next: ptr::null_mut(),
-            storage_buffer16_bit_access: Bool32::default(),
-            uniform_and_storage_buffer16_bit_access: Bool32::default(),
-            storage_push_constant16: Bool32::default(),
-            storage_input_output16: Bool32::default(),
+            storage_buffer16_bit_access: Default::default(),
+            uniform_and_storage_buffer16_bit_access: Default::default(),
+            storage_push_constant16: Default::default(),
+            storage_input_output16: Default::default(),
         }
     }
 }
@@ -20888,15 +18871,15 @@ pub struct PhysicalDeviceSubgroupProperties {
 }
 unsafe impl Send for PhysicalDeviceSubgroupProperties {}
 unsafe impl Sync for PhysicalDeviceSubgroupProperties {}
-impl default::Default for PhysicalDeviceSubgroupProperties {
+impl Default for PhysicalDeviceSubgroupProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_PROPERTIES,
             p_next: ptr::null_mut(),
-            subgroup_size: u32::default(),
-            supported_stages: ShaderStageFlags::default(),
-            supported_operations: SubgroupFeatureFlags::default(),
-            quad_operations_in_all_stages: Bool32::default(),
+            subgroup_size: Default::default(),
+            supported_stages: Default::default(),
+            supported_operations: Default::default(),
+            quad_operations_in_all_stages: Default::default(),
         }
     }
 }
@@ -20922,12 +18905,12 @@ pub struct PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
 }
 unsafe impl Send for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
 unsafe impl Sync for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {}
-impl default::Default for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
+impl Default for PhysicalDeviceShaderSubgroupExtendedTypesFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_EXTENDED_TYPES_FEATURES,
             p_next: ptr::null_mut(),
-            shader_subgroup_extended_types: Bool32::default(),
+            shader_subgroup_extended_types: Default::default(),
         }
     }
 }
@@ -20950,12 +18933,12 @@ pub struct BufferMemoryRequirementsInfo2 {
 }
 unsafe impl Send for BufferMemoryRequirementsInfo2 {}
 unsafe impl Sync for BufferMemoryRequirementsInfo2 {}
-impl default::Default for BufferMemoryRequirementsInfo2 {
+impl Default for BufferMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
-            buffer: None,
+            buffer: Default::default(),
         }
     }
 }
@@ -20978,7 +18961,7 @@ pub struct DeviceBufferMemoryRequirements {
 }
 unsafe impl Send for DeviceBufferMemoryRequirements {}
 unsafe impl Sync for DeviceBufferMemoryRequirements {}
-impl default::Default for DeviceBufferMemoryRequirements {
+impl Default for DeviceBufferMemoryRequirements {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_BUFFER_MEMORY_REQUIREMENTS,
@@ -21006,12 +18989,12 @@ pub struct ImageMemoryRequirementsInfo2 {
 }
 unsafe impl Send for ImageMemoryRequirementsInfo2 {}
 unsafe impl Sync for ImageMemoryRequirementsInfo2 {}
-impl default::Default for ImageMemoryRequirementsInfo2 {
+impl Default for ImageMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
-            image: None,
+            image: Default::default(),
         }
     }
 }
@@ -21034,12 +19017,12 @@ pub struct ImageSparseMemoryRequirementsInfo2 {
 }
 unsafe impl Send for ImageSparseMemoryRequirementsInfo2 {}
 unsafe impl Sync for ImageSparseMemoryRequirementsInfo2 {}
-impl default::Default for ImageSparseMemoryRequirementsInfo2 {
+impl Default for ImageSparseMemoryRequirementsInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2,
             p_next: ptr::null(),
-            image: None,
+            image: Default::default(),
         }
     }
 }
@@ -21063,13 +19046,13 @@ pub struct DeviceImageMemoryRequirements {
 }
 unsafe impl Send for DeviceImageMemoryRequirements {}
 unsafe impl Sync for DeviceImageMemoryRequirements {}
-impl default::Default for DeviceImageMemoryRequirements {
+impl Default for DeviceImageMemoryRequirements {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_IMAGE_MEMORY_REQUIREMENTS,
             p_next: ptr::null(),
             p_create_info: ptr::null(),
-            plane_aspect: ImageAspectFlags::default(),
+            plane_aspect: Default::default(),
         }
     }
 }
@@ -21093,12 +19076,12 @@ pub struct MemoryRequirements2 {
 }
 unsafe impl Send for MemoryRequirements2 {}
 unsafe impl Sync for MemoryRequirements2 {}
-impl default::Default for MemoryRequirements2 {
+impl Default for MemoryRequirements2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_REQUIREMENTS_2,
             p_next: ptr::null_mut(),
-            memory_requirements: MemoryRequirements::default(),
+            memory_requirements: Default::default(),
         }
     }
 }
@@ -21121,12 +19104,12 @@ pub struct SparseImageMemoryRequirements2 {
 }
 unsafe impl Send for SparseImageMemoryRequirements2 {}
 unsafe impl Sync for SparseImageMemoryRequirements2 {}
-impl default::Default for SparseImageMemoryRequirements2 {
+impl Default for SparseImageMemoryRequirements2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::SPARSE_IMAGE_MEMORY_REQUIREMENTS_2,
             p_next: ptr::null_mut(),
-            memory_requirements: SparseImageMemoryRequirements::default(),
+            memory_requirements: Default::default(),
         }
     }
 }
@@ -21149,12 +19132,12 @@ pub struct PhysicalDevicePointClippingProperties {
 }
 unsafe impl Send for PhysicalDevicePointClippingProperties {}
 unsafe impl Sync for PhysicalDevicePointClippingProperties {}
-impl default::Default for PhysicalDevicePointClippingProperties {
+impl Default for PhysicalDevicePointClippingProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES,
             p_next: ptr::null_mut(),
-            point_clipping_behavior: PointClippingBehavior::default(),
+            point_clipping_behavior: Default::default(),
         }
     }
 }
@@ -21178,13 +19161,13 @@ pub struct MemoryDedicatedRequirements {
 }
 unsafe impl Send for MemoryDedicatedRequirements {}
 unsafe impl Sync for MemoryDedicatedRequirements {}
-impl default::Default for MemoryDedicatedRequirements {
+impl Default for MemoryDedicatedRequirements {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_DEDICATED_REQUIREMENTS,
             p_next: ptr::null_mut(),
-            prefers_dedicated_allocation: Bool32::default(),
-            requires_dedicated_allocation: Bool32::default(),
+            prefers_dedicated_allocation: Default::default(),
+            requires_dedicated_allocation: Default::default(),
         }
     }
 }
@@ -21211,13 +19194,13 @@ pub struct MemoryDedicatedAllocateInfo {
 }
 unsafe impl Send for MemoryDedicatedAllocateInfo {}
 unsafe impl Sync for MemoryDedicatedAllocateInfo {}
-impl default::Default for MemoryDedicatedAllocateInfo {
+impl Default for MemoryDedicatedAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_DEDICATED_ALLOCATE_INFO,
             p_next: ptr::null(),
-            image: None,
-            buffer: None,
+            image: Default::default(),
+            buffer: Default::default(),
         }
     }
 }
@@ -21241,12 +19224,12 @@ pub struct ImageViewUsageCreateInfo {
 }
 unsafe impl Send for ImageViewUsageCreateInfo {}
 unsafe impl Sync for ImageViewUsageCreateInfo {}
-impl default::Default for ImageViewUsageCreateInfo {
+impl Default for ImageViewUsageCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_USAGE_CREATE_INFO,
             p_next: ptr::null(),
-            usage: ImageUsageFlags::default(),
+            usage: Default::default(),
         }
     }
 }
@@ -21269,12 +19252,12 @@ pub struct PipelineTessellationDomainOriginStateCreateInfo {
 }
 unsafe impl Send for PipelineTessellationDomainOriginStateCreateInfo {}
 unsafe impl Sync for PipelineTessellationDomainOriginStateCreateInfo {}
-impl default::Default for PipelineTessellationDomainOriginStateCreateInfo {
+impl Default for PipelineTessellationDomainOriginStateCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_TESSELLATION_DOMAIN_ORIGIN_STATE_CREATE_INFO,
             p_next: ptr::null(),
-            domain_origin: TessellationDomainOrigin::default(),
+            domain_origin: Default::default(),
         }
     }
 }
@@ -21297,12 +19280,12 @@ pub struct SamplerYcbcrConversionInfo {
 }
 unsafe impl Send for SamplerYcbcrConversionInfo {}
 unsafe impl Sync for SamplerYcbcrConversionInfo {}
-impl default::Default for SamplerYcbcrConversionInfo {
+impl Default for SamplerYcbcrConversionInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_INFO,
             p_next: ptr::null(),
-            conversion: None,
+            conversion: Default::default(),
         }
     }
 }
@@ -21332,19 +19315,19 @@ pub struct SamplerYcbcrConversionCreateInfo {
 }
 unsafe impl Send for SamplerYcbcrConversionCreateInfo {}
 unsafe impl Sync for SamplerYcbcrConversionCreateInfo {}
-impl default::Default for SamplerYcbcrConversionCreateInfo {
+impl Default for SamplerYcbcrConversionCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_CREATE_INFO,
             p_next: ptr::null(),
-            format: Format::default(),
-            ycbcr_model: SamplerYcbcrModelConversion::default(),
-            ycbcr_range: SamplerYcbcrRange::default(),
-            components: ComponentMapping::default(),
-            x_chroma_offset: ChromaLocation::default(),
-            y_chroma_offset: ChromaLocation::default(),
-            chroma_filter: Filter::default(),
-            force_explicit_reconstruction: Bool32::default(),
+            format: Default::default(),
+            ycbcr_model: Default::default(),
+            ycbcr_range: Default::default(),
+            components: Default::default(),
+            x_chroma_offset: Default::default(),
+            y_chroma_offset: Default::default(),
+            chroma_filter: Default::default(),
+            force_explicit_reconstruction: Default::default(),
         }
     }
 }
@@ -21374,12 +19357,12 @@ pub struct BindImagePlaneMemoryInfo {
 }
 unsafe impl Send for BindImagePlaneMemoryInfo {}
 unsafe impl Sync for BindImagePlaneMemoryInfo {}
-impl default::Default for BindImagePlaneMemoryInfo {
+impl Default for BindImagePlaneMemoryInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_IMAGE_PLANE_MEMORY_INFO,
             p_next: ptr::null(),
-            plane_aspect: ImageAspectFlags::default(),
+            plane_aspect: Default::default(),
         }
     }
 }
@@ -21402,12 +19385,12 @@ pub struct ImagePlaneMemoryRequirementsInfo {
 }
 unsafe impl Send for ImagePlaneMemoryRequirementsInfo {}
 unsafe impl Sync for ImagePlaneMemoryRequirementsInfo {}
-impl default::Default for ImagePlaneMemoryRequirementsInfo {
+impl Default for ImagePlaneMemoryRequirementsInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO,
             p_next: ptr::null(),
-            plane_aspect: ImageAspectFlags::default(),
+            plane_aspect: Default::default(),
         }
     }
 }
@@ -21431,12 +19414,12 @@ pub struct PhysicalDeviceSamplerYcbcrConversionFeatures {
 }
 unsafe impl Send for PhysicalDeviceSamplerYcbcrConversionFeatures {}
 unsafe impl Sync for PhysicalDeviceSamplerYcbcrConversionFeatures {}
-impl default::Default for PhysicalDeviceSamplerYcbcrConversionFeatures {
+impl Default for PhysicalDeviceSamplerYcbcrConversionFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES,
             p_next: ptr::null_mut(),
-            sampler_ycbcr_conversion: Bool32::default(),
+            sampler_ycbcr_conversion: Default::default(),
         }
     }
 }
@@ -21459,12 +19442,12 @@ pub struct SamplerYcbcrConversionImageFormatProperties {
 }
 unsafe impl Send for SamplerYcbcrConversionImageFormatProperties {}
 unsafe impl Sync for SamplerYcbcrConversionImageFormatProperties {}
-impl default::Default for SamplerYcbcrConversionImageFormatProperties {
+impl Default for SamplerYcbcrConversionImageFormatProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_YCBCR_CONVERSION_IMAGE_FORMAT_PROPERTIES,
             p_next: ptr::null_mut(),
-            combined_image_sampler_descriptor_count: u32::default(),
+            combined_image_sampler_descriptor_count: Default::default(),
         }
     }
 }
@@ -21490,12 +19473,12 @@ pub struct TextureLODGatherFormatPropertiesAMD {
 }
 unsafe impl Send for TextureLODGatherFormatPropertiesAMD {}
 unsafe impl Sync for TextureLODGatherFormatPropertiesAMD {}
-impl default::Default for TextureLODGatherFormatPropertiesAMD {
+impl Default for TextureLODGatherFormatPropertiesAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
             p_next: ptr::null_mut(),
-            supports_texture_gather_lod_bias_amd: Bool32::default(),
+            supports_texture_gather_lod_bias_amd: Default::default(),
         }
     }
 }
@@ -21522,14 +19505,14 @@ pub struct ConditionalRenderingBeginInfoEXT {
 }
 unsafe impl Send for ConditionalRenderingBeginInfoEXT {}
 unsafe impl Sync for ConditionalRenderingBeginInfoEXT {}
-impl default::Default for ConditionalRenderingBeginInfoEXT {
+impl Default for ConditionalRenderingBeginInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::CONDITIONAL_RENDERING_BEGIN_INFO_EXT,
             p_next: ptr::null(),
-            buffer: None,
-            offset: DeviceSize::default(),
-            flags: ConditionalRenderingFlagsEXT::default(),
+            buffer: Default::default(),
+            offset: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -21554,12 +19537,12 @@ pub struct ProtectedSubmitInfo {
 }
 unsafe impl Send for ProtectedSubmitInfo {}
 unsafe impl Sync for ProtectedSubmitInfo {}
-impl default::Default for ProtectedSubmitInfo {
+impl Default for ProtectedSubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PROTECTED_SUBMIT_INFO,
             p_next: ptr::null(),
-            protected_submit: Bool32::default(),
+            protected_submit: Default::default(),
         }
     }
 }
@@ -21581,12 +19564,12 @@ pub struct PhysicalDeviceProtectedMemoryFeatures {
 }
 unsafe impl Send for PhysicalDeviceProtectedMemoryFeatures {}
 unsafe impl Sync for PhysicalDeviceProtectedMemoryFeatures {}
-impl default::Default for PhysicalDeviceProtectedMemoryFeatures {
+impl Default for PhysicalDeviceProtectedMemoryFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES,
             p_next: ptr::null_mut(),
-            protected_memory: Bool32::default(),
+            protected_memory: Default::default(),
         }
     }
 }
@@ -21608,12 +19591,12 @@ pub struct PhysicalDeviceProtectedMemoryProperties {
 }
 unsafe impl Send for PhysicalDeviceProtectedMemoryProperties {}
 unsafe impl Sync for PhysicalDeviceProtectedMemoryProperties {}
-impl default::Default for PhysicalDeviceProtectedMemoryProperties {
+impl Default for PhysicalDeviceProtectedMemoryProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES,
             p_next: ptr::null_mut(),
-            protected_no_fault: Bool32::default(),
+            protected_no_fault: Default::default(),
         }
     }
 }
@@ -21637,14 +19620,14 @@ pub struct DeviceQueueInfo2 {
 }
 unsafe impl Send for DeviceQueueInfo2 {}
 unsafe impl Sync for DeviceQueueInfo2 {}
-impl default::Default for DeviceQueueInfo2 {
+impl Default for DeviceQueueInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_QUEUE_INFO_2,
             p_next: ptr::null(),
-            flags: DeviceQueueCreateFlags::default(),
-            queue_family_index: u32::default(),
-            queue_index: u32::default(),
+            flags: Default::default(),
+            queue_family_index: Default::default(),
+            queue_index: Default::default(),
         }
     }
 }
@@ -21670,14 +19653,14 @@ pub struct PipelineCoverageToColorStateCreateInfoNV {
 }
 unsafe impl Send for PipelineCoverageToColorStateCreateInfoNV {}
 unsafe impl Sync for PipelineCoverageToColorStateCreateInfoNV {}
-impl default::Default for PipelineCoverageToColorStateCreateInfoNV {
+impl Default for PipelineCoverageToColorStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COVERAGE_TO_COLOR_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: PipelineCoverageToColorStateCreateFlagsNV::default(),
-            coverage_to_color_enable: Bool32::default(),
-            coverage_to_color_location: u32::default(),
+            flags: Default::default(),
+            coverage_to_color_enable: Default::default(),
+            coverage_to_color_location: Default::default(),
         }
     }
 }
@@ -21702,13 +19685,13 @@ pub struct PhysicalDeviceSamplerFilterMinmaxProperties {
 }
 unsafe impl Send for PhysicalDeviceSamplerFilterMinmaxProperties {}
 unsafe impl Sync for PhysicalDeviceSamplerFilterMinmaxProperties {}
-impl default::Default for PhysicalDeviceSamplerFilterMinmaxProperties {
+impl Default for PhysicalDeviceSamplerFilterMinmaxProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES,
             p_next: ptr::null_mut(),
-            filter_minmax_single_component_formats: Bool32::default(),
-            filter_minmax_image_component_mapping: Bool32::default(),
+            filter_minmax_single_component_formats: Default::default(),
+            filter_minmax_image_component_mapping: Default::default(),
         }
     }
 }
@@ -21730,18 +19713,10 @@ impl fmt::Debug for PhysicalDeviceSamplerFilterMinmaxProperties {
 }
 pub type PhysicalDeviceSamplerFilterMinmaxPropertiesEXT = PhysicalDeviceSamplerFilterMinmaxProperties;
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct SampleLocationEXT {
     pub x: f32,
     pub y: f32,
-}
-impl default::Default for SampleLocationEXT {
-    fn default() -> Self {
-        Self {
-            x: f32::default(),
-            y: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for SampleLocationEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -21763,14 +19738,14 @@ pub struct SampleLocationsInfoEXT {
 }
 unsafe impl Send for SampleLocationsInfoEXT {}
 unsafe impl Sync for SampleLocationsInfoEXT {}
-impl default::Default for SampleLocationsInfoEXT {
+impl Default for SampleLocationsInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLE_LOCATIONS_INFO_EXT,
             p_next: ptr::null(),
-            sample_locations_per_pixel: SampleCountFlags::default(),
-            sample_location_grid_size: Extent2D::default(),
-            sample_locations_count: u32::default(),
+            sample_locations_per_pixel: Default::default(),
+            sample_location_grid_size: Default::default(),
+            sample_locations_count: Default::default(),
             p_sample_locations: ptr::null(),
         }
     }
@@ -21788,18 +19763,10 @@ impl fmt::Debug for SampleLocationsInfoEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AttachmentSampleLocationsEXT {
     pub attachment_index: u32,
     pub sample_locations_info: SampleLocationsInfoEXT,
-}
-impl default::Default for AttachmentSampleLocationsEXT {
-    fn default() -> Self {
-        Self {
-            attachment_index: u32::default(),
-            sample_locations_info: SampleLocationsInfoEXT::default(),
-        }
-    }
 }
 impl fmt::Debug for AttachmentSampleLocationsEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -21810,18 +19777,10 @@ impl fmt::Debug for AttachmentSampleLocationsEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct SubpassSampleLocationsEXT {
     pub subpass_index: u32,
     pub sample_locations_info: SampleLocationsInfoEXT,
-}
-impl default::Default for SubpassSampleLocationsEXT {
-    fn default() -> Self {
-        Self {
-            subpass_index: u32::default(),
-            sample_locations_info: SampleLocationsInfoEXT::default(),
-        }
-    }
 }
 impl fmt::Debug for SubpassSampleLocationsEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -21843,14 +19802,14 @@ pub struct RenderPassSampleLocationsBeginInfoEXT {
 }
 unsafe impl Send for RenderPassSampleLocationsBeginInfoEXT {}
 unsafe impl Sync for RenderPassSampleLocationsBeginInfoEXT {}
-impl default::Default for RenderPassSampleLocationsBeginInfoEXT {
+impl Default for RenderPassSampleLocationsBeginInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT,
             p_next: ptr::null(),
-            attachment_initial_sample_locations_count: u32::default(),
+            attachment_initial_sample_locations_count: Default::default(),
             p_attachment_initial_sample_locations: ptr::null(),
-            post_subpass_sample_locations_count: u32::default(),
+            post_subpass_sample_locations_count: Default::default(),
             p_post_subpass_sample_locations: ptr::null(),
         }
     }
@@ -21886,13 +19845,13 @@ pub struct PipelineSampleLocationsStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineSampleLocationsStateCreateInfoEXT {}
 unsafe impl Sync for PipelineSampleLocationsStateCreateInfoEXT {}
-impl default::Default for PipelineSampleLocationsStateCreateInfoEXT {
+impl Default for PipelineSampleLocationsStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            sample_locations_enable: Bool32::default(),
-            sample_locations_info: SampleLocationsInfoEXT::default(),
+            sample_locations_enable: Default::default(),
+            sample_locations_info: Default::default(),
         }
     }
 }
@@ -21919,16 +19878,16 @@ pub struct PhysicalDeviceSampleLocationsPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceSampleLocationsPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceSampleLocationsPropertiesEXT {}
-impl default::Default for PhysicalDeviceSampleLocationsPropertiesEXT {
+impl Default for PhysicalDeviceSampleLocationsPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            sample_location_sample_counts: SampleCountFlags::default(),
-            max_sample_location_grid_size: Extent2D::default(),
-            sample_location_coordinate_range: [f32::default(); 2],
-            sample_location_sub_pixel_bits: u32::default(),
-            variable_sample_locations: Bool32::default(),
+            sample_location_sample_counts: Default::default(),
+            max_sample_location_grid_size: Default::default(),
+            sample_location_coordinate_range: [Default::default(); 2],
+            sample_location_sub_pixel_bits: Default::default(),
+            variable_sample_locations: Default::default(),
         }
     }
 }
@@ -21957,12 +19916,12 @@ pub struct MultisamplePropertiesEXT {
 }
 unsafe impl Send for MultisamplePropertiesEXT {}
 unsafe impl Sync for MultisamplePropertiesEXT {}
-impl default::Default for MultisamplePropertiesEXT {
+impl Default for MultisamplePropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::MULTISAMPLE_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_sample_location_grid_size: Extent2D::default(),
+            max_sample_location_grid_size: Default::default(),
         }
     }
 }
@@ -21984,12 +19943,12 @@ pub struct SamplerReductionModeCreateInfo {
 }
 unsafe impl Send for SamplerReductionModeCreateInfo {}
 unsafe impl Sync for SamplerReductionModeCreateInfo {}
-impl default::Default for SamplerReductionModeCreateInfo {
+impl Default for SamplerReductionModeCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_REDUCTION_MODE_CREATE_INFO,
             p_next: ptr::null(),
-            reduction_mode: SamplerReductionMode::default(),
+            reduction_mode: Default::default(),
         }
     }
 }
@@ -22012,12 +19971,12 @@ pub struct PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {}
-impl default::Default for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
+impl Default for PhysicalDeviceBlendOperationAdvancedFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            advanced_blend_coherent_operations: Bool32::default(),
+            advanced_blend_coherent_operations: Default::default(),
         }
     }
 }
@@ -22042,12 +20001,12 @@ pub struct PhysicalDeviceMultiDrawFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceMultiDrawFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceMultiDrawFeaturesEXT {}
-impl default::Default for PhysicalDeviceMultiDrawFeaturesEXT {
+impl Default for PhysicalDeviceMultiDrawFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            multi_draw: Bool32::default(),
+            multi_draw: Default::default(),
         }
     }
 }
@@ -22074,17 +20033,17 @@ pub struct PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {}
-impl default::Default for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
+impl Default for PhysicalDeviceBlendOperationAdvancedPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            advanced_blend_max_color_attachments: u32::default(),
-            advanced_blend_independent_blend: Bool32::default(),
-            advanced_blend_non_premultiplied_src_color: Bool32::default(),
-            advanced_blend_non_premultiplied_dst_color: Bool32::default(),
-            advanced_blend_correlated_overlap: Bool32::default(),
-            advanced_blend_all_operations: Bool32::default(),
+            advanced_blend_max_color_attachments: Default::default(),
+            advanced_blend_independent_blend: Default::default(),
+            advanced_blend_non_premultiplied_src_color: Default::default(),
+            advanced_blend_non_premultiplied_dst_color: Default::default(),
+            advanced_blend_correlated_overlap: Default::default(),
+            advanced_blend_all_operations: Default::default(),
         }
     }
 }
@@ -22128,14 +20087,14 @@ pub struct PipelineColorBlendAdvancedStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineColorBlendAdvancedStateCreateInfoEXT {}
 unsafe impl Sync for PipelineColorBlendAdvancedStateCreateInfoEXT {}
-impl default::Default for PipelineColorBlendAdvancedStateCreateInfoEXT {
+impl Default for PipelineColorBlendAdvancedStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COLOR_BLEND_ADVANCED_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            src_premultiplied: Bool32::default(),
-            dst_premultiplied: Bool32::default(),
-            blend_overlap: BlendOverlapEXT::default(),
+            src_premultiplied: Default::default(),
+            dst_premultiplied: Default::default(),
+            blend_overlap: Default::default(),
         }
     }
 }
@@ -22160,13 +20119,13 @@ pub struct PhysicalDeviceInlineUniformBlockFeatures {
 }
 unsafe impl Send for PhysicalDeviceInlineUniformBlockFeatures {}
 unsafe impl Sync for PhysicalDeviceInlineUniformBlockFeatures {}
-impl default::Default for PhysicalDeviceInlineUniformBlockFeatures {
+impl Default for PhysicalDeviceInlineUniformBlockFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES,
             p_next: ptr::null_mut(),
-            inline_uniform_block: Bool32::default(),
-            descriptor_binding_inline_uniform_block_update_after_bind: Bool32::default(),
+            inline_uniform_block: Default::default(),
+            descriptor_binding_inline_uniform_block_update_after_bind: Default::default(),
         }
     }
 }
@@ -22197,16 +20156,16 @@ pub struct PhysicalDeviceInlineUniformBlockProperties {
 }
 unsafe impl Send for PhysicalDeviceInlineUniformBlockProperties {}
 unsafe impl Sync for PhysicalDeviceInlineUniformBlockProperties {}
-impl default::Default for PhysicalDeviceInlineUniformBlockProperties {
+impl Default for PhysicalDeviceInlineUniformBlockProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_inline_uniform_block_size: u32::default(),
-            max_per_stage_descriptor_inline_uniform_blocks: u32::default(),
-            max_per_stage_descriptor_update_after_bind_inline_uniform_blocks: u32::default(),
-            max_descriptor_set_inline_uniform_blocks: u32::default(),
-            max_descriptor_set_update_after_bind_inline_uniform_blocks: u32::default(),
+            max_inline_uniform_block_size: Default::default(),
+            max_per_stage_descriptor_inline_uniform_blocks: Default::default(),
+            max_per_stage_descriptor_update_after_bind_inline_uniform_blocks: Default::default(),
+            max_descriptor_set_inline_uniform_blocks: Default::default(),
+            max_descriptor_set_update_after_bind_inline_uniform_blocks: Default::default(),
         }
     }
 }
@@ -22246,12 +20205,12 @@ pub struct WriteDescriptorSetInlineUniformBlock {
 }
 unsafe impl Send for WriteDescriptorSetInlineUniformBlock {}
 unsafe impl Sync for WriteDescriptorSetInlineUniformBlock {}
-impl default::Default for WriteDescriptorSetInlineUniformBlock {
+impl Default for WriteDescriptorSetInlineUniformBlock {
     fn default() -> Self {
         Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK,
             p_next: ptr::null(),
-            data_size: u32::default(),
+            data_size: Default::default(),
             p_data: ptr::null(),
         }
     }
@@ -22276,12 +20235,12 @@ pub struct DescriptorPoolInlineUniformBlockCreateInfo {
 }
 unsafe impl Send for DescriptorPoolInlineUniformBlockCreateInfo {}
 unsafe impl Sync for DescriptorPoolInlineUniformBlockCreateInfo {}
-impl default::Default for DescriptorPoolInlineUniformBlockCreateInfo {
+impl Default for DescriptorPoolInlineUniformBlockCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_POOL_INLINE_UNIFORM_BLOCK_CREATE_INFO,
             p_next: ptr::null(),
-            max_inline_uniform_block_bindings: u32::default(),
+            max_inline_uniform_block_bindings: Default::default(),
         }
     }
 }
@@ -22311,15 +20270,15 @@ pub struct PipelineCoverageModulationStateCreateInfoNV {
 }
 unsafe impl Send for PipelineCoverageModulationStateCreateInfoNV {}
 unsafe impl Sync for PipelineCoverageModulationStateCreateInfoNV {}
-impl default::Default for PipelineCoverageModulationStateCreateInfoNV {
+impl Default for PipelineCoverageModulationStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COVERAGE_MODULATION_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: PipelineCoverageModulationStateCreateFlagsNV::default(),
-            coverage_modulation_mode: CoverageModulationModeNV::default(),
-            coverage_modulation_table_enable: Bool32::default(),
-            coverage_modulation_table_count: u32::default(),
+            flags: Default::default(),
+            coverage_modulation_mode: Default::default(),
+            coverage_modulation_table_enable: Default::default(),
+            coverage_modulation_table_count: Default::default(),
             p_coverage_modulation_table: ptr::null(),
         }
     }
@@ -22350,12 +20309,12 @@ pub struct ImageFormatListCreateInfo {
 }
 unsafe impl Send for ImageFormatListCreateInfo {}
 unsafe impl Sync for ImageFormatListCreateInfo {}
-impl default::Default for ImageFormatListCreateInfo {
+impl Default for ImageFormatListCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_FORMAT_LIST_CREATE_INFO,
             p_next: ptr::null(),
-            view_format_count: u32::default(),
+            view_format_count: Default::default(),
             p_view_formats: ptr::null(),
         }
     }
@@ -22382,13 +20341,13 @@ pub struct ValidationCacheCreateInfoEXT {
 }
 unsafe impl Send for ValidationCacheCreateInfoEXT {}
 unsafe impl Sync for ValidationCacheCreateInfoEXT {}
-impl default::Default for ValidationCacheCreateInfoEXT {
+impl Default for ValidationCacheCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::VALIDATION_CACHE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: ValidationCacheCreateFlagsEXT::default(),
-            initial_data_size: usize::default(),
+            flags: Default::default(),
+            initial_data_size: Default::default(),
             p_initial_data: ptr::null(),
         }
     }
@@ -22413,12 +20372,12 @@ pub struct ShaderModuleValidationCacheCreateInfoEXT {
 }
 unsafe impl Send for ShaderModuleValidationCacheCreateInfoEXT {}
 unsafe impl Sync for ShaderModuleValidationCacheCreateInfoEXT {}
-impl default::Default for ShaderModuleValidationCacheCreateInfoEXT {
+impl Default for ShaderModuleValidationCacheCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            validation_cache: None,
+            validation_cache: Default::default(),
         }
     }
 }
@@ -22441,13 +20400,13 @@ pub struct PhysicalDeviceMaintenance3Properties {
 }
 unsafe impl Send for PhysicalDeviceMaintenance3Properties {}
 unsafe impl Sync for PhysicalDeviceMaintenance3Properties {}
-impl default::Default for PhysicalDeviceMaintenance3Properties {
+impl Default for PhysicalDeviceMaintenance3Properties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_per_set_descriptors: u32::default(),
-            max_memory_allocation_size: DeviceSize::default(),
+            max_per_set_descriptors: Default::default(),
+            max_memory_allocation_size: Default::default(),
         }
     }
 }
@@ -22471,12 +20430,12 @@ pub struct PhysicalDeviceMaintenance4Features {
 }
 unsafe impl Send for PhysicalDeviceMaintenance4Features {}
 unsafe impl Sync for PhysicalDeviceMaintenance4Features {}
-impl default::Default for PhysicalDeviceMaintenance4Features {
+impl Default for PhysicalDeviceMaintenance4Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES,
             p_next: ptr::null_mut(),
-            maintenance4: Bool32::default(),
+            maintenance4: Default::default(),
         }
     }
 }
@@ -22499,12 +20458,12 @@ pub struct PhysicalDeviceMaintenance4Properties {
 }
 unsafe impl Send for PhysicalDeviceMaintenance4Properties {}
 unsafe impl Sync for PhysicalDeviceMaintenance4Properties {}
-impl default::Default for PhysicalDeviceMaintenance4Properties {
+impl Default for PhysicalDeviceMaintenance4Properties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_buffer_size: DeviceSize::default(),
+            max_buffer_size: Default::default(),
         }
     }
 }
@@ -22527,12 +20486,12 @@ pub struct DescriptorSetLayoutSupport {
 }
 unsafe impl Send for DescriptorSetLayoutSupport {}
 unsafe impl Sync for DescriptorSetLayoutSupport {}
-impl default::Default for DescriptorSetLayoutSupport {
+impl Default for DescriptorSetLayoutSupport {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_SUPPORT,
             p_next: ptr::null_mut(),
-            supported: Bool32::default(),
+            supported: Default::default(),
         }
     }
 }
@@ -22555,12 +20514,12 @@ pub struct PhysicalDeviceShaderDrawParametersFeatures {
 }
 unsafe impl Send for PhysicalDeviceShaderDrawParametersFeatures {}
 unsafe impl Sync for PhysicalDeviceShaderDrawParametersFeatures {}
-impl default::Default for PhysicalDeviceShaderDrawParametersFeatures {
+impl Default for PhysicalDeviceShaderDrawParametersFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_DRAW_PARAMETERS_FEATURES,
             p_next: ptr::null_mut(),
-            shader_draw_parameters: Bool32::default(),
+            shader_draw_parameters: Default::default(),
         }
     }
 }
@@ -22586,13 +20545,13 @@ pub struct PhysicalDeviceShaderFloat16Int8Features {
 }
 unsafe impl Send for PhysicalDeviceShaderFloat16Int8Features {}
 unsafe impl Sync for PhysicalDeviceShaderFloat16Int8Features {}
-impl default::Default for PhysicalDeviceShaderFloat16Int8Features {
+impl Default for PhysicalDeviceShaderFloat16Int8Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES,
             p_next: ptr::null_mut(),
-            shader_float16: Bool32::default(),
-            shader_int8: Bool32::default(),
+            shader_float16: Default::default(),
+            shader_int8: Default::default(),
         }
     }
 }
@@ -22648,28 +20607,28 @@ pub struct PhysicalDeviceFloatControlsProperties {
 }
 unsafe impl Send for PhysicalDeviceFloatControlsProperties {}
 unsafe impl Sync for PhysicalDeviceFloatControlsProperties {}
-impl default::Default for PhysicalDeviceFloatControlsProperties {
+impl Default for PhysicalDeviceFloatControlsProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FLOAT_CONTROLS_PROPERTIES,
             p_next: ptr::null_mut(),
-            denorm_behavior_independence: ShaderFloatControlsIndependence::default(),
-            rounding_mode_independence: ShaderFloatControlsIndependence::default(),
-            shader_signed_zero_inf_nan_preserve_float16: Bool32::default(),
-            shader_signed_zero_inf_nan_preserve_float32: Bool32::default(),
-            shader_signed_zero_inf_nan_preserve_float64: Bool32::default(),
-            shader_denorm_preserve_float16: Bool32::default(),
-            shader_denorm_preserve_float32: Bool32::default(),
-            shader_denorm_preserve_float64: Bool32::default(),
-            shader_denorm_flush_to_zero_float16: Bool32::default(),
-            shader_denorm_flush_to_zero_float32: Bool32::default(),
-            shader_denorm_flush_to_zero_float64: Bool32::default(),
-            shader_rounding_mode_rte_float16: Bool32::default(),
-            shader_rounding_mode_rte_float32: Bool32::default(),
-            shader_rounding_mode_rte_float64: Bool32::default(),
-            shader_rounding_mode_rtz_float16: Bool32::default(),
-            shader_rounding_mode_rtz_float32: Bool32::default(),
-            shader_rounding_mode_rtz_float64: Bool32::default(),
+            denorm_behavior_independence: Default::default(),
+            rounding_mode_independence: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float16: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float32: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float64: Default::default(),
+            shader_denorm_preserve_float16: Default::default(),
+            shader_denorm_preserve_float32: Default::default(),
+            shader_denorm_preserve_float64: Default::default(),
+            shader_denorm_flush_to_zero_float16: Default::default(),
+            shader_denorm_flush_to_zero_float32: Default::default(),
+            shader_denorm_flush_to_zero_float64: Default::default(),
+            shader_rounding_mode_rte_float16: Default::default(),
+            shader_rounding_mode_rte_float32: Default::default(),
+            shader_rounding_mode_rte_float64: Default::default(),
+            shader_rounding_mode_rtz_float16: Default::default(),
+            shader_rounding_mode_rtz_float32: Default::default(),
+            shader_rounding_mode_rtz_float64: Default::default(),
         }
     }
 }
@@ -22744,12 +20703,12 @@ pub struct PhysicalDeviceHostQueryResetFeatures {
 }
 unsafe impl Send for PhysicalDeviceHostQueryResetFeatures {}
 unsafe impl Sync for PhysicalDeviceHostQueryResetFeatures {}
-impl default::Default for PhysicalDeviceHostQueryResetFeatures {
+impl Default for PhysicalDeviceHostQueryResetFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES,
             p_next: ptr::null_mut(),
-            host_query_reset: Bool32::default(),
+            host_query_reset: Default::default(),
         }
     }
 }
@@ -22764,24 +20723,13 @@ impl fmt::Debug for PhysicalDeviceHostQueryResetFeatures {
 }
 pub type PhysicalDeviceHostQueryResetFeaturesEXT = PhysicalDeviceHostQueryResetFeatures;
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ShaderResourceUsageAMD {
     pub num_used_vgprs: u32,
     pub num_used_sgprs: u32,
     pub lds_size_per_local_work_group: u32,
     pub lds_usage_size_in_bytes: usize,
     pub scratch_mem_usage_in_bytes: usize,
-}
-impl default::Default for ShaderResourceUsageAMD {
-    fn default() -> Self {
-        Self {
-            num_used_vgprs: u32::default(),
-            num_used_sgprs: u32::default(),
-            lds_size_per_local_work_group: u32::default(),
-            lds_usage_size_in_bytes: usize::default(),
-            scratch_mem_usage_in_bytes: usize::default(),
-        }
-    }
 }
 impl fmt::Debug for ShaderResourceUsageAMD {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -22795,7 +20743,7 @@ impl fmt::Debug for ShaderResourceUsageAMD {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct ShaderStatisticsInfoAMD {
     pub shader_stage_mask: ShaderStageFlags,
     pub resource_usage: ShaderResourceUsageAMD,
@@ -22804,19 +20752,6 @@ pub struct ShaderStatisticsInfoAMD {
     pub num_available_vgprs: u32,
     pub num_available_sgprs: u32,
     pub compute_work_group_size: [u32; 3],
-}
-impl default::Default for ShaderStatisticsInfoAMD {
-    fn default() -> Self {
-        Self {
-            shader_stage_mask: ShaderStageFlags::default(),
-            resource_usage: ShaderResourceUsageAMD::default(),
-            num_physical_vgprs: u32::default(),
-            num_physical_sgprs: u32::default(),
-            num_available_vgprs: u32::default(),
-            num_available_sgprs: u32::default(),
-            compute_work_group_size: [u32::default(); 3],
-        }
-    }
 }
 impl fmt::Debug for ShaderStatisticsInfoAMD {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -22840,12 +20775,12 @@ pub struct DeviceQueueGlobalPriorityCreateInfoKHR {
 }
 unsafe impl Send for DeviceQueueGlobalPriorityCreateInfoKHR {}
 unsafe impl Sync for DeviceQueueGlobalPriorityCreateInfoKHR {}
-impl default::Default for DeviceQueueGlobalPriorityCreateInfoKHR {
+impl Default for DeviceQueueGlobalPriorityCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            global_priority: QueueGlobalPriorityKHR::default(),
+            global_priority: Default::default(),
         }
     }
 }
@@ -22868,12 +20803,12 @@ pub struct PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {}
-impl default::Default for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
+impl Default for PhysicalDeviceGlobalPriorityQueryFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            global_priority_query: Bool32::default(),
+            global_priority_query: Default::default(),
         }
     }
 }
@@ -22897,13 +20832,13 @@ pub struct QueueFamilyGlobalPriorityPropertiesKHR {
 }
 unsafe impl Send for QueueFamilyGlobalPriorityPropertiesKHR {}
 unsafe impl Sync for QueueFamilyGlobalPriorityPropertiesKHR {}
-impl default::Default for QueueFamilyGlobalPriorityPropertiesKHR {
+impl Default for QueueFamilyGlobalPriorityPropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            priority_count: u32::default(),
-            priorities: [QueueGlobalPriorityKHR::default(); MAX_GLOBAL_PRIORITY_SIZE_KHR],
+            priority_count: Default::default(),
+            priorities: [Default::default(); MAX_GLOBAL_PRIORITY_SIZE_KHR],
         }
     }
 }
@@ -22929,13 +20864,13 @@ pub struct DebugUtilsObjectNameInfoEXT {
 }
 unsafe impl Send for DebugUtilsObjectNameInfoEXT {}
 unsafe impl Sync for DebugUtilsObjectNameInfoEXT {}
-impl default::Default for DebugUtilsObjectNameInfoEXT {
+impl Default for DebugUtilsObjectNameInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
             p_next: ptr::null(),
-            object_type: ObjectType::default(),
-            object_handle: u64::default(),
+            object_type: Default::default(),
+            object_handle: Default::default(),
             p_object_name: ptr::null(),
         }
     }
@@ -22964,15 +20899,15 @@ pub struct DebugUtilsObjectTagInfoEXT {
 }
 unsafe impl Send for DebugUtilsObjectTagInfoEXT {}
 unsafe impl Sync for DebugUtilsObjectTagInfoEXT {}
-impl default::Default for DebugUtilsObjectTagInfoEXT {
+impl Default for DebugUtilsObjectTagInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_UTILS_OBJECT_TAG_INFO_EXT,
             p_next: ptr::null(),
-            object_type: ObjectType::default(),
-            object_handle: u64::default(),
-            tag_name: u64::default(),
-            tag_size: usize::default(),
+            object_type: Default::default(),
+            object_handle: Default::default(),
+            tag_name: Default::default(),
+            tag_size: Default::default(),
             p_tag: ptr::null(),
         }
     }
@@ -23000,13 +20935,13 @@ pub struct DebugUtilsLabelEXT {
 }
 unsafe impl Send for DebugUtilsLabelEXT {}
 unsafe impl Sync for DebugUtilsLabelEXT {}
-impl default::Default for DebugUtilsLabelEXT {
+impl Default for DebugUtilsLabelEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_UTILS_LABEL_EXT,
             p_next: ptr::null(),
             p_label_name: ptr::null(),
-            color: [f32::default(); 4],
+            color: [Default::default(); 4],
         }
     }
 }
@@ -23033,15 +20968,15 @@ pub struct DebugUtilsMessengerCreateInfoEXT {
 }
 unsafe impl Send for DebugUtilsMessengerCreateInfoEXT {}
 unsafe impl Sync for DebugUtilsMessengerCreateInfoEXT {}
-impl default::Default for DebugUtilsMessengerCreateInfoEXT {
+impl Default for DebugUtilsMessengerCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: DebugUtilsMessengerCreateFlagsEXT::default(),
-            message_severity: DebugUtilsMessageSeverityFlagsEXT::default(),
-            message_type: DebugUtilsMessageTypeFlagsEXT::default(),
-            pfn_user_callback: None,
+            flags: Default::default(),
+            message_severity: Default::default(),
+            message_type: Default::default(),
+            pfn_user_callback: Default::default(),
             p_user_data: ptr::null_mut(),
         }
     }
@@ -23084,20 +21019,20 @@ pub struct DebugUtilsMessengerCallbackDataEXT {
 }
 unsafe impl Send for DebugUtilsMessengerCallbackDataEXT {}
 unsafe impl Sync for DebugUtilsMessengerCallbackDataEXT {}
-impl default::Default for DebugUtilsMessengerCallbackDataEXT {
+impl Default for DebugUtilsMessengerCallbackDataEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT,
             p_next: ptr::null(),
-            flags: DebugUtilsMessengerCallbackDataFlagsEXT::default(),
+            flags: Default::default(),
             p_message_id_name: ptr::null(),
-            message_id_number: i32::default(),
+            message_id_number: Default::default(),
             p_message: ptr::null(),
-            queue_label_count: u32::default(),
+            queue_label_count: Default::default(),
             p_queue_labels: ptr::null(),
-            cmd_buf_label_count: u32::default(),
+            cmd_buf_label_count: Default::default(),
             p_cmd_buf_labels: ptr::null(),
-            object_count: u32::default(),
+            object_count: Default::default(),
             p_objects: ptr::null(),
         }
     }
@@ -23129,12 +21064,12 @@ pub struct PhysicalDeviceDeviceMemoryReportFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceDeviceMemoryReportFeaturesEXT {}
-impl default::Default for PhysicalDeviceDeviceMemoryReportFeaturesEXT {
+impl Default for PhysicalDeviceDeviceMemoryReportFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            device_memory_report: Bool32::default(),
+            device_memory_report: Default::default(),
         }
     }
 }
@@ -23158,13 +21093,13 @@ pub struct DeviceDeviceMemoryReportCreateInfoEXT {
 }
 unsafe impl Send for DeviceDeviceMemoryReportCreateInfoEXT {}
 unsafe impl Sync for DeviceDeviceMemoryReportCreateInfoEXT {}
-impl default::Default for DeviceDeviceMemoryReportCreateInfoEXT {
+impl Default for DeviceDeviceMemoryReportCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: DeviceMemoryReportFlagsEXT::default(),
-            pfn_user_callback: None,
+            flags: Default::default(),
+            pfn_user_callback: Default::default(),
             p_user_data: ptr::null_mut(),
         }
     }
@@ -23202,18 +21137,18 @@ pub struct DeviceMemoryReportCallbackDataEXT {
 }
 unsafe impl Send for DeviceMemoryReportCallbackDataEXT {}
 unsafe impl Sync for DeviceMemoryReportCallbackDataEXT {}
-impl default::Default for DeviceMemoryReportCallbackDataEXT {
+impl Default for DeviceMemoryReportCallbackDataEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT,
             p_next: ptr::null_mut(),
-            flags: DeviceMemoryReportFlagsEXT::default(),
-            ty: DeviceMemoryReportEventTypeEXT::default(),
-            memory_object_id: u64::default(),
-            size: DeviceSize::default(),
-            object_type: ObjectType::default(),
-            object_handle: u64::default(),
-            heap_index: u32::default(),
+            flags: Default::default(),
+            ty: Default::default(),
+            memory_object_id: Default::default(),
+            size: Default::default(),
+            object_type: Default::default(),
+            object_handle: Default::default(),
+            heap_index: Default::default(),
         }
     }
 }
@@ -23242,12 +21177,12 @@ pub struct ImportMemoryHostPointerInfoEXT {
 }
 unsafe impl Send for ImportMemoryHostPointerInfoEXT {}
 unsafe impl Sync for ImportMemoryHostPointerInfoEXT {}
-impl default::Default for ImportMemoryHostPointerInfoEXT {
+impl Default for ImportMemoryHostPointerInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
             p_next: ptr::null(),
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            handle_type: Default::default(),
             p_host_pointer: ptr::null_mut(),
         }
     }
@@ -23271,12 +21206,12 @@ pub struct MemoryHostPointerPropertiesEXT {
 }
 unsafe impl Send for MemoryHostPointerPropertiesEXT {}
 unsafe impl Sync for MemoryHostPointerPropertiesEXT {}
-impl default::Default for MemoryHostPointerPropertiesEXT {
+impl Default for MemoryHostPointerPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_HOST_POINTER_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            memory_type_bits: u32::default(),
+            memory_type_bits: Default::default(),
         }
     }
 }
@@ -23298,12 +21233,12 @@ pub struct PhysicalDeviceExternalMemoryHostPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceExternalMemoryHostPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceExternalMemoryHostPropertiesEXT {}
-impl default::Default for PhysicalDeviceExternalMemoryHostPropertiesEXT {
+impl Default for PhysicalDeviceExternalMemoryHostPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            min_imported_host_pointer_alignment: DeviceSize::default(),
+            min_imported_host_pointer_alignment: Default::default(),
         }
     }
 }
@@ -23345,20 +21280,20 @@ pub struct PhysicalDeviceConservativeRasterizationPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceConservativeRasterizationPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceConservativeRasterizationPropertiesEXT {}
-impl default::Default for PhysicalDeviceConservativeRasterizationPropertiesEXT {
+impl Default for PhysicalDeviceConservativeRasterizationPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            primitive_overestimation_size: f32::default(),
-            max_extra_primitive_overestimation_size: f32::default(),
-            extra_primitive_overestimation_size_granularity: f32::default(),
-            primitive_underestimation: Bool32::default(),
-            conservative_point_and_line_rasterization: Bool32::default(),
-            degenerate_triangles_rasterized: Bool32::default(),
-            degenerate_lines_rasterized: Bool32::default(),
-            fully_covered_fragment_shader_input_variable: Bool32::default(),
-            conservative_rasterization_post_depth_coverage: Bool32::default(),
+            primitive_overestimation_size: Default::default(),
+            max_extra_primitive_overestimation_size: Default::default(),
+            extra_primitive_overestimation_size_granularity: Default::default(),
+            primitive_underestimation: Default::default(),
+            conservative_point_and_line_rasterization: Default::default(),
+            degenerate_triangles_rasterized: Default::default(),
+            degenerate_lines_rasterized: Default::default(),
+            fully_covered_fragment_shader_input_variable: Default::default(),
+            conservative_rasterization_post_depth_coverage: Default::default(),
         }
     }
 }
@@ -23403,12 +21338,12 @@ pub struct CalibratedTimestampInfoEXT {
 }
 unsafe impl Send for CalibratedTimestampInfoEXT {}
 unsafe impl Sync for CalibratedTimestampInfoEXT {}
-impl default::Default for CalibratedTimestampInfoEXT {
+impl Default for CalibratedTimestampInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::CALIBRATED_TIMESTAMP_INFO_EXT,
             p_next: ptr::null(),
-            time_domain: TimeDomainEXT::default(),
+            time_domain: Default::default(),
         }
     }
 }
@@ -23457,25 +21392,25 @@ pub struct PhysicalDeviceShaderCorePropertiesAMD {
 }
 unsafe impl Send for PhysicalDeviceShaderCorePropertiesAMD {}
 unsafe impl Sync for PhysicalDeviceShaderCorePropertiesAMD {}
-impl default::Default for PhysicalDeviceShaderCorePropertiesAMD {
+impl Default for PhysicalDeviceShaderCorePropertiesAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
             p_next: ptr::null_mut(),
-            shader_engine_count: u32::default(),
-            shader_arrays_per_engine_count: u32::default(),
-            compute_units_per_shader_array: u32::default(),
-            simd_per_compute_unit: u32::default(),
-            wavefronts_per_simd: u32::default(),
-            wavefront_size: u32::default(),
-            sgprs_per_simd: u32::default(),
-            min_sgpr_allocation: u32::default(),
-            max_sgpr_allocation: u32::default(),
-            sgpr_allocation_granularity: u32::default(),
-            vgprs_per_simd: u32::default(),
-            min_vgpr_allocation: u32::default(),
-            max_vgpr_allocation: u32::default(),
-            vgpr_allocation_granularity: u32::default(),
+            shader_engine_count: Default::default(),
+            shader_arrays_per_engine_count: Default::default(),
+            compute_units_per_shader_array: Default::default(),
+            simd_per_compute_unit: Default::default(),
+            wavefronts_per_simd: Default::default(),
+            wavefront_size: Default::default(),
+            sgprs_per_simd: Default::default(),
+            min_sgpr_allocation: Default::default(),
+            max_sgpr_allocation: Default::default(),
+            sgpr_allocation_granularity: Default::default(),
+            vgprs_per_simd: Default::default(),
+            min_vgpr_allocation: Default::default(),
+            max_vgpr_allocation: Default::default(),
+            vgpr_allocation_granularity: Default::default(),
         }
     }
 }
@@ -23514,13 +21449,13 @@ pub struct PhysicalDeviceShaderCoreProperties2AMD {
 }
 unsafe impl Send for PhysicalDeviceShaderCoreProperties2AMD {}
 unsafe impl Sync for PhysicalDeviceShaderCoreProperties2AMD {}
-impl default::Default for PhysicalDeviceShaderCoreProperties2AMD {
+impl Default for PhysicalDeviceShaderCoreProperties2AMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD,
             p_next: ptr::null_mut(),
-            shader_core_features: ShaderCorePropertiesFlagsAMD::default(),
-            active_compute_unit_count: u32::default(),
+            shader_core_features: Default::default(),
+            active_compute_unit_count: Default::default(),
         }
     }
 }
@@ -23548,14 +21483,14 @@ pub struct PipelineRasterizationConservativeStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineRasterizationConservativeStateCreateInfoEXT {}
 unsafe impl Sync for PipelineRasterizationConservativeStateCreateInfoEXT {}
-impl default::Default for PipelineRasterizationConservativeStateCreateInfoEXT {
+impl Default for PipelineRasterizationConservativeStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: PipelineRasterizationConservativeStateCreateFlagsEXT::default(),
-            conservative_rasterization_mode: ConservativeRasterizationModeEXT::default(),
-            extra_primitive_overestimation_size: f32::default(),
+            flags: Default::default(),
+            conservative_rasterization_mode: Default::default(),
+            extra_primitive_overestimation_size: Default::default(),
         }
     }
 }
@@ -23601,31 +21536,31 @@ pub struct PhysicalDeviceDescriptorIndexingFeatures {
 }
 unsafe impl Send for PhysicalDeviceDescriptorIndexingFeatures {}
 unsafe impl Sync for PhysicalDeviceDescriptorIndexingFeatures {}
-impl default::Default for PhysicalDeviceDescriptorIndexingFeatures {
+impl Default for PhysicalDeviceDescriptorIndexingFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES,
             p_next: ptr::null_mut(),
-            shader_input_attachment_array_dynamic_indexing: Bool32::default(),
-            shader_uniform_texel_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_storage_texel_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_uniform_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_sampled_image_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_image_array_non_uniform_indexing: Bool32::default(),
-            shader_input_attachment_array_non_uniform_indexing: Bool32::default(),
-            shader_uniform_texel_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_texel_buffer_array_non_uniform_indexing: Bool32::default(),
-            descriptor_binding_uniform_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_sampled_image_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_image_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_uniform_texel_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_texel_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_update_unused_while_pending: Bool32::default(),
-            descriptor_binding_partially_bound: Bool32::default(),
-            descriptor_binding_variable_descriptor_count: Bool32::default(),
-            runtime_descriptor_array: Bool32::default(),
+            shader_input_attachment_array_dynamic_indexing: Default::default(),
+            shader_uniform_texel_buffer_array_dynamic_indexing: Default::default(),
+            shader_storage_texel_buffer_array_dynamic_indexing: Default::default(),
+            shader_uniform_buffer_array_non_uniform_indexing: Default::default(),
+            shader_sampled_image_array_non_uniform_indexing: Default::default(),
+            shader_storage_buffer_array_non_uniform_indexing: Default::default(),
+            shader_storage_image_array_non_uniform_indexing: Default::default(),
+            shader_input_attachment_array_non_uniform_indexing: Default::default(),
+            shader_uniform_texel_buffer_array_non_uniform_indexing: Default::default(),
+            shader_storage_texel_buffer_array_non_uniform_indexing: Default::default(),
+            descriptor_binding_uniform_buffer_update_after_bind: Default::default(),
+            descriptor_binding_sampled_image_update_after_bind: Default::default(),
+            descriptor_binding_storage_image_update_after_bind: Default::default(),
+            descriptor_binding_storage_buffer_update_after_bind: Default::default(),
+            descriptor_binding_uniform_texel_buffer_update_after_bind: Default::default(),
+            descriptor_binding_storage_texel_buffer_update_after_bind: Default::default(),
+            descriptor_binding_update_unused_while_pending: Default::default(),
+            descriptor_binding_partially_bound: Default::default(),
+            descriptor_binding_variable_descriptor_count: Default::default(),
+            runtime_descriptor_array: Default::default(),
         }
     }
 }
@@ -23746,34 +21681,34 @@ pub struct PhysicalDeviceDescriptorIndexingProperties {
 }
 unsafe impl Send for PhysicalDeviceDescriptorIndexingProperties {}
 unsafe impl Sync for PhysicalDeviceDescriptorIndexingProperties {}
-impl default::Default for PhysicalDeviceDescriptorIndexingProperties {
+impl Default for PhysicalDeviceDescriptorIndexingProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_update_after_bind_descriptors_in_all_pools: u32::default(),
-            shader_uniform_buffer_array_non_uniform_indexing_native: Bool32::default(),
-            shader_sampled_image_array_non_uniform_indexing_native: Bool32::default(),
-            shader_storage_buffer_array_non_uniform_indexing_native: Bool32::default(),
-            shader_storage_image_array_non_uniform_indexing_native: Bool32::default(),
-            shader_input_attachment_array_non_uniform_indexing_native: Bool32::default(),
-            robust_buffer_access_update_after_bind: Bool32::default(),
-            quad_divergent_implicit_lod: Bool32::default(),
-            max_per_stage_descriptor_update_after_bind_samplers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_uniform_buffers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_storage_buffers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_sampled_images: u32::default(),
-            max_per_stage_descriptor_update_after_bind_storage_images: u32::default(),
-            max_per_stage_descriptor_update_after_bind_input_attachments: u32::default(),
-            max_per_stage_update_after_bind_resources: u32::default(),
-            max_descriptor_set_update_after_bind_samplers: u32::default(),
-            max_descriptor_set_update_after_bind_uniform_buffers: u32::default(),
-            max_descriptor_set_update_after_bind_uniform_buffers_dynamic: u32::default(),
-            max_descriptor_set_update_after_bind_storage_buffers: u32::default(),
-            max_descriptor_set_update_after_bind_storage_buffers_dynamic: u32::default(),
-            max_descriptor_set_update_after_bind_sampled_images: u32::default(),
-            max_descriptor_set_update_after_bind_storage_images: u32::default(),
-            max_descriptor_set_update_after_bind_input_attachments: u32::default(),
+            max_update_after_bind_descriptors_in_all_pools: Default::default(),
+            shader_uniform_buffer_array_non_uniform_indexing_native: Default::default(),
+            shader_sampled_image_array_non_uniform_indexing_native: Default::default(),
+            shader_storage_buffer_array_non_uniform_indexing_native: Default::default(),
+            shader_storage_image_array_non_uniform_indexing_native: Default::default(),
+            shader_input_attachment_array_non_uniform_indexing_native: Default::default(),
+            robust_buffer_access_update_after_bind: Default::default(),
+            quad_divergent_implicit_lod: Default::default(),
+            max_per_stage_descriptor_update_after_bind_samplers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_uniform_buffers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_storage_buffers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_sampled_images: Default::default(),
+            max_per_stage_descriptor_update_after_bind_storage_images: Default::default(),
+            max_per_stage_descriptor_update_after_bind_input_attachments: Default::default(),
+            max_per_stage_update_after_bind_resources: Default::default(),
+            max_descriptor_set_update_after_bind_samplers: Default::default(),
+            max_descriptor_set_update_after_bind_uniform_buffers: Default::default(),
+            max_descriptor_set_update_after_bind_uniform_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_storage_buffers: Default::default(),
+            max_descriptor_set_update_after_bind_storage_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_sampled_images: Default::default(),
+            max_descriptor_set_update_after_bind_storage_images: Default::default(),
+            max_descriptor_set_update_after_bind_input_attachments: Default::default(),
         }
     }
 }
@@ -23885,12 +21820,12 @@ pub struct DescriptorSetLayoutBindingFlagsCreateInfo {
 }
 unsafe impl Send for DescriptorSetLayoutBindingFlagsCreateInfo {}
 unsafe impl Sync for DescriptorSetLayoutBindingFlagsCreateInfo {}
-impl default::Default for DescriptorSetLayoutBindingFlagsCreateInfo {
+impl Default for DescriptorSetLayoutBindingFlagsCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO,
             p_next: ptr::null(),
-            binding_count: u32::default(),
+            binding_count: Default::default(),
             p_binding_flags: ptr::null(),
         }
     }
@@ -23916,12 +21851,12 @@ pub struct DescriptorSetVariableDescriptorCountAllocateInfo {
 }
 unsafe impl Send for DescriptorSetVariableDescriptorCountAllocateInfo {}
 unsafe impl Sync for DescriptorSetVariableDescriptorCountAllocateInfo {}
-impl default::Default for DescriptorSetVariableDescriptorCountAllocateInfo {
+impl Default for DescriptorSetVariableDescriptorCountAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO,
             p_next: ptr::null(),
-            descriptor_set_count: u32::default(),
+            descriptor_set_count: Default::default(),
             p_descriptor_counts: ptr::null(),
         }
     }
@@ -23946,12 +21881,12 @@ pub struct DescriptorSetVariableDescriptorCountLayoutSupport {
 }
 unsafe impl Send for DescriptorSetVariableDescriptorCountLayoutSupport {}
 unsafe impl Sync for DescriptorSetVariableDescriptorCountLayoutSupport {}
-impl default::Default for DescriptorSetVariableDescriptorCountLayoutSupport {
+impl Default for DescriptorSetVariableDescriptorCountLayoutSupport {
     fn default() -> Self {
         Self {
             s_type: StructureType::DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_LAYOUT_SUPPORT,
             p_next: ptr::null_mut(),
-            max_variable_descriptor_count: u32::default(),
+            max_variable_descriptor_count: Default::default(),
         }
     }
 }
@@ -23986,20 +21921,20 @@ pub struct AttachmentDescription2 {
 }
 unsafe impl Send for AttachmentDescription2 {}
 unsafe impl Sync for AttachmentDescription2 {}
-impl default::Default for AttachmentDescription2 {
+impl Default for AttachmentDescription2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::ATTACHMENT_DESCRIPTION_2,
             p_next: ptr::null(),
-            flags: AttachmentDescriptionFlags::default(),
-            format: Format::default(),
-            samples: SampleCountFlags::default(),
-            load_op: AttachmentLoadOp::default(),
-            store_op: AttachmentStoreOp::default(),
-            stencil_load_op: AttachmentLoadOp::default(),
-            stencil_store_op: AttachmentStoreOp::default(),
-            initial_layout: ImageLayout::default(),
-            final_layout: ImageLayout::default(),
+            flags: Default::default(),
+            format: Default::default(),
+            samples: Default::default(),
+            load_op: Default::default(),
+            store_op: Default::default(),
+            stencil_load_op: Default::default(),
+            stencil_store_op: Default::default(),
+            initial_layout: Default::default(),
+            final_layout: Default::default(),
         }
     }
 }
@@ -24032,14 +21967,14 @@ pub struct AttachmentReference2 {
 }
 unsafe impl Send for AttachmentReference2 {}
 unsafe impl Sync for AttachmentReference2 {}
-impl default::Default for AttachmentReference2 {
+impl Default for AttachmentReference2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::ATTACHMENT_REFERENCE_2,
             p_next: ptr::null(),
-            attachment: u32::default(),
-            layout: ImageLayout::default(),
-            aspect_mask: ImageAspectFlags::default(),
+            attachment: Default::default(),
+            layout: Default::default(),
+            aspect_mask: Default::default(),
         }
     }
 }
@@ -24074,21 +22009,21 @@ pub struct SubpassDescription2 {
 }
 unsafe impl Send for SubpassDescription2 {}
 unsafe impl Sync for SubpassDescription2 {}
-impl default::Default for SubpassDescription2 {
+impl Default for SubpassDescription2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_DESCRIPTION_2,
             p_next: ptr::null(),
-            flags: SubpassDescriptionFlags::default(),
-            pipeline_bind_point: PipelineBindPoint::default(),
-            view_mask: u32::default(),
-            input_attachment_count: u32::default(),
+            flags: Default::default(),
+            pipeline_bind_point: Default::default(),
+            view_mask: Default::default(),
+            input_attachment_count: Default::default(),
             p_input_attachments: ptr::null(),
-            color_attachment_count: u32::default(),
+            color_attachment_count: Default::default(),
             p_color_attachments: ptr::null(),
             p_resolve_attachments: ptr::null(),
             p_depth_stencil_attachment: ptr::null(),
-            preserve_attachment_count: u32::default(),
+            preserve_attachment_count: Default::default(),
             p_preserve_attachments: ptr::null(),
         }
     }
@@ -24129,19 +22064,19 @@ pub struct SubpassDependency2 {
 }
 unsafe impl Send for SubpassDependency2 {}
 unsafe impl Sync for SubpassDependency2 {}
-impl default::Default for SubpassDependency2 {
+impl Default for SubpassDependency2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_DEPENDENCY_2,
             p_next: ptr::null(),
-            src_subpass: u32::default(),
-            dst_subpass: u32::default(),
-            src_stage_mask: PipelineStageFlags::default(),
-            dst_stage_mask: PipelineStageFlags::default(),
-            src_access_mask: AccessFlags::default(),
-            dst_access_mask: AccessFlags::default(),
-            dependency_flags: DependencyFlags::default(),
-            view_offset: i32::default(),
+            src_subpass: Default::default(),
+            dst_subpass: Default::default(),
+            src_stage_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            dependency_flags: Default::default(),
+            view_offset: Default::default(),
         }
     }
 }
@@ -24179,19 +22114,19 @@ pub struct RenderPassCreateInfo2 {
 }
 unsafe impl Send for RenderPassCreateInfo2 {}
 unsafe impl Sync for RenderPassCreateInfo2 {}
-impl default::Default for RenderPassCreateInfo2 {
+impl Default for RenderPassCreateInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_CREATE_INFO_2,
             p_next: ptr::null(),
-            flags: RenderPassCreateFlags::default(),
-            attachment_count: u32::default(),
+            flags: Default::default(),
+            attachment_count: Default::default(),
             p_attachments: ptr::null(),
-            subpass_count: u32::default(),
+            subpass_count: Default::default(),
             p_subpasses: ptr::null(),
-            dependency_count: u32::default(),
+            dependency_count: Default::default(),
             p_dependencies: ptr::null(),
-            correlated_view_mask_count: u32::default(),
+            correlated_view_mask_count: Default::default(),
             p_correlated_view_masks: ptr::null(),
         }
     }
@@ -24223,12 +22158,12 @@ pub struct SubpassBeginInfo {
 }
 unsafe impl Send for SubpassBeginInfo {}
 unsafe impl Sync for SubpassBeginInfo {}
-impl default::Default for SubpassBeginInfo {
+impl Default for SubpassBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_BEGIN_INFO,
             p_next: ptr::null(),
-            contents: SubpassContents::default(),
+            contents: Default::default(),
         }
     }
 }
@@ -24250,7 +22185,7 @@ pub struct SubpassEndInfo {
 }
 unsafe impl Send for SubpassEndInfo {}
 unsafe impl Sync for SubpassEndInfo {}
-impl default::Default for SubpassEndInfo {
+impl Default for SubpassEndInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_END_INFO,
@@ -24276,12 +22211,12 @@ pub struct PhysicalDeviceTimelineSemaphoreFeatures {
 }
 unsafe impl Send for PhysicalDeviceTimelineSemaphoreFeatures {}
 unsafe impl Sync for PhysicalDeviceTimelineSemaphoreFeatures {}
-impl default::Default for PhysicalDeviceTimelineSemaphoreFeatures {
+impl Default for PhysicalDeviceTimelineSemaphoreFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES,
             p_next: ptr::null_mut(),
-            timeline_semaphore: Bool32::default(),
+            timeline_semaphore: Default::default(),
         }
     }
 }
@@ -24304,12 +22239,12 @@ pub struct PhysicalDeviceTimelineSemaphoreProperties {
 }
 unsafe impl Send for PhysicalDeviceTimelineSemaphoreProperties {}
 unsafe impl Sync for PhysicalDeviceTimelineSemaphoreProperties {}
-impl default::Default for PhysicalDeviceTimelineSemaphoreProperties {
+impl Default for PhysicalDeviceTimelineSemaphoreProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_PROPERTIES,
             p_next: ptr::null_mut(),
-            max_timeline_semaphore_value_difference: u64::default(),
+            max_timeline_semaphore_value_difference: Default::default(),
         }
     }
 }
@@ -24336,13 +22271,13 @@ pub struct SemaphoreTypeCreateInfo {
 }
 unsafe impl Send for SemaphoreTypeCreateInfo {}
 unsafe impl Sync for SemaphoreTypeCreateInfo {}
-impl default::Default for SemaphoreTypeCreateInfo {
+impl Default for SemaphoreTypeCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_TYPE_CREATE_INFO,
             p_next: ptr::null(),
-            semaphore_type: SemaphoreType::default(),
-            initial_value: u64::default(),
+            semaphore_type: Default::default(),
+            initial_value: Default::default(),
         }
     }
 }
@@ -24369,14 +22304,14 @@ pub struct TimelineSemaphoreSubmitInfo {
 }
 unsafe impl Send for TimelineSemaphoreSubmitInfo {}
 unsafe impl Sync for TimelineSemaphoreSubmitInfo {}
-impl default::Default for TimelineSemaphoreSubmitInfo {
+impl Default for TimelineSemaphoreSubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::TIMELINE_SEMAPHORE_SUBMIT_INFO,
             p_next: ptr::null(),
-            wait_semaphore_value_count: u32::default(),
+            wait_semaphore_value_count: Default::default(),
             p_wait_semaphore_values: ptr::null(),
-            signal_semaphore_value_count: u32::default(),
+            signal_semaphore_value_count: Default::default(),
             p_signal_semaphore_values: ptr::null(),
         }
     }
@@ -24406,13 +22341,13 @@ pub struct SemaphoreWaitInfo {
 }
 unsafe impl Send for SemaphoreWaitInfo {}
 unsafe impl Sync for SemaphoreWaitInfo {}
-impl default::Default for SemaphoreWaitInfo {
+impl Default for SemaphoreWaitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_WAIT_INFO,
             p_next: ptr::null(),
-            flags: SemaphoreWaitFlags::default(),
-            semaphore_count: u32::default(),
+            flags: Default::default(),
+            semaphore_count: Default::default(),
             p_semaphores: ptr::null(),
             p_values: ptr::null(),
         }
@@ -24441,13 +22376,13 @@ pub struct SemaphoreSignalInfo {
 }
 unsafe impl Send for SemaphoreSignalInfo {}
 unsafe impl Sync for SemaphoreSignalInfo {}
-impl default::Default for SemaphoreSignalInfo {
+impl Default for SemaphoreSignalInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_SIGNAL_INFO,
             p_next: ptr::null(),
-            semaphore: None,
-            value: u64::default(),
+            semaphore: Default::default(),
+            value: Default::default(),
         }
     }
 }
@@ -24463,18 +22398,10 @@ impl fmt::Debug for SemaphoreSignalInfo {
 }
 pub type SemaphoreSignalInfoKHR = SemaphoreSignalInfo;
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDivisorDescriptionEXT {
     pub binding: u32,
     pub divisor: u32,
-}
-impl default::Default for VertexInputBindingDivisorDescriptionEXT {
-    fn default() -> Self {
-        Self {
-            binding: u32::default(),
-            divisor: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for VertexInputBindingDivisorDescriptionEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -24494,12 +22421,12 @@ pub struct PipelineVertexInputDivisorStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineVertexInputDivisorStateCreateInfoEXT {}
 unsafe impl Sync for PipelineVertexInputDivisorStateCreateInfoEXT {}
-impl default::Default for PipelineVertexInputDivisorStateCreateInfoEXT {
+impl Default for PipelineVertexInputDivisorStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            vertex_binding_divisor_count: u32::default(),
+            vertex_binding_divisor_count: Default::default(),
             p_vertex_binding_divisors: ptr::null(),
         }
     }
@@ -24524,12 +22451,12 @@ pub struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {}
-impl default::Default for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
+impl Default for PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_vertex_attrib_divisor: u32::default(),
+            max_vertex_attrib_divisor: Default::default(),
         }
     }
 }
@@ -24554,15 +22481,15 @@ pub struct PhysicalDevicePCIBusInfoPropertiesEXT {
 }
 unsafe impl Send for PhysicalDevicePCIBusInfoPropertiesEXT {}
 unsafe impl Sync for PhysicalDevicePCIBusInfoPropertiesEXT {}
-impl default::Default for PhysicalDevicePCIBusInfoPropertiesEXT {
+impl Default for PhysicalDevicePCIBusInfoPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            pci_domain: u32::default(),
-            pci_bus: u32::default(),
-            pci_device: u32::default(),
-            pci_function: u32::default(),
+            pci_domain: Default::default(),
+            pci_bus: Default::default(),
+            pci_device: Default::default(),
+            pci_function: Default::default(),
         }
     }
 }
@@ -24587,7 +22514,7 @@ pub struct ImportAndroidHardwareBufferInfoANDROID {
 }
 unsafe impl Send for ImportAndroidHardwareBufferInfoANDROID {}
 unsafe impl Sync for ImportAndroidHardwareBufferInfoANDROID {}
-impl default::Default for ImportAndroidHardwareBufferInfoANDROID {
+impl Default for ImportAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
@@ -24614,12 +22541,12 @@ pub struct AndroidHardwareBufferUsageANDROID {
 }
 unsafe impl Send for AndroidHardwareBufferUsageANDROID {}
 unsafe impl Sync for AndroidHardwareBufferUsageANDROID {}
-impl default::Default for AndroidHardwareBufferUsageANDROID {
+impl Default for AndroidHardwareBufferUsageANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_USAGE_ANDROID,
             p_next: ptr::null_mut(),
-            android_hardware_buffer_usage: u64::default(),
+            android_hardware_buffer_usage: Default::default(),
         }
     }
 }
@@ -24642,13 +22569,13 @@ pub struct AndroidHardwareBufferPropertiesANDROID {
 }
 unsafe impl Send for AndroidHardwareBufferPropertiesANDROID {}
 unsafe impl Sync for AndroidHardwareBufferPropertiesANDROID {}
-impl default::Default for AndroidHardwareBufferPropertiesANDROID {
+impl Default for AndroidHardwareBufferPropertiesANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_PROPERTIES_ANDROID,
             p_next: ptr::null_mut(),
-            allocation_size: DeviceSize::default(),
-            memory_type_bits: u32::default(),
+            allocation_size: Default::default(),
+            memory_type_bits: Default::default(),
         }
     }
 }
@@ -24671,12 +22598,12 @@ pub struct MemoryGetAndroidHardwareBufferInfoANDROID {
 }
 unsafe impl Send for MemoryGetAndroidHardwareBufferInfoANDROID {}
 unsafe impl Sync for MemoryGetAndroidHardwareBufferInfoANDROID {}
-impl default::Default for MemoryGetAndroidHardwareBufferInfoANDROID {
+impl Default for MemoryGetAndroidHardwareBufferInfoANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
             p_next: ptr::null(),
-            memory: None,
+            memory: Default::default(),
         }
     }
 }
@@ -24705,19 +22632,19 @@ pub struct AndroidHardwareBufferFormatPropertiesANDROID {
 }
 unsafe impl Send for AndroidHardwareBufferFormatPropertiesANDROID {}
 unsafe impl Sync for AndroidHardwareBufferFormatPropertiesANDROID {}
-impl default::Default for AndroidHardwareBufferFormatPropertiesANDROID {
+impl Default for AndroidHardwareBufferFormatPropertiesANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_ANDROID,
             p_next: ptr::null_mut(),
-            format: Format::default(),
-            external_format: u64::default(),
-            format_features: FormatFeatureFlags::default(),
-            sampler_ycbcr_conversion_components: ComponentMapping::default(),
-            suggested_ycbcr_model: SamplerYcbcrModelConversion::default(),
-            suggested_ycbcr_range: SamplerYcbcrRange::default(),
-            suggested_x_chroma_offset: ChromaLocation::default(),
-            suggested_y_chroma_offset: ChromaLocation::default(),
+            format: Default::default(),
+            external_format: Default::default(),
+            format_features: Default::default(),
+            sampler_ycbcr_conversion_components: Default::default(),
+            suggested_ycbcr_model: Default::default(),
+            suggested_ycbcr_range: Default::default(),
+            suggested_x_chroma_offset: Default::default(),
+            suggested_y_chroma_offset: Default::default(),
         }
     }
 }
@@ -24750,12 +22677,12 @@ pub struct CommandBufferInheritanceConditionalRenderingInfoEXT {
 }
 unsafe impl Send for CommandBufferInheritanceConditionalRenderingInfoEXT {}
 unsafe impl Sync for CommandBufferInheritanceConditionalRenderingInfoEXT {}
-impl default::Default for CommandBufferInheritanceConditionalRenderingInfoEXT {
+impl Default for CommandBufferInheritanceConditionalRenderingInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_CONDITIONAL_RENDERING_INFO_EXT,
             p_next: ptr::null(),
-            conditional_rendering_enable: Bool32::default(),
+            conditional_rendering_enable: Default::default(),
         }
     }
 }
@@ -24777,12 +22704,12 @@ pub struct ExternalFormatANDROID {
 }
 unsafe impl Send for ExternalFormatANDROID {}
 unsafe impl Sync for ExternalFormatANDROID {}
-impl default::Default for ExternalFormatANDROID {
+impl Default for ExternalFormatANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::EXTERNAL_FORMAT_ANDROID,
             p_next: ptr::null_mut(),
-            external_format: u64::default(),
+            external_format: Default::default(),
         }
     }
 }
@@ -24809,14 +22736,14 @@ pub struct PhysicalDevice8BitStorageFeatures {
 }
 unsafe impl Send for PhysicalDevice8BitStorageFeatures {}
 unsafe impl Sync for PhysicalDevice8BitStorageFeatures {}
-impl default::Default for PhysicalDevice8BitStorageFeatures {
+impl Default for PhysicalDevice8BitStorageFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES,
             p_next: ptr::null_mut(),
-            storage_buffer8_bit_access: Bool32::default(),
-            uniform_and_storage_buffer8_bit_access: Bool32::default(),
-            storage_push_constant8: Bool32::default(),
+            storage_buffer8_bit_access: Default::default(),
+            uniform_and_storage_buffer8_bit_access: Default::default(),
+            storage_push_constant8: Default::default(),
         }
     }
 }
@@ -24845,13 +22772,13 @@ pub struct PhysicalDeviceConditionalRenderingFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceConditionalRenderingFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceConditionalRenderingFeaturesEXT {}
-impl default::Default for PhysicalDeviceConditionalRenderingFeaturesEXT {
+impl Default for PhysicalDeviceConditionalRenderingFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_CONDITIONAL_RENDERING_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            conditional_rendering: Bool32::default(),
-            inherited_conditional_rendering: Bool32::default(),
+            conditional_rendering: Default::default(),
+            inherited_conditional_rendering: Default::default(),
         }
     }
 }
@@ -24876,14 +22803,14 @@ pub struct PhysicalDeviceVulkanMemoryModelFeatures {
 }
 unsafe impl Send for PhysicalDeviceVulkanMemoryModelFeatures {}
 unsafe impl Sync for PhysicalDeviceVulkanMemoryModelFeatures {}
-impl default::Default for PhysicalDeviceVulkanMemoryModelFeatures {
+impl Default for PhysicalDeviceVulkanMemoryModelFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_MEMORY_MODEL_FEATURES,
             p_next: ptr::null_mut(),
-            vulkan_memory_model: Bool32::default(),
-            vulkan_memory_model_device_scope: Bool32::default(),
-            vulkan_memory_model_availability_visibility_chains: Bool32::default(),
+            vulkan_memory_model: Default::default(),
+            vulkan_memory_model_device_scope: Default::default(),
+            vulkan_memory_model_availability_visibility_chains: Default::default(),
         }
     }
 }
@@ -24915,13 +22842,13 @@ pub struct PhysicalDeviceShaderAtomicInt64Features {
 }
 unsafe impl Send for PhysicalDeviceShaderAtomicInt64Features {}
 unsafe impl Sync for PhysicalDeviceShaderAtomicInt64Features {}
-impl default::Default for PhysicalDeviceShaderAtomicInt64Features {
+impl Default for PhysicalDeviceShaderAtomicInt64Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_INT64_FEATURES,
             p_next: ptr::null_mut(),
-            shader_buffer_int64_atomics: Bool32::default(),
-            shader_shared_int64_atomics: Bool32::default(),
+            shader_buffer_int64_atomics: Default::default(),
+            shader_shared_int64_atomics: Default::default(),
         }
     }
 }
@@ -24956,23 +22883,23 @@ pub struct PhysicalDeviceShaderAtomicFloatFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceShaderAtomicFloatFeaturesEXT {}
-impl default::Default for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
+impl Default for PhysicalDeviceShaderAtomicFloatFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            shader_buffer_float32_atomics: Bool32::default(),
-            shader_buffer_float32_atomic_add: Bool32::default(),
-            shader_buffer_float64_atomics: Bool32::default(),
-            shader_buffer_float64_atomic_add: Bool32::default(),
-            shader_shared_float32_atomics: Bool32::default(),
-            shader_shared_float32_atomic_add: Bool32::default(),
-            shader_shared_float64_atomics: Bool32::default(),
-            shader_shared_float64_atomic_add: Bool32::default(),
-            shader_image_float32_atomics: Bool32::default(),
-            shader_image_float32_atomic_add: Bool32::default(),
-            sparse_image_float32_atomics: Bool32::default(),
-            sparse_image_float32_atomic_add: Bool32::default(),
+            shader_buffer_float32_atomics: Default::default(),
+            shader_buffer_float32_atomic_add: Default::default(),
+            shader_buffer_float64_atomics: Default::default(),
+            shader_buffer_float64_atomic_add: Default::default(),
+            shader_shared_float32_atomics: Default::default(),
+            shader_shared_float32_atomic_add: Default::default(),
+            shader_shared_float64_atomics: Default::default(),
+            shader_shared_float64_atomic_add: Default::default(),
+            shader_image_float32_atomics: Default::default(),
+            shader_image_float32_atomic_add: Default::default(),
+            sparse_image_float32_atomics: Default::default(),
+            sparse_image_float32_atomic_add: Default::default(),
         }
     }
 }
@@ -25028,23 +22955,23 @@ pub struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {}
-impl default::Default for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
+impl Default for PhysicalDeviceShaderAtomicFloat2FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            shader_buffer_float16_atomics: Bool32::default(),
-            shader_buffer_float16_atomic_add: Bool32::default(),
-            shader_buffer_float16_atomic_min_max: Bool32::default(),
-            shader_buffer_float32_atomic_min_max: Bool32::default(),
-            shader_buffer_float64_atomic_min_max: Bool32::default(),
-            shader_shared_float16_atomics: Bool32::default(),
-            shader_shared_float16_atomic_add: Bool32::default(),
-            shader_shared_float16_atomic_min_max: Bool32::default(),
-            shader_shared_float32_atomic_min_max: Bool32::default(),
-            shader_shared_float64_atomic_min_max: Bool32::default(),
-            shader_image_float32_atomic_min_max: Bool32::default(),
-            sparse_image_float32_atomic_min_max: Bool32::default(),
+            shader_buffer_float16_atomics: Default::default(),
+            shader_buffer_float16_atomic_add: Default::default(),
+            shader_buffer_float16_atomic_min_max: Default::default(),
+            shader_buffer_float32_atomic_min_max: Default::default(),
+            shader_buffer_float64_atomic_min_max: Default::default(),
+            shader_shared_float16_atomics: Default::default(),
+            shader_shared_float16_atomic_add: Default::default(),
+            shader_shared_float16_atomic_min_max: Default::default(),
+            shader_shared_float32_atomic_min_max: Default::default(),
+            shader_shared_float64_atomic_min_max: Default::default(),
+            shader_image_float32_atomic_min_max: Default::default(),
+            sparse_image_float32_atomic_min_max: Default::default(),
         }
     }
 }
@@ -25108,13 +23035,13 @@ pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {}
-impl default::Default for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
+impl Default for PhysicalDeviceVertexAttributeDivisorFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            vertex_attribute_instance_rate_divisor: Bool32::default(),
-            vertex_attribute_instance_rate_zero_divisor: Bool32::default(),
+            vertex_attribute_instance_rate_divisor: Default::default(),
+            vertex_attribute_instance_rate_zero_divisor: Default::default(),
         }
     }
 }
@@ -25143,12 +23070,12 @@ pub struct QueueFamilyCheckpointPropertiesNV {
 }
 unsafe impl Send for QueueFamilyCheckpointPropertiesNV {}
 unsafe impl Sync for QueueFamilyCheckpointPropertiesNV {}
-impl default::Default for QueueFamilyCheckpointPropertiesNV {
+impl Default for QueueFamilyCheckpointPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_CHECKPOINT_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            checkpoint_execution_stage_mask: PipelineStageFlags::default(),
+            checkpoint_execution_stage_mask: Default::default(),
         }
     }
 }
@@ -25171,12 +23098,12 @@ pub struct CheckpointDataNV {
 }
 unsafe impl Send for CheckpointDataNV {}
 unsafe impl Sync for CheckpointDataNV {}
-impl default::Default for CheckpointDataNV {
+impl Default for CheckpointDataNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::CHECKPOINT_DATA_NV,
             p_next: ptr::null_mut(),
-            stage: PipelineStageFlags::default(),
+            stage: Default::default(),
             p_checkpoint_marker: ptr::null_mut(),
         }
     }
@@ -25207,15 +23134,15 @@ pub struct PhysicalDeviceDepthStencilResolveProperties {
 }
 unsafe impl Send for PhysicalDeviceDepthStencilResolveProperties {}
 unsafe impl Sync for PhysicalDeviceDepthStencilResolveProperties {}
-impl default::Default for PhysicalDeviceDepthStencilResolveProperties {
+impl Default for PhysicalDeviceDepthStencilResolveProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEPTH_STENCIL_RESOLVE_PROPERTIES,
             p_next: ptr::null_mut(),
-            supported_depth_resolve_modes: ResolveModeFlags::default(),
-            supported_stencil_resolve_modes: ResolveModeFlags::default(),
-            independent_resolve_none: Bool32::default(),
-            independent_resolve: Bool32::default(),
+            supported_depth_resolve_modes: Default::default(),
+            supported_stencil_resolve_modes: Default::default(),
+            independent_resolve_none: Default::default(),
+            independent_resolve: Default::default(),
         }
     }
 }
@@ -25246,13 +23173,13 @@ pub struct SubpassDescriptionDepthStencilResolve {
 }
 unsafe impl Send for SubpassDescriptionDepthStencilResolve {}
 unsafe impl Sync for SubpassDescriptionDepthStencilResolve {}
-impl default::Default for SubpassDescriptionDepthStencilResolve {
+impl Default for SubpassDescriptionDepthStencilResolve {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_DESCRIPTION_DEPTH_STENCIL_RESOLVE,
             p_next: ptr::null(),
-            depth_resolve_mode: ResolveModeFlags::default(),
-            stencil_resolve_mode: ResolveModeFlags::default(),
+            depth_resolve_mode: Default::default(),
+            stencil_resolve_mode: Default::default(),
             p_depth_stencil_resolve_attachment: ptr::null(),
         }
     }
@@ -25281,12 +23208,12 @@ pub struct ImageViewASTCDecodeModeEXT {
 }
 unsafe impl Send for ImageViewASTCDecodeModeEXT {}
 unsafe impl Sync for ImageViewASTCDecodeModeEXT {}
-impl default::Default for ImageViewASTCDecodeModeEXT {
+impl Default for ImageViewASTCDecodeModeEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_ASTC_DECODE_MODE_EXT,
             p_next: ptr::null(),
-            decode_mode: Format::default(),
+            decode_mode: Default::default(),
         }
     }
 }
@@ -25308,12 +23235,12 @@ pub struct PhysicalDeviceASTCDecodeFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceASTCDecodeFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceASTCDecodeFeaturesEXT {}
-impl default::Default for PhysicalDeviceASTCDecodeFeaturesEXT {
+impl Default for PhysicalDeviceASTCDecodeFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            decode_mode_shared_exponent: Bool32::default(),
+            decode_mode_shared_exponent: Default::default(),
         }
     }
 }
@@ -25336,13 +23263,13 @@ pub struct PhysicalDeviceTransformFeedbackFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceTransformFeedbackFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceTransformFeedbackFeaturesEXT {}
-impl default::Default for PhysicalDeviceTransformFeedbackFeaturesEXT {
+impl Default for PhysicalDeviceTransformFeedbackFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            transform_feedback: Bool32::default(),
-            geometry_streams: Bool32::default(),
+            transform_feedback: Default::default(),
+            geometry_streams: Default::default(),
         }
     }
 }
@@ -25374,21 +23301,21 @@ pub struct PhysicalDeviceTransformFeedbackPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceTransformFeedbackPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceTransformFeedbackPropertiesEXT {}
-impl default::Default for PhysicalDeviceTransformFeedbackPropertiesEXT {
+impl Default for PhysicalDeviceTransformFeedbackPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_transform_feedback_streams: u32::default(),
-            max_transform_feedback_buffers: u32::default(),
-            max_transform_feedback_buffer_size: DeviceSize::default(),
-            max_transform_feedback_stream_data_size: u32::default(),
-            max_transform_feedback_buffer_data_size: u32::default(),
-            max_transform_feedback_buffer_data_stride: u32::default(),
-            transform_feedback_queries: Bool32::default(),
-            transform_feedback_streams_lines_triangles: Bool32::default(),
-            transform_feedback_rasterization_stream_select: Bool32::default(),
-            transform_feedback_draw: Bool32::default(),
+            max_transform_feedback_streams: Default::default(),
+            max_transform_feedback_buffers: Default::default(),
+            max_transform_feedback_buffer_size: Default::default(),
+            max_transform_feedback_stream_data_size: Default::default(),
+            max_transform_feedback_buffer_data_size: Default::default(),
+            max_transform_feedback_buffer_data_stride: Default::default(),
+            transform_feedback_queries: Default::default(),
+            transform_feedback_streams_lines_triangles: Default::default(),
+            transform_feedback_rasterization_stream_select: Default::default(),
+            transform_feedback_draw: Default::default(),
         }
     }
 }
@@ -25438,13 +23365,13 @@ pub struct PipelineRasterizationStateStreamCreateInfoEXT {
 }
 unsafe impl Send for PipelineRasterizationStateStreamCreateInfoEXT {}
 unsafe impl Sync for PipelineRasterizationStateStreamCreateInfoEXT {}
-impl default::Default for PipelineRasterizationStateStreamCreateInfoEXT {
+impl Default for PipelineRasterizationStateStreamCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: PipelineRasterizationStateStreamCreateFlagsEXT::default(),
-            rasterization_stream: u32::default(),
+            flags: Default::default(),
+            rasterization_stream: Default::default(),
         }
     }
 }
@@ -25467,12 +23394,12 @@ pub struct PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {}
-impl default::Default for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
+impl Default for PhysicalDeviceRepresentativeFragmentTestFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_REPRESENTATIVE_FRAGMENT_TEST_FEATURES_NV,
             p_next: ptr::null_mut(),
-            representative_fragment_test: Bool32::default(),
+            representative_fragment_test: Default::default(),
         }
     }
 }
@@ -25494,12 +23421,12 @@ pub struct PipelineRepresentativeFragmentTestStateCreateInfoNV {
 }
 unsafe impl Send for PipelineRepresentativeFragmentTestStateCreateInfoNV {}
 unsafe impl Sync for PipelineRepresentativeFragmentTestStateCreateInfoNV {}
-impl default::Default for PipelineRepresentativeFragmentTestStateCreateInfoNV {
+impl Default for PipelineRepresentativeFragmentTestStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_REPRESENTATIVE_FRAGMENT_TEST_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            representative_fragment_test_enable: Bool32::default(),
+            representative_fragment_test_enable: Default::default(),
         }
     }
 }
@@ -25524,12 +23451,12 @@ pub struct PhysicalDeviceExclusiveScissorFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceExclusiveScissorFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceExclusiveScissorFeaturesNV {}
-impl default::Default for PhysicalDeviceExclusiveScissorFeaturesNV {
+impl Default for PhysicalDeviceExclusiveScissorFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV,
             p_next: ptr::null_mut(),
-            exclusive_scissor: Bool32::default(),
+            exclusive_scissor: Default::default(),
         }
     }
 }
@@ -25552,12 +23479,12 @@ pub struct PipelineViewportExclusiveScissorStateCreateInfoNV {
 }
 unsafe impl Send for PipelineViewportExclusiveScissorStateCreateInfoNV {}
 unsafe impl Sync for PipelineViewportExclusiveScissorStateCreateInfoNV {}
-impl default::Default for PipelineViewportExclusiveScissorStateCreateInfoNV {
+impl Default for PipelineViewportExclusiveScissorStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            exclusive_scissor_count: u32::default(),
+            exclusive_scissor_count: Default::default(),
             p_exclusive_scissors: ptr::null(),
         }
     }
@@ -25581,12 +23508,12 @@ pub struct PhysicalDeviceCornerSampledImageFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceCornerSampledImageFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceCornerSampledImageFeaturesNV {}
-impl default::Default for PhysicalDeviceCornerSampledImageFeaturesNV {
+impl Default for PhysicalDeviceCornerSampledImageFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV,
             p_next: ptr::null_mut(),
-            corner_sampled_image: Bool32::default(),
+            corner_sampled_image: Default::default(),
         }
     }
 }
@@ -25609,13 +23536,13 @@ pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
-impl default::Default for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
+impl Default for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV,
             p_next: ptr::null_mut(),
-            compute_derivative_group_quads: Bool32::default(),
-            compute_derivative_group_linear: Bool32::default(),
+            compute_derivative_group_quads: Default::default(),
+            compute_derivative_group_linear: Default::default(),
         }
     }
 }
@@ -25638,12 +23565,12 @@ pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
-impl default::Default for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
+impl Default for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV,
             p_next: ptr::null_mut(),
-            fragment_shader_barycentric: Bool32::default(),
+            fragment_shader_barycentric: Default::default(),
         }
     }
 }
@@ -25665,12 +23592,12 @@ pub struct PhysicalDeviceShaderImageFootprintFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceShaderImageFootprintFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceShaderImageFootprintFeaturesNV {}
-impl default::Default for PhysicalDeviceShaderImageFootprintFeaturesNV {
+impl Default for PhysicalDeviceShaderImageFootprintFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV,
             p_next: ptr::null_mut(),
-            image_footprint: Bool32::default(),
+            image_footprint: Default::default(),
         }
     }
 }
@@ -25692,12 +23619,12 @@ pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
-impl default::Default for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
+impl Default for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEDICATED_ALLOCATION_IMAGE_ALIASING_FEATURES_NV,
             p_next: ptr::null_mut(),
-            dedicated_allocation_image_aliasing: Bool32::default(),
+            dedicated_allocation_image_aliasing: Default::default(),
         }
     }
 }
@@ -25721,10 +23648,10 @@ pub struct ShadingRatePaletteNV {
 }
 unsafe impl Send for ShadingRatePaletteNV {}
 unsafe impl Sync for ShadingRatePaletteNV {}
-impl default::Default for ShadingRatePaletteNV {
+impl Default for ShadingRatePaletteNV {
     fn default() -> Self {
         Self {
-            shading_rate_palette_entry_count: u32::default(),
+            shading_rate_palette_entry_count: Default::default(),
             p_shading_rate_palette_entries: ptr::null(),
         }
     }
@@ -25751,13 +23678,13 @@ pub struct PipelineViewportShadingRateImageStateCreateInfoNV {
 }
 unsafe impl Send for PipelineViewportShadingRateImageStateCreateInfoNV {}
 unsafe impl Sync for PipelineViewportShadingRateImageStateCreateInfoNV {}
-impl default::Default for PipelineViewportShadingRateImageStateCreateInfoNV {
+impl Default for PipelineViewportShadingRateImageStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_SHADING_RATE_IMAGE_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            shading_rate_image_enable: Bool32::default(),
-            viewport_count: u32::default(),
+            shading_rate_image_enable: Default::default(),
+            viewport_count: Default::default(),
             p_shading_rate_palettes: ptr::null(),
         }
     }
@@ -25783,13 +23710,13 @@ pub struct PhysicalDeviceShadingRateImageFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceShadingRateImageFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceShadingRateImageFeaturesNV {}
-impl default::Default for PhysicalDeviceShadingRateImageFeaturesNV {
+impl Default for PhysicalDeviceShadingRateImageFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADING_RATE_IMAGE_FEATURES_NV,
             p_next: ptr::null_mut(),
-            shading_rate_image: Bool32::default(),
-            shading_rate_coarse_sample_order: Bool32::default(),
+            shading_rate_image: Default::default(),
+            shading_rate_coarse_sample_order: Default::default(),
         }
     }
 }
@@ -25817,14 +23744,14 @@ pub struct PhysicalDeviceShadingRateImagePropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceShadingRateImagePropertiesNV {}
 unsafe impl Sync for PhysicalDeviceShadingRateImagePropertiesNV {}
-impl default::Default for PhysicalDeviceShadingRateImagePropertiesNV {
+impl Default for PhysicalDeviceShadingRateImagePropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADING_RATE_IMAGE_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            shading_rate_texel_size: Extent2D::default(),
-            shading_rate_palette_size: u32::default(),
-            shading_rate_max_coarse_samples: u32::default(),
+            shading_rate_texel_size: Default::default(),
+            shading_rate_palette_size: Default::default(),
+            shading_rate_max_coarse_samples: Default::default(),
         }
     }
 }
@@ -25848,12 +23775,12 @@ pub struct PhysicalDeviceInvocationMaskFeaturesHUAWEI {
 }
 unsafe impl Send for PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
 unsafe impl Sync for PhysicalDeviceInvocationMaskFeaturesHUAWEI {}
-impl default::Default for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
+impl Default for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI,
             p_next: ptr::null_mut(),
-            invocation_mask: Bool32::default(),
+            invocation_mask: Default::default(),
         }
     }
 }
@@ -25867,20 +23794,11 @@ impl fmt::Debug for PhysicalDeviceInvocationMaskFeaturesHUAWEI {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CoarseSampleLocationNV {
     pub pixel_x: u32,
     pub pixel_y: u32,
     pub sample: u32,
-}
-impl default::Default for CoarseSampleLocationNV {
-    fn default() -> Self {
-        Self {
-            pixel_x: u32::default(),
-            pixel_y: u32::default(),
-            sample: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for CoarseSampleLocationNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -25901,12 +23819,12 @@ pub struct CoarseSampleOrderCustomNV {
 }
 unsafe impl Send for CoarseSampleOrderCustomNV {}
 unsafe impl Sync for CoarseSampleOrderCustomNV {}
-impl default::Default for CoarseSampleOrderCustomNV {
+impl Default for CoarseSampleOrderCustomNV {
     fn default() -> Self {
         Self {
-            shading_rate: ShadingRatePaletteEntryNV::default(),
-            sample_count: u32::default(),
-            sample_location_count: u32::default(),
+            shading_rate: Default::default(),
+            sample_count: Default::default(),
+            sample_location_count: Default::default(),
             p_sample_locations: ptr::null(),
         }
     }
@@ -25932,13 +23850,13 @@ pub struct PipelineViewportCoarseSampleOrderStateCreateInfoNV {
 }
 unsafe impl Send for PipelineViewportCoarseSampleOrderStateCreateInfoNV {}
 unsafe impl Sync for PipelineViewportCoarseSampleOrderStateCreateInfoNV {}
-impl default::Default for PipelineViewportCoarseSampleOrderStateCreateInfoNV {
+impl Default for PipelineViewportCoarseSampleOrderStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_COARSE_SAMPLE_ORDER_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            sample_order_type: CoarseSampleOrderTypeNV::default(),
-            custom_sample_order_count: u32::default(),
+            sample_order_type: Default::default(),
+            custom_sample_order_count: Default::default(),
             p_custom_sample_orders: ptr::null(),
         }
     }
@@ -25964,13 +23882,13 @@ pub struct PhysicalDeviceMeshShaderFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceMeshShaderFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceMeshShaderFeaturesNV {}
-impl default::Default for PhysicalDeviceMeshShaderFeaturesNV {
+impl Default for PhysicalDeviceMeshShaderFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV,
             p_next: ptr::null_mut(),
-            task_shader: Bool32::default(),
-            mesh_shader: Bool32::default(),
+            task_shader: Default::default(),
+            mesh_shader: Default::default(),
         }
     }
 }
@@ -26005,24 +23923,24 @@ pub struct PhysicalDeviceMeshShaderPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceMeshShaderPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceMeshShaderPropertiesNV {}
-impl default::Default for PhysicalDeviceMeshShaderPropertiesNV {
+impl Default for PhysicalDeviceMeshShaderPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            max_draw_mesh_tasks_count: u32::default(),
-            max_task_work_group_invocations: u32::default(),
-            max_task_work_group_size: [u32::default(); 3],
-            max_task_total_memory_size: u32::default(),
-            max_task_output_count: u32::default(),
-            max_mesh_work_group_invocations: u32::default(),
-            max_mesh_work_group_size: [u32::default(); 3],
-            max_mesh_total_memory_size: u32::default(),
-            max_mesh_output_vertices: u32::default(),
-            max_mesh_output_primitives: u32::default(),
-            max_mesh_multiview_view_count: u32::default(),
-            mesh_output_per_vertex_granularity: u32::default(),
-            mesh_output_per_primitive_granularity: u32::default(),
+            max_draw_mesh_tasks_count: Default::default(),
+            max_task_work_group_invocations: Default::default(),
+            max_task_work_group_size: [Default::default(); 3],
+            max_task_total_memory_size: Default::default(),
+            max_task_output_count: Default::default(),
+            max_mesh_work_group_invocations: Default::default(),
+            max_mesh_work_group_size: [Default::default(); 3],
+            max_mesh_total_memory_size: Default::default(),
+            max_mesh_output_vertices: Default::default(),
+            max_mesh_output_primitives: Default::default(),
+            max_mesh_multiview_view_count: Default::default(),
+            mesh_output_per_vertex_granularity: Default::default(),
+            mesh_output_per_primitive_granularity: Default::default(),
         }
     }
 }
@@ -26054,18 +23972,10 @@ impl fmt::Debug for PhysicalDeviceMeshShaderPropertiesNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DrawMeshTasksIndirectCommandNV {
     pub task_count: u32,
     pub first_task: u32,
-}
-impl default::Default for DrawMeshTasksIndirectCommandNV {
-    fn default() -> Self {
-        Self {
-            task_count: u32::default(),
-            first_task: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for DrawMeshTasksIndirectCommandNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -26088,16 +23998,16 @@ pub struct RayTracingShaderGroupCreateInfoNV {
 }
 unsafe impl Send for RayTracingShaderGroupCreateInfoNV {}
 unsafe impl Sync for RayTracingShaderGroupCreateInfoNV {}
-impl default::Default for RayTracingShaderGroupCreateInfoNV {
+impl Default for RayTracingShaderGroupCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_SHADER_GROUP_CREATE_INFO_NV,
             p_next: ptr::null(),
-            ty: RayTracingShaderGroupTypeKHR::default(),
-            general_shader: u32::default(),
-            closest_hit_shader: u32::default(),
-            any_hit_shader: u32::default(),
-            intersection_shader: u32::default(),
+            ty: Default::default(),
+            general_shader: Default::default(),
+            closest_hit_shader: Default::default(),
+            any_hit_shader: Default::default(),
+            intersection_shader: Default::default(),
         }
     }
 }
@@ -26128,16 +24038,16 @@ pub struct RayTracingShaderGroupCreateInfoKHR {
 }
 unsafe impl Send for RayTracingShaderGroupCreateInfoKHR {}
 unsafe impl Sync for RayTracingShaderGroupCreateInfoKHR {}
-impl default::Default for RayTracingShaderGroupCreateInfoKHR {
+impl Default for RayTracingShaderGroupCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            ty: RayTracingShaderGroupTypeKHR::default(),
-            general_shader: u32::default(),
-            closest_hit_shader: u32::default(),
-            any_hit_shader: u32::default(),
-            intersection_shader: u32::default(),
+            ty: Default::default(),
+            general_shader: Default::default(),
+            closest_hit_shader: Default::default(),
+            any_hit_shader: Default::default(),
+            intersection_shader: Default::default(),
             p_shader_group_capture_replay_handle: ptr::null(),
         }
     }
@@ -26181,20 +24091,20 @@ pub struct RayTracingPipelineCreateInfoNV {
 }
 unsafe impl Send for RayTracingPipelineCreateInfoNV {}
 unsafe impl Sync for RayTracingPipelineCreateInfoNV {}
-impl default::Default for RayTracingPipelineCreateInfoNV {
+impl Default for RayTracingPipelineCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_PIPELINE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: PipelineCreateFlags::default(),
-            stage_count: u32::default(),
+            flags: Default::default(),
+            stage_count: Default::default(),
             p_stages: ptr::null(),
-            group_count: u32::default(),
+            group_count: Default::default(),
             p_groups: ptr::null(),
-            max_recursion_depth: u32::default(),
-            layout: None,
-            base_pipeline_handle: None,
-            base_pipeline_index: i32::default(),
+            max_recursion_depth: Default::default(),
+            layout: Default::default(),
+            base_pipeline_handle: Default::default(),
+            base_pipeline_index: Default::default(),
         }
     }
 }
@@ -26240,23 +24150,23 @@ pub struct RayTracingPipelineCreateInfoKHR {
 }
 unsafe impl Send for RayTracingPipelineCreateInfoKHR {}
 unsafe impl Sync for RayTracingPipelineCreateInfoKHR {}
-impl default::Default for RayTracingPipelineCreateInfoKHR {
+impl Default for RayTracingPipelineCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_PIPELINE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            flags: PipelineCreateFlags::default(),
-            stage_count: u32::default(),
+            flags: Default::default(),
+            stage_count: Default::default(),
             p_stages: ptr::null(),
-            group_count: u32::default(),
+            group_count: Default::default(),
             p_groups: ptr::null(),
-            max_pipeline_ray_recursion_depth: u32::default(),
+            max_pipeline_ray_recursion_depth: Default::default(),
             p_library_info: ptr::null(),
             p_library_interface: ptr::null(),
             p_dynamic_state: ptr::null(),
-            layout: None,
-            base_pipeline_handle: None,
-            base_pipeline_index: i32::default(),
+            layout: Default::default(),
+            base_pipeline_handle: Default::default(),
+            base_pipeline_index: Default::default(),
         }
     }
 }
@@ -26303,22 +24213,22 @@ pub struct GeometryTrianglesNV {
 }
 unsafe impl Send for GeometryTrianglesNV {}
 unsafe impl Sync for GeometryTrianglesNV {}
-impl default::Default for GeometryTrianglesNV {
+impl Default for GeometryTrianglesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GEOMETRY_TRIANGLES_NV,
             p_next: ptr::null(),
-            vertex_data: None,
-            vertex_offset: DeviceSize::default(),
-            vertex_count: u32::default(),
-            vertex_stride: DeviceSize::default(),
-            vertex_format: Format::default(),
-            index_data: None,
-            index_offset: DeviceSize::default(),
-            index_count: u32::default(),
-            index_type: IndexType::default(),
-            transform_data: None,
-            transform_offset: DeviceSize::default(),
+            vertex_data: Default::default(),
+            vertex_offset: Default::default(),
+            vertex_count: Default::default(),
+            vertex_stride: Default::default(),
+            vertex_format: Default::default(),
+            index_data: Default::default(),
+            index_offset: Default::default(),
+            index_count: Default::default(),
+            index_type: Default::default(),
+            transform_data: Default::default(),
+            transform_offset: Default::default(),
         }
     }
 }
@@ -26355,15 +24265,15 @@ pub struct GeometryAABBNV {
 }
 unsafe impl Send for GeometryAABBNV {}
 unsafe impl Sync for GeometryAABBNV {}
-impl default::Default for GeometryAABBNV {
+impl Default for GeometryAABBNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GEOMETRY_AABB_NV,
             p_next: ptr::null(),
-            aabb_data: None,
-            num_aab_bs: u32::default(),
-            stride: u32::default(),
-            offset: DeviceSize::default(),
+            aabb_data: Default::default(),
+            num_aab_bs: Default::default(),
+            stride: Default::default(),
+            offset: Default::default(),
         }
     }
 }
@@ -26380,18 +24290,10 @@ impl fmt::Debug for GeometryAABBNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct GeometryDataNV {
     pub triangles: GeometryTrianglesNV,
     pub aabbs: GeometryAABBNV,
-}
-impl default::Default for GeometryDataNV {
-    fn default() -> Self {
-        Self {
-            triangles: GeometryTrianglesNV::default(),
-            aabbs: GeometryAABBNV::default(),
-        }
-    }
 }
 impl fmt::Debug for GeometryDataNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -26412,14 +24314,14 @@ pub struct GeometryNV {
 }
 unsafe impl Send for GeometryNV {}
 unsafe impl Sync for GeometryNV {}
-impl default::Default for GeometryNV {
+impl Default for GeometryNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::GEOMETRY_NV,
             p_next: ptr::null(),
-            geometry_type: GeometryTypeKHR::default(),
-            geometry: GeometryDataNV::default(),
-            flags: GeometryFlagsKHR::default(),
+            geometry_type: Default::default(),
+            geometry: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -26447,15 +24349,15 @@ pub struct AccelerationStructureInfoNV {
 }
 unsafe impl Send for AccelerationStructureInfoNV {}
 unsafe impl Sync for AccelerationStructureInfoNV {}
-impl default::Default for AccelerationStructureInfoNV {
+impl Default for AccelerationStructureInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_INFO_NV,
             p_next: ptr::null(),
-            ty: AccelerationStructureTypeNV::default(),
-            flags: BuildAccelerationStructureFlagsNV::default(),
-            instance_count: u32::default(),
-            geometry_count: u32::default(),
+            ty: Default::default(),
+            flags: Default::default(),
+            instance_count: Default::default(),
+            geometry_count: Default::default(),
             p_geometries: ptr::null(),
         }
     }
@@ -26483,13 +24385,13 @@ pub struct AccelerationStructureCreateInfoNV {
 }
 unsafe impl Send for AccelerationStructureCreateInfoNV {}
 unsafe impl Sync for AccelerationStructureCreateInfoNV {}
-impl default::Default for AccelerationStructureCreateInfoNV {
+impl Default for AccelerationStructureCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            compacted_size: DeviceSize::default(),
-            info: AccelerationStructureInfoNV::default(),
+            compacted_size: Default::default(),
+            info: Default::default(),
         }
     }
 }
@@ -26516,15 +24418,15 @@ pub struct BindAccelerationStructureMemoryInfoNV {
 }
 unsafe impl Send for BindAccelerationStructureMemoryInfoNV {}
 unsafe impl Sync for BindAccelerationStructureMemoryInfoNV {}
-impl default::Default for BindAccelerationStructureMemoryInfoNV {
+impl Default for BindAccelerationStructureMemoryInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::BIND_ACCELERATION_STRUCTURE_MEMORY_INFO_NV,
             p_next: ptr::null(),
-            acceleration_structure: None,
-            memory: None,
-            memory_offset: DeviceSize::default(),
-            device_index_count: u32::default(),
+            acceleration_structure: Default::default(),
+            memory: Default::default(),
+            memory_offset: Default::default(),
+            device_index_count: Default::default(),
             p_device_indices: ptr::null(),
         }
     }
@@ -26552,12 +24454,12 @@ pub struct WriteDescriptorSetAccelerationStructureKHR {
 }
 unsafe impl Send for WriteDescriptorSetAccelerationStructureKHR {}
 unsafe impl Sync for WriteDescriptorSetAccelerationStructureKHR {}
-impl default::Default for WriteDescriptorSetAccelerationStructureKHR {
+impl Default for WriteDescriptorSetAccelerationStructureKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_KHR,
             p_next: ptr::null(),
-            acceleration_structure_count: u32::default(),
+            acceleration_structure_count: Default::default(),
             p_acceleration_structures: ptr::null(),
         }
     }
@@ -26582,12 +24484,12 @@ pub struct WriteDescriptorSetAccelerationStructureNV {
 }
 unsafe impl Send for WriteDescriptorSetAccelerationStructureNV {}
 unsafe impl Sync for WriteDescriptorSetAccelerationStructureNV {}
-impl default::Default for WriteDescriptorSetAccelerationStructureNV {
+impl Default for WriteDescriptorSetAccelerationStructureNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::WRITE_DESCRIPTOR_SET_ACCELERATION_STRUCTURE_NV,
             p_next: ptr::null(),
-            acceleration_structure_count: u32::default(),
+            acceleration_structure_count: Default::default(),
             p_acceleration_structures: ptr::null(),
         }
     }
@@ -26612,13 +24514,13 @@ pub struct AccelerationStructureMemoryRequirementsInfoNV {
 }
 unsafe impl Send for AccelerationStructureMemoryRequirementsInfoNV {}
 unsafe impl Sync for AccelerationStructureMemoryRequirementsInfoNV {}
-impl default::Default for AccelerationStructureMemoryRequirementsInfoNV {
+impl Default for AccelerationStructureMemoryRequirementsInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_INFO_NV,
             p_next: ptr::null(),
-            ty: AccelerationStructureMemoryRequirementsTypeNV::default(),
-            acceleration_structure: None,
+            ty: Default::default(),
+            acceleration_structure: Default::default(),
         }
     }
 }
@@ -26645,16 +24547,16 @@ pub struct PhysicalDeviceAccelerationStructureFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceAccelerationStructureFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceAccelerationStructureFeaturesKHR {}
-impl default::Default for PhysicalDeviceAccelerationStructureFeaturesKHR {
+impl Default for PhysicalDeviceAccelerationStructureFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            acceleration_structure: Bool32::default(),
-            acceleration_structure_capture_replay: Bool32::default(),
-            acceleration_structure_indirect_build: Bool32::default(),
-            acceleration_structure_host_commands: Bool32::default(),
-            descriptor_binding_acceleration_structure_update_after_bind: Bool32::default(),
+            acceleration_structure: Default::default(),
+            acceleration_structure_capture_replay: Default::default(),
+            acceleration_structure_indirect_build: Default::default(),
+            acceleration_structure_host_commands: Default::default(),
+            descriptor_binding_acceleration_structure_update_after_bind: Default::default(),
         }
     }
 }
@@ -26696,16 +24598,16 @@ pub struct PhysicalDeviceRayTracingPipelineFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceRayTracingPipelineFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceRayTracingPipelineFeaturesKHR {}
-impl default::Default for PhysicalDeviceRayTracingPipelineFeaturesKHR {
+impl Default for PhysicalDeviceRayTracingPipelineFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            ray_tracing_pipeline: Bool32::default(),
-            ray_tracing_pipeline_shader_group_handle_capture_replay: Bool32::default(),
-            ray_tracing_pipeline_shader_group_handle_capture_replay_mixed: Bool32::default(),
-            ray_tracing_pipeline_trace_rays_indirect: Bool32::default(),
-            ray_traversal_primitive_culling: Bool32::default(),
+            ray_tracing_pipeline: Default::default(),
+            ray_tracing_pipeline_shader_group_handle_capture_replay: Default::default(),
+            ray_tracing_pipeline_shader_group_handle_capture_replay_mixed: Default::default(),
+            ray_tracing_pipeline_trace_rays_indirect: Default::default(),
+            ray_traversal_primitive_culling: Default::default(),
         }
     }
 }
@@ -26740,12 +24642,12 @@ pub struct PhysicalDeviceRayQueryFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceRayQueryFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceRayQueryFeaturesKHR {}
-impl default::Default for PhysicalDeviceRayQueryFeaturesKHR {
+impl Default for PhysicalDeviceRayQueryFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            ray_query: Bool32::default(),
+            ray_query: Default::default(),
         }
     }
 }
@@ -26774,19 +24676,19 @@ pub struct PhysicalDeviceAccelerationStructurePropertiesKHR {
 }
 unsafe impl Send for PhysicalDeviceAccelerationStructurePropertiesKHR {}
 unsafe impl Sync for PhysicalDeviceAccelerationStructurePropertiesKHR {}
-impl default::Default for PhysicalDeviceAccelerationStructurePropertiesKHR {
+impl Default for PhysicalDeviceAccelerationStructurePropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            max_geometry_count: u64::default(),
-            max_instance_count: u64::default(),
-            max_primitive_count: u64::default(),
-            max_per_stage_descriptor_acceleration_structures: u32::default(),
-            max_per_stage_descriptor_update_after_bind_acceleration_structures: u32::default(),
-            max_descriptor_set_acceleration_structures: u32::default(),
-            max_descriptor_set_update_after_bind_acceleration_structures: u32::default(),
-            min_acceleration_structure_scratch_offset_alignment: u32::default(),
+            max_geometry_count: Default::default(),
+            max_instance_count: Default::default(),
+            max_primitive_count: Default::default(),
+            max_per_stage_descriptor_acceleration_structures: Default::default(),
+            max_per_stage_descriptor_update_after_bind_acceleration_structures: Default::default(),
+            max_descriptor_set_acceleration_structures: Default::default(),
+            max_descriptor_set_update_after_bind_acceleration_structures: Default::default(),
+            min_acceleration_structure_scratch_offset_alignment: Default::default(),
         }
     }
 }
@@ -26837,19 +24739,19 @@ pub struct PhysicalDeviceRayTracingPipelinePropertiesKHR {
 }
 unsafe impl Send for PhysicalDeviceRayTracingPipelinePropertiesKHR {}
 unsafe impl Sync for PhysicalDeviceRayTracingPipelinePropertiesKHR {}
-impl default::Default for PhysicalDeviceRayTracingPipelinePropertiesKHR {
+impl Default for PhysicalDeviceRayTracingPipelinePropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            shader_group_handle_size: u32::default(),
-            max_ray_recursion_depth: u32::default(),
-            max_shader_group_stride: u32::default(),
-            shader_group_base_alignment: u32::default(),
-            shader_group_handle_capture_replay_size: u32::default(),
-            max_ray_dispatch_invocation_count: u32::default(),
-            shader_group_handle_alignment: u32::default(),
-            max_ray_hit_attribute_size: u32::default(),
+            shader_group_handle_size: Default::default(),
+            max_ray_recursion_depth: Default::default(),
+            max_shader_group_stride: Default::default(),
+            shader_group_base_alignment: Default::default(),
+            shader_group_handle_capture_replay_size: Default::default(),
+            max_ray_dispatch_invocation_count: Default::default(),
+            shader_group_handle_alignment: Default::default(),
+            max_ray_hit_attribute_size: Default::default(),
         }
     }
 }
@@ -26891,19 +24793,19 @@ pub struct PhysicalDeviceRayTracingPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceRayTracingPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceRayTracingPropertiesNV {}
-impl default::Default for PhysicalDeviceRayTracingPropertiesNV {
+impl Default for PhysicalDeviceRayTracingPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            shader_group_handle_size: u32::default(),
-            max_recursion_depth: u32::default(),
-            max_shader_group_stride: u32::default(),
-            shader_group_base_alignment: u32::default(),
-            max_geometry_count: u64::default(),
-            max_instance_count: u64::default(),
-            max_triangle_count: u64::default(),
-            max_descriptor_set_acceleration_structures: u32::default(),
+            shader_group_handle_size: Default::default(),
+            max_recursion_depth: Default::default(),
+            max_shader_group_stride: Default::default(),
+            shader_group_base_alignment: Default::default(),
+            max_geometry_count: Default::default(),
+            max_instance_count: Default::default(),
+            max_triangle_count: Default::default(),
+            max_descriptor_set_acceleration_structures: Default::default(),
         }
     }
 }
@@ -26927,20 +24829,11 @@ impl fmt::Debug for PhysicalDeviceRayTracingPropertiesNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct StridedDeviceAddressRegionKHR {
     pub device_address: DeviceAddress,
     pub stride: DeviceSize,
     pub size: DeviceSize,
-}
-impl default::Default for StridedDeviceAddressRegionKHR {
-    fn default() -> Self {
-        Self {
-            device_address: DeviceAddress::default(),
-            stride: DeviceSize::default(),
-            size: DeviceSize::default(),
-        }
-    }
 }
 impl fmt::Debug for StridedDeviceAddressRegionKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -26952,20 +24845,11 @@ impl fmt::Debug for StridedDeviceAddressRegionKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct TraceRaysIndirectCommandKHR {
     pub width: u32,
     pub height: u32,
     pub depth: u32,
-}
-impl default::Default for TraceRaysIndirectCommandKHR {
-    fn default() -> Self {
-        Self {
-            width: u32::default(),
-            height: u32::default(),
-            depth: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for TraceRaysIndirectCommandKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -26986,12 +24870,12 @@ pub struct DrmFormatModifierPropertiesListEXT {
 }
 unsafe impl Send for DrmFormatModifierPropertiesListEXT {}
 unsafe impl Sync for DrmFormatModifierPropertiesListEXT {}
-impl default::Default for DrmFormatModifierPropertiesListEXT {
+impl Default for DrmFormatModifierPropertiesListEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT,
             p_next: ptr::null_mut(),
-            drm_format_modifier_count: u32::default(),
+            drm_format_modifier_count: Default::default(),
             p_drm_format_modifier_properties: ptr::null_mut(),
         }
     }
@@ -27010,20 +24894,11 @@ impl fmt::Debug for DrmFormatModifierPropertiesListEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DrmFormatModifierPropertiesEXT {
     pub drm_format_modifier: u64,
     pub drm_format_modifier_plane_count: u32,
     pub drm_format_modifier_tiling_features: FormatFeatureFlags,
-}
-impl default::Default for DrmFormatModifierPropertiesEXT {
-    fn default() -> Self {
-        Self {
-            drm_format_modifier: u64::default(),
-            drm_format_modifier_plane_count: u32::default(),
-            drm_format_modifier_tiling_features: FormatFeatureFlags::default(),
-        }
-    }
 }
 impl fmt::Debug for DrmFormatModifierPropertiesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -27049,14 +24924,14 @@ pub struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
 }
 unsafe impl Send for PhysicalDeviceImageDrmFormatModifierInfoEXT {}
 unsafe impl Sync for PhysicalDeviceImageDrmFormatModifierInfoEXT {}
-impl default::Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
+impl Default for PhysicalDeviceImageDrmFormatModifierInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_DRM_FORMAT_MODIFIER_INFO_EXT,
             p_next: ptr::null(),
-            drm_format_modifier: u64::default(),
-            sharing_mode: SharingMode::default(),
-            queue_family_index_count: u32::default(),
+            drm_format_modifier: Default::default(),
+            sharing_mode: Default::default(),
+            queue_family_index_count: Default::default(),
             p_queue_family_indices: ptr::null(),
         }
     }
@@ -27083,12 +24958,12 @@ pub struct ImageDrmFormatModifierListCreateInfoEXT {
 }
 unsafe impl Send for ImageDrmFormatModifierListCreateInfoEXT {}
 unsafe impl Sync for ImageDrmFormatModifierListCreateInfoEXT {}
-impl default::Default for ImageDrmFormatModifierListCreateInfoEXT {
+impl Default for ImageDrmFormatModifierListCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            drm_format_modifier_count: u32::default(),
+            drm_format_modifier_count: Default::default(),
             p_drm_format_modifiers: ptr::null(),
         }
     }
@@ -27114,13 +24989,13 @@ pub struct ImageDrmFormatModifierExplicitCreateInfoEXT {
 }
 unsafe impl Send for ImageDrmFormatModifierExplicitCreateInfoEXT {}
 unsafe impl Sync for ImageDrmFormatModifierExplicitCreateInfoEXT {}
-impl default::Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
+impl Default for ImageDrmFormatModifierExplicitCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            drm_format_modifier: u64::default(),
-            drm_format_modifier_plane_count: u32::default(),
+            drm_format_modifier: Default::default(),
+            drm_format_modifier_plane_count: Default::default(),
             p_plane_layouts: ptr::null(),
         }
     }
@@ -27145,12 +25020,12 @@ pub struct ImageDrmFormatModifierPropertiesEXT {
 }
 unsafe impl Send for ImageDrmFormatModifierPropertiesEXT {}
 unsafe impl Sync for ImageDrmFormatModifierPropertiesEXT {}
-impl default::Default for ImageDrmFormatModifierPropertiesEXT {
+impl Default for ImageDrmFormatModifierPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            drm_format_modifier: u64::default(),
+            drm_format_modifier: Default::default(),
         }
     }
 }
@@ -27172,12 +25047,12 @@ pub struct ImageStencilUsageCreateInfo {
 }
 unsafe impl Send for ImageStencilUsageCreateInfo {}
 unsafe impl Sync for ImageStencilUsageCreateInfo {}
-impl default::Default for ImageStencilUsageCreateInfo {
+impl Default for ImageStencilUsageCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_STENCIL_USAGE_CREATE_INFO,
             p_next: ptr::null(),
-            stencil_usage: ImageUsageFlags::default(),
+            stencil_usage: Default::default(),
         }
     }
 }
@@ -27200,12 +25075,12 @@ pub struct DeviceMemoryOverallocationCreateInfoAMD {
 }
 unsafe impl Send for DeviceMemoryOverallocationCreateInfoAMD {}
 unsafe impl Sync for DeviceMemoryOverallocationCreateInfoAMD {}
-impl default::Default for DeviceMemoryOverallocationCreateInfoAMD {
+impl Default for DeviceMemoryOverallocationCreateInfoAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD,
             p_next: ptr::null(),
-            overallocation_behavior: MemoryOverallocationBehaviorAMD::default(),
+            overallocation_behavior: Default::default(),
         }
     }
 }
@@ -27229,14 +25104,14 @@ pub struct PhysicalDeviceFragmentDensityMapFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMapFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMapFeaturesEXT {}
-impl default::Default for PhysicalDeviceFragmentDensityMapFeaturesEXT {
+impl Default for PhysicalDeviceFragmentDensityMapFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            fragment_density_map: Bool32::default(),
-            fragment_density_map_dynamic: Bool32::default(),
-            fragment_density_map_non_subsampled_images: Bool32::default(),
+            fragment_density_map: Default::default(),
+            fragment_density_map_dynamic: Default::default(),
+            fragment_density_map_non_subsampled_images: Default::default(),
         }
     }
 }
@@ -27263,12 +25138,12 @@ pub struct PhysicalDeviceFragmentDensityMap2FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMap2FeaturesEXT {}
-impl default::Default for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
+impl Default for PhysicalDeviceFragmentDensityMap2FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            fragment_density_map_deferred: Bool32::default(),
+            fragment_density_map_deferred: Default::default(),
         }
     }
 }
@@ -27290,12 +25165,12 @@ pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {}
-impl default::Default for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
+impl Default for PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM,
             p_next: ptr::null_mut(),
-            fragment_density_map_offset: Bool32::default(),
+            fragment_density_map_offset: Default::default(),
         }
     }
 }
@@ -27319,14 +25194,14 @@ pub struct PhysicalDeviceFragmentDensityMapPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMapPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMapPropertiesEXT {}
-impl default::Default for PhysicalDeviceFragmentDensityMapPropertiesEXT {
+impl Default for PhysicalDeviceFragmentDensityMapPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            min_fragment_density_texel_size: Extent2D::default(),
-            max_fragment_density_texel_size: Extent2D::default(),
-            fragment_density_invocations: Bool32::default(),
+            min_fragment_density_texel_size: Default::default(),
+            max_fragment_density_texel_size: Default::default(),
+            fragment_density_invocations: Default::default(),
         }
     }
 }
@@ -27353,15 +25228,15 @@ pub struct PhysicalDeviceFragmentDensityMap2PropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMap2PropertiesEXT {}
-impl default::Default for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
+impl Default for PhysicalDeviceFragmentDensityMap2PropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            subsampled_loads: Bool32::default(),
-            subsampled_coarse_reconstruction_early_access: Bool32::default(),
-            max_subsampled_array_layers: u32::default(),
-            max_descriptor_set_subsampled_samplers: u32::default(),
+            subsampled_loads: Default::default(),
+            subsampled_coarse_reconstruction_early_access: Default::default(),
+            max_subsampled_array_layers: Default::default(),
+            max_descriptor_set_subsampled_samplers: Default::default(),
         }
     }
 }
@@ -27392,12 +25267,12 @@ pub struct PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
 }
 unsafe impl Send for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {}
 unsafe impl Sync for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {}
-impl default::Default for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
+impl Default for PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM,
             p_next: ptr::null_mut(),
-            fragment_density_offset_granularity: Extent2D::default(),
+            fragment_density_offset_granularity: Default::default(),
         }
     }
 }
@@ -27422,12 +25297,12 @@ pub struct RenderPassFragmentDensityMapCreateInfoEXT {
 }
 unsafe impl Send for RenderPassFragmentDensityMapCreateInfoEXT {}
 unsafe impl Sync for RenderPassFragmentDensityMapCreateInfoEXT {}
-impl default::Default for RenderPassFragmentDensityMapCreateInfoEXT {
+impl Default for RenderPassFragmentDensityMapCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_FRAGMENT_DENSITY_MAP_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            fragment_density_map_attachment: AttachmentReference::default(),
+            fragment_density_map_attachment: Default::default(),
         }
     }
 }
@@ -27450,12 +25325,12 @@ pub struct SubpassFragmentDensityMapOffsetEndInfoQCOM {
 }
 unsafe impl Send for SubpassFragmentDensityMapOffsetEndInfoQCOM {}
 unsafe impl Sync for SubpassFragmentDensityMapOffsetEndInfoQCOM {}
-impl default::Default for SubpassFragmentDensityMapOffsetEndInfoQCOM {
+impl Default for SubpassFragmentDensityMapOffsetEndInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM,
             p_next: ptr::null(),
-            fragment_density_offset_count: u32::default(),
+            fragment_density_offset_count: Default::default(),
             p_fragment_density_offsets: ptr::null(),
         }
     }
@@ -27479,12 +25354,12 @@ pub struct PhysicalDeviceScalarBlockLayoutFeatures {
 }
 unsafe impl Send for PhysicalDeviceScalarBlockLayoutFeatures {}
 unsafe impl Sync for PhysicalDeviceScalarBlockLayoutFeatures {}
-impl default::Default for PhysicalDeviceScalarBlockLayoutFeatures {
+impl Default for PhysicalDeviceScalarBlockLayoutFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SCALAR_BLOCK_LAYOUT_FEATURES,
             p_next: ptr::null_mut(),
-            scalar_block_layout: Bool32::default(),
+            scalar_block_layout: Default::default(),
         }
     }
 }
@@ -27508,12 +25383,12 @@ pub struct SurfaceProtectedCapabilitiesKHR {
 }
 unsafe impl Send for SurfaceProtectedCapabilitiesKHR {}
 unsafe impl Sync for SurfaceProtectedCapabilitiesKHR {}
-impl default::Default for SurfaceProtectedCapabilitiesKHR {
+impl Default for SurfaceProtectedCapabilitiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_PROTECTED_CAPABILITIES_KHR,
             p_next: ptr::null(),
-            supports_protected: Bool32::default(),
+            supports_protected: Default::default(),
         }
     }
 }
@@ -27535,12 +25410,12 @@ pub struct PhysicalDeviceUniformBufferStandardLayoutFeatures {
 }
 unsafe impl Send for PhysicalDeviceUniformBufferStandardLayoutFeatures {}
 unsafe impl Sync for PhysicalDeviceUniformBufferStandardLayoutFeatures {}
-impl default::Default for PhysicalDeviceUniformBufferStandardLayoutFeatures {
+impl Default for PhysicalDeviceUniformBufferStandardLayoutFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_UNIFORM_BUFFER_STANDARD_LAYOUT_FEATURES,
             p_next: ptr::null_mut(),
-            uniform_buffer_standard_layout: Bool32::default(),
+            uniform_buffer_standard_layout: Default::default(),
         }
     }
 }
@@ -27563,12 +25438,12 @@ pub struct PhysicalDeviceDepthClipEnableFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceDepthClipEnableFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceDepthClipEnableFeaturesEXT {}
-impl default::Default for PhysicalDeviceDepthClipEnableFeaturesEXT {
+impl Default for PhysicalDeviceDepthClipEnableFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLIP_ENABLE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            depth_clip_enable: Bool32::default(),
+            depth_clip_enable: Default::default(),
         }
     }
 }
@@ -27592,13 +25467,13 @@ pub struct PipelineRasterizationDepthClipStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineRasterizationDepthClipStateCreateInfoEXT {}
 unsafe impl Sync for PipelineRasterizationDepthClipStateCreateInfoEXT {}
-impl default::Default for PipelineRasterizationDepthClipStateCreateInfoEXT {
+impl Default for PipelineRasterizationDepthClipStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_DEPTH_CLIP_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: PipelineRasterizationDepthClipStateCreateFlagsEXT::default(),
-            depth_clip_enable: Bool32::default(),
+            flags: Default::default(),
+            depth_clip_enable: Default::default(),
         }
     }
 }
@@ -27622,13 +25497,13 @@ pub struct PhysicalDeviceMemoryBudgetPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceMemoryBudgetPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceMemoryBudgetPropertiesEXT {}
-impl default::Default for PhysicalDeviceMemoryBudgetPropertiesEXT {
+impl Default for PhysicalDeviceMemoryBudgetPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            heap_budget: [DeviceSize::default(); MAX_MEMORY_HEAPS],
-            heap_usage: [DeviceSize::default(); MAX_MEMORY_HEAPS],
+            heap_budget: [Default::default(); MAX_MEMORY_HEAPS],
+            heap_usage: [Default::default(); MAX_MEMORY_HEAPS],
         }
     }
 }
@@ -27651,12 +25526,12 @@ pub struct PhysicalDeviceMemoryPriorityFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceMemoryPriorityFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceMemoryPriorityFeaturesEXT {}
-impl default::Default for PhysicalDeviceMemoryPriorityFeaturesEXT {
+impl Default for PhysicalDeviceMemoryPriorityFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MEMORY_PRIORITY_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            memory_priority: Bool32::default(),
+            memory_priority: Default::default(),
         }
     }
 }
@@ -27678,12 +25553,12 @@ pub struct MemoryPriorityAllocateInfoEXT {
 }
 unsafe impl Send for MemoryPriorityAllocateInfoEXT {}
 unsafe impl Sync for MemoryPriorityAllocateInfoEXT {}
-impl default::Default for MemoryPriorityAllocateInfoEXT {
+impl Default for MemoryPriorityAllocateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_PRIORITY_ALLOCATE_INFO_EXT,
             p_next: ptr::null(),
-            priority: f32::default(),
+            priority: Default::default(),
         }
     }
 }
@@ -27705,12 +25580,12 @@ pub struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
 }
 unsafe impl Send for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
 unsafe impl Sync for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {}
-impl default::Default for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
+impl Default for PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            pageable_device_local_memory: Bool32::default(),
+            pageable_device_local_memory: Default::default(),
         }
     }
 }
@@ -27734,14 +25609,14 @@ pub struct PhysicalDeviceBufferDeviceAddressFeatures {
 }
 unsafe impl Send for PhysicalDeviceBufferDeviceAddressFeatures {}
 unsafe impl Sync for PhysicalDeviceBufferDeviceAddressFeatures {}
-impl default::Default for PhysicalDeviceBufferDeviceAddressFeatures {
+impl Default for PhysicalDeviceBufferDeviceAddressFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES,
             p_next: ptr::null_mut(),
-            buffer_device_address: Bool32::default(),
-            buffer_device_address_capture_replay: Bool32::default(),
-            buffer_device_address_multi_device: Bool32::default(),
+            buffer_device_address: Default::default(),
+            buffer_device_address_capture_replay: Default::default(),
+            buffer_device_address_multi_device: Default::default(),
         }
     }
 }
@@ -27774,14 +25649,14 @@ pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceBufferDeviceAddressFeaturesEXT {}
-impl default::Default for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
+impl Default for PhysicalDeviceBufferDeviceAddressFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            buffer_device_address: Bool32::default(),
-            buffer_device_address_capture_replay: Bool32::default(),
-            buffer_device_address_multi_device: Bool32::default(),
+            buffer_device_address: Default::default(),
+            buffer_device_address_capture_replay: Default::default(),
+            buffer_device_address_multi_device: Default::default(),
         }
     }
 }
@@ -27812,12 +25687,12 @@ pub struct BufferDeviceAddressInfo {
 }
 unsafe impl Send for BufferDeviceAddressInfo {}
 unsafe impl Sync for BufferDeviceAddressInfo {}
-impl default::Default for BufferDeviceAddressInfo {
+impl Default for BufferDeviceAddressInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_DEVICE_ADDRESS_INFO,
             p_next: ptr::null(),
-            buffer: None,
+            buffer: Default::default(),
         }
     }
 }
@@ -27841,12 +25716,12 @@ pub struct BufferOpaqueCaptureAddressCreateInfo {
 }
 unsafe impl Send for BufferOpaqueCaptureAddressCreateInfo {}
 unsafe impl Sync for BufferOpaqueCaptureAddressCreateInfo {}
-impl default::Default for BufferOpaqueCaptureAddressCreateInfo {
+impl Default for BufferOpaqueCaptureAddressCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_OPAQUE_CAPTURE_ADDRESS_CREATE_INFO,
             p_next: ptr::null(),
-            opaque_capture_address: u64::default(),
+            opaque_capture_address: Default::default(),
         }
     }
 }
@@ -27869,12 +25744,12 @@ pub struct BufferDeviceAddressCreateInfoEXT {
 }
 unsafe impl Send for BufferDeviceAddressCreateInfoEXT {}
 unsafe impl Sync for BufferDeviceAddressCreateInfoEXT {}
-impl default::Default for BufferDeviceAddressCreateInfoEXT {
+impl Default for BufferDeviceAddressCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            device_address: DeviceAddress::default(),
+            device_address: Default::default(),
         }
     }
 }
@@ -27896,12 +25771,12 @@ pub struct PhysicalDeviceImageViewImageFormatInfoEXT {
 }
 unsafe impl Send for PhysicalDeviceImageViewImageFormatInfoEXT {}
 unsafe impl Sync for PhysicalDeviceImageViewImageFormatInfoEXT {}
-impl default::Default for PhysicalDeviceImageViewImageFormatInfoEXT {
+impl Default for PhysicalDeviceImageViewImageFormatInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT,
             p_next: ptr::null_mut(),
-            image_view_type: ImageViewType::default(),
+            image_view_type: Default::default(),
         }
     }
 }
@@ -27926,13 +25801,13 @@ pub struct FilterCubicImageViewImageFormatPropertiesEXT {
 }
 unsafe impl Send for FilterCubicImageViewImageFormatPropertiesEXT {}
 unsafe impl Sync for FilterCubicImageViewImageFormatPropertiesEXT {}
-impl default::Default for FilterCubicImageViewImageFormatPropertiesEXT {
+impl Default for FilterCubicImageViewImageFormatPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            filter_cubic: Bool32::default(),
-            filter_cubic_minmax: Bool32::default(),
+            filter_cubic: Default::default(),
+            filter_cubic_minmax: Default::default(),
         }
     }
 }
@@ -27955,12 +25830,12 @@ pub struct PhysicalDeviceImagelessFramebufferFeatures {
 }
 unsafe impl Send for PhysicalDeviceImagelessFramebufferFeatures {}
 unsafe impl Sync for PhysicalDeviceImagelessFramebufferFeatures {}
-impl default::Default for PhysicalDeviceImagelessFramebufferFeatures {
+impl Default for PhysicalDeviceImagelessFramebufferFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGELESS_FRAMEBUFFER_FEATURES,
             p_next: ptr::null_mut(),
-            imageless_framebuffer: Bool32::default(),
+            imageless_framebuffer: Default::default(),
         }
     }
 }
@@ -27984,12 +25859,12 @@ pub struct FramebufferAttachmentsCreateInfo {
 }
 unsafe impl Send for FramebufferAttachmentsCreateInfo {}
 unsafe impl Sync for FramebufferAttachmentsCreateInfo {}
-impl default::Default for FramebufferAttachmentsCreateInfo {
+impl Default for FramebufferAttachmentsCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::FRAMEBUFFER_ATTACHMENTS_CREATE_INFO,
             p_next: ptr::null(),
-            attachment_image_info_count: u32::default(),
+            attachment_image_info_count: Default::default(),
             p_attachment_image_infos: ptr::null(),
         }
     }
@@ -28022,17 +25897,17 @@ pub struct FramebufferAttachmentImageInfo {
 }
 unsafe impl Send for FramebufferAttachmentImageInfo {}
 unsafe impl Sync for FramebufferAttachmentImageInfo {}
-impl default::Default for FramebufferAttachmentImageInfo {
+impl Default for FramebufferAttachmentImageInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::FRAMEBUFFER_ATTACHMENT_IMAGE_INFO,
             p_next: ptr::null(),
-            flags: ImageCreateFlags::default(),
-            usage: ImageUsageFlags::default(),
-            width: u32::default(),
-            height: u32::default(),
-            layer_count: u32::default(),
-            view_format_count: u32::default(),
+            flags: Default::default(),
+            usage: Default::default(),
+            width: Default::default(),
+            height: Default::default(),
+            layer_count: Default::default(),
+            view_format_count: Default::default(),
             p_view_formats: ptr::null(),
         }
     }
@@ -28063,12 +25938,12 @@ pub struct RenderPassAttachmentBeginInfo {
 }
 unsafe impl Send for RenderPassAttachmentBeginInfo {}
 unsafe impl Sync for RenderPassAttachmentBeginInfo {}
-impl default::Default for RenderPassAttachmentBeginInfo {
+impl Default for RenderPassAttachmentBeginInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_ATTACHMENT_BEGIN_INFO,
             p_next: ptr::null(),
-            attachment_count: u32::default(),
+            attachment_count: Default::default(),
             p_attachments: ptr::null(),
         }
     }
@@ -28093,12 +25968,12 @@ pub struct PhysicalDeviceTextureCompressionASTCHDRFeatures {
 }
 unsafe impl Send for PhysicalDeviceTextureCompressionASTCHDRFeatures {}
 unsafe impl Sync for PhysicalDeviceTextureCompressionASTCHDRFeatures {}
-impl default::Default for PhysicalDeviceTextureCompressionASTCHDRFeatures {
+impl Default for PhysicalDeviceTextureCompressionASTCHDRFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES,
             p_next: ptr::null_mut(),
-            texture_compression_astc_hdr: Bool32::default(),
+            texture_compression_astc_hdr: Default::default(),
         }
     }
 }
@@ -28122,13 +25997,13 @@ pub struct PhysicalDeviceCooperativeMatrixFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceCooperativeMatrixFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceCooperativeMatrixFeaturesNV {}
-impl default::Default for PhysicalDeviceCooperativeMatrixFeaturesNV {
+impl Default for PhysicalDeviceCooperativeMatrixFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
             p_next: ptr::null_mut(),
-            cooperative_matrix: Bool32::default(),
-            cooperative_matrix_robust_buffer_access: Bool32::default(),
+            cooperative_matrix: Default::default(),
+            cooperative_matrix_robust_buffer_access: Default::default(),
         }
     }
 }
@@ -28154,12 +26029,12 @@ pub struct PhysicalDeviceCooperativeMatrixPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceCooperativeMatrixPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceCooperativeMatrixPropertiesNV {}
-impl default::Default for PhysicalDeviceCooperativeMatrixPropertiesNV {
+impl Default for PhysicalDeviceCooperativeMatrixPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            cooperative_matrix_supported_stages: ShaderStageFlags::default(),
+            cooperative_matrix_supported_stages: Default::default(),
         }
     }
 }
@@ -28191,19 +26066,19 @@ pub struct CooperativeMatrixPropertiesNV {
 }
 unsafe impl Send for CooperativeMatrixPropertiesNV {}
 unsafe impl Sync for CooperativeMatrixPropertiesNV {}
-impl default::Default for CooperativeMatrixPropertiesNV {
+impl Default for CooperativeMatrixPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::COOPERATIVE_MATRIX_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            m_size: u32::default(),
-            n_size: u32::default(),
-            k_size: u32::default(),
-            a_type: ComponentTypeNV::default(),
-            b_type: ComponentTypeNV::default(),
-            c_type: ComponentTypeNV::default(),
-            d_type: ComponentTypeNV::default(),
-            scope: ScopeNV::default(),
+            m_size: Default::default(),
+            n_size: Default::default(),
+            k_size: Default::default(),
+            a_type: Default::default(),
+            b_type: Default::default(),
+            c_type: Default::default(),
+            d_type: Default::default(),
+            scope: Default::default(),
         }
     }
 }
@@ -28232,12 +26107,12 @@ pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceYcbcrImageArraysFeaturesEXT {}
-impl default::Default for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
+impl Default for PhysicalDeviceYcbcrImageArraysFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            ycbcr_image_arrays: Bool32::default(),
+            ycbcr_image_arrays: Default::default(),
         }
     }
 }
@@ -28261,14 +26136,14 @@ pub struct ImageViewHandleInfoNVX {
 }
 unsafe impl Send for ImageViewHandleInfoNVX {}
 unsafe impl Sync for ImageViewHandleInfoNVX {}
-impl default::Default for ImageViewHandleInfoNVX {
+impl Default for ImageViewHandleInfoNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_HANDLE_INFO_NVX,
             p_next: ptr::null(),
-            image_view: None,
-            descriptor_type: DescriptorType::default(),
-            sampler: None,
+            image_view: Default::default(),
+            descriptor_type: Default::default(),
+            sampler: Default::default(),
         }
     }
 }
@@ -28293,13 +26168,13 @@ pub struct ImageViewAddressPropertiesNVX {
 }
 unsafe impl Send for ImageViewAddressPropertiesNVX {}
 unsafe impl Sync for ImageViewAddressPropertiesNVX {}
-impl default::Default for ImageViewAddressPropertiesNVX {
+impl Default for ImageViewAddressPropertiesNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_ADDRESS_PROPERTIES_NVX,
             p_next: ptr::null_mut(),
-            device_address: DeviceAddress::default(),
-            size: DeviceSize::default(),
+            device_address: Default::default(),
+            size: Default::default(),
         }
     }
 }
@@ -28314,18 +26189,10 @@ impl fmt::Debug for ImageViewAddressPropertiesNVX {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineCreationFeedback {
     pub flags: PipelineCreationFeedbackFlags,
     pub duration: u64,
-}
-impl default::Default for PipelineCreationFeedback {
-    fn default() -> Self {
-        Self {
-            flags: PipelineCreationFeedbackFlags::default(),
-            duration: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for PipelineCreationFeedback {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -28349,13 +26216,13 @@ pub struct PipelineCreationFeedbackCreateInfo {
 }
 unsafe impl Send for PipelineCreationFeedbackCreateInfo {}
 unsafe impl Sync for PipelineCreationFeedbackCreateInfo {}
-impl default::Default for PipelineCreationFeedbackCreateInfo {
+impl Default for PipelineCreationFeedbackCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_CREATION_FEEDBACK_CREATE_INFO,
             p_next: ptr::null(),
             p_pipeline_creation_feedback: ptr::null_mut(),
-            pipeline_stage_creation_feedback_count: u32::default(),
+            pipeline_stage_creation_feedback_count: Default::default(),
             p_pipeline_stage_creation_feedbacks: ptr::null_mut(),
         }
     }
@@ -28387,12 +26254,12 @@ pub struct SurfaceFullScreenExclusiveInfoEXT {
 }
 unsafe impl Send for SurfaceFullScreenExclusiveInfoEXT {}
 unsafe impl Sync for SurfaceFullScreenExclusiveInfoEXT {}
-impl default::Default for SurfaceFullScreenExclusiveInfoEXT {
+impl Default for SurfaceFullScreenExclusiveInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT,
             p_next: ptr::null_mut(),
-            full_screen_exclusive: FullScreenExclusiveEXT::default(),
+            full_screen_exclusive: Default::default(),
         }
     }
 }
@@ -28414,7 +26281,7 @@ pub struct SurfaceFullScreenExclusiveWin32InfoEXT {
 }
 unsafe impl Send for SurfaceFullScreenExclusiveWin32InfoEXT {}
 unsafe impl Sync for SurfaceFullScreenExclusiveWin32InfoEXT {}
-impl default::Default for SurfaceFullScreenExclusiveWin32InfoEXT {
+impl Default for SurfaceFullScreenExclusiveWin32InfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT,
@@ -28441,12 +26308,12 @@ pub struct SurfaceCapabilitiesFullScreenExclusiveEXT {
 }
 unsafe impl Send for SurfaceCapabilitiesFullScreenExclusiveEXT {}
 unsafe impl Sync for SurfaceCapabilitiesFullScreenExclusiveEXT {}
-impl default::Default for SurfaceCapabilitiesFullScreenExclusiveEXT {
+impl Default for SurfaceCapabilitiesFullScreenExclusiveEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SURFACE_CAPABILITIES_FULL_SCREEN_EXCLUSIVE_EXT,
             p_next: ptr::null_mut(),
-            full_screen_exclusive_supported: Bool32::default(),
+            full_screen_exclusive_supported: Default::default(),
         }
     }
 }
@@ -28471,13 +26338,13 @@ pub struct PhysicalDevicePerformanceQueryFeaturesKHR {
 }
 unsafe impl Send for PhysicalDevicePerformanceQueryFeaturesKHR {}
 unsafe impl Sync for PhysicalDevicePerformanceQueryFeaturesKHR {}
-impl default::Default for PhysicalDevicePerformanceQueryFeaturesKHR {
+impl Default for PhysicalDevicePerformanceQueryFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_QUERY_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            performance_counter_query_pools: Bool32::default(),
-            performance_counter_multiple_query_pools: Bool32::default(),
+            performance_counter_query_pools: Default::default(),
+            performance_counter_multiple_query_pools: Default::default(),
         }
     }
 }
@@ -28504,12 +26371,12 @@ pub struct PhysicalDevicePerformanceQueryPropertiesKHR {
 }
 unsafe impl Send for PhysicalDevicePerformanceQueryPropertiesKHR {}
 unsafe impl Sync for PhysicalDevicePerformanceQueryPropertiesKHR {}
-impl default::Default for PhysicalDevicePerformanceQueryPropertiesKHR {
+impl Default for PhysicalDevicePerformanceQueryPropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PERFORMANCE_QUERY_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            allow_command_buffer_query_copies: Bool32::default(),
+            allow_command_buffer_query_copies: Default::default(),
         }
     }
 }
@@ -28537,15 +26404,15 @@ pub struct PerformanceCounterKHR {
 }
 unsafe impl Send for PerformanceCounterKHR {}
 unsafe impl Sync for PerformanceCounterKHR {}
-impl default::Default for PerformanceCounterKHR {
+impl Default for PerformanceCounterKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_COUNTER_KHR,
             p_next: ptr::null_mut(),
-            unit: PerformanceCounterUnitKHR::default(),
-            scope: PerformanceCounterScopeKHR::default(),
-            storage: PerformanceCounterStorageKHR::default(),
-            uuid: [u8::default(); UUID_SIZE],
+            unit: Default::default(),
+            scope: Default::default(),
+            storage: Default::default(),
+            uuid: [Default::default(); UUID_SIZE],
         }
     }
 }
@@ -28573,15 +26440,15 @@ pub struct PerformanceCounterDescriptionKHR {
 }
 unsafe impl Send for PerformanceCounterDescriptionKHR {}
 unsafe impl Sync for PerformanceCounterDescriptionKHR {}
-impl default::Default for PerformanceCounterDescriptionKHR {
+impl Default for PerformanceCounterDescriptionKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_COUNTER_DESCRIPTION_KHR,
             p_next: ptr::null_mut(),
-            flags: PerformanceCounterDescriptionFlagsKHR::default(),
-            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            category: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
+            flags: Default::default(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+            category: [Default::default(); MAX_DESCRIPTION_SIZE],
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
         }
     }
 }
@@ -28608,13 +26475,13 @@ pub struct QueryPoolPerformanceCreateInfoKHR {
 }
 unsafe impl Send for QueryPoolPerformanceCreateInfoKHR {}
 unsafe impl Sync for QueryPoolPerformanceCreateInfoKHR {}
-impl default::Default for QueryPoolPerformanceCreateInfoKHR {
+impl Default for QueryPoolPerformanceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUERY_POOL_PERFORMANCE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            queue_family_index: u32::default(),
-            counter_index_count: u32::default(),
+            queue_family_index: Default::default(),
+            counter_index_count: Default::default(),
             p_counter_indices: ptr::null(),
         }
     }
@@ -28641,7 +26508,7 @@ pub union PerformanceCounterResultKHR {
     pub float32: f32,
     pub float64: f64,
 }
-impl default::Default for PerformanceCounterResultKHR {
+impl Default for PerformanceCounterResultKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -28669,13 +26536,13 @@ pub struct AcquireProfilingLockInfoKHR {
 }
 unsafe impl Send for AcquireProfilingLockInfoKHR {}
 unsafe impl Sync for AcquireProfilingLockInfoKHR {}
-impl default::Default for AcquireProfilingLockInfoKHR {
+impl Default for AcquireProfilingLockInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACQUIRE_PROFILING_LOCK_INFO_KHR,
             p_next: ptr::null(),
-            flags: AcquireProfilingLockFlagsKHR::default(),
-            timeout: u64::default(),
+            flags: Default::default(),
+            timeout: Default::default(),
         }
     }
 }
@@ -28699,12 +26566,12 @@ pub struct PerformanceQuerySubmitInfoKHR {
 }
 unsafe impl Send for PerformanceQuerySubmitInfoKHR {}
 unsafe impl Sync for PerformanceQuerySubmitInfoKHR {}
-impl default::Default for PerformanceQuerySubmitInfoKHR {
+impl Default for PerformanceQuerySubmitInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_QUERY_SUBMIT_INFO_KHR,
             p_next: ptr::null(),
-            counter_pass_index: u32::default(),
+            counter_pass_index: Default::default(),
         }
     }
 }
@@ -28726,12 +26593,12 @@ pub struct HeadlessSurfaceCreateInfoEXT {
 }
 unsafe impl Send for HeadlessSurfaceCreateInfoEXT {}
 unsafe impl Sync for HeadlessSurfaceCreateInfoEXT {}
-impl default::Default for HeadlessSurfaceCreateInfoEXT {
+impl Default for HeadlessSurfaceCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::HEADLESS_SURFACE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            flags: HeadlessSurfaceCreateFlagsEXT::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -28753,12 +26620,12 @@ pub struct PhysicalDeviceCoverageReductionModeFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceCoverageReductionModeFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceCoverageReductionModeFeaturesNV {}
-impl default::Default for PhysicalDeviceCoverageReductionModeFeaturesNV {
+impl Default for PhysicalDeviceCoverageReductionModeFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COVERAGE_REDUCTION_MODE_FEATURES_NV,
             p_next: ptr::null_mut(),
-            coverage_reduction_mode: Bool32::default(),
+            coverage_reduction_mode: Default::default(),
         }
     }
 }
@@ -28781,13 +26648,13 @@ pub struct PipelineCoverageReductionStateCreateInfoNV {
 }
 unsafe impl Send for PipelineCoverageReductionStateCreateInfoNV {}
 unsafe impl Sync for PipelineCoverageReductionStateCreateInfoNV {}
-impl default::Default for PipelineCoverageReductionStateCreateInfoNV {
+impl Default for PipelineCoverageReductionStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COVERAGE_REDUCTION_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: PipelineCoverageReductionStateCreateFlagsNV::default(),
-            coverage_reduction_mode: CoverageReductionModeNV::default(),
+            flags: Default::default(),
+            coverage_reduction_mode: Default::default(),
         }
     }
 }
@@ -28813,15 +26680,15 @@ pub struct FramebufferMixedSamplesCombinationNV {
 }
 unsafe impl Send for FramebufferMixedSamplesCombinationNV {}
 unsafe impl Sync for FramebufferMixedSamplesCombinationNV {}
-impl default::Default for FramebufferMixedSamplesCombinationNV {
+impl Default for FramebufferMixedSamplesCombinationNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::FRAMEBUFFER_MIXED_SAMPLES_COMBINATION_NV,
             p_next: ptr::null_mut(),
-            coverage_reduction_mode: CoverageReductionModeNV::default(),
-            rasterization_samples: SampleCountFlags::default(),
-            depth_stencil_samples: SampleCountFlags::default(),
-            color_samples: SampleCountFlags::default(),
+            coverage_reduction_mode: Default::default(),
+            rasterization_samples: Default::default(),
+            depth_stencil_samples: Default::default(),
+            color_samples: Default::default(),
         }
     }
 }
@@ -28846,12 +26713,12 @@ pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
 }
 unsafe impl Send for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
 unsafe impl Sync for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {}
-impl default::Default for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
+impl Default for PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL,
             p_next: ptr::null_mut(),
-            shader_integer_functions2: Bool32::default(),
+            shader_integer_functions2: Default::default(),
         }
     }
 }
@@ -28875,7 +26742,7 @@ pub union PerformanceValueDataINTEL {
 }
 unsafe impl Send for PerformanceValueDataINTEL {}
 unsafe impl Sync for PerformanceValueDataINTEL {}
-impl default::Default for PerformanceValueDataINTEL {
+impl Default for PerformanceValueDataINTEL {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -28892,18 +26759,10 @@ impl fmt::Debug for PerformanceValueDataINTEL {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct PerformanceValueINTEL {
     pub ty: PerformanceValueTypeINTEL,
     pub data: PerformanceValueDataINTEL,
-}
-impl default::Default for PerformanceValueINTEL {
-    fn default() -> Self {
-        Self {
-            ty: PerformanceValueTypeINTEL::default(),
-            data: PerformanceValueDataINTEL::default(),
-        }
-    }
 }
 impl fmt::Debug for PerformanceValueINTEL {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -28922,7 +26781,7 @@ pub struct InitializePerformanceApiInfoINTEL {
 }
 unsafe impl Send for InitializePerformanceApiInfoINTEL {}
 unsafe impl Sync for InitializePerformanceApiInfoINTEL {}
-impl default::Default for InitializePerformanceApiInfoINTEL {
+impl Default for InitializePerformanceApiInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::INITIALIZE_PERFORMANCE_API_INFO_INTEL,
@@ -28949,12 +26808,12 @@ pub struct QueryPoolPerformanceQueryCreateInfoINTEL {
 }
 unsafe impl Send for QueryPoolPerformanceQueryCreateInfoINTEL {}
 unsafe impl Sync for QueryPoolPerformanceQueryCreateInfoINTEL {}
-impl default::Default for QueryPoolPerformanceQueryCreateInfoINTEL {
+impl Default for QueryPoolPerformanceQueryCreateInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUERY_POOL_PERFORMANCE_QUERY_CREATE_INFO_INTEL,
             p_next: ptr::null(),
-            performance_counters_sampling: QueryPoolSamplingModeINTEL::default(),
+            performance_counters_sampling: Default::default(),
         }
     }
 }
@@ -28977,12 +26836,12 @@ pub struct PerformanceMarkerInfoINTEL {
 }
 unsafe impl Send for PerformanceMarkerInfoINTEL {}
 unsafe impl Sync for PerformanceMarkerInfoINTEL {}
-impl default::Default for PerformanceMarkerInfoINTEL {
+impl Default for PerformanceMarkerInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_MARKER_INFO_INTEL,
             p_next: ptr::null(),
-            marker: u64::default(),
+            marker: Default::default(),
         }
     }
 }
@@ -29004,12 +26863,12 @@ pub struct PerformanceStreamMarkerInfoINTEL {
 }
 unsafe impl Send for PerformanceStreamMarkerInfoINTEL {}
 unsafe impl Sync for PerformanceStreamMarkerInfoINTEL {}
-impl default::Default for PerformanceStreamMarkerInfoINTEL {
+impl Default for PerformanceStreamMarkerInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_STREAM_MARKER_INFO_INTEL,
             p_next: ptr::null(),
-            marker: u32::default(),
+            marker: Default::default(),
         }
     }
 }
@@ -29033,14 +26892,14 @@ pub struct PerformanceOverrideInfoINTEL {
 }
 unsafe impl Send for PerformanceOverrideInfoINTEL {}
 unsafe impl Sync for PerformanceOverrideInfoINTEL {}
-impl default::Default for PerformanceOverrideInfoINTEL {
+impl Default for PerformanceOverrideInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_OVERRIDE_INFO_INTEL,
             p_next: ptr::null(),
-            ty: PerformanceOverrideTypeINTEL::default(),
-            enable: Bool32::default(),
-            parameter: u64::default(),
+            ty: Default::default(),
+            enable: Default::default(),
+            parameter: Default::default(),
         }
     }
 }
@@ -29064,12 +26923,12 @@ pub struct PerformanceConfigurationAcquireInfoINTEL {
 }
 unsafe impl Send for PerformanceConfigurationAcquireInfoINTEL {}
 unsafe impl Sync for PerformanceConfigurationAcquireInfoINTEL {}
-impl default::Default for PerformanceConfigurationAcquireInfoINTEL {
+impl Default for PerformanceConfigurationAcquireInfoINTEL {
     fn default() -> Self {
         Self {
             s_type: StructureType::PERFORMANCE_CONFIGURATION_ACQUIRE_INFO_INTEL,
             p_next: ptr::null(),
-            ty: PerformanceConfigurationTypeINTEL::default(),
+            ty: Default::default(),
         }
     }
 }
@@ -29092,13 +26951,13 @@ pub struct PhysicalDeviceShaderClockFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceShaderClockFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceShaderClockFeaturesKHR {}
-impl default::Default for PhysicalDeviceShaderClockFeaturesKHR {
+impl Default for PhysicalDeviceShaderClockFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            shader_subgroup_clock: Bool32::default(),
-            shader_device_clock: Bool32::default(),
+            shader_subgroup_clock: Default::default(),
+            shader_device_clock: Default::default(),
         }
     }
 }
@@ -29121,12 +26980,12 @@ pub struct PhysicalDeviceIndexTypeUint8FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceIndexTypeUint8FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceIndexTypeUint8FeaturesEXT {}
-impl default::Default for PhysicalDeviceIndexTypeUint8FeaturesEXT {
+impl Default for PhysicalDeviceIndexTypeUint8FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            index_type_uint8: Bool32::default(),
+            index_type_uint8: Default::default(),
         }
     }
 }
@@ -29149,13 +27008,13 @@ pub struct PhysicalDeviceShaderSMBuiltinsPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceShaderSMBuiltinsPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceShaderSMBuiltinsPropertiesNV {}
-impl default::Default for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
+impl Default for PhysicalDeviceShaderSMBuiltinsPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            shader_sm_count: u32::default(),
-            shader_warps_per_sm: u32::default(),
+            shader_sm_count: Default::default(),
+            shader_warps_per_sm: Default::default(),
         }
     }
 }
@@ -29178,12 +27037,12 @@ pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceShaderSMBuiltinsFeaturesNV {}
-impl default::Default for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
+impl Default for PhysicalDeviceShaderSMBuiltinsFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SM_BUILTINS_FEATURES_NV,
             p_next: ptr::null_mut(),
-            shader_sm_builtins: Bool32::default(),
+            shader_sm_builtins: Default::default(),
         }
     }
 }
@@ -29208,14 +27067,14 @@ pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {}
-impl default::Default for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
+impl Default for PhysicalDeviceFragmentShaderInterlockFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            fragment_shader_sample_interlock: Bool32::default(),
-            fragment_shader_pixel_interlock: Bool32::default(),
-            fragment_shader_shading_rate_interlock: Bool32::default(),
+            fragment_shader_sample_interlock: Default::default(),
+            fragment_shader_pixel_interlock: Default::default(),
+            fragment_shader_shading_rate_interlock: Default::default(),
         }
     }
 }
@@ -29245,12 +27104,12 @@ pub struct PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
 }
 unsafe impl Send for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
 unsafe impl Sync for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {}
-impl default::Default for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
+impl Default for PhysicalDeviceSeparateDepthStencilLayoutsFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SEPARATE_DEPTH_STENCIL_LAYOUTS_FEATURES,
             p_next: ptr::null_mut(),
-            separate_depth_stencil_layouts: Bool32::default(),
+            separate_depth_stencil_layouts: Default::default(),
         }
     }
 }
@@ -29273,12 +27132,12 @@ pub struct AttachmentReferenceStencilLayout {
 }
 unsafe impl Send for AttachmentReferenceStencilLayout {}
 unsafe impl Sync for AttachmentReferenceStencilLayout {}
-impl default::Default for AttachmentReferenceStencilLayout {
+impl Default for AttachmentReferenceStencilLayout {
     fn default() -> Self {
         Self {
             s_type: StructureType::ATTACHMENT_REFERENCE_STENCIL_LAYOUT,
             p_next: ptr::null_mut(),
-            stencil_layout: ImageLayout::default(),
+            stencil_layout: Default::default(),
         }
     }
 }
@@ -29301,13 +27160,13 @@ pub struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
 }
 unsafe impl Send for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
 unsafe impl Sync for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {}
-impl default::Default for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
+impl Default for PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            primitive_topology_list_restart: Bool32::default(),
-            primitive_topology_patch_list_restart: Bool32::default(),
+            primitive_topology_list_restart: Default::default(),
+            primitive_topology_patch_list_restart: Default::default(),
         }
     }
 }
@@ -29335,13 +27194,13 @@ pub struct AttachmentDescriptionStencilLayout {
 }
 unsafe impl Send for AttachmentDescriptionStencilLayout {}
 unsafe impl Sync for AttachmentDescriptionStencilLayout {}
-impl default::Default for AttachmentDescriptionStencilLayout {
+impl Default for AttachmentDescriptionStencilLayout {
     fn default() -> Self {
         Self {
             s_type: StructureType::ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT,
             p_next: ptr::null_mut(),
-            stencil_initial_layout: ImageLayout::default(),
-            stencil_final_layout: ImageLayout::default(),
+            stencil_initial_layout: Default::default(),
+            stencil_final_layout: Default::default(),
         }
     }
 }
@@ -29365,12 +27224,12 @@ pub struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
 }
 unsafe impl Send for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
 unsafe impl Sync for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {}
-impl default::Default for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
+impl Default for PhysicalDevicePipelineExecutablePropertiesFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_EXECUTABLE_PROPERTIES_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            pipeline_executable_info: Bool32::default(),
+            pipeline_executable_info: Default::default(),
         }
     }
 }
@@ -29392,12 +27251,12 @@ pub struct PipelineInfoKHR {
 }
 unsafe impl Send for PipelineInfoKHR {}
 unsafe impl Sync for PipelineInfoKHR {}
-impl default::Default for PipelineInfoKHR {
+impl Default for PipelineInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_INFO_KHR,
             p_next: ptr::null(),
-            pipeline: None,
+            pipeline: Default::default(),
         }
     }
 }
@@ -29422,15 +27281,15 @@ pub struct PipelineExecutablePropertiesKHR {
 }
 unsafe impl Send for PipelineExecutablePropertiesKHR {}
 unsafe impl Sync for PipelineExecutablePropertiesKHR {}
-impl default::Default for PipelineExecutablePropertiesKHR {
+impl Default for PipelineExecutablePropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            stages: ShaderStageFlags::default(),
-            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            subgroup_size: u32::default(),
+            stages: Default::default(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            subgroup_size: Default::default(),
         }
     }
 }
@@ -29456,13 +27315,13 @@ pub struct PipelineExecutableInfoKHR {
 }
 unsafe impl Send for PipelineExecutableInfoKHR {}
 unsafe impl Sync for PipelineExecutableInfoKHR {}
-impl default::Default for PipelineExecutableInfoKHR {
+impl Default for PipelineExecutableInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_INFO_KHR,
             p_next: ptr::null(),
-            pipeline: None,
-            executable_index: u32::default(),
+            pipeline: Default::default(),
+            executable_index: Default::default(),
         }
     }
 }
@@ -29484,7 +27343,7 @@ pub union PipelineExecutableStatisticValueKHR {
     pub u64: u64,
     pub f64: f64,
 }
-impl default::Default for PipelineExecutableStatisticValueKHR {
+impl Default for PipelineExecutableStatisticValueKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -29511,15 +27370,15 @@ pub struct PipelineExecutableStatisticKHR {
 }
 unsafe impl Send for PipelineExecutableStatisticKHR {}
 unsafe impl Sync for PipelineExecutableStatisticKHR {}
-impl default::Default for PipelineExecutableStatisticKHR {
+impl Default for PipelineExecutableStatisticKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_STATISTIC_KHR,
             p_next: ptr::null_mut(),
-            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            format: PipelineExecutableStatisticFormatKHR::default(),
-            value: PipelineExecutableStatisticValueKHR::default(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            format: Default::default(),
+            value: Default::default(),
         }
     }
 }
@@ -29548,15 +27407,15 @@ pub struct PipelineExecutableInternalRepresentationKHR {
 }
 unsafe impl Send for PipelineExecutableInternalRepresentationKHR {}
 unsafe impl Sync for PipelineExecutableInternalRepresentationKHR {}
-impl default::Default for PipelineExecutableInternalRepresentationKHR {
+impl Default for PipelineExecutableInternalRepresentationKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR,
             p_next: ptr::null_mut(),
-            name: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            is_text: Bool32::default(),
-            data_size: usize::default(),
+            name: [Default::default(); MAX_DESCRIPTION_SIZE],
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            is_text: Default::default(),
+            data_size: Default::default(),
             p_data: ptr::null_mut(),
         }
     }
@@ -29583,12 +27442,12 @@ pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeatures {
 }
 unsafe impl Send for PhysicalDeviceShaderDemoteToHelperInvocationFeatures {}
 unsafe impl Sync for PhysicalDeviceShaderDemoteToHelperInvocationFeatures {}
-impl default::Default for PhysicalDeviceShaderDemoteToHelperInvocationFeatures {
+impl Default for PhysicalDeviceShaderDemoteToHelperInvocationFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES,
             p_next: ptr::null_mut(),
-            shader_demote_to_helper_invocation: Bool32::default(),
+            shader_demote_to_helper_invocation: Default::default(),
         }
     }
 }
@@ -29614,12 +27473,12 @@ pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {}
-impl default::Default for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
+impl Default for PhysicalDeviceTexelBufferAlignmentFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            texel_buffer_alignment: Bool32::default(),
+            texel_buffer_alignment: Default::default(),
         }
     }
 }
@@ -29644,15 +27503,15 @@ pub struct PhysicalDeviceTexelBufferAlignmentProperties {
 }
 unsafe impl Send for PhysicalDeviceTexelBufferAlignmentProperties {}
 unsafe impl Sync for PhysicalDeviceTexelBufferAlignmentProperties {}
-impl default::Default for PhysicalDeviceTexelBufferAlignmentProperties {
+impl Default for PhysicalDeviceTexelBufferAlignmentProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_PROPERTIES,
             p_next: ptr::null_mut(),
-            storage_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
-            storage_texel_buffer_offset_single_texel_alignment: Bool32::default(),
-            uniform_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
-            uniform_texel_buffer_offset_single_texel_alignment: Bool32::default(),
+            storage_texel_buffer_offset_alignment_bytes: Default::default(),
+            storage_texel_buffer_offset_single_texel_alignment: Default::default(),
+            uniform_texel_buffer_offset_alignment_bytes: Default::default(),
+            uniform_texel_buffer_offset_single_texel_alignment: Default::default(),
         }
     }
 }
@@ -29691,13 +27550,13 @@ pub struct PhysicalDeviceSubgroupSizeControlFeatures {
 }
 unsafe impl Send for PhysicalDeviceSubgroupSizeControlFeatures {}
 unsafe impl Sync for PhysicalDeviceSubgroupSizeControlFeatures {}
-impl default::Default for PhysicalDeviceSubgroupSizeControlFeatures {
+impl Default for PhysicalDeviceSubgroupSizeControlFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_FEATURES,
             p_next: ptr::null_mut(),
-            subgroup_size_control: Bool32::default(),
-            compute_full_subgroups: Bool32::default(),
+            subgroup_size_control: Default::default(),
+            compute_full_subgroups: Default::default(),
         }
     }
 }
@@ -29728,15 +27587,15 @@ pub struct PhysicalDeviceSubgroupSizeControlProperties {
 }
 unsafe impl Send for PhysicalDeviceSubgroupSizeControlProperties {}
 unsafe impl Sync for PhysicalDeviceSubgroupSizeControlProperties {}
-impl default::Default for PhysicalDeviceSubgroupSizeControlProperties {
+impl Default for PhysicalDeviceSubgroupSizeControlProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBGROUP_SIZE_CONTROL_PROPERTIES,
             p_next: ptr::null_mut(),
-            min_subgroup_size: u32::default(),
-            max_subgroup_size: u32::default(),
-            max_compute_workgroup_subgroups: u32::default(),
-            required_subgroup_size_stages: ShaderStageFlags::default(),
+            min_subgroup_size: Default::default(),
+            max_subgroup_size: Default::default(),
+            max_compute_workgroup_subgroups: Default::default(),
+            required_subgroup_size_stages: Default::default(),
         }
     }
 }
@@ -29762,12 +27621,12 @@ pub struct PipelineShaderStageRequiredSubgroupSizeCreateInfo {
 }
 unsafe impl Send for PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
 unsafe impl Sync for PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
-impl default::Default for PipelineShaderStageRequiredSubgroupSizeCreateInfo {
+impl Default for PipelineShaderStageRequiredSubgroupSizeCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO,
             p_next: ptr::null_mut(),
-            required_subgroup_size: u32::default(),
+            required_subgroup_size: Default::default(),
         }
     }
 }
@@ -29791,13 +27650,13 @@ pub struct SubpassShadingPipelineCreateInfoHUAWEI {
 }
 unsafe impl Send for SubpassShadingPipelineCreateInfoHUAWEI {}
 unsafe impl Sync for SubpassShadingPipelineCreateInfoHUAWEI {}
-impl default::Default for SubpassShadingPipelineCreateInfoHUAWEI {
+impl Default for SubpassShadingPipelineCreateInfoHUAWEI {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
             p_next: ptr::null_mut(),
-            render_pass: None,
-            subpass: u32::default(),
+            render_pass: Default::default(),
+            subpass: Default::default(),
         }
     }
 }
@@ -29820,12 +27679,12 @@ pub struct PhysicalDeviceSubpassShadingPropertiesHUAWEI {
 }
 unsafe impl Send for PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
 unsafe impl Sync for PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
-impl default::Default for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
+impl Default for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
             p_next: ptr::null_mut(),
-            max_subpass_shading_workgroup_size_aspect_ratio: u32::default(),
+            max_subpass_shading_workgroup_size_aspect_ratio: Default::default(),
         }
     }
 }
@@ -29850,12 +27709,12 @@ pub struct MemoryOpaqueCaptureAddressAllocateInfo {
 }
 unsafe impl Send for MemoryOpaqueCaptureAddressAllocateInfo {}
 unsafe impl Sync for MemoryOpaqueCaptureAddressAllocateInfo {}
-impl default::Default for MemoryOpaqueCaptureAddressAllocateInfo {
+impl Default for MemoryOpaqueCaptureAddressAllocateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_OPAQUE_CAPTURE_ADDRESS_ALLOCATE_INFO,
             p_next: ptr::null(),
-            opaque_capture_address: u64::default(),
+            opaque_capture_address: Default::default(),
         }
     }
 }
@@ -29878,12 +27737,12 @@ pub struct DeviceMemoryOpaqueCaptureAddressInfo {
 }
 unsafe impl Send for DeviceMemoryOpaqueCaptureAddressInfo {}
 unsafe impl Sync for DeviceMemoryOpaqueCaptureAddressInfo {}
-impl default::Default for DeviceMemoryOpaqueCaptureAddressInfo {
+impl Default for DeviceMemoryOpaqueCaptureAddressInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO,
             p_next: ptr::null(),
-            memory: None,
+            memory: Default::default(),
         }
     }
 }
@@ -29911,17 +27770,17 @@ pub struct PhysicalDeviceLineRasterizationFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceLineRasterizationFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceLineRasterizationFeaturesEXT {}
-impl default::Default for PhysicalDeviceLineRasterizationFeaturesEXT {
+impl Default for PhysicalDeviceLineRasterizationFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            rectangular_lines: Bool32::default(),
-            bresenham_lines: Bool32::default(),
-            smooth_lines: Bool32::default(),
-            stippled_rectangular_lines: Bool32::default(),
-            stippled_bresenham_lines: Bool32::default(),
-            stippled_smooth_lines: Bool32::default(),
+            rectangular_lines: Default::default(),
+            bresenham_lines: Default::default(),
+            smooth_lines: Default::default(),
+            stippled_rectangular_lines: Default::default(),
+            stippled_bresenham_lines: Default::default(),
+            stippled_smooth_lines: Default::default(),
         }
     }
 }
@@ -29948,12 +27807,12 @@ pub struct PhysicalDeviceLineRasterizationPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceLineRasterizationPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceLineRasterizationPropertiesEXT {}
-impl default::Default for PhysicalDeviceLineRasterizationPropertiesEXT {
+impl Default for PhysicalDeviceLineRasterizationPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            line_sub_pixel_precision_bits: u32::default(),
+            line_sub_pixel_precision_bits: Default::default(),
         }
     }
 }
@@ -29978,15 +27837,15 @@ pub struct PipelineRasterizationLineStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineRasterizationLineStateCreateInfoEXT {}
 unsafe impl Sync for PipelineRasterizationLineStateCreateInfoEXT {}
-impl default::Default for PipelineRasterizationLineStateCreateInfoEXT {
+impl Default for PipelineRasterizationLineStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            line_rasterization_mode: LineRasterizationModeEXT::default(),
-            stippled_line_enable: Bool32::default(),
-            line_stipple_factor: u32::default(),
-            line_stipple_pattern: u16::default(),
+            line_rasterization_mode: Default::default(),
+            stippled_line_enable: Default::default(),
+            line_stipple_factor: Default::default(),
+            line_stipple_pattern: Default::default(),
         }
     }
 }
@@ -30011,12 +27870,12 @@ pub struct PhysicalDevicePipelineCreationCacheControlFeatures {
 }
 unsafe impl Send for PhysicalDevicePipelineCreationCacheControlFeatures {}
 unsafe impl Sync for PhysicalDevicePipelineCreationCacheControlFeatures {}
-impl default::Default for PhysicalDevicePipelineCreationCacheControlFeatures {
+impl Default for PhysicalDevicePipelineCreationCacheControlFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES,
             p_next: ptr::null_mut(),
-            pipeline_creation_cache_control: Bool32::default(),
+            pipeline_creation_cache_control: Default::default(),
         }
     }
 }
@@ -30058,23 +27917,23 @@ pub struct PhysicalDeviceVulkan11Features {
 }
 unsafe impl Send for PhysicalDeviceVulkan11Features {}
 unsafe impl Sync for PhysicalDeviceVulkan11Features {}
-impl default::Default for PhysicalDeviceVulkan11Features {
+impl Default for PhysicalDeviceVulkan11Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_1_FEATURES,
             p_next: ptr::null_mut(),
-            storage_buffer16_bit_access: Bool32::default(),
-            uniform_and_storage_buffer16_bit_access: Bool32::default(),
-            storage_push_constant16: Bool32::default(),
-            storage_input_output16: Bool32::default(),
-            multiview: Bool32::default(),
-            multiview_geometry_shader: Bool32::default(),
-            multiview_tessellation_shader: Bool32::default(),
-            variable_pointers_storage_buffer: Bool32::default(),
-            variable_pointers: Bool32::default(),
-            protected_memory: Bool32::default(),
-            sampler_ycbcr_conversion: Bool32::default(),
-            shader_draw_parameters: Bool32::default(),
+            storage_buffer16_bit_access: Default::default(),
+            uniform_and_storage_buffer16_bit_access: Default::default(),
+            storage_push_constant16: Default::default(),
+            storage_input_output16: Default::default(),
+            multiview: Default::default(),
+            multiview_geometry_shader: Default::default(),
+            multiview_tessellation_shader: Default::default(),
+            variable_pointers_storage_buffer: Default::default(),
+            variable_pointers: Default::default(),
+            protected_memory: Default::default(),
+            sampler_ycbcr_conversion: Default::default(),
+            shader_draw_parameters: Default::default(),
         }
     }
 }
@@ -30133,26 +27992,26 @@ pub struct PhysicalDeviceVulkan11Properties {
 }
 unsafe impl Send for PhysicalDeviceVulkan11Properties {}
 unsafe impl Sync for PhysicalDeviceVulkan11Properties {}
-impl default::Default for PhysicalDeviceVulkan11Properties {
+impl Default for PhysicalDeviceVulkan11Properties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES,
             p_next: ptr::null_mut(),
-            device_uuid: [u8::default(); UUID_SIZE],
-            driver_uuid: [u8::default(); UUID_SIZE],
-            device_luid: [u8::default(); LUID_SIZE],
-            device_node_mask: u32::default(),
-            device_luid_valid: Bool32::default(),
-            subgroup_size: u32::default(),
-            subgroup_supported_stages: ShaderStageFlags::default(),
-            subgroup_supported_operations: SubgroupFeatureFlags::default(),
-            subgroup_quad_operations_in_all_stages: Bool32::default(),
-            point_clipping_behavior: PointClippingBehavior::default(),
-            max_multiview_view_count: u32::default(),
-            max_multiview_instance_index: u32::default(),
-            protected_no_fault: Bool32::default(),
-            max_per_set_descriptors: u32::default(),
-            max_memory_allocation_size: DeviceSize::default(),
+            device_uuid: [Default::default(); UUID_SIZE],
+            driver_uuid: [Default::default(); UUID_SIZE],
+            device_luid: [Default::default(); LUID_SIZE],
+            device_node_mask: Default::default(),
+            device_luid_valid: Default::default(),
+            subgroup_size: Default::default(),
+            subgroup_supported_stages: Default::default(),
+            subgroup_supported_operations: Default::default(),
+            subgroup_quad_operations_in_all_stages: Default::default(),
+            point_clipping_behavior: Default::default(),
+            max_multiview_view_count: Default::default(),
+            max_multiview_instance_index: Default::default(),
+            protected_no_fault: Default::default(),
+            max_per_set_descriptors: Default::default(),
+            max_memory_allocation_size: Default::default(),
         }
     }
 }
@@ -30242,58 +28101,58 @@ pub struct PhysicalDeviceVulkan12Features {
 }
 unsafe impl Send for PhysicalDeviceVulkan12Features {}
 unsafe impl Sync for PhysicalDeviceVulkan12Features {}
-impl default::Default for PhysicalDeviceVulkan12Features {
+impl Default for PhysicalDeviceVulkan12Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
             p_next: ptr::null_mut(),
-            sampler_mirror_clamp_to_edge: Bool32::default(),
-            draw_indirect_count: Bool32::default(),
-            storage_buffer8_bit_access: Bool32::default(),
-            uniform_and_storage_buffer8_bit_access: Bool32::default(),
-            storage_push_constant8: Bool32::default(),
-            shader_buffer_int64_atomics: Bool32::default(),
-            shader_shared_int64_atomics: Bool32::default(),
-            shader_float16: Bool32::default(),
-            shader_int8: Bool32::default(),
-            descriptor_indexing: Bool32::default(),
-            shader_input_attachment_array_dynamic_indexing: Bool32::default(),
-            shader_uniform_texel_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_storage_texel_buffer_array_dynamic_indexing: Bool32::default(),
-            shader_uniform_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_sampled_image_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_image_array_non_uniform_indexing: Bool32::default(),
-            shader_input_attachment_array_non_uniform_indexing: Bool32::default(),
-            shader_uniform_texel_buffer_array_non_uniform_indexing: Bool32::default(),
-            shader_storage_texel_buffer_array_non_uniform_indexing: Bool32::default(),
-            descriptor_binding_uniform_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_sampled_image_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_image_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_uniform_texel_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_storage_texel_buffer_update_after_bind: Bool32::default(),
-            descriptor_binding_update_unused_while_pending: Bool32::default(),
-            descriptor_binding_partially_bound: Bool32::default(),
-            descriptor_binding_variable_descriptor_count: Bool32::default(),
-            runtime_descriptor_array: Bool32::default(),
-            sampler_filter_minmax: Bool32::default(),
-            scalar_block_layout: Bool32::default(),
-            imageless_framebuffer: Bool32::default(),
-            uniform_buffer_standard_layout: Bool32::default(),
-            shader_subgroup_extended_types: Bool32::default(),
-            separate_depth_stencil_layouts: Bool32::default(),
-            host_query_reset: Bool32::default(),
-            timeline_semaphore: Bool32::default(),
-            buffer_device_address: Bool32::default(),
-            buffer_device_address_capture_replay: Bool32::default(),
-            buffer_device_address_multi_device: Bool32::default(),
-            vulkan_memory_model: Bool32::default(),
-            vulkan_memory_model_device_scope: Bool32::default(),
-            vulkan_memory_model_availability_visibility_chains: Bool32::default(),
-            shader_output_viewport_index: Bool32::default(),
-            shader_output_layer: Bool32::default(),
-            subgroup_broadcast_dynamic_id: Bool32::default(),
+            sampler_mirror_clamp_to_edge: Default::default(),
+            draw_indirect_count: Default::default(),
+            storage_buffer8_bit_access: Default::default(),
+            uniform_and_storage_buffer8_bit_access: Default::default(),
+            storage_push_constant8: Default::default(),
+            shader_buffer_int64_atomics: Default::default(),
+            shader_shared_int64_atomics: Default::default(),
+            shader_float16: Default::default(),
+            shader_int8: Default::default(),
+            descriptor_indexing: Default::default(),
+            shader_input_attachment_array_dynamic_indexing: Default::default(),
+            shader_uniform_texel_buffer_array_dynamic_indexing: Default::default(),
+            shader_storage_texel_buffer_array_dynamic_indexing: Default::default(),
+            shader_uniform_buffer_array_non_uniform_indexing: Default::default(),
+            shader_sampled_image_array_non_uniform_indexing: Default::default(),
+            shader_storage_buffer_array_non_uniform_indexing: Default::default(),
+            shader_storage_image_array_non_uniform_indexing: Default::default(),
+            shader_input_attachment_array_non_uniform_indexing: Default::default(),
+            shader_uniform_texel_buffer_array_non_uniform_indexing: Default::default(),
+            shader_storage_texel_buffer_array_non_uniform_indexing: Default::default(),
+            descriptor_binding_uniform_buffer_update_after_bind: Default::default(),
+            descriptor_binding_sampled_image_update_after_bind: Default::default(),
+            descriptor_binding_storage_image_update_after_bind: Default::default(),
+            descriptor_binding_storage_buffer_update_after_bind: Default::default(),
+            descriptor_binding_uniform_texel_buffer_update_after_bind: Default::default(),
+            descriptor_binding_storage_texel_buffer_update_after_bind: Default::default(),
+            descriptor_binding_update_unused_while_pending: Default::default(),
+            descriptor_binding_partially_bound: Default::default(),
+            descriptor_binding_variable_descriptor_count: Default::default(),
+            runtime_descriptor_array: Default::default(),
+            sampler_filter_minmax: Default::default(),
+            scalar_block_layout: Default::default(),
+            imageless_framebuffer: Default::default(),
+            uniform_buffer_standard_layout: Default::default(),
+            shader_subgroup_extended_types: Default::default(),
+            separate_depth_stencil_layouts: Default::default(),
+            host_query_reset: Default::default(),
+            timeline_semaphore: Default::default(),
+            buffer_device_address: Default::default(),
+            buffer_device_address_capture_replay: Default::default(),
+            buffer_device_address_multi_device: Default::default(),
+            vulkan_memory_model: Default::default(),
+            vulkan_memory_model_device_scope: Default::default(),
+            vulkan_memory_model_availability_visibility_chains: Default::default(),
+            shader_output_viewport_index: Default::default(),
+            shader_output_layer: Default::default(),
+            subgroup_broadcast_dynamic_id: Default::default(),
         }
     }
 }
@@ -30503,63 +28362,63 @@ pub struct PhysicalDeviceVulkan12Properties {
 }
 unsafe impl Send for PhysicalDeviceVulkan12Properties {}
 unsafe impl Sync for PhysicalDeviceVulkan12Properties {}
-impl default::Default for PhysicalDeviceVulkan12Properties {
+impl Default for PhysicalDeviceVulkan12Properties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES,
             p_next: ptr::null_mut(),
-            driver_id: DriverId::default(),
-            driver_name: [c_char::default(); MAX_DRIVER_NAME_SIZE],
-            driver_info: [c_char::default(); MAX_DRIVER_INFO_SIZE],
-            conformance_version: ConformanceVersion::default(),
-            denorm_behavior_independence: ShaderFloatControlsIndependence::default(),
-            rounding_mode_independence: ShaderFloatControlsIndependence::default(),
-            shader_signed_zero_inf_nan_preserve_float16: Bool32::default(),
-            shader_signed_zero_inf_nan_preserve_float32: Bool32::default(),
-            shader_signed_zero_inf_nan_preserve_float64: Bool32::default(),
-            shader_denorm_preserve_float16: Bool32::default(),
-            shader_denorm_preserve_float32: Bool32::default(),
-            shader_denorm_preserve_float64: Bool32::default(),
-            shader_denorm_flush_to_zero_float16: Bool32::default(),
-            shader_denorm_flush_to_zero_float32: Bool32::default(),
-            shader_denorm_flush_to_zero_float64: Bool32::default(),
-            shader_rounding_mode_rte_float16: Bool32::default(),
-            shader_rounding_mode_rte_float32: Bool32::default(),
-            shader_rounding_mode_rte_float64: Bool32::default(),
-            shader_rounding_mode_rtz_float16: Bool32::default(),
-            shader_rounding_mode_rtz_float32: Bool32::default(),
-            shader_rounding_mode_rtz_float64: Bool32::default(),
-            max_update_after_bind_descriptors_in_all_pools: u32::default(),
-            shader_uniform_buffer_array_non_uniform_indexing_native: Bool32::default(),
-            shader_sampled_image_array_non_uniform_indexing_native: Bool32::default(),
-            shader_storage_buffer_array_non_uniform_indexing_native: Bool32::default(),
-            shader_storage_image_array_non_uniform_indexing_native: Bool32::default(),
-            shader_input_attachment_array_non_uniform_indexing_native: Bool32::default(),
-            robust_buffer_access_update_after_bind: Bool32::default(),
-            quad_divergent_implicit_lod: Bool32::default(),
-            max_per_stage_descriptor_update_after_bind_samplers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_uniform_buffers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_storage_buffers: u32::default(),
-            max_per_stage_descriptor_update_after_bind_sampled_images: u32::default(),
-            max_per_stage_descriptor_update_after_bind_storage_images: u32::default(),
-            max_per_stage_descriptor_update_after_bind_input_attachments: u32::default(),
-            max_per_stage_update_after_bind_resources: u32::default(),
-            max_descriptor_set_update_after_bind_samplers: u32::default(),
-            max_descriptor_set_update_after_bind_uniform_buffers: u32::default(),
-            max_descriptor_set_update_after_bind_uniform_buffers_dynamic: u32::default(),
-            max_descriptor_set_update_after_bind_storage_buffers: u32::default(),
-            max_descriptor_set_update_after_bind_storage_buffers_dynamic: u32::default(),
-            max_descriptor_set_update_after_bind_sampled_images: u32::default(),
-            max_descriptor_set_update_after_bind_storage_images: u32::default(),
-            max_descriptor_set_update_after_bind_input_attachments: u32::default(),
-            supported_depth_resolve_modes: ResolveModeFlags::default(),
-            supported_stencil_resolve_modes: ResolveModeFlags::default(),
-            independent_resolve_none: Bool32::default(),
-            independent_resolve: Bool32::default(),
-            filter_minmax_single_component_formats: Bool32::default(),
-            filter_minmax_image_component_mapping: Bool32::default(),
-            max_timeline_semaphore_value_difference: u64::default(),
-            framebuffer_integer_color_sample_counts: SampleCountFlags::default(),
+            driver_id: Default::default(),
+            driver_name: [Default::default(); MAX_DRIVER_NAME_SIZE],
+            driver_info: [Default::default(); MAX_DRIVER_INFO_SIZE],
+            conformance_version: Default::default(),
+            denorm_behavior_independence: Default::default(),
+            rounding_mode_independence: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float16: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float32: Default::default(),
+            shader_signed_zero_inf_nan_preserve_float64: Default::default(),
+            shader_denorm_preserve_float16: Default::default(),
+            shader_denorm_preserve_float32: Default::default(),
+            shader_denorm_preserve_float64: Default::default(),
+            shader_denorm_flush_to_zero_float16: Default::default(),
+            shader_denorm_flush_to_zero_float32: Default::default(),
+            shader_denorm_flush_to_zero_float64: Default::default(),
+            shader_rounding_mode_rte_float16: Default::default(),
+            shader_rounding_mode_rte_float32: Default::default(),
+            shader_rounding_mode_rte_float64: Default::default(),
+            shader_rounding_mode_rtz_float16: Default::default(),
+            shader_rounding_mode_rtz_float32: Default::default(),
+            shader_rounding_mode_rtz_float64: Default::default(),
+            max_update_after_bind_descriptors_in_all_pools: Default::default(),
+            shader_uniform_buffer_array_non_uniform_indexing_native: Default::default(),
+            shader_sampled_image_array_non_uniform_indexing_native: Default::default(),
+            shader_storage_buffer_array_non_uniform_indexing_native: Default::default(),
+            shader_storage_image_array_non_uniform_indexing_native: Default::default(),
+            shader_input_attachment_array_non_uniform_indexing_native: Default::default(),
+            robust_buffer_access_update_after_bind: Default::default(),
+            quad_divergent_implicit_lod: Default::default(),
+            max_per_stage_descriptor_update_after_bind_samplers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_uniform_buffers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_storage_buffers: Default::default(),
+            max_per_stage_descriptor_update_after_bind_sampled_images: Default::default(),
+            max_per_stage_descriptor_update_after_bind_storage_images: Default::default(),
+            max_per_stage_descriptor_update_after_bind_input_attachments: Default::default(),
+            max_per_stage_update_after_bind_resources: Default::default(),
+            max_descriptor_set_update_after_bind_samplers: Default::default(),
+            max_descriptor_set_update_after_bind_uniform_buffers: Default::default(),
+            max_descriptor_set_update_after_bind_uniform_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_storage_buffers: Default::default(),
+            max_descriptor_set_update_after_bind_storage_buffers_dynamic: Default::default(),
+            max_descriptor_set_update_after_bind_sampled_images: Default::default(),
+            max_descriptor_set_update_after_bind_storage_images: Default::default(),
+            max_descriptor_set_update_after_bind_input_attachments: Default::default(),
+            supported_depth_resolve_modes: Default::default(),
+            supported_stencil_resolve_modes: Default::default(),
+            independent_resolve_none: Default::default(),
+            independent_resolve: Default::default(),
+            filter_minmax_single_component_formats: Default::default(),
+            filter_minmax_image_component_mapping: Default::default(),
+            max_timeline_semaphore_value_difference: Default::default(),
+            framebuffer_integer_color_sample_counts: Default::default(),
         }
     }
 }
@@ -30760,26 +28619,26 @@ pub struct PhysicalDeviceVulkan13Features {
 }
 unsafe impl Send for PhysicalDeviceVulkan13Features {}
 unsafe impl Sync for PhysicalDeviceVulkan13Features {}
-impl default::Default for PhysicalDeviceVulkan13Features {
+impl Default for PhysicalDeviceVulkan13Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
             p_next: ptr::null_mut(),
-            robust_image_access: Bool32::default(),
-            inline_uniform_block: Bool32::default(),
-            descriptor_binding_inline_uniform_block_update_after_bind: Bool32::default(),
-            pipeline_creation_cache_control: Bool32::default(),
-            private_data: Bool32::default(),
-            shader_demote_to_helper_invocation: Bool32::default(),
-            shader_terminate_invocation: Bool32::default(),
-            subgroup_size_control: Bool32::default(),
-            compute_full_subgroups: Bool32::default(),
-            synchronization2: Bool32::default(),
-            texture_compression_astc_hdr: Bool32::default(),
-            shader_zero_initialize_workgroup_memory: Bool32::default(),
-            dynamic_rendering: Bool32::default(),
-            shader_integer_dot_product: Bool32::default(),
-            maintenance4: Bool32::default(),
+            robust_image_access: Default::default(),
+            inline_uniform_block: Default::default(),
+            descriptor_binding_inline_uniform_block_update_after_bind: Default::default(),
+            pipeline_creation_cache_control: Default::default(),
+            private_data: Default::default(),
+            shader_demote_to_helper_invocation: Default::default(),
+            shader_terminate_invocation: Default::default(),
+            subgroup_size_control: Default::default(),
+            compute_full_subgroups: Default::default(),
+            synchronization2: Default::default(),
+            texture_compression_astc_hdr: Default::default(),
+            shader_zero_initialize_workgroup_memory: Default::default(),
+            dynamic_rendering: Default::default(),
+            shader_integer_dot_product: Default::default(),
+            maintenance4: Default::default(),
         }
     }
 }
@@ -30872,56 +28731,56 @@ pub struct PhysicalDeviceVulkan13Properties {
 }
 unsafe impl Send for PhysicalDeviceVulkan13Properties {}
 unsafe impl Sync for PhysicalDeviceVulkan13Properties {}
-impl default::Default for PhysicalDeviceVulkan13Properties {
+impl Default for PhysicalDeviceVulkan13Properties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VULKAN_1_3_PROPERTIES,
             p_next: ptr::null_mut(),
-            min_subgroup_size: u32::default(),
-            max_subgroup_size: u32::default(),
-            max_compute_workgroup_subgroups: u32::default(),
-            required_subgroup_size_stages: ShaderStageFlags::default(),
-            max_inline_uniform_block_size: u32::default(),
-            max_per_stage_descriptor_inline_uniform_blocks: u32::default(),
-            max_per_stage_descriptor_update_after_bind_inline_uniform_blocks: u32::default(),
-            max_descriptor_set_inline_uniform_blocks: u32::default(),
-            max_descriptor_set_update_after_bind_inline_uniform_blocks: u32::default(),
-            max_inline_uniform_total_size: u32::default(),
-            integer_dot_product8_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product8_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product8_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_unsigned_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_signed_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product16_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product16_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product16_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product32_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product32_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product32_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product64_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product64_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product64_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Bool32::default(),
-            storage_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
-            storage_texel_buffer_offset_single_texel_alignment: Bool32::default(),
-            uniform_texel_buffer_offset_alignment_bytes: DeviceSize::default(),
-            uniform_texel_buffer_offset_single_texel_alignment: Bool32::default(),
-            max_buffer_size: DeviceSize::default(),
+            min_subgroup_size: Default::default(),
+            max_subgroup_size: Default::default(),
+            max_compute_workgroup_subgroups: Default::default(),
+            required_subgroup_size_stages: Default::default(),
+            max_inline_uniform_block_size: Default::default(),
+            max_per_stage_descriptor_inline_uniform_blocks: Default::default(),
+            max_per_stage_descriptor_update_after_bind_inline_uniform_blocks: Default::default(),
+            max_descriptor_set_inline_uniform_blocks: Default::default(),
+            max_descriptor_set_update_after_bind_inline_uniform_blocks: Default::default(),
+            max_inline_uniform_total_size: Default::default(),
+            integer_dot_product8_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product8_bit_signed_accelerated: Default::default(),
+            integer_dot_product8_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_unsigned_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_signed_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product16_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product16_bit_signed_accelerated: Default::default(),
+            integer_dot_product16_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product32_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product32_bit_signed_accelerated: Default::default(),
+            integer_dot_product32_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product64_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product64_bit_signed_accelerated: Default::default(),
+            integer_dot_product64_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Default::default(),
+            storage_texel_buffer_offset_alignment_bytes: Default::default(),
+            storage_texel_buffer_offset_single_texel_alignment: Default::default(),
+            uniform_texel_buffer_offset_alignment_bytes: Default::default(),
+            uniform_texel_buffer_offset_single_texel_alignment: Default::default(),
+            max_buffer_size: Default::default(),
         }
     }
 }
@@ -31101,12 +28960,12 @@ pub struct PipelineCompilerControlCreateInfoAMD {
 }
 unsafe impl Send for PipelineCompilerControlCreateInfoAMD {}
 unsafe impl Sync for PipelineCompilerControlCreateInfoAMD {}
-impl default::Default for PipelineCompilerControlCreateInfoAMD {
+impl Default for PipelineCompilerControlCreateInfoAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COMPILER_CONTROL_CREATE_INFO_AMD,
             p_next: ptr::null(),
-            compiler_control_flags: PipelineCompilerControlFlagsAMD::default(),
+            compiler_control_flags: Default::default(),
         }
     }
 }
@@ -31128,12 +28987,12 @@ pub struct PhysicalDeviceCoherentMemoryFeaturesAMD {
 }
 unsafe impl Send for PhysicalDeviceCoherentMemoryFeaturesAMD {}
 unsafe impl Sync for PhysicalDeviceCoherentMemoryFeaturesAMD {}
-impl default::Default for PhysicalDeviceCoherentMemoryFeaturesAMD {
+impl Default for PhysicalDeviceCoherentMemoryFeaturesAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COHERENT_MEMORY_FEATURES_AMD,
             p_next: ptr::null_mut(),
-            device_coherent_memory: Bool32::default(),
+            device_coherent_memory: Default::default(),
         }
     }
 }
@@ -31159,16 +29018,16 @@ pub struct PhysicalDeviceToolProperties {
 }
 unsafe impl Send for PhysicalDeviceToolProperties {}
 unsafe impl Sync for PhysicalDeviceToolProperties {}
-impl default::Default for PhysicalDeviceToolProperties {
+impl Default for PhysicalDeviceToolProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_TOOL_PROPERTIES,
             p_next: ptr::null_mut(),
-            name: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
-            version: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
-            purposes: ToolPurposeFlags::default(),
-            description: [c_char::default(); MAX_DESCRIPTION_SIZE],
-            layer: [c_char::default(); MAX_EXTENSION_NAME_SIZE],
+            name: [Default::default(); MAX_EXTENSION_NAME_SIZE],
+            version: [Default::default(); MAX_EXTENSION_NAME_SIZE],
+            purposes: Default::default(),
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            layer: [Default::default(); MAX_EXTENSION_NAME_SIZE],
         }
     }
 }
@@ -31196,13 +29055,13 @@ pub struct SamplerCustomBorderColorCreateInfoEXT {
 }
 unsafe impl Send for SamplerCustomBorderColorCreateInfoEXT {}
 unsafe impl Sync for SamplerCustomBorderColorCreateInfoEXT {}
-impl default::Default for SamplerCustomBorderColorCreateInfoEXT {
+impl Default for SamplerCustomBorderColorCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_CUSTOM_BORDER_COLOR_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            custom_border_color: ClearColorValue::default(),
-            format: Format::default(),
+            custom_border_color: Default::default(),
+            format: Default::default(),
         }
     }
 }
@@ -31225,12 +29084,12 @@ pub struct PhysicalDeviceCustomBorderColorPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceCustomBorderColorPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceCustomBorderColorPropertiesEXT {}
-impl default::Default for PhysicalDeviceCustomBorderColorPropertiesEXT {
+impl Default for PhysicalDeviceCustomBorderColorPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            max_custom_border_color_samplers: u32::default(),
+            max_custom_border_color_samplers: Default::default(),
         }
     }
 }
@@ -31256,13 +29115,13 @@ pub struct PhysicalDeviceCustomBorderColorFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceCustomBorderColorFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceCustomBorderColorFeaturesEXT {}
-impl default::Default for PhysicalDeviceCustomBorderColorFeaturesEXT {
+impl Default for PhysicalDeviceCustomBorderColorFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            custom_border_colors: Bool32::default(),
-            custom_border_color_without_format: Bool32::default(),
+            custom_border_colors: Default::default(),
+            custom_border_color_without_format: Default::default(),
         }
     }
 }
@@ -31289,13 +29148,13 @@ pub struct SamplerBorderColorComponentMappingCreateInfoEXT {
 }
 unsafe impl Send for SamplerBorderColorComponentMappingCreateInfoEXT {}
 unsafe impl Sync for SamplerBorderColorComponentMappingCreateInfoEXT {}
-impl default::Default for SamplerBorderColorComponentMappingCreateInfoEXT {
+impl Default for SamplerBorderColorComponentMappingCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            components: ComponentMapping::default(),
-            srgb: Bool32::default(),
+            components: Default::default(),
+            srgb: Default::default(),
         }
     }
 }
@@ -31319,13 +29178,13 @@ pub struct PhysicalDeviceBorderColorSwizzleFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceBorderColorSwizzleFeaturesEXT {}
-impl default::Default for PhysicalDeviceBorderColorSwizzleFeaturesEXT {
+impl Default for PhysicalDeviceBorderColorSwizzleFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            border_color_swizzle: Bool32::default(),
-            border_color_swizzle_from_image: Bool32::default(),
+            border_color_swizzle: Default::default(),
+            border_color_swizzle_from_image: Default::default(),
         }
     }
 }
@@ -31347,7 +29206,7 @@ pub union DeviceOrHostAddressKHR {
 }
 unsafe impl Send for DeviceOrHostAddressKHR {}
 unsafe impl Sync for DeviceOrHostAddressKHR {}
-impl default::Default for DeviceOrHostAddressKHR {
+impl Default for DeviceOrHostAddressKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -31368,7 +29227,7 @@ pub union DeviceOrHostAddressConstKHR {
 }
 unsafe impl Send for DeviceOrHostAddressConstKHR {}
 unsafe impl Sync for DeviceOrHostAddressConstKHR {}
-impl default::Default for DeviceOrHostAddressConstKHR {
+impl Default for DeviceOrHostAddressConstKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -31396,18 +29255,18 @@ pub struct AccelerationStructureGeometryTrianglesDataKHR {
 }
 unsafe impl Send for AccelerationStructureGeometryTrianglesDataKHR {}
 unsafe impl Sync for AccelerationStructureGeometryTrianglesDataKHR {}
-impl default::Default for AccelerationStructureGeometryTrianglesDataKHR {
+impl Default for AccelerationStructureGeometryTrianglesDataKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR,
             p_next: ptr::null(),
-            vertex_format: Format::default(),
-            vertex_data: DeviceOrHostAddressConstKHR::default(),
-            vertex_stride: DeviceSize::default(),
-            max_vertex: u32::default(),
-            index_type: IndexType::default(),
-            index_data: DeviceOrHostAddressConstKHR::default(),
-            transform_data: DeviceOrHostAddressConstKHR::default(),
+            vertex_format: Default::default(),
+            vertex_data: Default::default(),
+            vertex_stride: Default::default(),
+            max_vertex: Default::default(),
+            index_type: Default::default(),
+            index_data: Default::default(),
+            transform_data: Default::default(),
         }
     }
 }
@@ -31436,13 +29295,13 @@ pub struct AccelerationStructureGeometryAabbsDataKHR {
 }
 unsafe impl Send for AccelerationStructureGeometryAabbsDataKHR {}
 unsafe impl Sync for AccelerationStructureGeometryAabbsDataKHR {}
-impl default::Default for AccelerationStructureGeometryAabbsDataKHR {
+impl Default for AccelerationStructureGeometryAabbsDataKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR,
             p_next: ptr::null(),
-            data: DeviceOrHostAddressConstKHR::default(),
-            stride: DeviceSize::default(),
+            data: Default::default(),
+            stride: Default::default(),
         }
     }
 }
@@ -31466,13 +29325,13 @@ pub struct AccelerationStructureGeometryInstancesDataKHR {
 }
 unsafe impl Send for AccelerationStructureGeometryInstancesDataKHR {}
 unsafe impl Sync for AccelerationStructureGeometryInstancesDataKHR {}
-impl default::Default for AccelerationStructureGeometryInstancesDataKHR {
+impl Default for AccelerationStructureGeometryInstancesDataKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR,
             p_next: ptr::null(),
-            array_of_pointers: Bool32::default(),
-            data: DeviceOrHostAddressConstKHR::default(),
+            array_of_pointers: Default::default(),
+            data: Default::default(),
         }
     }
 }
@@ -31493,7 +29352,7 @@ pub union AccelerationStructureGeometryDataKHR {
     pub aabbs: AccelerationStructureGeometryAabbsDataKHR,
     pub instances: AccelerationStructureGeometryInstancesDataKHR,
 }
-impl default::Default for AccelerationStructureGeometryDataKHR {
+impl Default for AccelerationStructureGeometryDataKHR {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -31518,14 +29377,14 @@ pub struct AccelerationStructureGeometryKHR {
 }
 unsafe impl Send for AccelerationStructureGeometryKHR {}
 unsafe impl Sync for AccelerationStructureGeometryKHR {}
-impl default::Default for AccelerationStructureGeometryKHR {
+impl Default for AccelerationStructureGeometryKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_KHR,
             p_next: ptr::null(),
-            geometry_type: GeometryTypeKHR::default(),
-            geometry: AccelerationStructureGeometryDataKHR::default(),
-            flags: GeometryFlagsKHR::default(),
+            geometry_type: Default::default(),
+            geometry: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -31557,20 +29416,20 @@ pub struct AccelerationStructureBuildGeometryInfoKHR {
 }
 unsafe impl Send for AccelerationStructureBuildGeometryInfoKHR {}
 unsafe impl Sync for AccelerationStructureBuildGeometryInfoKHR {}
-impl default::Default for AccelerationStructureBuildGeometryInfoKHR {
+impl Default for AccelerationStructureBuildGeometryInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR,
             p_next: ptr::null(),
-            ty: AccelerationStructureTypeKHR::default(),
-            flags: BuildAccelerationStructureFlagsKHR::default(),
-            mode: BuildAccelerationStructureModeKHR::default(),
-            src_acceleration_structure: None,
-            dst_acceleration_structure: None,
-            geometry_count: u32::default(),
+            ty: Default::default(),
+            flags: Default::default(),
+            mode: Default::default(),
+            src_acceleration_structure: Default::default(),
+            dst_acceleration_structure: Default::default(),
+            geometry_count: Default::default(),
             p_geometries: ptr::null(),
             pp_geometries: ptr::null(),
-            scratch_data: DeviceOrHostAddressKHR::default(),
+            scratch_data: Default::default(),
         }
     }
 }
@@ -31592,22 +29451,12 @@ impl fmt::Debug for AccelerationStructureBuildGeometryInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureBuildRangeInfoKHR {
     pub primitive_count: u32,
     pub primitive_offset: u32,
     pub first_vertex: u32,
     pub transform_offset: u32,
-}
-impl default::Default for AccelerationStructureBuildRangeInfoKHR {
-    fn default() -> Self {
-        Self {
-            primitive_count: u32::default(),
-            primitive_offset: u32::default(),
-            first_vertex: u32::default(),
-            transform_offset: u32::default(),
-        }
-    }
 }
 impl fmt::Debug for AccelerationStructureBuildRangeInfoKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -31634,17 +29483,17 @@ pub struct AccelerationStructureCreateInfoKHR {
 }
 unsafe impl Send for AccelerationStructureCreateInfoKHR {}
 unsafe impl Sync for AccelerationStructureCreateInfoKHR {}
-impl default::Default for AccelerationStructureCreateInfoKHR {
+impl Default for AccelerationStructureCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            create_flags: AccelerationStructureCreateFlagsKHR::default(),
-            buffer: None,
-            offset: DeviceSize::default(),
-            size: DeviceSize::default(),
-            ty: AccelerationStructureTypeKHR::default(),
-            device_address: DeviceAddress::default(),
+            create_flags: Default::default(),
+            buffer: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
+            ty: Default::default(),
+            device_address: Default::default(),
         }
     }
 }
@@ -31663,7 +29512,7 @@ impl fmt::Debug for AccelerationStructureCreateInfoKHR {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AabbPositionsKHR {
     pub min_x: f32,
     pub min_y: f32,
@@ -31671,18 +29520,6 @@ pub struct AabbPositionsKHR {
     pub max_x: f32,
     pub max_y: f32,
     pub max_z: f32,
-}
-impl default::Default for AabbPositionsKHR {
-    fn default() -> Self {
-        Self {
-            min_x: f32::default(),
-            min_y: f32::default(),
-            min_z: f32::default(),
-            max_x: f32::default(),
-            max_y: f32::default(),
-            max_z: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for AabbPositionsKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -31698,16 +29535,9 @@ impl fmt::Debug for AabbPositionsKHR {
 }
 pub type AabbPositionsNV = AabbPositionsKHR;
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct TransformMatrixKHR {
     pub matrix: [f32; 12],
-}
-impl default::Default for TransformMatrixKHR {
-    fn default() -> Self {
-        Self {
-            matrix: [f32::default(); 12],
-        }
-    }
 }
 impl fmt::Debug for TransformMatrixKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -31718,22 +29548,12 @@ impl fmt::Debug for TransformMatrixKHR {
 }
 pub type TransformMatrixNV = TransformMatrixKHR;
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AccelerationStructureInstanceKHR {
     pub transform: TransformMatrixKHR,
     pub instance_custom_index_and_mask: u32,
     pub instance_shader_binding_table_record_offset_and_flags: u32,
     pub acceleration_structure_reference: u64,
-}
-impl default::Default for AccelerationStructureInstanceKHR {
-    fn default() -> Self {
-        Self {
-            transform: TransformMatrixKHR::default(),
-            instance_custom_index_and_mask: u32::default(),
-            instance_shader_binding_table_record_offset_and_flags: u32::default(),
-            acceleration_structure_reference: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for AccelerationStructureInstanceKHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -31761,12 +29581,12 @@ pub struct AccelerationStructureDeviceAddressInfoKHR {
 }
 unsafe impl Send for AccelerationStructureDeviceAddressInfoKHR {}
 unsafe impl Sync for AccelerationStructureDeviceAddressInfoKHR {}
-impl default::Default for AccelerationStructureDeviceAddressInfoKHR {
+impl Default for AccelerationStructureDeviceAddressInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR,
             p_next: ptr::null(),
-            acceleration_structure: None,
+            acceleration_structure: Default::default(),
         }
     }
 }
@@ -31788,7 +29608,7 @@ pub struct AccelerationStructureVersionInfoKHR {
 }
 unsafe impl Send for AccelerationStructureVersionInfoKHR {}
 unsafe impl Sync for AccelerationStructureVersionInfoKHR {}
-impl default::Default for AccelerationStructureVersionInfoKHR {
+impl Default for AccelerationStructureVersionInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_VERSION_INFO_KHR,
@@ -31817,14 +29637,14 @@ pub struct CopyAccelerationStructureInfoKHR {
 }
 unsafe impl Send for CopyAccelerationStructureInfoKHR {}
 unsafe impl Sync for CopyAccelerationStructureInfoKHR {}
-impl default::Default for CopyAccelerationStructureInfoKHR {
+impl Default for CopyAccelerationStructureInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_ACCELERATION_STRUCTURE_INFO_KHR,
             p_next: ptr::null(),
-            src: None,
-            dst: None,
-            mode: CopyAccelerationStructureModeKHR::default(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
         }
     }
 }
@@ -31850,14 +29670,14 @@ pub struct CopyAccelerationStructureToMemoryInfoKHR {
 }
 unsafe impl Send for CopyAccelerationStructureToMemoryInfoKHR {}
 unsafe impl Sync for CopyAccelerationStructureToMemoryInfoKHR {}
-impl default::Default for CopyAccelerationStructureToMemoryInfoKHR {
+impl Default for CopyAccelerationStructureToMemoryInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR,
             p_next: ptr::null(),
-            src: None,
-            dst: DeviceOrHostAddressKHR::default(),
-            mode: CopyAccelerationStructureModeKHR::default(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
         }
     }
 }
@@ -31883,14 +29703,14 @@ pub struct CopyMemoryToAccelerationStructureInfoKHR {
 }
 unsafe impl Send for CopyMemoryToAccelerationStructureInfoKHR {}
 unsafe impl Sync for CopyMemoryToAccelerationStructureInfoKHR {}
-impl default::Default for CopyMemoryToAccelerationStructureInfoKHR {
+impl Default for CopyMemoryToAccelerationStructureInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR,
             p_next: ptr::null(),
-            src: DeviceOrHostAddressConstKHR::default(),
-            dst: None,
-            mode: CopyAccelerationStructureModeKHR::default(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
         }
     }
 }
@@ -31915,13 +29735,13 @@ pub struct RayTracingPipelineInterfaceCreateInfoKHR {
 }
 unsafe impl Send for RayTracingPipelineInterfaceCreateInfoKHR {}
 unsafe impl Sync for RayTracingPipelineInterfaceCreateInfoKHR {}
-impl default::Default for RayTracingPipelineInterfaceCreateInfoKHR {
+impl Default for RayTracingPipelineInterfaceCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            max_pipeline_ray_payload_size: u32::default(),
-            max_pipeline_ray_hit_attribute_size: u32::default(),
+            max_pipeline_ray_payload_size: Default::default(),
+            max_pipeline_ray_hit_attribute_size: Default::default(),
         }
     }
 }
@@ -31948,12 +29768,12 @@ pub struct PipelineLibraryCreateInfoKHR {
 }
 unsafe impl Send for PipelineLibraryCreateInfoKHR {}
 unsafe impl Sync for PipelineLibraryCreateInfoKHR {}
-impl default::Default for PipelineLibraryCreateInfoKHR {
+impl Default for PipelineLibraryCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_LIBRARY_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            library_count: u32::default(),
+            library_count: Default::default(),
             p_libraries: ptr::null(),
         }
     }
@@ -31977,12 +29797,12 @@ pub struct PhysicalDeviceExtendedDynamicStateFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceExtendedDynamicStateFeaturesEXT {}
-impl default::Default for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
+impl Default for PhysicalDeviceExtendedDynamicStateFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            extended_dynamic_state: Bool32::default(),
+            extended_dynamic_state: Default::default(),
         }
     }
 }
@@ -32006,14 +29826,14 @@ pub struct PhysicalDeviceExtendedDynamicState2FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
-impl default::Default for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
+impl Default for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            extended_dynamic_state2: Bool32::default(),
-            extended_dynamic_state2_logic_op: Bool32::default(),
-            extended_dynamic_state2_patch_control_points: Bool32::default(),
+            extended_dynamic_state2: Default::default(),
+            extended_dynamic_state2_logic_op: Default::default(),
+            extended_dynamic_state2_patch_control_points: Default::default(),
         }
     }
 }
@@ -32044,12 +29864,12 @@ pub struct RenderPassTransformBeginInfoQCOM {
 }
 unsafe impl Send for RenderPassTransformBeginInfoQCOM {}
 unsafe impl Sync for RenderPassTransformBeginInfoQCOM {}
-impl default::Default for RenderPassTransformBeginInfoQCOM {
+impl Default for RenderPassTransformBeginInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM,
             p_next: ptr::null_mut(),
-            transform: SurfaceTransformFlagsKHR::default(),
+            transform: Default::default(),
         }
     }
 }
@@ -32071,12 +29891,12 @@ pub struct CopyCommandTransformInfoQCOM {
 }
 unsafe impl Send for CopyCommandTransformInfoQCOM {}
 unsafe impl Sync for CopyCommandTransformInfoQCOM {}
-impl default::Default for CopyCommandTransformInfoQCOM {
+impl Default for CopyCommandTransformInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_COMMAND_TRANSFORM_INFO_QCOM,
             p_next: ptr::null(),
-            transform: SurfaceTransformFlagsKHR::default(),
+            transform: Default::default(),
         }
     }
 }
@@ -32100,13 +29920,13 @@ pub struct CommandBufferInheritanceRenderPassTransformInfoQCOM {
 }
 unsafe impl Send for CommandBufferInheritanceRenderPassTransformInfoQCOM {}
 unsafe impl Sync for CommandBufferInheritanceRenderPassTransformInfoQCOM {}
-impl default::Default for CommandBufferInheritanceRenderPassTransformInfoQCOM {
+impl Default for CommandBufferInheritanceRenderPassTransformInfoQCOM {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM,
             p_next: ptr::null_mut(),
-            transform: SurfaceTransformFlagsKHR::default(),
-            render_area: Rect2D::default(),
+            transform: Default::default(),
+            render_area: Default::default(),
         }
     }
 }
@@ -32129,12 +29949,12 @@ pub struct PhysicalDeviceDiagnosticsConfigFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceDiagnosticsConfigFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceDiagnosticsConfigFeaturesNV {}
-impl default::Default for PhysicalDeviceDiagnosticsConfigFeaturesNV {
+impl Default for PhysicalDeviceDiagnosticsConfigFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV,
             p_next: ptr::null_mut(),
-            diagnostics_config: Bool32::default(),
+            diagnostics_config: Default::default(),
         }
     }
 }
@@ -32156,12 +29976,12 @@ pub struct DeviceDiagnosticsConfigCreateInfoNV {
 }
 unsafe impl Send for DeviceDiagnosticsConfigCreateInfoNV {}
 unsafe impl Sync for DeviceDiagnosticsConfigCreateInfoNV {}
-impl default::Default for DeviceDiagnosticsConfigCreateInfoNV {
+impl Default for DeviceDiagnosticsConfigCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV,
             p_next: ptr::null(),
-            flags: DeviceDiagnosticsConfigFlagsNV::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -32183,12 +30003,12 @@ pub struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures {
 }
 unsafe impl Send for PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures {}
 unsafe impl Sync for PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures {}
-impl default::Default for PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures {
+impl Default for PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES,
             p_next: ptr::null_mut(),
-            shader_zero_initialize_workgroup_memory: Bool32::default(),
+            shader_zero_initialize_workgroup_memory: Default::default(),
         }
     }
 }
@@ -32214,12 +30034,12 @@ pub struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {}
-impl default::Default for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
+impl Default for PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            shader_subgroup_uniform_control_flow: Bool32::default(),
+            shader_subgroup_uniform_control_flow: Default::default(),
         }
     }
 }
@@ -32246,14 +30066,14 @@ pub struct PhysicalDeviceRobustness2FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceRobustness2FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceRobustness2FeaturesEXT {}
-impl default::Default for PhysicalDeviceRobustness2FeaturesEXT {
+impl Default for PhysicalDeviceRobustness2FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            robust_buffer_access2: Bool32::default(),
-            robust_image_access2: Bool32::default(),
-            null_descriptor: Bool32::default(),
+            robust_buffer_access2: Default::default(),
+            robust_image_access2: Default::default(),
+            null_descriptor: Default::default(),
         }
     }
 }
@@ -32278,13 +30098,13 @@ pub struct PhysicalDeviceRobustness2PropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceRobustness2PropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceRobustness2PropertiesEXT {}
-impl default::Default for PhysicalDeviceRobustness2PropertiesEXT {
+impl Default for PhysicalDeviceRobustness2PropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_ROBUSTNESS_2_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            robust_storage_buffer_access_size_alignment: DeviceSize::default(),
-            robust_uniform_buffer_access_size_alignment: DeviceSize::default(),
+            robust_storage_buffer_access_size_alignment: Default::default(),
+            robust_uniform_buffer_access_size_alignment: Default::default(),
         }
     }
 }
@@ -32313,12 +30133,12 @@ pub struct PhysicalDeviceImageRobustnessFeatures {
 }
 unsafe impl Send for PhysicalDeviceImageRobustnessFeatures {}
 unsafe impl Sync for PhysicalDeviceImageRobustnessFeatures {}
-impl default::Default for PhysicalDeviceImageRobustnessFeatures {
+impl Default for PhysicalDeviceImageRobustnessFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES,
             p_next: ptr::null_mut(),
-            robust_image_access: Bool32::default(),
+            robust_image_access: Default::default(),
         }
     }
 }
@@ -32344,15 +30164,15 @@ pub struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {}
-impl default::Default for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
+impl Default for PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            workgroup_memory_explicit_layout: Bool32::default(),
-            workgroup_memory_explicit_layout_scalar_block_layout: Bool32::default(),
-            workgroup_memory_explicit_layout8_bit_access: Bool32::default(),
-            workgroup_memory_explicit_layout16_bit_access: Bool32::default(),
+            workgroup_memory_explicit_layout: Default::default(),
+            workgroup_memory_explicit_layout_scalar_block_layout: Default::default(),
+            workgroup_memory_explicit_layout8_bit_access: Default::default(),
+            workgroup_memory_explicit_layout16_bit_access: Default::default(),
         }
     }
 }
@@ -32403,26 +30223,26 @@ pub struct PhysicalDevicePortabilitySubsetFeaturesKHR {
 }
 unsafe impl Send for PhysicalDevicePortabilitySubsetFeaturesKHR {}
 unsafe impl Sync for PhysicalDevicePortabilitySubsetFeaturesKHR {}
-impl default::Default for PhysicalDevicePortabilitySubsetFeaturesKHR {
+impl Default for PhysicalDevicePortabilitySubsetFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            constant_alpha_color_blend_factors: Bool32::default(),
-            events: Bool32::default(),
-            image_view_format_reinterpretation: Bool32::default(),
-            image_view_format_swizzle: Bool32::default(),
-            image_view2_d_on3_d_image: Bool32::default(),
-            multisample_array_image: Bool32::default(),
-            mutable_comparison_samplers: Bool32::default(),
-            point_polygons: Bool32::default(),
-            sampler_mip_lod_bias: Bool32::default(),
-            separate_stencil_mask_ref: Bool32::default(),
-            shader_sample_rate_interpolation_functions: Bool32::default(),
-            tessellation_isolines: Bool32::default(),
-            tessellation_point_mode: Bool32::default(),
-            triangle_fans: Bool32::default(),
-            vertex_attribute_access_beyond_stride: Bool32::default(),
+            constant_alpha_color_blend_factors: Default::default(),
+            events: Default::default(),
+            image_view_format_reinterpretation: Default::default(),
+            image_view_format_swizzle: Default::default(),
+            image_view2_d_on3_d_image: Default::default(),
+            multisample_array_image: Default::default(),
+            mutable_comparison_samplers: Default::default(),
+            point_polygons: Default::default(),
+            sampler_mip_lod_bias: Default::default(),
+            separate_stencil_mask_ref: Default::default(),
+            shader_sample_rate_interpolation_functions: Default::default(),
+            tessellation_isolines: Default::default(),
+            tessellation_point_mode: Default::default(),
+            triangle_fans: Default::default(),
+            vertex_attribute_access_beyond_stride: Default::default(),
         }
     }
 }
@@ -32470,12 +30290,12 @@ pub struct PhysicalDevicePortabilitySubsetPropertiesKHR {
 }
 unsafe impl Send for PhysicalDevicePortabilitySubsetPropertiesKHR {}
 unsafe impl Sync for PhysicalDevicePortabilitySubsetPropertiesKHR {}
-impl default::Default for PhysicalDevicePortabilitySubsetPropertiesKHR {
+impl Default for PhysicalDevicePortabilitySubsetPropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PORTABILITY_SUBSET_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            min_vertex_input_binding_stride_alignment: u32::default(),
+            min_vertex_input_binding_stride_alignment: Default::default(),
         }
     }
 }
@@ -32501,13 +30321,13 @@ pub struct PhysicalDevice4444FormatsFeaturesEXT {
 }
 unsafe impl Send for PhysicalDevice4444FormatsFeaturesEXT {}
 unsafe impl Sync for PhysicalDevice4444FormatsFeaturesEXT {}
-impl default::Default for PhysicalDevice4444FormatsFeaturesEXT {
+impl Default for PhysicalDevice4444FormatsFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            format_a4r4g4b4: Bool32::default(),
-            format_a4b4g4r4: Bool32::default(),
+            format_a4r4g4b4: Default::default(),
+            format_a4b4g4r4: Default::default(),
         }
     }
 }
@@ -32530,12 +30350,12 @@ pub struct PhysicalDeviceSubpassShadingFeaturesHUAWEI {
 }
 unsafe impl Send for PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
 unsafe impl Sync for PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
-impl default::Default for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
+impl Default for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
             p_next: ptr::null_mut(),
-            subpass_shading: Bool32::default(),
+            subpass_shading: Default::default(),
         }
     }
 }
@@ -32562,14 +30382,14 @@ pub struct BufferCopy2 {
 }
 unsafe impl Send for BufferCopy2 {}
 unsafe impl Sync for BufferCopy2 {}
-impl default::Default for BufferCopy2 {
+impl Default for BufferCopy2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COPY_2,
             p_next: ptr::null(),
-            src_offset: DeviceSize::default(),
-            dst_offset: DeviceSize::default(),
-            size: DeviceSize::default(),
+            src_offset: Default::default(),
+            dst_offset: Default::default(),
+            size: Default::default(),
         }
     }
 }
@@ -32601,16 +30421,16 @@ pub struct ImageCopy2 {
 }
 unsafe impl Send for ImageCopy2 {}
 unsafe impl Sync for ImageCopy2 {}
-impl default::Default for ImageCopy2 {
+impl Default for ImageCopy2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_COPY_2,
             p_next: ptr::null(),
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offset: Offset3D::default(),
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offset: Offset3D::default(),
-            extent: Extent3D::default(),
+            src_subresource: Default::default(),
+            src_offset: Default::default(),
+            dst_subresource: Default::default(),
+            dst_offset: Default::default(),
+            extent: Default::default(),
         }
     }
 }
@@ -32642,15 +30462,15 @@ pub struct ImageBlit2 {
 }
 unsafe impl Send for ImageBlit2 {}
 unsafe impl Sync for ImageBlit2 {}
-impl default::Default for ImageBlit2 {
+impl Default for ImageBlit2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_BLIT_2,
             p_next: ptr::null(),
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offsets: [Offset3D::default(); 2],
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offsets: [Offset3D::default(); 2],
+            src_subresource: Default::default(),
+            src_offsets: [Default::default(); 2],
+            dst_subresource: Default::default(),
+            dst_offsets: [Default::default(); 2],
         }
     }
 }
@@ -32685,17 +30505,17 @@ pub struct BufferImageCopy2 {
 }
 unsafe impl Send for BufferImageCopy2 {}
 unsafe impl Sync for BufferImageCopy2 {}
-impl default::Default for BufferImageCopy2 {
+impl Default for BufferImageCopy2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_IMAGE_COPY_2,
             p_next: ptr::null(),
-            buffer_offset: DeviceSize::default(),
-            buffer_row_length: u32::default(),
-            buffer_image_height: u32::default(),
-            image_subresource: ImageSubresourceLayers::default(),
-            image_offset: Offset3D::default(),
-            image_extent: Extent3D::default(),
+            buffer_offset: Default::default(),
+            buffer_row_length: Default::default(),
+            buffer_image_height: Default::default(),
+            image_subresource: Default::default(),
+            image_offset: Default::default(),
+            image_extent: Default::default(),
         }
     }
 }
@@ -32727,16 +30547,16 @@ pub struct ImageResolve2 {
 }
 unsafe impl Send for ImageResolve2 {}
 unsafe impl Sync for ImageResolve2 {}
-impl default::Default for ImageResolve2 {
+impl Default for ImageResolve2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_RESOLVE_2,
             p_next: ptr::null(),
-            src_subresource: ImageSubresourceLayers::default(),
-            src_offset: Offset3D::default(),
-            dst_subresource: ImageSubresourceLayers::default(),
-            dst_offset: Offset3D::default(),
-            extent: Extent3D::default(),
+            src_subresource: Default::default(),
+            src_offset: Default::default(),
+            dst_subresource: Default::default(),
+            dst_offset: Default::default(),
+            extent: Default::default(),
         }
     }
 }
@@ -32766,14 +30586,14 @@ pub struct CopyBufferInfo2 {
 }
 unsafe impl Send for CopyBufferInfo2 {}
 unsafe impl Sync for CopyBufferInfo2 {}
-impl default::Default for CopyBufferInfo2 {
+impl Default for CopyBufferInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_BUFFER_INFO_2,
             p_next: ptr::null(),
-            src_buffer: None,
-            dst_buffer: None,
-            region_count: u32::default(),
+            src_buffer: Default::default(),
+            dst_buffer: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -32805,16 +30625,16 @@ pub struct CopyImageInfo2 {
 }
 unsafe impl Send for CopyImageInfo2 {}
 unsafe impl Sync for CopyImageInfo2 {}
-impl default::Default for CopyImageInfo2 {
+impl Default for CopyImageInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_IMAGE_INFO_2,
             p_next: ptr::null(),
-            src_image: None,
-            src_image_layout: ImageLayout::default(),
-            dst_image: None,
-            dst_image_layout: ImageLayout::default(),
-            region_count: u32::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -32849,18 +30669,18 @@ pub struct BlitImageInfo2 {
 }
 unsafe impl Send for BlitImageInfo2 {}
 unsafe impl Sync for BlitImageInfo2 {}
-impl default::Default for BlitImageInfo2 {
+impl Default for BlitImageInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::BLIT_IMAGE_INFO_2,
             p_next: ptr::null(),
-            src_image: None,
-            src_image_layout: ImageLayout::default(),
-            dst_image: None,
-            dst_image_layout: ImageLayout::default(),
-            region_count: u32::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
-            filter: Filter::default(),
+            filter: Default::default(),
         }
     }
 }
@@ -32893,15 +30713,15 @@ pub struct CopyBufferToImageInfo2 {
 }
 unsafe impl Send for CopyBufferToImageInfo2 {}
 unsafe impl Sync for CopyBufferToImageInfo2 {}
-impl default::Default for CopyBufferToImageInfo2 {
+impl Default for CopyBufferToImageInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_BUFFER_TO_IMAGE_INFO_2,
             p_next: ptr::null(),
-            src_buffer: None,
-            dst_image: None,
-            dst_image_layout: ImageLayout::default(),
-            region_count: u32::default(),
+            src_buffer: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -32933,15 +30753,15 @@ pub struct CopyImageToBufferInfo2 {
 }
 unsafe impl Send for CopyImageToBufferInfo2 {}
 unsafe impl Sync for CopyImageToBufferInfo2 {}
-impl default::Default for CopyImageToBufferInfo2 {
+impl Default for CopyImageToBufferInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::COPY_IMAGE_TO_BUFFER_INFO_2,
             p_next: ptr::null(),
-            src_image: None,
-            src_image_layout: ImageLayout::default(),
-            dst_buffer: None,
-            region_count: u32::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            dst_buffer: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -32974,16 +30794,16 @@ pub struct ResolveImageInfo2 {
 }
 unsafe impl Send for ResolveImageInfo2 {}
 unsafe impl Sync for ResolveImageInfo2 {}
-impl default::Default for ResolveImageInfo2 {
+impl Default for ResolveImageInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::RESOLVE_IMAGE_INFO_2,
             p_next: ptr::null(),
-            src_image: None,
-            src_image_layout: ImageLayout::default(),
-            dst_image: None,
-            dst_image_layout: ImageLayout::default(),
-            region_count: u32::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
             p_regions: ptr::null(),
         }
     }
@@ -33013,13 +30833,13 @@ pub struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {}
-impl default::Default for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
+impl Default for PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            shader_image_int64_atomics: Bool32::default(),
-            sparse_image_int64_atomics: Bool32::default(),
+            shader_image_int64_atomics: Default::default(),
+            sparse_image_int64_atomics: Default::default(),
         }
     }
 }
@@ -33043,13 +30863,13 @@ pub struct FragmentShadingRateAttachmentInfoKHR {
 }
 unsafe impl Send for FragmentShadingRateAttachmentInfoKHR {}
 unsafe impl Sync for FragmentShadingRateAttachmentInfoKHR {}
-impl default::Default for FragmentShadingRateAttachmentInfoKHR {
+impl Default for FragmentShadingRateAttachmentInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
             p_next: ptr::null(),
             p_fragment_shading_rate_attachment: ptr::null(),
-            shading_rate_attachment_texel_size: Extent2D::default(),
+            shading_rate_attachment_texel_size: Default::default(),
         }
     }
 }
@@ -33079,13 +30899,13 @@ pub struct PipelineFragmentShadingRateStateCreateInfoKHR {
 }
 unsafe impl Send for PipelineFragmentShadingRateStateCreateInfoKHR {}
 unsafe impl Sync for PipelineFragmentShadingRateStateCreateInfoKHR {}
-impl default::Default for PipelineFragmentShadingRateStateCreateInfoKHR {
+impl Default for PipelineFragmentShadingRateStateCreateInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR,
             p_next: ptr::null(),
-            fragment_size: Extent2D::default(),
-            combiner_ops: [FragmentShadingRateCombinerOpKHR::default(); 2],
+            fragment_size: Default::default(),
+            combiner_ops: [Default::default(); 2],
         }
     }
 }
@@ -33110,14 +30930,14 @@ pub struct PhysicalDeviceFragmentShadingRateFeaturesKHR {
 }
 unsafe impl Send for PhysicalDeviceFragmentShadingRateFeaturesKHR {}
 unsafe impl Sync for PhysicalDeviceFragmentShadingRateFeaturesKHR {}
-impl default::Default for PhysicalDeviceFragmentShadingRateFeaturesKHR {
+impl Default for PhysicalDeviceFragmentShadingRateFeaturesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR,
             p_next: ptr::null_mut(),
-            pipeline_fragment_shading_rate: Bool32::default(),
-            primitive_fragment_shading_rate: Bool32::default(),
-            attachment_fragment_shading_rate: Bool32::default(),
+            pipeline_fragment_shading_rate: Default::default(),
+            primitive_fragment_shading_rate: Default::default(),
+            attachment_fragment_shading_rate: Default::default(),
         }
     }
 }
@@ -33160,28 +30980,28 @@ pub struct PhysicalDeviceFragmentShadingRatePropertiesKHR {
 }
 unsafe impl Send for PhysicalDeviceFragmentShadingRatePropertiesKHR {}
 unsafe impl Sync for PhysicalDeviceFragmentShadingRatePropertiesKHR {}
-impl default::Default for PhysicalDeviceFragmentShadingRatePropertiesKHR {
+impl Default for PhysicalDeviceFragmentShadingRatePropertiesKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR,
             p_next: ptr::null_mut(),
-            min_fragment_shading_rate_attachment_texel_size: Extent2D::default(),
-            max_fragment_shading_rate_attachment_texel_size: Extent2D::default(),
-            max_fragment_shading_rate_attachment_texel_size_aspect_ratio: u32::default(),
-            primitive_fragment_shading_rate_with_multiple_viewports: Bool32::default(),
-            layered_shading_rate_attachments: Bool32::default(),
-            fragment_shading_rate_non_trivial_combiner_ops: Bool32::default(),
-            max_fragment_size: Extent2D::default(),
-            max_fragment_size_aspect_ratio: u32::default(),
-            max_fragment_shading_rate_coverage_samples: u32::default(),
-            max_fragment_shading_rate_rasterization_samples: SampleCountFlags::default(),
-            fragment_shading_rate_with_shader_depth_stencil_writes: Bool32::default(),
-            fragment_shading_rate_with_sample_mask: Bool32::default(),
-            fragment_shading_rate_with_shader_sample_mask: Bool32::default(),
-            fragment_shading_rate_with_conservative_rasterization: Bool32::default(),
-            fragment_shading_rate_with_fragment_shader_interlock: Bool32::default(),
-            fragment_shading_rate_with_custom_sample_locations: Bool32::default(),
-            fragment_shading_rate_strict_multiply_combiner: Bool32::default(),
+            min_fragment_shading_rate_attachment_texel_size: Default::default(),
+            max_fragment_shading_rate_attachment_texel_size: Default::default(),
+            max_fragment_shading_rate_attachment_texel_size_aspect_ratio: Default::default(),
+            primitive_fragment_shading_rate_with_multiple_viewports: Default::default(),
+            layered_shading_rate_attachments: Default::default(),
+            fragment_shading_rate_non_trivial_combiner_ops: Default::default(),
+            max_fragment_size: Default::default(),
+            max_fragment_size_aspect_ratio: Default::default(),
+            max_fragment_shading_rate_coverage_samples: Default::default(),
+            max_fragment_shading_rate_rasterization_samples: Default::default(),
+            fragment_shading_rate_with_shader_depth_stencil_writes: Default::default(),
+            fragment_shading_rate_with_sample_mask: Default::default(),
+            fragment_shading_rate_with_shader_sample_mask: Default::default(),
+            fragment_shading_rate_with_conservative_rasterization: Default::default(),
+            fragment_shading_rate_with_fragment_shader_interlock: Default::default(),
+            fragment_shading_rate_with_custom_sample_locations: Default::default(),
+            fragment_shading_rate_strict_multiply_combiner: Default::default(),
         }
     }
 }
@@ -33265,13 +31085,13 @@ pub struct PhysicalDeviceFragmentShadingRateKHR {
 }
 unsafe impl Send for PhysicalDeviceFragmentShadingRateKHR {}
 unsafe impl Sync for PhysicalDeviceFragmentShadingRateKHR {}
-impl default::Default for PhysicalDeviceFragmentShadingRateKHR {
+impl Default for PhysicalDeviceFragmentShadingRateKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR,
             p_next: ptr::null_mut(),
-            sample_counts: SampleCountFlags::default(),
-            fragment_size: Extent2D::default(),
+            sample_counts: Default::default(),
+            fragment_size: Default::default(),
         }
     }
 }
@@ -33294,12 +31114,12 @@ pub struct PhysicalDeviceShaderTerminateInvocationFeatures {
 }
 unsafe impl Send for PhysicalDeviceShaderTerminateInvocationFeatures {}
 unsafe impl Sync for PhysicalDeviceShaderTerminateInvocationFeatures {}
-impl default::Default for PhysicalDeviceShaderTerminateInvocationFeatures {
+impl Default for PhysicalDeviceShaderTerminateInvocationFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_TERMINATE_INVOCATION_FEATURES,
             p_next: ptr::null_mut(),
-            shader_terminate_invocation: Bool32::default(),
+            shader_terminate_invocation: Default::default(),
         }
     }
 }
@@ -33324,14 +31144,14 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {}
-impl default::Default for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
+impl Default for PhysicalDeviceFragmentShadingRateEnumsFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV,
             p_next: ptr::null_mut(),
-            fragment_shading_rate_enums: Bool32::default(),
-            supersample_fragment_shading_rates: Bool32::default(),
-            no_invocation_fragment_shading_rates: Bool32::default(),
+            fragment_shading_rate_enums: Default::default(),
+            supersample_fragment_shading_rates: Default::default(),
+            no_invocation_fragment_shading_rates: Default::default(),
         }
     }
 }
@@ -33361,12 +31181,12 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
 }
 unsafe impl Send for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {}
 unsafe impl Sync for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {}
-impl default::Default for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
+impl Default for PhysicalDeviceFragmentShadingRateEnumsPropertiesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV,
             p_next: ptr::null_mut(),
-            max_fragment_shading_rate_invocation_count: SampleCountFlags::default(),
+            max_fragment_shading_rate_invocation_count: Default::default(),
         }
     }
 }
@@ -33393,14 +31213,14 @@ pub struct PipelineFragmentShadingRateEnumStateCreateInfoNV {
 }
 unsafe impl Send for PipelineFragmentShadingRateEnumStateCreateInfoNV {}
 unsafe impl Sync for PipelineFragmentShadingRateEnumStateCreateInfoNV {}
-impl default::Default for PipelineFragmentShadingRateEnumStateCreateInfoNV {
+impl Default for PipelineFragmentShadingRateEnumStateCreateInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV,
             p_next: ptr::null(),
-            shading_rate_type: FragmentShadingRateTypeNV::default(),
-            shading_rate: FragmentShadingRateNV::default(),
-            combiner_ops: [FragmentShadingRateCombinerOpKHR::default(); 2],
+            shading_rate_type: Default::default(),
+            shading_rate: Default::default(),
+            combiner_ops: [Default::default(); 2],
         }
     }
 }
@@ -33426,14 +31246,14 @@ pub struct AccelerationStructureBuildSizesInfoKHR {
 }
 unsafe impl Send for AccelerationStructureBuildSizesInfoKHR {}
 unsafe impl Sync for AccelerationStructureBuildSizesInfoKHR {}
-impl default::Default for AccelerationStructureBuildSizesInfoKHR {
+impl Default for AccelerationStructureBuildSizesInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_BUILD_SIZES_INFO_KHR,
             p_next: ptr::null(),
-            acceleration_structure_size: DeviceSize::default(),
-            update_scratch_size: DeviceSize::default(),
-            build_scratch_size: DeviceSize::default(),
+            acceleration_structure_size: Default::default(),
+            update_scratch_size: Default::default(),
+            build_scratch_size: Default::default(),
         }
     }
 }
@@ -33457,12 +31277,12 @@ pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
 }
 unsafe impl Send for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
 unsafe impl Sync for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
-impl default::Default for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+impl Default for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE,
             p_next: ptr::null_mut(),
-            mutable_descriptor_type: Bool32::default(),
+            mutable_descriptor_type: Default::default(),
         }
     }
 }
@@ -33483,10 +31303,10 @@ pub struct MutableDescriptorTypeListVALVE {
 }
 unsafe impl Send for MutableDescriptorTypeListVALVE {}
 unsafe impl Sync for MutableDescriptorTypeListVALVE {}
-impl default::Default for MutableDescriptorTypeListVALVE {
+impl Default for MutableDescriptorTypeListVALVE {
     fn default() -> Self {
         Self {
-            descriptor_type_count: u32::default(),
+            descriptor_type_count: Default::default(),
             p_descriptor_types: ptr::null(),
         }
     }
@@ -33509,12 +31329,12 @@ pub struct MutableDescriptorTypeCreateInfoVALVE {
 }
 unsafe impl Send for MutableDescriptorTypeCreateInfoVALVE {}
 unsafe impl Sync for MutableDescriptorTypeCreateInfoVALVE {}
-impl default::Default for MutableDescriptorTypeCreateInfoVALVE {
+impl Default for MutableDescriptorTypeCreateInfoVALVE {
     fn default() -> Self {
         Self {
             s_type: StructureType::MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE,
             p_next: ptr::null(),
-            mutable_descriptor_type_list_count: u32::default(),
+            mutable_descriptor_type_list_count: Default::default(),
             p_mutable_descriptor_type_lists: ptr::null(),
         }
     }
@@ -33541,12 +31361,12 @@ pub struct PhysicalDeviceDepthClipControlFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceDepthClipControlFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceDepthClipControlFeaturesEXT {}
-impl default::Default for PhysicalDeviceDepthClipControlFeaturesEXT {
+impl Default for PhysicalDeviceDepthClipControlFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            depth_clip_control: Bool32::default(),
+            depth_clip_control: Default::default(),
         }
     }
 }
@@ -33568,12 +31388,12 @@ pub struct PipelineViewportDepthClipControlCreateInfoEXT {
 }
 unsafe impl Send for PipelineViewportDepthClipControlCreateInfoEXT {}
 unsafe impl Sync for PipelineViewportDepthClipControlCreateInfoEXT {}
-impl default::Default for PipelineViewportDepthClipControlCreateInfoEXT {
+impl Default for PipelineViewportDepthClipControlCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            negative_one_to_one: Bool32::default(),
+            negative_one_to_one: Default::default(),
         }
     }
 }
@@ -33595,12 +31415,12 @@ pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {}
-impl default::Default for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
+impl Default for PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            vertex_input_dynamic_state: Bool32::default(),
+            vertex_input_dynamic_state: Default::default(),
         }
     }
 }
@@ -33622,12 +31442,12 @@ pub struct PhysicalDeviceExternalMemoryRDMAFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceExternalMemoryRDMAFeaturesNV {}
-impl default::Default for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
+impl Default for PhysicalDeviceExternalMemoryRDMAFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV,
             p_next: ptr::null_mut(),
-            external_memory_rdma: Bool32::default(),
+            external_memory_rdma: Default::default(),
         }
     }
 }
@@ -33652,15 +31472,15 @@ pub struct VertexInputBindingDescription2EXT {
 }
 unsafe impl Send for VertexInputBindingDescription2EXT {}
 unsafe impl Sync for VertexInputBindingDescription2EXT {}
-impl default::Default for VertexInputBindingDescription2EXT {
+impl Default for VertexInputBindingDescription2EXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
             p_next: ptr::null_mut(),
-            binding: u32::default(),
-            stride: u32::default(),
-            input_rate: VertexInputRate::default(),
-            divisor: u32::default(),
+            binding: Default::default(),
+            stride: Default::default(),
+            input_rate: Default::default(),
+            divisor: Default::default(),
         }
     }
 }
@@ -33692,15 +31512,15 @@ pub struct VertexInputAttributeDescription2EXT {
 }
 unsafe impl Send for VertexInputAttributeDescription2EXT {}
 unsafe impl Sync for VertexInputAttributeDescription2EXT {}
-impl default::Default for VertexInputAttributeDescription2EXT {
+impl Default for VertexInputAttributeDescription2EXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
             p_next: ptr::null_mut(),
-            location: u32::default(),
-            binding: u32::default(),
-            format: Format::default(),
-            offset: u32::default(),
+            location: Default::default(),
+            binding: Default::default(),
+            format: Default::default(),
+            offset: Default::default(),
         }
     }
 }
@@ -33725,12 +31545,12 @@ pub struct PhysicalDeviceColorWriteEnableFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceColorWriteEnableFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceColorWriteEnableFeaturesEXT {}
-impl default::Default for PhysicalDeviceColorWriteEnableFeaturesEXT {
+impl Default for PhysicalDeviceColorWriteEnableFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            color_write_enable: Bool32::default(),
+            color_write_enable: Default::default(),
         }
     }
 }
@@ -33754,12 +31574,12 @@ pub struct PipelineColorWriteCreateInfoEXT {
 }
 unsafe impl Send for PipelineColorWriteCreateInfoEXT {}
 unsafe impl Sync for PipelineColorWriteCreateInfoEXT {}
-impl default::Default for PipelineColorWriteCreateInfoEXT {
+impl Default for PipelineColorWriteCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_COLOR_WRITE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            attachment_count: u32::default(),
+            attachment_count: Default::default(),
             p_color_write_enables: ptr::null(),
         }
     }
@@ -33786,15 +31606,15 @@ pub struct MemoryBarrier2 {
 }
 unsafe impl Send for MemoryBarrier2 {}
 unsafe impl Sync for MemoryBarrier2 {}
-impl default::Default for MemoryBarrier2 {
+impl Default for MemoryBarrier2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_BARRIER_2,
             p_next: ptr::null(),
-            src_stage_mask: PipelineStageFlags2::default(),
-            src_access_mask: AccessFlags2::default(),
-            dst_stage_mask: PipelineStageFlags2::default(),
-            dst_access_mask: AccessFlags2::default(),
+            src_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            dst_access_mask: Default::default(),
         }
     }
 }
@@ -33829,21 +31649,21 @@ pub struct ImageMemoryBarrier2 {
 }
 unsafe impl Send for ImageMemoryBarrier2 {}
 unsafe impl Sync for ImageMemoryBarrier2 {}
-impl default::Default for ImageMemoryBarrier2 {
+impl Default for ImageMemoryBarrier2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_MEMORY_BARRIER_2,
             p_next: ptr::null(),
-            src_stage_mask: PipelineStageFlags2::default(),
-            src_access_mask: AccessFlags2::default(),
-            dst_stage_mask: PipelineStageFlags2::default(),
-            dst_access_mask: AccessFlags2::default(),
-            old_layout: ImageLayout::default(),
-            new_layout: ImageLayout::default(),
-            src_queue_family_index: u32::default(),
-            dst_queue_family_index: u32::default(),
-            image: None,
-            subresource_range: ImageSubresourceRange::default(),
+            src_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            old_layout: Default::default(),
+            new_layout: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            image: Default::default(),
+            subresource_range: Default::default(),
         }
     }
 }
@@ -33883,20 +31703,20 @@ pub struct BufferMemoryBarrier2 {
 }
 unsafe impl Send for BufferMemoryBarrier2 {}
 unsafe impl Sync for BufferMemoryBarrier2 {}
-impl default::Default for BufferMemoryBarrier2 {
+impl Default for BufferMemoryBarrier2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_MEMORY_BARRIER_2,
             p_next: ptr::null(),
-            src_stage_mask: PipelineStageFlags2::default(),
-            src_access_mask: AccessFlags2::default(),
-            dst_stage_mask: PipelineStageFlags2::default(),
-            dst_access_mask: AccessFlags2::default(),
-            src_queue_family_index: u32::default(),
-            dst_queue_family_index: u32::default(),
-            buffer: None,
-            offset: DeviceSize::default(),
-            size: DeviceSize::default(),
+            src_stage_mask: Default::default(),
+            src_access_mask: Default::default(),
+            dst_stage_mask: Default::default(),
+            dst_access_mask: Default::default(),
+            src_queue_family_index: Default::default(),
+            dst_queue_family_index: Default::default(),
+            buffer: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
         }
     }
 }
@@ -33933,17 +31753,17 @@ pub struct DependencyInfo {
 }
 unsafe impl Send for DependencyInfo {}
 unsafe impl Sync for DependencyInfo {}
-impl default::Default for DependencyInfo {
+impl Default for DependencyInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::DEPENDENCY_INFO,
             p_next: ptr::null(),
-            dependency_flags: DependencyFlags::default(),
-            memory_barrier_count: u32::default(),
+            dependency_flags: Default::default(),
+            memory_barrier_count: Default::default(),
             p_memory_barriers: ptr::null(),
-            buffer_memory_barrier_count: u32::default(),
+            buffer_memory_barrier_count: Default::default(),
             p_buffer_memory_barriers: ptr::null(),
-            image_memory_barrier_count: u32::default(),
+            image_memory_barrier_count: Default::default(),
             p_image_memory_barriers: ptr::null(),
         }
     }
@@ -33976,15 +31796,15 @@ pub struct SemaphoreSubmitInfo {
 }
 unsafe impl Send for SemaphoreSubmitInfo {}
 unsafe impl Sync for SemaphoreSubmitInfo {}
-impl default::Default for SemaphoreSubmitInfo {
+impl Default for SemaphoreSubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::SEMAPHORE_SUBMIT_INFO,
             p_next: ptr::null(),
-            semaphore: None,
-            value: u64::default(),
-            stage_mask: PipelineStageFlags2::default(),
-            device_index: u32::default(),
+            semaphore: Default::default(),
+            value: Default::default(),
+            stage_mask: Default::default(),
+            device_index: Default::default(),
         }
     }
 }
@@ -34011,13 +31831,13 @@ pub struct CommandBufferSubmitInfo {
 }
 unsafe impl Send for CommandBufferSubmitInfo {}
 unsafe impl Sync for CommandBufferSubmitInfo {}
-impl default::Default for CommandBufferSubmitInfo {
+impl Default for CommandBufferSubmitInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_SUBMIT_INFO,
             p_next: ptr::null(),
-            command_buffer: None,
-            device_mask: u32::default(),
+            command_buffer: Default::default(),
+            device_mask: Default::default(),
         }
     }
 }
@@ -34047,17 +31867,17 @@ pub struct SubmitInfo2 {
 }
 unsafe impl Send for SubmitInfo2 {}
 unsafe impl Sync for SubmitInfo2 {}
-impl default::Default for SubmitInfo2 {
+impl Default for SubmitInfo2 {
     fn default() -> Self {
         Self {
             s_type: StructureType::SUBMIT_INFO_2,
             p_next: ptr::null(),
-            flags: SubmitFlags::default(),
-            wait_semaphore_info_count: u32::default(),
+            flags: Default::default(),
+            wait_semaphore_info_count: Default::default(),
             p_wait_semaphore_infos: ptr::null(),
-            command_buffer_info_count: u32::default(),
+            command_buffer_info_count: Default::default(),
             p_command_buffer_infos: ptr::null(),
-            signal_semaphore_info_count: u32::default(),
+            signal_semaphore_info_count: Default::default(),
             p_signal_semaphore_infos: ptr::null(),
         }
     }
@@ -34087,12 +31907,12 @@ pub struct QueueFamilyCheckpointProperties2NV {
 }
 unsafe impl Send for QueueFamilyCheckpointProperties2NV {}
 unsafe impl Sync for QueueFamilyCheckpointProperties2NV {}
-impl default::Default for QueueFamilyCheckpointProperties2NV {
+impl Default for QueueFamilyCheckpointProperties2NV {
     fn default() -> Self {
         Self {
             s_type: StructureType::QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV,
             p_next: ptr::null_mut(),
-            checkpoint_execution_stage_mask: PipelineStageFlags2::default(),
+            checkpoint_execution_stage_mask: Default::default(),
         }
     }
 }
@@ -34115,12 +31935,12 @@ pub struct CheckpointData2NV {
 }
 unsafe impl Send for CheckpointData2NV {}
 unsafe impl Sync for CheckpointData2NV {}
-impl default::Default for CheckpointData2NV {
+impl Default for CheckpointData2NV {
     fn default() -> Self {
         Self {
             s_type: StructureType::CHECKPOINT_DATA_2_NV,
             p_next: ptr::null_mut(),
-            stage: PipelineStageFlags2::default(),
+            stage: Default::default(),
             p_checkpoint_marker: ptr::null_mut(),
         }
     }
@@ -34144,12 +31964,12 @@ pub struct PhysicalDeviceSynchronization2Features {
 }
 unsafe impl Send for PhysicalDeviceSynchronization2Features {}
 unsafe impl Sync for PhysicalDeviceSynchronization2Features {}
-impl default::Default for PhysicalDeviceSynchronization2Features {
+impl Default for PhysicalDeviceSynchronization2Features {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES,
             p_next: ptr::null_mut(),
-            synchronization2: Bool32::default(),
+            synchronization2: Default::default(),
         }
     }
 }
@@ -34172,12 +31992,12 @@ pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
-impl default::Default for PhysicalDeviceInheritedViewportScissorFeaturesNV {
+impl Default for PhysicalDeviceInheritedViewportScissorFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV,
             p_next: ptr::null_mut(),
-            inherited_viewport_scissor2_d: Bool32::default(),
+            inherited_viewport_scissor2_d: Default::default(),
         }
     }
 }
@@ -34201,13 +32021,13 @@ pub struct CommandBufferInheritanceViewportScissorInfoNV {
 }
 unsafe impl Send for CommandBufferInheritanceViewportScissorInfoNV {}
 unsafe impl Sync for CommandBufferInheritanceViewportScissorInfoNV {}
-impl default::Default for CommandBufferInheritanceViewportScissorInfoNV {
+impl Default for CommandBufferInheritanceViewportScissorInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV,
             p_next: ptr::null(),
-            viewport_scissor2_d: Bool32::default(),
-            viewport_depth_count: u32::default(),
+            viewport_scissor2_d: Default::default(),
+            viewport_depth_count: Default::default(),
             p_viewport_depths: ptr::null(),
         }
     }
@@ -34232,12 +32052,12 @@ pub struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {}
-impl default::Default for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
+impl Default for PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            ycbcr2plane444_formats: Bool32::default(),
+            ycbcr2plane444_formats: Default::default(),
         }
     }
 }
@@ -34260,13 +32080,13 @@ pub struct PhysicalDeviceProvokingVertexFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceProvokingVertexFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceProvokingVertexFeaturesEXT {}
-impl default::Default for PhysicalDeviceProvokingVertexFeaturesEXT {
+impl Default for PhysicalDeviceProvokingVertexFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROVOKING_VERTEX_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            provoking_vertex_last: Bool32::default(),
-            transform_feedback_preserves_provoking_vertex: Bool32::default(),
+            provoking_vertex_last: Default::default(),
+            transform_feedback_preserves_provoking_vertex: Default::default(),
         }
     }
 }
@@ -34293,13 +32113,13 @@ pub struct PhysicalDeviceProvokingVertexPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceProvokingVertexPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceProvokingVertexPropertiesEXT {}
-impl default::Default for PhysicalDeviceProvokingVertexPropertiesEXT {
+impl Default for PhysicalDeviceProvokingVertexPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_PROVOKING_VERTEX_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            provoking_vertex_mode_per_pipeline: Bool32::default(),
-            transform_feedback_preserves_triangle_fan_provoking_vertex: Bool32::default(),
+            provoking_vertex_mode_per_pipeline: Default::default(),
+            transform_feedback_preserves_triangle_fan_provoking_vertex: Default::default(),
         }
     }
 }
@@ -34328,12 +32148,12 @@ pub struct PipelineRasterizationProvokingVertexStateCreateInfoEXT {
 }
 unsafe impl Send for PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
 unsafe impl Sync for PipelineRasterizationProvokingVertexStateCreateInfoEXT {}
-impl default::Default for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
+impl Default for PipelineRasterizationProvokingVertexStateCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RASTERIZATION_PROVOKING_VERTEX_STATE_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            provoking_vertex_mode: ProvokingVertexModeEXT::default(),
+            provoking_vertex_mode: Default::default(),
         }
     }
 }
@@ -34356,12 +32176,12 @@ pub struct CuModuleCreateInfoNVX {
 }
 unsafe impl Send for CuModuleCreateInfoNVX {}
 unsafe impl Sync for CuModuleCreateInfoNVX {}
-impl default::Default for CuModuleCreateInfoNVX {
+impl Default for CuModuleCreateInfoNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::CU_MODULE_CREATE_INFO_NVX,
             p_next: ptr::null(),
-            data_size: usize::default(),
+            data_size: Default::default(),
             p_data: ptr::null(),
         }
     }
@@ -34386,12 +32206,12 @@ pub struct CuFunctionCreateInfoNVX {
 }
 unsafe impl Send for CuFunctionCreateInfoNVX {}
 unsafe impl Sync for CuFunctionCreateInfoNVX {}
-impl default::Default for CuFunctionCreateInfoNVX {
+impl Default for CuFunctionCreateInfoNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::CU_FUNCTION_CREATE_INFO_NVX,
             p_next: ptr::null(),
-            module: None,
+            module: Default::default(),
             p_name: ptr::null(),
         }
     }
@@ -34426,22 +32246,22 @@ pub struct CuLaunchInfoNVX {
 }
 unsafe impl Send for CuLaunchInfoNVX {}
 unsafe impl Sync for CuLaunchInfoNVX {}
-impl default::Default for CuLaunchInfoNVX {
+impl Default for CuLaunchInfoNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::CU_LAUNCH_INFO_NVX,
             p_next: ptr::null(),
-            function: None,
-            grid_dim_x: u32::default(),
-            grid_dim_y: u32::default(),
-            grid_dim_z: u32::default(),
-            block_dim_x: u32::default(),
-            block_dim_y: u32::default(),
-            block_dim_z: u32::default(),
-            shared_mem_bytes: u32::default(),
-            param_count: usize::default(),
+            function: Default::default(),
+            grid_dim_x: Default::default(),
+            grid_dim_y: Default::default(),
+            grid_dim_z: Default::default(),
+            block_dim_x: Default::default(),
+            block_dim_y: Default::default(),
+            block_dim_z: Default::default(),
+            shared_mem_bytes: Default::default(),
+            param_count: Default::default(),
             p_params: ptr::null(),
-            extra_count: usize::default(),
+            extra_count: Default::default(),
             p_extras: ptr::null(),
         }
     }
@@ -34475,12 +32295,12 @@ pub struct PhysicalDeviceShaderIntegerDotProductFeatures {
 }
 unsafe impl Send for PhysicalDeviceShaderIntegerDotProductFeatures {}
 unsafe impl Sync for PhysicalDeviceShaderIntegerDotProductFeatures {}
-impl default::Default for PhysicalDeviceShaderIntegerDotProductFeatures {
+impl Default for PhysicalDeviceShaderIntegerDotProductFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_FEATURES,
             p_next: ptr::null_mut(),
-            shader_integer_dot_product: Bool32::default(),
+            shader_integer_dot_product: Default::default(),
         }
     }
 }
@@ -34532,41 +32352,41 @@ pub struct PhysicalDeviceShaderIntegerDotProductProperties {
 }
 unsafe impl Send for PhysicalDeviceShaderIntegerDotProductProperties {}
 unsafe impl Sync for PhysicalDeviceShaderIntegerDotProductProperties {}
-impl default::Default for PhysicalDeviceShaderIntegerDotProductProperties {
+impl Default for PhysicalDeviceShaderIntegerDotProductProperties {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_INTEGER_DOT_PRODUCT_PROPERTIES,
             p_next: ptr::null_mut(),
-            integer_dot_product8_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product8_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product8_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_unsigned_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_signed_accelerated: Bool32::default(),
-            integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product16_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product16_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product16_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product32_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product32_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product32_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product64_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product64_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product64_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Bool32::default(),
-            integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Bool32::default(),
+            integer_dot_product8_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product8_bit_signed_accelerated: Default::default(),
+            integer_dot_product8_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_unsigned_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_signed_accelerated: Default::default(),
+            integer_dot_product4x8_bit_packed_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product16_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product16_bit_signed_accelerated: Default::default(),
+            integer_dot_product16_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product32_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product32_bit_signed_accelerated: Default::default(),
+            integer_dot_product32_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product64_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product64_bit_signed_accelerated: Default::default(),
+            integer_dot_product64_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating8_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating4x8_bit_packed_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating16_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating32_bit_mixed_signedness_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_unsigned_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_signed_accelerated: Default::default(),
+            integer_dot_product_accumulating_saturating64_bit_mixed_signedness_accelerated: Default::default(),
         }
     }
 }
@@ -34713,17 +32533,17 @@ pub struct PhysicalDeviceDrmPropertiesEXT {
 }
 unsafe impl Send for PhysicalDeviceDrmPropertiesEXT {}
 unsafe impl Sync for PhysicalDeviceDrmPropertiesEXT {}
-impl default::Default for PhysicalDeviceDrmPropertiesEXT {
+impl Default for PhysicalDeviceDrmPropertiesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
             p_next: ptr::null_mut(),
-            has_primary: Bool32::default(),
-            has_render: Bool32::default(),
-            primary_major: i64::default(),
-            primary_minor: i64::default(),
-            render_major: i64::default(),
-            render_minor: i64::default(),
+            has_primary: Default::default(),
+            has_render: Default::default(),
+            primary_major: Default::default(),
+            primary_minor: Default::default(),
+            render_major: Default::default(),
+            render_minor: Default::default(),
         }
     }
 }
@@ -34751,13 +32571,13 @@ pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceRayTracingMotionBlurFeaturesNV {}
-impl default::Default for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
+impl Default for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV,
             p_next: ptr::null_mut(),
-            ray_tracing_motion_blur: Bool32::default(),
-            ray_tracing_motion_blur_pipeline_trace_rays_indirect: Bool32::default(),
+            ray_tracing_motion_blur: Default::default(),
+            ray_tracing_motion_blur_pipeline_trace_rays_indirect: Default::default(),
         }
     }
 }
@@ -34775,17 +32595,12 @@ impl fmt::Debug for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AccelerationStructureMotionInstanceTypeNV(i32);
 impl AccelerationStructureMotionInstanceTypeNV {
     pub const STATIC: Self = Self(0);
     pub const MATRIX_MOTION: Self = Self(1);
     pub const SRT_MOTION: Self = Self(2);
-}
-impl default::Default for AccelerationStructureMotionInstanceTypeNV {
-    fn default() -> Self {
-        Self(0)
-    }
 }
 impl fmt::Display for AccelerationStructureMotionInstanceTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -34811,12 +32626,12 @@ pub struct AccelerationStructureGeometryMotionTrianglesDataNV {
 }
 unsafe impl Send for AccelerationStructureGeometryMotionTrianglesDataNV {}
 unsafe impl Sync for AccelerationStructureGeometryMotionTrianglesDataNV {}
-impl default::Default for AccelerationStructureGeometryMotionTrianglesDataNV {
+impl Default for AccelerationStructureGeometryMotionTrianglesDataNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV,
             p_next: ptr::null(),
-            vertex_data: DeviceOrHostAddressConstKHR::default(),
+            vertex_data: Default::default(),
         }
     }
 }
@@ -34839,13 +32654,13 @@ pub struct AccelerationStructureMotionInfoNV {
 }
 unsafe impl Send for AccelerationStructureMotionInfoNV {}
 unsafe impl Sync for AccelerationStructureMotionInfoNV {}
-impl default::Default for AccelerationStructureMotionInfoNV {
+impl Default for AccelerationStructureMotionInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::ACCELERATION_STRUCTURE_MOTION_INFO_NV,
             p_next: ptr::null(),
-            max_instances: u32::default(),
-            flags: AccelerationStructureMotionInfoFlagsNV::default(),
+            max_instances: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -34860,7 +32675,7 @@ impl fmt::Debug for AccelerationStructureMotionInfoNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct SRTDataNV {
     pub sx: f32,
     pub a: f32,
@@ -34878,28 +32693,6 @@ pub struct SRTDataNV {
     pub tx: f32,
     pub ty: f32,
     pub tz: f32,
-}
-impl default::Default for SRTDataNV {
-    fn default() -> Self {
-        Self {
-            sx: f32::default(),
-            a: f32::default(),
-            b: f32::default(),
-            pvx: f32::default(),
-            sy: f32::default(),
-            c: f32::default(),
-            pvy: f32::default(),
-            sz: f32::default(),
-            pvz: f32::default(),
-            qx: f32::default(),
-            qy: f32::default(),
-            qz: f32::default(),
-            qw: f32::default(),
-            tx: f32::default(),
-            ty: f32::default(),
-            tz: f32::default(),
-        }
-    }
 }
 impl fmt::Debug for SRTDataNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -34924,24 +32717,13 @@ impl fmt::Debug for SRTDataNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AccelerationStructureSRTMotionInstanceNV {
     pub transform_t0: SRTDataNV,
     pub transform_t1: SRTDataNV,
     pub instance_custom_index_and_mask: u32,
     pub instance_shader_binding_table_record_offset_and_flags: u32,
     pub acceleration_structure_reference: u64,
-}
-impl default::Default for AccelerationStructureSRTMotionInstanceNV {
-    fn default() -> Self {
-        Self {
-            transform_t0: SRTDataNV::default(),
-            transform_t1: SRTDataNV::default(),
-            instance_custom_index_and_mask: u32::default(),
-            instance_shader_binding_table_record_offset_and_flags: u32::default(),
-            acceleration_structure_reference: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for AccelerationStructureSRTMotionInstanceNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -34961,24 +32743,13 @@ impl fmt::Debug for AccelerationStructureSRTMotionInstanceNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AccelerationStructureMatrixMotionInstanceNV {
     pub transform_t0: TransformMatrixKHR,
     pub transform_t1: TransformMatrixKHR,
     pub instance_custom_index_and_mask: u32,
     pub instance_shader_binding_table_record_offset_and_flags: u32,
     pub acceleration_structure_reference: u64,
-}
-impl default::Default for AccelerationStructureMatrixMotionInstanceNV {
-    fn default() -> Self {
-        Self {
-            transform_t0: TransformMatrixKHR::default(),
-            transform_t1: TransformMatrixKHR::default(),
-            instance_custom_index_and_mask: u32::default(),
-            instance_shader_binding_table_record_offset_and_flags: u32::default(),
-            acceleration_structure_reference: u64::default(),
-        }
-    }
 }
 impl fmt::Debug for AccelerationStructureMatrixMotionInstanceNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -35004,7 +32775,7 @@ pub union AccelerationStructureMotionInstanceDataNV {
     pub matrix_motion_instance: AccelerationStructureMatrixMotionInstanceNV,
     pub srt_motion_instance: AccelerationStructureSRTMotionInstanceNV,
 }
-impl default::Default for AccelerationStructureMotionInstanceDataNV {
+impl Default for AccelerationStructureMotionInstanceDataNV {
     fn default() -> Self {
         unsafe { mem::zeroed() }
     }
@@ -35019,20 +32790,11 @@ impl fmt::Debug for AccelerationStructureMotionInstanceDataNV {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct AccelerationStructureMotionInstanceNV {
     pub ty: AccelerationStructureMotionInstanceTypeNV,
     pub flags: AccelerationStructureMotionInstanceFlagsNV,
     pub data: AccelerationStructureMotionInstanceDataNV,
-}
-impl default::Default for AccelerationStructureMotionInstanceNV {
-    fn default() -> Self {
-        Self {
-            ty: AccelerationStructureMotionInstanceTypeNV::default(),
-            flags: AccelerationStructureMotionInstanceFlagsNV::default(),
-            data: AccelerationStructureMotionInstanceDataNV::default(),
-        }
-    }
 }
 impl fmt::Debug for AccelerationStructureMotionInstanceNV {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -35054,13 +32816,13 @@ pub struct MemoryGetRemoteAddressInfoNV {
 }
 unsafe impl Send for MemoryGetRemoteAddressInfoNV {}
 unsafe impl Sync for MemoryGetRemoteAddressInfoNV {}
-impl default::Default for MemoryGetRemoteAddressInfoNV {
+impl Default for MemoryGetRemoteAddressInfoNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::MEMORY_GET_REMOTE_ADDRESS_INFO_NV,
             p_next: ptr::null(),
-            memory: None,
-            handle_type: ExternalMemoryHandleTypeFlags::default(),
+            memory: Default::default(),
+            handle_type: Default::default(),
         }
     }
 }
@@ -35084,13 +32846,13 @@ pub struct ImportMemoryBufferCollectionFUCHSIA {
 }
 unsafe impl Send for ImportMemoryBufferCollectionFUCHSIA {}
 unsafe impl Sync for ImportMemoryBufferCollectionFUCHSIA {}
-impl default::Default for ImportMemoryBufferCollectionFUCHSIA {
+impl Default for ImportMemoryBufferCollectionFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMPORT_MEMORY_BUFFER_COLLECTION_FUCHSIA,
             p_next: ptr::null(),
-            collection: None,
-            index: u32::default(),
+            collection: Default::default(),
+            index: Default::default(),
         }
     }
 }
@@ -35114,13 +32876,13 @@ pub struct BufferCollectionImageCreateInfoFUCHSIA {
 }
 unsafe impl Send for BufferCollectionImageCreateInfoFUCHSIA {}
 unsafe impl Sync for BufferCollectionImageCreateInfoFUCHSIA {}
-impl default::Default for BufferCollectionImageCreateInfoFUCHSIA {
+impl Default for BufferCollectionImageCreateInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COLLECTION_IMAGE_CREATE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            collection: None,
-            index: u32::default(),
+            collection: Default::default(),
+            index: Default::default(),
         }
     }
 }
@@ -35144,13 +32906,13 @@ pub struct BufferCollectionBufferCreateInfoFUCHSIA {
 }
 unsafe impl Send for BufferCollectionBufferCreateInfoFUCHSIA {}
 unsafe impl Sync for BufferCollectionBufferCreateInfoFUCHSIA {}
-impl default::Default for BufferCollectionBufferCreateInfoFUCHSIA {
+impl Default for BufferCollectionBufferCreateInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COLLECTION_BUFFER_CREATE_INFO_FUCHSIA,
             p_next: ptr::null(),
-            collection: None,
-            index: u32::default(),
+            collection: Default::default(),
+            index: Default::default(),
         }
     }
 }
@@ -35173,7 +32935,7 @@ pub struct BufferCollectionCreateInfoFUCHSIA {
 }
 unsafe impl Send for BufferCollectionCreateInfoFUCHSIA {}
 unsafe impl Sync for BufferCollectionCreateInfoFUCHSIA {}
-impl default::Default for BufferCollectionCreateInfoFUCHSIA {
+impl Default for BufferCollectionCreateInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COLLECTION_CREATE_INFO_FUCHSIA,
@@ -35210,22 +32972,22 @@ pub struct BufferCollectionPropertiesFUCHSIA {
 }
 unsafe impl Send for BufferCollectionPropertiesFUCHSIA {}
 unsafe impl Sync for BufferCollectionPropertiesFUCHSIA {}
-impl default::Default for BufferCollectionPropertiesFUCHSIA {
+impl Default for BufferCollectionPropertiesFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COLLECTION_PROPERTIES_FUCHSIA,
             p_next: ptr::null_mut(),
-            memory_type_bits: u32::default(),
-            buffer_count: u32::default(),
-            create_info_index: u32::default(),
-            sysmem_pixel_format: u64::default(),
-            format_features: FormatFeatureFlags::default(),
-            sysmem_color_space_index: SysmemColorSpaceFUCHSIA::default(),
-            sampler_ycbcr_conversion_components: ComponentMapping::default(),
-            suggested_ycbcr_model: SamplerYcbcrModelConversion::default(),
-            suggested_ycbcr_range: SamplerYcbcrRange::default(),
-            suggested_x_chroma_offset: ChromaLocation::default(),
-            suggested_y_chroma_offset: ChromaLocation::default(),
+            memory_type_bits: Default::default(),
+            buffer_count: Default::default(),
+            create_info_index: Default::default(),
+            sysmem_pixel_format: Default::default(),
+            format_features: Default::default(),
+            sysmem_color_space_index: Default::default(),
+            sampler_ycbcr_conversion_components: Default::default(),
+            suggested_ycbcr_model: Default::default(),
+            suggested_ycbcr_range: Default::default(),
+            suggested_x_chroma_offset: Default::default(),
+            suggested_y_chroma_offset: Default::default(),
         }
     }
 }
@@ -35262,14 +33024,14 @@ pub struct BufferConstraintsInfoFUCHSIA {
 }
 unsafe impl Send for BufferConstraintsInfoFUCHSIA {}
 unsafe impl Sync for BufferConstraintsInfoFUCHSIA {}
-impl default::Default for BufferConstraintsInfoFUCHSIA {
+impl Default for BufferConstraintsInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_CONSTRAINTS_INFO_FUCHSIA,
             p_next: ptr::null(),
-            create_info: BufferCreateInfo::default(),
-            required_format_features: FormatFeatureFlags::default(),
-            buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA::default(),
+            create_info: Default::default(),
+            required_format_features: Default::default(),
+            buffer_collection_constraints: Default::default(),
         }
     }
 }
@@ -35293,12 +33055,12 @@ pub struct SysmemColorSpaceFUCHSIA {
 }
 unsafe impl Send for SysmemColorSpaceFUCHSIA {}
 unsafe impl Sync for SysmemColorSpaceFUCHSIA {}
-impl default::Default for SysmemColorSpaceFUCHSIA {
+impl Default for SysmemColorSpaceFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::SYSMEM_COLOR_SPACE_FUCHSIA,
             p_next: ptr::null(),
-            color_space: u32::default(),
+            color_space: Default::default(),
         }
     }
 }
@@ -35325,16 +33087,16 @@ pub struct ImageFormatConstraintsInfoFUCHSIA {
 }
 unsafe impl Send for ImageFormatConstraintsInfoFUCHSIA {}
 unsafe impl Sync for ImageFormatConstraintsInfoFUCHSIA {}
-impl default::Default for ImageFormatConstraintsInfoFUCHSIA {
+impl Default for ImageFormatConstraintsInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_FORMAT_CONSTRAINTS_INFO_FUCHSIA,
             p_next: ptr::null(),
-            image_create_info: ImageCreateInfo::default(),
-            required_format_features: FormatFeatureFlags::default(),
-            flags: ImageFormatConstraintsFlagsFUCHSIA::default(),
-            sysmem_pixel_format: u64::default(),
-            color_space_count: u32::default(),
+            image_create_info: Default::default(),
+            required_format_features: Default::default(),
+            flags: Default::default(),
+            sysmem_pixel_format: Default::default(),
+            color_space_count: Default::default(),
             p_color_spaces: ptr::null(),
         }
     }
@@ -35365,15 +33127,15 @@ pub struct ImageConstraintsInfoFUCHSIA {
 }
 unsafe impl Send for ImageConstraintsInfoFUCHSIA {}
 unsafe impl Sync for ImageConstraintsInfoFUCHSIA {}
-impl default::Default for ImageConstraintsInfoFUCHSIA {
+impl Default for ImageConstraintsInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_CONSTRAINTS_INFO_FUCHSIA,
             p_next: ptr::null(),
-            format_constraints_count: u32::default(),
+            format_constraints_count: Default::default(),
             p_format_constraints: ptr::null(),
-            buffer_collection_constraints: BufferCollectionConstraintsInfoFUCHSIA::default(),
-            flags: ImageConstraintsInfoFlagsFUCHSIA::default(),
+            buffer_collection_constraints: Default::default(),
+            flags: Default::default(),
         }
     }
 }
@@ -35402,16 +33164,16 @@ pub struct BufferCollectionConstraintsInfoFUCHSIA {
 }
 unsafe impl Send for BufferCollectionConstraintsInfoFUCHSIA {}
 unsafe impl Sync for BufferCollectionConstraintsInfoFUCHSIA {}
-impl default::Default for BufferCollectionConstraintsInfoFUCHSIA {
+impl Default for BufferCollectionConstraintsInfoFUCHSIA {
     fn default() -> Self {
         Self {
             s_type: StructureType::BUFFER_COLLECTION_CONSTRAINTS_INFO_FUCHSIA,
             p_next: ptr::null(),
-            min_buffer_count: u32::default(),
-            max_buffer_count: u32::default(),
-            min_buffer_count_for_camping: u32::default(),
-            min_buffer_count_for_dedicated_slack: u32::default(),
-            min_buffer_count_for_shared_slack: u32::default(),
+            min_buffer_count: Default::default(),
+            max_buffer_count: Default::default(),
+            min_buffer_count_for_camping: Default::default(),
+            min_buffer_count_for_dedicated_slack: Default::default(),
+            min_buffer_count_for_shared_slack: Default::default(),
         }
     }
 }
@@ -35443,12 +33205,12 @@ pub struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {}
-impl default::Default for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
+impl Default for PhysicalDeviceRGBA10X6FormatsFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            format_rgba10x6_without_y_cb_cr_sampler: Bool32::default(),
+            format_rgba10x6_without_y_cb_cr_sampler: Default::default(),
         }
     }
 }
@@ -35475,14 +33237,14 @@ pub struct FormatProperties3 {
 }
 unsafe impl Send for FormatProperties3 {}
 unsafe impl Sync for FormatProperties3 {}
-impl default::Default for FormatProperties3 {
+impl Default for FormatProperties3 {
     fn default() -> Self {
         Self {
             s_type: StructureType::FORMAT_PROPERTIES_3,
             p_next: ptr::null_mut(),
-            linear_tiling_features: FormatFeatureFlags2::default(),
-            optimal_tiling_features: FormatFeatureFlags2::default(),
-            buffer_features: FormatFeatureFlags2::default(),
+            linear_tiling_features: Default::default(),
+            optimal_tiling_features: Default::default(),
+            buffer_features: Default::default(),
         }
     }
 }
@@ -35508,12 +33270,12 @@ pub struct DrmFormatModifierPropertiesList2EXT {
 }
 unsafe impl Send for DrmFormatModifierPropertiesList2EXT {}
 unsafe impl Sync for DrmFormatModifierPropertiesList2EXT {}
-impl default::Default for DrmFormatModifierPropertiesList2EXT {
+impl Default for DrmFormatModifierPropertiesList2EXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT,
             p_next: ptr::null_mut(),
-            drm_format_modifier_count: u32::default(),
+            drm_format_modifier_count: Default::default(),
             p_drm_format_modifier_properties: ptr::null_mut(),
         }
     }
@@ -35532,20 +33294,11 @@ impl fmt::Debug for DrmFormatModifierPropertiesList2EXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DrmFormatModifierProperties2EXT {
     pub drm_format_modifier: u64,
     pub drm_format_modifier_plane_count: u32,
     pub drm_format_modifier_tiling_features: FormatFeatureFlags2,
-}
-impl default::Default for DrmFormatModifierProperties2EXT {
-    fn default() -> Self {
-        Self {
-            drm_format_modifier: u64::default(),
-            drm_format_modifier_plane_count: u32::default(),
-            drm_format_modifier_tiling_features: FormatFeatureFlags2::default(),
-        }
-    }
 }
 impl fmt::Debug for DrmFormatModifierProperties2EXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -35575,19 +33328,19 @@ pub struct AndroidHardwareBufferFormatProperties2ANDROID {
 }
 unsafe impl Send for AndroidHardwareBufferFormatProperties2ANDROID {}
 unsafe impl Sync for AndroidHardwareBufferFormatProperties2ANDROID {}
-impl default::Default for AndroidHardwareBufferFormatProperties2ANDROID {
+impl Default for AndroidHardwareBufferFormatProperties2ANDROID {
     fn default() -> Self {
         Self {
             s_type: StructureType::ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID,
             p_next: ptr::null_mut(),
-            format: Format::default(),
-            external_format: u64::default(),
-            format_features: FormatFeatureFlags2::default(),
-            sampler_ycbcr_conversion_components: ComponentMapping::default(),
-            suggested_ycbcr_model: SamplerYcbcrModelConversion::default(),
-            suggested_ycbcr_range: SamplerYcbcrRange::default(),
-            suggested_x_chroma_offset: ChromaLocation::default(),
-            suggested_y_chroma_offset: ChromaLocation::default(),
+            format: Default::default(),
+            external_format: Default::default(),
+            format_features: Default::default(),
+            sampler_ycbcr_conversion_components: Default::default(),
+            suggested_ycbcr_model: Default::default(),
+            suggested_ycbcr_range: Default::default(),
+            suggested_x_chroma_offset: Default::default(),
+            suggested_y_chroma_offset: Default::default(),
         }
     }
 }
@@ -35623,16 +33376,16 @@ pub struct PipelineRenderingCreateInfo {
 }
 unsafe impl Send for PipelineRenderingCreateInfo {}
 unsafe impl Sync for PipelineRenderingCreateInfo {}
-impl default::Default for PipelineRenderingCreateInfo {
+impl Default for PipelineRenderingCreateInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::PIPELINE_RENDERING_CREATE_INFO,
             p_next: ptr::null(),
-            view_mask: u32::default(),
-            color_attachment_count: u32::default(),
+            view_mask: Default::default(),
+            color_attachment_count: Default::default(),
             p_color_attachment_formats: ptr::null(),
-            depth_attachment_format: Format::default(),
-            stencil_attachment_format: Format::default(),
+            depth_attachment_format: Default::default(),
+            stencil_attachment_format: Default::default(),
         }
     }
 }
@@ -35666,16 +33419,16 @@ pub struct RenderingInfo {
 }
 unsafe impl Send for RenderingInfo {}
 unsafe impl Sync for RenderingInfo {}
-impl default::Default for RenderingInfo {
+impl Default for RenderingInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDERING_INFO,
             p_next: ptr::null(),
-            flags: RenderingFlags::default(),
-            render_area: Rect2D::default(),
-            layer_count: u32::default(),
-            view_mask: u32::default(),
-            color_attachment_count: u32::default(),
+            flags: Default::default(),
+            render_area: Default::default(),
+            layer_count: Default::default(),
+            view_mask: Default::default(),
+            color_attachment_count: Default::default(),
             p_color_attachments: ptr::null(),
             p_depth_attachment: ptr::null(),
             p_stencil_attachment: ptr::null(),
@@ -35715,19 +33468,19 @@ pub struct RenderingAttachmentInfo {
 }
 unsafe impl Send for RenderingAttachmentInfo {}
 unsafe impl Sync for RenderingAttachmentInfo {}
-impl default::Default for RenderingAttachmentInfo {
+impl Default for RenderingAttachmentInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDERING_ATTACHMENT_INFO,
             p_next: ptr::null(),
-            image_view: None,
-            image_layout: ImageLayout::default(),
-            resolve_mode: ResolveModeFlags::default(),
-            resolve_image_view: None,
-            resolve_image_layout: ImageLayout::default(),
-            load_op: AttachmentLoadOp::default(),
-            store_op: AttachmentStoreOp::default(),
-            clear_value: ClearValue::default(),
+            image_view: Default::default(),
+            image_layout: Default::default(),
+            resolve_mode: Default::default(),
+            resolve_image_view: Default::default(),
+            resolve_image_layout: Default::default(),
+            load_op: Default::default(),
+            store_op: Default::default(),
+            clear_value: Default::default(),
         }
     }
 }
@@ -35759,14 +33512,14 @@ pub struct RenderingFragmentShadingRateAttachmentInfoKHR {
 }
 unsafe impl Send for RenderingFragmentShadingRateAttachmentInfoKHR {}
 unsafe impl Sync for RenderingFragmentShadingRateAttachmentInfoKHR {}
-impl default::Default for RenderingFragmentShadingRateAttachmentInfoKHR {
+impl Default for RenderingFragmentShadingRateAttachmentInfoKHR {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
             p_next: ptr::null(),
-            image_view: None,
-            image_layout: ImageLayout::default(),
-            shading_rate_attachment_texel_size: Extent2D::default(),
+            image_view: Default::default(),
+            image_layout: Default::default(),
+            shading_rate_attachment_texel_size: Default::default(),
         }
     }
 }
@@ -35794,13 +33547,13 @@ pub struct RenderingFragmentDensityMapAttachmentInfoEXT {
 }
 unsafe impl Send for RenderingFragmentDensityMapAttachmentInfoEXT {}
 unsafe impl Sync for RenderingFragmentDensityMapAttachmentInfoEXT {}
-impl default::Default for RenderingFragmentDensityMapAttachmentInfoEXT {
+impl Default for RenderingFragmentDensityMapAttachmentInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT,
             p_next: ptr::null(),
-            image_view: None,
-            image_layout: ImageLayout::default(),
+            image_view: Default::default(),
+            image_layout: Default::default(),
         }
     }
 }
@@ -35823,12 +33576,12 @@ pub struct PhysicalDeviceDynamicRenderingFeatures {
 }
 unsafe impl Send for PhysicalDeviceDynamicRenderingFeatures {}
 unsafe impl Sync for PhysicalDeviceDynamicRenderingFeatures {}
-impl default::Default for PhysicalDeviceDynamicRenderingFeatures {
+impl Default for PhysicalDeviceDynamicRenderingFeatures {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES,
             p_next: ptr::null_mut(),
-            dynamic_rendering: Bool32::default(),
+            dynamic_rendering: Default::default(),
         }
     }
 }
@@ -35857,18 +33610,18 @@ pub struct CommandBufferInheritanceRenderingInfo {
 }
 unsafe impl Send for CommandBufferInheritanceRenderingInfo {}
 unsafe impl Sync for CommandBufferInheritanceRenderingInfo {}
-impl default::Default for CommandBufferInheritanceRenderingInfo {
+impl Default for CommandBufferInheritanceRenderingInfo {
     fn default() -> Self {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_RENDERING_INFO,
             p_next: ptr::null(),
-            flags: RenderingFlags::default(),
-            view_mask: u32::default(),
-            color_attachment_count: u32::default(),
+            flags: Default::default(),
+            view_mask: Default::default(),
+            color_attachment_count: Default::default(),
             p_color_attachment_formats: ptr::null(),
-            depth_attachment_format: Format::default(),
-            stencil_attachment_format: Format::default(),
-            rasterization_samples: SampleCountFlags::default(),
+            depth_attachment_format: Default::default(),
+            stencil_attachment_format: Default::default(),
+            rasterization_samples: Default::default(),
         }
     }
 }
@@ -35899,14 +33652,14 @@ pub struct AttachmentSampleCountInfoAMD {
 }
 unsafe impl Send for AttachmentSampleCountInfoAMD {}
 unsafe impl Sync for AttachmentSampleCountInfoAMD {}
-impl default::Default for AttachmentSampleCountInfoAMD {
+impl Default for AttachmentSampleCountInfoAMD {
     fn default() -> Self {
         Self {
             s_type: StructureType::ATTACHMENT_SAMPLE_COUNT_INFO_AMD,
             p_next: ptr::null(),
-            color_attachment_count: u32::default(),
+            color_attachment_count: Default::default(),
             p_color_attachment_samples: ptr::null(),
-            depth_stencil_attachment_samples: SampleCountFlags::default(),
+            depth_stencil_attachment_samples: Default::default(),
         }
     }
 }
@@ -35935,13 +33688,13 @@ pub struct MultiviewPerViewAttributesInfoNVX {
 }
 unsafe impl Send for MultiviewPerViewAttributesInfoNVX {}
 unsafe impl Sync for MultiviewPerViewAttributesInfoNVX {}
-impl default::Default for MultiviewPerViewAttributesInfoNVX {
+impl Default for MultiviewPerViewAttributesInfoNVX {
     fn default() -> Self {
         Self {
             s_type: StructureType::MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX,
             p_next: ptr::null(),
-            per_view_attributes: Bool32::default(),
-            per_view_attributes_position_x_only: Bool32::default(),
+            per_view_attributes: Default::default(),
+            per_view_attributes_position_x_only: Default::default(),
         }
     }
 }
@@ -35967,12 +33720,12 @@ pub struct PhysicalDeviceImageViewMinLodFeaturesEXT {
 }
 unsafe impl Send for PhysicalDeviceImageViewMinLodFeaturesEXT {}
 unsafe impl Sync for PhysicalDeviceImageViewMinLodFeaturesEXT {}
-impl default::Default for PhysicalDeviceImageViewMinLodFeaturesEXT {
+impl Default for PhysicalDeviceImageViewMinLodFeaturesEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT,
             p_next: ptr::null_mut(),
-            min_lod: Bool32::default(),
+            min_lod: Default::default(),
         }
     }
 }
@@ -35994,12 +33747,12 @@ pub struct ImageViewMinLodCreateInfoEXT {
 }
 unsafe impl Send for ImageViewMinLodCreateInfoEXT {}
 unsafe impl Sync for ImageViewMinLodCreateInfoEXT {}
-impl default::Default for ImageViewMinLodCreateInfoEXT {
+impl Default for ImageViewMinLodCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT,
             p_next: ptr::null(),
-            min_lod: f32::default(),
+            min_lod: Default::default(),
         }
     }
 }
@@ -36023,14 +33776,14 @@ pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
 }
 unsafe impl Send for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
 unsafe impl Sync for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
-impl default::Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+impl Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM,
             p_next: ptr::null_mut(),
-            rasterization_order_color_attachment_access: Bool32::default(),
-            rasterization_order_depth_attachment_access: Bool32::default(),
-            rasterization_order_stencil_attachment_access: Bool32::default(),
+            rasterization_order_color_attachment_access: Default::default(),
+            rasterization_order_depth_attachment_access: Default::default(),
+            rasterization_order_stencil_attachment_access: Default::default(),
         }
     }
 }
@@ -36063,12 +33816,12 @@ pub struct PhysicalDeviceLinearColorAttachmentFeaturesNV {
 }
 unsafe impl Send for PhysicalDeviceLinearColorAttachmentFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceLinearColorAttachmentFeaturesNV {}
-impl default::Default for PhysicalDeviceLinearColorAttachmentFeaturesNV {
+impl Default for PhysicalDeviceLinearColorAttachmentFeaturesNV {
     fn default() -> Self {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV,
             p_next: ptr::null_mut(),
-            linear_color_attachment: Bool32::default(),
+            linear_color_attachment: Default::default(),
         }
     }
 }

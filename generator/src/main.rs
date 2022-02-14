@@ -546,7 +546,7 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn check_type_derives(&self, base_type: CBaseType) -> bool {
+    fn can_derive_hash(&self, base_type: CBaseType) -> bool {
         match base_type {
             CBaseType::Void
             | CBaseType::Char
@@ -577,7 +577,7 @@ impl<'a> Generator<'a> {
                                     .all(|decl| {
                                         decl.ty.array_size.is_none()
                                             && decl.ty.decoration == CDecoration::None
-                                            && self.check_type_derives(decl.ty.base)
+                                            && self.can_derive_hash(decl.ty.base)
                                     })
                             } else {
                                 false
@@ -1023,42 +1023,14 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn get_rust_default(&self, base_type: CBaseType) -> String {
+    fn needs_zero_default(&self, base_type: CBaseType) -> bool {
         match base_type {
             CBaseType::Void => panic!("cannot set a default"),
-            CBaseType::Char => "c_char::default()".to_owned(),
-            CBaseType::Int => "c_int::default()".to_owned(),
-            CBaseType::F32 => "f32::default()".to_owned(),
-            CBaseType::F64 => "f64::default()".to_owned(),
-            CBaseType::U8 => "u8::default()".to_owned(),
-            CBaseType::U16 => "u16::default()".to_owned(),
-            CBaseType::U32 => "u32::default()".to_owned(),
-            CBaseType::U64 => "u64::default()".to_owned(),
-            CBaseType::I8 => "i8::default()".to_owned(),
-            CBaseType::I16 => "i16::default()".to_owned(),
-            CBaseType::I32 => "i32::default()".to_owned(),
-            CBaseType::I64 => "i64::default()".to_owned(),
-            CBaseType::USize => "usize::default()".to_owned(),
             CBaseType::Named(type_name) => {
                 let type_name = self.bitmask_from_value.get(type_name).copied().unwrap_or(type_name);
-                if type_name.starts_with(TYPE_PREFIX) {
-                    if self
-                        .type_by_name
-                        .get(type_name)
-                        .and_then(|ty| ty.category.as_deref())
-                        .map(|s| s == "handle")
-                        .unwrap_or(false)
-                    {
-                        "None".to_owned()
-                    } else {
-                        format!("{}::default()", type_name.skip_prefix(TYPE_PREFIX))
-                    }
-                } else if type_name.starts_with(PFN_PREFIX) {
-                    "None".to_owned()
-                } else {
-                    "unsafe { mem::zeroed() }".to_owned()
-                }
+                !(type_name.starts_with(TYPE_PREFIX) || type_name.starts_with(PFN_PREFIX))
             }
+            _ => false,
         }
     }
 
@@ -1260,9 +1232,12 @@ impl<'a> Generator<'a> {
                 .collect();
 
             let (derives, interior_type) = match enum_type {
-                EnumType::Bitmask(BitMaskSize::N32) => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u32"),
-                EnumType::Bitmask(BitMaskSize::N64) => ("Debug, Copy, Clone, PartialEq, Eq, Hash", "u64"),
-                EnumType::Value => ("Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash", "i32"),
+                EnumType::Bitmask(BitMaskSize::N32) => ("Debug, Copy, Clone, Default, PartialEq, Eq, Hash", "u32"),
+                EnumType::Bitmask(BitMaskSize::N64) => ("Debug, Copy, Clone, Default, PartialEq, Eq, Hash", "u64"),
+                EnumType::Value => (
+                    "Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash",
+                    "i32",
+                ),
             };
             let enum_name = type_name.skip_prefix(TYPE_PREFIX);
             writeln!(
@@ -1300,11 +1275,6 @@ impl<'a> Generator<'a> {
                 }
             }
             writeln!(w, "}}")?;
-            writeln!(
-                w,
-                "impl default::Default for {} {{ fn default() -> Self {{ Self(0) }} }}",
-                enum_name
-            )?;
             match enum_type {
                 EnumType::Bitmask(_) => {
                     writeln!(w, "impl_bitmask!({}, {1:#x});", enum_name, all_bits)?;
@@ -1479,46 +1449,79 @@ impl<'a> Generator<'a> {
             }
         } else if let vk::TypeSpec::Members(ref members) = ty.spec {
             let agg_name = type_name.skip_prefix(TYPE_PREFIX);
+            let members = {
+                let mut members: Vec<_> = members
+                    .iter()
+                    .filter_map(|member| match member {
+                        vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                        _ => None,
+                    })
+                    .map(|member_def| {
+                        let decl = c_parse_variable_decl(member_def.code.as_str());
+                        let decl = self.rewrite_variable_decl(agg_name, decl);
+                        StructMember {
+                            def: member_def,
+                            decl,
+                            merged_name: String::new(),
+                        }
+                    })
+                    .collect();
+                // merge bitfield members
+                while let Some(index) = members
+                    .iter()
+                    .enumerate()
+                    .find(|(_, member)| member.decl.ty.bit_count.is_some())
+                    .map(|(i, _)| i)
+                {
+                    let temp = members.remove(index + 1);
+                    members[index].merge_with(temp);
+                }
+                members
+            };
+            let needs_custom_default = match agg_type {
+                AggregateType::Struct => members.iter().any(|member| {
+                    if member.def.values.is_some() {
+                        true
+                    } else {
+                        let needs_zeros = match member.decl.ty.decoration {
+                            CDecoration::Pointer
+                            | CDecoration::PointerToPointer
+                            | CDecoration::PointerToConst
+                            | CDecoration::PointerToConstPointerToConst => true,
+                            CDecoration::None | CDecoration::Const => self.needs_zero_default(member.decl.ty.base),
+                        };
+                        needs_zeros
+                            || member
+                                .decl
+                                .ty
+                                .array_size
+                                .map(|size| match size {
+                                    CArraySize::Literal(n) => n > 32,
+                                    CArraySize::Ident(_) => true,
+                                })
+                                .unwrap_or(false)
+                    }
+                }),
+                AggregateType::Union => true,
+            };
+            let mut derives = vec!["Copy", "Clone"];
+            if !needs_custom_default {
+                derives.push("Default");
+            }
+            if self.can_derive_hash(CBaseType::Named(type_name)) {
+                derives.extend_from_slice(&["PartialEq", "Eq", "Hash"]);
+            }
             writeln!(
                 w,
                 "#[repr(C)] #[derive({})] pub {} {} {{",
-                if self.check_type_derives(CBaseType::Named(type_name)) {
-                    "Copy, Clone, PartialEq, Eq, Hash"
-                } else {
-                    "Copy, Clone"
-                },
+                derives.join(","),
                 match agg_type {
                     AggregateType::Struct => "struct",
                     AggregateType::Union => "union",
                 },
                 agg_name
             )?;
-            let mut members: Vec<_> = members
-                .iter()
-                .filter_map(|member| match member {
-                    vk::TypeMember::Definition(ref member_def) => Some(member_def),
-                    _ => None,
-                })
-                .map(|member_def| {
-                    let decl = c_parse_variable_decl(member_def.code.as_str());
-                    let decl = self.rewrite_variable_decl(agg_name, decl);
-                    StructMember {
-                        def: member_def,
-                        decl,
-                        merged_name: String::new(),
-                    }
-                })
-                .collect();
-            // merge bitfield members
-            while let Some(index) = members
-                .iter()
-                .enumerate()
-                .find(|(_, member)| member.decl.ty.bit_count.is_some())
-                .map(|(i, _)| i)
-            {
-                let temp = members.remove(index + 1);
-                members[index].merge_with(temp);
-            }
+
             for member in members.iter() {
                 for comment in member.def.markup.iter().filter_map(|markup| match markup {
                     vk::TypeMemberMarkup::Comment(ref comment) => Some(comment),
@@ -1538,49 +1541,55 @@ impl<'a> Generator<'a> {
                 writeln!(w, "unsafe impl Send for {} {{ }}", agg_name)?;
                 writeln!(w, "unsafe impl Sync for {} {{ }}", agg_name)?;
             }
-            writeln!(w, "impl default::Default for {} {{ fn default() -> Self {{", agg_name)?;
-            match agg_type {
-                AggregateType::Struct => {
-                    write!(w, "Self {{")?;
-                    for member in members.iter() {
-                        write!(w, "{}: ", get_rust_variable_name(member.name()))?;
-                        if let Some(values) = member.def.values.as_deref() {
-                            // assume enum value for now
-                            let member_type_name = member.decl.ty.base.try_name().unwrap();
-                            let name = self.get_enum_entry_name(member_type_name, EnumType::Value, values);
-                            writeln!(
-                                w,
-                                "{}::{},",
-                                self.get_rust_type_name(member.decl.ty.base, true, None),
-                                name
-                            )?;
-                        } else {
-                            // get element default
-                            let element_value = match member.decl.ty.decoration {
-                                CDecoration::Pointer | CDecoration::PointerToPointer => "ptr::null_mut()".to_owned(),
-                                CDecoration::PointerToConst | CDecoration::PointerToConstPointerToConst => {
-                                    "ptr::null()".to_owned()
-                                }
-                                CDecoration::None | CDecoration::Const => {
-                                    self.get_rust_default(member.decl.ty.base).to_owned()
-                                }
-                            };
-
-                            // write single or array
-                            if let Some(array_size) = member.decl.ty.array_size {
-                                writeln!(w, "[{}; {}],", element_value, array_size.skip_prefix(CONST_PREFIX))?;
+            if needs_custom_default {
+                writeln!(w, "impl Default for {} {{ fn default() -> Self {{", agg_name)?;
+                match agg_type {
+                    AggregateType::Struct => {
+                        write!(w, "Self {{")?;
+                        for member in members.iter() {
+                            write!(w, "{}: ", get_rust_variable_name(member.name()))?;
+                            if let Some(values) = member.def.values.as_deref() {
+                                // assume enum value for now
+                                let member_type_name = member.decl.ty.base.try_name().unwrap();
+                                let name = self.get_enum_entry_name(member_type_name, EnumType::Value, values);
+                                writeln!(
+                                    w,
+                                    "{}::{},",
+                                    self.get_rust_type_name(member.decl.ty.base, true, None),
+                                    name
+                                )?;
                             } else {
-                                writeln!(w, "{},", element_value)?;
+                                // get element default
+                                let element_value = match member.decl.ty.decoration {
+                                    CDecoration::Pointer | CDecoration::PointerToPointer => "ptr::null_mut()",
+                                    CDecoration::PointerToConst | CDecoration::PointerToConstPointerToConst => {
+                                        "ptr::null()"
+                                    }
+                                    CDecoration::None | CDecoration::Const => {
+                                        if self.needs_zero_default(member.decl.ty.base) {
+                                            "unsafe { mem::zeroed() }"
+                                        } else {
+                                            "Default::default()"
+                                        }
+                                    }
+                                };
+
+                                // write single or array
+                                if let Some(array_size) = member.decl.ty.array_size {
+                                    writeln!(w, "[{}; {}],", element_value, array_size.skip_prefix(CONST_PREFIX))?;
+                                } else {
+                                    writeln!(w, "{},", element_value)?;
+                                }
                             }
                         }
+                        writeln!(w, "}}")?;
                     }
-                    writeln!(w, "}}")?;
+                    AggregateType::Union => {
+                        writeln!(w, "unsafe {{ mem::zeroed() }}")?;
+                    }
                 }
-                AggregateType::Union => {
-                    writeln!(w, "unsafe {{ mem::zeroed() }}")?;
-                }
+                writeln!(w, "}} }}")?;
             }
-            writeln!(w, "}} }}")?;
             {
                 writeln!(w, "impl fmt::Debug for {} {{", agg_name)?;
                 writeln!(w, "fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {{")?;
