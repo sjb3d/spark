@@ -78,3 +78,23 @@ impl Lib {
 lazy_static! {
     static ref LIB: LoaderResult<Lib> = Lib::new();
 }
+
+struct VecMaybeUninit<T>(Vec<MaybeUninit<T>>);
+
+impl<T> VecMaybeUninit<T> {
+    fn with_len(n: usize) -> Self {
+        let mut v = Vec::with_capacity(n);
+        unsafe { v.set_len(n); }
+        Self(v)
+    }
+
+    fn as_mut_ptr(&mut self) -> *mut T {
+        self.0.as_mut_ptr() as *mut T
+    }
+
+    unsafe fn assume_init(self) -> Vec<T> {
+        let s: Box<[T]> = mem::transmute(self.0.into_boxed_slice());
+        s.into_vec()
+    }
+}
+

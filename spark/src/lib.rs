@@ -81,6 +81,28 @@ impl Lib {
 lazy_static! {
     static ref LIB: LoaderResult<Lib> = Lib::new();
 }
+
+struct VecMaybeUninit<T>(Vec<MaybeUninit<T>>);
+
+impl<T> VecMaybeUninit<T> {
+    fn with_len(n: usize) -> Self {
+        let mut v = Vec::with_capacity(n);
+        unsafe {
+            v.set_len(n);
+        }
+        Self(v)
+    }
+
+    fn as_mut_ptr(&mut self) -> *mut T {
+        self.0.as_mut_ptr() as *mut T
+    }
+
+    unsafe fn assume_init(self) -> Vec<T> {
+        let s: Box<[T]> = mem::transmute(self.0.into_boxed_slice());
+        s.into_vec()
+    }
+}
+
 #[derive(Copy, Clone)]
 pub struct Loader {
     pub fp_create_instance: Option<vk::FnCreateInstance>,
@@ -11002,8 +11024,7 @@ impl Device {
             .fp_create_graphics_pipelines
             .expect("vkCreateGraphicsPipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        let mut v = Vec::with_capacity(create_info_count as usize);
-        v.set_len(create_info_count as usize);
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -11013,7 +11034,7 @@ impl Device {
             v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -11100,8 +11121,7 @@ impl Device {
             .fp_create_compute_pipelines
             .expect("vkCreateComputePipelines is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        let mut v = Vec::with_capacity(create_info_count as usize);
-        v.set_len(create_info_count as usize);
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -11111,7 +11131,7 @@ impl Device {
             v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -11345,11 +11365,10 @@ impl Device {
         let fp = self
             .fp_allocate_descriptor_sets
             .expect("vkAllocateDescriptorSets is not loaded");
-        let mut v = Vec::with_capacity(p_allocate_info.descriptor_set_count as usize);
-        v.set_len(p_allocate_info.descriptor_set_count as usize);
+        let mut v = VecMaybeUninit::with_len(p_allocate_info.descriptor_set_count as usize);
         let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -11542,11 +11561,10 @@ impl Device {
         let fp = self
             .fp_allocate_command_buffers
             .expect("vkAllocateCommandBuffers is not loaded");
-        let mut v = Vec::with_capacity(p_allocate_info.command_buffer_count as usize);
-        v.set_len(p_allocate_info.command_buffer_count as usize);
+        let mut v = VecMaybeUninit::with_len(p_allocate_info.command_buffer_count as usize);
         let v_err = (fp)(Some(self.handle), p_allocate_info, v.as_mut_ptr());
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -12368,8 +12386,7 @@ impl Device {
             .fp_create_shared_swapchains_khr
             .expect("vkCreateSharedSwapchainsKHR is not loaded");
         let swapchain_count = p_create_infos.len() as u32;
-        let mut v = Vec::with_capacity(swapchain_count as usize);
-        v.set_len(swapchain_count as usize);
+        let mut v = VecMaybeUninit::with_len(swapchain_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             swapchain_count,
@@ -12378,7 +12395,7 @@ impl Device {
             v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -13832,8 +13849,7 @@ impl Device {
             .fp_get_calibrated_timestamps_ext
             .expect("vkGetCalibratedTimestampsEXT is not loaded");
         let timestamp_count = p_timestamp_infos.len() as u32;
-        let mut v = Vec::with_capacity(timestamp_count as usize);
-        v.set_len(timestamp_count as usize);
+        let mut v = VecMaybeUninit::with_len(timestamp_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             timestamp_count,
@@ -13842,7 +13858,7 @@ impl Device {
             p_max_deviation,
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -14955,8 +14971,7 @@ impl Device {
             .fp_create_ray_tracing_pipelines_nv
             .expect("vkCreateRayTracingPipelinesNV is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        let mut v = Vec::with_capacity(create_info_count as usize);
-        v.set_len(create_info_count as usize);
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             pipeline_cache,
@@ -14966,7 +14981,7 @@ impl Device {
             v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }
@@ -15056,8 +15071,7 @@ impl Device {
             .fp_create_ray_tracing_pipelines_khr
             .expect("vkCreateRayTracingPipelinesKHR is not loaded");
         let create_info_count = p_create_infos.len() as u32;
-        let mut v = Vec::with_capacity(create_info_count as usize);
-        v.set_len(create_info_count as usize);
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
         let v_err = (fp)(
             Some(self.handle),
             deferred_operation,
@@ -15068,7 +15082,7 @@ impl Device {
             v.as_mut_ptr(),
         );
         match v_err {
-            vk::Result::SUCCESS => Ok(v),
+            vk::Result::SUCCESS => Ok(v.assume_init()),
             _ => Err(v_err),
         }
     }

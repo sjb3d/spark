@@ -2764,7 +2764,7 @@ impl<'a> Generator<'a> {
                         LibCommandStyle::ToVecKnownLen | LibCommandStyle::ToVecUnknownLen => {
                             write!(
                                 w,
-                                "let mut v = Vec::with_capacity({0} as usize); v.set_len({0} as usize); let v_err = ",
+                                "let mut v = VecMaybeUninit::with_len({0} as usize); let v_err = ",
                                 len_expr
                             )?;
                         }
@@ -2946,7 +2946,10 @@ impl<'a> Generator<'a> {
                             write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(()), _ => Err(v_err) }}")?;
                         }
                         LibCommandStyle::ToVecUnknownLen | LibCommandStyle::ToVecKnownLen => {
-                            write!(w, "match v_err {{ vk::Result::SUCCESS => Ok(v), _ => Err(v_err) }}")?;
+                            write!(
+                                w,
+                                "match v_err {{ vk::Result::SUCCESS => Ok(v.assume_init()), _ => Err(v_err) }}"
+                            )?;
                         }
                         LibCommandStyle::Array | LibCommandStyle::Single => {
                             write!(
