@@ -11,5 +11,5 @@ license = "MIT"
 publish = false
 
 [dependencies]
-lazy_static = "1.1.0"
+lazy_static = "1.4.0"
 shared_library = "0.1.9"

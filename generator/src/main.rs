@@ -1,7 +1,7 @@
 mod c_parse;
 
 use crate::c_parse::*;
-use heck::{ShoutySnakeCase, SnakeCase};
+use heck::{ToShoutySnakeCase, ToSnakeCase};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::env;
 use std::fmt;
