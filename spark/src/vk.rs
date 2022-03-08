@@ -6731,6 +6731,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES;
     pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_BUFFER_MEMORY_REQUIREMENTS;
     pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_IMAGE_MEMORY_REQUIREMENTS;
+    /// Added by extension VK_VALVE_descriptor_set_host_mapping.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE: Self = Self(1000420000);
+    /// Added by extension VK_VALVE_descriptor_set_host_mapping.
+    pub const DESCRIPTOR_SET_BINDING_REFERENCE_VALVE: Self = Self(1000420001);
+    /// Added by extension VK_VALVE_descriptor_set_host_mapping.
+    pub const DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE: Self = Self(1000420002);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM: Self = Self(1000425000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
@@ -7305,6 +7311,9 @@ impl fmt::Display for StructureType {
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
+            1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
+            1000420001 => Some(&"DESCRIPTOR_SET_BINDING_REFERENCE_VALVE"),
+            1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
@@ -33834,6 +33843,93 @@ impl fmt::Debug for PhysicalDeviceLinearColorAttachmentFeaturesNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_set_host_mapping: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {}
+unsafe impl Sync for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {}
+impl Default for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE,
+            p_next: ptr::null_mut(),
+            descriptor_set_host_mapping: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_set_host_mapping", &self.descriptor_set_host_mapping)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorSetBindingReferenceVALVE {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub descriptor_set_layout: Option<DescriptorSetLayout>,
+    pub binding: u32,
+}
+unsafe impl Send for DescriptorSetBindingReferenceVALVE {}
+unsafe impl Sync for DescriptorSetBindingReferenceVALVE {}
+impl Default for DescriptorSetBindingReferenceVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_SET_BINDING_REFERENCE_VALVE,
+            p_next: ptr::null(),
+            descriptor_set_layout: Default::default(),
+            binding: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorSetBindingReferenceVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorSetBindingReferenceVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_set_layout", &self.descriptor_set_layout)
+            .field("binding", &self.binding)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorSetLayoutHostMappingInfoVALVE {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_offset: usize,
+    pub descriptor_size: u32,
+}
+unsafe impl Send for DescriptorSetLayoutHostMappingInfoVALVE {}
+unsafe impl Sync for DescriptorSetLayoutHostMappingInfoVALVE {}
+impl Default for DescriptorSetLayoutHostMappingInfoVALVE {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE,
+            p_next: ptr::null_mut(),
+            descriptor_offset: Default::default(),
+            descriptor_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorSetLayoutHostMappingInfoVALVE {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorSetLayoutHostMappingInfoVALVE")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_offset", &self.descriptor_offset)
+            .field("descriptor_size", &self.descriptor_size)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -36053,3 +36149,10 @@ pub type FnGetBufferCollectionPropertiesFUCHSIA = unsafe extern "system" fn(
 pub type FnCmdBeginRendering =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_rendering_info: *const RenderingInfo);
 pub type FnCmdEndRendering = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
+pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_binding_reference: *const DescriptorSetBindingReferenceVALVE,
+    p_host_mapping: *mut DescriptorSetLayoutHostMappingInfoVALVE,
+);
+pub type FnGetDescriptorSetHostMappingVALVE =
+    unsafe extern "system" fn(device: Option<Device>, descriptor_set: Option<DescriptorSet>, pp_data: *mut *mut c_void);

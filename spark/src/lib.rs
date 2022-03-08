@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 206
+//! Generated from vk.xml with `VK_HEADER_VERSION` 207
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4066,6 +4066,7 @@ pub struct DeviceExtensions {
     pub ext_border_color_swizzle: bool,
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
+    pub valve_descriptor_set_host_mapping: bool,
     pub qcom_fragment_density_map_offset: bool,
     pub nv_linear_color_attachment: bool,
 }
@@ -4301,6 +4302,7 @@ impl DeviceExtensions {
             b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
+            b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             _ => {}
@@ -4536,6 +4538,7 @@ impl DeviceExtensions {
             ext_border_color_swizzle: false,
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
+            valve_descriptor_set_host_mapping: false,
             qcom_fragment_density_map_offset: false,
             nv_linear_color_attachment: false,
         }
@@ -6298,6 +6301,12 @@ impl DeviceExtensions {
             self.khr_maintenance4 = true;
         }
     }
+    pub fn supports_valve_descriptor_set_host_mapping(&self) -> bool {
+        self.valve_descriptor_set_host_mapping
+    }
+    pub fn enable_valve_descriptor_set_host_mapping(&mut self) {
+        self.valve_descriptor_set_host_mapping = true;
+    }
     pub fn supports_qcom_fragment_density_map_offset(&self) -> bool {
         self.qcom_fragment_density_map_offset && self.supports_ext_fragment_density_map()
     }
@@ -6996,6 +7005,9 @@ impl DeviceExtensions {
         if self.khr_maintenance4 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance4\0") })
         }
+        if self.valve_descriptor_set_host_mapping {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_descriptor_set_host_mapping\0") })
+        }
         if self.qcom_fragment_density_map_offset {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_fragment_density_map_offset\0") })
         }
@@ -7380,6 +7392,8 @@ pub struct Device {
     pub fp_get_buffer_collection_properties_fuchsia: Option<vk::FnGetBufferCollectionPropertiesFUCHSIA>,
     pub fp_cmd_begin_rendering: Option<vk::FnCmdBeginRendering>,
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
+    pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
+    pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -10385,6 +10399,22 @@ impl Device {
                 fp.map(|f| mem::transmute(f))
             } else if extensions.khr_dynamic_rendering {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdEndRenderingKHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_layout_host_mapping_info_valve: if extensions.valve_descriptor_set_host_mapping {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetLayoutHostMappingInfoVALVE\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_host_mapping_valve: if extensions.valve_descriptor_set_host_mapping {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetHostMappingVALVE\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -16866,6 +16896,24 @@ impl Device {
     pub unsafe fn cmd_end_rendering_khr(&self, command_buffer: vk::CommandBuffer) {
         let fp = self.fp_cmd_end_rendering.expect("vkCmdEndRenderingKHR is not loaded");
         (fp)(Some(command_buffer));
+    }
+    pub unsafe fn get_descriptor_set_layout_host_mapping_info_valve(
+        &self,
+        p_binding_reference: &vk::DescriptorSetBindingReferenceVALVE,
+        p_host_mapping: &mut vk::DescriptorSetLayoutHostMappingInfoVALVE,
+    ) {
+        let fp = self
+            .fp_get_descriptor_set_layout_host_mapping_info_valve
+            .expect("vkGetDescriptorSetLayoutHostMappingInfoVALVE is not loaded");
+        (fp)(Some(self.handle), p_binding_reference, p_host_mapping);
+    }
+    pub unsafe fn get_descriptor_set_host_mapping_valve(&self, descriptor_set: vk::DescriptorSet) -> *mut c_void {
+        let fp = self
+            .fp_get_descriptor_set_host_mapping_valve
+            .expect("vkGetDescriptorSetHostMappingVALVE is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(descriptor_set), res.as_mut_ptr());
+        res.assume_init()
     }
 }
 

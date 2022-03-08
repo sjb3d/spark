@@ -20439,3 +20439,109 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceLinearColorAttachmentFeatures
 impl DeviceCreateInfoNext for PhysicalDeviceLinearColorAttachmentFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLinearColorAttachmentFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceLinearColorAttachmentFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
+    type Type = PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
+    inner: vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE,
+}
+impl PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_set_host_mapping(mut self, descriptor_set_host_mapping: bool) -> Self {
+        self.inner.descriptor_set_host_mapping = if descriptor_set_host_mapping {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
+    type Target = vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {}
+impl Builder<'_> for vk::DescriptorSetBindingReferenceVALVE {
+    type Type = DescriptorSetBindingReferenceVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorSetBindingReferenceVALVEBuilder {
+    inner: vk::DescriptorSetBindingReferenceVALVE,
+}
+impl DescriptorSetBindingReferenceVALVEBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_set_layout(mut self, descriptor_set_layout: vk::DescriptorSetLayout) -> Self {
+        self.inner.descriptor_set_layout = Some(descriptor_set_layout);
+        self
+    }
+    pub fn binding(mut self, binding: u32) -> Self {
+        self.inner.binding = binding;
+        self
+    }
+}
+impl Deref for DescriptorSetBindingReferenceVALVEBuilder {
+    type Target = vk::DescriptorSetBindingReferenceVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DescriptorSetLayoutHostMappingInfoVALVE {
+    type Type = DescriptorSetLayoutHostMappingInfoVALVEBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorSetLayoutHostMappingInfoVALVEBuilder {
+    inner: vk::DescriptorSetLayoutHostMappingInfoVALVE,
+}
+impl DescriptorSetLayoutHostMappingInfoVALVEBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_offset(mut self, descriptor_offset: usize) -> Self {
+        self.inner.descriptor_offset = descriptor_offset;
+        self
+    }
+    pub fn descriptor_size(mut self, descriptor_size: u32) -> Self {
+        self.inner.descriptor_size = descriptor_size;
+        self
+    }
+}
+impl Deref for DescriptorSetLayoutHostMappingInfoVALVEBuilder {
+    type Target = vk::DescriptorSetLayoutHostMappingInfoVALVE;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
