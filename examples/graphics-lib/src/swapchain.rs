@@ -24,6 +24,7 @@ impl Swapchain {
 
     fn create(
         context: &Context,
+        window_extent: vk::Extent2D,
         usage: vk::ImageUsageFlags,
         old_swapchain: Option<vk::SwapchainKHR>,
     ) -> (vk::SwapchainKHR, vk::SurfaceFormatKHR, vk::Extent2D) {
@@ -33,7 +34,10 @@ impl Swapchain {
                 .get_physical_device_surface_capabilities_khr(context.physical_device, context.surface)
         }
         .unwrap();
-        let extent = surface_capabilities.current_extent;
+        let mut extent = surface_capabilities.current_extent;
+        if extent.width == u32::MAX && extent.height == u32::MAX {
+            extent = window_extent;
+        }
         let surface_supported = unsafe {
             context.instance.get_physical_device_surface_support_khr(
                 context.physical_device,
@@ -84,8 +88,8 @@ impl Swapchain {
         (swapchain, surface_format, extent)
     }
 
-    pub fn new(context: &Arc<Context>, usage: vk::ImageUsageFlags) -> Self {
-        let (swapchain, surface_format, extent) = Swapchain::create(context, usage, None);
+    pub fn new(context: &Arc<Context>, window_extent: vk::Extent2D, usage: vk::ImageUsageFlags) -> Self {
+        let (swapchain, surface_format, extent) = Swapchain::create(context, window_extent, usage, None);
 
         let images = unsafe { context.device.get_swapchain_images_khr_to_vec(swapchain) }.unwrap();
 
@@ -98,8 +102,9 @@ impl Swapchain {
         }
     }
 
-    pub fn recreate(&mut self, usage: vk::ImageUsageFlags) {
-        let (swapchain, surface_format, extent) = Swapchain::create(&self.context, usage, Some(self.swapchain));
+    pub fn recreate(&mut self, window_extent: vk::Extent2D, usage: vk::ImageUsageFlags) {
+        let (swapchain, surface_format, extent) =
+            Swapchain::create(&self.context, window_extent, usage, Some(self.swapchain));
         unsafe { self.context.device.destroy_swapchain_khr(Some(self.swapchain), None) };
 
         self.swapchain = swapchain;
@@ -108,14 +113,24 @@ impl Swapchain {
         self.images = unsafe { self.context.device.get_swapchain_images_khr_to_vec(swapchain) }.unwrap();
     }
 
-    pub fn acquire(&self, image_available_semaphore: vk::Semaphore) -> SwapchainAcquireResult {
+    pub fn acquire(
+        &self,
+        window_extent: vk::Extent2D,
+        image_available_semaphore: vk::Semaphore,
+    ) -> SwapchainAcquireResult {
         let res = unsafe {
             self.context
                 .device
                 .acquire_next_image_khr(self.swapchain, u64::MAX, Some(image_available_semaphore), None)
         };
         match res {
-            Ok((vk::Result::SUCCESS, image_index)) => SwapchainAcquireResult::Ok(image_index),
+            Ok((vk::Result::SUCCESS, image_index)) => {
+                if self.extent == window_extent {
+                    SwapchainAcquireResult::Ok(image_index)
+                } else {
+                    SwapchainAcquireResult::RecreateSoon(image_index)
+                }
+            }
             Ok((vk::Result::SUBOPTIMAL_KHR, image_index)) => SwapchainAcquireResult::RecreateSoon(image_index),
             Ok((err, _)) => panic!("failed to acquire next image {}", err),
             Err(vk::Result::ERROR_OUT_OF_DATE_KHR) => SwapchainAcquireResult::RecreateNow,

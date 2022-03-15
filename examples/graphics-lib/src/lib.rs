@@ -139,7 +139,14 @@ impl App {
             &mut ui_context,
         );
 
-        let swapchain = Swapchain::new(&context, Self::SWAPCHAIN_USAGE);
+        let window_extent = {
+            let inner_size = window.inner_size();
+            vk::Extent2D {
+                width: inner_size.width,
+                height: inner_size.height,
+            }
+        };
+        let swapchain = Swapchain::new(&context, window_extent, Self::SWAPCHAIN_USAGE);
         let command_buffer_pool = CommandBufferPool::new(&context);
 
         let render_pass = {
@@ -365,15 +372,22 @@ impl App {
         self.ui_renderer.begin_frame(&self.context.device, cmd);
 
         // we want to render to the swapchain, so acquire an image from it (this usually does not block)
+        let window_extent = {
+            let inner_size = window.inner_size();
+            vk::Extent2D {
+                width: inner_size.width,
+                height: inner_size.height,
+            }
+        };
         let swap_image_index = loop {
             if self.recreate_swapchain {
                 for (_, target) in self.swap_targets.drain() {
                     self.old_swap_targets.push(target);
                 }
-                self.swapchain.recreate(Self::SWAPCHAIN_USAGE);
+                self.swapchain.recreate(window_extent, Self::SWAPCHAIN_USAGE);
                 self.recreate_swapchain = false;
             }
-            match self.swapchain.acquire(image_available_semaphore) {
+            match self.swapchain.acquire(window_extent, image_available_semaphore) {
                 SwapchainAcquireResult::Ok(image_index) => break image_index,
                 SwapchainAcquireResult::RecreateSoon(image_index) => {
                     self.recreate_swapchain = true;
