@@ -463,11 +463,14 @@ impl fmt::Display for BufferViewCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct InstanceCreateFlags(u32);
-impl InstanceCreateFlags {}
-impl_bitmask!(InstanceCreateFlags, 0x0);
+impl InstanceCreateFlags {
+    /// Added by extension VK_KHR_portability_enumeration.
+    pub const ENUMERATE_PORTABILITY_KHR: Self = Self(0x1);
+}
+impl_bitmask!(InstanceCreateFlags, 0x1);
 impl fmt::Display for InstanceCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x1, "ENUMERATE_PORTABILITY_KHR")], f)
     }
 }
 #[repr(transparent)]

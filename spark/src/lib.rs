@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 207
+//! Generated from vk.xml with `VK_HEADER_VERSION` 209
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -261,6 +261,7 @@ pub struct InstanceExtensions {
     pub ext_headless_surface: bool,
     pub ext_acquire_drm_display: bool,
     pub ext_directfb_surface: bool,
+    pub khr_portability_enumeration: bool,
     pub google_surfaceless_query: bool,
 }
 impl InstanceExtensions {
@@ -298,6 +299,7 @@ impl InstanceExtensions {
             b"VK_EXT_headless_surface" => self.ext_headless_surface = true,
             b"VK_EXT_acquire_drm_display" => self.ext_acquire_drm_display = true,
             b"VK_EXT_directfb_surface" => self.ext_directfb_surface = true,
+            b"VK_KHR_portability_enumeration" => self.khr_portability_enumeration = true,
             b"VK_GOOGLE_surfaceless_query" => self.google_surfaceless_query = true,
             _ => {}
         }
@@ -337,6 +339,7 @@ impl InstanceExtensions {
             ext_headless_surface: false,
             ext_acquire_drm_display: false,
             ext_directfb_surface: false,
+            khr_portability_enumeration: false,
             google_surfaceless_query: false,
         }
     }
@@ -1447,6 +1450,12 @@ impl InstanceExtensions {
     pub fn enable_ext_image_view_min_lod(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_khr_portability_enumeration(&self) -> bool {
+        self.khr_portability_enumeration
+    }
+    pub fn enable_khr_portability_enumeration(&mut self) {
+        self.khr_portability_enumeration = true;
+    }
     pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1563,6 +1572,9 @@ impl InstanceExtensions {
         }
         if self.ext_directfb_surface {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_directfb_surface\0") })
+        }
+        if self.khr_portability_enumeration {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_portability_enumeration\0") })
         }
         if self.google_surfaceless_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_surfaceless_query\0") })
