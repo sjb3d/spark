@@ -1110,6 +1110,8 @@ impl<'a> Deref for ShaderModuleCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineShaderStageCreateInfoNext for ShaderModuleCreateInfoBuilder<'a> {}
+impl PipelineShaderStageCreateInfoNext for vk::ShaderModuleCreateInfo {}
 impl<'a> Builder<'a> for vk::DescriptorSetLayoutBinding {
     type Type = DescriptorSetLayoutBindingBuilder<'a>;
     fn builder() -> Self::Type {
@@ -1347,8 +1349,8 @@ impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
         self.inner.stage = stage;
         self
     }
-    pub fn module(mut self, module: vk::ShaderModule) -> Self {
-        self.inner.module = Some(module);
+    pub fn module(mut self, module: Option<vk::ShaderModule>) -> Self {
+        self.inner.module = module;
         self
     }
     pub fn p_name(mut self, p_name: &'a CStr) -> Self {
@@ -1938,6 +1940,10 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         self.inner.flags = flags;
         self
     }
+    pub fn stage_count(mut self, stage_count: u32) -> Self {
+        self.inner.stage_count = stage_count;
+        self
+    }
     pub fn p_stages(mut self, p_stages: &'a [vk::PipelineShaderStageCreateInfo]) -> Self {
         self.inner.stage_count = p_stages.len() as u32;
         self.inner.p_stages = p_stages.first().map_or(ptr::null(), |s| s as *const _);
@@ -1970,9 +1976,9 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
     }
     pub fn p_rasterization_state(
         mut self,
-        p_rasterization_state: &'a vk::PipelineRasterizationStateCreateInfo,
+        p_rasterization_state: Option<&'a vk::PipelineRasterizationStateCreateInfo>,
     ) -> Self {
-        self.inner.p_rasterization_state = p_rasterization_state;
+        self.inner.p_rasterization_state = p_rasterization_state.map_or(ptr::null(), |p| p);
         self
     }
     pub fn p_multisample_state(
@@ -2000,8 +2006,8 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         self.inner.p_dynamic_state = p_dynamic_state.map_or(ptr::null(), |p| p);
         self
     }
-    pub fn layout(mut self, layout: vk::PipelineLayout) -> Self {
-        self.inner.layout = Some(layout);
+    pub fn layout(mut self, layout: Option<vk::PipelineLayout>) -> Self {
+        self.inner.layout = layout;
         self
     }
     pub fn render_pass(mut self, render_pass: Option<vk::RenderPass>) -> Self {
@@ -8976,6 +8982,8 @@ impl<'a> Deref for DebugUtilsObjectNameInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> PipelineShaderStageCreateInfoNext for DebugUtilsObjectNameInfoEXTBuilder<'a> {}
+impl PipelineShaderStageCreateInfoNext for vk::DebugUtilsObjectNameInfoEXT {}
 impl<'a> Builder<'a> for vk::DebugUtilsObjectTagInfoEXT {
     type Type = DebugUtilsObjectTagInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
@@ -16524,6 +16532,8 @@ impl<'a> Deref for PipelineLibraryCreateInfoKHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> GraphicsPipelineCreateInfoNext for PipelineLibraryCreateInfoKHRBuilder<'a> {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineLibraryCreateInfoKHR {}
 impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT {
     type Type = PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -18880,6 +18890,68 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSynchronization2FeaturesBuild
 impl DeviceCreateInfoNext for PhysicalDeviceSynchronization2FeaturesBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSynchronization2Features {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSynchronization2Features {}
+impl Builder<'_> for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
+    type Type = PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT,
+}
+impl PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn primitives_generated_query(mut self, primitives_generated_query: bool) -> Self {
+        self.inner.primitives_generated_query = if primitives_generated_query {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn primitives_generated_query_with_rasterizer_discard(
+        mut self,
+        primitives_generated_query_with_rasterizer_discard: bool,
+    ) -> Self {
+        self.inner.primitives_generated_query_with_rasterizer_discard =
+            if primitives_generated_query_with_rasterizer_discard {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn primitives_generated_query_with_non_zero_streams(
+        mut self,
+        primitives_generated_query_with_non_zero_streams: bool,
+    ) -> Self {
+        self.inner.primitives_generated_query_with_non_zero_streams =
+            if primitives_generated_query_with_non_zero_streams {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {
     type Type = PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -20439,6 +20511,121 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceLinearColorAttachmentFeatures
 impl DeviceCreateInfoNext for PhysicalDeviceLinearColorAttachmentFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLinearColorAttachmentFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceLinearColorAttachmentFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {
+    type Type = PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT,
+}
+impl PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn graphics_pipeline_library(mut self, graphics_pipeline_library: bool) -> Self {
+        self.inner.graphics_pipeline_library = if graphics_pipeline_library { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
+    type Type = PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
+    inner: vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT,
+}
+impl PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn graphics_pipeline_library_fast_linking(mut self, graphics_pipeline_library_fast_linking: bool) -> Self {
+        self.inner.graphics_pipeline_library_fast_linking = if graphics_pipeline_library_fast_linking {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn graphics_pipeline_library_independent_interpolation_decoration(
+        mut self,
+        graphics_pipeline_library_independent_interpolation_decoration: bool,
+    ) -> Self {
+        self.inner
+            .graphics_pipeline_library_independent_interpolation_decoration =
+            if graphics_pipeline_library_independent_interpolation_decoration {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
+    type Target = vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {}
+impl Builder<'_> for vk::GraphicsPipelineLibraryCreateInfoEXT {
+    type Type = GraphicsPipelineLibraryCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GraphicsPipelineLibraryCreateInfoEXTBuilder {
+    inner: vk::GraphicsPipelineLibraryCreateInfoEXT,
+}
+impl GraphicsPipelineLibraryCreateInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::GraphicsPipelineLibraryFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl Deref for GraphicsPipelineLibraryCreateInfoEXTBuilder {
+    type Target = vk::GraphicsPipelineLibraryCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl GraphicsPipelineCreateInfoNext for GraphicsPipelineLibraryCreateInfoEXTBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::GraphicsPipelineLibraryCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE {
     type Type = PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder;
     fn builder() -> Self::Type {

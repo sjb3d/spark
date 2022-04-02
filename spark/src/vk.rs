@@ -280,11 +280,14 @@ impl fmt::Display for SamplerCreateFlags {
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineLayoutCreateFlags(u32);
-impl PipelineLayoutCreateFlags {}
-impl_bitmask!(PipelineLayoutCreateFlags, 0x0);
+impl PipelineLayoutCreateFlags {
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const INDEPENDENT_SETS_EXT: Self = Self(0x2);
+}
+impl_bitmask!(PipelineLayoutCreateFlags, 0x2);
 impl fmt::Display for PipelineLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
+        display_bitmask(self.0 as _, &[(0x2, "INDEPENDENT_SETS_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -1041,10 +1044,14 @@ impl PipelineCreateFlags {
     pub const LIBRARY_KHR: Self = Self(0x800);
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::FAIL_ON_PIPELINE_COMPILE_REQUIRED;
     pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self::EARLY_RETURN_ON_FAILURE;
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT: Self = Self(0x800000);
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const LINK_TIME_OPTIMIZATION_EXT: Self = Self(0x400);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
 }
-impl_bitmask!(PipelineCreateFlags, 0x7ffbff);
+impl_bitmask!(PipelineCreateFlags, 0xffffff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1071,6 +1078,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
                 (0x40000, "INDIRECT_BINDABLE_NV"),
                 (0x800, "LIBRARY_KHR"),
+                (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT"),
+                (0x400, "LINK_TIME_OPTIMIZATION_EXT"),
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
             ],
             f,
@@ -3464,6 +3473,30 @@ impl fmt::Display for ImageConstraintsInfoFlagsFUCHSIA {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct GraphicsPipelineLibraryFlagsEXT(u32);
+impl GraphicsPipelineLibraryFlagsEXT {
+    pub const VERTEX_INPUT_INTERFACE: Self = Self(0x1);
+    pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x2);
+    pub const FRAGMENT_SHADER: Self = Self(0x4);
+    pub const FRAGMENT_OUTPUT_INTERFACE: Self = Self(0x8);
+}
+impl_bitmask!(GraphicsPipelineLibraryFlagsEXT, 0xf);
+impl fmt::Display for GraphicsPipelineLibraryFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "VERTEX_INPUT_INTERFACE"),
+                (0x2, "PRE_RASTERIZATION_SHADERS"),
+                (0x4, "FRAGMENT_SHADER"),
+                (0x8, "FRAGMENT_OUTPUT_INTERFACE"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
@@ -5400,6 +5433,8 @@ impl QueryType {
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
+    /// Added by extension VK_EXT_primitives_generated_query.
+    pub const PRIMITIVES_GENERATED_EXT: Self = Self(1000382000);
 }
 impl fmt::Display for QueryType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5413,6 +5448,7 @@ impl fmt::Display for QueryType {
             1000150001 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
+            1000382000 => Some(&"PRIMITIVES_GENERATED_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6599,6 +6635,12 @@ impl StructureType {
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV: Self = Self(1000314008);
     /// Added by extension VK_KHR_synchronization2.
     pub const CHECKPOINT_DATA_2_NV: Self = Self(1000314009);
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT: Self = Self(1000320000);
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT: Self = Self(1000320001);
+    /// Added by extension VK_EXT_graphics_pipeline_library.
+    pub const GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT: Self = Self(1000320002);
     /// Added by extension VK_KHR_shader_subgroup_uniform_control_flow.
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR: Self = Self(1000323000);
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self =
@@ -6713,6 +6755,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT: Self = Self(1000381000);
     /// Added by extension VK_EXT_color_write_enable.
     pub const PIPELINE_COLOR_WRITE_CREATE_INFO_EXT: Self = Self(1000381001);
+    /// Added by extension VK_EXT_primitives_generated_query.
+    pub const PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT: Self = Self(1000382000);
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR;
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR;
@@ -7258,6 +7302,9 @@ impl fmt::Display for StructureType {
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
             1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
             1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
+            1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
+            1000320001 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT"),
+            1000320002 => Some(&"GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT"),
             1000323000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
@@ -7307,6 +7354,7 @@ impl fmt::Display for StructureType {
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
+            1000382000 => Some(&"PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT"),
             1000391000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT"),
             1000391001 => Some(&"IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
@@ -31997,6 +32045,45 @@ impl fmt::Debug for PhysicalDeviceSynchronization2Features {
 pub type PhysicalDeviceSynchronization2FeaturesKHR = PhysicalDeviceSynchronization2Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub primitives_generated_query: Bool32,
+    pub primitives_generated_query_with_rasterizer_discard: Bool32,
+    pub primitives_generated_query_with_non_zero_streams: Bool32,
+}
+unsafe impl Send for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
+impl Default for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            primitives_generated_query: Default::default(),
+            primitives_generated_query_with_rasterizer_discard: Default::default(),
+            primitives_generated_query_with_non_zero_streams: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("primitives_generated_query", &self.primitives_generated_query)
+            .field(
+                "primitives_generated_query_with_rasterizer_discard",
+                &self.primitives_generated_query_with_rasterizer_discard,
+            )
+            .field(
+                "primitives_generated_query_with_non_zero_streams",
+                &self.primitives_generated_query_with_non_zero_streams,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -33843,6 +33930,96 @@ impl fmt::Debug for PhysicalDeviceLinearColorAttachmentFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("linear_color_attachment", &self.linear_color_attachment)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub graphics_pipeline_library: Bool32,
+}
+unsafe impl Send for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {}
+impl Default for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            graphics_pipeline_library: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("graphics_pipeline_library", &self.graphics_pipeline_library)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub graphics_pipeline_library_fast_linking: Bool32,
+    pub graphics_pipeline_library_independent_interpolation_decoration: Bool32,
+}
+unsafe impl Send for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {}
+impl Default for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            graphics_pipeline_library_fast_linking: Default::default(),
+            graphics_pipeline_library_independent_interpolation_decoration: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "graphics_pipeline_library_fast_linking",
+                &self.graphics_pipeline_library_fast_linking,
+            )
+            .field(
+                "graphics_pipeline_library_independent_interpolation_decoration",
+                &self.graphics_pipeline_library_independent_interpolation_decoration,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GraphicsPipelineLibraryCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: GraphicsPipelineLibraryFlagsEXT,
+}
+unsafe impl Send for GraphicsPipelineLibraryCreateInfoEXT {}
+unsafe impl Sync for GraphicsPipelineLibraryCreateInfoEXT {}
+impl Default for GraphicsPipelineLibraryCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for GraphicsPipelineLibraryCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GraphicsPipelineLibraryCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
             .finish()
     }
 }

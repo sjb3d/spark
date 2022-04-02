@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 209
+//! Generated from vk.xml with `VK_HEADER_VERSION` 210
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1275,6 +1275,12 @@ impl InstanceExtensions {
     pub fn enable_khr_synchronization2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_graphics_pipeline_library(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1436,6 +1442,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_color_write_enable(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_primitives_generated_query(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_primitives_generated_query(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_global_priority_query(&self) -> bool {
@@ -4043,6 +4055,7 @@ pub struct DeviceExtensions {
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
     pub khr_synchronization2: bool,
+    pub ext_graphics_pipeline_library: bool,
     pub khr_shader_subgroup_uniform_control_flow: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
@@ -4071,6 +4084,7 @@ pub struct DeviceExtensions {
     pub nv_external_memory_rdma: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
+    pub ext_primitives_generated_query: bool,
     pub ext_global_priority_query: bool,
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
@@ -4279,6 +4293,7 @@ impl DeviceExtensions {
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
+            b"VK_EXT_graphics_pipeline_library" => self.ext_graphics_pipeline_library = true,
             b"VK_KHR_shader_subgroup_uniform_control_flow" => self.khr_shader_subgroup_uniform_control_flow = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
@@ -4307,6 +4322,7 @@ impl DeviceExtensions {
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
+            b"VK_EXT_primitives_generated_query" => self.ext_primitives_generated_query = true,
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_image_view_min_lod" => self.ext_image_view_min_lod = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
@@ -4515,6 +4531,7 @@ impl DeviceExtensions {
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
             khr_synchronization2: false,
+            ext_graphics_pipeline_library: false,
             khr_shader_subgroup_uniform_control_flow: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
@@ -4543,6 +4560,7 @@ impl DeviceExtensions {
             nv_external_memory_rdma: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
+            ext_primitives_generated_query: false,
             ext_global_priority_query: false,
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
@@ -5998,6 +6016,13 @@ impl DeviceExtensions {
             self.khr_synchronization2 = true;
         }
     }
+    pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
+        self.ext_graphics_pipeline_library && self.supports_khr_pipeline_library()
+    }
+    pub fn enable_ext_graphics_pipeline_library(&mut self) {
+        self.ext_graphics_pipeline_library = true;
+        self.enable_khr_pipeline_library();
+    }
     pub fn supports_khr_shader_subgroup_uniform_control_flow(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.khr_shader_subgroup_uniform_control_flow
     }
@@ -6264,6 +6289,13 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_color_write_enable(&mut self) {
         self.ext_color_write_enable = true;
+    }
+    pub fn supports_ext_primitives_generated_query(&self) -> bool {
+        self.ext_primitives_generated_query && self.supports_ext_transform_feedback()
+    }
+    pub fn enable_ext_primitives_generated_query(&mut self) {
+        self.ext_primitives_generated_query = true;
+        self.enable_ext_transform_feedback();
     }
     pub fn supports_ext_global_priority_query(&self) -> bool {
         self.ext_global_priority_query && self.supports_ext_global_priority()
@@ -6912,6 +6944,9 @@ impl DeviceExtensions {
         if self.khr_synchronization2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_synchronization2\0") })
         }
+        if self.ext_graphics_pipeline_library {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_graphics_pipeline_library\0") })
+        }
         if self.khr_shader_subgroup_uniform_control_flow {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_uniform_control_flow\0") })
         }
@@ -6995,6 +7030,9 @@ impl DeviceExtensions {
         }
         if self.ext_color_write_enable {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_color_write_enable\0") })
+        }
+        if self.ext_primitives_generated_query {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_primitives_generated_query\0") })
         }
         if self.ext_global_priority_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority_query\0") })
