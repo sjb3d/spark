@@ -945,10 +945,13 @@ impl ImageCreateFlags {
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
+    /// Image is created with a layout where individual slices are capable of being used as 2D images
+    /// Added by extension VK_EXT_image_2d_view_of_3d.
+    pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self(0x8000);
 }
-impl_bitmask!(ImageCreateFlags, 0xffff);
+impl_bitmask!(ImageCreateFlags, 0x2ffff);
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -969,6 +972,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
+                (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
                 (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_QCOM"),
             ],
             f,
@@ -2265,7 +2269,7 @@ impl PipelineStageFlags2 {
     pub const ALL_TRANSFER: Self = Self(0x1000);
     pub const ALL_TRANSFER_KHR: Self = Self::ALL_TRANSFER;
     pub const TRANSFER: Self = Self::ALL_TRANSFER_KHR;
-    pub const TRANSFER_KHR: Self = Self::TRANSFER;
+    pub const TRANSFER_KHR: Self = Self::ALL_TRANSFER;
     pub const BOTTOM_OF_PIPE: Self = Self(0x2000);
     pub const BOTTOM_OF_PIPE_KHR: Self = Self::BOTTOM_OF_PIPE;
     pub const HOST: Self = Self(0x4000);
@@ -6768,6 +6772,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT: Self = Self(1000392000);
     /// Added by extension VK_EXT_multi_draw.
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
+    /// Added by extension VK_EXT_image_2d_view_of_3d.
+    pub const PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000393000);
     /// Added by extension VK_EXT_border_color_swizzle.
     pub const PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT: Self = Self(1000411000);
     /// Added by extension VK_EXT_border_color_swizzle.
@@ -7359,6 +7365,7 @@ impl fmt::Display for StructureType {
             1000391001 => Some(&"IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
+            1000393000 => Some(&"PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
@@ -31325,6 +31332,36 @@ impl fmt::Debug for AccelerationStructureBuildSizesInfoKHR {
             .field("acceleration_structure_size", &self.acceleration_structure_size)
             .field("update_scratch_size", &self.update_scratch_size)
             .field("build_scratch_size", &self.build_scratch_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImage2DViewOf3DFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_2d_view_of_3d: Bool32,
+    pub sampler_2d_view_of_3d: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
+impl Default for PhysicalDeviceImage2DViewOf3DFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            image_2d_view_of_3d: Default::default(),
+            sampler_2d_view_of_3d: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImage2DViewOf3DFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImage2DViewOf3DFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_2d_view_of_3d", &self.image_2d_view_of_3d)
+            .field("sampler_2d_view_of_3d", &self.sampler_2d_view_of_3d)
             .finish()
     }
 }

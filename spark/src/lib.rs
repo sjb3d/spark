@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 210
+//! Generated from vk.xml with `VK_HEADER_VERSION` 211
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1460,6 +1460,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_image_view_min_lod(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_image_2d_view_of_3d(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_image_2d_view_of_3d(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_portability_enumeration(&self) -> bool {
@@ -4088,6 +4094,7 @@ pub struct DeviceExtensions {
     pub ext_global_priority_query: bool,
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
+    pub ext_image_2d_view_of_3d: bool,
     pub ext_load_store_op_none: bool,
     pub ext_border_color_swizzle: bool,
     pub ext_pageable_device_local_memory: bool,
@@ -4326,6 +4333,7 @@ impl DeviceExtensions {
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_image_view_min_lod" => self.ext_image_view_min_lod = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
+            b"VK_EXT_image_2d_view_of_3d" => self.ext_image_2d_view_of_3d = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
@@ -4564,6 +4572,7 @@ impl DeviceExtensions {
             ext_global_priority_query: false,
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
+            ext_image_2d_view_of_3d: false,
             ext_load_store_op_none: false,
             ext_border_color_swizzle: false,
             ext_pageable_device_local_memory: false,
@@ -6316,6 +6325,13 @@ impl DeviceExtensions {
     pub fn enable_ext_multi_draw(&mut self) {
         self.ext_multi_draw = true;
     }
+    pub fn supports_ext_image_2d_view_of_3d(&self) -> bool {
+        self.ext_image_2d_view_of_3d && self.supports_khr_maintenance1()
+    }
+    pub fn enable_ext_image_2d_view_of_3d(&mut self) {
+        self.ext_image_2d_view_of_3d = true;
+        self.enable_khr_maintenance1();
+    }
     pub fn supports_ext_load_store_op_none(&self) -> bool {
         self.ext_load_store_op_none
     }
@@ -7042,6 +7058,9 @@ impl DeviceExtensions {
         }
         if self.ext_multi_draw {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_multi_draw\0") })
+        }
+        if self.ext_image_2d_view_of_3d {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_2d_view_of_3d\0") })
         }
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
@@ -16845,7 +16864,7 @@ impl Device {
         let fp = self.fp_wait_for_present_khr.expect("vkWaitForPresentKHR is not loaded");
         let err = (fp)(Some(self.handle), Some(swapchain), present_id, timeout);
         match err {
-            vk::Result::SUCCESS | vk::Result::TIMEOUT => Ok(err),
+            vk::Result::SUCCESS | vk::Result::TIMEOUT | vk::Result::SUBOPTIMAL_KHR => Ok(err),
             _ => Err(err),
         }
     }

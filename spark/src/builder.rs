@@ -18111,6 +18111,44 @@ impl Deref for AccelerationStructureBuildSizesInfoKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {
+    type Type = PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT,
+}
+impl PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_2d_view_of_3d(mut self, image_2d_view_of_3d: bool) -> Self {
+        self.inner.image_2d_view_of_3d = if image_2d_view_of_3d { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn sampler_2d_view_of_3d(mut self, sampler_2d_view_of_3d: bool) -> Self {
+        self.inner.sampler_2d_view_of_3d = if sampler_2d_view_of_3d { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
     type Type = PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder;
     fn builder() -> Self::Type {
