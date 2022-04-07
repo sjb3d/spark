@@ -12765,9 +12765,9 @@ pub struct PhysicalDeviceFeatures {
     /// Sparse resources support: GPU can access partially resident buffers
     pub sparse_residency_buffer: Bool32,
     /// Sparse resources support: GPU can access partially resident 2D (non-MSAA non-depth/stencil) images
-    pub sparse_residency_image2_d: Bool32,
+    pub sparse_residency_image_2d: Bool32,
     /// Sparse resources support: GPU can access partially resident 3D images
-    pub sparse_residency_image3_d: Bool32,
+    pub sparse_residency_image_3d: Bool32,
     /// Sparse resources support: GPU can access partially resident MSAA 2D images with 2 samples
     pub sparse_residency2_samples: Bool32,
     /// Sparse resources support: GPU can access partially resident MSAA 2D images with 4 samples
@@ -12862,8 +12862,8 @@ impl fmt::Debug for PhysicalDeviceFeatures {
             .field("shader_resource_min_lod", &self.shader_resource_min_lod)
             .field("sparse_binding", &self.sparse_binding)
             .field("sparse_residency_buffer", &self.sparse_residency_buffer)
-            .field("sparse_residency_image2_d", &self.sparse_residency_image2_d)
-            .field("sparse_residency_image3_d", &self.sparse_residency_image3_d)
+            .field("sparse_residency_image_2d", &self.sparse_residency_image_2d)
+            .field("sparse_residency_image_3d", &self.sparse_residency_image_3d)
             .field("sparse_residency2_samples", &self.sparse_residency2_samples)
             .field("sparse_residency4_samples", &self.sparse_residency4_samples)
             .field("sparse_residency8_samples", &self.sparse_residency8_samples)
@@ -12878,11 +12878,11 @@ impl fmt::Debug for PhysicalDeviceFeatures {
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PhysicalDeviceSparseProperties {
     /// Sparse resources support: GPU will access all 2D (single sample) sparse resources using the standard sparse image block shapes (based on pixel format)
-    pub residency_standard2_d_block_shape: Bool32,
+    pub residency_standard_2d_block_shape: Bool32,
     /// Sparse resources support: GPU will access all 2D (multisample) sparse resources using the standard sparse image block shapes (based on pixel format)
-    pub residency_standard2_d_multisample_block_shape: Bool32,
+    pub residency_standard_2d_multisample_block_shape: Bool32,
     /// Sparse resources support: GPU will access all 3D sparse resources using the standard sparse image block shapes (based on pixel format)
-    pub residency_standard3_d_block_shape: Bool32,
+    pub residency_standard_3d_block_shape: Bool32,
     /// Sparse resources support: Images with mip level dimensions that are NOT a multiple of the sparse image block dimensions will be placed in the mip tail
     pub residency_aligned_mip_size: Bool32,
     /// Sparse resources support: GPU can consistently access non-resident regions of a resource, all reads return as if data is 0, writes are discarded
@@ -12892,16 +12892,16 @@ impl fmt::Debug for PhysicalDeviceSparseProperties {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("PhysicalDeviceSparseProperties")
             .field(
-                "residency_standard2_d_block_shape",
-                &self.residency_standard2_d_block_shape,
+                "residency_standard_2d_block_shape",
+                &self.residency_standard_2d_block_shape,
             )
             .field(
-                "residency_standard2_d_multisample_block_shape",
-                &self.residency_standard2_d_multisample_block_shape,
+                "residency_standard_2d_multisample_block_shape",
+                &self.residency_standard_2d_multisample_block_shape,
             )
             .field(
-                "residency_standard3_d_block_shape",
-                &self.residency_standard3_d_block_shape,
+                "residency_standard_3d_block_shape",
+                &self.residency_standard_3d_block_shape,
             )
             .field("residency_aligned_mip_size", &self.residency_aligned_mip_size)
             .field("residency_non_resident_strict", &self.residency_non_resident_strict)
@@ -12912,11 +12912,11 @@ impl fmt::Debug for PhysicalDeviceSparseProperties {
 #[derive(Copy, Clone, Default)]
 pub struct PhysicalDeviceLimits {
     /// max 1D image dimension
-    pub max_image_dimension1_d: u32,
+    pub max_image_dimension_1d: u32,
     /// max 2D image dimension
-    pub max_image_dimension2_d: u32,
+    pub max_image_dimension_2d: u32,
     /// max 3D image dimension
-    pub max_image_dimension3_d: u32,
+    pub max_image_dimension_3d: u32,
     /// max cubemap image dimension
     pub max_image_dimension_cube: u32,
     /// max layers for image arrays
@@ -13127,9 +13127,9 @@ pub struct PhysicalDeviceLimits {
 impl fmt::Debug for PhysicalDeviceLimits {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("PhysicalDeviceLimits")
-            .field("max_image_dimension1_d", &self.max_image_dimension1_d)
-            .field("max_image_dimension2_d", &self.max_image_dimension2_d)
-            .field("max_image_dimension3_d", &self.max_image_dimension3_d)
+            .field("max_image_dimension_1d", &self.max_image_dimension_1d)
+            .field("max_image_dimension_2d", &self.max_image_dimension_2d)
+            .field("max_image_dimension_3d", &self.max_image_dimension_3d)
             .field("max_image_dimension_cube", &self.max_image_dimension_cube)
             .field("max_image_array_layers", &self.max_image_array_layers)
             .field("max_texel_buffer_elements", &self.max_texel_buffer_elements)
@@ -30269,7 +30269,7 @@ pub struct PhysicalDevicePortabilitySubsetFeaturesKHR {
     pub events: Bool32,
     pub image_view_format_reinterpretation: Bool32,
     pub image_view_format_swizzle: Bool32,
-    pub image_view2_d_on3_d_image: Bool32,
+    pub image_view_2d_on_3d_image: Bool32,
     pub multisample_array_image: Bool32,
     pub mutable_comparison_samplers: Bool32,
     pub point_polygons: Bool32,
@@ -30292,7 +30292,7 @@ impl Default for PhysicalDevicePortabilitySubsetFeaturesKHR {
             events: Default::default(),
             image_view_format_reinterpretation: Default::default(),
             image_view_format_swizzle: Default::default(),
-            image_view2_d_on3_d_image: Default::default(),
+            image_view_2d_on_3d_image: Default::default(),
             multisample_array_image: Default::default(),
             mutable_comparison_samplers: Default::default(),
             point_polygons: Default::default(),
@@ -30321,7 +30321,7 @@ impl fmt::Debug for PhysicalDevicePortabilitySubsetFeaturesKHR {
                 &self.image_view_format_reinterpretation,
             )
             .field("image_view_format_swizzle", &self.image_view_format_swizzle)
-            .field("image_view2_d_on3_d_image", &self.image_view2_d_on3_d_image)
+            .field("image_view_2d_on_3d_image", &self.image_view_2d_on_3d_image)
             .field("multisample_array_image", &self.multisample_array_image)
             .field("mutable_comparison_samplers", &self.mutable_comparison_samplers)
             .field("point_polygons", &self.point_polygons)
@@ -32087,7 +32087,7 @@ impl fmt::Debug for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
 pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
-    pub inherited_viewport_scissor2_d: Bool32,
+    pub inherited_viewport_scissor_2d: Bool32,
 }
 unsafe impl Send for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
 unsafe impl Sync for PhysicalDeviceInheritedViewportScissorFeaturesNV {}
@@ -32096,7 +32096,7 @@ impl Default for PhysicalDeviceInheritedViewportScissorFeaturesNV {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_INHERITED_VIEWPORT_SCISSOR_FEATURES_NV,
             p_next: ptr::null_mut(),
-            inherited_viewport_scissor2_d: Default::default(),
+            inherited_viewport_scissor_2d: Default::default(),
         }
     }
 }
@@ -32105,7 +32105,7 @@ impl fmt::Debug for PhysicalDeviceInheritedViewportScissorFeaturesNV {
         fmt.debug_struct("PhysicalDeviceInheritedViewportScissorFeaturesNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("inherited_viewport_scissor2_d", &self.inherited_viewport_scissor2_d)
+            .field("inherited_viewport_scissor_2d", &self.inherited_viewport_scissor_2d)
             .finish()
     }
 }
@@ -32114,7 +32114,7 @@ impl fmt::Debug for PhysicalDeviceInheritedViewportScissorFeaturesNV {
 pub struct CommandBufferInheritanceViewportScissorInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
-    pub viewport_scissor2_d: Bool32,
+    pub viewport_scissor_2d: Bool32,
     pub viewport_depth_count: u32,
     pub p_viewport_depths: *const Viewport,
 }
@@ -32125,7 +32125,7 @@ impl Default for CommandBufferInheritanceViewportScissorInfoNV {
         Self {
             s_type: StructureType::COMMAND_BUFFER_INHERITANCE_VIEWPORT_SCISSOR_INFO_NV,
             p_next: ptr::null(),
-            viewport_scissor2_d: Default::default(),
+            viewport_scissor_2d: Default::default(),
             viewport_depth_count: Default::default(),
             p_viewport_depths: ptr::null(),
         }
@@ -32136,7 +32136,7 @@ impl fmt::Debug for CommandBufferInheritanceViewportScissorInfoNV {
         fmt.debug_struct("CommandBufferInheritanceViewportScissorInfoNV")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
-            .field("viewport_scissor2_d", &self.viewport_scissor2_d)
+            .field("viewport_scissor_2d", &self.viewport_scissor_2d)
             .field("viewport_depth_count", &self.viewport_depth_count)
             .field("p_viewport_depths", &self.p_viewport_depths)
             .finish()

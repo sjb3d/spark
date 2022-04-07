@@ -1,7 +1,6 @@
 mod c_parse;
 
 use crate::c_parse::*;
-use heck::{ToShoutySnakeCase, ToSnakeCase};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::env;
 use std::fmt;
@@ -13,6 +12,43 @@ use std::iter;
 use std::path::Path;
 use std::process::Command as Spawn;
 use vk_parse as vk;
+
+fn add_dimension_separators(s: &str) -> String {
+    let mut input = s.chars().peekable();
+    let mut output = String::new();
+    while let Some(c) = input.next() {
+        if '1' <= c && c <= '4' && input.peek().copied() == Some('D') {
+            output.push('_');
+            output.push(c);
+            output.push('D');
+            output.push('_');
+            input.next();
+        } else {
+            output.push(c);
+        }
+    }
+    output
+}
+
+trait CustomToSnakeCase {
+    fn to_snake_case(&self) -> String;
+}
+
+impl CustomToSnakeCase for str {
+    fn to_snake_case(&self) -> String {
+        heck::ToSnakeCase::to_snake_case(add_dimension_separators(self).as_str())
+    }
+}
+
+trait CustomToShoutySnakeCase {
+    fn to_shouty_snake_case(&self) -> String;
+}
+
+impl CustomToShoutySnakeCase for str {
+    fn to_shouty_snake_case(&self) -> String {
+        heck::ToShoutySnakeCase::to_shouty_snake_case(add_dimension_separators(self).as_str())
+    }
+}
 
 #[derive(Debug)]
 enum Error {

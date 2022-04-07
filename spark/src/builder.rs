@@ -17057,8 +17057,8 @@ impl PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
         self.inner.image_view_format_swizzle = if image_view_format_swizzle { vk::TRUE } else { vk::FALSE };
         self
     }
-    pub fn image_view2_d_on3_d_image(mut self, image_view2_d_on3_d_image: bool) -> Self {
-        self.inner.image_view2_d_on3_d_image = if image_view2_d_on3_d_image { vk::TRUE } else { vk::FALSE };
+    pub fn image_view_2d_on_3d_image(mut self, image_view_2d_on_3d_image: bool) -> Self {
+        self.inner.image_view_2d_on_3d_image = if image_view_2d_on_3d_image { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn multisample_array_image(mut self, multisample_array_image: bool) -> Self {
@@ -18971,8 +18971,8 @@ impl PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
         self.inner.p_next = p_next;
         self
     }
-    pub fn inherited_viewport_scissor2_d(mut self, inherited_viewport_scissor2_d: bool) -> Self {
-        self.inner.inherited_viewport_scissor2_d = if inherited_viewport_scissor2_d {
+    pub fn inherited_viewport_scissor_2d(mut self, inherited_viewport_scissor_2d: bool) -> Self {
+        self.inner.inherited_viewport_scissor_2d = if inherited_viewport_scissor_2d {
             vk::TRUE
         } else {
             vk::FALSE
@@ -19010,8 +19010,8 @@ impl<'a> CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
         self.inner.p_next = p_next;
         self
     }
-    pub fn viewport_scissor2_d(mut self, viewport_scissor2_d: bool) -> Self {
-        self.inner.viewport_scissor2_d = if viewport_scissor2_d { vk::TRUE } else { vk::FALSE };
+    pub fn viewport_scissor_2d(mut self, viewport_scissor_2d: bool) -> Self {
+        self.inner.viewport_scissor_2d = if viewport_scissor_2d { vk::TRUE } else { vk::FALSE };
         self
     }
     pub fn viewport_depth_count(mut self, viewport_depth_count: u32) -> Self {
