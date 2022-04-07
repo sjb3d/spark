@@ -1681,7 +1681,7 @@ impl<'a> Generator<'a> {
                     write!(
                         w,
                         "{}: {},",
-                        get_rust_variable_name(param.name.to_snake_case().as_str()),
+                        get_rust_variable_name(param.name),
                         self.get_rust_parameter_type(&param.ty.strip_array(), None),
                     )?;
                 }
@@ -1730,7 +1730,7 @@ impl<'a> Generator<'a> {
                 let mut params: Vec<LibParam> = decls
                     .iter()
                     .map(|decl| LibParam {
-                        name: get_rust_variable_name(decl.name.to_snake_case().as_str()),
+                        name: get_rust_variable_name(decl.name),
                         ty: LibParamType::CDecl,
                     })
                     .collect();
@@ -2238,7 +2238,7 @@ impl<'a> Generator<'a> {
                             let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
                             let len_names: Vec<String> = len_names
                                 .iter()
-                                .map(|s| get_rust_variable_name(s.to_snake_case().as_str()))
+                                .map(|s| get_rust_variable_name(s))
                                 .collect();
                             Some(len_names.join("."))
                         };
@@ -2324,7 +2324,7 @@ impl<'a> Generator<'a> {
                     } else {
                         let len_names: Vec<String> = len_names
                             .iter()
-                            .map(|s| get_rust_variable_name(s.to_snake_case().as_str()))
+                            .map(|s| get_rust_variable_name(s))
                             .collect();
                         params[i].ty = LibParamType::ReturnVec {
                             inner_type_name: inner_type_name.clone(),
@@ -2471,7 +2471,7 @@ impl<'a> Generator<'a> {
             .parameters
             .iter()
             .map(|cparam| LibParam {
-                name: get_rust_variable_name(cparam.name.to_snake_case().as_str()),
+                name: get_rust_variable_name(cparam.name),
                 ty: LibParamType::CDecl,
             })
             .collect();
