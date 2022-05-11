@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 211
+//! Generated from vk.xml with `VK_HEADER_VERSION` 213
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1432,6 +1432,12 @@ impl InstanceExtensions {
         self.enable_khr_external_memory_capabilities();
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_pipeline_properties(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_pipeline_properties(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1448,6 +1454,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_primitives_generated_query(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_ray_tracing_maintenance1(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_ray_tracing_maintenance1(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_global_priority_query(&self) -> bool {
@@ -4072,6 +4084,7 @@ pub struct DeviceExtensions {
     pub ext_image_robustness: bool,
     pub khr_workgroup_memory_explicit_layout: bool,
     pub khr_copy_commands2: bool,
+    pub ext_image_compression_control: bool,
     pub ext_4444_formats: bool,
     pub arm_rasterization_order_attachment_access: bool,
     pub ext_rgba10x6_formats: bool,
@@ -4088,9 +4101,11 @@ pub struct DeviceExtensions {
     pub huawei_subpass_shading: bool,
     pub huawei_invocation_mask: bool,
     pub nv_external_memory_rdma: bool,
+    pub ext_pipeline_properties: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
     pub ext_primitives_generated_query: bool,
+    pub khr_ray_tracing_maintenance1: bool,
     pub ext_global_priority_query: bool,
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
@@ -4102,6 +4117,8 @@ pub struct DeviceExtensions {
     pub valve_descriptor_set_host_mapping: bool,
     pub qcom_fragment_density_map_offset: bool,
     pub nv_linear_color_attachment: bool,
+    pub ext_image_compression_control_swapchain: bool,
+    pub ext_subpass_merge_feedback: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4311,6 +4328,7 @@ impl DeviceExtensions {
             b"VK_EXT_image_robustness" => self.ext_image_robustness = true,
             b"VK_KHR_workgroup_memory_explicit_layout" => self.khr_workgroup_memory_explicit_layout = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
+            b"VK_EXT_image_compression_control" => self.ext_image_compression_control = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             b"VK_ARM_rasterization_order_attachment_access" => self.arm_rasterization_order_attachment_access = true,
             b"VK_EXT_rgba10x6_formats" => self.ext_rgba10x6_formats = true,
@@ -4327,9 +4345,11 @@ impl DeviceExtensions {
             b"VK_HUAWEI_subpass_shading" => self.huawei_subpass_shading = true,
             b"VK_HUAWEI_invocation_mask" => self.huawei_invocation_mask = true,
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
+            b"VK_EXT_pipeline_properties" => self.ext_pipeline_properties = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             b"VK_EXT_primitives_generated_query" => self.ext_primitives_generated_query = true,
+            b"VK_KHR_ray_tracing_maintenance1" => self.khr_ray_tracing_maintenance1 = true,
             b"VK_EXT_global_priority_query" => self.ext_global_priority_query = true,
             b"VK_EXT_image_view_min_lod" => self.ext_image_view_min_lod = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
@@ -4341,6 +4361,8 @@ impl DeviceExtensions {
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
+            b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
+            b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             _ => {}
         }
     }
@@ -4550,6 +4572,7 @@ impl DeviceExtensions {
             ext_image_robustness: false,
             khr_workgroup_memory_explicit_layout: false,
             khr_copy_commands2: false,
+            ext_image_compression_control: false,
             ext_4444_formats: false,
             arm_rasterization_order_attachment_access: false,
             ext_rgba10x6_formats: false,
@@ -4566,9 +4589,11 @@ impl DeviceExtensions {
             huawei_subpass_shading: false,
             huawei_invocation_mask: false,
             nv_external_memory_rdma: false,
+            ext_pipeline_properties: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
             ext_primitives_generated_query: false,
+            khr_ray_tracing_maintenance1: false,
             ext_global_priority_query: false,
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
@@ -4580,6 +4605,8 @@ impl DeviceExtensions {
             valve_descriptor_set_host_mapping: false,
             qcom_fragment_density_map_offset: false,
             nv_linear_color_attachment: false,
+            ext_image_compression_control_swapchain: false,
+            ext_subpass_merge_feedback: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6135,6 +6162,12 @@ impl DeviceExtensions {
             self.khr_copy_commands2 = true;
         }
     }
+    pub fn supports_ext_image_compression_control(&self) -> bool {
+        self.ext_image_compression_control
+    }
+    pub fn enable_ext_image_compression_control(&mut self) {
+        self.ext_image_compression_control = true;
+    }
     pub fn supports_ext_4444_formats(&self) -> bool {
         self.ext_4444_formats || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6285,6 +6318,12 @@ impl DeviceExtensions {
         self.nv_external_memory_rdma = true;
         self.enable_khr_external_memory();
     }
+    pub fn supports_ext_pipeline_properties(&self) -> bool {
+        self.ext_pipeline_properties
+    }
+    pub fn enable_ext_pipeline_properties(&mut self) {
+        self.ext_pipeline_properties = true;
+    }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.ext_extended_dynamic_state2 || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6305,6 +6344,23 @@ impl DeviceExtensions {
     pub fn enable_ext_primitives_generated_query(&mut self) {
         self.ext_primitives_generated_query = true;
         self.enable_ext_transform_feedback();
+    }
+    pub fn supports_khr_ray_tracing_maintenance1(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.khr_ray_tracing_maintenance1
+            && self.supports_khr_acceleration_structure()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_khr_ray_tracing_maintenance1(&mut self) {
+        self.khr_ray_tracing_maintenance1 = true;
+        self.enable_khr_acceleration_structure();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_ext_global_priority_query(&self) -> bool {
         self.ext_global_priority_query && self.supports_ext_global_priority()
@@ -6379,6 +6435,19 @@ impl DeviceExtensions {
     }
     pub fn enable_nv_linear_color_attachment(&mut self) {
         self.nv_linear_color_attachment = true;
+    }
+    pub fn supports_ext_image_compression_control_swapchain(&self) -> bool {
+        self.ext_image_compression_control_swapchain && self.supports_ext_image_compression_control()
+    }
+    pub fn enable_ext_image_compression_control_swapchain(&mut self) {
+        self.ext_image_compression_control_swapchain = true;
+        self.enable_ext_image_compression_control();
+    }
+    pub fn supports_ext_subpass_merge_feedback(&self) -> bool {
+        self.ext_subpass_merge_feedback
+    }
+    pub fn enable_ext_subpass_merge_feedback(&mut self) {
+        self.ext_subpass_merge_feedback = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6993,6 +7062,9 @@ impl DeviceExtensions {
         if self.khr_copy_commands2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_copy_commands2\0") })
         }
+        if self.ext_image_compression_control {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_compression_control\0") })
+        }
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
@@ -7041,6 +7113,9 @@ impl DeviceExtensions {
         if self.nv_external_memory_rdma {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_external_memory_rdma\0") })
         }
+        if self.ext_pipeline_properties {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_properties\0") })
+        }
         if self.ext_extended_dynamic_state2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state2\0") })
         }
@@ -7049,6 +7124,9 @@ impl DeviceExtensions {
         }
         if self.ext_primitives_generated_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_primitives_generated_query\0") })
+        }
+        if self.khr_ray_tracing_maintenance1 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_maintenance1\0") })
         }
         if self.ext_global_priority_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_global_priority_query\0") })
@@ -7082,6 +7160,12 @@ impl DeviceExtensions {
         }
         if self.nv_linear_color_attachment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_linear_color_attachment\0") })
+        }
+        if self.ext_image_compression_control_swapchain {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_compression_control_swapchain\0") })
+        }
+        if self.ext_subpass_merge_feedback {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subpass_merge_feedback\0") })
         }
         v
     }
@@ -7359,6 +7443,7 @@ pub struct Device {
     pub fp_get_physical_device_cooperative_matrix_properties_nv:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesNV>,
     pub fp_cmd_trace_rays_indirect_khr: Option<vk::FnCmdTraceRaysIndirectKHR>,
+    pub fp_cmd_trace_rays_indirect2_khr: Option<vk::FnCmdTraceRaysIndirect2KHR>,
     pub fp_get_device_acceleration_structure_compatibility_khr:
         Option<vk::FnGetDeviceAccelerationStructureCompatibilityKHR>,
     pub fp_get_ray_tracing_shader_group_stack_size_khr: Option<vk::FnGetRayTracingShaderGroupStackSizeKHR>,
@@ -7463,6 +7548,8 @@ pub struct Device {
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
+    pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
+    pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -9556,6 +9643,14 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_trace_rays_indirect2_khr: if extensions.khr_ray_tracing_maintenance1
+                && extensions.khr_ray_tracing_pipeline
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdTraceRaysIndirect2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_device_acceleration_structure_compatibility_khr: if extensions.khr_acceleration_structure {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDeviceAccelerationStructureCompatibilityKHR\0",
@@ -10484,6 +10579,20 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDescriptorSetHostMappingVALVE\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_subresource_layout2_ext: if extensions.ext_image_compression_control {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageSubresourceLayout2EXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_properties_ext: if extensions.ext_pipeline_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPipelinePropertiesEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -15280,6 +15389,16 @@ impl Device {
             indirect_device_address,
         );
     }
+    pub unsafe fn cmd_trace_rays_indirect2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        indirect_device_address: vk::DeviceAddress,
+    ) {
+        let fp = self
+            .fp_cmd_trace_rays_indirect2_khr
+            .expect("vkCmdTraceRaysIndirect2KHR is not loaded");
+        (fp)(Some(command_buffer), indirect_device_address);
+    }
     pub unsafe fn get_device_acceleration_structure_compatibility_khr(
         &self,
         p_version_info: &vk::AccelerationStructureVersionInfoKHR,
@@ -16983,6 +17102,35 @@ impl Device {
         let mut res = MaybeUninit::<_>::uninit();
         (fp)(Some(self.handle), Some(descriptor_set), res.as_mut_ptr());
         res.assume_init()
+    }
+    pub unsafe fn get_image_subresource_layout2_ext(
+        &self,
+        image: vk::Image,
+        p_subresource: &vk::ImageSubresource2EXT,
+        p_layout: &mut vk::SubresourceLayout2EXT,
+    ) {
+        let fp = self
+            .fp_get_image_subresource_layout2_ext
+            .expect("vkGetImageSubresourceLayout2EXT is not loaded");
+        (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
+    }
+    pub unsafe fn get_pipeline_properties_ext(
+        &self,
+        p_pipeline_info: &vk::PipelineInfoEXT,
+        p_pipeline_properties: &mut impl BaseOutStructureNext,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_pipeline_properties_ext
+            .expect("vkGetPipelinePropertiesEXT is not loaded");
+        let err = (fp)(
+            Some(self.handle),
+            p_pipeline_info,
+            p_pipeline_properties as *mut _ as *mut _,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
     }
 }
 

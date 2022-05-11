@@ -2191,8 +2191,10 @@ impl AccessFlags2 {
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_READ_HUAWEI: Self = Self(0x8000000000);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const SHADER_BINDING_TABLE_READ_KHR: Self = Self(0x10000000000);
 }
-impl_bitmask!(AccessFlags2, 0x870fffffff);
+impl_bitmask!(AccessFlags2, 0x1870fffffff);
 impl fmt::Display for AccessFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2230,6 +2232,7 @@ impl fmt::Display for AccessFlags2 {
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
                 (0x8000000000, "INVOCATION_MASK_READ_HUAWEI"),
+                (0x10000000000, "SHADER_BINDING_TABLE_READ_KHR"),
             ],
             f,
         )
@@ -2318,8 +2321,10 @@ impl PipelineStageFlags2 {
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x8000000000);
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x10000000000);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const ACCELERATION_STRUCTURE_COPY_KHR: Self = Self(0x10000000);
 }
-impl_bitmask!(PipelineStageFlags2, 0x1ff03ffffff);
+impl_bitmask!(PipelineStageFlags2, 0x1ff13ffffff);
 impl fmt::Display for PipelineStageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2360,6 +2365,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x100000, "MESH_SHADER_NV"),
                 (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
                 (0x10000000000, "INVOCATION_MASK_HUAWEI"),
+                (0x10000000, "ACCELERATION_STRUCTURE_COPY_KHR"),
             ],
             f,
         )
@@ -3495,6 +3501,94 @@ impl fmt::Display for GraphicsPipelineLibraryFlagsEXT {
                 (0x2, "PRE_RASTERIZATION_SHADERS"),
                 (0x4, "FRAGMENT_SHADER"),
                 (0x8, "FRAGMENT_OUTPUT_INTERFACE"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ImageCompressionFlagsEXT(u32);
+impl ImageCompressionFlagsEXT {
+    pub const DEFAULT: Self = Self(0x0);
+    pub const FIXED_RATE_DEFAULT: Self = Self(0x1);
+    pub const FIXED_RATE_EXPLICIT: Self = Self(0x2);
+    pub const DISABLED: Self = Self(0x4);
+}
+impl_bitmask!(ImageCompressionFlagsEXT, 0x7);
+impl fmt::Display for ImageCompressionFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "FIXED_RATE_DEFAULT"),
+                (0x2, "FIXED_RATE_EXPLICIT"),
+                (0x4, "DISABLED"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ImageCompressionFixedRateFlagsEXT(u32);
+impl ImageCompressionFixedRateFlagsEXT {
+    pub const NONE: Self = Self(0x0);
+    pub const N1BPC: Self = Self(0x1);
+    pub const N2BPC: Self = Self(0x2);
+    pub const N3BPC: Self = Self(0x4);
+    pub const N4BPC: Self = Self(0x8);
+    pub const N5BPC: Self = Self(0x10);
+    pub const N6BPC: Self = Self(0x20);
+    pub const N7BPC: Self = Self(0x40);
+    pub const N8BPC: Self = Self(0x80);
+    pub const N9BPC: Self = Self(0x100);
+    pub const N10BPC: Self = Self(0x200);
+    pub const N11BPC: Self = Self(0x400);
+    pub const N12BPC: Self = Self(0x800);
+    pub const N13BPC: Self = Self(0x1000);
+    pub const N14BPC: Self = Self(0x2000);
+    pub const N15BPC: Self = Self(0x4000);
+    pub const N16BPC: Self = Self(0x8000);
+    pub const N17BPC: Self = Self(0x10000);
+    pub const N18BPC: Self = Self(0x20000);
+    pub const N19BPC: Self = Self(0x40000);
+    pub const N20BPC: Self = Self(0x80000);
+    pub const N21BPC: Self = Self(0x100000);
+    pub const N22BPC: Self = Self(0x200000);
+    pub const N23BPC: Self = Self(0x400000);
+    pub const N24BPC: Self = Self(0x800000);
+}
+impl_bitmask!(ImageCompressionFixedRateFlagsEXT, 0xffffff);
+impl fmt::Display for ImageCompressionFixedRateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "N1BPC"),
+                (0x2, "N2BPC"),
+                (0x4, "N3BPC"),
+                (0x8, "N4BPC"),
+                (0x10, "N5BPC"),
+                (0x20, "N6BPC"),
+                (0x40, "N7BPC"),
+                (0x80, "N8BPC"),
+                (0x100, "N9BPC"),
+                (0x200, "N10BPC"),
+                (0x400, "N11BPC"),
+                (0x800, "N12BPC"),
+                (0x1000, "N13BPC"),
+                (0x2000, "N14BPC"),
+                (0x4000, "N15BPC"),
+                (0x8000, "N16BPC"),
+                (0x10000, "N17BPC"),
+                (0x20000, "N18BPC"),
+                (0x40000, "N19BPC"),
+                (0x80000, "N20BPC"),
+                (0x100000, "N21BPC"),
+                (0x200000, "N22BPC"),
+                (0x400000, "N23BPC"),
+                (0x800000, "N24BPC"),
             ],
             f,
         )
@@ -5439,6 +5533,10 @@ impl QueryType {
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
     /// Added by extension VK_EXT_primitives_generated_query.
     pub const PRIMITIVES_GENERATED_EXT: Self = Self(1000382000);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR: Self = Self(1000386000);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const ACCELERATION_STRUCTURE_SIZE_KHR: Self = Self(1000386001);
 }
 impl fmt::Display for QueryType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5453,6 +5551,8 @@ impl fmt::Display for QueryType {
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
             1000382000 => Some(&"PRIMITIVES_GENERATED_EXT"),
+            1000386000 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR"),
+            1000386001 => Some(&"ACCELERATION_STRUCTURE_SIZE_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -5566,6 +5666,8 @@ impl Result {
     pub const OPERATION_NOT_DEFERRED_KHR: Self = Self(1000268003);
     pub const PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED;
     pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED;
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const ERROR_COMPRESSION_EXHAUSTED_EXT: Self = Self(-1000338000);
 }
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5608,6 +5710,7 @@ impl fmt::Display for Result {
             1000268001 => Some(&"THREAD_DONE_KHR"),
             1000268002 => Some(&"OPERATION_DEFERRED_KHR"),
             1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
+            -1000338000 => Some(&"ERROR_COMPRESSION_EXHAUSTED_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6683,6 +6786,16 @@ impl StructureType {
     pub const IMAGE_BLIT_2_KHR: Self = Self::IMAGE_BLIT_2;
     pub const BUFFER_IMAGE_COPY_2_KHR: Self = Self::BUFFER_IMAGE_COPY_2;
     pub const IMAGE_RESOLVE_2_KHR: Self = Self::IMAGE_RESOLVE_2;
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT: Self = Self(1000338000);
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const IMAGE_COMPRESSION_CONTROL_EXT: Self = Self(1000338001);
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const SUBRESOURCE_LAYOUT_2_EXT: Self = Self(1000338002);
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self(1000338003);
+    /// Added by extension VK_EXT_image_compression_control.
+    pub const IMAGE_COMPRESSION_PROPERTIES_EXT: Self = Self(1000338004);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
     /// Added by extension VK_ARM_rasterization_order_attachment_access.
@@ -6752,6 +6865,11 @@ impl StructureType {
     pub const MEMORY_GET_REMOTE_ADDRESS_INFO_NV: Self = Self(1000371000);
     /// Added by extension VK_NV_external_memory_rdma.
     pub const PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV: Self = Self(1000371001);
+    /// Added by extension VK_EXT_pipeline_properties.
+    pub const PIPELINE_PROPERTIES_IDENTIFIER_EXT: Self = Self(1000372000);
+    /// Added by extension VK_EXT_pipeline_properties.
+    pub const PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT: Self = Self(1000372001);
+    pub const PIPELINE_INFO_EXT: Self = Self::PIPELINE_INFO_KHR;
     /// Not promoted to 1.3
     /// Added by extension VK_EXT_extended_dynamic_state2.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT: Self = Self(1000377000);
@@ -6761,6 +6879,8 @@ impl StructureType {
     pub const PIPELINE_COLOR_WRITE_CREATE_INFO_EXT: Self = Self(1000381001);
     /// Added by extension VK_EXT_primitives_generated_query.
     pub const PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT: Self = Self(1000382000);
+    /// Added by extension VK_KHR_ray_tracing_maintenance1.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR: Self = Self(1000386000);
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR;
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT: Self = Self::QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR;
@@ -6798,6 +6918,16 @@ impl StructureType {
     pub const SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM: Self = Self(1000425002);
     /// Added by extension VK_NV_linear_color_attachment.
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
+    /// Added by extension VK_EXT_image_compression_control_swapchain.
+    pub const PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT: Self = Self(1000437000);
+    /// Added by extension VK_EXT_subpass_merge_feedback.
+    pub const PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT: Self = Self(1000458000);
+    /// Added by extension VK_EXT_subpass_merge_feedback.
+    pub const RENDER_PASS_CREATION_CONTROL_EXT: Self = Self(1000458001);
+    /// Added by extension VK_EXT_subpass_merge_feedback.
+    pub const RENDER_PASS_CREATION_FEEDBACK_INFO_EXT: Self = Self(1000458002);
+    /// Added by extension VK_EXT_subpass_merge_feedback.
+    pub const RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT: Self = Self(1000458003);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7323,6 +7453,11 @@ impl fmt::Display for StructureType {
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
             1000333000 => Some(&"COPY_COMMAND_TRANSFORM_INFO_QCOM"),
             1000336000 => Some(&"PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR"),
+            1000338000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT"),
+            1000338001 => Some(&"IMAGE_COMPRESSION_CONTROL_EXT"),
+            1000338002 => Some(&"SUBRESOURCE_LAYOUT_2_EXT"),
+            1000338003 => Some(&"IMAGE_SUBRESOURCE_2_EXT"),
+            1000338004 => Some(&"IMAGE_COMPRESSION_PROPERTIES_EXT"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
             1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM"),
             1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
@@ -7357,10 +7492,13 @@ impl fmt::Display for StructureType {
             1000370000 => Some(&"PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI"),
             1000371000 => Some(&"MEMORY_GET_REMOTE_ADDRESS_INFO_NV"),
             1000371001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV"),
+            1000372000 => Some(&"PIPELINE_PROPERTIES_IDENTIFIER_EXT"),
+            1000372001 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
             1000382000 => Some(&"PHYSICAL_DEVICE_PRIMITIVES_GENERATED_QUERY_FEATURES_EXT"),
+            1000386000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR"),
             1000391000 => Some(&"PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT"),
             1000391001 => Some(&"IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT"),
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
@@ -7376,6 +7514,11 @@ impl fmt::Display for StructureType {
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
             1000430000 => Some(&"PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV"),
+            1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
+            1000458000 => Some(&"PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT"),
+            1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
+            1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_INFO_EXT"),
+            1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8567,6 +8710,51 @@ impl fmt::Display for FragmentShadingRateTypeNV {
         let name = match self.0 {
             0 => Some(&"FRAGMENT_SIZE"),
             1 => Some(&"ENUMS"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct SubpassMergeStatusEXT(i32);
+impl SubpassMergeStatusEXT {
+    pub const MERGED: Self = Self(0);
+    pub const DISALLOWED: Self = Self(1);
+    pub const NOT_MERGED_SIDE_EFFECTS: Self = Self(2);
+    pub const NOT_MERGED_SAMPLES_MISMATCH: Self = Self(3);
+    pub const NOT_MERGED_VIEWS_MISMATCH: Self = Self(4);
+    pub const NOT_MERGED_ALIASING: Self = Self(5);
+    pub const NOT_MERGED_DEPENDENCIES: Self = Self(6);
+    pub const NOT_MERGED_INCOMPATIBLE_INPUT_ATTACHMENT: Self = Self(7);
+    pub const NOT_MERGED_TOO_MANY_ATTACHMENTS: Self = Self(8);
+    pub const NOT_MERGED_INSUFFICIENT_STORAGE: Self = Self(9);
+    pub const NOT_MERGED_DEPTH_STENCIL_COUNT: Self = Self(10);
+    pub const NOT_MERGED_RESOLVE_ATTACHMENT_REUSE: Self = Self(11);
+    pub const NOT_MERGED_SINGLE_SUBPASS: Self = Self(12);
+    pub const NOT_MERGED_UNSPECIFIED: Self = Self(13);
+}
+impl fmt::Display for SubpassMergeStatusEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MERGED"),
+            1 => Some(&"DISALLOWED"),
+            2 => Some(&"NOT_MERGED_SIDE_EFFECTS"),
+            3 => Some(&"NOT_MERGED_SAMPLES_MISMATCH"),
+            4 => Some(&"NOT_MERGED_VIEWS_MISMATCH"),
+            5 => Some(&"NOT_MERGED_ALIASING"),
+            6 => Some(&"NOT_MERGED_DEPENDENCIES"),
+            7 => Some(&"NOT_MERGED_INCOMPATIBLE_INPUT_ATTACHMENT"),
+            8 => Some(&"NOT_MERGED_TOO_MANY_ATTACHMENTS"),
+            9 => Some(&"NOT_MERGED_INSUFFICIENT_STORAGE"),
+            10 => Some(&"NOT_MERGED_DEPTH_STENCIL_COUNT"),
+            11 => Some(&"NOT_MERGED_RESOLVE_ATTACHMENT_REUSE"),
+            12 => Some(&"NOT_MERGED_SINGLE_SUBPASS"),
+            13 => Some(&"NOT_MERGED_UNSPECIFIED"),
             _ => None,
         };
         if let Some(name) = name {
@@ -24928,6 +25116,95 @@ impl fmt::Debug for TraceRaysIndirectCommandKHR {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct TraceRaysIndirectCommand2KHR {
+    pub raygen_shader_record_address: DeviceAddress,
+    pub raygen_shader_record_size: DeviceSize,
+    pub miss_shader_binding_table_address: DeviceAddress,
+    pub miss_shader_binding_table_size: DeviceSize,
+    pub miss_shader_binding_table_stride: DeviceSize,
+    pub hit_shader_binding_table_address: DeviceAddress,
+    pub hit_shader_binding_table_size: DeviceSize,
+    pub hit_shader_binding_table_stride: DeviceSize,
+    pub callable_shader_binding_table_address: DeviceAddress,
+    pub callable_shader_binding_table_size: DeviceSize,
+    pub callable_shader_binding_table_stride: DeviceSize,
+    pub width: u32,
+    pub height: u32,
+    pub depth: u32,
+}
+impl fmt::Debug for TraceRaysIndirectCommand2KHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TraceRaysIndirectCommand2KHR")
+            .field("raygen_shader_record_address", &self.raygen_shader_record_address)
+            .field("raygen_shader_record_size", &self.raygen_shader_record_size)
+            .field(
+                "miss_shader_binding_table_address",
+                &self.miss_shader_binding_table_address,
+            )
+            .field("miss_shader_binding_table_size", &self.miss_shader_binding_table_size)
+            .field(
+                "miss_shader_binding_table_stride",
+                &self.miss_shader_binding_table_stride,
+            )
+            .field(
+                "hit_shader_binding_table_address",
+                &self.hit_shader_binding_table_address,
+            )
+            .field("hit_shader_binding_table_size", &self.hit_shader_binding_table_size)
+            .field("hit_shader_binding_table_stride", &self.hit_shader_binding_table_stride)
+            .field(
+                "callable_shader_binding_table_address",
+                &self.callable_shader_binding_table_address,
+            )
+            .field(
+                "callable_shader_binding_table_size",
+                &self.callable_shader_binding_table_size,
+            )
+            .field(
+                "callable_shader_binding_table_stride",
+                &self.callable_shader_binding_table_stride,
+            )
+            .field("width", &self.width)
+            .field("height", &self.height)
+            .field("depth", &self.depth)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingMaintenance1FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_maintenance1: Bool32,
+    pub ray_tracing_pipeline_trace_rays_indirect2: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingMaintenance1FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceRayTracingMaintenance1FeaturesKHR {}
+impl Default for PhysicalDeviceRayTracingMaintenance1FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_MAINTENANCE_1_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            ray_tracing_maintenance1: Default::default(),
+            ray_tracing_pipeline_trace_rays_indirect2: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingMaintenance1FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingMaintenance1FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_maintenance1", &self.ray_tracing_maintenance1)
+            .field(
+                "ray_tracing_pipeline_trace_rays_indirect2",
+                &self.ray_tracing_pipeline_trace_rays_indirect2,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DrmFormatModifierPropertiesListEXT {
     pub s_type: StructureType,
@@ -27336,6 +27613,7 @@ impl fmt::Debug for PipelineInfoKHR {
             .finish()
     }
 }
+pub type PipelineInfoEXT = PipelineInfoKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PipelineExecutablePropertiesKHR {
@@ -34147,6 +34425,351 @@ impl fmt::Debug for DescriptorSetLayoutHostMappingInfoVALVE {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageCompressionControlEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: ImageCompressionFlagsEXT,
+    pub compression_control_plane_count: u32,
+    pub p_fixed_rate_flags: *mut ImageCompressionFixedRateFlagsEXT,
+}
+unsafe impl Send for ImageCompressionControlEXT {}
+unsafe impl Sync for ImageCompressionControlEXT {}
+impl Default for ImageCompressionControlEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_COMPRESSION_CONTROL_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            compression_control_plane_count: Default::default(),
+            p_fixed_rate_flags: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for ImageCompressionControlEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageCompressionControlEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("compression_control_plane_count", &self.compression_control_plane_count)
+            .field("p_fixed_rate_flags", &self.p_fixed_rate_flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageCompressionControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_compression_control: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageCompressionControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageCompressionControlFeaturesEXT {}
+impl Default for PhysicalDeviceImageCompressionControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            image_compression_control: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageCompressionControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageCompressionControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_compression_control", &self.image_compression_control)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageCompressionPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_compression_flags: ImageCompressionFlagsEXT,
+    pub image_compression_fixed_rate_flags: ImageCompressionFixedRateFlagsEXT,
+}
+unsafe impl Send for ImageCompressionPropertiesEXT {}
+unsafe impl Sync for ImageCompressionPropertiesEXT {}
+impl Default for ImageCompressionPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_COMPRESSION_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            image_compression_flags: Default::default(),
+            image_compression_fixed_rate_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageCompressionPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageCompressionPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_compression_flags", &self.image_compression_flags)
+            .field(
+                "image_compression_fixed_rate_flags",
+                &self.image_compression_fixed_rate_flags,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_compression_control_swapchain: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {}
+impl Default for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            image_compression_control_swapchain: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "image_compression_control_swapchain",
+                &self.image_compression_control_swapchain,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageSubresource2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_subresource: ImageSubresource,
+}
+unsafe impl Send for ImageSubresource2EXT {}
+unsafe impl Sync for ImageSubresource2EXT {}
+impl Default for ImageSubresource2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_SUBRESOURCE_2_EXT,
+            p_next: ptr::null_mut(),
+            image_subresource: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageSubresource2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageSubresource2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_subresource", &self.image_subresource)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubresourceLayout2EXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub subresource_layout: SubresourceLayout,
+}
+unsafe impl Send for SubresourceLayout2EXT {}
+unsafe impl Sync for SubresourceLayout2EXT {}
+impl Default for SubresourceLayout2EXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBRESOURCE_LAYOUT_2_EXT,
+            p_next: ptr::null_mut(),
+            subresource_layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SubresourceLayout2EXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubresourceLayout2EXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subresource_layout", &self.subresource_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassCreationControlEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub disallow_merging: Bool32,
+}
+unsafe impl Send for RenderPassCreationControlEXT {}
+unsafe impl Sync for RenderPassCreationControlEXT {}
+impl Default for RenderPassCreationControlEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_CREATION_CONTROL_EXT,
+            p_next: ptr::null(),
+            disallow_merging: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassCreationControlEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassCreationControlEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("disallow_merging", &self.disallow_merging)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassCreationFeedbackInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub post_merge_subpass_count: u32,
+}
+unsafe impl Send for RenderPassCreationFeedbackInfoEXT {}
+unsafe impl Sync for RenderPassCreationFeedbackInfoEXT {}
+impl Default for RenderPassCreationFeedbackInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_CREATION_FEEDBACK_INFO_EXT,
+            p_next: ptr::null(),
+            post_merge_subpass_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassCreationFeedbackInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassCreationFeedbackInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("post_merge_subpass_count", &self.post_merge_subpass_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassSubpassFeedbackInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub subpass_merge_status: SubpassMergeStatusEXT,
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub post_merge_index: u32,
+}
+unsafe impl Send for RenderPassSubpassFeedbackInfoEXT {}
+unsafe impl Sync for RenderPassSubpassFeedbackInfoEXT {}
+impl Default for RenderPassSubpassFeedbackInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT,
+            p_next: ptr::null(),
+            subpass_merge_status: Default::default(),
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            post_merge_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassSubpassFeedbackInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassSubpassFeedbackInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subpass_merge_status", &self.subpass_merge_status)
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("post_merge_index", &self.post_merge_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub subpass_merge_feedback: Bool32,
+}
+unsafe impl Send for PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
+impl Default for PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            subpass_merge_feedback: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSubpassMergeFeedbackFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("subpass_merge_feedback", &self.subpass_merge_feedback)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelinePropertiesIdentifierEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_identifier: [u8; UUID_SIZE],
+}
+unsafe impl Send for PipelinePropertiesIdentifierEXT {}
+unsafe impl Sync for PipelinePropertiesIdentifierEXT {}
+impl Default for PipelinePropertiesIdentifierEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_PROPERTIES_IDENTIFIER_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_identifier: [Default::default(); UUID_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PipelinePropertiesIdentifierEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelinePropertiesIdentifierEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_identifier", &self.pipeline_identifier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelinePropertiesFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_properties_identifier: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelinePropertiesFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePipelinePropertiesFeaturesEXT {}
+impl Default for PhysicalDevicePipelinePropertiesFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_properties_identifier: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelinePropertiesFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelinePropertiesFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_properties_identifier", &self.pipeline_properties_identifier)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -35955,6 +36578,8 @@ pub type FnCmdTraceRaysIndirectKHR = unsafe extern "system" fn(
     p_callable_shader_binding_table: *const StridedDeviceAddressRegionKHR,
     indirect_device_address: DeviceAddress,
 );
+pub type FnCmdTraceRaysIndirect2KHR =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, indirect_device_address: DeviceAddress);
 pub type FnGetDeviceAccelerationStructureCompatibilityKHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_version_info: *const AccelerationStructureVersionInfoKHR,
@@ -36373,3 +36998,14 @@ pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" f
 );
 pub type FnGetDescriptorSetHostMappingVALVE =
     unsafe extern "system" fn(device: Option<Device>, descriptor_set: Option<DescriptorSet>, pp_data: *mut *mut c_void);
+pub type FnGetImageSubresourceLayout2EXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    image: Option<Image>,
+    p_subresource: *const ImageSubresource2EXT,
+    p_layout: *mut SubresourceLayout2EXT,
+);
+pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_pipeline_info: *const PipelineInfoEXT,
+    p_pipeline_properties: *mut BaseOutStructure,
+) -> Result;

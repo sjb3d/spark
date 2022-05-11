@@ -27,6 +27,7 @@ impl Builder<'_> for vk::BaseOutStructure {
         Default::default()
     }
 }
+pub trait BaseOutStructureNext {}
 #[derive(Default)]
 pub struct BaseOutStructureBuilder {
     inner: vk::BaseOutStructure,
@@ -7312,6 +7313,35 @@ impl<'a> Deref for SurfaceCapabilities2KHRBuilder<'a> {
         &self.inner
     }
 }
+impl<'a> Builder<'a> for vk::SurfaceFormat2KHR {
+    type Type = SurfaceFormat2KHRBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait SurfaceFormat2KHRNext {}
+#[derive(Default)]
+pub struct SurfaceFormat2KHRBuilder<'a> {
+    inner: vk::SurfaceFormat2KHR,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SurfaceFormat2KHRBuilder<'a> {
+    pub fn insert_next<T: SurfaceFormat2KHRNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::SurfaceFormat2KHR {
+        &mut self.inner
+    }
+}
+impl<'a> Deref for SurfaceFormat2KHRBuilder<'a> {
+    type Target = vk::SurfaceFormat2KHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::DisplayPlaneInfo2KHR {
     type Type = DisplayPlaneInfo2KHRBuilder;
     fn builder() -> Self::Type {
@@ -12510,6 +12540,51 @@ impl DeviceCreateInfoNext for vk::PhysicalDeviceRayQueryFeaturesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceAccelerationStructurePropertiesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingPipelinePropertiesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingPropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR {
+    type Type = PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR,
+}
+impl PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_maintenance1(mut self, ray_tracing_maintenance1: bool) -> Self {
+        self.inner.ray_tracing_maintenance1 = if ray_tracing_maintenance1 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn ray_tracing_pipeline_trace_rays_indirect2(
+        mut self,
+        ray_tracing_pipeline_trace_rays_indirect2: bool,
+    ) -> Self {
+        self.inner.ray_tracing_pipeline_trace_rays_indirect2 = if ray_tracing_pipeline_trace_rays_indirect2 {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR {}
 impl FormatProperties2Next for vk::DrmFormatModifierPropertiesListEXT {}
 impl<'a> Builder<'a> for vk::PhysicalDeviceImageDrmFormatModifierInfoEXT {
     type Type = PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a>;
@@ -20770,3 +20845,407 @@ impl Deref for DescriptorSetLayoutHostMappingInfoVALVEBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::ImageCompressionControlEXT {
+    type Type = ImageCompressionControlEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageCompressionControlEXTBuilder {
+    inner: vk::ImageCompressionControlEXT,
+}
+impl ImageCompressionControlEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ImageCompressionFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn compression_control_plane_count(mut self, compression_control_plane_count: u32) -> Self {
+        self.inner.compression_control_plane_count = compression_control_plane_count;
+        self
+    }
+    pub fn p_fixed_rate_flags(mut self, p_fixed_rate_flags: *mut vk::ImageCompressionFixedRateFlagsEXT) -> Self {
+        self.inner.p_fixed_rate_flags = p_fixed_rate_flags;
+        self
+    }
+}
+impl Deref for ImageCompressionControlEXTBuilder {
+    type Target = vk::ImageCompressionControlEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for ImageCompressionControlEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for ImageCompressionControlEXTBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for ImageCompressionControlEXTBuilder {}
+impl ImageCreateInfoNext for vk::ImageCompressionControlEXT {}
+impl SwapchainCreateInfoKHRNext for vk::ImageCompressionControlEXT {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::ImageCompressionControlEXT {}
+impl Builder<'_> for vk::PhysicalDeviceImageCompressionControlFeaturesEXT {
+    type Type = PhysicalDeviceImageCompressionControlFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageCompressionControlFeaturesEXT,
+}
+impl PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_compression_control(mut self, image_compression_control: bool) -> Self {
+        self.inner.image_compression_control = if image_compression_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageCompressionControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageCompressionControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageCompressionControlFeaturesEXT {}
+impl ImageFormatProperties2Next for vk::ImageCompressionPropertiesEXT {}
+impl SurfaceFormat2KHRNext for vk::ImageCompressionPropertiesEXT {}
+impl SubresourceLayout2EXTNext for vk::ImageCompressionPropertiesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
+    type Type = PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT,
+}
+impl PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_compression_control_swapchain(mut self, image_compression_control_swapchain: bool) -> Self {
+        self.inner.image_compression_control_swapchain = if image_compression_control_swapchain {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {}
+impl Builder<'_> for vk::ImageSubresource2EXT {
+    type Type = ImageSubresource2EXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageSubresource2EXTBuilder {
+    inner: vk::ImageSubresource2EXT,
+}
+impl ImageSubresource2EXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_subresource(mut self, image_subresource: vk::ImageSubresource) -> Self {
+        self.inner.image_subresource = image_subresource;
+        self
+    }
+}
+impl Deref for ImageSubresource2EXTBuilder {
+    type Target = vk::ImageSubresource2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::SubresourceLayout2EXT {
+    type Type = SubresourceLayout2EXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait SubresourceLayout2EXTNext {}
+#[derive(Default)]
+pub struct SubresourceLayout2EXTBuilder<'a> {
+    inner: vk::SubresourceLayout2EXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SubresourceLayout2EXTBuilder<'a> {
+    pub fn insert_next<T: SubresourceLayout2EXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::SubresourceLayout2EXT {
+        &mut self.inner
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subresource_layout(mut self, subresource_layout: vk::SubresourceLayout) -> Self {
+        self.inner.subresource_layout = subresource_layout;
+        self
+    }
+}
+impl<'a> Deref for SubresourceLayout2EXTBuilder<'a> {
+    type Target = vk::SubresourceLayout2EXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::RenderPassCreationControlEXT {
+    type Type = RenderPassCreationControlEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait RenderPassCreationControlEXTNext {}
+#[derive(Default)]
+pub struct RenderPassCreationControlEXTBuilder<'a> {
+    inner: vk::RenderPassCreationControlEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> RenderPassCreationControlEXTBuilder<'a> {
+    pub fn insert_next<T: RenderPassCreationControlEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn disallow_merging(mut self, disallow_merging: bool) -> Self {
+        self.inner.disallow_merging = if disallow_merging { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl<'a> Deref for RenderPassCreationControlEXTBuilder<'a> {
+    type Target = vk::RenderPassCreationControlEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> RenderPassCreateInfo2Next for RenderPassCreationControlEXTBuilder<'a> {}
+impl<'a> SubpassDescription2Next for RenderPassCreationControlEXTBuilder<'a> {}
+impl RenderPassCreateInfo2Next for vk::RenderPassCreationControlEXT {}
+impl SubpassDescription2Next for vk::RenderPassCreationControlEXT {}
+impl Builder<'_> for vk::RenderPassCreationFeedbackInfoEXT {
+    type Type = RenderPassCreationFeedbackInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassCreationFeedbackInfoEXTBuilder {
+    inner: vk::RenderPassCreationFeedbackInfoEXT,
+}
+impl RenderPassCreationFeedbackInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn post_merge_subpass_count(mut self, post_merge_subpass_count: u32) -> Self {
+        self.inner.post_merge_subpass_count = post_merge_subpass_count;
+        self
+    }
+}
+impl Deref for RenderPassCreationFeedbackInfoEXTBuilder {
+    type Target = vk::RenderPassCreationFeedbackInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl RenderPassCreateInfo2Next for RenderPassCreationFeedbackInfoEXTBuilder {}
+impl RenderPassCreationControlEXTNext for RenderPassCreationFeedbackInfoEXTBuilder {}
+impl RenderPassCreateInfo2Next for vk::RenderPassCreationFeedbackInfoEXT {}
+impl RenderPassCreationControlEXTNext for vk::RenderPassCreationFeedbackInfoEXT {}
+impl Builder<'_> for vk::RenderPassSubpassFeedbackInfoEXT {
+    type Type = RenderPassSubpassFeedbackInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct RenderPassSubpassFeedbackInfoEXTBuilder {
+    inner: vk::RenderPassSubpassFeedbackInfoEXT,
+}
+impl RenderPassSubpassFeedbackInfoEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subpass_merge_status(mut self, subpass_merge_status: vk::SubpassMergeStatusEXT) -> Self {
+        self.inner.subpass_merge_status = subpass_merge_status;
+        self
+    }
+    pub fn post_merge_index(mut self, post_merge_index: u32) -> Self {
+        self.inner.post_merge_index = post_merge_index;
+        self
+    }
+}
+impl Deref for RenderPassSubpassFeedbackInfoEXTBuilder {
+    type Target = vk::RenderPassSubpassFeedbackInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubpassDescription2Next for RenderPassSubpassFeedbackInfoEXTBuilder {}
+impl RenderPassCreationControlEXTNext for RenderPassSubpassFeedbackInfoEXTBuilder {}
+impl SubpassDescription2Next for vk::RenderPassSubpassFeedbackInfoEXT {}
+impl RenderPassCreationControlEXTNext for vk::RenderPassSubpassFeedbackInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
+    type Type = PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT,
+}
+impl PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn subpass_merge_feedback(mut self, subpass_merge_feedback: bool) -> Self {
+        self.inner.subpass_merge_feedback = if subpass_merge_feedback { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
+impl Builder<'_> for vk::PipelinePropertiesIdentifierEXT {
+    type Type = PipelinePropertiesIdentifierEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelinePropertiesIdentifierEXTBuilder {
+    inner: vk::PipelinePropertiesIdentifierEXT,
+}
+impl PipelinePropertiesIdentifierEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl Deref for PipelinePropertiesIdentifierEXTBuilder {
+    type Target = vk::PipelinePropertiesIdentifierEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BaseOutStructureNext for PipelinePropertiesIdentifierEXTBuilder {}
+impl BaseOutStructureNext for vk::PipelinePropertiesIdentifierEXT {}
+impl Builder<'_> for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {
+    type Type = PhysicalDevicePipelinePropertiesFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePipelinePropertiesFeaturesEXT,
+}
+impl PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {
+    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
+        self.inner.s_type = s_type;
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_properties_identifier(mut self, pipeline_properties_identifier: bool) -> Self {
+        self.inner.pipeline_properties_identifier = if pipeline_properties_identifier {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePipelinePropertiesFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
