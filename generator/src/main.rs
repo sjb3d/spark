@@ -105,6 +105,7 @@ const NAMED_TYPE_VKBOOL32: CBaseType = CBaseType::Named("VkBool32");
 const NAMED_TYPE_VKVERSION: CBaseType = CBaseType::Named("VkVersion");
 const NAMED_TYPE_VKINSTANCE: CBaseType = CBaseType::Named("VkInstance");
 const NAMED_TYPE_VKDEVICE: CBaseType = CBaseType::Named("VkDevice");
+const NAMED_TYPE_VKBASEOUTSTRUCTURE: CBaseType = CBaseType::Named("VkBaseOutStructure");
 
 trait SkipPrefix {
     fn skip_prefix(self, prefix: &str) -> Self;
@@ -473,6 +474,7 @@ enum LibParamType {
     MutRef {
         inner_type_name: String,
     },
+    BaseOutMutRef,
     ReturnObject {
         inner_type_name: String,
     },
@@ -1891,7 +1893,8 @@ impl<'a> Generator<'a> {
                     .filter_map(|ty| ty.structextends.as_deref())
                     .flat_map(|s| s.split(','))
                     .any(|s| self.non_alias_type_name(s) == type_name);
-                let needs_lifetime = is_extended
+                let needs_insert_next = is_extended && ty.name.as_deref() != NAMED_TYPE_VKBASEOUTSTRUCTURE.try_name();
+                let needs_lifetime = needs_insert_next
                     || params.iter().any(|rparam| {
                         matches!(
                             rparam.ty,
@@ -1938,7 +1941,7 @@ impl<'a> Generator<'a> {
 
                     // setters
                     writeln!(w, "impl{0} {1}Builder{0} {{", generics_decl, agg_name)?;
-                    if is_extended {
+                    if needs_insert_next {
                         writeln!(
                             w,
                             "pub fn insert_next<T: {}Next>(mut self, next: &'a mut T) -> Self {{",
@@ -2272,10 +2275,7 @@ impl<'a> Generator<'a> {
                             None
                         } else {
                             let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
-                            let len_names: Vec<String> = len_names
-                                .iter()
-                                .map(|s| get_rust_variable_name(s))
-                                .collect();
+                            let len_names: Vec<String> = len_names.iter().map(|s| get_rust_variable_name(s)).collect();
                             Some(len_names.join("."))
                         };
                     params[i].ty = LibParamType::Slice {
@@ -2358,10 +2358,7 @@ impl<'a> Generator<'a> {
                         };
                         len_expr
                     } else {
-                        let len_names: Vec<String> = len_names
-                            .iter()
-                            .map(|s| get_rust_variable_name(s))
-                            .collect();
+                        let len_names: Vec<String> = len_names.iter().map(|s| get_rust_variable_name(s)).collect();
                         params[i].ty = LibParamType::ReturnVec {
                             inner_type_name: inner_type_name.clone(),
                         };
@@ -2391,6 +2388,7 @@ impl<'a> Generator<'a> {
                 && cmd_return_value != CommandReturnValue::Other
                 && return_type == LibReturnType::CDecl
             {
+                let is_generic_output = cparam.ty.base == NAMED_TYPE_VKBASEOUTSTRUCTURE;
                 let has_member_values = cparam
                     .ty
                     .base
@@ -2417,7 +2415,7 @@ impl<'a> Generator<'a> {
                             .any(|def| def.values.is_some())
                     })
                     .unwrap_or(false);
-                if !has_member_values {
+                if !(is_generic_output || has_member_values) {
                     let mut inner_type_name = if cparam.ty.decoration == CDecoration::PointerToPointer {
                         format!("*mut {}", inner_type_name)
                     } else {
@@ -2470,7 +2468,11 @@ impl<'a> Generator<'a> {
                     continue;
                 }
                 if cparam.ty.decoration == CDecoration::Pointer && vparam.optional.is_none() {
-                    params[i].ty = LibParamType::MutRef { inner_type_name };
+                    params[i].ty = if cparam.ty.base == NAMED_TYPE_VKBASEOUTSTRUCTURE {
+                        LibParamType::BaseOutMutRef
+                    } else {
+                        LibParamType::MutRef { inner_type_name }
+                    };
                     continue;
                 }
             }
@@ -2636,6 +2638,9 @@ impl<'a> Generator<'a> {
                     }
                     LibParamType::MutRef { ref inner_type_name } => {
                         write!(w, "{}: &mut {},", rparam.name, inner_type_name,)?;
+                    }
+                    LibParamType::BaseOutMutRef => {
+                        write!(w, "{}: &mut impl BaseOutStructureNext,", rparam.name,)?;
                     }
                     LibParamType::ReturnObject { .. } => {}
                     LibParamType::ReturnVecLenShared => {
@@ -2835,6 +2840,9 @@ impl<'a> Generator<'a> {
                         }
                         LibParamType::MutRef { .. } | LibParamType::ReturnVecLenShared => {
                             write!(w, "{}", rparam.name)?;
+                        }
+                        LibParamType::BaseOutMutRef => {
+                            write!(w, "{} as *mut _ as *mut _", rparam.name)?;
                         }
                         LibParamType::MemberHandle => {
                             write!(w, "Some(self.handle)")?;
