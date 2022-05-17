@@ -448,6 +448,7 @@ enum LibParamType {
     CDecl,
     Bool,
     MemberHandle,
+    Constant,
     CStr {
         is_optional: bool,
     },
@@ -1780,6 +1781,12 @@ impl<'a> Generator<'a> {
                         Some("vk::"),
                     );
 
+                    // match members with constant value
+                    if vparam.values.is_some() {
+                        params[i].ty = LibParamType::Constant;
+                        continue;
+                    }
+
                     // match bool
                     if cparam.ty.base == NAMED_TYPE_VKBOOL32 && cparam.ty.decoration == CDecoration::None {
                         params[i].ty = LibParamType::Bool;
@@ -2113,6 +2120,7 @@ impl<'a> Generator<'a> {
                                         )?;
                                     }
                                 }
+                                LibParamType::Constant => {}
                                 _ => panic!("unhandled struct member {:?}", rparam),
                             }
                         }
@@ -2581,7 +2589,7 @@ impl<'a> Generator<'a> {
                             self.get_rust_parameter_type(&cparam.ty, Some("vk::")),
                         )?;
                     }
-                    LibParamType::MemberHandle => {}
+                    LibParamType::MemberHandle | LibParamType::Constant => {}
                     LibParamType::Bool => {
                         write!(w, "{}: bool,", rparam.name)?;
                     }
@@ -2922,6 +2930,7 @@ impl<'a> Generator<'a> {
                                 write!(w, "v.as_mut_ptr()")?;
                             }
                         },
+                        LibParamType::Constant => {}
                     }
                     write!(w, ",")?;
                 }

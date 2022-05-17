@@ -87,10 +87,6 @@ pub struct ApplicationInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ApplicationInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -186,10 +182,6 @@ impl<'a> DeviceQueueCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -231,10 +223,6 @@ impl<'a> DeviceCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -292,10 +280,6 @@ impl<'a> InstanceCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -346,10 +330,6 @@ impl<'a> MemoryAllocateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -380,10 +360,6 @@ pub struct MappedMemoryRangeBuilder {
     inner: vk::MappedMemoryRange,
 }
 impl MappedMemoryRangeBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -424,10 +400,6 @@ impl<'a> WriteDescriptorSetBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -483,10 +455,6 @@ pub struct CopyDescriptorSetBuilder {
     inner: vk::CopyDescriptorSet,
 }
 impl CopyDescriptorSetBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -545,10 +513,6 @@ impl<'a> BufferCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -592,10 +556,6 @@ pub struct BufferViewCreateInfoBuilder {
     inner: vk::BufferViewCreateInfo,
 }
 impl BufferViewCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -638,10 +598,6 @@ pub struct MemoryBarrierBuilder {
     inner: vk::MemoryBarrier,
 }
 impl MemoryBarrierBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -672,10 +628,6 @@ pub struct BufferMemoryBarrierBuilder {
     inner: vk::BufferMemoryBarrier,
 }
 impl BufferMemoryBarrierBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -732,10 +684,6 @@ impl<'a> ImageMemoryBarrierBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -798,10 +746,6 @@ impl<'a> ImageCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -881,10 +825,6 @@ impl<'a> ImageViewCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1025,10 +965,6 @@ impl<'a> BindSparseInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1082,10 +1018,6 @@ impl<'a> ShaderModuleCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1172,10 +1104,6 @@ impl<'a> DescriptorSetLayoutCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1213,10 +1141,6 @@ impl<'a> DescriptorPoolCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1260,10 +1184,6 @@ impl<'a> DescriptorSetAllocateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1334,10 +1254,6 @@ impl<'a> PipelineShaderStageCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1386,10 +1302,6 @@ impl<'a> ComputePipelineCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1442,10 +1354,6 @@ impl<'a> PipelineVertexInputStateCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1492,10 +1400,6 @@ pub struct PipelineInputAssemblyStateCreateInfoBuilder {
     inner: vk::PipelineInputAssemblyStateCreateInfo,
 }
 impl PipelineInputAssemblyStateCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1538,10 +1442,6 @@ impl<'a> PipelineTessellationStateCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1578,10 +1478,6 @@ impl<'a> PipelineViewportStateCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1634,10 +1530,6 @@ impl<'a> PipelineRasterizationStateCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -1714,10 +1606,6 @@ impl<'a> PipelineMultisampleStateCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1776,10 +1664,6 @@ impl<'a> PipelineColorBlendStateCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1820,10 +1704,6 @@ pub struct PipelineDynamicStateCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineDynamicStateCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1855,10 +1735,6 @@ pub struct PipelineDepthStencilStateCreateInfoBuilder {
     inner: vk::PipelineDepthStencilStateCreateInfo,
 }
 impl PipelineDepthStencilStateCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -1927,10 +1803,6 @@ impl<'a> GraphicsPipelineCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2046,10 +1918,6 @@ pub struct PipelineCacheCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineCacheCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2082,10 +1950,6 @@ pub struct PipelineLayoutCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineLayoutCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2128,10 +1992,6 @@ impl<'a> SamplerCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2220,10 +2080,6 @@ pub struct CommandPoolCreateInfoBuilder {
     inner: vk::CommandPoolCreateInfo,
 }
 impl CommandPoolCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2254,10 +2110,6 @@ pub struct CommandBufferAllocateInfoBuilder {
     inner: vk::CommandBufferAllocateInfo,
 }
 impl CommandBufferAllocateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2298,10 +2150,6 @@ impl<'a> CommandBufferInheritanceInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2358,10 +2206,6 @@ impl<'a> CommandBufferBeginInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2398,10 +2242,6 @@ impl<'a> RenderPassBeginInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2510,10 +2350,6 @@ impl<'a> RenderPassCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2555,10 +2391,6 @@ pub struct EventCreateInfoBuilder {
     inner: vk::EventCreateInfo,
 }
 impl EventCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2591,10 +2423,6 @@ impl<'a> FenceCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2631,10 +2459,6 @@ impl<'a> SemaphoreCreateInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2667,10 +2491,6 @@ impl<'a> QueryPoolCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2717,10 +2537,6 @@ impl<'a> FramebufferCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -2778,10 +2594,6 @@ impl<'a> SubmitInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2825,10 +2637,6 @@ pub struct DisplayModeCreateInfoKHRBuilder {
     inner: vk::DisplayModeCreateInfoKHR,
 }
 impl DisplayModeCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2859,10 +2667,6 @@ pub struct DisplaySurfaceCreateInfoKHRBuilder {
     inner: vk::DisplaySurfaceCreateInfoKHR,
 }
 impl DisplaySurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2917,10 +2721,6 @@ pub struct DisplayPresentInfoKHRBuilder {
     inner: vk::DisplayPresentInfoKHR,
 }
 impl DisplayPresentInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2957,10 +2757,6 @@ pub struct AndroidSurfaceCreateInfoKHRBuilder {
     inner: vk::AndroidSurfaceCreateInfoKHR,
 }
 impl AndroidSurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2991,10 +2787,6 @@ pub struct ViSurfaceCreateInfoNNBuilder {
     inner: vk::ViSurfaceCreateInfoNN,
 }
 impl ViSurfaceCreateInfoNNBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3025,10 +2817,6 @@ pub struct WaylandSurfaceCreateInfoKHRBuilder {
     inner: vk::WaylandSurfaceCreateInfoKHR,
 }
 impl WaylandSurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3063,10 +2851,6 @@ pub struct Win32SurfaceCreateInfoKHRBuilder {
     inner: vk::Win32SurfaceCreateInfoKHR,
 }
 impl Win32SurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3101,10 +2885,6 @@ pub struct XlibSurfaceCreateInfoKHRBuilder {
     inner: vk::XlibSurfaceCreateInfoKHR,
 }
 impl XlibSurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3139,10 +2919,6 @@ pub struct XcbSurfaceCreateInfoKHRBuilder {
     inner: vk::XcbSurfaceCreateInfoKHR,
 }
 impl XcbSurfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3177,10 +2953,6 @@ pub struct DirectFBSurfaceCreateInfoEXTBuilder {
     inner: vk::DirectFBSurfaceCreateInfoEXT,
 }
 impl DirectFBSurfaceCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3215,10 +2987,6 @@ pub struct ImagePipeSurfaceCreateInfoFUCHSIABuilder {
     inner: vk::ImagePipeSurfaceCreateInfoFUCHSIA,
 }
 impl ImagePipeSurfaceCreateInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3255,10 +3023,6 @@ impl<'a> SwapchainCreateInfoKHRBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -3352,10 +3116,6 @@ impl<'a> PresentInfoKHRBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3394,10 +3154,6 @@ pub struct DebugReportCallbackCreateInfoEXTBuilder {
     inner: vk::DebugReportCallbackCreateInfoEXT,
 }
 impl DebugReportCallbackCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3435,10 +3191,6 @@ pub struct ValidationFlagsEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ValidationFlagsEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3471,10 +3223,6 @@ pub struct ValidationFeaturesEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ValidationFeaturesEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3519,10 +3267,6 @@ pub struct PipelineRasterizationStateRasterizationOrderAMDBuilder {
     inner: vk::PipelineRasterizationStateRasterizationOrderAMD,
 }
 impl PipelineRasterizationStateRasterizationOrderAMDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3552,10 +3296,6 @@ pub struct DebugMarkerObjectNameInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugMarkerObjectNameInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3591,10 +3331,6 @@ pub struct DebugMarkerObjectTagInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugMarkerObjectTagInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3635,10 +3371,6 @@ pub struct DebugMarkerMarkerInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugMarkerMarkerInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3665,10 +3397,6 @@ pub struct DedicatedAllocationImageCreateInfoNVBuilder {
     inner: vk::DedicatedAllocationImageCreateInfoNV,
 }
 impl DedicatedAllocationImageCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3697,10 +3425,6 @@ pub struct DedicatedAllocationBufferCreateInfoNVBuilder {
     inner: vk::DedicatedAllocationBufferCreateInfoNV,
 }
 impl DedicatedAllocationBufferCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3729,10 +3453,6 @@ pub struct DedicatedAllocationMemoryAllocateInfoNVBuilder {
     inner: vk::DedicatedAllocationMemoryAllocateInfoNV,
 }
 impl DedicatedAllocationMemoryAllocateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3765,10 +3485,6 @@ pub struct ExternalMemoryImageCreateInfoNVBuilder {
     inner: vk::ExternalMemoryImageCreateInfoNV,
 }
 impl ExternalMemoryImageCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3797,10 +3513,6 @@ pub struct ExportMemoryAllocateInfoNVBuilder {
     inner: vk::ExportMemoryAllocateInfoNV,
 }
 impl ExportMemoryAllocateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3829,10 +3541,6 @@ pub struct ImportMemoryWin32HandleInfoNVBuilder {
     inner: vk::ImportMemoryWin32HandleInfoNV,
 }
 impl ImportMemoryWin32HandleInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3866,10 +3574,6 @@ pub struct ExportMemoryWin32HandleInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ExportMemoryWin32HandleInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3903,10 +3607,6 @@ pub struct Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> Win32KeyedMutexAcquireReleaseInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3956,10 +3656,6 @@ pub struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {
     inner: vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV,
 }
 impl PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -3990,10 +3686,6 @@ pub struct DevicePrivateDataCreateInfoBuilder {
     inner: vk::DevicePrivateDataCreateInfo,
 }
 impl DevicePrivateDataCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4022,10 +3714,6 @@ pub struct PrivateDataSlotCreateInfoBuilder {
     inner: vk::PrivateDataSlotCreateInfo,
 }
 impl PrivateDataSlotCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4052,10 +3740,6 @@ pub struct PhysicalDevicePrivateDataFeaturesBuilder {
     inner: vk::PhysicalDevicePrivateDataFeatures,
 }
 impl PhysicalDevicePrivateDataFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4089,10 +3773,6 @@ pub struct GraphicsShaderGroupCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> GraphicsShaderGroupCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4135,10 +3815,6 @@ pub struct GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> GraphicsPipelineShaderGroupsCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4174,10 +3850,6 @@ pub struct IndirectCommandsLayoutTokenNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> IndirectCommandsLayoutTokenNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4248,10 +3920,6 @@ pub struct IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> IndirectCommandsLayoutCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4293,10 +3961,6 @@ pub struct GeneratedCommandsInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> GeneratedCommandsInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4368,10 +4032,6 @@ pub struct GeneratedCommandsMemoryRequirementsInfoNVBuilder {
     inner: vk::GeneratedCommandsMemoryRequirementsInfoNV,
 }
 impl GeneratedCommandsMemoryRequirementsInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4420,10 +4080,6 @@ impl<'a> PhysicalDeviceFeatures2Builder<'a> {
     }
     pub fn get_mut(&mut self) -> &mut vk::PhysicalDeviceFeatures2 {
         &mut self.inner
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
     }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
@@ -4548,10 +4204,6 @@ impl<'a> PhysicalDeviceImageFormatInfo2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4652,10 +4304,6 @@ pub struct PhysicalDeviceSparseImageFormatInfo2Builder {
     inner: vk::PhysicalDeviceSparseImageFormatInfo2,
 }
 impl PhysicalDeviceSparseImageFormatInfo2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4701,10 +4349,6 @@ pub struct PresentRegionsKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PresentRegionsKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4758,10 +4402,6 @@ pub struct PhysicalDeviceVariablePointersFeaturesBuilder {
     inner: vk::PhysicalDeviceVariablePointersFeatures,
 }
 impl PhysicalDeviceVariablePointersFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4800,10 +4440,6 @@ pub struct PhysicalDeviceExternalImageFormatInfoBuilder {
     inner: vk::PhysicalDeviceExternalImageFormatInfo,
 }
 impl PhysicalDeviceExternalImageFormatInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4833,10 +4469,6 @@ pub struct PhysicalDeviceExternalBufferInfoBuilder {
     inner: vk::PhysicalDeviceExternalBufferInfo,
 }
 impl PhysicalDeviceExternalBufferInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4872,10 +4504,6 @@ pub struct ExternalMemoryImageCreateInfoBuilder {
     inner: vk::ExternalMemoryImageCreateInfo,
 }
 impl ExternalMemoryImageCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4904,10 +4532,6 @@ pub struct ExternalMemoryBufferCreateInfoBuilder {
     inner: vk::ExternalMemoryBufferCreateInfo,
 }
 impl ExternalMemoryBufferCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4936,10 +4560,6 @@ pub struct ExportMemoryAllocateInfoBuilder {
     inner: vk::ExportMemoryAllocateInfo,
 }
 impl ExportMemoryAllocateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -4968,10 +4588,6 @@ pub struct ImportMemoryWin32HandleInfoKHRBuilder {
     inner: vk::ImportMemoryWin32HandleInfoKHR,
 }
 impl ImportMemoryWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5009,10 +4625,6 @@ pub struct ExportMemoryWin32HandleInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ExportMemoryWin32HandleInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5049,10 +4661,6 @@ pub struct ImportMemoryZirconHandleInfoFUCHSIABuilder {
     inner: vk::ImportMemoryZirconHandleInfoFUCHSIA,
 }
 impl ImportMemoryZirconHandleInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5085,10 +4693,6 @@ pub struct MemoryGetZirconHandleInfoFUCHSIABuilder {
     inner: vk::MemoryGetZirconHandleInfoFUCHSIA,
 }
 impl MemoryGetZirconHandleInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5119,10 +4723,6 @@ pub struct MemoryGetWin32HandleInfoKHRBuilder {
     inner: vk::MemoryGetWin32HandleInfoKHR,
 }
 impl MemoryGetWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5153,10 +4753,6 @@ pub struct ImportMemoryFdInfoKHRBuilder {
     inner: vk::ImportMemoryFdInfoKHR,
 }
 impl ImportMemoryFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5189,10 +4785,6 @@ pub struct MemoryGetFdInfoKHRBuilder {
     inner: vk::MemoryGetFdInfoKHR,
 }
 impl MemoryGetFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5224,10 +4816,6 @@ pub struct Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> Win32KeyedMutexAcquireReleaseInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5283,10 +4871,6 @@ impl<'a> PhysicalDeviceExternalSemaphoreInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5313,10 +4897,6 @@ pub struct ExportSemaphoreCreateInfoBuilder {
     inner: vk::ExportSemaphoreCreateInfo,
 }
 impl ExportSemaphoreCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5345,10 +4925,6 @@ pub struct ImportSemaphoreWin32HandleInfoKHRBuilder {
     inner: vk::ImportSemaphoreWin32HandleInfoKHR,
 }
 impl ImportSemaphoreWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5392,10 +4968,6 @@ pub struct ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ExportSemaphoreWin32HandleInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5433,10 +5005,6 @@ pub struct D3D12FenceSubmitInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> D3D12FenceSubmitInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5471,10 +5039,6 @@ pub struct SemaphoreGetWin32HandleInfoKHRBuilder {
     inner: vk::SemaphoreGetWin32HandleInfoKHR,
 }
 impl SemaphoreGetWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5505,10 +5069,6 @@ pub struct ImportSemaphoreFdInfoKHRBuilder {
     inner: vk::ImportSemaphoreFdInfoKHR,
 }
 impl ImportSemaphoreFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5547,10 +5107,6 @@ pub struct SemaphoreGetFdInfoKHRBuilder {
     inner: vk::SemaphoreGetFdInfoKHR,
 }
 impl SemaphoreGetFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5581,10 +5137,6 @@ pub struct ImportSemaphoreZirconHandleInfoFUCHSIABuilder {
     inner: vk::ImportSemaphoreZirconHandleInfoFUCHSIA,
 }
 impl ImportSemaphoreZirconHandleInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5623,10 +5175,6 @@ pub struct SemaphoreGetZirconHandleInfoFUCHSIABuilder {
     inner: vk::SemaphoreGetZirconHandleInfoFUCHSIA,
 }
 impl SemaphoreGetZirconHandleInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5657,10 +5205,6 @@ pub struct PhysicalDeviceExternalFenceInfoBuilder {
     inner: vk::PhysicalDeviceExternalFenceInfo,
 }
 impl PhysicalDeviceExternalFenceInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5687,10 +5231,6 @@ pub struct ExportFenceCreateInfoBuilder {
     inner: vk::ExportFenceCreateInfo,
 }
 impl ExportFenceCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5719,10 +5259,6 @@ pub struct ImportFenceWin32HandleInfoKHRBuilder {
     inner: vk::ImportFenceWin32HandleInfoKHR,
 }
 impl ImportFenceWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5766,10 +5302,6 @@ pub struct ExportFenceWin32HandleInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ExportFenceWin32HandleInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5806,10 +5338,6 @@ pub struct FenceGetWin32HandleInfoKHRBuilder {
     inner: vk::FenceGetWin32HandleInfoKHR,
 }
 impl FenceGetWin32HandleInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5840,10 +5368,6 @@ pub struct ImportFenceFdInfoKHRBuilder {
     inner: vk::ImportFenceFdInfoKHR,
 }
 impl ImportFenceFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5882,10 +5406,6 @@ pub struct FenceGetFdInfoKHRBuilder {
     inner: vk::FenceGetFdInfoKHR,
 }
 impl FenceGetFdInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5916,10 +5436,6 @@ pub struct PhysicalDeviceMultiviewFeaturesBuilder {
     inner: vk::PhysicalDeviceMultiviewFeatures,
 }
 impl PhysicalDeviceMultiviewFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -5964,10 +5480,6 @@ pub struct RenderPassMultiviewCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassMultiviewCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6007,10 +5519,6 @@ pub struct DisplayPowerInfoEXTBuilder {
     inner: vk::DisplayPowerInfoEXT,
 }
 impl DisplayPowerInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6037,10 +5545,6 @@ pub struct DeviceEventInfoEXTBuilder {
     inner: vk::DeviceEventInfoEXT,
 }
 impl DeviceEventInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6067,10 +5571,6 @@ pub struct DisplayEventInfoEXTBuilder {
     inner: vk::DisplayEventInfoEXT,
 }
 impl DisplayEventInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6097,10 +5597,6 @@ pub struct SwapchainCounterCreateInfoEXTBuilder {
     inner: vk::SwapchainCounterCreateInfoEXT,
 }
 impl SwapchainCounterCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6129,10 +5625,6 @@ pub struct MemoryAllocateFlagsInfoBuilder {
     inner: vk::MemoryAllocateFlagsInfo,
 }
 impl MemoryAllocateFlagsInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6173,10 +5665,6 @@ impl<'a> BindBufferMemoryInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6212,10 +5700,6 @@ pub struct BindBufferMemoryDeviceGroupInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BindBufferMemoryDeviceGroupInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6253,10 +5737,6 @@ impl<'a> BindImageMemoryInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6292,10 +5772,6 @@ pub struct BindImageMemoryDeviceGroupInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BindImageMemoryDeviceGroupInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6333,10 +5809,6 @@ pub struct DeviceGroupRenderPassBeginInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceGroupRenderPassBeginInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6372,10 +5844,6 @@ pub struct DeviceGroupCommandBufferBeginInfoBuilder {
     inner: vk::DeviceGroupCommandBufferBeginInfo,
 }
 impl DeviceGroupCommandBufferBeginInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6405,10 +5873,6 @@ pub struct DeviceGroupSubmitInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceGroupSubmitInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6454,10 +5918,6 @@ pub struct DeviceGroupBindSparseInfoBuilder {
     inner: vk::DeviceGroupBindSparseInfo,
 }
 impl DeviceGroupBindSparseInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6490,10 +5950,6 @@ pub struct ImageSwapchainCreateInfoKHRBuilder {
     inner: vk::ImageSwapchainCreateInfoKHR,
 }
 impl ImageSwapchainCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6522,10 +5978,6 @@ pub struct BindImageMemorySwapchainInfoKHRBuilder {
     inner: vk::BindImageMemorySwapchainInfoKHR,
 }
 impl BindImageMemorySwapchainInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6558,10 +6010,6 @@ pub struct AcquireNextImageInfoKHRBuilder {
     inner: vk::AcquireNextImageInfoKHR,
 }
 impl AcquireNextImageInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6605,10 +6053,6 @@ pub struct DeviceGroupPresentInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceGroupPresentInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6643,10 +6087,6 @@ pub struct DeviceGroupDeviceCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceGroupDeviceCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6676,10 +6116,6 @@ pub struct DeviceGroupSwapchainCreateInfoKHRBuilder {
     inner: vk::DeviceGroupSwapchainCreateInfoKHR,
 }
 impl DeviceGroupSwapchainCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6709,10 +6145,6 @@ pub struct DescriptorUpdateTemplateCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorUpdateTemplateCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6769,10 +6201,6 @@ pub struct PhysicalDevicePresentIdFeaturesKHRBuilder {
     inner: vk::PhysicalDevicePresentIdFeaturesKHR,
 }
 impl PhysicalDevicePresentIdFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6804,10 +6232,6 @@ pub struct PresentIdKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PresentIdKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6837,10 +6261,6 @@ pub struct PhysicalDevicePresentWaitFeaturesKHRBuilder {
     inner: vk::PhysicalDevicePresentWaitFeaturesKHR,
 }
 impl PhysicalDevicePresentWaitFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6871,10 +6291,6 @@ pub struct HdrMetadataEXTBuilder {
     inner: vk::HdrMetadataEXT,
 }
 impl HdrMetadataEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6930,10 +6346,6 @@ pub struct SwapchainDisplayNativeHdrCreateInfoAMDBuilder {
     inner: vk::SwapchainDisplayNativeHdrCreateInfoAMD,
 }
 impl SwapchainDisplayNativeHdrCreateInfoAMDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6963,10 +6375,6 @@ pub struct PresentTimesInfoGOOGLEBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PresentTimesInfoGOOGLEBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -6996,10 +6404,6 @@ pub struct IOSSurfaceCreateInfoMVKBuilder {
     inner: vk::IOSSurfaceCreateInfoMVK,
 }
 impl IOSSurfaceCreateInfoMVKBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7030,10 +6434,6 @@ pub struct MacOSSurfaceCreateInfoMVKBuilder {
     inner: vk::MacOSSurfaceCreateInfoMVK,
 }
 impl MacOSSurfaceCreateInfoMVKBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7065,10 +6465,6 @@ pub struct MetalSurfaceCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> MetalSurfaceCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7100,10 +6496,6 @@ pub struct PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportWScalingStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7142,10 +6534,6 @@ pub struct PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportSwizzleStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7181,10 +6569,6 @@ pub struct PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineDiscardRectangleStateCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7224,10 +6608,6 @@ pub struct RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassInputAttachmentAspectCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7263,10 +6643,6 @@ impl<'a> PhysicalDeviceSurfaceInfo2KHRBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -7353,10 +6729,6 @@ pub struct DisplayPlaneInfo2KHRBuilder {
     inner: vk::DisplayPlaneInfo2KHR,
 }
 impl DisplayPlaneInfo2KHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7388,10 +6760,6 @@ pub struct PhysicalDevice16BitStorageFeaturesBuilder {
     inner: vk::PhysicalDevice16BitStorageFeatures,
 }
 impl PhysicalDevice16BitStorageFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7443,10 +6811,6 @@ pub struct PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder {
     inner: vk::PhysicalDeviceShaderSubgroupExtendedTypesFeatures,
 }
 impl PhysicalDeviceShaderSubgroupExtendedTypesFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7481,10 +6845,6 @@ pub struct BufferMemoryRequirementsInfo2Builder {
     inner: vk::BufferMemoryRequirementsInfo2,
 }
 impl BufferMemoryRequirementsInfo2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7512,10 +6872,6 @@ pub struct DeviceBufferMemoryRequirementsBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceBufferMemoryRequirementsBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7550,10 +6906,6 @@ impl<'a> ImageMemoryRequirementsInfo2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7580,10 +6932,6 @@ pub struct ImageSparseMemoryRequirementsInfo2Builder {
     inner: vk::ImageSparseMemoryRequirementsInfo2,
 }
 impl ImageSparseMemoryRequirementsInfo2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7611,10 +6959,6 @@ pub struct DeviceImageMemoryRequirementsBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DeviceImageMemoryRequirementsBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7676,10 +7020,6 @@ pub struct MemoryDedicatedAllocateInfoBuilder {
     inner: vk::MemoryDedicatedAllocateInfo,
 }
 impl MemoryDedicatedAllocateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7712,10 +7052,6 @@ pub struct ImageViewUsageCreateInfoBuilder {
     inner: vk::ImageViewUsageCreateInfo,
 }
 impl ImageViewUsageCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7744,10 +7080,6 @@ pub struct PipelineTessellationDomainOriginStateCreateInfoBuilder {
     inner: vk::PipelineTessellationDomainOriginStateCreateInfo,
 }
 impl PipelineTessellationDomainOriginStateCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7776,10 +7108,6 @@ pub struct SamplerYcbcrConversionInfoBuilder {
     inner: vk::SamplerYcbcrConversionInfo,
 }
 impl SamplerYcbcrConversionInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7816,10 +7144,6 @@ impl<'a> SamplerYcbcrConversionCreateInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -7880,10 +7204,6 @@ pub struct BindImagePlaneMemoryInfoBuilder {
     inner: vk::BindImagePlaneMemoryInfo,
 }
 impl BindImagePlaneMemoryInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7912,10 +7232,6 @@ pub struct ImagePlaneMemoryRequirementsInfoBuilder {
     inner: vk::ImagePlaneMemoryRequirementsInfo,
 }
 impl ImagePlaneMemoryRequirementsInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7944,10 +7260,6 @@ pub struct PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder {
     inner: vk::PhysicalDeviceSamplerYcbcrConversionFeatures,
 }
 impl PhysicalDeviceSamplerYcbcrConversionFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -7980,10 +7292,6 @@ pub struct ConditionalRenderingBeginInfoEXTBuilder {
     inner: vk::ConditionalRenderingBeginInfoEXT,
 }
 impl ConditionalRenderingBeginInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8018,10 +7326,6 @@ pub struct ProtectedSubmitInfoBuilder {
     inner: vk::ProtectedSubmitInfo,
 }
 impl ProtectedSubmitInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8050,10 +7354,6 @@ pub struct PhysicalDeviceProtectedMemoryFeaturesBuilder {
     inner: vk::PhysicalDeviceProtectedMemoryFeatures,
 }
 impl PhysicalDeviceProtectedMemoryFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8085,10 +7385,6 @@ pub struct DeviceQueueInfo2Builder {
     inner: vk::DeviceQueueInfo2,
 }
 impl DeviceQueueInfo2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8123,10 +7419,6 @@ pub struct PipelineCoverageToColorStateCreateInfoNVBuilder {
     inner: vk::PipelineCoverageToColorStateCreateInfoNV,
 }
 impl PipelineCoverageToColorStateCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8165,10 +7457,6 @@ pub struct SampleLocationsInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SampleLocationsInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8209,10 +7497,6 @@ pub struct RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassSampleLocationsBeginInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8257,10 +7541,6 @@ pub struct PipelineSampleLocationsStateCreateInfoEXTBuilder {
     inner: vk::PipelineSampleLocationsStateCreateInfoEXT,
 }
 impl PipelineSampleLocationsStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8294,10 +7574,6 @@ pub struct SamplerReductionModeCreateInfoBuilder {
     inner: vk::SamplerReductionModeCreateInfo,
 }
 impl SamplerReductionModeCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8326,10 +7602,6 @@ pub struct PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceBlendOperationAdvancedFeaturesEXT,
 }
 impl PhysicalDeviceBlendOperationAdvancedFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8364,10 +7636,6 @@ pub struct PhysicalDeviceMultiDrawFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceMultiDrawFeaturesEXT,
 }
 impl PhysicalDeviceMultiDrawFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8399,10 +7667,6 @@ pub struct PipelineColorBlendAdvancedStateCreateInfoEXTBuilder {
     inner: vk::PipelineColorBlendAdvancedStateCreateInfoEXT,
 }
 impl PipelineColorBlendAdvancedStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8439,10 +7703,6 @@ pub struct PhysicalDeviceInlineUniformBlockFeaturesBuilder {
     inner: vk::PhysicalDeviceInlineUniformBlockFeatures,
 }
 impl PhysicalDeviceInlineUniformBlockFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8487,10 +7747,6 @@ pub struct WriteDescriptorSetInlineUniformBlockBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> WriteDescriptorSetInlineUniformBlockBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8520,10 +7776,6 @@ pub struct DescriptorPoolInlineUniformBlockCreateInfoBuilder {
     inner: vk::DescriptorPoolInlineUniformBlockCreateInfo,
 }
 impl DescriptorPoolInlineUniformBlockCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8553,10 +7805,6 @@ pub struct PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineCoverageModulationStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8609,10 +7857,6 @@ pub struct ImageFormatListCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageFormatListCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8647,10 +7891,6 @@ pub struct ValidationCacheCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ValidationCacheCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8682,10 +7922,6 @@ pub struct ShaderModuleValidationCacheCreateInfoEXTBuilder {
     inner: vk::ShaderModuleValidationCacheCreateInfoEXT,
 }
 impl ShaderModuleValidationCacheCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8715,10 +7951,6 @@ pub struct PhysicalDeviceMaintenance4FeaturesBuilder {
     inner: vk::PhysicalDeviceMaintenance4Features,
 }
 impl PhysicalDeviceMaintenance4FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8779,10 +8011,6 @@ pub struct PhysicalDeviceShaderDrawParametersFeaturesBuilder {
     inner: vk::PhysicalDeviceShaderDrawParametersFeatures,
 }
 impl PhysicalDeviceShaderDrawParametersFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8813,10 +8041,6 @@ pub struct PhysicalDeviceShaderFloat16Int8FeaturesBuilder {
     inner: vk::PhysicalDeviceShaderFloat16Int8Features,
 }
 impl PhysicalDeviceShaderFloat16Int8FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8852,10 +8076,6 @@ pub struct PhysicalDeviceHostQueryResetFeaturesBuilder {
     inner: vk::PhysicalDeviceHostQueryResetFeatures,
 }
 impl PhysicalDeviceHostQueryResetFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8886,10 +8106,6 @@ pub struct DeviceQueueGlobalPriorityCreateInfoKHRBuilder {
     inner: vk::DeviceQueueGlobalPriorityCreateInfoKHR,
 }
 impl DeviceQueueGlobalPriorityCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8918,10 +8134,6 @@ pub struct PhysicalDeviceGlobalPriorityQueryFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceGlobalPriorityQueryFeaturesKHR,
 }
 impl PhysicalDeviceGlobalPriorityQueryFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8952,10 +8164,6 @@ pub struct QueueFamilyGlobalPriorityPropertiesKHRBuilder {
     inner: vk::QueueFamilyGlobalPriorityPropertiesKHR,
 }
 impl QueueFamilyGlobalPriorityPropertiesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -8985,10 +8193,6 @@ pub struct DebugUtilsObjectNameInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugUtilsObjectNameInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9026,10 +8230,6 @@ pub struct DebugUtilsObjectTagInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugUtilsObjectTagInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9070,10 +8270,6 @@ pub struct DebugUtilsLabelEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugUtilsLabelEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9100,10 +8296,6 @@ pub struct DebugUtilsMessengerCreateInfoEXTBuilder {
     inner: vk::DebugUtilsMessengerCreateInfoEXT,
 }
 impl DebugUtilsMessengerCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9149,10 +8341,6 @@ pub struct DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9206,10 +8394,6 @@ pub struct PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceDeviceMemoryReportFeaturesEXT,
 }
 impl PhysicalDeviceDeviceMemoryReportFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9240,10 +8424,6 @@ pub struct DeviceDeviceMemoryReportCreateInfoEXTBuilder {
     inner: vk::DeviceDeviceMemoryReportCreateInfoEXT,
 }
 impl DeviceDeviceMemoryReportCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9280,10 +8460,6 @@ pub struct ImportMemoryHostPointerInfoEXTBuilder {
     inner: vk::ImportMemoryHostPointerInfoEXT,
 }
 impl ImportMemoryHostPointerInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9318,10 +8494,6 @@ pub struct CalibratedTimestampInfoEXTBuilder {
     inner: vk::CalibratedTimestampInfoEXT,
 }
 impl CalibratedTimestampInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9350,10 +8522,6 @@ pub struct PipelineRasterizationConservativeStateCreateInfoEXTBuilder {
     inner: vk::PipelineRasterizationConservativeStateCreateInfoEXT,
 }
 impl PipelineRasterizationConservativeStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9393,10 +8561,6 @@ pub struct PhysicalDeviceDescriptorIndexingFeaturesBuilder {
     inner: vk::PhysicalDeviceDescriptorIndexingFeatures,
 }
 impl PhysicalDeviceDescriptorIndexingFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9650,10 +8814,6 @@ pub struct DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorSetLayoutBindingFlagsCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9684,10 +8844,6 @@ pub struct DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DescriptorSetVariableDescriptorCountAllocateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9724,10 +8880,6 @@ impl<'a> AttachmentDescription2Builder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -9796,10 +8948,6 @@ impl<'a> AttachmentReference2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9840,10 +8988,6 @@ impl<'a> SubpassDescription2Builder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -9920,10 +9064,6 @@ impl<'a> SubpassDependency2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -9986,10 +9126,6 @@ impl<'a> RenderPassCreateInfo2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10036,10 +9172,6 @@ pub struct SubpassBeginInfoBuilder {
     inner: vk::SubpassBeginInfo,
 }
 impl SubpassBeginInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10074,10 +9206,6 @@ impl<'a> SubpassEndInfoBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10100,10 +9228,6 @@ pub struct PhysicalDeviceTimelineSemaphoreFeaturesBuilder {
     inner: vk::PhysicalDeviceTimelineSemaphoreFeatures,
 }
 impl PhysicalDeviceTimelineSemaphoreFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10135,10 +9259,6 @@ pub struct SemaphoreTypeCreateInfoBuilder {
     inner: vk::SemaphoreTypeCreateInfo,
 }
 impl SemaphoreTypeCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10174,10 +9294,6 @@ pub struct TimelineSemaphoreSubmitInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> TimelineSemaphoreSubmitInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10215,10 +9331,6 @@ pub struct SemaphoreWaitInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SemaphoreWaitInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10252,10 +9364,6 @@ pub struct SemaphoreSignalInfoBuilder {
     inner: vk::SemaphoreSignalInfo,
 }
 impl SemaphoreSignalInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10287,10 +9395,6 @@ pub struct PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineVertexInputDivisorStateCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10325,10 +9429,6 @@ pub struct ImportAndroidHardwareBufferInfoANDROIDBuilder {
     inner: vk::ImportAndroidHardwareBufferInfoANDROID,
 }
 impl ImportAndroidHardwareBufferInfoANDROIDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10387,10 +9487,6 @@ pub struct MemoryGetAndroidHardwareBufferInfoANDROIDBuilder {
     inner: vk::MemoryGetAndroidHardwareBufferInfoANDROID,
 }
 impl MemoryGetAndroidHardwareBufferInfoANDROIDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10418,10 +9514,6 @@ pub struct CommandBufferInheritanceConditionalRenderingInfoEXTBuilder {
     inner: vk::CommandBufferInheritanceConditionalRenderingInfoEXT,
 }
 impl CommandBufferInheritanceConditionalRenderingInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10454,10 +9546,6 @@ pub struct ExternalFormatANDROIDBuilder {
     inner: vk::ExternalFormatANDROID,
 }
 impl ExternalFormatANDROIDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10488,10 +9576,6 @@ pub struct PhysicalDevice8BitStorageFeaturesBuilder {
     inner: vk::PhysicalDevice8BitStorageFeatures,
 }
 impl PhysicalDevice8BitStorageFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10538,10 +9622,6 @@ pub struct PhysicalDeviceConditionalRenderingFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceConditionalRenderingFeaturesEXT,
 }
 impl PhysicalDeviceConditionalRenderingFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10580,10 +9660,6 @@ pub struct PhysicalDeviceVulkanMemoryModelFeaturesBuilder {
     inner: vk::PhysicalDeviceVulkanMemoryModelFeatures,
 }
 impl PhysicalDeviceVulkanMemoryModelFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10634,10 +9710,6 @@ pub struct PhysicalDeviceShaderAtomicInt64FeaturesBuilder {
     inner: vk::PhysicalDeviceShaderAtomicInt64Features,
 }
 impl PhysicalDeviceShaderAtomicInt64FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10680,10 +9752,6 @@ pub struct PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceShaderAtomicFloatFeaturesEXT,
 }
 impl PhysicalDeviceShaderAtomicFloatFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10806,10 +9874,6 @@ pub struct PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceShaderAtomicFloat2FeaturesEXT,
 }
 impl PhysicalDeviceShaderAtomicFloat2FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10932,10 +9996,6 @@ pub struct PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceVertexAttributeDivisorFeaturesEXT,
 }
 impl PhysicalDeviceVertexAttributeDivisorFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -10984,10 +10044,6 @@ pub struct SubpassDescriptionDepthStencilResolveBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SubpassDescriptionDepthStencilResolveBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11027,10 +10083,6 @@ pub struct ImageViewASTCDecodeModeEXTBuilder {
     inner: vk::ImageViewASTCDecodeModeEXT,
 }
 impl ImageViewASTCDecodeModeEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11059,10 +10111,6 @@ pub struct PhysicalDeviceASTCDecodeFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceASTCDecodeFeaturesEXT,
 }
 impl PhysicalDeviceASTCDecodeFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11097,10 +10145,6 @@ pub struct PhysicalDeviceTransformFeedbackFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceTransformFeedbackFeaturesEXT,
 }
 impl PhysicalDeviceTransformFeedbackFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11136,10 +10180,6 @@ pub struct PipelineRasterizationStateStreamCreateInfoEXTBuilder {
     inner: vk::PipelineRasterizationStateStreamCreateInfoEXT,
 }
 impl PipelineRasterizationStateStreamCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11172,10 +10212,6 @@ pub struct PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder {
     inner: vk::PhysicalDeviceRepresentativeFragmentTestFeaturesNV,
 }
 impl PhysicalDeviceRepresentativeFragmentTestFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11210,10 +10246,6 @@ pub struct PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder {
     inner: vk::PipelineRepresentativeFragmentTestStateCreateInfoNV,
 }
 impl PipelineRepresentativeFragmentTestStateCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11246,10 +10278,6 @@ pub struct PhysicalDeviceExclusiveScissorFeaturesNVBuilder {
     inner: vk::PhysicalDeviceExclusiveScissorFeaturesNV,
 }
 impl PhysicalDeviceExclusiveScissorFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11281,10 +10309,6 @@ pub struct PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportExclusiveScissorStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11314,10 +10338,6 @@ pub struct PhysicalDeviceCornerSampledImageFeaturesNVBuilder {
     inner: vk::PhysicalDeviceCornerSampledImageFeaturesNV,
 }
 impl PhysicalDeviceCornerSampledImageFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11348,10 +10368,6 @@ pub struct PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
     inner: vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV,
 }
 impl PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11394,10 +10410,6 @@ pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
     inner: vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV,
 }
 impl PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11432,10 +10444,6 @@ pub struct PhysicalDeviceShaderImageFootprintFeaturesNVBuilder {
     inner: vk::PhysicalDeviceShaderImageFootprintFeaturesNV,
 }
 impl PhysicalDeviceShaderImageFootprintFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11466,10 +10474,6 @@ pub struct PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {
     inner: vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV,
 }
 impl PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11534,10 +10538,6 @@ pub struct PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportShadingRateImageStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11571,10 +10571,6 @@ pub struct PhysicalDeviceShadingRateImageFeaturesNVBuilder {
     inner: vk::PhysicalDeviceShadingRateImageFeaturesNV,
 }
 impl PhysicalDeviceShadingRateImageFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11614,10 +10610,6 @@ pub struct PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {
     inner: vk::PhysicalDeviceInvocationMaskFeaturesHUAWEI,
 }
 impl PhysicalDeviceInvocationMaskFeaturesHUAWEIBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11681,10 +10673,6 @@ pub struct PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineViewportCoarseSampleOrderStateCreateInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11718,10 +10706,6 @@ pub struct PhysicalDeviceMeshShaderFeaturesNVBuilder {
     inner: vk::PhysicalDeviceMeshShaderFeaturesNV,
 }
 impl PhysicalDeviceMeshShaderFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11757,10 +10741,6 @@ pub struct RayTracingShaderGroupCreateInfoNVBuilder {
     inner: vk::RayTracingShaderGroupCreateInfoNV,
 }
 impl RayTracingShaderGroupCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11803,10 +10783,6 @@ pub struct RayTracingShaderGroupCreateInfoKHRBuilder {
     inner: vk::RayTracingShaderGroupCreateInfoKHR,
 }
 impl RayTracingShaderGroupCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11859,10 +10835,6 @@ impl<'a> RayTracingPipelineCreateInfoNVBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -11923,10 +10895,6 @@ impl<'a> RayTracingPipelineCreateInfoKHRBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -11996,10 +10964,6 @@ pub struct GeometryTrianglesNVBuilder {
     inner: vk::GeometryTrianglesNV,
 }
 impl GeometryTrianglesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12066,10 +11030,6 @@ pub struct GeometryAABBNVBuilder {
     inner: vk::GeometryAABBNV,
 }
 impl GeometryAABBNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12108,10 +11068,6 @@ pub struct GeometryNVBuilder {
     inner: vk::GeometryNV,
 }
 impl GeometryNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12147,10 +11103,6 @@ pub struct AccelerationStructureInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> AccelerationStructureInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12190,10 +11142,6 @@ pub struct AccelerationStructureCreateInfoNVBuilder {
     inner: vk::AccelerationStructureCreateInfoNV,
 }
 impl AccelerationStructureCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12225,10 +11173,6 @@ pub struct BindAccelerationStructureMemoryInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BindAccelerationStructureMemoryInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12269,10 +11213,6 @@ pub struct WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> WriteDescriptorSetAccelerationStructureKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12303,10 +11243,6 @@ pub struct WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> WriteDescriptorSetAccelerationStructureNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12336,10 +11272,6 @@ pub struct AccelerationStructureMemoryRequirementsInfoNVBuilder {
     inner: vk::AccelerationStructureMemoryRequirementsInfoNV,
 }
 impl AccelerationStructureMemoryRequirementsInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12370,10 +11302,6 @@ pub struct PhysicalDeviceAccelerationStructureFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceAccelerationStructureFeaturesKHR,
 }
 impl PhysicalDeviceAccelerationStructureFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12440,10 +11368,6 @@ pub struct PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceRayTracingPipelineFeaturesKHR,
 }
 impl PhysicalDeviceRayTracingPipelineFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12514,10 +11438,6 @@ pub struct PhysicalDeviceRayQueryFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceRayQueryFeaturesKHR,
 }
 impl PhysicalDeviceRayQueryFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12551,10 +11471,6 @@ pub struct PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {
     inner: vk::PhysicalDeviceRayTracingMaintenance1FeaturesKHR,
 }
 impl PhysicalDeviceRayTracingMaintenance1FeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12598,10 +11514,6 @@ pub struct PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PhysicalDeviceImageDrmFormatModifierInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12640,10 +11552,6 @@ pub struct ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageDrmFormatModifierListCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12674,10 +11582,6 @@ pub struct ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageDrmFormatModifierExplicitCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12711,10 +11615,6 @@ pub struct ImageStencilUsageCreateInfoBuilder {
     inner: vk::ImageStencilUsageCreateInfo,
 }
 impl ImageStencilUsageCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12745,10 +11645,6 @@ pub struct DeviceMemoryOverallocationCreateInfoAMDBuilder {
     inner: vk::DeviceMemoryOverallocationCreateInfoAMD,
 }
 impl DeviceMemoryOverallocationCreateInfoAMDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12777,10 +11673,6 @@ pub struct PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceFragmentDensityMapFeaturesEXT,
 }
 impl PhysicalDeviceFragmentDensityMapFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12830,10 +11722,6 @@ pub struct PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceFragmentDensityMap2FeaturesEXT,
 }
 impl PhysicalDeviceFragmentDensityMap2FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12868,10 +11756,6 @@ pub struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
     inner: vk::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM,
 }
 impl PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOMBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12909,10 +11793,6 @@ pub struct RenderPassFragmentDensityMapCreateInfoEXTBuilder {
     inner: vk::RenderPassFragmentDensityMapCreateInfoEXT,
 }
 impl RenderPassFragmentDensityMapCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12944,10 +11824,6 @@ pub struct SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SubpassFragmentDensityMapOffsetEndInfoQCOMBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12979,10 +11855,6 @@ pub struct PhysicalDeviceScalarBlockLayoutFeaturesBuilder {
     inner: vk::PhysicalDeviceScalarBlockLayoutFeatures,
 }
 impl PhysicalDeviceScalarBlockLayoutFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13013,10 +11885,6 @@ pub struct SurfaceProtectedCapabilitiesKHRBuilder {
     inner: vk::SurfaceProtectedCapabilitiesKHR,
 }
 impl SurfaceProtectedCapabilitiesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13045,10 +11913,6 @@ pub struct PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder {
     inner: vk::PhysicalDeviceUniformBufferStandardLayoutFeatures,
 }
 impl PhysicalDeviceUniformBufferStandardLayoutFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13083,10 +11947,6 @@ pub struct PhysicalDeviceDepthClipEnableFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceDepthClipEnableFeaturesEXT,
 }
 impl PhysicalDeviceDepthClipEnableFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13117,10 +11977,6 @@ pub struct PipelineRasterizationDepthClipStateCreateInfoEXTBuilder {
     inner: vk::PipelineRasterizationDepthClipStateCreateInfoEXT,
 }
 impl PipelineRasterizationDepthClipStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13154,10 +12010,6 @@ pub struct PhysicalDeviceMemoryPriorityFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceMemoryPriorityFeaturesEXT,
 }
 impl PhysicalDeviceMemoryPriorityFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13188,10 +12040,6 @@ pub struct MemoryPriorityAllocateInfoEXTBuilder {
     inner: vk::MemoryPriorityAllocateInfoEXT,
 }
 impl MemoryPriorityAllocateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13220,10 +12068,6 @@ pub struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {
     inner: vk::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT,
 }
 impl PhysicalDevicePageableDeviceLocalMemoryFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13258,10 +12102,6 @@ pub struct PhysicalDeviceBufferDeviceAddressFeaturesBuilder {
     inner: vk::PhysicalDeviceBufferDeviceAddressFeatures,
 }
 impl PhysicalDeviceBufferDeviceAddressFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13308,10 +12148,6 @@ pub struct PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceBufferDeviceAddressFeaturesEXT,
 }
 impl PhysicalDeviceBufferDeviceAddressFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13358,10 +12194,6 @@ pub struct BufferDeviceAddressInfoBuilder {
     inner: vk::BufferDeviceAddressInfo,
 }
 impl BufferDeviceAddressInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13388,10 +12220,6 @@ pub struct BufferOpaqueCaptureAddressCreateInfoBuilder {
     inner: vk::BufferOpaqueCaptureAddressCreateInfo,
 }
 impl BufferOpaqueCaptureAddressCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13420,10 +12248,6 @@ pub struct BufferDeviceAddressCreateInfoEXTBuilder {
     inner: vk::BufferDeviceAddressCreateInfoEXT,
 }
 impl BufferDeviceAddressCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13452,10 +12276,6 @@ pub struct PhysicalDeviceImageViewImageFormatInfoEXTBuilder {
     inner: vk::PhysicalDeviceImageViewImageFormatInfoEXT,
 }
 impl PhysicalDeviceImageViewImageFormatInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13485,10 +12305,6 @@ pub struct PhysicalDeviceImagelessFramebufferFeaturesBuilder {
     inner: vk::PhysicalDeviceImagelessFramebufferFeatures,
 }
 impl PhysicalDeviceImagelessFramebufferFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13520,10 +12336,6 @@ pub struct FramebufferAttachmentsCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> FramebufferAttachmentsCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13557,10 +12369,6 @@ pub struct FramebufferAttachmentImageInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> FramebufferAttachmentImageInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13609,10 +12417,6 @@ pub struct RenderPassAttachmentBeginInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> RenderPassAttachmentBeginInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13642,10 +12446,6 @@ pub struct PhysicalDeviceTextureCompressionASTCHDRFeaturesBuilder {
     inner: vk::PhysicalDeviceTextureCompressionASTCHDRFeatures,
 }
 impl PhysicalDeviceTextureCompressionASTCHDRFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13680,10 +12480,6 @@ pub struct PhysicalDeviceCooperativeMatrixFeaturesNVBuilder {
     inner: vk::PhysicalDeviceCooperativeMatrixFeaturesNV,
 }
 impl PhysicalDeviceCooperativeMatrixFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13723,10 +12519,6 @@ pub struct CooperativeMatrixPropertiesNVBuilder {
     inner: vk::CooperativeMatrixPropertiesNV,
 }
 impl CooperativeMatrixPropertiesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13781,10 +12573,6 @@ pub struct PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceYcbcrImageArraysFeaturesEXT,
 }
 impl PhysicalDeviceYcbcrImageArraysFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13815,10 +12603,6 @@ pub struct ImageViewHandleInfoNVXBuilder {
     inner: vk::ImageViewHandleInfoNVX,
 }
 impl ImageViewHandleInfoNVXBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13853,10 +12637,6 @@ pub struct PipelineCreationFeedbackCreateInfoBuilder {
     inner: vk::PipelineCreationFeedbackCreateInfo,
 }
 impl PipelineCreationFeedbackCreateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13905,10 +12685,6 @@ pub struct SurfaceFullScreenExclusiveInfoEXTBuilder {
     inner: vk::SurfaceFullScreenExclusiveInfoEXT,
 }
 impl SurfaceFullScreenExclusiveInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13939,10 +12715,6 @@ pub struct SurfaceFullScreenExclusiveWin32InfoEXTBuilder {
     inner: vk::SurfaceFullScreenExclusiveWin32InfoEXT,
 }
 impl SurfaceFullScreenExclusiveWin32InfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -13973,10 +12745,6 @@ pub struct SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
     inner: vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
 }
 impl SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14009,10 +12777,6 @@ pub struct PhysicalDevicePerformanceQueryFeaturesKHRBuilder {
     inner: vk::PhysicalDevicePerformanceQueryFeaturesKHR,
 }
 impl PhysicalDevicePerformanceQueryFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14057,10 +12821,6 @@ pub struct QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> QueryPoolPerformanceCreateInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14094,10 +12854,6 @@ pub struct AcquireProfilingLockInfoKHRBuilder {
     inner: vk::AcquireProfilingLockInfoKHR,
 }
 impl AcquireProfilingLockInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14128,10 +12884,6 @@ pub struct PerformanceQuerySubmitInfoKHRBuilder {
     inner: vk::PerformanceQuerySubmitInfoKHR,
 }
 impl PerformanceQuerySubmitInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14162,10 +12914,6 @@ pub struct HeadlessSurfaceCreateInfoEXTBuilder {
     inner: vk::HeadlessSurfaceCreateInfoEXT,
 }
 impl HeadlessSurfaceCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14192,10 +12940,6 @@ pub struct PhysicalDeviceCoverageReductionModeFeaturesNVBuilder {
     inner: vk::PhysicalDeviceCoverageReductionModeFeaturesNV,
 }
 impl PhysicalDeviceCoverageReductionModeFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14226,10 +12970,6 @@ pub struct PipelineCoverageReductionStateCreateInfoNVBuilder {
     inner: vk::PipelineCoverageReductionStateCreateInfoNV,
 }
 impl PipelineCoverageReductionStateCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14262,10 +13002,6 @@ pub struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder {
     inner: vk::PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL,
 }
 impl PhysicalDeviceShaderIntegerFunctions2FeaturesINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14296,10 +13032,6 @@ pub struct InitializePerformanceApiInfoINTELBuilder {
     inner: vk::InitializePerformanceApiInfoINTEL,
 }
 impl InitializePerformanceApiInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14326,10 +13058,6 @@ pub struct QueryPoolPerformanceQueryCreateInfoINTELBuilder {
     inner: vk::QueryPoolPerformanceQueryCreateInfoINTEL,
 }
 impl QueryPoolPerformanceQueryCreateInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14361,10 +13089,6 @@ pub struct PerformanceMarkerInfoINTELBuilder {
     inner: vk::PerformanceMarkerInfoINTEL,
 }
 impl PerformanceMarkerInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14391,10 +13115,6 @@ pub struct PerformanceStreamMarkerInfoINTELBuilder {
     inner: vk::PerformanceStreamMarkerInfoINTEL,
 }
 impl PerformanceStreamMarkerInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14421,10 +13141,6 @@ pub struct PerformanceOverrideInfoINTELBuilder {
     inner: vk::PerformanceOverrideInfoINTEL,
 }
 impl PerformanceOverrideInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14459,10 +13175,6 @@ pub struct PerformanceConfigurationAcquireInfoINTELBuilder {
     inner: vk::PerformanceConfigurationAcquireInfoINTEL,
 }
 impl PerformanceConfigurationAcquireInfoINTELBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14489,10 +13201,6 @@ pub struct PhysicalDeviceShaderClockFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceShaderClockFeaturesKHR,
 }
 impl PhysicalDeviceShaderClockFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14527,10 +13235,6 @@ pub struct PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceIndexTypeUint8FeaturesEXT,
 }
 impl PhysicalDeviceIndexTypeUint8FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14562,10 +13266,6 @@ pub struct PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder {
     inner: vk::PhysicalDeviceShaderSMBuiltinsFeaturesNV,
 }
 impl PhysicalDeviceShaderSMBuiltinsFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14596,10 +13296,6 @@ pub struct PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceFragmentShaderInterlockFeaturesEXT,
 }
 impl PhysicalDeviceFragmentShaderInterlockFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14650,10 +13346,6 @@ pub struct PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder {
     inner: vk::PhysicalDeviceSeparateDepthStencilLayoutsFeatures,
 }
 impl PhysicalDeviceSeparateDepthStencilLayoutsFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14688,10 +13380,6 @@ pub struct AttachmentReferenceStencilLayoutBuilder {
     inner: vk::AttachmentReferenceStencilLayout,
 }
 impl AttachmentReferenceStencilLayoutBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14720,10 +13408,6 @@ pub struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {
     inner: vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT,
 }
 impl PhysicalDevicePrimitiveTopologyListRestartFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14766,10 +13450,6 @@ pub struct AttachmentDescriptionStencilLayoutBuilder {
     inner: vk::AttachmentDescriptionStencilLayout,
 }
 impl AttachmentDescriptionStencilLayoutBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14802,10 +13482,6 @@ pub struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder {
     inner: vk::PhysicalDevicePipelineExecutablePropertiesFeaturesKHR,
 }
 impl PhysicalDevicePipelineExecutablePropertiesFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14836,10 +13512,6 @@ pub struct PipelineInfoKHRBuilder {
     inner: vk::PipelineInfoKHR,
 }
 impl PipelineInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14866,10 +13538,6 @@ pub struct PipelineExecutableInfoKHRBuilder {
     inner: vk::PipelineExecutableInfoKHR,
 }
 impl PipelineExecutableInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14900,10 +13568,6 @@ pub struct PhysicalDeviceShaderDemoteToHelperInvocationFeaturesBuilder {
     inner: vk::PhysicalDeviceShaderDemoteToHelperInvocationFeatures,
 }
 impl PhysicalDeviceShaderDemoteToHelperInvocationFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14938,10 +13602,6 @@ pub struct PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceTexelBufferAlignmentFeaturesEXT,
 }
 impl PhysicalDeviceTexelBufferAlignmentFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -14973,10 +13633,6 @@ pub struct PhysicalDeviceSubgroupSizeControlFeaturesBuilder {
     inner: vk::PhysicalDeviceSubgroupSizeControlFeatures,
 }
 impl PhysicalDeviceSubgroupSizeControlFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15015,10 +13671,6 @@ pub struct MemoryOpaqueCaptureAddressAllocateInfoBuilder {
     inner: vk::MemoryOpaqueCaptureAddressAllocateInfo,
 }
 impl MemoryOpaqueCaptureAddressAllocateInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15047,10 +13699,6 @@ pub struct DeviceMemoryOpaqueCaptureAddressInfoBuilder {
     inner: vk::DeviceMemoryOpaqueCaptureAddressInfo,
 }
 impl DeviceMemoryOpaqueCaptureAddressInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15077,10 +13725,6 @@ pub struct PhysicalDeviceLineRasterizationFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceLineRasterizationFeaturesEXT,
 }
 impl PhysicalDeviceLineRasterizationFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15136,10 +13780,6 @@ pub struct PipelineRasterizationLineStateCreateInfoEXTBuilder {
     inner: vk::PipelineRasterizationLineStateCreateInfoEXT,
 }
 impl PipelineRasterizationLineStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15180,10 +13820,6 @@ pub struct PhysicalDevicePipelineCreationCacheControlFeaturesBuilder {
     inner: vk::PhysicalDevicePipelineCreationCacheControlFeatures,
 }
 impl PhysicalDevicePipelineCreationCacheControlFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15218,10 +13854,6 @@ pub struct PhysicalDeviceVulkan11FeaturesBuilder {
     inner: vk::PhysicalDeviceVulkan11Features,
 }
 impl PhysicalDeviceVulkan11FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15313,10 +13945,6 @@ pub struct PhysicalDeviceVulkan12FeaturesBuilder {
     inner: vk::PhysicalDeviceVulkan12Features,
 }
 impl PhysicalDeviceVulkan12FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15737,10 +14365,6 @@ pub struct PhysicalDeviceVulkan13FeaturesBuilder {
     inner: vk::PhysicalDeviceVulkan13Features,
 }
 impl PhysicalDeviceVulkan13FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15860,10 +14484,6 @@ pub struct PipelineCompilerControlCreateInfoAMDBuilder {
     inner: vk::PipelineCompilerControlCreateInfoAMD,
 }
 impl PipelineCompilerControlCreateInfoAMDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15894,10 +14514,6 @@ pub struct PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {
     inner: vk::PhysicalDeviceCoherentMemoryFeaturesAMD,
 }
 impl PhysicalDeviceCoherentMemoryFeaturesAMDBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15928,10 +14544,6 @@ pub struct SamplerCustomBorderColorCreateInfoEXTBuilder {
     inner: vk::SamplerCustomBorderColorCreateInfoEXT,
 }
 impl SamplerCustomBorderColorCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -15965,10 +14577,6 @@ pub struct PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceCustomBorderColorFeaturesEXT,
 }
 impl PhysicalDeviceCustomBorderColorFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16007,10 +14615,6 @@ pub struct SamplerBorderColorComponentMappingCreateInfoEXTBuilder {
     inner: vk::SamplerBorderColorComponentMappingCreateInfoEXT,
 }
 impl SamplerBorderColorComponentMappingCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16043,10 +14647,6 @@ pub struct PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceBorderColorSwizzleFeaturesEXT,
 }
 impl PhysicalDeviceBorderColorSwizzleFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16091,10 +14691,6 @@ impl<'a> AccelerationStructureGeometryTrianglesDataKHRBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -16147,10 +14743,6 @@ pub struct AccelerationStructureGeometryAabbsDataKHRBuilder {
     inner: vk::AccelerationStructureGeometryAabbsDataKHR,
 }
 impl AccelerationStructureGeometryAabbsDataKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16181,10 +14773,6 @@ pub struct AccelerationStructureGeometryInstancesDataKHRBuilder {
     inner: vk::AccelerationStructureGeometryInstancesDataKHR,
 }
 impl AccelerationStructureGeometryInstancesDataKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16215,10 +14803,6 @@ pub struct AccelerationStructureGeometryKHRBuilder {
     inner: vk::AccelerationStructureGeometryKHR,
 }
 impl AccelerationStructureGeometryKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16254,10 +14838,6 @@ pub struct AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> AccelerationStructureBuildGeometryInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16328,10 +14908,6 @@ impl<'a> AccelerationStructureCreateInfoKHRBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16378,10 +14954,6 @@ pub struct AccelerationStructureDeviceAddressInfoKHRBuilder {
     inner: vk::AccelerationStructureDeviceAddressInfoKHR,
 }
 impl AccelerationStructureDeviceAddressInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16408,10 +14980,6 @@ pub struct AccelerationStructureVersionInfoKHRBuilder {
     inner: vk::AccelerationStructureVersionInfoKHR,
 }
 impl AccelerationStructureVersionInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16438,10 +15006,6 @@ pub struct CopyAccelerationStructureInfoKHRBuilder {
     inner: vk::CopyAccelerationStructureInfoKHR,
 }
 impl CopyAccelerationStructureInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16476,10 +15040,6 @@ pub struct CopyAccelerationStructureToMemoryInfoKHRBuilder {
     inner: vk::CopyAccelerationStructureToMemoryInfoKHR,
 }
 impl CopyAccelerationStructureToMemoryInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16514,10 +15074,6 @@ pub struct CopyMemoryToAccelerationStructureInfoKHRBuilder {
     inner: vk::CopyMemoryToAccelerationStructureInfoKHR,
 }
 impl CopyMemoryToAccelerationStructureInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16552,10 +15108,6 @@ pub struct RayTracingPipelineInterfaceCreateInfoKHRBuilder {
     inner: vk::RayTracingPipelineInterfaceCreateInfoKHR,
 }
 impl RayTracingPipelineInterfaceCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16587,10 +15139,6 @@ pub struct PipelineLibraryCreateInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineLibraryCreateInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16620,10 +15168,6 @@ pub struct PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT,
 }
 impl PhysicalDeviceExtendedDynamicStateFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16654,10 +15198,6 @@ pub struct PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT,
 }
 impl PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16707,10 +15247,6 @@ pub struct RenderPassTransformBeginInfoQCOMBuilder {
     inner: vk::RenderPassTransformBeginInfoQCOM,
 }
 impl RenderPassTransformBeginInfoQCOMBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16739,10 +15275,6 @@ pub struct CopyCommandTransformInfoQCOMBuilder {
     inner: vk::CopyCommandTransformInfoQCOM,
 }
 impl CopyCommandTransformInfoQCOMBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16773,10 +15305,6 @@ pub struct CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {
     inner: vk::CommandBufferInheritanceRenderPassTransformInfoQCOM,
 }
 impl CommandBufferInheritanceRenderPassTransformInfoQCOMBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16809,10 +15337,6 @@ pub struct PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder {
     inner: vk::PhysicalDeviceDiagnosticsConfigFeaturesNV,
 }
 impl PhysicalDeviceDiagnosticsConfigFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16843,10 +15367,6 @@ pub struct DeviceDiagnosticsConfigCreateInfoNVBuilder {
     inner: vk::DeviceDiagnosticsConfigCreateInfoNV,
 }
 impl DeviceDiagnosticsConfigCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16875,10 +15395,6 @@ pub struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesBuilder {
     inner: vk::PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures,
 }
 impl PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16913,10 +15429,6 @@ pub struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR,
 }
 impl PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16951,10 +15463,6 @@ pub struct PhysicalDeviceRobustness2FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceRobustness2FeaturesEXT,
 }
 impl PhysicalDeviceRobustness2FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16994,10 +15502,6 @@ pub struct PhysicalDeviceImageRobustnessFeaturesBuilder {
     inner: vk::PhysicalDeviceImageRobustnessFeatures,
 }
 impl PhysicalDeviceImageRobustnessFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17028,10 +15532,6 @@ pub struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR,
 }
 impl PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17100,10 +15600,6 @@ pub struct PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
     inner: vk::PhysicalDevicePortabilitySubsetFeaturesKHR,
 }
 impl PhysicalDevicePortabilitySubsetFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17213,10 +15709,6 @@ pub struct PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
     inner: vk::PhysicalDevicePortabilitySubsetPropertiesKHR,
 }
 impl PhysicalDevicePortabilitySubsetPropertiesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17245,10 +15737,6 @@ pub struct PhysicalDevice4444FormatsFeaturesEXTBuilder {
     inner: vk::PhysicalDevice4444FormatsFeaturesEXT,
 }
 impl PhysicalDevice4444FormatsFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17283,10 +15771,6 @@ pub struct PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {
     inner: vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI,
 }
 impl PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17317,10 +15801,6 @@ pub struct BufferCopy2Builder {
     inner: vk::BufferCopy2,
 }
 impl BufferCopy2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17355,10 +15835,6 @@ pub struct ImageCopy2Builder {
     inner: vk::ImageCopy2,
 }
 impl ImageCopy2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17409,10 +15885,6 @@ impl<'a> ImageBlit2Builder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17449,10 +15921,6 @@ impl<'a> BufferImageCopy2Builder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -17501,10 +15969,6 @@ pub struct ImageResolve2Builder {
     inner: vk::ImageResolve2,
 }
 impl ImageResolve2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17548,10 +16012,6 @@ pub struct CopyBufferInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CopyBufferInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17588,10 +16048,6 @@ pub struct CopyImageInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CopyImageInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17636,10 +16092,6 @@ pub struct BlitImageInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BlitImageInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17688,10 +16140,6 @@ pub struct CopyBufferToImageInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CopyBufferToImageInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17732,10 +16180,6 @@ pub struct CopyImageToBufferInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CopyImageToBufferInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17776,10 +16220,6 @@ pub struct ResolveImageInfo2Builder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ResolveImageInfo2Builder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17823,10 +16263,6 @@ pub struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
     inner: vk::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT,
 }
 impl PhysicalDeviceShaderImageAtomicInt64FeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17870,10 +16306,6 @@ pub struct FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> FragmentShadingRateAttachmentInfoKHRBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17909,10 +16341,6 @@ pub struct PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
     inner: vk::PipelineFragmentShadingRateStateCreateInfoKHR,
 }
 impl PipelineFragmentShadingRateStateCreateInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17941,10 +16369,6 @@ pub struct PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
     inner: vk::PhysicalDeviceFragmentShadingRateFeaturesKHR,
 }
 impl PhysicalDeviceFragmentShadingRateFeaturesKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17996,10 +16420,6 @@ pub struct PhysicalDeviceShaderTerminateInvocationFeaturesBuilder {
     inner: vk::PhysicalDeviceShaderTerminateInvocationFeatures,
 }
 impl PhysicalDeviceShaderTerminateInvocationFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18034,10 +16454,6 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
     inner: vk::PhysicalDeviceFragmentShadingRateEnumsFeaturesNV,
 }
 impl PhysicalDeviceFragmentShadingRateEnumsFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18088,10 +16504,6 @@ pub struct PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
     inner: vk::PhysicalDeviceFragmentShadingRateEnumsPropertiesNV,
 }
 impl PhysicalDeviceFragmentShadingRateEnumsPropertiesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18123,10 +16535,6 @@ pub struct PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
     inner: vk::PipelineFragmentShadingRateEnumStateCreateInfoNV,
 }
 impl PipelineFragmentShadingRateEnumStateCreateInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18159,10 +16567,6 @@ pub struct AccelerationStructureBuildSizesInfoKHRBuilder {
     inner: vk::AccelerationStructureBuildSizesInfoKHR,
 }
 impl AccelerationStructureBuildSizesInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18197,10 +16601,6 @@ pub struct PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT,
 }
 impl PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18235,10 +16635,6 @@ pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
     inner: vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE,
 }
 impl PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18294,10 +16690,6 @@ pub struct MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18334,10 +16726,6 @@ pub struct PhysicalDeviceDepthClipControlFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceDepthClipControlFeaturesEXT,
 }
 impl PhysicalDeviceDepthClipControlFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18368,10 +16756,6 @@ pub struct PipelineViewportDepthClipControlCreateInfoEXTBuilder {
     inner: vk::PipelineViewportDepthClipControlCreateInfoEXT,
 }
 impl PipelineViewportDepthClipControlCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18400,10 +16784,6 @@ pub struct PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceVertexInputDynamicStateFeaturesEXT,
 }
 impl PhysicalDeviceVertexInputDynamicStateFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18438,10 +16818,6 @@ pub struct PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {
     inner: vk::PhysicalDeviceExternalMemoryRDMAFeaturesNV,
 }
 impl PhysicalDeviceExternalMemoryRDMAFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18472,10 +16848,6 @@ pub struct VertexInputBindingDescription2EXTBuilder {
     inner: vk::VertexInputBindingDescription2EXT,
 }
 impl VertexInputBindingDescription2EXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18514,10 +16886,6 @@ pub struct VertexInputAttributeDescription2EXTBuilder {
     inner: vk::VertexInputAttributeDescription2EXT,
 }
 impl VertexInputAttributeDescription2EXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18556,10 +16924,6 @@ pub struct PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceColorWriteEnableFeaturesEXT,
 }
 impl PhysicalDeviceColorWriteEnableFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18591,10 +16955,6 @@ pub struct PipelineColorWriteCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineColorWriteCreateInfoEXTBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18624,10 +16984,6 @@ pub struct MemoryBarrier2Builder {
     inner: vk::MemoryBarrier2,
 }
 impl MemoryBarrier2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18674,10 +17030,6 @@ impl<'a> ImageMemoryBarrier2Builder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -18742,10 +17094,6 @@ pub struct BufferMemoryBarrier2Builder {
     inner: vk::BufferMemoryBarrier2,
 }
 impl BufferMemoryBarrier2Builder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18805,10 +17153,6 @@ pub struct DependencyInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DependencyInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18850,10 +17194,6 @@ pub struct SemaphoreSubmitInfoBuilder {
     inner: vk::SemaphoreSubmitInfo,
 }
 impl SemaphoreSubmitInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18892,10 +17232,6 @@ pub struct CommandBufferSubmitInfoBuilder {
     inner: vk::CommandBufferSubmitInfo,
 }
 impl CommandBufferSubmitInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18932,10 +17268,6 @@ impl<'a> SubmitInfo2Builder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -18980,10 +17312,6 @@ pub struct PhysicalDeviceSynchronization2FeaturesBuilder {
     inner: vk::PhysicalDeviceSynchronization2Features,
 }
 impl PhysicalDeviceSynchronization2FeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19014,10 +17342,6 @@ pub struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {
     inner: vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT,
 }
 impl PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19076,10 +17400,6 @@ pub struct PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
     inner: vk::PhysicalDeviceInheritedViewportScissorFeaturesNV,
 }
 impl PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19115,10 +17435,6 @@ pub struct CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CommandBufferInheritanceViewportScissorInfoNVBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19155,10 +17471,6 @@ pub struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT,
 }
 impl PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19189,10 +17501,6 @@ pub struct PhysicalDeviceProvokingVertexFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceProvokingVertexFeaturesEXT,
 }
 impl PhysicalDeviceProvokingVertexFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19235,10 +17543,6 @@ pub struct PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
     inner: vk::PipelineRasterizationProvokingVertexStateCreateInfoEXT,
 }
 impl PipelineRasterizationProvokingVertexStateCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19268,10 +17572,6 @@ pub struct CuModuleCreateInfoNVXBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CuModuleCreateInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19300,10 +17600,6 @@ pub struct CuFunctionCreateInfoNVXBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CuFunctionCreateInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19335,10 +17631,6 @@ pub struct CuLaunchInfoNVXBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CuLaunchInfoNVXBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19403,10 +17695,6 @@ pub struct PhysicalDeviceShaderIntegerDotProductFeaturesBuilder {
     inner: vk::PhysicalDeviceShaderIntegerDotProductFeatures,
 }
 impl PhysicalDeviceShaderIntegerDotProductFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19443,10 +17731,6 @@ pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
     inner: vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV,
 }
 impl PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19489,10 +17773,6 @@ pub struct AccelerationStructureGeometryMotionTrianglesDataNVBuilder {
     inner: vk::AccelerationStructureGeometryMotionTrianglesDataNV,
 }
 impl AccelerationStructureGeometryMotionTrianglesDataNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19521,10 +17801,6 @@ pub struct AccelerationStructureMotionInfoNVBuilder {
     inner: vk::AccelerationStructureMotionInfoNV,
 }
 impl AccelerationStructureMotionInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19557,10 +17833,6 @@ pub struct MemoryGetRemoteAddressInfoNVBuilder {
     inner: vk::MemoryGetRemoteAddressInfoNV,
 }
 impl MemoryGetRemoteAddressInfoNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19591,10 +17863,6 @@ pub struct ImportMemoryBufferCollectionFUCHSIABuilder {
     inner: vk::ImportMemoryBufferCollectionFUCHSIA,
 }
 impl ImportMemoryBufferCollectionFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19627,10 +17895,6 @@ pub struct BufferCollectionImageCreateInfoFUCHSIABuilder {
     inner: vk::BufferCollectionImageCreateInfoFUCHSIA,
 }
 impl BufferCollectionImageCreateInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19663,10 +17927,6 @@ pub struct BufferCollectionBufferCreateInfoFUCHSIABuilder {
     inner: vk::BufferCollectionBufferCreateInfoFUCHSIA,
 }
 impl BufferCollectionBufferCreateInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19699,10 +17959,6 @@ pub struct BufferCollectionCreateInfoFUCHSIABuilder {
     inner: vk::BufferCollectionCreateInfoFUCHSIA,
 }
 impl BufferCollectionCreateInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19729,10 +17985,6 @@ pub struct BufferCollectionPropertiesFUCHSIABuilder {
     inner: vk::BufferCollectionPropertiesFUCHSIA,
 }
 impl BufferCollectionPropertiesFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19802,10 +18054,6 @@ pub struct BufferConstraintsInfoFUCHSIABuilder {
     inner: vk::BufferConstraintsInfoFUCHSIA,
 }
 impl BufferConstraintsInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19843,10 +18091,6 @@ pub struct SysmemColorSpaceFUCHSIABuilder {
     inner: vk::SysmemColorSpaceFUCHSIA,
 }
 impl SysmemColorSpaceFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19874,10 +18118,6 @@ pub struct ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageFormatConstraintsInfoFUCHSIABuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19922,10 +18162,6 @@ pub struct ImageConstraintsInfoFUCHSIABuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ImageConstraintsInfoFUCHSIABuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19964,10 +18200,6 @@ pub struct BufferCollectionConstraintsInfoFUCHSIABuilder {
     inner: vk::BufferCollectionConstraintsInfoFUCHSIA,
 }
 impl BufferCollectionConstraintsInfoFUCHSIABuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20010,10 +18242,6 @@ pub struct PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceRGBA10X6FormatsFeaturesEXT,
 }
 impl PhysicalDeviceRGBA10X6FormatsFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20052,10 +18280,6 @@ pub struct PipelineRenderingCreateInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> PipelineRenderingCreateInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20105,10 +18329,6 @@ impl<'a> RenderingInfoBuilder<'a> {
         unsafe {
             insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
         }
-        self
-    }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
         self
     }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
@@ -20162,10 +18382,6 @@ pub struct RenderingAttachmentInfoBuilder {
     inner: vk::RenderingAttachmentInfo,
 }
 impl RenderingAttachmentInfoBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20220,10 +18436,6 @@ pub struct RenderingFragmentShadingRateAttachmentInfoKHRBuilder {
     inner: vk::RenderingFragmentShadingRateAttachmentInfoKHR,
 }
 impl RenderingFragmentShadingRateAttachmentInfoKHRBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20260,10 +18472,6 @@ pub struct RenderingFragmentDensityMapAttachmentInfoEXTBuilder {
     inner: vk::RenderingFragmentDensityMapAttachmentInfoEXT,
 }
 impl RenderingFragmentDensityMapAttachmentInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20296,10 +18504,6 @@ pub struct PhysicalDeviceDynamicRenderingFeaturesBuilder {
     inner: vk::PhysicalDeviceDynamicRenderingFeatures,
 }
 impl PhysicalDeviceDynamicRenderingFeaturesBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20331,10 +18535,6 @@ pub struct CommandBufferInheritanceRenderingInfoBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> CommandBufferInheritanceRenderingInfoBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20387,10 +18587,6 @@ pub struct AttachmentSampleCountInfoAMDBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> AttachmentSampleCountInfoAMDBuilder<'a> {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20428,10 +18624,6 @@ pub struct MultiviewPerViewAttributesInfoNVXBuilder {
     inner: vk::MultiviewPerViewAttributesInfoNVX,
 }
 impl MultiviewPerViewAttributesInfoNVXBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20472,10 +18664,6 @@ pub struct PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceImageViewMinLodFeaturesEXT,
 }
 impl PhysicalDeviceImageViewMinLodFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20506,10 +18694,6 @@ pub struct ImageViewMinLodCreateInfoEXTBuilder {
     inner: vk::ImageViewMinLodCreateInfoEXT,
 }
 impl ImageViewMinLodCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20538,10 +18722,6 @@ pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
     inner: vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM,
 }
 impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20601,10 +18781,6 @@ pub struct PhysicalDeviceLinearColorAttachmentFeaturesNVBuilder {
     inner: vk::PhysicalDeviceLinearColorAttachmentFeaturesNV,
 }
 impl PhysicalDeviceLinearColorAttachmentFeaturesNVBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20635,10 +18811,6 @@ pub struct PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT,
 }
 impl PhysicalDeviceGraphicsPipelineLibraryFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20669,10 +18841,6 @@ pub struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
     inner: vk::PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT,
 }
 impl PhysicalDeviceGraphicsPipelineLibraryPropertiesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20718,10 +18886,6 @@ pub struct GraphicsPipelineLibraryCreateInfoEXTBuilder {
     inner: vk::GraphicsPipelineLibraryCreateInfoEXT,
 }
 impl GraphicsPipelineLibraryCreateInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20750,10 +18914,6 @@ pub struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
     inner: vk::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE,
 }
 impl PhysicalDeviceDescriptorSetHostMappingFeaturesVALVEBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20788,10 +18948,6 @@ pub struct DescriptorSetBindingReferenceVALVEBuilder {
     inner: vk::DescriptorSetBindingReferenceVALVE,
 }
 impl DescriptorSetBindingReferenceVALVEBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20822,10 +18978,6 @@ pub struct DescriptorSetLayoutHostMappingInfoVALVEBuilder {
     inner: vk::DescriptorSetLayoutHostMappingInfoVALVE,
 }
 impl DescriptorSetLayoutHostMappingInfoVALVEBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20856,10 +19008,6 @@ pub struct ImageCompressionControlEXTBuilder {
     inner: vk::ImageCompressionControlEXT,
 }
 impl ImageCompressionControlEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20900,10 +19048,6 @@ pub struct PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceImageCompressionControlFeaturesEXT,
 }
 impl PhysicalDeviceImageCompressionControlFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20937,10 +19081,6 @@ pub struct PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT,
 }
 impl PhysicalDeviceImageCompressionControlSwapchainFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -20975,10 +19115,6 @@ pub struct ImageSubresource2EXTBuilder {
     inner: vk::ImageSubresource2EXT,
 }
 impl ImageSubresource2EXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21016,10 +19152,6 @@ impl<'a> SubresourceLayout2EXTBuilder<'a> {
     pub fn get_mut(&mut self) -> &mut vk::SubresourceLayout2EXT {
         &mut self.inner
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21054,10 +19186,6 @@ impl<'a> RenderPassCreationControlEXTBuilder<'a> {
         }
         self
     }
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21088,10 +19216,6 @@ pub struct RenderPassCreationFeedbackInfoEXTBuilder {
     inner: vk::RenderPassCreationFeedbackInfoEXT,
 }
 impl RenderPassCreationFeedbackInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21122,10 +19246,6 @@ pub struct RenderPassSubpassFeedbackInfoEXTBuilder {
     inner: vk::RenderPassSubpassFeedbackInfoEXT,
 }
 impl RenderPassSubpassFeedbackInfoEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21160,10 +19280,6 @@ pub struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {
     inner: vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT,
 }
 impl PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21194,10 +19310,6 @@ pub struct PipelinePropertiesIdentifierEXTBuilder {
     inner: vk::PipelinePropertiesIdentifierEXT,
 }
 impl PipelinePropertiesIdentifierEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -21222,10 +19334,6 @@ pub struct PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {
     inner: vk::PhysicalDevicePipelinePropertiesFeaturesEXT,
 }
 impl PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {
-    pub fn s_type(mut self, s_type: vk::StructureType) -> Self {
-        self.inner.s_type = s_type;
-        self
-    }
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
