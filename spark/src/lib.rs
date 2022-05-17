@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 213
+//! Generated from vk.xml with `VK_HEADER_VERSION` 214
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4074,6 +4074,7 @@ pub struct DeviceExtensions {
     pub qcom_render_pass_store_ops: bool,
     pub khr_synchronization2: bool,
     pub ext_graphics_pipeline_library: bool,
+    pub amd_shader_early_and_late_fragment_tests: bool,
     pub khr_shader_subgroup_uniform_control_flow: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
@@ -4318,6 +4319,7 @@ impl DeviceExtensions {
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_EXT_graphics_pipeline_library" => self.ext_graphics_pipeline_library = true,
+            b"VK_AMD_shader_early_and_late_fragment_tests" => self.amd_shader_early_and_late_fragment_tests = true,
             b"VK_KHR_shader_subgroup_uniform_control_flow" => self.khr_shader_subgroup_uniform_control_flow = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
@@ -4562,6 +4564,7 @@ impl DeviceExtensions {
             qcom_render_pass_store_ops: false,
             khr_synchronization2: false,
             ext_graphics_pipeline_library: false,
+            amd_shader_early_and_late_fragment_tests: false,
             khr_shader_subgroup_uniform_control_flow: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
@@ -4749,12 +4752,20 @@ impl DeviceExtensions {
         self.amd_shader_info = true;
     }
     pub fn supports_khr_dynamic_rendering(&self) -> bool {
-        self.khr_dynamic_rendering || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+        (self.khr_dynamic_rendering || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+            && self.supports_khr_depth_stencil_resolve()
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
     }
     pub fn enable_khr_dynamic_rendering(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.khr_dynamic_rendering = true;
         }
+        self.enable_khr_depth_stencil_resolve();
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
     }
     pub fn supports_amd_shader_image_load_store_lod(&self) -> bool {
         self.amd_shader_image_load_store_lod
@@ -6059,6 +6070,12 @@ impl DeviceExtensions {
         self.ext_graphics_pipeline_library = true;
         self.enable_khr_pipeline_library();
     }
+    pub fn supports_amd_shader_early_and_late_fragment_tests(&self) -> bool {
+        self.amd_shader_early_and_late_fragment_tests
+    }
+    pub fn enable_amd_shader_early_and_late_fragment_tests(&mut self) {
+        self.amd_shader_early_and_late_fragment_tests = true;
+    }
     pub fn supports_khr_shader_subgroup_uniform_control_flow(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.khr_shader_subgroup_uniform_control_flow
     }
@@ -7031,6 +7048,9 @@ impl DeviceExtensions {
         }
         if self.ext_graphics_pipeline_library {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_graphics_pipeline_library\0") })
+        }
+        if self.amd_shader_early_and_late_fragment_tests {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_early_and_late_fragment_tests\0") })
         }
         if self.khr_shader_subgroup_uniform_control_flow {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_uniform_control_flow\0") })

@@ -19152,14 +19152,6 @@ impl<'a> SubresourceLayout2EXTBuilder<'a> {
     pub fn get_mut(&mut self) -> &mut vk::SubresourceLayout2EXT {
         &mut self.inner
     }
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn subresource_layout(mut self, subresource_layout: vk::SubresourceLayout) -> Self {
-        self.inner.subresource_layout = subresource_layout;
-        self
-    }
 }
 impl<'a> Deref for SubresourceLayout2EXTBuilder<'a> {
     type Target = vk::SubresourceLayout2EXT;
@@ -19357,3 +19349,37 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelinePropertiesFeaturesEXT
 impl DeviceCreateInfoNext for PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+    type Type = PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT,
+}
+impl PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_early_and_late_fragment_tests(mut self, shader_early_and_late_fragment_tests: bool) -> Self {
+        self.inner.shader_early_and_late_fragment_tests = if shader_early_and_late_fragment_tests {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}

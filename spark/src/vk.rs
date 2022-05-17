@@ -2102,8 +2102,9 @@ impl DeviceDiagnosticsConfigFlagsNV {
     pub const ENABLE_SHADER_DEBUG_INFO: Self = Self(0x1);
     pub const ENABLE_RESOURCE_TRACKING: Self = Self(0x2);
     pub const ENABLE_AUTOMATIC_CHECKPOINTS: Self = Self(0x4);
+    pub const ENABLE_SHADER_ERROR_REPORTING: Self = Self(0x8);
 }
-impl_bitmask!(DeviceDiagnosticsConfigFlagsNV, 0x7);
+impl_bitmask!(DeviceDiagnosticsConfigFlagsNV, 0xf);
 impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2112,6 +2113,7 @@ impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
                 (0x1, "ENABLE_SHADER_DEBUG_INFO"),
                 (0x2, "ENABLE_RESOURCE_TRACKING"),
                 (0x4, "ENABLE_AUTOMATIC_CHECKPOINTS"),
+                (0x8, "ENABLE_SHADER_ERROR_REPORTING"),
             ],
             f,
         )
@@ -6748,6 +6750,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT: Self = Self(1000320001);
     /// Added by extension VK_EXT_graphics_pipeline_library.
     pub const GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT: Self = Self(1000320002);
+    /// Added by extension VK_AMD_shader_early_and_late_fragment_tests.
+    pub const PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT: Self = Self(1000321000);
     /// Added by extension VK_KHR_shader_subgroup_uniform_control_flow.
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR: Self = Self(1000323000);
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self =
@@ -7441,6 +7445,7 @@ impl fmt::Display for StructureType {
             1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
             1000320001 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT"),
             1000320002 => Some(&"GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT"),
+            1000321000 => Some(&"PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT"),
             1000323000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
@@ -34767,6 +34772,36 @@ impl fmt::Debug for PhysicalDevicePipelinePropertiesFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("pipeline_properties_identifier", &self.pipeline_properties_identifier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_early_and_late_fragment_tests: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
+impl Default for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_early_and_late_fragment_tests: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_early_and_late_fragment_tests",
+                &self.shader_early_and_late_fragment_tests,
+            )
             .finish()
     }
 }
