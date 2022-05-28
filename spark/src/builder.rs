@@ -10399,40 +10399,6 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceComputeShaderDerivativesFeatu
 impl DeviceCreateInfoNext for PhysicalDeviceComputeShaderDerivativesFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceComputeShaderDerivativesFeaturesNV {}
-impl Builder<'_> for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
-    type Type = PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder;
-    fn builder() -> Self::Type {
-        Default::default()
-    }
-}
-#[derive(Default)]
-pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
-    inner: vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV,
-}
-impl PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
-        self.inner.p_next = p_next;
-        self
-    }
-    pub fn fragment_shader_barycentric(mut self, fragment_shader_barycentric: bool) -> Self {
-        self.inner.fragment_shader_barycentric = if fragment_shader_barycentric {
-            vk::TRUE
-        } else {
-            vk::FALSE
-        };
-        self
-    }
-}
-impl Deref for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {
-    type Target = vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV;
-    fn deref(&self) -> &Self::Target {
-        &self.inner
-    }
-}
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceFragmentShaderBarycentricFeaturesNVBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
 impl Builder<'_> for vk::PhysicalDeviceShaderImageFootprintFeaturesNV {
     type Type = PhysicalDeviceShaderImageFootprintFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -17720,6 +17686,41 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderIntegerDotProductFe
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderIntegerDotProductFeatures {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderIntegerDotProductProperties {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDrmPropertiesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {
+    type Type = PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR,
+}
+impl PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn fragment_shader_barycentric(mut self, fragment_shader_barycentric: bool) -> Self {
+        self.inner.fragment_shader_barycentric = if fragment_shader_barycentric {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFragmentShaderBarycentricFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {}
 impl Builder<'_> for vk::PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     type Type = PhysicalDeviceRayTracingMotionBlurFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -19349,17 +19350,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelinePropertiesFeaturesEXT
 impl DeviceCreateInfoNext for PhysicalDevicePipelinePropertiesFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
-    type Type = PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder;
+impl Builder<'_> for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
+    type Type = PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
-    inner: vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT,
+pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {
+    inner: vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD,
 }
-impl PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
+impl PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19373,13 +19374,13 @@ impl PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {
-    type Target = vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT;
+impl Deref for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {
+    type Target = vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXTBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}

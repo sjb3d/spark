@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 214
+//! Generated from vk.xml with `VK_HEADER_VERSION` 215
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1279,6 +1279,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_graphics_pipeline_library(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_fragment_shader_barycentric(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_fragment_shader_barycentric(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_zero_initialize_workgroup_memory(&self) -> bool {
@@ -4075,6 +4081,7 @@ pub struct DeviceExtensions {
     pub khr_synchronization2: bool,
     pub ext_graphics_pipeline_library: bool,
     pub amd_shader_early_and_late_fragment_tests: bool,
+    pub khr_fragment_shader_barycentric: bool,
     pub khr_shader_subgroup_uniform_control_flow: bool,
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
@@ -4320,6 +4327,7 @@ impl DeviceExtensions {
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_EXT_graphics_pipeline_library" => self.ext_graphics_pipeline_library = true,
             b"VK_AMD_shader_early_and_late_fragment_tests" => self.amd_shader_early_and_late_fragment_tests = true,
+            b"VK_KHR_fragment_shader_barycentric" => self.khr_fragment_shader_barycentric = true,
             b"VK_KHR_shader_subgroup_uniform_control_flow" => self.khr_shader_subgroup_uniform_control_flow = true,
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
@@ -4565,6 +4573,7 @@ impl DeviceExtensions {
             khr_synchronization2: false,
             ext_graphics_pipeline_library: false,
             amd_shader_early_and_late_fragment_tests: false,
+            khr_fragment_shader_barycentric: false,
             khr_shader_subgroup_uniform_control_flow: false,
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
@@ -6076,6 +6085,12 @@ impl DeviceExtensions {
     pub fn enable_amd_shader_early_and_late_fragment_tests(&mut self) {
         self.amd_shader_early_and_late_fragment_tests = true;
     }
+    pub fn supports_khr_fragment_shader_barycentric(&self) -> bool {
+        self.khr_fragment_shader_barycentric
+    }
+    pub fn enable_khr_fragment_shader_barycentric(&mut self) {
+        self.khr_fragment_shader_barycentric = true;
+    }
     pub fn supports_khr_shader_subgroup_uniform_control_flow(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.khr_shader_subgroup_uniform_control_flow
     }
@@ -7051,6 +7066,9 @@ impl DeviceExtensions {
         }
         if self.amd_shader_early_and_late_fragment_tests {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_shader_early_and_late_fragment_tests\0") })
+        }
+        if self.khr_fragment_shader_barycentric {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_fragment_shader_barycentric\0") })
         }
         if self.khr_shader_subgroup_uniform_control_flow {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_subgroup_uniform_control_flow\0") })

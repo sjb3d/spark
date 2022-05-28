@@ -6495,8 +6495,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV: Self = Self(1000202000);
     /// Added by extension VK_NV_mesh_shader.
     pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV: Self = Self(1000202001);
-    /// Added by extension VK_NV_fragment_shader_barycentric.
-    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self = Self(1000203000);
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV: Self =
+        Self::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR;
     /// Added by extension VK_NV_shader_image_footprint.
     pub const PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV: Self = Self(1000204000);
     /// Added by extension VK_NV_scissor_exclusive.
@@ -6751,7 +6751,11 @@ impl StructureType {
     /// Added by extension VK_EXT_graphics_pipeline_library.
     pub const GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT: Self = Self(1000320002);
     /// Added by extension VK_AMD_shader_early_and_late_fragment_tests.
-    pub const PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT: Self = Self(1000321000);
+    pub const PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD: Self = Self(1000321000);
+    /// Added by extension VK_KHR_fragment_shader_barycentric.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR: Self = Self(1000203000);
+    /// Added by extension VK_KHR_fragment_shader_barycentric.
+    pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR: Self = Self(1000322000);
     /// Added by extension VK_KHR_shader_subgroup_uniform_control_flow.
     pub const PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR: Self = Self(1000323000);
     pub const PHYSICAL_DEVICE_ZERO_INITIALIZE_WORKGROUP_MEMORY_FEATURES_KHR: Self =
@@ -7348,7 +7352,6 @@ impl fmt::Display for StructureType {
             1000201000 => Some(&"PHYSICAL_DEVICE_COMPUTE_SHADER_DERIVATIVES_FEATURES_NV"),
             1000202000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV"),
             1000202001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV"),
-            1000203000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV"),
             1000204000 => Some(&"PHYSICAL_DEVICE_SHADER_IMAGE_FOOTPRINT_FEATURES_NV"),
             1000205000 => Some(&"PIPELINE_VIEWPORT_EXCLUSIVE_SCISSOR_STATE_CREATE_INFO_NV"),
             1000205002 => Some(&"PHYSICAL_DEVICE_EXCLUSIVE_SCISSOR_FEATURES_NV"),
@@ -7445,7 +7448,9 @@ impl fmt::Display for StructureType {
             1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
             1000320001 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT"),
             1000320002 => Some(&"GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT"),
-            1000321000 => Some(&"PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT"),
+            1000321000 => Some(&"PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD"),
+            1000203000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR"),
+            1000322000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR"),
             1000323000 => Some(&"PHYSICAL_DEVICE_SHADER_SUBGROUP_UNIFORM_CONTROL_FLOW_FEATURES_KHR"),
             1000326000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_PROPERTIES_NV"),
             1000326001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV"),
@@ -23816,33 +23821,7 @@ impl fmt::Debug for PhysicalDeviceComputeShaderDerivativesFeaturesNV {
             .finish()
     }
 }
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
-    pub s_type: StructureType,
-    pub p_next: *mut c_void,
-    pub fragment_shader_barycentric: Bool32,
-}
-unsafe impl Send for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
-unsafe impl Sync for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {}
-impl Default for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_NV,
-            p_next: ptr::null_mut(),
-            fragment_shader_barycentric: Default::default(),
-        }
-    }
-}
-impl fmt::Debug for PhysicalDeviceFragmentShaderBarycentricFeaturesNV {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceFragmentShaderBarycentricFeaturesNV")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
-            .field("fragment_shader_barycentric", &self.fragment_shader_barycentric)
-            .finish()
-    }
-}
+pub type PhysicalDeviceFragmentShaderBarycentricFeaturesNV = PhysicalDeviceFragmentShaderBarycentricFeaturesKHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderImageFootprintFeaturesNV {
@@ -32982,6 +32961,63 @@ impl fmt::Debug for PhysicalDeviceDrmPropertiesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub fragment_shader_barycentric: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {}
+impl Default for PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            fragment_shader_barycentric: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShaderBarycentricFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShaderBarycentricFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("fragment_shader_barycentric", &self.fragment_shader_barycentric)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tri_strip_vertex_order_independent_of_provoking_vertex: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {}
+impl Default for PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            tri_strip_vertex_order_independent_of_provoking_vertex: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFragmentShaderBarycentricPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFragmentShaderBarycentricPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "tri_strip_vertex_order_independent_of_provoking_vertex",
+                &self.tri_strip_vertex_order_independent_of_provoking_vertex,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceRayTracingMotionBlurFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -34777,25 +34813,25 @@ impl fmt::Debug for PhysicalDevicePipelinePropertiesFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+pub struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub shader_early_and_late_fragment_tests: Bool32,
 }
-unsafe impl Send for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
-unsafe impl Sync for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {}
-impl Default for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+unsafe impl Send for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
+unsafe impl Sync for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
+impl Default for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_EXT,
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD,
             p_next: ptr::null_mut(),
             shader_early_and_late_fragment_tests: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT {
+impl fmt::Debug for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT")
+        fmt.debug_struct("PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
