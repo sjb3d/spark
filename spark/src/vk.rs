@@ -98,6 +98,19 @@ pub type AHardwareBuffer = Never;
 
 // Metal
 pub type CAMetalLayer = Never;
+#[allow(non_camel_case_types)]
+pub type MTLDevice_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLCommandQueue_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLBuffer_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLTexture_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLSharedEvent_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type __IOSurface = Never;
+pub type IOSurfaceRef = *mut __IOSurface;
 
 // Zircon
 #[allow(non_camel_case_types)]
@@ -266,13 +279,19 @@ impl SamplerCreateFlags {
     pub const SUBSAMPLED_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = Self(0x2);
+    /// Added by extension VK_EXT_non_seamless_cube_map.
+    pub const NON_SEAMLESS_CUBE_MAP_EXT: Self = Self(0x4);
 }
-impl_bitmask!(SamplerCreateFlags, 0x3);
+impl_bitmask!(SamplerCreateFlags, 0x7);
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
-            &[(0x1, "SUBSAMPLED_EXT"), (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT")],
+            &[
+                (0x1, "SUBSAMPLED_EXT"),
+                (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT"),
+                (0x4, "NON_SEAMLESS_CUBE_MAP_EXT"),
+            ],
             f,
         )
     }
@@ -3597,6 +3616,34 @@ impl fmt::Display for ImageCompressionFixedRateFlagsEXT {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ExportMetalObjectTypeFlagsEXT(u32);
+impl ExportMetalObjectTypeFlagsEXT {
+    pub const METAL_DEVICE: Self = Self(0x1);
+    pub const METAL_COMMAND_QUEUE: Self = Self(0x2);
+    pub const METAL_BUFFER: Self = Self(0x4);
+    pub const METAL_TEXTURE: Self = Self(0x8);
+    pub const METAL_IOSURFACE: Self = Self(0x10);
+    pub const METAL_SHARED_EVENT: Self = Self(0x20);
+}
+impl_bitmask!(ExportMetalObjectTypeFlagsEXT, 0x3f);
+impl fmt::Display for ExportMetalObjectTypeFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "METAL_DEVICE"),
+                (0x2, "METAL_COMMAND_QUEUE"),
+                (0x4, "METAL_BUFFER"),
+                (0x8, "METAL_TEXTURE"),
+                (0x10, "METAL_IOSURFACE"),
+                (0x20, "METAL_SHARED_EVENT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
@@ -5605,7 +5652,7 @@ impl Result {
     pub const ERROR_OUT_OF_HOST_MEMORY: Self = Self(-1);
     /// A device memory allocation has failed
     pub const ERROR_OUT_OF_DEVICE_MEMORY: Self = Self(-2);
-    /// Initialization of a object has failed
+    /// Initialization of an object has failed
     pub const ERROR_INITIALIZATION_FAILED: Self = Self(-3);
     /// The logical device has been lost. See <<devsandqueues-lost-device>>
     pub const ERROR_DEVICE_LOST: Self = Self(-4);
@@ -6732,6 +6779,30 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
     /// Added by extension VK_NV_device_diagnostics_config.
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_OBJECT_CREATE_INFO_EXT: Self = Self(1000311000);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_OBJECTS_INFO_EXT: Self = Self(1000311001);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_DEVICE_INFO_EXT: Self = Self(1000311002);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_COMMAND_QUEUE_INFO_EXT: Self = Self(1000311003);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_BUFFER_INFO_EXT: Self = Self(1000311004);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const IMPORT_METAL_BUFFER_INFO_EXT: Self = Self(1000311005);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_TEXTURE_INFO_EXT: Self = Self(1000311006);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const IMPORT_METAL_TEXTURE_INFO_EXT: Self = Self(1000311007);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_IO_SURFACE_INFO_EXT: Self = Self(1000311008);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const IMPORT_METAL_IO_SURFACE_INFO_EXT: Self = Self(1000311009);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const EXPORT_METAL_SHARED_EVENT_INFO_EXT: Self = Self(1000311010);
+    /// Added by extension VK_EXT_metal_objects.
+    pub const IMPORT_METAL_SHARED_EVENT_INFO_EXT: Self = Self(1000311011);
     pub const MEMORY_BARRIER_2_KHR: Self = Self::MEMORY_BARRIER_2;
     pub const BUFFER_MEMORY_BARRIER_2_KHR: Self = Self::BUFFER_MEMORY_BARRIER_2;
     pub const IMAGE_MEMORY_BARRIER_2_KHR: Self = Self::IMAGE_MEMORY_BARRIER_2;
@@ -6918,6 +6989,8 @@ impl StructureType {
     pub const DESCRIPTOR_SET_BINDING_REFERENCE_VALVE: Self = Self(1000420001);
     /// Added by extension VK_VALVE_descriptor_set_host_mapping.
     pub const DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE: Self = Self(1000420002);
+    /// Added by extension VK_EXT_non_seamless_cube_map.
+    pub const PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT: Self = Self(1000422000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM: Self = Self(1000425000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
@@ -6933,9 +7006,9 @@ impl StructureType {
     /// Added by extension VK_EXT_subpass_merge_feedback.
     pub const RENDER_PASS_CREATION_CONTROL_EXT: Self = Self(1000458001);
     /// Added by extension VK_EXT_subpass_merge_feedback.
-    pub const RENDER_PASS_CREATION_FEEDBACK_INFO_EXT: Self = Self(1000458002);
+    pub const RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458002);
     /// Added by extension VK_EXT_subpass_merge_feedback.
-    pub const RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT: Self = Self(1000458003);
+    pub const RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458003);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7443,6 +7516,18 @@ impl fmt::Display for StructureType {
             1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
+            1000311000 => Some(&"EXPORT_METAL_OBJECT_CREATE_INFO_EXT"),
+            1000311001 => Some(&"EXPORT_METAL_OBJECTS_INFO_EXT"),
+            1000311002 => Some(&"EXPORT_METAL_DEVICE_INFO_EXT"),
+            1000311003 => Some(&"EXPORT_METAL_COMMAND_QUEUE_INFO_EXT"),
+            1000311004 => Some(&"EXPORT_METAL_BUFFER_INFO_EXT"),
+            1000311005 => Some(&"IMPORT_METAL_BUFFER_INFO_EXT"),
+            1000311006 => Some(&"EXPORT_METAL_TEXTURE_INFO_EXT"),
+            1000311007 => Some(&"IMPORT_METAL_TEXTURE_INFO_EXT"),
+            1000311008 => Some(&"EXPORT_METAL_IO_SURFACE_INFO_EXT"),
+            1000311009 => Some(&"IMPORT_METAL_IO_SURFACE_INFO_EXT"),
+            1000311010 => Some(&"EXPORT_METAL_SHARED_EVENT_INFO_EXT"),
+            1000311011 => Some(&"IMPORT_METAL_SHARED_EVENT_INFO_EXT"),
             1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
             1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
             1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
@@ -7520,6 +7605,7 @@ impl fmt::Display for StructureType {
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
             1000420001 => Some(&"DESCRIPTOR_SET_BINDING_REFERENCE_VALVE"),
             1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
+            1000422000 => Some(&"PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
@@ -7527,8 +7613,8 @@ impl fmt::Display for StructureType {
             1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
             1000458000 => Some(&"PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT"),
             1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
-            1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_INFO_EXT"),
-            1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT"),
+            1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT"),
+            1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -34671,48 +34757,54 @@ impl fmt::Debug for RenderPassCreationControlEXT {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct RenderPassCreationFeedbackInfoEXT {
-    pub s_type: StructureType,
-    pub p_next: *const c_void,
     pub post_merge_subpass_count: u32,
-}
-unsafe impl Send for RenderPassCreationFeedbackInfoEXT {}
-unsafe impl Sync for RenderPassCreationFeedbackInfoEXT {}
-impl Default for RenderPassCreationFeedbackInfoEXT {
-    fn default() -> Self {
-        Self {
-            s_type: StructureType::RENDER_PASS_CREATION_FEEDBACK_INFO_EXT,
-            p_next: ptr::null(),
-            post_merge_subpass_count: Default::default(),
-        }
-    }
 }
 impl fmt::Debug for RenderPassCreationFeedbackInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("RenderPassCreationFeedbackInfoEXT")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
             .field("post_merge_subpass_count", &self.post_merge_subpass_count)
             .finish()
     }
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct RenderPassSubpassFeedbackInfoEXT {
+pub struct RenderPassCreationFeedbackCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
+    pub p_render_pass_feedback: *mut RenderPassCreationFeedbackInfoEXT,
+}
+unsafe impl Send for RenderPassCreationFeedbackCreateInfoEXT {}
+unsafe impl Sync for RenderPassCreationFeedbackCreateInfoEXT {}
+impl Default for RenderPassCreationFeedbackCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            p_render_pass_feedback: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassCreationFeedbackCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassCreationFeedbackCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_render_pass_feedback", &self.p_render_pass_feedback)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassSubpassFeedbackInfoEXT {
     pub subpass_merge_status: SubpassMergeStatusEXT,
     pub description: [c_char; MAX_DESCRIPTION_SIZE],
     pub post_merge_index: u32,
 }
-unsafe impl Send for RenderPassSubpassFeedbackInfoEXT {}
-unsafe impl Sync for RenderPassSubpassFeedbackInfoEXT {}
 impl Default for RenderPassSubpassFeedbackInfoEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::RENDER_PASS_SUBPASS_FEEDBACK_INFO_EXT,
-            p_next: ptr::null(),
             subpass_merge_status: Default::default(),
             description: [Default::default(); MAX_DESCRIPTION_SIZE],
             post_merge_index: Default::default(),
@@ -34722,11 +34814,36 @@ impl Default for RenderPassSubpassFeedbackInfoEXT {
 impl fmt::Debug for RenderPassSubpassFeedbackInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("RenderPassSubpassFeedbackInfoEXT")
-            .field("s_type", &self.s_type)
-            .field("p_next", &self.p_next)
             .field("subpass_merge_status", &self.subpass_merge_status)
             .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
             .field("post_merge_index", &self.post_merge_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderPassSubpassFeedbackCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_subpass_feedback: *mut RenderPassSubpassFeedbackInfoEXT,
+}
+unsafe impl Send for RenderPassSubpassFeedbackCreateInfoEXT {}
+unsafe impl Sync for RenderPassSubpassFeedbackCreateInfoEXT {}
+impl Default for RenderPassSubpassFeedbackCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            p_subpass_feedback: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for RenderPassSubpassFeedbackCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderPassSubpassFeedbackCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_subpass_feedback", &self.p_subpass_feedback)
             .finish()
     }
 }
@@ -34838,6 +34955,384 @@ impl fmt::Debug for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
                 "shader_early_and_late_fragment_tests",
                 &self.shader_early_and_late_fragment_tests,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalObjectCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub export_object_type: ExportMetalObjectTypeFlagsEXT,
+}
+unsafe impl Send for ExportMetalObjectCreateInfoEXT {}
+unsafe impl Sync for ExportMetalObjectCreateInfoEXT {}
+impl Default for ExportMetalObjectCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_OBJECT_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            export_object_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExportMetalObjectCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalObjectCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("export_object_type", &self.export_object_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalObjectsInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+}
+unsafe impl Send for ExportMetalObjectsInfoEXT {}
+unsafe impl Sync for ExportMetalObjectsInfoEXT {}
+impl Default for ExportMetalObjectsInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_OBJECTS_INFO_EXT,
+            p_next: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ExportMetalObjectsInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalObjectsInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalDeviceInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mtl_device: MTLDevice_id,
+}
+unsafe impl Send for ExportMetalDeviceInfoEXT {}
+unsafe impl Sync for ExportMetalDeviceInfoEXT {}
+impl Default for ExportMetalDeviceInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_DEVICE_INFO_EXT,
+            p_next: ptr::null(),
+            mtl_device: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalDeviceInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalDeviceInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mtl_device", &self.mtl_device)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalCommandQueueInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub queue: Option<Queue>,
+    pub mtl_command_queue: MTLCommandQueue_id,
+}
+unsafe impl Send for ExportMetalCommandQueueInfoEXT {}
+unsafe impl Sync for ExportMetalCommandQueueInfoEXT {}
+impl Default for ExportMetalCommandQueueInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_COMMAND_QUEUE_INFO_EXT,
+            p_next: ptr::null(),
+            queue: Default::default(),
+            mtl_command_queue: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalCommandQueueInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalCommandQueueInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue", &self.queue)
+            .field("mtl_command_queue", &self.mtl_command_queue)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalBufferInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub memory: Option<DeviceMemory>,
+    pub mtl_buffer: MTLBuffer_id,
+}
+unsafe impl Send for ExportMetalBufferInfoEXT {}
+unsafe impl Sync for ExportMetalBufferInfoEXT {}
+impl Default for ExportMetalBufferInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_BUFFER_INFO_EXT,
+            p_next: ptr::null(),
+            memory: Default::default(),
+            mtl_buffer: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalBufferInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalBufferInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory", &self.memory)
+            .field("mtl_buffer", &self.mtl_buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMetalBufferInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mtl_buffer: MTLBuffer_id,
+}
+unsafe impl Send for ImportMetalBufferInfoEXT {}
+unsafe impl Sync for ImportMetalBufferInfoEXT {}
+impl Default for ImportMetalBufferInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_METAL_BUFFER_INFO_EXT,
+            p_next: ptr::null(),
+            mtl_buffer: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportMetalBufferInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMetalBufferInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mtl_buffer", &self.mtl_buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalTextureInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image: Option<Image>,
+    pub image_view: Option<ImageView>,
+    pub buffer_view: Option<BufferView>,
+    pub plane: ImageAspectFlags,
+    pub mtl_texture: MTLTexture_id,
+}
+unsafe impl Send for ExportMetalTextureInfoEXT {}
+unsafe impl Sync for ExportMetalTextureInfoEXT {}
+impl Default for ExportMetalTextureInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_TEXTURE_INFO_EXT,
+            p_next: ptr::null(),
+            image: Default::default(),
+            image_view: Default::default(),
+            buffer_view: Default::default(),
+            plane: Default::default(),
+            mtl_texture: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalTextureInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalTextureInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image", &self.image)
+            .field("image_view", &self.image_view)
+            .field("buffer_view", &self.buffer_view)
+            .field("plane", &self.plane)
+            .field("mtl_texture", &self.mtl_texture)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMetalTextureInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub plane: ImageAspectFlags,
+    pub mtl_texture: MTLTexture_id,
+}
+unsafe impl Send for ImportMetalTextureInfoEXT {}
+unsafe impl Sync for ImportMetalTextureInfoEXT {}
+impl Default for ImportMetalTextureInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_METAL_TEXTURE_INFO_EXT,
+            p_next: ptr::null(),
+            plane: Default::default(),
+            mtl_texture: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportMetalTextureInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMetalTextureInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("plane", &self.plane)
+            .field("mtl_texture", &self.mtl_texture)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalIOSurfaceInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image: Option<Image>,
+    pub io_surface: IOSurfaceRef,
+}
+unsafe impl Send for ExportMetalIOSurfaceInfoEXT {}
+unsafe impl Sync for ExportMetalIOSurfaceInfoEXT {}
+impl Default for ExportMetalIOSurfaceInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_IO_SURFACE_INFO_EXT,
+            p_next: ptr::null(),
+            image: Default::default(),
+            io_surface: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalIOSurfaceInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalIOSurfaceInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image", &self.image)
+            .field("io_surface", &self.io_surface)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMetalIOSurfaceInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub io_surface: IOSurfaceRef,
+}
+unsafe impl Send for ImportMetalIOSurfaceInfoEXT {}
+unsafe impl Sync for ImportMetalIOSurfaceInfoEXT {}
+impl Default for ImportMetalIOSurfaceInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_METAL_IO_SURFACE_INFO_EXT,
+            p_next: ptr::null(),
+            io_surface: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportMetalIOSurfaceInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMetalIOSurfaceInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("io_surface", &self.io_surface)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExportMetalSharedEventInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub semaphore: Option<Semaphore>,
+    pub event: Option<Event>,
+    pub mtl_shared_event: MTLSharedEvent_id,
+}
+unsafe impl Send for ExportMetalSharedEventInfoEXT {}
+unsafe impl Sync for ExportMetalSharedEventInfoEXT {}
+impl Default for ExportMetalSharedEventInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXPORT_METAL_SHARED_EVENT_INFO_EXT,
+            p_next: ptr::null(),
+            semaphore: Default::default(),
+            event: Default::default(),
+            mtl_shared_event: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ExportMetalSharedEventInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExportMetalSharedEventInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("semaphore", &self.semaphore)
+            .field("event", &self.event)
+            .field("mtl_shared_event", &self.mtl_shared_event)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImportMetalSharedEventInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub mtl_shared_event: MTLSharedEvent_id,
+}
+unsafe impl Send for ImportMetalSharedEventInfoEXT {}
+unsafe impl Sync for ImportMetalSharedEventInfoEXT {}
+impl Default for ImportMetalSharedEventInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMPORT_METAL_SHARED_EVENT_INFO_EXT,
+            p_next: ptr::null(),
+            mtl_shared_event: unsafe { mem::zeroed() },
+        }
+    }
+}
+impl fmt::Debug for ImportMetalSharedEventInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImportMetalSharedEventInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mtl_shared_event", &self.mtl_shared_event)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub non_seamless_cube_map: Bool32,
+}
+unsafe impl Send for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}
+impl Default for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            non_seamless_cube_map: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceNonSeamlessCubeMapFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("non_seamless_cube_map", &self.non_seamless_cube_map)
             .finish()
     }
 }
@@ -37080,3 +37575,5 @@ pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
     p_pipeline_info: *const PipelineInfoEXT,
     p_pipeline_properties: *mut BaseOutStructure,
 ) -> Result;
+pub type FnExportMetalObjectsEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_metal_objects_info: *mut ExportMetalObjectsInfoEXT);

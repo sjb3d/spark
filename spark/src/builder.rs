@@ -545,17 +545,25 @@ impl<'a> Deref for BufferCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BufferViewCreateInfo {
-    type Type = BufferViewCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::BufferViewCreateInfo {
+    type Type = BufferViewCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BufferViewCreateInfoNext {}
 #[derive(Default)]
-pub struct BufferViewCreateInfoBuilder {
+pub struct BufferViewCreateInfoBuilder<'a> {
     inner: vk::BufferViewCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BufferViewCreateInfoBuilder {
+impl<'a> BufferViewCreateInfoBuilder<'a> {
+    pub fn insert_next<T: BufferViewCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -581,7 +589,7 @@ impl BufferViewCreateInfoBuilder {
         self
     }
 }
-impl Deref for BufferViewCreateInfoBuilder {
+impl<'a> Deref for BufferViewCreateInfoBuilder<'a> {
     type Target = vk::BufferViewCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -2380,17 +2388,25 @@ impl<'a> Deref for RenderPassCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::EventCreateInfo {
-    type Type = EventCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::EventCreateInfo {
+    type Type = EventCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait EventCreateInfoNext {}
 #[derive(Default)]
-pub struct EventCreateInfoBuilder {
+pub struct EventCreateInfoBuilder<'a> {
     inner: vk::EventCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl EventCreateInfoBuilder {
+impl<'a> EventCreateInfoBuilder<'a> {
+    pub fn insert_next<T: EventCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2400,7 +2416,7 @@ impl EventCreateInfoBuilder {
         self
     }
 }
-impl Deref for EventCreateInfoBuilder {
+impl<'a> Deref for EventCreateInfoBuilder<'a> {
     type Target = vk::EventCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -19160,25 +19176,17 @@ impl<'a> Deref for SubresourceLayout2EXTBuilder<'a> {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::RenderPassCreationControlEXT {
-    type Type = RenderPassCreationControlEXTBuilder<'a>;
+impl Builder<'_> for vk::RenderPassCreationControlEXT {
+    type Type = RenderPassCreationControlEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
-pub trait RenderPassCreationControlEXTNext {}
 #[derive(Default)]
-pub struct RenderPassCreationControlEXTBuilder<'a> {
+pub struct RenderPassCreationControlEXTBuilder {
     inner: vk::RenderPassCreationControlEXT,
-    phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> RenderPassCreationControlEXTBuilder<'a> {
-    pub fn insert_next<T: RenderPassCreationControlEXTNext>(mut self, next: &'a mut T) -> Self {
-        unsafe {
-            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
-        }
-        self
-    }
+impl RenderPassCreationControlEXTBuilder {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -19188,80 +19196,75 @@ impl<'a> RenderPassCreationControlEXTBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for RenderPassCreationControlEXTBuilder<'a> {
+impl Deref for RenderPassCreationControlEXTBuilder {
     type Target = vk::RenderPassCreationControlEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> RenderPassCreateInfo2Next for RenderPassCreationControlEXTBuilder<'a> {}
-impl<'a> SubpassDescription2Next for RenderPassCreationControlEXTBuilder<'a> {}
+impl RenderPassCreateInfo2Next for RenderPassCreationControlEXTBuilder {}
+impl SubpassDescription2Next for RenderPassCreationControlEXTBuilder {}
 impl RenderPassCreateInfo2Next for vk::RenderPassCreationControlEXT {}
 impl SubpassDescription2Next for vk::RenderPassCreationControlEXT {}
-impl Builder<'_> for vk::RenderPassCreationFeedbackInfoEXT {
-    type Type = RenderPassCreationFeedbackInfoEXTBuilder;
+impl Builder<'_> for vk::RenderPassCreationFeedbackCreateInfoEXT {
+    type Type = RenderPassCreationFeedbackCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct RenderPassCreationFeedbackInfoEXTBuilder {
-    inner: vk::RenderPassCreationFeedbackInfoEXT,
+pub struct RenderPassCreationFeedbackCreateInfoEXTBuilder {
+    inner: vk::RenderPassCreationFeedbackCreateInfoEXT,
 }
-impl RenderPassCreationFeedbackInfoEXTBuilder {
+impl RenderPassCreationFeedbackCreateInfoEXTBuilder {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn post_merge_subpass_count(mut self, post_merge_subpass_count: u32) -> Self {
-        self.inner.post_merge_subpass_count = post_merge_subpass_count;
+    pub fn p_render_pass_feedback(
+        mut self,
+        p_render_pass_feedback: *mut vk::RenderPassCreationFeedbackInfoEXT,
+    ) -> Self {
+        self.inner.p_render_pass_feedback = p_render_pass_feedback;
         self
     }
 }
-impl Deref for RenderPassCreationFeedbackInfoEXTBuilder {
-    type Target = vk::RenderPassCreationFeedbackInfoEXT;
+impl Deref for RenderPassCreationFeedbackCreateInfoEXTBuilder {
+    type Target = vk::RenderPassCreationFeedbackCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl RenderPassCreateInfo2Next for RenderPassCreationFeedbackInfoEXTBuilder {}
-impl RenderPassCreationControlEXTNext for RenderPassCreationFeedbackInfoEXTBuilder {}
-impl RenderPassCreateInfo2Next for vk::RenderPassCreationFeedbackInfoEXT {}
-impl RenderPassCreationControlEXTNext for vk::RenderPassCreationFeedbackInfoEXT {}
-impl Builder<'_> for vk::RenderPassSubpassFeedbackInfoEXT {
-    type Type = RenderPassSubpassFeedbackInfoEXTBuilder;
+impl RenderPassCreateInfo2Next for RenderPassCreationFeedbackCreateInfoEXTBuilder {}
+impl RenderPassCreateInfo2Next for vk::RenderPassCreationFeedbackCreateInfoEXT {}
+impl Builder<'_> for vk::RenderPassSubpassFeedbackCreateInfoEXT {
+    type Type = RenderPassSubpassFeedbackCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct RenderPassSubpassFeedbackInfoEXTBuilder {
-    inner: vk::RenderPassSubpassFeedbackInfoEXT,
+pub struct RenderPassSubpassFeedbackCreateInfoEXTBuilder {
+    inner: vk::RenderPassSubpassFeedbackCreateInfoEXT,
 }
-impl RenderPassSubpassFeedbackInfoEXTBuilder {
+impl RenderPassSubpassFeedbackCreateInfoEXTBuilder {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
-    pub fn subpass_merge_status(mut self, subpass_merge_status: vk::SubpassMergeStatusEXT) -> Self {
-        self.inner.subpass_merge_status = subpass_merge_status;
-        self
-    }
-    pub fn post_merge_index(mut self, post_merge_index: u32) -> Self {
-        self.inner.post_merge_index = post_merge_index;
+    pub fn p_subpass_feedback(mut self, p_subpass_feedback: *mut vk::RenderPassSubpassFeedbackInfoEXT) -> Self {
+        self.inner.p_subpass_feedback = p_subpass_feedback;
         self
     }
 }
-impl Deref for RenderPassSubpassFeedbackInfoEXTBuilder {
-    type Target = vk::RenderPassSubpassFeedbackInfoEXT;
+impl Deref for RenderPassSubpassFeedbackCreateInfoEXTBuilder {
+    type Target = vk::RenderPassSubpassFeedbackCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl SubpassDescription2Next for RenderPassSubpassFeedbackInfoEXTBuilder {}
-impl RenderPassCreationControlEXTNext for RenderPassSubpassFeedbackInfoEXTBuilder {}
-impl SubpassDescription2Next for vk::RenderPassSubpassFeedbackInfoEXT {}
-impl RenderPassCreationControlEXTNext for vk::RenderPassSubpassFeedbackInfoEXT {}
+impl SubpassDescription2Next for RenderPassSubpassFeedbackCreateInfoEXTBuilder {}
+impl SubpassDescription2Next for vk::RenderPassSubpassFeedbackCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
     type Type = PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -19384,3 +19387,428 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderEarlyAndLateFragmentTes
 impl DeviceCreateInfoNext for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
+impl Builder<'_> for vk::ExportMetalObjectCreateInfoEXT {
+    type Type = ExportMetalObjectCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalObjectCreateInfoEXTBuilder {
+    inner: vk::ExportMetalObjectCreateInfoEXT,
+}
+impl ExportMetalObjectCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn export_object_type(mut self, export_object_type: vk::ExportMetalObjectTypeFlagsEXT) -> Self {
+        self.inner.export_object_type = export_object_type;
+        self
+    }
+}
+impl Deref for ExportMetalObjectCreateInfoEXTBuilder {
+    type Target = vk::ExportMetalObjectCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl InstanceCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl MemoryAllocateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl ImageCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl ImageViewCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl BufferViewCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl SemaphoreCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl EventCreateInfoNext for ExportMetalObjectCreateInfoEXTBuilder {}
+impl InstanceCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl MemoryAllocateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl ImageCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl ImageViewCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl BufferViewCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl SemaphoreCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl EventCreateInfoNext for vk::ExportMetalObjectCreateInfoEXT {}
+impl<'a> Builder<'a> for vk::ExportMetalObjectsInfoEXT {
+    type Type = ExportMetalObjectsInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait ExportMetalObjectsInfoEXTNext {}
+#[derive(Default)]
+pub struct ExportMetalObjectsInfoEXTBuilder<'a> {
+    inner: vk::ExportMetalObjectsInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ExportMetalObjectsInfoEXTBuilder<'a> {
+    pub fn insert_next<T: ExportMetalObjectsInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn get_mut(&mut self) -> &mut vk::ExportMetalObjectsInfoEXT {
+        &mut self.inner
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+}
+impl<'a> Deref for ExportMetalObjectsInfoEXTBuilder<'a> {
+    type Target = vk::ExportMetalObjectsInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ExportMetalDeviceInfoEXT {
+    type Type = ExportMetalDeviceInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalDeviceInfoEXTBuilder {
+    inner: vk::ExportMetalDeviceInfoEXT,
+}
+impl ExportMetalDeviceInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mtl_device(mut self, mtl_device: vk::MTLDevice_id) -> Self {
+        self.inner.mtl_device = mtl_device;
+        self
+    }
+}
+impl Deref for ExportMetalDeviceInfoEXTBuilder {
+    type Target = vk::ExportMetalDeviceInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalDeviceInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalDeviceInfoEXT {}
+impl Builder<'_> for vk::ExportMetalCommandQueueInfoEXT {
+    type Type = ExportMetalCommandQueueInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalCommandQueueInfoEXTBuilder {
+    inner: vk::ExportMetalCommandQueueInfoEXT,
+}
+impl ExportMetalCommandQueueInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue(mut self, queue: vk::Queue) -> Self {
+        self.inner.queue = Some(queue);
+        self
+    }
+    pub fn mtl_command_queue(mut self, mtl_command_queue: vk::MTLCommandQueue_id) -> Self {
+        self.inner.mtl_command_queue = mtl_command_queue;
+        self
+    }
+}
+impl Deref for ExportMetalCommandQueueInfoEXTBuilder {
+    type Target = vk::ExportMetalCommandQueueInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalCommandQueueInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalCommandQueueInfoEXT {}
+impl Builder<'_> for vk::ExportMetalBufferInfoEXT {
+    type Type = ExportMetalBufferInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalBufferInfoEXTBuilder {
+    inner: vk::ExportMetalBufferInfoEXT,
+}
+impl ExportMetalBufferInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn mtl_buffer(mut self, mtl_buffer: vk::MTLBuffer_id) -> Self {
+        self.inner.mtl_buffer = mtl_buffer;
+        self
+    }
+}
+impl Deref for ExportMetalBufferInfoEXTBuilder {
+    type Target = vk::ExportMetalBufferInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalBufferInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalBufferInfoEXT {}
+impl Builder<'_> for vk::ImportMetalBufferInfoEXT {
+    type Type = ImportMetalBufferInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMetalBufferInfoEXTBuilder {
+    inner: vk::ImportMetalBufferInfoEXT,
+}
+impl ImportMetalBufferInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mtl_buffer(mut self, mtl_buffer: vk::MTLBuffer_id) -> Self {
+        self.inner.mtl_buffer = mtl_buffer;
+        self
+    }
+}
+impl Deref for ImportMetalBufferInfoEXTBuilder {
+    type Target = vk::ImportMetalBufferInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl MemoryAllocateInfoNext for ImportMetalBufferInfoEXTBuilder {}
+impl MemoryAllocateInfoNext for vk::ImportMetalBufferInfoEXT {}
+impl Builder<'_> for vk::ExportMetalTextureInfoEXT {
+    type Type = ExportMetalTextureInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalTextureInfoEXTBuilder {
+    inner: vk::ExportMetalTextureInfoEXT,
+}
+impl ExportMetalTextureInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image(mut self, image: Option<vk::Image>) -> Self {
+        self.inner.image = image;
+        self
+    }
+    pub fn image_view(mut self, image_view: Option<vk::ImageView>) -> Self {
+        self.inner.image_view = image_view;
+        self
+    }
+    pub fn buffer_view(mut self, buffer_view: Option<vk::BufferView>) -> Self {
+        self.inner.buffer_view = buffer_view;
+        self
+    }
+    pub fn plane(mut self, plane: vk::ImageAspectFlags) -> Self {
+        self.inner.plane = plane;
+        self
+    }
+    pub fn mtl_texture(mut self, mtl_texture: vk::MTLTexture_id) -> Self {
+        self.inner.mtl_texture = mtl_texture;
+        self
+    }
+}
+impl Deref for ExportMetalTextureInfoEXTBuilder {
+    type Target = vk::ExportMetalTextureInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalTextureInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalTextureInfoEXT {}
+impl Builder<'_> for vk::ImportMetalTextureInfoEXT {
+    type Type = ImportMetalTextureInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMetalTextureInfoEXTBuilder {
+    inner: vk::ImportMetalTextureInfoEXT,
+}
+impl ImportMetalTextureInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn plane(mut self, plane: vk::ImageAspectFlags) -> Self {
+        self.inner.plane = plane;
+        self
+    }
+    pub fn mtl_texture(mut self, mtl_texture: vk::MTLTexture_id) -> Self {
+        self.inner.mtl_texture = mtl_texture;
+        self
+    }
+}
+impl Deref for ImportMetalTextureInfoEXTBuilder {
+    type Target = vk::ImportMetalTextureInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for ImportMetalTextureInfoEXTBuilder {}
+impl ImageCreateInfoNext for vk::ImportMetalTextureInfoEXT {}
+impl Builder<'_> for vk::ExportMetalIOSurfaceInfoEXT {
+    type Type = ExportMetalIOSurfaceInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalIOSurfaceInfoEXTBuilder {
+    inner: vk::ExportMetalIOSurfaceInfoEXT,
+}
+impl ExportMetalIOSurfaceInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image(mut self, image: vk::Image) -> Self {
+        self.inner.image = Some(image);
+        self
+    }
+    pub fn io_surface(mut self, io_surface: vk::IOSurfaceRef) -> Self {
+        self.inner.io_surface = io_surface;
+        self
+    }
+}
+impl Deref for ExportMetalIOSurfaceInfoEXTBuilder {
+    type Target = vk::ExportMetalIOSurfaceInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalIOSurfaceInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalIOSurfaceInfoEXT {}
+impl Builder<'_> for vk::ImportMetalIOSurfaceInfoEXT {
+    type Type = ImportMetalIOSurfaceInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMetalIOSurfaceInfoEXTBuilder {
+    inner: vk::ImportMetalIOSurfaceInfoEXT,
+}
+impl ImportMetalIOSurfaceInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn io_surface(mut self, io_surface: vk::IOSurfaceRef) -> Self {
+        self.inner.io_surface = io_surface;
+        self
+    }
+}
+impl Deref for ImportMetalIOSurfaceInfoEXTBuilder {
+    type Target = vk::ImportMetalIOSurfaceInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageCreateInfoNext for ImportMetalIOSurfaceInfoEXTBuilder {}
+impl ImageCreateInfoNext for vk::ImportMetalIOSurfaceInfoEXT {}
+impl Builder<'_> for vk::ExportMetalSharedEventInfoEXT {
+    type Type = ExportMetalSharedEventInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExportMetalSharedEventInfoEXTBuilder {
+    inner: vk::ExportMetalSharedEventInfoEXT,
+}
+impl ExportMetalSharedEventInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn semaphore(mut self, semaphore: Option<vk::Semaphore>) -> Self {
+        self.inner.semaphore = semaphore;
+        self
+    }
+    pub fn event(mut self, event: Option<vk::Event>) -> Self {
+        self.inner.event = event;
+        self
+    }
+    pub fn mtl_shared_event(mut self, mtl_shared_event: vk::MTLSharedEvent_id) -> Self {
+        self.inner.mtl_shared_event = mtl_shared_event;
+        self
+    }
+}
+impl Deref for ExportMetalSharedEventInfoEXTBuilder {
+    type Target = vk::ExportMetalSharedEventInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ExportMetalObjectsInfoEXTNext for ExportMetalSharedEventInfoEXTBuilder {}
+impl ExportMetalObjectsInfoEXTNext for vk::ExportMetalSharedEventInfoEXT {}
+impl Builder<'_> for vk::ImportMetalSharedEventInfoEXT {
+    type Type = ImportMetalSharedEventInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImportMetalSharedEventInfoEXTBuilder {
+    inner: vk::ImportMetalSharedEventInfoEXT,
+}
+impl ImportMetalSharedEventInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mtl_shared_event(mut self, mtl_shared_event: vk::MTLSharedEvent_id) -> Self {
+        self.inner.mtl_shared_event = mtl_shared_event;
+        self
+    }
+}
+impl Deref for ImportMetalSharedEventInfoEXTBuilder {
+    type Target = vk::ImportMetalSharedEventInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SemaphoreCreateInfoNext for ImportMetalSharedEventInfoEXTBuilder {}
+impl EventCreateInfoNext for ImportMetalSharedEventInfoEXTBuilder {}
+impl SemaphoreCreateInfoNext for vk::ImportMetalSharedEventInfoEXT {}
+impl EventCreateInfoNext for vk::ImportMetalSharedEventInfoEXT {}
+impl Builder<'_> for vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
+    type Type = PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT,
+}
+impl PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn non_seamless_cube_map(mut self, non_seamless_cube_map: bool) -> Self {
+        self.inner.non_seamless_cube_map = if non_seamless_cube_map { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}

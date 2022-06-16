@@ -101,6 +101,19 @@ pub type AHardwareBuffer = Never;
 
 // Metal
 pub type CAMetalLayer = Never;
+#[allow(non_camel_case_types)]
+pub type MTLDevice_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLCommandQueue_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLBuffer_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLTexture_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type MTLSharedEvent_id = *mut c_void;
+#[allow(non_camel_case_types)]
+pub type __IOSurface = Never;
+pub type IOSurfaceRef = *mut __IOSurface;
 
 // Zircon
 #[allow(non_camel_case_types)]

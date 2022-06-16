@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 215
+//! Generated from vk.xml with `VK_HEADER_VERSION` 218
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4078,6 +4078,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
     pub ext_graphics_pipeline_library: bool,
     pub amd_shader_early_and_late_fragment_tests: bool,
@@ -4123,6 +4124,7 @@ pub struct DeviceExtensions {
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
     pub valve_descriptor_set_host_mapping: bool,
+    pub ext_non_seamless_cube_map: bool,
     pub qcom_fragment_density_map_offset: bool,
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
@@ -4324,6 +4326,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_EXT_metal_objects" => self.ext_metal_objects = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_EXT_graphics_pipeline_library" => self.ext_graphics_pipeline_library = true,
             b"VK_AMD_shader_early_and_late_fragment_tests" => self.amd_shader_early_and_late_fragment_tests = true,
@@ -4369,6 +4372,7 @@ impl DeviceExtensions {
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
+            b"VK_EXT_non_seamless_cube_map" => self.ext_non_seamless_cube_map = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
@@ -4570,6 +4574,7 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            ext_metal_objects: false,
             khr_synchronization2: false,
             ext_graphics_pipeline_library: false,
             amd_shader_early_and_late_fragment_tests: false,
@@ -4615,6 +4620,7 @@ impl DeviceExtensions {
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
             valve_descriptor_set_host_mapping: false,
+            ext_non_seamless_cube_map: false,
             qcom_fragment_density_map_offset: false,
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
@@ -6064,6 +6070,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_ext_metal_objects(&self) -> bool {
+        self.ext_metal_objects
+    }
+    pub fn enable_ext_metal_objects(&mut self) {
+        self.ext_metal_objects = true;
+    }
     pub fn supports_khr_synchronization2(&self) -> bool {
         self.khr_synchronization2 || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6454,6 +6466,12 @@ impl DeviceExtensions {
     }
     pub fn enable_valve_descriptor_set_host_mapping(&mut self) {
         self.valve_descriptor_set_host_mapping = true;
+    }
+    pub fn supports_ext_non_seamless_cube_map(&self) -> bool {
+        self.ext_non_seamless_cube_map
+    }
+    pub fn enable_ext_non_seamless_cube_map(&mut self) {
+        self.ext_non_seamless_cube_map = true;
     }
     pub fn supports_qcom_fragment_density_map_offset(&self) -> bool {
         self.qcom_fragment_density_map_offset && self.supports_ext_fragment_density_map()
@@ -7058,6 +7076,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
         }
+        if self.ext_metal_objects {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_metal_objects\0") })
+        }
         if self.khr_synchronization2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_synchronization2\0") })
         }
@@ -7192,6 +7213,9 @@ impl DeviceExtensions {
         }
         if self.valve_descriptor_set_host_mapping {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_descriptor_set_host_mapping\0") })
+        }
+        if self.ext_non_seamless_cube_map {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_non_seamless_cube_map\0") })
         }
         if self.qcom_fragment_density_map_offset {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_fragment_density_map_offset\0") })
@@ -7588,6 +7612,7 @@ pub struct Device {
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
     pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
+    pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -10631,6 +10656,12 @@ impl Device {
             },
             fp_get_pipeline_properties_ext: if extensions.ext_pipeline_properties {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetPipelinePropertiesEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_export_metal_objects_ext: if extensions.ext_metal_objects {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkExportMetalObjectsEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -17169,6 +17200,12 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn export_metal_objects_ext(&self, p_metal_objects_info: &mut vk::ExportMetalObjectsInfoEXT) {
+        let fp = self
+            .fp_export_metal_objects_ext
+            .expect("vkExportMetalObjectsEXT is not loaded");
+        (fp)(Some(self.handle), p_metal_objects_info);
     }
 }
 
