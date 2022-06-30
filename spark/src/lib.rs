@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 218
+//! Generated from vk.xml with `VK_HEADER_VERSION` 219
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1444,6 +1444,12 @@ impl InstanceExtensions {
     pub fn enable_ext_pipeline_properties(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_multisampled_render_to_single_sampled(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_multisampled_render_to_single_sampled(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1510,6 +1516,12 @@ impl InstanceExtensions {
     pub fn enable_google_surfaceless_query(&mut self) {
         self.google_surfaceless_query = true;
         self.enable_khr_surface();
+    }
+    pub fn supports_ext_shader_module_identifier(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_shader_module_identifier(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -4111,6 +4123,7 @@ pub struct DeviceExtensions {
     pub huawei_invocation_mask: bool,
     pub nv_external_memory_rdma: bool,
     pub ext_pipeline_properties: bool,
+    pub ext_multisampled_render_to_single_sampled: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
     pub ext_primitives_generated_query: bool,
@@ -4129,6 +4142,7 @@ pub struct DeviceExtensions {
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub ext_subpass_merge_feedback: bool,
+    pub ext_shader_module_identifier: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4359,6 +4373,7 @@ impl DeviceExtensions {
             b"VK_HUAWEI_invocation_mask" => self.huawei_invocation_mask = true,
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
             b"VK_EXT_pipeline_properties" => self.ext_pipeline_properties = true,
+            b"VK_EXT_multisampled_render_to_single_sampled" => self.ext_multisampled_render_to_single_sampled = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
             b"VK_EXT_primitives_generated_query" => self.ext_primitives_generated_query = true,
@@ -4377,6 +4392,7 @@ impl DeviceExtensions {
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
+            b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
             _ => {}
         }
     }
@@ -4607,6 +4623,7 @@ impl DeviceExtensions {
             huawei_invocation_mask: false,
             nv_external_memory_rdma: false,
             ext_pipeline_properties: false,
+            ext_multisampled_render_to_single_sampled: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
             ext_primitives_generated_query: false,
@@ -4625,6 +4642,7 @@ impl DeviceExtensions {
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             ext_subpass_merge_feedback: false,
+            ext_shader_module_identifier: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6368,6 +6386,20 @@ impl DeviceExtensions {
     pub fn enable_ext_pipeline_properties(&mut self) {
         self.ext_pipeline_properties = true;
     }
+    pub fn supports_ext_multisampled_render_to_single_sampled(&self) -> bool {
+        self.ext_multisampled_render_to_single_sampled
+            && self.supports_khr_create_renderpass2()
+            && self.supports_khr_depth_stencil_resolve()
+            && self.supports_khr_multiview()
+            && self.supports_khr_maintenance2()
+    }
+    pub fn enable_ext_multisampled_render_to_single_sampled(&mut self) {
+        self.ext_multisampled_render_to_single_sampled = true;
+        self.enable_khr_create_renderpass2();
+        self.enable_khr_depth_stencil_resolve();
+        self.enable_khr_multiview();
+        self.enable_khr_maintenance2();
+    }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
         self.ext_extended_dynamic_state2 || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6498,6 +6530,13 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_subpass_merge_feedback(&mut self) {
         self.ext_subpass_merge_feedback = true;
+    }
+    pub fn supports_ext_shader_module_identifier(&self) -> bool {
+        self.ext_shader_module_identifier && self.supports_ext_pipeline_creation_cache_control()
+    }
+    pub fn enable_ext_shader_module_identifier(&mut self) {
+        self.ext_shader_module_identifier = true;
+        self.enable_ext_pipeline_creation_cache_control();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -7175,6 +7214,9 @@ impl DeviceExtensions {
         if self.ext_pipeline_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_properties\0") })
         }
+        if self.ext_multisampled_render_to_single_sampled {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_multisampled_render_to_single_sampled\0") })
+        }
         if self.ext_extended_dynamic_state2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state2\0") })
         }
@@ -7228,6 +7270,9 @@ impl DeviceExtensions {
         }
         if self.ext_subpass_merge_feedback {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subpass_merge_feedback\0") })
+        }
+        if self.ext_shader_module_identifier {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_module_identifier\0") })
         }
         v
     }
@@ -7610,6 +7655,8 @@ pub struct Device {
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
+    pub fp_get_shader_module_identifier_ext: Option<vk::FnGetShaderModuleIdentifierEXT>,
+    pub fp_get_shader_module_create_info_identifier_ext: Option<vk::FnGetShaderModuleCreateInfoIdentifierEXT>,
     pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
@@ -10641,6 +10688,20 @@ impl Device {
             fp_get_descriptor_set_host_mapping_valve: if extensions.valve_descriptor_set_host_mapping {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDescriptorSetHostMappingVALVE\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_shader_module_identifier_ext: if extensions.ext_shader_module_identifier {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderModuleIdentifierEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_shader_module_create_info_identifier_ext: if extensions.ext_shader_module_identifier {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetShaderModuleCreateInfoIdentifierEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -17172,6 +17233,26 @@ impl Device {
         (fp)(Some(self.handle), Some(descriptor_set), res.as_mut_ptr());
         res.assume_init()
     }
+    pub unsafe fn get_shader_module_identifier_ext(
+        &self,
+        shader_module: vk::ShaderModule,
+        p_identifier: &mut vk::ShaderModuleIdentifierEXT,
+    ) {
+        let fp = self
+            .fp_get_shader_module_identifier_ext
+            .expect("vkGetShaderModuleIdentifierEXT is not loaded");
+        (fp)(Some(self.handle), Some(shader_module), p_identifier);
+    }
+    pub unsafe fn get_shader_module_create_info_identifier_ext(
+        &self,
+        p_create_info: &vk::ShaderModuleCreateInfo,
+        p_identifier: &mut vk::ShaderModuleIdentifierEXT,
+    ) {
+        let fp = self
+            .fp_get_shader_module_create_info_identifier_ext
+            .expect("vkGetShaderModuleCreateInfoIdentifierEXT is not loaded");
+        (fp)(Some(self.handle), p_create_info, p_identifier);
+    }
     pub unsafe fn get_image_subresource_layout2_ext(
         &self,
         image: vk::Image,
@@ -17186,7 +17267,7 @@ impl Device {
     pub unsafe fn get_pipeline_properties_ext(
         &self,
         p_pipeline_info: &vk::PipelineInfoEXT,
-        p_pipeline_properties: &mut impl BaseOutStructureNext,
+        p_pipeline_properties: &mut vk::PipelinePropertiesIdentifierEXT,
     ) -> Result<()> {
         let fp = self
             .fp_get_pipeline_properties_ext

@@ -229,6 +229,7 @@ pub const SHADER_UNUSED_KHR: u32 = 0xffffffff;
 pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub const MAX_GLOBAL_PRIORITY_SIZE_KHR: usize = 16;
 pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = MAX_GLOBAL_PRIORITY_SIZE_KHR;
+pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -964,13 +965,15 @@ impl ImageCreateFlags {
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
+    /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
+    pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT: Self = Self(0x40000);
     /// Image is created with a layout where individual slices are capable of being used as 2D images
     /// Added by extension VK_EXT_image_2d_view_of_3d.
     pub const N2D_VIEW_COMPATIBLE_EXT: Self = Self(0x20000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self(0x8000);
 }
-impl_bitmask!(ImageCreateFlags, 0x2ffff);
+impl_bitmask!(ImageCreateFlags, 0x6ffff);
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -991,6 +994,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
+                (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
                 (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
                 (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_QCOM"),
             ],
@@ -6949,6 +6953,12 @@ impl StructureType {
     /// Added by extension VK_EXT_pipeline_properties.
     pub const PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT: Self = Self(1000372001);
     pub const PIPELINE_INFO_EXT: Self = Self::PIPELINE_INFO_KHR;
+    /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
+    pub const PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT: Self = Self(1000376000);
+    /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
+    pub const SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT: Self = Self(1000376001);
+    /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
+    pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT: Self = Self(1000376002);
     /// Not promoted to 1.3
     /// Added by extension VK_EXT_extended_dynamic_state2.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT: Self = Self(1000377000);
@@ -7009,6 +7019,14 @@ impl StructureType {
     pub const RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458002);
     /// Added by extension VK_EXT_subpass_merge_feedback.
     pub const RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458003);
+    /// Added by extension VK_EXT_shader_module_identifier.
+    pub const PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT: Self = Self(1000462000);
+    /// Added by extension VK_EXT_shader_module_identifier.
+    pub const PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT: Self = Self(1000462001);
+    /// Added by extension VK_EXT_shader_module_identifier.
+    pub const PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT: Self = Self(1000462002);
+    /// Added by extension VK_EXT_shader_module_identifier.
+    pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7589,6 +7607,9 @@ impl fmt::Display for StructureType {
             1000371001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV"),
             1000372000 => Some(&"PIPELINE_PROPERTIES_IDENTIFIER_EXT"),
             1000372001 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT"),
+            1000376000 => Some(&"PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT"),
+            1000376001 => Some(&"SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT"),
+            1000376002 => Some(&"MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT"),
             1000377000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT"),
             1000381000 => Some(&"PHYSICAL_DEVICE_COLOR_WRITE_ENABLE_FEATURES_EXT"),
             1000381001 => Some(&"PIPELINE_COLOR_WRITE_CREATE_INFO_EXT"),
@@ -7615,6 +7636,10 @@ impl fmt::Display for StructureType {
             1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
             1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT"),
             1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT"),
+            1000462000 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT"),
+            1000462001 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT"),
+            1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
+            1000462003 => Some(&"SHADER_MODULE_IDENTIFIER_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9597,6 +9622,8 @@ impl DriverId {
     pub const SAMSUNG_PROPRIETARY: Self = Self(21);
     /// Mesa open source project
     pub const MESA_VENUS: Self = Self(22);
+    /// Mesa open source project
+    pub const MESA_DOZEN: Self = Self(23);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -9635,6 +9662,7 @@ impl fmt::Display for DriverId {
             20 => Some(&"MESA_PANVK"),
             21 => Some(&"SAMSUNG_PROPRIETARY"),
             22 => Some(&"MESA_VENUS"),
+            23 => Some(&"MESA_DOZEN"),
             _ => None,
         };
         if let Some(name) = name {
@@ -32469,6 +32497,96 @@ impl fmt::Debug for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub multisampled_render_to_single_sampled: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
+impl Default for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            multisampled_render_to_single_sampled: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "multisampled_render_to_single_sampled",
+                &self.multisampled_render_to_single_sampled,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubpassResolvePerformanceQueryEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub optimal: Bool32,
+}
+unsafe impl Send for SubpassResolvePerformanceQueryEXT {}
+unsafe impl Sync for SubpassResolvePerformanceQueryEXT {}
+impl Default for SubpassResolvePerformanceQueryEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT,
+            p_next: ptr::null_mut(),
+            optimal: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SubpassResolvePerformanceQueryEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubpassResolvePerformanceQueryEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("optimal", &self.optimal)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MultisampledRenderToSingleSampledInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub multisampled_render_to_single_sampled_enable: Bool32,
+    pub rasterization_samples: SampleCountFlags,
+}
+unsafe impl Send for MultisampledRenderToSingleSampledInfoEXT {}
+unsafe impl Sync for MultisampledRenderToSingleSampledInfoEXT {}
+impl Default for MultisampledRenderToSingleSampledInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT,
+            p_next: ptr::null(),
+            multisampled_render_to_single_sampled_enable: Default::default(),
+            rasterization_samples: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MultisampledRenderToSingleSampledInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MultisampledRenderToSingleSampledInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "multisampled_render_to_single_sampled_enable",
+                &self.multisampled_render_to_single_sampled_enable,
+            )
+            .field("rasterization_samples", &self.rasterization_samples)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceInheritedViewportScissorFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -34549,6 +34667,123 @@ impl fmt::Debug for DescriptorSetLayoutHostMappingInfoVALVE {
             .field("p_next", &self.p_next)
             .field("descriptor_offset", &self.descriptor_offset)
             .field("descriptor_size", &self.descriptor_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_module_identifier: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderModuleIdentifierFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderModuleIdentifierFeaturesEXT {}
+impl Default for PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_module_identifier: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderModuleIdentifierFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_module_identifier", &self.shader_module_identifier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderModuleIdentifierPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_module_identifier_algorithm_uuid: [u8; UUID_SIZE],
+}
+unsafe impl Send for PhysicalDeviceShaderModuleIdentifierPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderModuleIdentifierPropertiesEXT {}
+impl Default for PhysicalDeviceShaderModuleIdentifierPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            shader_module_identifier_algorithm_uuid: [Default::default(); UUID_SIZE],
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderModuleIdentifierPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderModuleIdentifierPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_module_identifier_algorithm_uuid",
+                &self.shader_module_identifier_algorithm_uuid,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineShaderStageModuleIdentifierCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub identifier_size: u32,
+    pub p_identifier: *const u8,
+}
+unsafe impl Send for PipelineShaderStageModuleIdentifierCreateInfoEXT {}
+unsafe impl Sync for PipelineShaderStageModuleIdentifierCreateInfoEXT {}
+impl Default for PipelineShaderStageModuleIdentifierCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            identifier_size: Default::default(),
+            p_identifier: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for PipelineShaderStageModuleIdentifierCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineShaderStageModuleIdentifierCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("identifier_size", &self.identifier_size)
+            .field("p_identifier", &self.p_identifier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ShaderModuleIdentifierEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub identifier_size: u32,
+    pub identifier: [u8; MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT],
+}
+unsafe impl Send for ShaderModuleIdentifierEXT {}
+unsafe impl Sync for ShaderModuleIdentifierEXT {}
+impl Default for ShaderModuleIdentifierEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHADER_MODULE_IDENTIFIER_EXT,
+            p_next: ptr::null_mut(),
+            identifier_size: Default::default(),
+            identifier: [Default::default(); MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT],
+        }
+    }
+}
+impl fmt::Debug for ShaderModuleIdentifierEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ShaderModuleIdentifierEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("identifier_size", &self.identifier_size)
+            .field("identifier", &self.identifier)
             .finish()
     }
 }
@@ -37564,6 +37799,16 @@ pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" f
 );
 pub type FnGetDescriptorSetHostMappingVALVE =
     unsafe extern "system" fn(device: Option<Device>, descriptor_set: Option<DescriptorSet>, pp_data: *mut *mut c_void);
+pub type FnGetShaderModuleIdentifierEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    shader_module: Option<ShaderModule>,
+    p_identifier: *mut ShaderModuleIdentifierEXT,
+);
+pub type FnGetShaderModuleCreateInfoIdentifierEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ShaderModuleCreateInfo,
+    p_identifier: *mut ShaderModuleIdentifierEXT,
+);
 pub type FnGetImageSubresourceLayout2EXT = unsafe extern "system" fn(
     device: Option<Device>,
     image: Option<Image>,

@@ -27,7 +27,6 @@ impl Builder<'_> for vk::BaseOutStructure {
         Default::default()
     }
 }
-pub trait BaseOutStructureNext {}
 #[derive(Default)]
 pub struct BaseOutStructureBuilder {
     inner: vk::BaseOutStructure,
@@ -17371,6 +17370,82 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePrimitivesGeneratedQueryFeatu
 impl DeviceCreateInfoNext for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
+    type Type = PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT,
+}
+impl PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multisampled_render_to_single_sampled(mut self, multisampled_render_to_single_sampled: bool) -> Self {
+        self.inner.multisampled_render_to_single_sampled = if multisampled_render_to_single_sampled {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {}
+impl FormatProperties2Next for vk::SubpassResolvePerformanceQueryEXT {}
+impl Builder<'_> for vk::MultisampledRenderToSingleSampledInfoEXT {
+    type Type = MultisampledRenderToSingleSampledInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MultisampledRenderToSingleSampledInfoEXTBuilder {
+    inner: vk::MultisampledRenderToSingleSampledInfoEXT,
+}
+impl MultisampledRenderToSingleSampledInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multisampled_render_to_single_sampled_enable(
+        mut self,
+        multisampled_render_to_single_sampled_enable: bool,
+    ) -> Self {
+        self.inner.multisampled_render_to_single_sampled_enable = if multisampled_render_to_single_sampled_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn rasterization_samples(mut self, rasterization_samples: vk::SampleCountFlags) -> Self {
+        self.inner.rasterization_samples = rasterization_samples;
+        self
+    }
+}
+impl Deref for MultisampledRenderToSingleSampledInfoEXTBuilder {
+    type Target = vk::MultisampledRenderToSingleSampledInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubpassDescription2Next for MultisampledRenderToSingleSampledInfoEXTBuilder {}
+impl RenderingInfoNext for MultisampledRenderToSingleSampledInfoEXTBuilder {}
+impl SubpassDescription2Next for vk::MultisampledRenderToSingleSampledInfoEXT {}
+impl RenderingInfoNext for vk::MultisampledRenderToSingleSampledInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {
     type Type = PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -19014,6 +19089,67 @@ impl Deref for DescriptorSetLayoutHostMappingInfoVALVEBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
+    type Type = PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT,
+}
+impl PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_module_identifier(mut self, shader_module_identifier: bool) -> Self {
+        self.inner.shader_module_identifier = if shader_module_identifier { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderModuleIdentifierPropertiesEXT {}
+impl<'a> Builder<'a> for vk::PipelineShaderStageModuleIdentifierCreateInfoEXT {
+    type Type = PipelineShaderStageModuleIdentifierCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineShaderStageModuleIdentifierCreateInfoEXTBuilder<'a> {
+    inner: vk::PipelineShaderStageModuleIdentifierCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> PipelineShaderStageModuleIdentifierCreateInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_identifier(mut self, p_identifier: &'a [u8]) -> Self {
+        self.inner.identifier_size = p_identifier.len() as u32;
+        self.inner.p_identifier = p_identifier.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for PipelineShaderStageModuleIdentifierCreateInfoEXTBuilder<'a> {
+    type Target = vk::PipelineShaderStageModuleIdentifierCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PipelineShaderStageCreateInfoNext for PipelineShaderStageModuleIdentifierCreateInfoEXTBuilder<'a> {}
+impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageModuleIdentifierCreateInfoEXT {}
 impl Builder<'_> for vk::ImageCompressionControlEXT {
     type Type = ImageCompressionControlEXTBuilder;
     fn builder() -> Self::Type {
@@ -19317,8 +19453,6 @@ impl Deref for PipelinePropertiesIdentifierEXTBuilder {
         &self.inner
     }
 }
-impl BaseOutStructureNext for PipelinePropertiesIdentifierEXTBuilder {}
-impl BaseOutStructureNext for vk::PipelinePropertiesIdentifierEXT {}
 impl Builder<'_> for vk::PhysicalDevicePipelinePropertiesFeaturesEXT {
     type Type = PhysicalDevicePipelinePropertiesFeaturesEXTBuilder;
     fn builder() -> Self::Type {
