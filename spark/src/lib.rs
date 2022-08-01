@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 219
+//! Generated from vk.xml with `VK_HEADER_VERSION` 223
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -519,6 +519,12 @@ impl InstanceExtensions {
     pub fn enable_ext_astc_decode_mode(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_pipeline_robustness(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_pipeline_robustness(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_khr_device_group_creation(&self) -> bool {
         self.khr_device_group_creation || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
@@ -824,6 +830,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_sample_locations(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_blend_operation_advanced(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_blend_operation_advanced(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_acceleration_structure(&self) -> bool {
@@ -1517,10 +1529,22 @@ impl InstanceExtensions {
         self.google_surfaceless_query = true;
         self.enable_khr_surface();
     }
+    pub fn supports_qcom_image_processing(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_image_processing(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_shader_module_identifier(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_shader_module_identifier(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_qcom_tile_properties(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_qcom_tile_properties(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -3934,6 +3958,7 @@ pub struct DeviceExtensions {
     pub ext_shader_subgroup_vote: bool,
     pub ext_texture_compression_astc_hdr: bool,
     pub ext_astc_decode_mode: bool,
+    pub ext_pipeline_robustness: bool,
     pub khr_maintenance1: bool,
     pub khr_external_memory: bool,
     pub khr_external_memory_win32: bool,
@@ -4141,8 +4166,10 @@ pub struct DeviceExtensions {
     pub qcom_fragment_density_map_offset: bool,
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
+    pub qcom_image_processing: bool,
     pub ext_subpass_merge_feedback: bool,
     pub ext_shader_module_identifier: bool,
+    pub qcom_tile_properties: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4182,6 +4209,7 @@ impl DeviceExtensions {
             b"VK_EXT_shader_subgroup_vote" => self.ext_shader_subgroup_vote = true,
             b"VK_EXT_texture_compression_astc_hdr" => self.ext_texture_compression_astc_hdr = true,
             b"VK_EXT_astc_decode_mode" => self.ext_astc_decode_mode = true,
+            b"VK_EXT_pipeline_robustness" => self.ext_pipeline_robustness = true,
             b"VK_KHR_maintenance1" => self.khr_maintenance1 = true,
             b"VK_KHR_external_memory" => self.khr_external_memory = true,
             b"VK_KHR_external_memory_win32" => self.khr_external_memory_win32 = true,
@@ -4391,8 +4419,10 @@ impl DeviceExtensions {
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
+            b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
+            b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             _ => {}
         }
     }
@@ -4434,6 +4464,7 @@ impl DeviceExtensions {
             ext_shader_subgroup_vote: false,
             ext_texture_compression_astc_hdr: false,
             ext_astc_decode_mode: false,
+            ext_pipeline_robustness: false,
             khr_maintenance1: false,
             khr_external_memory: false,
             khr_external_memory_win32: false,
@@ -4641,8 +4672,10 @@ impl DeviceExtensions {
             qcom_fragment_density_map_offset: false,
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
+            qcom_image_processing: false,
             ext_subpass_merge_feedback: false,
             ext_shader_module_identifier: false,
+            qcom_tile_properties: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -4888,6 +4921,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_astc_decode_mode(&mut self) {
         self.ext_astc_decode_mode = true;
+    }
+    pub fn supports_ext_pipeline_robustness(&self) -> bool {
+        self.ext_pipeline_robustness
+    }
+    pub fn enable_ext_pipeline_robustness(&mut self) {
+        self.ext_pipeline_robustness = true;
     }
     pub fn supports_khr_maintenance1(&self) -> bool {
         self.khr_maintenance1 || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -6525,6 +6564,13 @@ impl DeviceExtensions {
         self.ext_image_compression_control_swapchain = true;
         self.enable_ext_image_compression_control();
     }
+    pub fn supports_qcom_image_processing(&self) -> bool {
+        self.qcom_image_processing && self.supports_khr_format_feature_flags2()
+    }
+    pub fn enable_qcom_image_processing(&mut self) {
+        self.qcom_image_processing = true;
+        self.enable_khr_format_feature_flags2();
+    }
     pub fn supports_ext_subpass_merge_feedback(&self) -> bool {
         self.ext_subpass_merge_feedback
     }
@@ -6537,6 +6583,12 @@ impl DeviceExtensions {
     pub fn enable_ext_shader_module_identifier(&mut self) {
         self.ext_shader_module_identifier = true;
         self.enable_ext_pipeline_creation_cache_control();
+    }
+    pub fn supports_qcom_tile_properties(&self) -> bool {
+        self.qcom_tile_properties
+    }
+    pub fn enable_qcom_tile_properties(&mut self) {
+        self.qcom_tile_properties = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -6644,6 +6696,9 @@ impl DeviceExtensions {
         }
         if self.ext_astc_decode_mode {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_astc_decode_mode\0") })
+        }
+        if self.ext_pipeline_robustness {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_robustness\0") })
         }
         if self.khr_maintenance1 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance1\0") })
@@ -7268,11 +7323,17 @@ impl DeviceExtensions {
         if self.ext_image_compression_control_swapchain {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_compression_control_swapchain\0") })
         }
+        if self.qcom_image_processing {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing\0") })
+        }
         if self.ext_subpass_merge_feedback {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subpass_merge_feedback\0") })
         }
         if self.ext_shader_module_identifier {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_module_identifier\0") })
+        }
+        if self.qcom_tile_properties {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
         }
         v
     }
@@ -7660,6 +7721,8 @@ pub struct Device {
     pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
+    pub fp_get_framebuffer_tile_properties_qcom: Option<vk::FnGetFramebufferTilePropertiesQCOM>,
+    pub fp_get_dynamic_rendering_tile_properties_qcom: Option<vk::FnGetDynamicRenderingTilePropertiesQCOM>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -10723,6 +10786,22 @@ impl Device {
             },
             fp_export_metal_objects_ext: if extensions.ext_metal_objects {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkExportMetalObjectsEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_framebuffer_tile_properties_qcom: if extensions.qcom_tile_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetFramebufferTilePropertiesQCOM\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_dynamic_rendering_tile_properties_qcom: if extensions.qcom_tile_properties {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDynamicRenderingTilePropertiesQCOM\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -17287,6 +17366,41 @@ impl Device {
             .fp_export_metal_objects_ext
             .expect("vkExportMetalObjectsEXT is not loaded");
         (fp)(Some(self.handle), p_metal_objects_info);
+    }
+    pub unsafe fn get_framebuffer_tile_properties_qcom_to_vec(
+        &self,
+        framebuffer: vk::Framebuffer,
+    ) -> Result<Vec<vk::TilePropertiesQCOM>> {
+        let fp = self
+            .fp_get_framebuffer_tile_properties_qcom
+            .expect("vkGetFramebufferTilePropertiesQCOM is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), Some(framebuffer), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), Some(framebuffer), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn get_dynamic_rendering_tile_properties_qcom(
+        &self,
+        p_rendering_info: &vk::RenderingInfo,
+        p_properties: &mut vk::TilePropertiesQCOM,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_dynamic_rendering_tile_properties_qcom
+            .expect("vkGetDynamicRenderingTilePropertiesQCOM is not loaded");
+        let err = (fp)(Some(self.handle), p_rendering_info, p_properties);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
     }
 }
 

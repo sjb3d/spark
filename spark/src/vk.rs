@@ -282,8 +282,10 @@ impl SamplerCreateFlags {
     pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = Self(0x2);
     /// Added by extension VK_EXT_non_seamless_cube_map.
     pub const NON_SEAMLESS_CUBE_MAP_EXT: Self = Self(0x4);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const IMAGE_PROCESSING_QCOM: Self = Self(0x10);
 }
-impl_bitmask!(SamplerCreateFlags, 0x7);
+impl_bitmask!(SamplerCreateFlags, 0x17);
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -292,6 +294,7 @@ impl fmt::Display for SamplerCreateFlags {
                 (0x1, "SUBSAMPLED_EXT"),
                 (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT"),
                 (0x4, "NON_SEAMLESS_CUBE_MAP_EXT"),
+                (0x10, "IMAGE_PROCESSING_QCOM"),
             ],
             f,
         )
@@ -906,8 +909,12 @@ impl ImageUsageFlags {
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x40000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const SAMPLE_WEIGHT_QCOM: Self = Self(0x100000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
 }
-impl_bitmask!(ImageUsageFlags, 0x403ff);
+impl_bitmask!(ImageUsageFlags, 0x3403ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -924,6 +931,8 @@ impl fmt::Display for ImageUsageFlags {
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
+                (0x100000, "SAMPLE_WEIGHT_QCOM"),
+                (0x200000, "SAMPLE_BLOCK_MATCH_QCOM"),
             ],
             f,
         )
@@ -1198,9 +1207,7 @@ impl FormatFeatureFlags {
     pub const COSITED_CHROMA_SAMPLES: Self = Self(0x800000);
     /// Format can be used with min/max reduction filtering
     pub const SAMPLED_IMAGE_FILTER_MINMAX: Self = Self(0x10000);
-    /// Format can be filtered with VK_FILTER_CUBIC_IMG when being sampled
-    /// Added by extension VK_IMG_filter_cubic.
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = Self(0x2000);
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_IMG: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_EXT;
     pub const TRANSFER_SRC_KHR: Self = Self::TRANSFER_SRC;
     pub const TRANSFER_DST_KHR: Self = Self::TRANSFER_DST;
     pub const SAMPLED_IMAGE_FILTER_MINMAX_EXT: Self = Self::SAMPLED_IMAGE_FILTER_MINMAX;
@@ -1217,7 +1224,8 @@ impl FormatFeatureFlags {
         Self::SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE;
     pub const DISJOINT_KHR: Self = Self::DISJOINT;
     pub const COSITED_CHROMA_SAMPLES_KHR: Self = Self::COSITED_CHROMA_SAMPLES;
-    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self::SAMPLED_IMAGE_FILTER_CUBIC_IMG;
+    /// Added by extension VK_EXT_filter_cubic.
+    pub const SAMPLED_IMAGE_FILTER_CUBIC_EXT: Self = Self(0x2000);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_fragment_shading_rate.
@@ -1258,8 +1266,8 @@ impl fmt::Display for FormatFeatureFlags {
                 (0x400000, "DISJOINT"),
                 (0x800000, "COSITED_CHROMA_SAMPLES"),
                 (0x10000, "SAMPLED_IMAGE_FILTER_MINMAX"),
-                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_IMG"),
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
+                (0x2000, "SAMPLED_IMAGE_FILTER_CUBIC_EXT"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
             ],
@@ -2488,8 +2496,16 @@ impl FormatFeatureFlags2 {
     /// Format support linear image as render target, it cannot be mixed with non linear attachment
     /// Added by extension VK_NV_linear_color_attachment.
     pub const LINEAR_COLOR_ATTACHMENT_NV: Self = Self(0x4000000000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const WEIGHT_IMAGE_QCOM: Self = Self(0x400000000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const WEIGHT_SAMPLED_IMAGE_QCOM: Self = Self(0x800000000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const BLOCK_MATCHING_QCOM: Self = Self(0x1000000000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const BOX_FILTER_SAMPLED_QCOM: Self = Self(0x2000000000);
 }
-impl_bitmask!(FormatFeatureFlags2, 0x43e1ffffff);
+impl_bitmask!(FormatFeatureFlags2, 0x7fe1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2532,6 +2548,10 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x4000000000, "LINEAR_COLOR_ATTACHMENT_NV"),
+                (0x400000000, "WEIGHT_IMAGE_QCOM"),
+                (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
+                (0x1000000000, "BLOCK_MATCHING_QCOM"),
+                (0x2000000000, "BOX_FILTER_SAMPLED_QCOM"),
             ],
             f,
         )
@@ -4444,6 +4464,10 @@ impl DescriptorType {
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
     /// Added by extension VK_VALVE_mutable_descriptor_type.
     pub const MUTABLE_VALVE: Self = Self(1000351000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const SAMPLE_WEIGHT_IMAGE_QCOM: Self = Self(1000440000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const BLOCK_MATCH_IMAGE_QCOM: Self = Self(1000440001);
 }
 impl fmt::Display for DescriptorType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4463,6 +4487,8 @@ impl fmt::Display for DescriptorType {
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
             1000351000 => Some(&"MUTABLE_VALVE"),
+            1000440000 => Some(&"SAMPLE_WEIGHT_IMAGE_QCOM"),
+            1000440001 => Some(&"BLOCK_MATCH_IMAGE_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6153,6 +6179,12 @@ impl StructureType {
     pub const IMAGE_VIEW_ASTC_DECODE_MODE_EXT: Self = Self(1000067000);
     /// Added by extension VK_EXT_astc_decode_mode.
     pub const PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT: Self = Self(1000067001);
+    /// Added by extension VK_EXT_pipeline_robustness.
+    pub const PIPELINE_ROBUSTNESS_CREATE_INFO_EXT: Self = Self(1000068000);
+    /// Added by extension VK_EXT_pipeline_robustness.
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT: Self = Self(1000068001);
+    /// Added by extension VK_EXT_pipeline_robustness.
+    pub const PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT: Self = Self(1000068002);
     pub const PHYSICAL_DEVICE_GROUP_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_GROUP_PROPERTIES;
     pub const DEVICE_GROUP_DEVICE_CREATE_INFO_KHR: Self = Self::DEVICE_GROUP_DEVICE_CREATE_INFO;
     pub const PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO_KHR: Self = Self::PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO;
@@ -7011,6 +7043,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
     /// Added by extension VK_EXT_image_compression_control_swapchain.
     pub const PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT: Self = Self(1000437000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM: Self = Self(1000440000);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM: Self = Self(1000440001);
+    /// Added by extension VK_QCOM_image_processing.
+    pub const IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM: Self = Self(1000440002);
     /// Added by extension VK_EXT_subpass_merge_feedback.
     pub const PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT: Self = Self(1000458000);
     /// Added by extension VK_EXT_subpass_merge_feedback.
@@ -7027,6 +7065,10 @@ impl StructureType {
     pub const PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT: Self = Self(1000462002);
     /// Added by extension VK_EXT_shader_module_identifier.
     pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
+    /// Added by extension VK_QCOM_tile_properties.
+    pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
+    /// Added by extension VK_QCOM_tile_properties.
+    pub const TILE_PROPERTIES_QCOM: Self = Self(1000484001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7294,6 +7336,9 @@ impl fmt::Display for StructureType {
             1000062000 => Some(&"VI_SURFACE_CREATE_INFO_NN"),
             1000067000 => Some(&"IMAGE_VIEW_ASTC_DECODE_MODE_EXT"),
             1000067001 => Some(&"PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT"),
+            1000068000 => Some(&"PIPELINE_ROBUSTNESS_CREATE_INFO_EXT"),
+            1000068001 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT"),
+            1000068002 => Some(&"PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT"),
             1000073000 => Some(&"IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
             1000073001 => Some(&"EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR"),
             1000073002 => Some(&"MEMORY_WIN32_HANDLE_PROPERTIES_KHR"),
@@ -7632,6 +7677,9 @@ impl fmt::Display for StructureType {
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
             1000430000 => Some(&"PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV"),
             1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
+            1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
+            1000440001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM"),
+            1000440002 => Some(&"IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM"),
             1000458000 => Some(&"PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT"),
             1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
             1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT"),
@@ -7640,6 +7688,8 @@ impl fmt::Display for StructureType {
             1000462001 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT"),
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
             1000462003 => Some(&"SHADER_MODULE_IDENTIFIER_EXT"),
+            1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
+            1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7731,16 +7781,16 @@ pub struct Filter(i32);
 impl Filter {
     pub const NEAREST: Self = Self(0);
     pub const LINEAR: Self = Self(1);
-    /// Added by extension VK_IMG_filter_cubic.
-    pub const CUBIC_IMG: Self = Self(1000015000);
-    pub const CUBIC_EXT: Self = Self::CUBIC_IMG;
+    pub const CUBIC_IMG: Self = Self::CUBIC_EXT;
+    /// Added by extension VK_EXT_filter_cubic.
+    pub const CUBIC_EXT: Self = Self(1000015000);
 }
 impl fmt::Display for Filter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"NEAREST"),
             1 => Some(&"LINEAR"),
-            1000015000 => Some(&"CUBIC_IMG"),
+            1000015000 => Some(&"CUBIC_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -8897,6 +8947,56 @@ impl fmt::Display for ProvokingVertexModeEXT {
         let name = match self.0 {
             0 => Some(&"FIRST_VERTEX"),
             1 => Some(&"LAST_VERTEX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PipelineRobustnessBufferBehaviorEXT(i32);
+impl PipelineRobustnessBufferBehaviorEXT {
+    pub const DEVICE_DEFAULT: Self = Self(0);
+    pub const DISABLED: Self = Self(1);
+    pub const ROBUST_BUFFER_ACCESS: Self = Self(2);
+    pub const ROBUST_BUFFER_ACCESS_2: Self = Self(3);
+}
+impl fmt::Display for PipelineRobustnessBufferBehaviorEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEVICE_DEFAULT"),
+            1 => Some(&"DISABLED"),
+            2 => Some(&"ROBUST_BUFFER_ACCESS"),
+            3 => Some(&"ROBUST_BUFFER_ACCESS_2"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct PipelineRobustnessImageBehaviorEXT(i32);
+impl PipelineRobustnessImageBehaviorEXT {
+    pub const DEVICE_DEFAULT: Self = Self(0);
+    pub const DISABLED: Self = Self(1);
+    pub const ROBUST_IMAGE_ACCESS: Self = Self(2);
+    pub const ROBUST_IMAGE_ACCESS_2: Self = Self(3);
+}
+impl fmt::Display for PipelineRobustnessImageBehaviorEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"DEVICE_DEFAULT"),
+            1 => Some(&"DISABLED"),
+            2 => Some(&"ROBUST_IMAGE_ACCESS"),
+            3 => Some(&"ROBUST_IMAGE_ACCESS_2"),
             _ => None,
         };
         if let Some(name) = name {
@@ -11426,6 +11526,7 @@ impl fmt::Debug for ImageResolve {
 #[derive(Copy, Clone)]
 pub struct ShaderModuleCreateInfo {
     pub s_type: StructureType,
+    /// noautovalidity because this structure can be either an explicit parameter, or passed in a pNext chain
     pub p_next: *const c_void,
     pub flags: ShaderModuleCreateFlags,
     /// Specified in bytes
@@ -35571,6 +35672,276 @@ impl fmt::Debug for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineRobustnessFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_robustness: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineRobustnessFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePipelineRobustnessFeaturesEXT {}
+impl Default for PhysicalDevicePipelineRobustnessFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_robustness: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineRobustnessFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineRobustnessFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_robustness", &self.pipeline_robustness)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineRobustnessCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub storage_buffers: PipelineRobustnessBufferBehaviorEXT,
+    pub uniform_buffers: PipelineRobustnessBufferBehaviorEXT,
+    pub vertex_inputs: PipelineRobustnessBufferBehaviorEXT,
+    pub images: PipelineRobustnessImageBehaviorEXT,
+}
+unsafe impl Send for PipelineRobustnessCreateInfoEXT {}
+unsafe impl Sync for PipelineRobustnessCreateInfoEXT {}
+impl Default for PipelineRobustnessCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_ROBUSTNESS_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            storage_buffers: Default::default(),
+            uniform_buffers: Default::default(),
+            vertex_inputs: Default::default(),
+            images: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineRobustnessCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineRobustnessCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("storage_buffers", &self.storage_buffers)
+            .field("uniform_buffers", &self.uniform_buffers)
+            .field("vertex_inputs", &self.vertex_inputs)
+            .field("images", &self.images)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineRobustnessPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub default_robustness_storage_buffers: PipelineRobustnessBufferBehaviorEXT,
+    pub default_robustness_uniform_buffers: PipelineRobustnessBufferBehaviorEXT,
+    pub default_robustness_vertex_inputs: PipelineRobustnessBufferBehaviorEXT,
+    pub default_robustness_images: PipelineRobustnessImageBehaviorEXT,
+}
+unsafe impl Send for PhysicalDevicePipelineRobustnessPropertiesEXT {}
+unsafe impl Sync for PhysicalDevicePipelineRobustnessPropertiesEXT {}
+impl Default for PhysicalDevicePipelineRobustnessPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_ROBUSTNESS_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            default_robustness_storage_buffers: Default::default(),
+            default_robustness_uniform_buffers: Default::default(),
+            default_robustness_vertex_inputs: Default::default(),
+            default_robustness_images: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineRobustnessPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineRobustnessPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "default_robustness_storage_buffers",
+                &self.default_robustness_storage_buffers,
+            )
+            .field(
+                "default_robustness_uniform_buffers",
+                &self.default_robustness_uniform_buffers,
+            )
+            .field(
+                "default_robustness_vertex_inputs",
+                &self.default_robustness_vertex_inputs,
+            )
+            .field("default_robustness_images", &self.default_robustness_images)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewSampleWeightCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub filter_center: Offset2D,
+    pub filter_size: Extent2D,
+    pub num_phases: u32,
+}
+unsafe impl Send for ImageViewSampleWeightCreateInfoQCOM {}
+unsafe impl Sync for ImageViewSampleWeightCreateInfoQCOM {}
+impl Default for ImageViewSampleWeightCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM,
+            p_next: ptr::null(),
+            filter_center: Default::default(),
+            filter_size: Default::default(),
+            num_phases: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewSampleWeightCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewSampleWeightCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("filter_center", &self.filter_center)
+            .field("filter_size", &self.filter_size)
+            .field("num_phases", &self.num_phases)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageProcessingFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub texture_sample_weighted: Bool32,
+    pub texture_box_filter: Bool32,
+    pub texture_block_match: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageProcessingFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceImageProcessingFeaturesQCOM {}
+impl Default for PhysicalDeviceImageProcessingFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            texture_sample_weighted: Default::default(),
+            texture_box_filter: Default::default(),
+            texture_block_match: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageProcessingFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageProcessingFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("texture_sample_weighted", &self.texture_sample_weighted)
+            .field("texture_box_filter", &self.texture_box_filter)
+            .field("texture_block_match", &self.texture_block_match)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageProcessingPropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_weight_filter_phases: u32,
+    pub max_weight_filter_dimension: Extent2D,
+    pub max_block_match_region: Extent2D,
+    pub max_box_filter_block_size: Extent2D,
+}
+unsafe impl Send for PhysicalDeviceImageProcessingPropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceImageProcessingPropertiesQCOM {}
+impl Default for PhysicalDeviceImageProcessingPropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            max_weight_filter_phases: Default::default(),
+            max_weight_filter_dimension: Default::default(),
+            max_block_match_region: Default::default(),
+            max_box_filter_block_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageProcessingPropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageProcessingPropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_weight_filter_phases", &self.max_weight_filter_phases)
+            .field("max_weight_filter_dimension", &self.max_weight_filter_dimension)
+            .field("max_block_match_region", &self.max_block_match_region)
+            .field("max_box_filter_block_size", &self.max_box_filter_block_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceTilePropertiesFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tile_properties: Bool32,
+}
+unsafe impl Send for PhysicalDeviceTilePropertiesFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceTilePropertiesFeaturesQCOM {}
+impl Default for PhysicalDeviceTilePropertiesFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            tile_properties: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceTilePropertiesFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceTilePropertiesFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tile_properties", &self.tile_properties)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct TilePropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub tile_size: Extent3D,
+    pub apron_size: Extent2D,
+    pub origin: Offset2D,
+}
+unsafe impl Send for TilePropertiesQCOM {}
+unsafe impl Sync for TilePropertiesQCOM {}
+impl Default for TilePropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::TILE_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            tile_size: Default::default(),
+            apron_size: Default::default(),
+            origin: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for TilePropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("TilePropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("tile_size", &self.tile_size)
+            .field("apron_size", &self.apron_size)
+            .field("origin", &self.origin)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -37822,3 +38193,14 @@ pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
 ) -> Result;
 pub type FnExportMetalObjectsEXT =
     unsafe extern "system" fn(device: Option<Device>, p_metal_objects_info: *mut ExportMetalObjectsInfoEXT);
+pub type FnGetFramebufferTilePropertiesQCOM = unsafe extern "system" fn(
+    device: Option<Device>,
+    framebuffer: Option<Framebuffer>,
+    p_properties_count: *mut u32,
+    p_properties: *mut TilePropertiesQCOM,
+) -> Result;
+pub type FnGetDynamicRenderingTilePropertiesQCOM = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_rendering_info: *const RenderingInfo,
+    p_properties: *mut TilePropertiesQCOM,
+) -> Result;

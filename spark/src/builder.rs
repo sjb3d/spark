@@ -7953,7 +7953,9 @@ impl Deref for ShaderModuleValidationCacheCreateInfoEXTBuilder {
     }
 }
 impl ShaderModuleCreateInfoNext for ShaderModuleValidationCacheCreateInfoEXTBuilder {}
+impl PipelineShaderStageCreateInfoNext for ShaderModuleValidationCacheCreateInfoEXTBuilder {}
 impl ShaderModuleCreateInfoNext for vk::ShaderModuleValidationCacheCreateInfoEXT {}
+impl PipelineShaderStageCreateInfoNext for vk::ShaderModuleValidationCacheCreateInfoEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMaintenance3Properties {}
 impl Builder<'_> for vk::PhysicalDeviceMaintenance4Features {
     type Type = PhysicalDeviceMaintenance4FeaturesBuilder;
@@ -19946,3 +19948,219 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceNonSeamlessCubeMapFeaturesEXT
 impl DeviceCreateInfoNext for PhysicalDeviceNonSeamlessCubeMapFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDevicePipelineRobustnessFeaturesEXT {
+    type Type = PhysicalDevicePipelineRobustnessFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineRobustnessFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePipelineRobustnessFeaturesEXT,
+}
+impl PhysicalDevicePipelineRobustnessFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_robustness(mut self, pipeline_robustness: bool) -> Self {
+        self.inner.pipeline_robustness = if pipeline_robustness { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineRobustnessFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePipelineRobustnessFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineRobustnessFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineRobustnessFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineRobustnessFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineRobustnessFeaturesEXT {}
+impl Builder<'_> for vk::PipelineRobustnessCreateInfoEXT {
+    type Type = PipelineRobustnessCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineRobustnessCreateInfoEXTBuilder {
+    inner: vk::PipelineRobustnessCreateInfoEXT,
+}
+impl PipelineRobustnessCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn storage_buffers(mut self, storage_buffers: vk::PipelineRobustnessBufferBehaviorEXT) -> Self {
+        self.inner.storage_buffers = storage_buffers;
+        self
+    }
+    pub fn uniform_buffers(mut self, uniform_buffers: vk::PipelineRobustnessBufferBehaviorEXT) -> Self {
+        self.inner.uniform_buffers = uniform_buffers;
+        self
+    }
+    pub fn vertex_inputs(mut self, vertex_inputs: vk::PipelineRobustnessBufferBehaviorEXT) -> Self {
+        self.inner.vertex_inputs = vertex_inputs;
+        self
+    }
+    pub fn images(mut self, images: vk::PipelineRobustnessImageBehaviorEXT) -> Self {
+        self.inner.images = images;
+        self
+    }
+}
+impl Deref for PipelineRobustnessCreateInfoEXTBuilder {
+    type Target = vk::PipelineRobustnessCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl GraphicsPipelineCreateInfoNext for PipelineRobustnessCreateInfoEXTBuilder {}
+impl ComputePipelineCreateInfoNext for PipelineRobustnessCreateInfoEXTBuilder {}
+impl PipelineShaderStageCreateInfoNext for PipelineRobustnessCreateInfoEXTBuilder {}
+impl RayTracingPipelineCreateInfoKHRNext for PipelineRobustnessCreateInfoEXTBuilder {}
+impl GraphicsPipelineCreateInfoNext for vk::PipelineRobustnessCreateInfoEXT {}
+impl ComputePipelineCreateInfoNext for vk::PipelineRobustnessCreateInfoEXT {}
+impl PipelineShaderStageCreateInfoNext for vk::PipelineRobustnessCreateInfoEXT {}
+impl RayTracingPipelineCreateInfoKHRNext for vk::PipelineRobustnessCreateInfoEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDevicePipelineRobustnessPropertiesEXT {}
+impl Builder<'_> for vk::ImageViewSampleWeightCreateInfoQCOM {
+    type Type = ImageViewSampleWeightCreateInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageViewSampleWeightCreateInfoQCOMBuilder {
+    inner: vk::ImageViewSampleWeightCreateInfoQCOM,
+}
+impl ImageViewSampleWeightCreateInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn filter_center(mut self, filter_center: vk::Offset2D) -> Self {
+        self.inner.filter_center = filter_center;
+        self
+    }
+    pub fn filter_size(mut self, filter_size: vk::Extent2D) -> Self {
+        self.inner.filter_size = filter_size;
+        self
+    }
+    pub fn num_phases(mut self, num_phases: u32) -> Self {
+        self.inner.num_phases = num_phases;
+        self
+    }
+}
+impl Deref for ImageViewSampleWeightCreateInfoQCOMBuilder {
+    type Target = vk::ImageViewSampleWeightCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageViewCreateInfoNext for ImageViewSampleWeightCreateInfoQCOMBuilder {}
+impl ImageViewCreateInfoNext for vk::ImageViewSampleWeightCreateInfoQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceImageProcessingFeaturesQCOM {
+    type Type = PhysicalDeviceImageProcessingFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageProcessingFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceImageProcessingFeaturesQCOM,
+}
+impl PhysicalDeviceImageProcessingFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn texture_sample_weighted(mut self, texture_sample_weighted: bool) -> Self {
+        self.inner.texture_sample_weighted = if texture_sample_weighted { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn texture_box_filter(mut self, texture_box_filter: bool) -> Self {
+        self.inner.texture_box_filter = if texture_box_filter { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn texture_block_match(mut self, texture_block_match: bool) -> Self {
+        self.inner.texture_block_match = if texture_block_match { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageProcessingFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceImageProcessingFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageProcessingFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageProcessingFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageProcessingFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageProcessingFeaturesQCOM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceImageProcessingPropertiesQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceTilePropertiesFeaturesQCOM {
+    type Type = PhysicalDeviceTilePropertiesFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceTilePropertiesFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceTilePropertiesFeaturesQCOM,
+}
+impl PhysicalDeviceTilePropertiesFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tile_properties(mut self, tile_properties: bool) -> Self {
+        self.inner.tile_properties = if tile_properties { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceTilePropertiesFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceTilePropertiesFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceTilePropertiesFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceTilePropertiesFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceTilePropertiesFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceTilePropertiesFeaturesQCOM {}
+impl Builder<'_> for vk::TilePropertiesQCOM {
+    type Type = TilePropertiesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct TilePropertiesQCOMBuilder {
+    inner: vk::TilePropertiesQCOM,
+}
+impl TilePropertiesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn tile_size(mut self, tile_size: vk::Extent3D) -> Self {
+        self.inner.tile_size = tile_size;
+        self
+    }
+    pub fn apron_size(mut self, apron_size: vk::Extent2D) -> Self {
+        self.inner.apron_size = apron_size;
+        self
+    }
+    pub fn origin(mut self, origin: vk::Offset2D) -> Self {
+        self.inner.origin = origin;
+        self
+    }
+}
+impl Deref for TilePropertiesQCOMBuilder {
+    type Target = vk::TilePropertiesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
