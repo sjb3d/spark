@@ -330,10 +330,14 @@ impl fmt::Display for PipelineCacheCreateFlags {
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineDepthStencilStateCreateFlags(u32);
 impl PipelineDepthStencilStateCreateFlags {
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x1);
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x2);
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self =
+        Self::RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT;
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self =
+        Self::RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT;
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT: Self = Self(0x1);
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT: Self = Self(0x2);
 }
 impl_bitmask!(PipelineDepthStencilStateCreateFlags, 0x3);
 impl fmt::Display for PipelineDepthStencilStateCreateFlags {
@@ -341,8 +345,8 @@ impl fmt::Display for PipelineDepthStencilStateCreateFlags {
         display_bitmask(
             self.0 as _,
             &[
-                (0x1, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM"),
-                (0x2, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM"),
+                (0x1, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT"),
+                (0x2, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT"),
             ],
             f,
         )
@@ -362,13 +366,14 @@ impl fmt::Display for PipelineDynamicStateCreateFlags {
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PipelineColorBlendStateCreateFlags(u32);
 impl PipelineColorBlendStateCreateFlags {
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM: Self = Self(0x1);
+    pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM: Self = Self::RASTERIZATION_ORDER_ATTACHMENT_ACCESS_EXT;
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_EXT: Self = Self(0x1);
 }
 impl_bitmask!(PipelineColorBlendStateCreateFlags, 0x1);
 impl fmt::Display for PipelineColorBlendStateCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[(0x1, "RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM")], f)
+        display_bitmask(self.0 as _, &[(0x1, "RASTERIZATION_ORDER_ATTACHMENT_ACCESS_EXT")], f)
     }
 }
 #[repr(transparent)]
@@ -847,10 +852,12 @@ impl ShaderStageFlags {
     pub const MISS_NV: Self = Self::MISS_KHR;
     pub const INTERSECTION_NV: Self = Self::INTERSECTION_KHR;
     pub const CALLABLE_NV: Self = Self::CALLABLE_KHR;
-    /// Added by extension VK_NV_mesh_shader.
-    pub const TASK_NV: Self = Self(0x40);
-    /// Added by extension VK_NV_mesh_shader.
-    pub const MESH_NV: Self = Self(0x80);
+    pub const TASK_NV: Self = Self::TASK_EXT;
+    pub const MESH_NV: Self = Self::MESH_EXT;
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const TASK_EXT: Self = Self(0x40);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const MESH_EXT: Self = Self(0x80);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x4000);
 }
@@ -874,8 +881,8 @@ impl fmt::Display for ShaderStageFlags {
                 (0x800, "MISS_KHR"),
                 (0x1000, "INTERSECTION_KHR"),
                 (0x2000, "CALLABLE_KHR"),
-                (0x40, "TASK_NV"),
-                (0x80, "MESH_NV"),
+                (0x40, "TASK_EXT"),
+                (0x80, "MESH_EXT"),
                 (0x4000, "SUBPASS_SHADING_HUAWEI"),
             ],
             f,
@@ -907,6 +914,8 @@ impl ImageUsageFlags {
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x80000);
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x40000);
     /// Added by extension VK_QCOM_image_processing.
@@ -914,7 +923,7 @@ impl ImageUsageFlags {
     /// Added by extension VK_QCOM_image_processing.
     pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
 }
-impl_bitmask!(ImageUsageFlags, 0x3403ff);
+impl_bitmask!(ImageUsageFlags, 0x3c03ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -930,6 +939,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x80, "INPUT_ATTACHMENT"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x80000, "ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
                 (0x100000, "SAMPLE_WEIGHT_QCOM"),
                 (0x200000, "SAMPLE_BLOCK_MATCH_QCOM"),
@@ -1086,8 +1096,12 @@ impl PipelineCreateFlags {
     pub const LINK_TIME_OPTIMIZATION_EXT: Self = Self(0x400);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
 }
-impl_bitmask!(PipelineCreateFlags, 0xffffff);
+impl_bitmask!(PipelineCreateFlags, 0x6ffffff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1117,6 +1131,8 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT"),
                 (0x400, "LINK_TIME_OPTIMIZATION_EXT"),
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
+                (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
+                (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
             ],
             f,
         )
@@ -1435,8 +1451,12 @@ impl QueryPipelineStatisticFlags {
     pub const TESSELLATION_EVALUATION_SHADER_INVOCATIONS: Self = Self(0x200);
     /// Optional
     pub const COMPUTE_SHADER_INVOCATIONS: Self = Self(0x400);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const TASK_SHADER_INVOCATIONS_EXT: Self = Self(0x800);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const MESH_SHADER_INVOCATIONS_EXT: Self = Self(0x1000);
 }
-impl_bitmask!(QueryPipelineStatisticFlags, 0x7ff);
+impl_bitmask!(QueryPipelineStatisticFlags, 0x1fff);
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1453,6 +1473,8 @@ impl fmt::Display for QueryPipelineStatisticFlags {
                 (0x100, "TESSELLATION_CONTROL_SHADER_PATCHES"),
                 (0x200, "TESSELLATION_EVALUATION_SHADER_INVOCATIONS"),
                 (0x400, "COMPUTE_SHADER_INVOCATIONS"),
+                (0x800, "TASK_SHADER_INVOCATIONS_EXT"),
+                (0x1000, "MESH_SHADER_INVOCATIONS_EXT"),
             ],
             f,
         )
@@ -1565,12 +1587,18 @@ impl SubpassDescriptionFlags {
     pub const FRAGMENT_REGION_QCOM: Self = Self(0x4);
     /// Added by extension VK_QCOM_render_pass_shader_resolve.
     pub const SHADER_RESOLVE_QCOM: Self = Self(0x8);
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM: Self = Self(0x10);
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self = Self(0x20);
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self = Self(0x40);
+    pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM: Self =
+        Self::RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT;
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self =
+        Self::RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT;
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM: Self =
+        Self::RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT;
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT: Self = Self(0x10);
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT: Self = Self(0x20);
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT: Self = Self(0x40);
 }
 impl_bitmask!(SubpassDescriptionFlags, 0x7f);
 impl fmt::Display for SubpassDescriptionFlags {
@@ -1582,9 +1610,9 @@ impl fmt::Display for SubpassDescriptionFlags {
                 (0x2, "PER_VIEW_POSITION_X_ONLY_NVX"),
                 (0x4, "FRAGMENT_REGION_QCOM"),
                 (0x8, "SHADER_RESOLVE_QCOM"),
-                (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_ARM"),
-                (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM"),
-                (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_ARM"),
+                (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT"),
+                (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT"),
+                (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT"),
             ],
             f,
         )
@@ -1641,10 +1669,8 @@ impl PipelineStageFlags {
     pub const SHADING_RATE_IMAGE_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_KHR;
     pub const RAY_TRACING_SHADER_NV: Self = Self::RAY_TRACING_SHADER_KHR;
     pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::ACCELERATION_STRUCTURE_BUILD_KHR;
-    /// Added by extension VK_NV_mesh_shader.
-    pub const TASK_SHADER_NV: Self = Self(0x80000);
-    /// Added by extension VK_NV_mesh_shader.
-    pub const MESH_SHADER_NV: Self = Self(0x100000);
+    pub const TASK_SHADER_NV: Self = Self::TASK_SHADER_EXT;
+    pub const MESH_SHADER_NV: Self = Self::MESH_SHADER_EXT;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_fragment_shading_rate.
@@ -1652,6 +1678,10 @@ impl PipelineStageFlags {
     /// Added by extension VK_NV_device_generated_commands.
     pub const COMMAND_PREPROCESS_NV: Self = Self(0x20000);
     pub const NONE_KHR: Self = Self::NONE;
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const TASK_SHADER_EXT: Self = Self(0x80000);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const MESH_SHADER_EXT: Self = Self(0x100000);
 }
 impl_bitmask!(PipelineStageFlags, 0x3ffffff);
 impl fmt::Display for PipelineStageFlags {
@@ -1680,11 +1710,11 @@ impl fmt::Display for PipelineStageFlags {
                 (0x40000, "CONDITIONAL_RENDERING_EXT"),
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
                 (0x200000, "RAY_TRACING_SHADER_KHR"),
-                (0x80000, "TASK_SHADER_NV"),
-                (0x100000, "MESH_SHADER_NV"),
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
                 (0x400000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
                 (0x20000, "COMMAND_PREPROCESS_NV"),
+                (0x80000, "TASK_SHADER_EXT"),
+                (0x100000, "MESH_SHADER_EXT"),
             ],
             f,
         )
@@ -1826,13 +1856,21 @@ impl DependencyFlags {
     pub const VIEW_LOCAL: Self = Self(0x2);
     pub const VIEW_LOCAL_KHR: Self = Self::VIEW_LOCAL;
     pub const DEVICE_GROUP_KHR: Self = Self::DEVICE_GROUP;
+    /// Dependency may be a feedback loop
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const FEEDBACK_LOOP_EXT: Self = Self(0x8);
 }
-impl_bitmask!(DependencyFlags, 0x7);
+impl_bitmask!(DependencyFlags, 0xf);
 impl fmt::Display for DependencyFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
-            &[(0x1, "BY_REGION"), (0x4, "DEVICE_GROUP"), (0x2, "VIEW_LOCAL")],
+            &[
+                (0x1, "BY_REGION"),
+                (0x4, "DEVICE_GROUP"),
+                (0x2, "VIEW_LOCAL"),
+                (0x8, "FEEDBACK_LOOP_EXT"),
+            ],
             f,
         )
     }
@@ -2346,10 +2384,12 @@ impl PipelineStageFlags2 {
     pub const ACCELERATION_STRUCTURE_BUILD_NV: Self = Self::ACCELERATION_STRUCTURE_BUILD_KHR;
     /// Added by extension VK_KHR_synchronization2.
     pub const FRAGMENT_DENSITY_PROCESS_EXT: Self = Self(0x800000);
+    pub const TASK_SHADER_NV: Self = Self::TASK_SHADER_EXT;
+    pub const MESH_SHADER_NV: Self = Self::MESH_SHADER_EXT;
     /// Added by extension VK_KHR_synchronization2.
-    pub const TASK_SHADER_NV: Self = Self(0x80000);
+    pub const TASK_SHADER_EXT: Self = Self(0x80000);
     /// Added by extension VK_KHR_synchronization2.
-    pub const MESH_SHADER_NV: Self = Self(0x100000);
+    pub const MESH_SHADER_EXT: Self = Self(0x100000);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x8000000000);
     /// Added by extension VK_HUAWEI_invocation_mask.
@@ -2394,8 +2434,8 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x2000000, "ACCELERATION_STRUCTURE_BUILD_KHR"),
                 (0x200000, "RAY_TRACING_SHADER_KHR"),
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
-                (0x80000, "TASK_SHADER_NV"),
-                (0x100000, "MESH_SHADER_NV"),
+                (0x80000, "TASK_SHADER_EXT"),
+                (0x100000, "MESH_SHADER_EXT"),
                 (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
                 (0x10000000000, "INVOCATION_MASK_HUAWEI"),
                 (0x10000000, "ACCELERATION_STRUCTURE_COPY_KHR"),
@@ -5286,6 +5326,8 @@ impl ImageLayout {
     pub const STENCIL_READ_ONLY_OPTIMAL_KHR: Self = Self::STENCIL_READ_ONLY_OPTIMAL;
     pub const READ_ONLY_OPTIMAL_KHR: Self = Self::READ_ONLY_OPTIMAL;
     pub const ATTACHMENT_OPTIMAL_KHR: Self = Self::ATTACHMENT_OPTIMAL;
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT: Self = Self(1000339000);
 }
 impl fmt::Display for ImageLayout {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5311,6 +5353,7 @@ impl fmt::Display for ImageLayout {
             1000111000 => Some(&"SHARED_PRESENT_KHR"),
             1000218000 => Some(&"FRAGMENT_DENSITY_MAP_OPTIMAL_EXT"),
             1000164003 => Some(&"FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR"),
+            1000339000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -5610,6 +5653,8 @@ impl QueryType {
     pub const ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV: Self = Self(1000165000);
     /// Added by extension VK_INTEL_performance_query.
     pub const PERFORMANCE_QUERY_INTEL: Self = Self(1000210000);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const MESH_PRIMITIVES_GENERATED_EXT: Self = Self(1000328000);
     /// Added by extension VK_EXT_primitives_generated_query.
     pub const PRIMITIVES_GENERATED_EXT: Self = Self(1000382000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
@@ -5629,6 +5674,7 @@ impl fmt::Display for QueryType {
             1000150001 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_SIZE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_COMPACTED_SIZE_NV"),
             1000210000 => Some(&"PERFORMANCE_QUERY_INTEL"),
+            1000328000 => Some(&"MESH_PRIMITIVES_GENERATED_EXT"),
             1000382000 => Some(&"PRIMITIVES_GENERATED_EXT"),
             1000386000 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR"),
             1000386001 => Some(&"ACCELERATION_STRUCTURE_SIZE_KHR"),
@@ -6879,6 +6925,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV: Self = Self(1000327001);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const ACCELERATION_STRUCTURE_MOTION_INFO_NV: Self = Self(1000327002);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT: Self = Self(1000328000);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT: Self = Self(1000328001);
     /// Added by extension VK_EXT_ycbcr_2plane_444_formats.
     pub const PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT: Self = Self(1000330000);
     /// Added by extension VK_EXT_fragment_density_map2.
@@ -6911,10 +6961,12 @@ impl StructureType {
     pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self(1000338003);
     /// Added by extension VK_EXT_image_compression_control.
     pub const IMAGE_COMPRESSION_PROPERTIES_EXT: Self = Self(1000338004);
+    /// Added by extension VK_EXT_attachment_feedback_loop_layout.
+    pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT: Self = Self(1000339000);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
-    /// Added by extension VK_ARM_rasterization_order_attachment_access.
-    pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM: Self = Self(1000342000);
+    pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM: Self =
+        Self::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT;
     /// Added by extension VK_EXT_rgba10x6_formats.
     pub const PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT: Self = Self(1000344000);
     /// Added by extension VK_EXT_directfb_surface.
@@ -7031,6 +7083,8 @@ impl StructureType {
     pub const DESCRIPTOR_SET_BINDING_REFERENCE_VALVE: Self = Self(1000420001);
     /// Added by extension VK_VALVE_descriptor_set_host_mapping.
     pub const DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE: Self = Self(1000420002);
+    /// Added by extension VK_EXT_depth_clamp_zero_one.
+    pub const PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT: Self = Self(1000421000);
     /// Added by extension VK_EXT_non_seamless_cube_map.
     pub const PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT: Self = Self(1000422000);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
@@ -7065,10 +7119,16 @@ impl StructureType {
     pub const PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT: Self = Self(1000462002);
     /// Added by extension VK_EXT_shader_module_identifier.
     pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
+    /// Added by extension VK_EXT_rasterization_order_attachment_access.
+    pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT: Self = Self(1000342000);
     /// Added by extension VK_QCOM_tile_properties.
     pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
     /// Added by extension VK_QCOM_tile_properties.
     pub const TILE_PROPERTIES_QCOM: Self = Self(1000484001);
+    /// Added by extension VK_SEC_amigo_profiling.
+    pub const PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC: Self = Self(1000485000);
+    /// Added by extension VK_SEC_amigo_profiling.
+    pub const AMIGO_PROFILING_SUBMIT_INFO_SEC: Self = Self(1000485001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7606,6 +7666,8 @@ impl fmt::Display for StructureType {
             1000327000 => Some(&"ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV"),
             1000327001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV"),
             1000327002 => Some(&"ACCELERATION_STRUCTURE_MOTION_INFO_NV"),
+            1000328000 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT"),
+            1000328001 => Some(&"PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT"),
             1000330000 => Some(&"PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT"),
             1000332000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_FEATURES_EXT"),
             1000332001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_2_PROPERTIES_EXT"),
@@ -7616,8 +7678,8 @@ impl fmt::Display for StructureType {
             1000338002 => Some(&"SUBRESOURCE_LAYOUT_2_EXT"),
             1000338003 => Some(&"IMAGE_SUBRESOURCE_2_EXT"),
             1000338004 => Some(&"IMAGE_COMPRESSION_PROPERTIES_EXT"),
+            1000339000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
-            1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM"),
             1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
@@ -7671,6 +7733,7 @@ impl fmt::Display for StructureType {
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
             1000420001 => Some(&"DESCRIPTOR_SET_BINDING_REFERENCE_VALVE"),
             1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
+            1000421000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT"),
             1000422000 => Some(&"PHYSICAL_DEVICE_NON_SEAMLESS_CUBE_MAP_FEATURES_EXT"),
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
@@ -7688,8 +7751,11 @@ impl fmt::Display for StructureType {
             1000462001 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT"),
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
             1000462003 => Some(&"SHADER_MODULE_IDENTIFIER_EXT"),
+            1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT"),
             1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
+            1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
+            1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7980,6 +8046,8 @@ impl IndirectCommandsTokenTypeNV {
     pub const DRAW_INDEXED: Self = Self(5);
     pub const DRAW: Self = Self(6);
     pub const DRAW_TASKS: Self = Self(7);
+    /// Added by extension VK_EXT_mesh_shader.
+    pub const DRAW_MESH_TASKS: Self = Self(1000328000);
 }
 impl fmt::Display for IndirectCommandsTokenTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7992,6 +8060,7 @@ impl fmt::Display for IndirectCommandsTokenTypeNV {
             5 => Some(&"DRAW_INDEXED"),
             6 => Some(&"DRAW"),
             7 => Some(&"DRAW_TASKS"),
+            1000328000 => Some(&"DRAW_MESH_TASKS"),
             _ => None,
         };
         if let Some(name) = name {
@@ -24441,6 +24510,202 @@ impl fmt::Debug for DrawMeshTasksIndirectCommandNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceMeshShaderFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub task_shader: Bool32,
+    pub mesh_shader: Bool32,
+    pub multiview_mesh_shader: Bool32,
+    pub primitive_fragment_shading_rate_mesh_shader: Bool32,
+    pub mesh_shader_queries: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMeshShaderFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMeshShaderFeaturesEXT {}
+impl Default for PhysicalDeviceMeshShaderFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            task_shader: Default::default(),
+            mesh_shader: Default::default(),
+            multiview_mesh_shader: Default::default(),
+            primitive_fragment_shading_rate_mesh_shader: Default::default(),
+            mesh_shader_queries: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMeshShaderFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMeshShaderFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("task_shader", &self.task_shader)
+            .field("mesh_shader", &self.mesh_shader)
+            .field("multiview_mesh_shader", &self.multiview_mesh_shader)
+            .field(
+                "primitive_fragment_shading_rate_mesh_shader",
+                &self.primitive_fragment_shading_rate_mesh_shader,
+            )
+            .field("mesh_shader_queries", &self.mesh_shader_queries)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMeshShaderPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_task_work_group_total_count: u32,
+    pub max_task_work_group_count: [u32; 3],
+    pub max_task_work_group_invocations: u32,
+    pub max_task_work_group_size: [u32; 3],
+    pub max_task_payload_size: u32,
+    pub max_task_shared_memory_size: u32,
+    pub max_task_payload_and_shared_memory_size: u32,
+    pub max_mesh_work_group_total_count: u32,
+    pub max_mesh_work_group_count: [u32; 3],
+    pub max_mesh_work_group_invocations: u32,
+    pub max_mesh_work_group_size: [u32; 3],
+    pub max_mesh_shared_memory_size: u32,
+    pub max_mesh_payload_and_shared_memory_size: u32,
+    pub max_mesh_output_memory_size: u32,
+    pub max_mesh_payload_and_output_memory_size: u32,
+    pub max_mesh_output_components: u32,
+    pub max_mesh_output_vertices: u32,
+    pub max_mesh_output_primitives: u32,
+    pub max_mesh_output_layers: u32,
+    pub max_mesh_multiview_view_count: u32,
+    pub mesh_output_per_vertex_granularity: u32,
+    pub mesh_output_per_primitive_granularity: u32,
+    pub max_preferred_task_work_group_invocations: u32,
+    pub max_preferred_mesh_work_group_invocations: u32,
+    pub prefers_local_invocation_vertex_output: Bool32,
+    pub prefers_local_invocation_primitive_output: Bool32,
+    pub prefers_compact_vertex_output: Bool32,
+    pub prefers_compact_primitive_output: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMeshShaderPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceMeshShaderPropertiesEXT {}
+impl Default for PhysicalDeviceMeshShaderPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_task_work_group_total_count: Default::default(),
+            max_task_work_group_count: [Default::default(); 3],
+            max_task_work_group_invocations: Default::default(),
+            max_task_work_group_size: [Default::default(); 3],
+            max_task_payload_size: Default::default(),
+            max_task_shared_memory_size: Default::default(),
+            max_task_payload_and_shared_memory_size: Default::default(),
+            max_mesh_work_group_total_count: Default::default(),
+            max_mesh_work_group_count: [Default::default(); 3],
+            max_mesh_work_group_invocations: Default::default(),
+            max_mesh_work_group_size: [Default::default(); 3],
+            max_mesh_shared_memory_size: Default::default(),
+            max_mesh_payload_and_shared_memory_size: Default::default(),
+            max_mesh_output_memory_size: Default::default(),
+            max_mesh_payload_and_output_memory_size: Default::default(),
+            max_mesh_output_components: Default::default(),
+            max_mesh_output_vertices: Default::default(),
+            max_mesh_output_primitives: Default::default(),
+            max_mesh_output_layers: Default::default(),
+            max_mesh_multiview_view_count: Default::default(),
+            mesh_output_per_vertex_granularity: Default::default(),
+            mesh_output_per_primitive_granularity: Default::default(),
+            max_preferred_task_work_group_invocations: Default::default(),
+            max_preferred_mesh_work_group_invocations: Default::default(),
+            prefers_local_invocation_vertex_output: Default::default(),
+            prefers_local_invocation_primitive_output: Default::default(),
+            prefers_compact_vertex_output: Default::default(),
+            prefers_compact_primitive_output: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMeshShaderPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMeshShaderPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_task_work_group_total_count", &self.max_task_work_group_total_count)
+            .field("max_task_work_group_count", &self.max_task_work_group_count)
+            .field("max_task_work_group_invocations", &self.max_task_work_group_invocations)
+            .field("max_task_work_group_size", &self.max_task_work_group_size)
+            .field("max_task_payload_size", &self.max_task_payload_size)
+            .field("max_task_shared_memory_size", &self.max_task_shared_memory_size)
+            .field(
+                "max_task_payload_and_shared_memory_size",
+                &self.max_task_payload_and_shared_memory_size,
+            )
+            .field("max_mesh_work_group_total_count", &self.max_mesh_work_group_total_count)
+            .field("max_mesh_work_group_count", &self.max_mesh_work_group_count)
+            .field("max_mesh_work_group_invocations", &self.max_mesh_work_group_invocations)
+            .field("max_mesh_work_group_size", &self.max_mesh_work_group_size)
+            .field("max_mesh_shared_memory_size", &self.max_mesh_shared_memory_size)
+            .field(
+                "max_mesh_payload_and_shared_memory_size",
+                &self.max_mesh_payload_and_shared_memory_size,
+            )
+            .field("max_mesh_output_memory_size", &self.max_mesh_output_memory_size)
+            .field(
+                "max_mesh_payload_and_output_memory_size",
+                &self.max_mesh_payload_and_output_memory_size,
+            )
+            .field("max_mesh_output_components", &self.max_mesh_output_components)
+            .field("max_mesh_output_vertices", &self.max_mesh_output_vertices)
+            .field("max_mesh_output_primitives", &self.max_mesh_output_primitives)
+            .field("max_mesh_output_layers", &self.max_mesh_output_layers)
+            .field("max_mesh_multiview_view_count", &self.max_mesh_multiview_view_count)
+            .field(
+                "mesh_output_per_vertex_granularity",
+                &self.mesh_output_per_vertex_granularity,
+            )
+            .field(
+                "mesh_output_per_primitive_granularity",
+                &self.mesh_output_per_primitive_granularity,
+            )
+            .field(
+                "max_preferred_task_work_group_invocations",
+                &self.max_preferred_task_work_group_invocations,
+            )
+            .field(
+                "max_preferred_mesh_work_group_invocations",
+                &self.max_preferred_mesh_work_group_invocations,
+            )
+            .field(
+                "prefers_local_invocation_vertex_output",
+                &self.prefers_local_invocation_vertex_output,
+            )
+            .field(
+                "prefers_local_invocation_primitive_output",
+                &self.prefers_local_invocation_primitive_output,
+            )
+            .field("prefers_compact_vertex_output", &self.prefers_compact_vertex_output)
+            .field(
+                "prefers_compact_primitive_output",
+                &self.prefers_compact_primitive_output,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DrawMeshTasksIndirectCommandEXT {
+    pub group_count_x: u32,
+    pub group_count_y: u32,
+    pub group_count_z: u32,
+}
+impl fmt::Debug for DrawMeshTasksIndirectCommandEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DrawMeshTasksIndirectCommandEXT")
+            .field("group_count_x", &self.group_count_x)
+            .field("group_count_y", &self.group_count_y)
+            .field("group_count_z", &self.group_count_z)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RayTracingShaderGroupCreateInfoNV {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -34527,19 +34792,19 @@ impl fmt::Debug for ImageViewMinLodCreateInfoEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub rasterization_order_color_attachment_access: Bool32,
     pub rasterization_order_depth_attachment_access: Bool32,
     pub rasterization_order_stencil_attachment_access: Bool32,
 }
-unsafe impl Send for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
-unsafe impl Sync for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
-impl Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+unsafe impl Send for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {}
+impl Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM,
+            s_type: StructureType::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT,
             p_next: ptr::null_mut(),
             rasterization_order_color_attachment_access: Default::default(),
             rasterization_order_depth_attachment_access: Default::default(),
@@ -34547,9 +34812,9 @@ impl Default for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
+impl fmt::Debug for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM")
+        fmt.debug_struct("PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -34567,6 +34832,8 @@ impl fmt::Debug for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM 
             .finish()
     }
 }
+pub type PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM =
+    PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceLinearColorAttachmentFeaturesNV {
@@ -35939,6 +36206,117 @@ impl fmt::Debug for TilePropertiesQCOM {
             .field("tile_size", &self.tile_size)
             .field("apron_size", &self.apron_size)
             .field("origin", &self.origin)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceAmigoProfilingFeaturesSEC {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub amigo_profiling: Bool32,
+}
+unsafe impl Send for PhysicalDeviceAmigoProfilingFeaturesSEC {}
+unsafe impl Sync for PhysicalDeviceAmigoProfilingFeaturesSEC {}
+impl Default for PhysicalDeviceAmigoProfilingFeaturesSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC,
+            p_next: ptr::null_mut(),
+            amigo_profiling: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAmigoProfilingFeaturesSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAmigoProfilingFeaturesSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("amigo_profiling", &self.amigo_profiling)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AmigoProfilingSubmitInfoSEC {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub first_draw_timestamp: u64,
+    pub swap_buffer_timestamp: u64,
+}
+unsafe impl Send for AmigoProfilingSubmitInfoSEC {}
+unsafe impl Sync for AmigoProfilingSubmitInfoSEC {}
+impl Default for AmigoProfilingSubmitInfoSEC {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::AMIGO_PROFILING_SUBMIT_INFO_SEC,
+            p_next: ptr::null(),
+            first_draw_timestamp: Default::default(),
+            swap_buffer_timestamp: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AmigoProfilingSubmitInfoSEC {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AmigoProfilingSubmitInfoSEC")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("first_draw_timestamp", &self.first_draw_timestamp)
+            .field("swap_buffer_timestamp", &self.swap_buffer_timestamp)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub attachment_feedback_loop_layout: Bool32,
+}
+unsafe impl Send for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
+impl Default for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            attachment_feedback_loop_layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("attachment_feedback_loop_layout", &self.attachment_feedback_loop_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthClampZeroOneFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub depth_clamp_zero_one: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
+impl Default for PhysicalDeviceDepthClampZeroOneFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_CLAMP_ZERO_ONE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            depth_clamp_zero_one: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthClampZeroOneFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthClampZeroOneFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_clamp_zero_one", &self.depth_clamp_zero_one)
             .finish()
     }
 }
@@ -37563,6 +37941,28 @@ pub type FnCmdDrawMeshTasksIndirectNV = unsafe extern "system" fn(
     stride: u32,
 );
 pub type FnCmdDrawMeshTasksIndirectCountNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    count_buffer: Option<Buffer>,
+    count_buffer_offset: DeviceSize,
+    max_draw_count: u32,
+    stride: u32,
+);
+pub type FnCmdDrawMeshTasksEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    group_count_x: u32,
+    group_count_y: u32,
+    group_count_z: u32,
+);
+pub type FnCmdDrawMeshTasksIndirectEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    draw_count: u32,
+    stride: u32,
+);
+pub type FnCmdDrawMeshTasksIndirectCountEXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     buffer: Option<Buffer>,
     offset: DeviceSize,

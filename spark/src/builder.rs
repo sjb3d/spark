@@ -10713,6 +10713,60 @@ impl DeviceCreateInfoNext for PhysicalDeviceMeshShaderFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMeshShaderFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMeshShaderFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMeshShaderPropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceMeshShaderFeaturesEXT {
+    type Type = PhysicalDeviceMeshShaderFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMeshShaderFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMeshShaderFeaturesEXT,
+}
+impl PhysicalDeviceMeshShaderFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn task_shader(mut self, task_shader: bool) -> Self {
+        self.inner.task_shader = if task_shader { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn mesh_shader(mut self, mesh_shader: bool) -> Self {
+        self.inner.mesh_shader = if mesh_shader { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn multiview_mesh_shader(mut self, multiview_mesh_shader: bool) -> Self {
+        self.inner.multiview_mesh_shader = if multiview_mesh_shader { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn primitive_fragment_shading_rate_mesh_shader(
+        mut self,
+        primitive_fragment_shading_rate_mesh_shader: bool,
+    ) -> Self {
+        self.inner.primitive_fragment_shading_rate_mesh_shader = if primitive_fragment_shading_rate_mesh_shader {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn mesh_shader_queries(mut self, mesh_shader_queries: bool) -> Self {
+        self.inner.mesh_shader_queries = if mesh_shader_queries { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMeshShaderFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMeshShaderFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMeshShaderFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMeshShaderFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMeshShaderFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMeshShaderFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMeshShaderPropertiesEXT {}
 impl Builder<'_> for vk::RayTracingShaderGroupCreateInfoNV {
     type Type = RayTracingShaderGroupCreateInfoNVBuilder;
     fn builder() -> Self::Type {
@@ -18805,17 +18859,17 @@ impl Deref for ImageViewMinLodCreateInfoEXTBuilder {
 }
 impl ImageViewCreateInfoNext for ImageViewMinLodCreateInfoEXTBuilder {}
 impl ImageViewCreateInfoNext for vk::ImageViewMinLodCreateInfoEXT {}
-impl Builder<'_> for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {
-    type Type = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder;
+impl Builder<'_> for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {
+    type Type = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
-    inner: vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM,
+pub struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT,
 }
-impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
+impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -18854,16 +18908,16 @@ impl PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {
-    type Target = vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
+impl Deref for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARMBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM {}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceLinearColorAttachmentFeaturesNV {
     type Type = PhysicalDeviceLinearColorAttachmentFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -20164,3 +20218,129 @@ impl Deref for TilePropertiesQCOMBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceAmigoProfilingFeaturesSEC {
+    type Type = PhysicalDeviceAmigoProfilingFeaturesSECBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceAmigoProfilingFeaturesSECBuilder {
+    inner: vk::PhysicalDeviceAmigoProfilingFeaturesSEC,
+}
+impl PhysicalDeviceAmigoProfilingFeaturesSECBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn amigo_profiling(mut self, amigo_profiling: bool) -> Self {
+        self.inner.amigo_profiling = if amigo_profiling { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceAmigoProfilingFeaturesSECBuilder {
+    type Target = vk::PhysicalDeviceAmigoProfilingFeaturesSEC;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAmigoProfilingFeaturesSECBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAmigoProfilingFeaturesSECBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAmigoProfilingFeaturesSEC {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAmigoProfilingFeaturesSEC {}
+impl Builder<'_> for vk::AmigoProfilingSubmitInfoSEC {
+    type Type = AmigoProfilingSubmitInfoSECBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AmigoProfilingSubmitInfoSECBuilder {
+    inner: vk::AmigoProfilingSubmitInfoSEC,
+}
+impl AmigoProfilingSubmitInfoSECBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn first_draw_timestamp(mut self, first_draw_timestamp: u64) -> Self {
+        self.inner.first_draw_timestamp = first_draw_timestamp;
+        self
+    }
+    pub fn swap_buffer_timestamp(mut self, swap_buffer_timestamp: u64) -> Self {
+        self.inner.swap_buffer_timestamp = swap_buffer_timestamp;
+        self
+    }
+}
+impl Deref for AmigoProfilingSubmitInfoSECBuilder {
+    type Target = vk::AmigoProfilingSubmitInfoSEC;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubmitInfoNext for AmigoProfilingSubmitInfoSECBuilder {}
+impl SubmitInfoNext for vk::AmigoProfilingSubmitInfoSEC {}
+impl Builder<'_> for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {
+    type Type = PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT,
+}
+impl PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn attachment_feedback_loop_layout(mut self, attachment_feedback_loop_layout: bool) -> Self {
+        self.inner.attachment_feedback_loop_layout = if attachment_feedback_loop_layout {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {
+    type Type = PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT,
+}
+impl PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_clamp_zero_one(mut self, depth_clamp_zero_one: bool) -> Self {
+        self.inner.depth_clamp_zero_one = if depth_clamp_zero_one { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}

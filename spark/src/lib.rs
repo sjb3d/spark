@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 223
+//! Generated from vk.xml with `VK_HEADER_VERSION` 226
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1317,6 +1317,12 @@ impl InstanceExtensions {
     pub fn enable_nv_ray_tracing_motion_blur(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_mesh_shader(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_mesh_shader(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1345,6 +1351,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_workgroup_memory_explicit_layout(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_attachment_feedback_loop_layout(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_attachment_feedback_loop_layout(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_4444_formats(&self) -> bool {
@@ -1541,10 +1553,22 @@ impl InstanceExtensions {
     pub fn enable_ext_shader_module_identifier(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_rasterization_order_attachment_access(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_qcom_tile_properties(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_sec_amigo_profiling(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_sec_amigo_profiling(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -4124,6 +4148,7 @@ pub struct DeviceExtensions {
     pub khr_zero_initialize_workgroup_memory: bool,
     pub nv_fragment_shading_rate_enums: bool,
     pub nv_ray_tracing_motion_blur: bool,
+    pub ext_mesh_shader: bool,
     pub ext_ycbcr_2plane_444_formats: bool,
     pub ext_fragment_density_map2: bool,
     pub qcom_rotated_copy_commands: bool,
@@ -4131,6 +4156,7 @@ pub struct DeviceExtensions {
     pub khr_workgroup_memory_explicit_layout: bool,
     pub khr_copy_commands2: bool,
     pub ext_image_compression_control: bool,
+    pub ext_attachment_feedback_loop_layout: bool,
     pub ext_4444_formats: bool,
     pub arm_rasterization_order_attachment_access: bool,
     pub ext_rgba10x6_formats: bool,
@@ -4162,6 +4188,7 @@ pub struct DeviceExtensions {
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
     pub valve_descriptor_set_host_mapping: bool,
+    pub ext_depth_clamp_zero_one: bool,
     pub ext_non_seamless_cube_map: bool,
     pub qcom_fragment_density_map_offset: bool,
     pub nv_linear_color_attachment: bool,
@@ -4169,7 +4196,9 @@ pub struct DeviceExtensions {
     pub qcom_image_processing: bool,
     pub ext_subpass_merge_feedback: bool,
     pub ext_shader_module_identifier: bool,
+    pub ext_rasterization_order_attachment_access: bool,
     pub qcom_tile_properties: bool,
+    pub sec_amigo_profiling: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4377,6 +4406,7 @@ impl DeviceExtensions {
             b"VK_KHR_zero_initialize_workgroup_memory" => self.khr_zero_initialize_workgroup_memory = true,
             b"VK_NV_fragment_shading_rate_enums" => self.nv_fragment_shading_rate_enums = true,
             b"VK_NV_ray_tracing_motion_blur" => self.nv_ray_tracing_motion_blur = true,
+            b"VK_EXT_mesh_shader" => self.ext_mesh_shader = true,
             b"VK_EXT_ycbcr_2plane_444_formats" => self.ext_ycbcr_2plane_444_formats = true,
             b"VK_EXT_fragment_density_map2" => self.ext_fragment_density_map2 = true,
             b"VK_QCOM_rotated_copy_commands" => self.qcom_rotated_copy_commands = true,
@@ -4384,6 +4414,7 @@ impl DeviceExtensions {
             b"VK_KHR_workgroup_memory_explicit_layout" => self.khr_workgroup_memory_explicit_layout = true,
             b"VK_KHR_copy_commands2" => self.khr_copy_commands2 = true,
             b"VK_EXT_image_compression_control" => self.ext_image_compression_control = true,
+            b"VK_EXT_attachment_feedback_loop_layout" => self.ext_attachment_feedback_loop_layout = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
             b"VK_ARM_rasterization_order_attachment_access" => self.arm_rasterization_order_attachment_access = true,
             b"VK_EXT_rgba10x6_formats" => self.ext_rgba10x6_formats = true,
@@ -4415,6 +4446,7 @@ impl DeviceExtensions {
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
             b"VK_VALVE_descriptor_set_host_mapping" => self.valve_descriptor_set_host_mapping = true,
+            b"VK_EXT_depth_clamp_zero_one" => self.ext_depth_clamp_zero_one = true,
             b"VK_EXT_non_seamless_cube_map" => self.ext_non_seamless_cube_map = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
@@ -4422,7 +4454,9 @@ impl DeviceExtensions {
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
+            b"VK_EXT_rasterization_order_attachment_access" => self.ext_rasterization_order_attachment_access = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
+            b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             _ => {}
         }
     }
@@ -4630,6 +4664,7 @@ impl DeviceExtensions {
             khr_zero_initialize_workgroup_memory: false,
             nv_fragment_shading_rate_enums: false,
             nv_ray_tracing_motion_blur: false,
+            ext_mesh_shader: false,
             ext_ycbcr_2plane_444_formats: false,
             ext_fragment_density_map2: false,
             qcom_rotated_copy_commands: false,
@@ -4637,6 +4672,7 @@ impl DeviceExtensions {
             khr_workgroup_memory_explicit_layout: false,
             khr_copy_commands2: false,
             ext_image_compression_control: false,
+            ext_attachment_feedback_loop_layout: false,
             ext_4444_formats: false,
             arm_rasterization_order_attachment_access: false,
             ext_rgba10x6_formats: false,
@@ -4668,6 +4704,7 @@ impl DeviceExtensions {
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
             valve_descriptor_set_host_mapping: false,
+            ext_depth_clamp_zero_one: false,
             ext_non_seamless_cube_map: false,
             qcom_fragment_density_map_offset: false,
             nv_linear_color_attachment: false,
@@ -4675,7 +4712,9 @@ impl DeviceExtensions {
             qcom_image_processing: false,
             ext_subpass_merge_feedback: false,
             ext_shader_module_identifier: false,
+            ext_rasterization_order_attachment_access: false,
             qcom_tile_properties: false,
+            sec_amigo_profiling: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6210,6 +6249,12 @@ impl DeviceExtensions {
         self.enable_khr_deferred_host_operations();
         self.enable_khr_maintenance3();
     }
+    pub fn supports_ext_mesh_shader(&self) -> bool {
+        self.ext_mesh_shader
+    }
+    pub fn enable_ext_mesh_shader(&mut self) {
+        self.ext_mesh_shader = true;
+    }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         (self.ext_ycbcr_2plane_444_formats || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
             && self.supports_khr_sampler_ycbcr_conversion()
@@ -6268,6 +6313,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_image_compression_control(&mut self) {
         self.ext_image_compression_control = true;
+    }
+    pub fn supports_ext_attachment_feedback_loop_layout(&self) -> bool {
+        self.ext_attachment_feedback_loop_layout
+    }
+    pub fn enable_ext_attachment_feedback_loop_layout(&mut self) {
+        self.ext_attachment_feedback_loop_layout = true;
     }
     pub fn supports_ext_4444_formats(&self) -> bool {
         self.ext_4444_formats || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
@@ -6538,6 +6589,12 @@ impl DeviceExtensions {
     pub fn enable_valve_descriptor_set_host_mapping(&mut self) {
         self.valve_descriptor_set_host_mapping = true;
     }
+    pub fn supports_ext_depth_clamp_zero_one(&self) -> bool {
+        self.ext_depth_clamp_zero_one
+    }
+    pub fn enable_ext_depth_clamp_zero_one(&mut self) {
+        self.ext_depth_clamp_zero_one = true;
+    }
     pub fn supports_ext_non_seamless_cube_map(&self) -> bool {
         self.ext_non_seamless_cube_map
     }
@@ -6584,11 +6641,23 @@ impl DeviceExtensions {
         self.ext_shader_module_identifier = true;
         self.enable_ext_pipeline_creation_cache_control();
     }
+    pub fn supports_ext_rasterization_order_attachment_access(&self) -> bool {
+        self.ext_rasterization_order_attachment_access
+    }
+    pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
+        self.ext_rasterization_order_attachment_access = true;
+    }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
     }
     pub fn enable_qcom_tile_properties(&mut self) {
         self.qcom_tile_properties = true;
+    }
+    pub fn supports_sec_amigo_profiling(&self) -> bool {
+        self.sec_amigo_profiling
+    }
+    pub fn enable_sec_amigo_profiling(&mut self) {
+        self.sec_amigo_profiling = true;
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -7197,6 +7266,9 @@ impl DeviceExtensions {
         if self.nv_ray_tracing_motion_blur {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_motion_blur\0") })
         }
+        if self.ext_mesh_shader {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mesh_shader\0") })
+        }
         if self.ext_ycbcr_2plane_444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_ycbcr_2plane_444_formats\0") })
         }
@@ -7217,6 +7289,9 @@ impl DeviceExtensions {
         }
         if self.ext_image_compression_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_compression_control\0") })
+        }
+        if self.ext_attachment_feedback_loop_layout {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_layout\0") })
         }
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
@@ -7311,6 +7386,9 @@ impl DeviceExtensions {
         if self.valve_descriptor_set_host_mapping {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_VALVE_descriptor_set_host_mapping\0") })
         }
+        if self.ext_depth_clamp_zero_one {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clamp_zero_one\0") })
+        }
         if self.ext_non_seamless_cube_map {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_non_seamless_cube_map\0") })
         }
@@ -7332,8 +7410,14 @@ impl DeviceExtensions {
         if self.ext_shader_module_identifier {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_module_identifier\0") })
         }
+        if self.ext_rasterization_order_attachment_access {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_rasterization_order_attachment_access\0") })
+        }
         if self.qcom_tile_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
+        }
+        if self.sec_amigo_profiling {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_SEC_amigo_profiling\0") })
         }
         v
     }
@@ -7581,6 +7665,9 @@ pub struct Device {
     pub fp_cmd_draw_mesh_tasks_nv: Option<vk::FnCmdDrawMeshTasksNV>,
     pub fp_cmd_draw_mesh_tasks_indirect_nv: Option<vk::FnCmdDrawMeshTasksIndirectNV>,
     pub fp_cmd_draw_mesh_tasks_indirect_count_nv: Option<vk::FnCmdDrawMeshTasksIndirectCountNV>,
+    pub fp_cmd_draw_mesh_tasks_ext: Option<vk::FnCmdDrawMeshTasksEXT>,
+    pub fp_cmd_draw_mesh_tasks_indirect_ext: Option<vk::FnCmdDrawMeshTasksIndirectEXT>,
+    pub fp_cmd_draw_mesh_tasks_indirect_count_ext: Option<vk::FnCmdDrawMeshTasksIndirectCountEXT>,
     pub fp_compile_deferred_nv: Option<vk::FnCompileDeferredNV>,
     pub fp_create_acceleration_structure_nv: Option<vk::FnCreateAccelerationStructureNV>,
     pub fp_cmd_bind_invocation_mask_huawei: Option<vk::FnCmdBindInvocationMaskHUAWEI>,
@@ -9606,6 +9693,26 @@ impl Device {
             fp_cmd_draw_mesh_tasks_indirect_count_nv: if extensions.nv_mesh_shader {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdDrawMeshTasksIndirectCountNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_ext: if extensions.ext_mesh_shader {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect_ext: if extensions.ext_mesh_shader {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawMeshTasksIndirectEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_mesh_tasks_indirect_count_ext: if extensions.ext_mesh_shader {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDrawMeshTasksIndirectCountEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -14912,6 +15019,54 @@ impl Device {
         let fp = self
             .fp_cmd_draw_mesh_tasks_indirect_count_nv
             .expect("vkCmdDrawMeshTasksIndirectCountNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            Some(buffer),
+            offset,
+            Some(count_buffer),
+            count_buffer_offset,
+            max_draw_count,
+            stride,
+        );
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        group_count_x: u32,
+        group_count_y: u32,
+        group_count_z: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_mesh_tasks_ext
+            .expect("vkCmdDrawMeshTasksEXT is not loaded");
+        (fp)(Some(command_buffer), group_count_x, group_count_y, group_count_z);
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_indirect_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        draw_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_mesh_tasks_indirect_ext
+            .expect("vkCmdDrawMeshTasksIndirectEXT is not loaded");
+        (fp)(Some(command_buffer), Some(buffer), offset, draw_count, stride);
+    }
+    pub unsafe fn cmd_draw_mesh_tasks_indirect_count_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        count_buffer: vk::Buffer,
+        count_buffer_offset: vk::DeviceSize,
+        max_draw_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_mesh_tasks_indirect_count_ext
+            .expect("vkCmdDrawMeshTasksIndirectCountEXT is not loaded");
         (fp)(
             Some(command_buffer),
             Some(buffer),
