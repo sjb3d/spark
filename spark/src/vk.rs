@@ -464,8 +464,9 @@ impl DescriptorSetLayoutCreateFlags {
     /// Added by extension VK_KHR_push_descriptor.
     pub const PUSH_DESCRIPTOR_KHR: Self = Self(0x1);
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self::UPDATE_AFTER_BIND_POOL;
-    /// Added by extension VK_VALVE_mutable_descriptor_type.
-    pub const HOST_ONLY_POOL_VALVE: Self = Self(0x4);
+    pub const HOST_ONLY_POOL_VALVE: Self = Self::HOST_ONLY_POOL_EXT;
+    /// Added by extension VK_EXT_mutable_descriptor_type.
+    pub const HOST_ONLY_POOL_EXT: Self = Self(0x4);
 }
 impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x7);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
@@ -475,7 +476,7 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
             &[
                 (0x2, "UPDATE_AFTER_BIND_POOL"),
                 (0x1, "PUSH_DESCRIPTOR_KHR"),
-                (0x4, "HOST_ONLY_POOL_VALVE"),
+                (0x4, "HOST_ONLY_POOL_EXT"),
             ],
             f,
         )
@@ -1599,8 +1600,10 @@ impl SubpassDescriptionFlags {
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT: Self = Self(0x20);
     /// Added by extension VK_EXT_rasterization_order_attachment_access.
     pub const RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT: Self = Self(0x40);
+    /// Added by extension VK_EXT_legacy_dithering.
+    pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x80);
 }
-impl_bitmask!(SubpassDescriptionFlags, 0x7f);
+impl_bitmask!(SubpassDescriptionFlags, 0xff);
 impl fmt::Display for SubpassDescriptionFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1613,6 +1616,7 @@ impl fmt::Display for SubpassDescriptionFlags {
                 (0x10, "RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_EXT"),
                 (0x20, "RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT"),
                 (0x40, "RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_EXT"),
+                (0x80, "ENABLE_LEGACY_DITHERING_EXT"),
             ],
             f,
         )
@@ -1818,8 +1822,9 @@ impl DescriptorPoolCreateFlags {
     pub const FREE_DESCRIPTOR_SET: Self = Self(0x1);
     pub const UPDATE_AFTER_BIND: Self = Self(0x2);
     pub const UPDATE_AFTER_BIND_EXT: Self = Self::UPDATE_AFTER_BIND;
-    /// Added by extension VK_VALVE_mutable_descriptor_type.
-    pub const HOST_ONLY_VALVE: Self = Self(0x4);
+    pub const HOST_ONLY_VALVE: Self = Self::HOST_ONLY_EXT;
+    /// Added by extension VK_EXT_mutable_descriptor_type.
+    pub const HOST_ONLY_EXT: Self = Self(0x4);
 }
 impl_bitmask!(DescriptorPoolCreateFlags, 0x7);
 impl fmt::Display for DescriptorPoolCreateFlags {
@@ -1829,7 +1834,7 @@ impl fmt::Display for DescriptorPoolCreateFlags {
             &[
                 (0x1, "FREE_DESCRIPTOR_SET"),
                 (0x2, "UPDATE_AFTER_BIND"),
-                (0x4, "HOST_ONLY_VALVE"),
+                (0x4, "HOST_ONLY_EXT"),
             ],
             f,
         )
@@ -2608,8 +2613,10 @@ impl RenderingFlags {
     pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING: Self = Self(0x4);
     pub const RESUMING_KHR: Self = Self::RESUMING;
+    /// Added by extension VK_EXT_legacy_dithering.
+    pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x8);
 }
-impl_bitmask!(RenderingFlags, 0x7);
+impl_bitmask!(RenderingFlags, 0xf);
 impl fmt::Display for RenderingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2618,6 +2625,7 @@ impl fmt::Display for RenderingFlags {
                 (0x1, "CONTENTS_SECONDARY_COMMAND_BUFFERS"),
                 (0x2, "SUSPENDING"),
                 (0x4, "RESUMING"),
+                (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
             ],
             f,
         )
@@ -4502,12 +4510,13 @@ impl DescriptorType {
     pub const ACCELERATION_STRUCTURE_KHR: Self = Self(1000150000);
     /// Added by extension VK_NV_ray_tracing.
     pub const ACCELERATION_STRUCTURE_NV: Self = Self(1000165000);
-    /// Added by extension VK_VALVE_mutable_descriptor_type.
-    pub const MUTABLE_VALVE: Self = Self(1000351000);
+    pub const MUTABLE_VALVE: Self = Self::MUTABLE_EXT;
     /// Added by extension VK_QCOM_image_processing.
     pub const SAMPLE_WEIGHT_IMAGE_QCOM: Self = Self(1000440000);
     /// Added by extension VK_QCOM_image_processing.
     pub const BLOCK_MATCH_IMAGE_QCOM: Self = Self(1000440001);
+    /// Added by extension VK_EXT_mutable_descriptor_type.
+    pub const MUTABLE_EXT: Self = Self(1000351000);
 }
 impl fmt::Display for DescriptorType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4526,9 +4535,9 @@ impl fmt::Display for DescriptorType {
             1000138000 => Some(&"INLINE_UNIFORM_BLOCK"),
             1000150000 => Some(&"ACCELERATION_STRUCTURE_KHR"),
             1000165000 => Some(&"ACCELERATION_STRUCTURE_NV"),
-            1000351000 => Some(&"MUTABLE_VALVE"),
             1000440000 => Some(&"SAMPLE_WEIGHT_IMAGE_QCOM"),
             1000440001 => Some(&"BLOCK_MATCH_IMAGE_QCOM"),
+            1000351000 => Some(&"MUTABLE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6971,10 +6980,9 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT: Self = Self(1000344000);
     /// Added by extension VK_EXT_directfb_surface.
     pub const DIRECTFB_SURFACE_CREATE_INFO_EXT: Self = Self(1000346000);
-    /// Added by extension VK_VALVE_mutable_descriptor_type.
-    pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self = Self(1000351000);
-    /// Added by extension VK_VALVE_mutable_descriptor_type.
-    pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self(1000351002);
+    pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE: Self =
+        Self::PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT;
+    pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE: Self = Self::MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT;
     /// Added by extension VK_EXT_vertex_input_dynamic_state.
     pub const PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000352000);
     /// Added by extension VK_EXT_vertex_input_dynamic_state.
@@ -7121,6 +7129,8 @@ impl StructureType {
     pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
     /// Added by extension VK_EXT_rasterization_order_attachment_access.
     pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT: Self = Self(1000342000);
+    /// Added by extension VK_EXT_legacy_dithering.
+    pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
     /// Added by extension VK_QCOM_tile_properties.
     pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
     /// Added by extension VK_QCOM_tile_properties.
@@ -7129,6 +7139,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC: Self = Self(1000485000);
     /// Added by extension VK_SEC_amigo_profiling.
     pub const AMIGO_PROFILING_SUBMIT_INFO_SEC: Self = Self(1000485001);
+    /// Added by extension VK_EXT_mutable_descriptor_type.
+    pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
+    /// Added by extension VK_EXT_mutable_descriptor_type.
+    pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -7682,8 +7696,6 @@ impl fmt::Display for StructureType {
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
             1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
-            1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE"),
-            1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE"),
             1000352000 => Some(&"PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT"),
             1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
@@ -7752,10 +7764,13 @@ impl fmt::Display for StructureType {
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
             1000462003 => Some(&"SHADER_MODULE_IDENTIFIER_EXT"),
             1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT"),
+            1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
             1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
             1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
+            1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
+            1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -32109,40 +32124,41 @@ impl fmt::Debug for PhysicalDeviceImage2DViewOf3DFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+pub struct PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub mutable_descriptor_type: Bool32,
 }
-unsafe impl Send for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
-unsafe impl Sync for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
-impl Default for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+unsafe impl Send for PhysicalDeviceMutableDescriptorTypeFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceMutableDescriptorTypeFeaturesEXT {}
+impl Default for PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_VALVE,
+            s_type: StructureType::PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT,
             p_next: ptr::null_mut(),
             mutable_descriptor_type: Default::default(),
         }
     }
 }
-impl fmt::Debug for PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
+impl fmt::Debug for PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("PhysicalDeviceMutableDescriptorTypeFeaturesVALVE")
+        fmt.debug_struct("PhysicalDeviceMutableDescriptorTypeFeaturesEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("mutable_descriptor_type", &self.mutable_descriptor_type)
             .finish()
     }
 }
+pub type PhysicalDeviceMutableDescriptorTypeFeaturesVALVE = PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MutableDescriptorTypeListVALVE {
+pub struct MutableDescriptorTypeListEXT {
     pub descriptor_type_count: u32,
     pub p_descriptor_types: *const DescriptorType,
 }
-unsafe impl Send for MutableDescriptorTypeListVALVE {}
-unsafe impl Sync for MutableDescriptorTypeListVALVE {}
-impl Default for MutableDescriptorTypeListVALVE {
+unsafe impl Send for MutableDescriptorTypeListEXT {}
+unsafe impl Sync for MutableDescriptorTypeListEXT {}
+impl Default for MutableDescriptorTypeListEXT {
     fn default() -> Self {
         Self {
             descriptor_type_count: Default::default(),
@@ -32150,37 +32166,38 @@ impl Default for MutableDescriptorTypeListVALVE {
         }
     }
 }
-impl fmt::Debug for MutableDescriptorTypeListVALVE {
+impl fmt::Debug for MutableDescriptorTypeListEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("MutableDescriptorTypeListVALVE")
+        fmt.debug_struct("MutableDescriptorTypeListEXT")
             .field("descriptor_type_count", &self.descriptor_type_count)
             .field("p_descriptor_types", &self.p_descriptor_types)
             .finish()
     }
 }
+pub type MutableDescriptorTypeListVALVE = MutableDescriptorTypeListEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct MutableDescriptorTypeCreateInfoVALVE {
+pub struct MutableDescriptorTypeCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
     pub mutable_descriptor_type_list_count: u32,
-    pub p_mutable_descriptor_type_lists: *const MutableDescriptorTypeListVALVE,
+    pub p_mutable_descriptor_type_lists: *const MutableDescriptorTypeListEXT,
 }
-unsafe impl Send for MutableDescriptorTypeCreateInfoVALVE {}
-unsafe impl Sync for MutableDescriptorTypeCreateInfoVALVE {}
-impl Default for MutableDescriptorTypeCreateInfoVALVE {
+unsafe impl Send for MutableDescriptorTypeCreateInfoEXT {}
+unsafe impl Sync for MutableDescriptorTypeCreateInfoEXT {}
+impl Default for MutableDescriptorTypeCreateInfoEXT {
     fn default() -> Self {
         Self {
-            s_type: StructureType::MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE,
+            s_type: StructureType::MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT,
             p_next: ptr::null(),
             mutable_descriptor_type_list_count: Default::default(),
             p_mutable_descriptor_type_lists: ptr::null(),
         }
     }
 }
-impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
+impl fmt::Debug for MutableDescriptorTypeCreateInfoEXT {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("MutableDescriptorTypeCreateInfoVALVE")
+        fmt.debug_struct("MutableDescriptorTypeCreateInfoEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field(
@@ -32191,6 +32208,7 @@ impl fmt::Debug for MutableDescriptorTypeCreateInfoVALVE {
             .finish()
     }
 }
+pub type MutableDescriptorTypeCreateInfoVALVE = MutableDescriptorTypeCreateInfoEXT;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceDepthClipControlFeaturesEXT {
@@ -32858,6 +32876,33 @@ impl fmt::Debug for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
                 "primitives_generated_query_with_non_zero_streams",
                 &self.primitives_generated_query_with_non_zero_streams,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLegacyDitheringFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub legacy_dithering: Bool32,
+}
+unsafe impl Send for PhysicalDeviceLegacyDitheringFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceLegacyDitheringFeaturesEXT {}
+impl Default for PhysicalDeviceLegacyDitheringFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            legacy_dithering: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLegacyDitheringFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLegacyDitheringFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("legacy_dithering", &self.legacy_dithering)
             .finish()
     }
 }

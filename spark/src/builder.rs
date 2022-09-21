@@ -16661,17 +16661,17 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceImage2DViewOf3DFeaturesEXTBui
 impl DeviceCreateInfoNext for PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
-impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {
-    type Type = PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder;
+impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
+    type Type = PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
-    inner: vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE,
+pub struct PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT,
 }
-impl PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
+impl PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder {
     pub fn p_next(mut self, p_next: *mut c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -16681,59 +16681,59 @@ impl PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
         self
     }
 }
-impl Deref for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {
-    type Target = vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE;
+impl Deref for PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl PhysicalDeviceFeatures2Next for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {}
-impl DeviceCreateInfoNext for PhysicalDeviceMutableDescriptorTypeFeaturesVALVEBuilder {}
-impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
-impl DeviceCreateInfoNext for vk::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE {}
-impl<'a> Builder<'a> for vk::MutableDescriptorTypeListVALVE {
-    type Type = MutableDescriptorTypeListVALVEBuilder<'a>;
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {}
+impl<'a> Builder<'a> for vk::MutableDescriptorTypeListEXT {
+    type Type = MutableDescriptorTypeListEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct MutableDescriptorTypeListVALVEBuilder<'a> {
-    inner: vk::MutableDescriptorTypeListVALVE,
+pub struct MutableDescriptorTypeListEXTBuilder<'a> {
+    inner: vk::MutableDescriptorTypeListEXT,
     phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> MutableDescriptorTypeListVALVEBuilder<'a> {
+impl<'a> MutableDescriptorTypeListEXTBuilder<'a> {
     pub fn p_descriptor_types(mut self, p_descriptor_types: &'a [vk::DescriptorType]) -> Self {
         self.inner.descriptor_type_count = p_descriptor_types.len() as u32;
         self.inner.p_descriptor_types = p_descriptor_types.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
 }
-impl<'a> Deref for MutableDescriptorTypeListVALVEBuilder<'a> {
-    type Target = vk::MutableDescriptorTypeListVALVE;
+impl<'a> Deref for MutableDescriptorTypeListEXTBuilder<'a> {
+    type Target = vk::MutableDescriptorTypeListEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> Builder<'a> for vk::MutableDescriptorTypeCreateInfoVALVE {
-    type Type = MutableDescriptorTypeCreateInfoVALVEBuilder<'a>;
+impl<'a> Builder<'a> for vk::MutableDescriptorTypeCreateInfoEXT {
+    type Type = MutableDescriptorTypeCreateInfoEXTBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
 #[derive(Default)]
-pub struct MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
-    inner: vk::MutableDescriptorTypeCreateInfoVALVE,
+pub struct MutableDescriptorTypeCreateInfoEXTBuilder<'a> {
+    inner: vk::MutableDescriptorTypeCreateInfoEXT,
     phantom: PhantomData<&'a vk::Never>,
 }
-impl<'a> MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
+impl<'a> MutableDescriptorTypeCreateInfoEXTBuilder<'a> {
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
     pub fn p_mutable_descriptor_type_lists(
         mut self,
-        p_mutable_descriptor_type_lists: &'a [vk::MutableDescriptorTypeListVALVE],
+        p_mutable_descriptor_type_lists: &'a [vk::MutableDescriptorTypeListEXT],
     ) -> Self {
         self.inner.mutable_descriptor_type_list_count = p_mutable_descriptor_type_lists.len() as u32;
         self.inner.p_mutable_descriptor_type_lists = p_mutable_descriptor_type_lists
@@ -16742,16 +16742,16 @@ impl<'a> MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
         self
     }
 }
-impl<'a> Deref for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {
-    type Target = vk::MutableDescriptorTypeCreateInfoVALVE;
+impl<'a> Deref for MutableDescriptorTypeCreateInfoEXTBuilder<'a> {
+    type Target = vk::MutableDescriptorTypeCreateInfoEXT;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
-impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
-impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoVALVEBuilder<'a> {}
-impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
-impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoVALVE {}
+impl<'a> DescriptorSetLayoutCreateInfoNext for MutableDescriptorTypeCreateInfoEXTBuilder<'a> {}
+impl<'a> DescriptorPoolCreateInfoNext for MutableDescriptorTypeCreateInfoEXTBuilder<'a> {}
+impl DescriptorSetLayoutCreateInfoNext for vk::MutableDescriptorTypeCreateInfoEXT {}
+impl DescriptorPoolCreateInfoNext for vk::MutableDescriptorTypeCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceDepthClipControlFeaturesEXT {
     type Type = PhysicalDeviceDepthClipControlFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -17426,6 +17426,36 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePrimitivesGeneratedQueryFeatu
 impl DeviceCreateInfoNext for PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceLegacyDitheringFeaturesEXT {
+    type Type = PhysicalDeviceLegacyDitheringFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceLegacyDitheringFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceLegacyDitheringFeaturesEXT,
+}
+impl PhysicalDeviceLegacyDitheringFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn legacy_dithering(mut self, legacy_dithering: bool) -> Self {
+        self.inner.legacy_dithering = if legacy_dithering { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceLegacyDitheringFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceLegacyDitheringFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceLegacyDitheringFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceLegacyDitheringFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceLegacyDitheringFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceLegacyDitheringFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT {
     type Type = PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXTBuilder;
     fn builder() -> Self::Type {

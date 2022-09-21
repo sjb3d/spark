@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 226
+//! Generated from vk.xml with `VK_HEADER_VERSION` 228
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1559,6 +1559,12 @@ impl InstanceExtensions {
     pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_legacy_dithering(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_legacy_dithering(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1569,6 +1575,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_sec_amigo_profiling(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_mutable_descriptor_type(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
@@ -4197,8 +4209,10 @@ pub struct DeviceExtensions {
     pub ext_subpass_merge_feedback: bool,
     pub ext_shader_module_identifier: bool,
     pub ext_rasterization_order_attachment_access: bool,
+    pub ext_legacy_dithering: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
+    pub ext_mutable_descriptor_type: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4455,8 +4469,10 @@ impl DeviceExtensions {
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
             b"VK_EXT_rasterization_order_attachment_access" => self.ext_rasterization_order_attachment_access = true,
+            b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
+            b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             _ => {}
         }
     }
@@ -4713,8 +4729,10 @@ impl DeviceExtensions {
             ext_subpass_merge_feedback: false,
             ext_shader_module_identifier: false,
             ext_rasterization_order_attachment_access: false,
+            ext_legacy_dithering: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
+            ext_mutable_descriptor_type: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6250,10 +6268,12 @@ impl DeviceExtensions {
         self.enable_khr_maintenance3();
     }
     pub fn supports_ext_mesh_shader(&self) -> bool {
-        self.ext_mesh_shader
+        self.ext_mesh_shader && self.supports_khr_spirv_1_4() && self.supports_khr_shader_float_controls()
     }
     pub fn enable_ext_mesh_shader(&mut self) {
         self.ext_mesh_shader = true;
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_shader_float_controls();
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         (self.ext_ycbcr_2plane_444_formats || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
@@ -6647,6 +6667,12 @@ impl DeviceExtensions {
     pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
         self.ext_rasterization_order_attachment_access = true;
     }
+    pub fn supports_ext_legacy_dithering(&self) -> bool {
+        self.ext_legacy_dithering
+    }
+    pub fn enable_ext_legacy_dithering(&mut self) {
+        self.ext_legacy_dithering = true;
+    }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
     }
@@ -6658,6 +6684,13 @@ impl DeviceExtensions {
     }
     pub fn enable_sec_amigo_profiling(&mut self) {
         self.sec_amigo_profiling = true;
+    }
+    pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
+        self.ext_mutable_descriptor_type && self.supports_khr_maintenance3()
+    }
+    pub fn enable_ext_mutable_descriptor_type(&mut self) {
+        self.ext_mutable_descriptor_type = true;
+        self.enable_khr_maintenance3();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -7413,11 +7446,17 @@ impl DeviceExtensions {
         if self.ext_rasterization_order_attachment_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_rasterization_order_attachment_access\0") })
         }
+        if self.ext_legacy_dithering {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_legacy_dithering\0") })
+        }
         if self.qcom_tile_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
         }
         if self.sec_amigo_profiling {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_SEC_amigo_profiling\0") })
+        }
+        if self.ext_mutable_descriptor_type {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mutable_descriptor_type\0") })
         }
         v
     }
