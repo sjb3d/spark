@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 231
+//! Generated from vk.xml with `VK_HEADER_VERSION` 232
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -7960,7 +7960,6 @@ pub struct Device {
     pub fp_cmd_set_depth_bias_enable: Option<vk::FnCmdSetDepthBiasEnable>,
     pub fp_cmd_set_logic_op_ext: Option<vk::FnCmdSetLogicOpEXT>,
     pub fp_cmd_set_primitive_restart_enable: Option<vk::FnCmdSetPrimitiveRestartEnable>,
-    pub fp_create_private_data_slot: Option<vk::FnCreatePrivateDataSlot>,
     pub fp_cmd_set_tessellation_domain_origin_ext: Option<vk::FnCmdSetTessellationDomainOriginEXT>,
     pub fp_cmd_set_depth_clamp_enable_ext: Option<vk::FnCmdSetDepthClampEnableEXT>,
     pub fp_cmd_set_polygon_mode_ext: Option<vk::FnCmdSetPolygonModeEXT>,
@@ -7992,6 +7991,7 @@ pub struct Device {
     pub fp_cmd_set_shading_rate_image_enable_nv: Option<vk::FnCmdSetShadingRateImageEnableNV>,
     pub fp_cmd_set_coverage_reduction_mode_nv: Option<vk::FnCmdSetCoverageReductionModeNV>,
     pub fp_cmd_set_representative_fragment_test_enable_nv: Option<vk::FnCmdSetRepresentativeFragmentTestEnableNV>,
+    pub fp_create_private_data_slot: Option<vk::FnCreatePrivateDataSlot>,
     pub fp_destroy_private_data_slot: Option<vk::FnDestroyPrivateDataSlot>,
     pub fp_set_private_data: Option<vk::FnSetPrivateData>,
     pub fp_get_private_data: Option<vk::FnGetPrivateData>,
@@ -10741,18 +10741,6 @@ impl Device {
             } else {
                 None
             },
-            fp_create_private_data_slot: if version >= vk::Version::from_raw_parts(1, 3, 0) {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePrivateDataSlot\0"));
-                if fp.is_none() {
-                    return Err(LoaderError::MissingSymbol("vkCreatePrivateDataSlot".to_string()));
-                }
-                fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_private_data {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePrivateDataSlotEXT\0"));
-                fp.map(|f| mem::transmute(f))
-            } else {
-                None
-            },
             fp_cmd_set_tessellation_domain_origin_ext: if extensions.ext_extended_dynamic_state3 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetTessellationDomainOriginEXT\0",
@@ -10969,6 +10957,18 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRepresentativeFragmentTestEnableNV\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_private_data_slot: if version >= vk::Version::from_raw_parts(1, 3, 0) {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePrivateDataSlot\0"));
+                if fp.is_none() {
+                    return Err(LoaderError::MissingSymbol("vkCreatePrivateDataSlot".to_string()));
+                }
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_private_data {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreatePrivateDataSlotEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -17347,26 +17347,6 @@ impl Device {
             if primitive_restart_enable { vk::TRUE } else { vk::FALSE },
         );
     }
-    pub unsafe fn create_private_data_slot(
-        &self,
-        p_create_info: &vk::PrivateDataSlotCreateInfo,
-        p_allocator: Option<&vk::AllocationCallbacks>,
-    ) -> Result<vk::PrivateDataSlot> {
-        let fp = self
-            .fp_create_private_data_slot
-            .expect("vkCreatePrivateDataSlot is not loaded");
-        let mut res = MaybeUninit::<_>::uninit();
-        let err = (fp)(
-            Some(self.handle),
-            p_create_info,
-            p_allocator.map_or(ptr::null(), |r| r),
-            res.as_mut_ptr(),
-        );
-        match err {
-            vk::Result::SUCCESS => Ok(res.assume_init()),
-            _ => Err(err),
-        }
-    }
     pub unsafe fn cmd_set_tessellation_domain_origin_ext(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -17748,6 +17728,26 @@ impl Device {
                 vk::FALSE
             },
         );
+    }
+    pub unsafe fn create_private_data_slot(
+        &self,
+        p_create_info: &vk::PrivateDataSlotCreateInfo,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::PrivateDataSlot> {
+        let fp = self
+            .fp_create_private_data_slot
+            .expect("vkCreatePrivateDataSlot is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn create_private_data_slot_ext(
         &self,

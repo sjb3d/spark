@@ -38327,6 +38327,7 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
 pub struct PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
+    pub shader_core_mask: u64,
     pub shader_core_count: u32,
     pub shader_warps_per_core: u32,
 }
@@ -38337,6 +38338,7 @@ impl Default for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
         Self {
             s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM,
             p_next: ptr::null_mut(),
+            shader_core_mask: Default::default(),
             shader_core_count: Default::default(),
             shader_warps_per_core: Default::default(),
         }
@@ -38347,6 +38349,7 @@ impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
         fmt.debug_struct("PhysicalDeviceShaderCoreBuiltinsPropertiesARM")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("shader_core_mask", &self.shader_core_mask)
             .field("shader_core_count", &self.shader_core_count)
             .field("shader_warps_per_core", &self.shader_warps_per_core)
             .finish()
@@ -40433,12 +40436,6 @@ pub type FnCmdSetDepthBiasEnable =
 pub type FnCmdSetLogicOpEXT = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, logic_op: LogicOp);
 pub type FnCmdSetPrimitiveRestartEnable =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, primitive_restart_enable: Bool32);
-pub type FnCreatePrivateDataSlot = unsafe extern "system" fn(
-    device: Option<Device>,
-    p_create_info: *const PrivateDataSlotCreateInfo,
-    p_allocator: *const AllocationCallbacks,
-    p_private_data_slot: *mut PrivateDataSlot,
-) -> Result;
 pub type FnCmdSetTessellationDomainOriginEXT =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, domain_origin: TessellationDomainOrigin);
 pub type FnCmdSetDepthClampEnableEXT =
@@ -40531,6 +40528,12 @@ pub type FnCmdSetCoverageReductionModeNV =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, coverage_reduction_mode: CoverageReductionModeNV);
 pub type FnCmdSetRepresentativeFragmentTestEnableNV =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, representative_fragment_test_enable: Bool32);
+pub type FnCreatePrivateDataSlot = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const PrivateDataSlotCreateInfo,
+    p_allocator: *const AllocationCallbacks,
+    p_private_data_slot: *mut PrivateDataSlot,
+) -> Result;
 pub type FnDestroyPrivateDataSlot = unsafe extern "system" fn(
     device: Option<Device>,
     private_data_slot: Option<PrivateDataSlot>,
