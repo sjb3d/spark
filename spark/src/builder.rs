@@ -8352,12 +8352,19 @@ impl<'a> Builder<'a> for vk::DebugUtilsMessengerCallbackDataEXT {
         Default::default()
     }
 }
+pub trait DebugUtilsMessengerCallbackDataEXTNext {}
 #[derive(Default)]
 pub struct DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
     inner: vk::DebugUtilsMessengerCallbackDataEXT,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> DebugUtilsMessengerCallbackDataEXTBuilder<'a> {
+    pub fn insert_next<T: DebugUtilsMessengerCallbackDataEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -12803,6 +12810,92 @@ impl Deref for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {
 }
 impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesFullScreenExclusiveEXTBuilder {}
 impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesFullScreenExclusiveEXT {}
+impl Builder<'_> for vk::PhysicalDevicePresentBarrierFeaturesNV {
+    type Type = PhysicalDevicePresentBarrierFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePresentBarrierFeaturesNVBuilder {
+    inner: vk::PhysicalDevicePresentBarrierFeaturesNV,
+}
+impl PhysicalDevicePresentBarrierFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_barrier(mut self, present_barrier: bool) -> Self {
+        self.inner.present_barrier = if present_barrier { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePresentBarrierFeaturesNVBuilder {
+    type Target = vk::PhysicalDevicePresentBarrierFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePresentBarrierFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePresentBarrierFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePresentBarrierFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePresentBarrierFeaturesNV {}
+impl Builder<'_> for vk::SurfaceCapabilitiesPresentBarrierNV {
+    type Type = SurfaceCapabilitiesPresentBarrierNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfaceCapabilitiesPresentBarrierNVBuilder {
+    inner: vk::SurfaceCapabilitiesPresentBarrierNV,
+}
+impl SurfaceCapabilitiesPresentBarrierNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_barrier_supported(mut self, present_barrier_supported: bool) -> Self {
+        self.inner.present_barrier_supported = if present_barrier_supported { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SurfaceCapabilitiesPresentBarrierNVBuilder {
+    type Target = vk::SurfaceCapabilitiesPresentBarrierNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for SurfaceCapabilitiesPresentBarrierNVBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfaceCapabilitiesPresentBarrierNV {}
+impl Builder<'_> for vk::SwapchainPresentBarrierCreateInfoNV {
+    type Type = SwapchainPresentBarrierCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainPresentBarrierCreateInfoNVBuilder {
+    inner: vk::SwapchainPresentBarrierCreateInfoNV,
+}
+impl SwapchainPresentBarrierCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_barrier_enable(mut self, present_barrier_enable: bool) -> Self {
+        self.inner.present_barrier_enable = if present_barrier_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SwapchainPresentBarrierCreateInfoNVBuilder {
+    type Target = vk::SwapchainPresentBarrierCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SwapchainCreateInfoKHRNext for SwapchainPresentBarrierCreateInfoNVBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentBarrierCreateInfoNV {}
 impl Builder<'_> for vk::PhysicalDevicePerformanceQueryFeaturesKHR {
     type Type = PhysicalDevicePerformanceQueryFeaturesKHRBuilder;
     fn builder() -> Self::Type {
@@ -15273,6 +15366,406 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicState2Features
 impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicState2FeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicState2FeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {
+    type Type = PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT,
+}
+impl PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn extended_dynamic_state3_tessellation_domain_origin(
+        mut self,
+        extended_dynamic_state3_tessellation_domain_origin: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_tessellation_domain_origin =
+            if extended_dynamic_state3_tessellation_domain_origin {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state_3d_epth_clamp_enable(
+        mut self,
+        extended_dynamic_state_3d_epth_clamp_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state_3d_epth_clamp_enable = if extended_dynamic_state_3d_epth_clamp_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_polygon_mode(mut self, extended_dynamic_state3_polygon_mode: bool) -> Self {
+        self.inner.extended_dynamic_state3_polygon_mode = if extended_dynamic_state3_polygon_mode {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_rasterization_samples(
+        mut self,
+        extended_dynamic_state3_rasterization_samples: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_rasterization_samples = if extended_dynamic_state3_rasterization_samples {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_sample_mask(mut self, extended_dynamic_state3_sample_mask: bool) -> Self {
+        self.inner.extended_dynamic_state3_sample_mask = if extended_dynamic_state3_sample_mask {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_alpha_to_coverage_enable(
+        mut self,
+        extended_dynamic_state3_alpha_to_coverage_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_alpha_to_coverage_enable =
+            if extended_dynamic_state3_alpha_to_coverage_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_alpha_to_one_enable(
+        mut self,
+        extended_dynamic_state3_alpha_to_one_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_alpha_to_one_enable = if extended_dynamic_state3_alpha_to_one_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_logic_op_enable(mut self, extended_dynamic_state3_logic_op_enable: bool) -> Self {
+        self.inner.extended_dynamic_state3_logic_op_enable = if extended_dynamic_state3_logic_op_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_color_blend_enable(
+        mut self,
+        extended_dynamic_state3_color_blend_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_color_blend_enable = if extended_dynamic_state3_color_blend_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_color_blend_equation(
+        mut self,
+        extended_dynamic_state3_color_blend_equation: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_color_blend_equation = if extended_dynamic_state3_color_blend_equation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_color_write_mask(mut self, extended_dynamic_state3_color_write_mask: bool) -> Self {
+        self.inner.extended_dynamic_state3_color_write_mask = if extended_dynamic_state3_color_write_mask {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_rasterization_stream(
+        mut self,
+        extended_dynamic_state3_rasterization_stream: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_rasterization_stream = if extended_dynamic_state3_rasterization_stream {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_conservative_rasterization_mode(
+        mut self,
+        extended_dynamic_state3_conservative_rasterization_mode: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_conservative_rasterization_mode =
+            if extended_dynamic_state3_conservative_rasterization_mode {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_extra_primitive_overestimation_size(
+        mut self,
+        extended_dynamic_state3_extra_primitive_overestimation_size: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_extra_primitive_overestimation_size =
+            if extended_dynamic_state3_extra_primitive_overestimation_size {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state_3d_epth_clip_enable(
+        mut self,
+        extended_dynamic_state_3d_epth_clip_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state_3d_epth_clip_enable = if extended_dynamic_state_3d_epth_clip_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_sample_locations_enable(
+        mut self,
+        extended_dynamic_state3_sample_locations_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_sample_locations_enable = if extended_dynamic_state3_sample_locations_enable
+        {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_color_blend_advanced(
+        mut self,
+        extended_dynamic_state3_color_blend_advanced: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_color_blend_advanced = if extended_dynamic_state3_color_blend_advanced {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_provoking_vertex_mode(
+        mut self,
+        extended_dynamic_state3_provoking_vertex_mode: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_provoking_vertex_mode = if extended_dynamic_state3_provoking_vertex_mode {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_line_rasterization_mode(
+        mut self,
+        extended_dynamic_state3_line_rasterization_mode: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_line_rasterization_mode = if extended_dynamic_state3_line_rasterization_mode
+        {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_line_stipple_enable(
+        mut self,
+        extended_dynamic_state3_line_stipple_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_line_stipple_enable = if extended_dynamic_state3_line_stipple_enable {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state_3d_epth_clip_negative_one_to_one(
+        mut self,
+        extended_dynamic_state_3d_epth_clip_negative_one_to_one: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state_3d_epth_clip_negative_one_to_one =
+            if extended_dynamic_state_3d_epth_clip_negative_one_to_one {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_viewport_w_scaling_enable(
+        mut self,
+        extended_dynamic_state3_viewport_w_scaling_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_viewport_w_scaling_enable =
+            if extended_dynamic_state3_viewport_w_scaling_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_viewport_swizzle(mut self, extended_dynamic_state3_viewport_swizzle: bool) -> Self {
+        self.inner.extended_dynamic_state3_viewport_swizzle = if extended_dynamic_state3_viewport_swizzle {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_to_color_enable(
+        mut self,
+        extended_dynamic_state3_coverage_to_color_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_to_color_enable =
+            if extended_dynamic_state3_coverage_to_color_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_to_color_location(
+        mut self,
+        extended_dynamic_state3_coverage_to_color_location: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_to_color_location =
+            if extended_dynamic_state3_coverage_to_color_location {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_modulation_mode(
+        mut self,
+        extended_dynamic_state3_coverage_modulation_mode: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_modulation_mode =
+            if extended_dynamic_state3_coverage_modulation_mode {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_modulation_table_enable(
+        mut self,
+        extended_dynamic_state3_coverage_modulation_table_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_modulation_table_enable =
+            if extended_dynamic_state3_coverage_modulation_table_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_modulation_table(
+        mut self,
+        extended_dynamic_state3_coverage_modulation_table: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_modulation_table =
+            if extended_dynamic_state3_coverage_modulation_table {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_coverage_reduction_mode(
+        mut self,
+        extended_dynamic_state3_coverage_reduction_mode: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_coverage_reduction_mode = if extended_dynamic_state3_coverage_reduction_mode
+        {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn extended_dynamic_state3_representative_fragment_test_enable(
+        mut self,
+        extended_dynamic_state3_representative_fragment_test_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_representative_fragment_test_enable =
+            if extended_dynamic_state3_representative_fragment_test_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn extended_dynamic_state3_shading_rate_image_enable(
+        mut self,
+        extended_dynamic_state3_shading_rate_image_enable: bool,
+    ) -> Self {
+        self.inner.extended_dynamic_state3_shading_rate_image_enable =
+            if extended_dynamic_state3_shading_rate_image_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExtendedDynamicState3FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT {
+    type Type = PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
+    inner: vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT,
+}
+impl PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dynamic_primitive_topology_unrestricted(mut self, dynamic_primitive_topology_unrestricted: bool) -> Self {
+        self.inner.dynamic_primitive_topology_unrestricted = if dynamic_primitive_topology_unrestricted {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {
+    type Target = vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceExtendedDynamicState3PropertiesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExtendedDynamicState3PropertiesEXT {}
 impl Builder<'_> for vk::RenderPassTransformBeginInfoQCOM {
     type Type = RenderPassTransformBeginInfoQCOMBuilder;
     fn builder() -> Self::Type {
@@ -17532,6 +18025,36 @@ impl SubpassDescription2Next for MultisampledRenderToSingleSampledInfoEXTBuilder
 impl RenderingInfoNext for MultisampledRenderToSingleSampledInfoEXTBuilder {}
 impl SubpassDescription2Next for vk::MultisampledRenderToSingleSampledInfoEXT {}
 impl RenderingInfoNext for vk::MultisampledRenderToSingleSampledInfoEXT {}
+impl Builder<'_> for vk::PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+    type Type = PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePipelineProtectedAccessFeaturesEXT,
+}
+impl PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_protected_access(mut self, pipeline_protected_access: bool) -> Self {
+        self.inner.pipeline_protected_access = if pipeline_protected_access { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePipelineProtectedAccessFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineProtectedAccessFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceInheritedViewportScissorFeaturesNV {
     type Type = PhysicalDeviceInheritedViewportScissorFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -19517,6 +20040,376 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubpassMergeFeedbackFeaturesE
 impl DeviceCreateInfoNext for PhysicalDeviceSubpassMergeFeedbackFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {}
+impl<'a> Builder<'a> for vk::MicromapBuildInfoEXT {
+    type Type = MicromapBuildInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MicromapBuildInfoEXTBuilder<'a> {
+    inner: vk::MicromapBuildInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> MicromapBuildInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::MicromapTypeEXT) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn flags(mut self, flags: vk::BuildMicromapFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn mode(mut self, mode: vk::BuildMicromapModeEXT) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+    pub fn dst_micromap(mut self, dst_micromap: Option<vk::MicromapEXT>) -> Self {
+        self.inner.dst_micromap = dst_micromap;
+        self
+    }
+    pub fn p_usage_counts(mut self, p_usage_counts: &'a [vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = p_usage_counts.len() as u32;
+        self.inner.p_usage_counts = p_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn pp_usage_counts(mut self, pp_usage_counts: &'a [*const vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = pp_usage_counts.len() as u32;
+        self.inner.pp_usage_counts = pp_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn data(mut self, data: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.data = data;
+        self
+    }
+    pub fn scratch_data(mut self, scratch_data: vk::DeviceOrHostAddressKHR) -> Self {
+        self.inner.scratch_data = scratch_data;
+        self
+    }
+    pub fn triangle_array(mut self, triangle_array: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.triangle_array = triangle_array;
+        self
+    }
+    pub fn triangle_array_stride(mut self, triangle_array_stride: vk::DeviceSize) -> Self {
+        self.inner.triangle_array_stride = triangle_array_stride;
+        self
+    }
+}
+impl<'a> Deref for MicromapBuildInfoEXTBuilder<'a> {
+    type Target = vk::MicromapBuildInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::MicromapCreateInfoEXT {
+    type Type = MicromapCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MicromapCreateInfoEXTBuilder {
+    inner: vk::MicromapCreateInfoEXT,
+}
+impl MicromapCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn create_flags(mut self, create_flags: vk::MicromapCreateFlagsEXT) -> Self {
+        self.inner.create_flags = create_flags;
+        self
+    }
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
+        self.inner.buffer = Some(buffer);
+        self
+    }
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn ty(mut self, ty: vk::MicromapTypeEXT) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn device_address(mut self, device_address: vk::DeviceAddress) -> Self {
+        self.inner.device_address = device_address;
+        self
+    }
+}
+impl Deref for MicromapCreateInfoEXTBuilder {
+    type Target = vk::MicromapCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::MicromapVersionInfoEXT {
+    type Type = MicromapVersionInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MicromapVersionInfoEXTBuilder {
+    inner: vk::MicromapVersionInfoEXT,
+}
+impl MicromapVersionInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_version_data(mut self, p_version_data: *const u8) -> Self {
+        self.inner.p_version_data = p_version_data;
+        self
+    }
+}
+impl Deref for MicromapVersionInfoEXTBuilder {
+    type Target = vk::MicromapVersionInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::CopyMicromapInfoEXT {
+    type Type = CopyMicromapInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyMicromapInfoEXTBuilder {
+    inner: vk::CopyMicromapInfoEXT,
+}
+impl CopyMicromapInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::MicromapEXT) -> Self {
+        self.inner.src = Some(src);
+        self
+    }
+    pub fn dst(mut self, dst: vk::MicromapEXT) -> Self {
+        self.inner.dst = Some(dst);
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyMicromapModeEXT) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl Deref for CopyMicromapInfoEXTBuilder {
+    type Target = vk::CopyMicromapInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::CopyMicromapToMemoryInfoEXT {
+    type Type = CopyMicromapToMemoryInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyMicromapToMemoryInfoEXTBuilder {
+    inner: vk::CopyMicromapToMemoryInfoEXT,
+}
+impl CopyMicromapToMemoryInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::MicromapEXT) -> Self {
+        self.inner.src = Some(src);
+        self
+    }
+    pub fn dst(mut self, dst: vk::DeviceOrHostAddressKHR) -> Self {
+        self.inner.dst = dst;
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyMicromapModeEXT) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl Deref for CopyMicromapToMemoryInfoEXTBuilder {
+    type Target = vk::CopyMicromapToMemoryInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::CopyMemoryToMicromapInfoEXT {
+    type Type = CopyMemoryToMicromapInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyMemoryToMicromapInfoEXTBuilder {
+    inner: vk::CopyMemoryToMicromapInfoEXT,
+}
+impl CopyMemoryToMicromapInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn src(mut self, src: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.src = src;
+        self
+    }
+    pub fn dst(mut self, dst: vk::MicromapEXT) -> Self {
+        self.inner.dst = Some(dst);
+        self
+    }
+    pub fn mode(mut self, mode: vk::CopyMicromapModeEXT) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+}
+impl Deref for CopyMemoryToMicromapInfoEXTBuilder {
+    type Target = vk::CopyMemoryToMicromapInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::MicromapBuildSizesInfoEXT {
+    type Type = MicromapBuildSizesInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MicromapBuildSizesInfoEXTBuilder {
+    inner: vk::MicromapBuildSizesInfoEXT,
+}
+impl MicromapBuildSizesInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn micromap_size(mut self, micromap_size: vk::DeviceSize) -> Self {
+        self.inner.micromap_size = micromap_size;
+        self
+    }
+    pub fn build_scratch_size(mut self, build_scratch_size: vk::DeviceSize) -> Self {
+        self.inner.build_scratch_size = build_scratch_size;
+        self
+    }
+    pub fn discardable(mut self, discardable: bool) -> Self {
+        self.inner.discardable = if discardable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for MicromapBuildSizesInfoEXTBuilder {
+    type Target = vk::MicromapBuildSizesInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceOpacityMicromapFeaturesEXT {
+    type Type = PhysicalDeviceOpacityMicromapFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceOpacityMicromapFeaturesEXT,
+}
+impl PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn micromap(mut self, micromap: bool) -> Self {
+        self.inner.micromap = if micromap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn micromap_capture_replay(mut self, micromap_capture_replay: bool) -> Self {
+        self.inner.micromap_capture_replay = if micromap_capture_replay { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn micromap_host_commands(mut self, micromap_host_commands: bool) -> Self {
+        self.inner.micromap_host_commands = if micromap_host_commands { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceOpacityMicromapFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceOpacityMicromapFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceOpacityMicromapFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceOpacityMicromapFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceOpacityMicromapPropertiesEXT {}
+impl<'a> Builder<'a> for vk::AccelerationStructureTrianglesOpacityMicromapEXT {
+    type Type = AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a> {
+    inner: vk::AccelerationStructureTrianglesOpacityMicromapEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_buffer(mut self, index_buffer: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.index_buffer = index_buffer;
+        self
+    }
+    pub fn index_stride(mut self, index_stride: vk::DeviceSize) -> Self {
+        self.inner.index_stride = index_stride;
+        self
+    }
+    pub fn base_triangle(mut self, base_triangle: u32) -> Self {
+        self.inner.base_triangle = base_triangle;
+        self
+    }
+    pub fn p_usage_counts(mut self, p_usage_counts: &'a [vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = p_usage_counts.len() as u32;
+        self.inner.p_usage_counts = p_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn pp_usage_counts(mut self, pp_usage_counts: &'a [*const vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = pp_usage_counts.len() as u32;
+        self.inner.pp_usage_counts = pp_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn micromap(mut self, micromap: vk::MicromapEXT) -> Self {
+        self.inner.micromap = Some(micromap);
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a> {
+    type Target = vk::AccelerationStructureTrianglesOpacityMicromapEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> AccelerationStructureGeometryTrianglesDataKHRNext
+    for AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a>
+{
+}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureTrianglesOpacityMicromapEXT {}
 impl Builder<'_> for vk::PipelinePropertiesIdentifierEXT {
     type Type = PipelinePropertiesIdentifierEXTBuilder;
     fn builder() -> Self::Type {
@@ -20374,3 +21267,374 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthClampZeroOneFeaturesEXTB
 impl DeviceCreateInfoNext for PhysicalDeviceDepthClampZeroOneFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthClampZeroOneFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceAddressBindingReportFeaturesEXT {
+    type Type = PhysicalDeviceAddressBindingReportFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceAddressBindingReportFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceAddressBindingReportFeaturesEXT,
+}
+impl PhysicalDeviceAddressBindingReportFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn report_address_binding(mut self, report_address_binding: bool) -> Self {
+        self.inner.report_address_binding = if report_address_binding { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceAddressBindingReportFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceAddressBindingReportFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAddressBindingReportFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAddressBindingReportFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAddressBindingReportFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAddressBindingReportFeaturesEXT {}
+impl Builder<'_> for vk::DeviceAddressBindingCallbackDataEXT {
+    type Type = DeviceAddressBindingCallbackDataEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceAddressBindingCallbackDataEXTBuilder {
+    inner: vk::DeviceAddressBindingCallbackDataEXT,
+}
+impl DeviceAddressBindingCallbackDataEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DeviceAddressBindingFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn base_address(mut self, base_address: vk::DeviceAddress) -> Self {
+        self.inner.base_address = base_address;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn binding_type(mut self, binding_type: vk::DeviceAddressBindingTypeEXT) -> Self {
+        self.inner.binding_type = binding_type;
+        self
+    }
+}
+impl Deref for DeviceAddressBindingCallbackDataEXTBuilder {
+    type Target = vk::DeviceAddressBindingCallbackDataEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DebugUtilsMessengerCallbackDataEXTNext for DeviceAddressBindingCallbackDataEXTBuilder {}
+impl DebugUtilsMessengerCallbackDataEXTNext for vk::DeviceAddressBindingCallbackDataEXT {}
+impl Builder<'_> for vk::PhysicalDeviceOpticalFlowFeaturesNV {
+    type Type = PhysicalDeviceOpticalFlowFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceOpticalFlowFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceOpticalFlowFeaturesNV,
+}
+impl PhysicalDeviceOpticalFlowFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn optical_flow(mut self, optical_flow: bool) -> Self {
+        self.inner.optical_flow = if optical_flow { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceOpticalFlowFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceOpticalFlowFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceOpticalFlowFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceOpticalFlowFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceOpticalFlowFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceOpticalFlowFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceOpticalFlowPropertiesNV {}
+impl Builder<'_> for vk::OpticalFlowImageFormatInfoNV {
+    type Type = OpticalFlowImageFormatInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OpticalFlowImageFormatInfoNVBuilder {
+    inner: vk::OpticalFlowImageFormatInfoNV,
+}
+impl OpticalFlowImageFormatInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn usage(mut self, usage: vk::OpticalFlowUsageFlagsNV) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl Deref for OpticalFlowImageFormatInfoNVBuilder {
+    type Target = vk::OpticalFlowImageFormatInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceImageFormatInfo2Next for OpticalFlowImageFormatInfoNVBuilder {}
+impl ImageCreateInfoNext for OpticalFlowImageFormatInfoNVBuilder {}
+impl PhysicalDeviceImageFormatInfo2Next for vk::OpticalFlowImageFormatInfoNV {}
+impl ImageCreateInfoNext for vk::OpticalFlowImageFormatInfoNV {}
+impl<'a> Builder<'a> for vk::OpticalFlowSessionCreateInfoNV {
+    type Type = OpticalFlowSessionCreateInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait OpticalFlowSessionCreateInfoNVNext {}
+#[derive(Default)]
+pub struct OpticalFlowSessionCreateInfoNVBuilder<'a> {
+    inner: vk::OpticalFlowSessionCreateInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> OpticalFlowSessionCreateInfoNVBuilder<'a> {
+    pub fn insert_next<T: OpticalFlowSessionCreateInfoNVNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn width(mut self, width: u32) -> Self {
+        self.inner.width = width;
+        self
+    }
+    pub fn height(mut self, height: u32) -> Self {
+        self.inner.height = height;
+        self
+    }
+    pub fn image_format(mut self, image_format: vk::Format) -> Self {
+        self.inner.image_format = image_format;
+        self
+    }
+    pub fn flow_vector_format(mut self, flow_vector_format: vk::Format) -> Self {
+        self.inner.flow_vector_format = flow_vector_format;
+        self
+    }
+    pub fn cost_format(mut self, cost_format: vk::Format) -> Self {
+        self.inner.cost_format = cost_format;
+        self
+    }
+    pub fn output_grid_size(mut self, output_grid_size: vk::OpticalFlowGridSizeFlagsNV) -> Self {
+        self.inner.output_grid_size = output_grid_size;
+        self
+    }
+    pub fn hint_grid_size(mut self, hint_grid_size: vk::OpticalFlowGridSizeFlagsNV) -> Self {
+        self.inner.hint_grid_size = hint_grid_size;
+        self
+    }
+    pub fn performance_level(mut self, performance_level: vk::OpticalFlowPerformanceLevelNV) -> Self {
+        self.inner.performance_level = performance_level;
+        self
+    }
+    pub fn flags(mut self, flags: vk::OpticalFlowSessionCreateFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+}
+impl<'a> Deref for OpticalFlowSessionCreateInfoNVBuilder<'a> {
+    type Target = vk::OpticalFlowSessionCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::OpticalFlowSessionCreatePrivateDataInfoNV {
+    type Type = OpticalFlowSessionCreatePrivateDataInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OpticalFlowSessionCreatePrivateDataInfoNVBuilder {
+    inner: vk::OpticalFlowSessionCreatePrivateDataInfoNV,
+}
+impl OpticalFlowSessionCreatePrivateDataInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn id(mut self, id: u32) -> Self {
+        self.inner.id = id;
+        self
+    }
+    pub fn size(mut self, size: u32) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn p_private_data(mut self, p_private_data: *const c_void) -> Self {
+        self.inner.p_private_data = p_private_data;
+        self
+    }
+}
+impl Deref for OpticalFlowSessionCreatePrivateDataInfoNVBuilder {
+    type Target = vk::OpticalFlowSessionCreatePrivateDataInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl OpticalFlowSessionCreateInfoNVNext for OpticalFlowSessionCreatePrivateDataInfoNVBuilder {}
+impl OpticalFlowSessionCreateInfoNVNext for vk::OpticalFlowSessionCreatePrivateDataInfoNV {}
+impl<'a> Builder<'a> for vk::OpticalFlowExecuteInfoNV {
+    type Type = OpticalFlowExecuteInfoNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OpticalFlowExecuteInfoNVBuilder<'a> {
+    inner: vk::OpticalFlowExecuteInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> OpticalFlowExecuteInfoNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::OpticalFlowExecuteFlagsNV) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::Rect2D]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for OpticalFlowExecuteInfoNVBuilder<'a> {
+    type Target = vk::OpticalFlowExecuteInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceFaultFeaturesEXT {
+    type Type = PhysicalDeviceFaultFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFaultFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceFaultFeaturesEXT,
+}
+impl PhysicalDeviceFaultFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_fault(mut self, device_fault: bool) -> Self {
+        self.inner.device_fault = if device_fault { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn device_fault_vendor_binary(mut self, device_fault_vendor_binary: bool) -> Self {
+        self.inner.device_fault_vendor_binary = if device_fault_vendor_binary {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFaultFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceFaultFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFaultFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFaultFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFaultFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFaultFeaturesEXT {}
+impl Builder<'_> for vk::DeviceFaultCountsEXT {
+    type Type = DeviceFaultCountsEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceFaultCountsEXTBuilder {
+    inner: vk::DeviceFaultCountsEXT,
+}
+impl DeviceFaultCountsEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address_info_count(mut self, address_info_count: u32) -> Self {
+        self.inner.address_info_count = address_info_count;
+        self
+    }
+    pub fn vendor_info_count(mut self, vendor_info_count: u32) -> Self {
+        self.inner.vendor_info_count = vendor_info_count;
+        self
+    }
+    pub fn vendor_binary_size(mut self, vendor_binary_size: vk::DeviceSize) -> Self {
+        self.inner.vendor_binary_size = vendor_binary_size;
+        self
+    }
+}
+impl Deref for DeviceFaultCountsEXTBuilder {
+    type Target = vk::DeviceFaultCountsEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DeviceFaultInfoEXT {
+    type Type = DeviceFaultInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DeviceFaultInfoEXTBuilder {
+    inner: vk::DeviceFaultInfoEXT,
+}
+impl DeviceFaultInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_address_infos(mut self, p_address_infos: *mut vk::DeviceFaultAddressInfoEXT) -> Self {
+        self.inner.p_address_infos = p_address_infos;
+        self
+    }
+    pub fn p_vendor_infos(mut self, p_vendor_infos: *mut vk::DeviceFaultVendorInfoEXT) -> Self {
+        self.inner.p_vendor_infos = p_vendor_infos;
+        self
+    }
+    pub fn p_vendor_binary_data(mut self, p_vendor_binary_data: *mut c_void) -> Self {
+        self.inner.p_vendor_binary_data = p_vendor_binary_data;
+        self
+    }
+}
+impl Deref for DeviceFaultInfoEXTBuilder {
+    type Target = vk::DeviceFaultInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

@@ -542,8 +542,10 @@ impl QueueFlags {
     pub const SPARSE_BINDING: Self = Self(0x8);
     /// Queues may support protected operations
     pub const PROTECTED: Self = Self(0x10);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_NV: Self = Self(0x100);
 }
-impl_bitmask!(QueueFlags, 0x1f);
+impl_bitmask!(QueueFlags, 0x11f);
 impl fmt::Display for QueueFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -554,6 +556,7 @@ impl fmt::Display for QueueFlags {
                 (0x4, "TRANSFER"),
                 (0x8, "SPARSE_BINDING"),
                 (0x10, "PROTECTED"),
+                (0x100, "OPTICAL_FLOW_NV"),
             ],
             f,
         )
@@ -763,8 +766,12 @@ impl BufferUsageFlags {
     pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE_KHR;
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
     pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self::SHADER_DEVICE_ADDRESS;
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
 }
-impl_bitmask!(BufferUsageFlags, 0x1a1fff);
+impl_bitmask!(BufferUsageFlags, 0x19a1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -786,6 +793,8 @@ impl fmt::Display for BufferUsageFlags {
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
+                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
+                (0x1000000, "MICROMAP_STORAGE_EXT"),
             ],
             f,
         )
@@ -1101,8 +1110,14 @@ impl PipelineCreateFlags {
     pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_EXT_pipeline_protected_access.
+    pub const NO_PROTECTED_ACCESS_EXT: Self = Self(0x8000000);
+    /// Added by extension VK_EXT_pipeline_protected_access.
+    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
 }
-impl_bitmask!(PipelineCreateFlags, 0x6ffffff);
+impl_bitmask!(PipelineCreateFlags, 0x4fffffff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1134,6 +1149,9 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
                 (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
+                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
+                (0x8000000, "NO_PROTECTED_ACCESS_EXT"),
+                (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
             ],
             f,
         )
@@ -1990,8 +2008,12 @@ impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FRONT_COUNTERCLOCKWISE_NV: Self = Self::TRIANGLE_FRONT_COUNTERCLOCKWISE;
     pub const FORCE_OPAQUE_NV: Self = Self::FORCE_OPAQUE;
     pub const FORCE_NO_OPAQUE_NV: Self = Self::FORCE_NO_OPAQUE;
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const FORCE_OPACITY_MICROMAP_2_STATE_EXT: Self = Self(0x10);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x20);
 }
-impl_bitmask!(GeometryInstanceFlagsKHR, 0xf);
+impl_bitmask!(GeometryInstanceFlagsKHR, 0x3f);
 impl fmt::Display for GeometryInstanceFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2001,6 +2023,8 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
                 (0x2, "TRIANGLE_FLIP_FACING"),
                 (0x4, "FORCE_OPAQUE"),
                 (0x8, "FORCE_NO_OPAQUE"),
+                (0x10, "FORCE_OPACITY_MICROMAP_2_STATE_EXT"),
+                (0x20, "DISABLE_OPACITY_MICROMAPS_EXT"),
             ],
             f,
         )
@@ -2023,8 +2047,14 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const LOW_MEMORY_NV: Self = Self::LOW_MEMORY;
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const MOTION_NV: Self = Self(0x20);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const ALLOW_OPACITY_MICROMAP_UPDATE_EXT: Self = Self(0x40);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const ALLOW_DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x80);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT: Self = Self(0x100);
 }
-impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x3f);
+impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x1ff);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2036,6 +2066,9 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x8, "PREFER_FAST_BUILD"),
                 (0x10, "LOW_MEMORY"),
                 (0x20, "MOTION_NV"),
+                (0x40, "ALLOW_OPACITY_MICROMAP_UPDATE_EXT"),
+                (0x80, "ALLOW_DISABLE_OPACITY_MICROMAPS_EXT"),
+                (0x100, "ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT"),
             ],
             f,
         )
@@ -2269,8 +2302,16 @@ impl AccessFlags2 {
     pub const INVOCATION_MASK_READ_HUAWEI: Self = Self(0x8000000000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
     pub const SHADER_BINDING_TABLE_READ_KHR: Self = Self(0x10000000000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_READ_EXT: Self = Self(0x100000000000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_WRITE_EXT: Self = Self(0x200000000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_READ_NV: Self = Self(0x40000000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_WRITE_NV: Self = Self(0x80000000000);
 }
-impl_bitmask!(AccessFlags2, 0x1870fffffff);
+impl_bitmask!(AccessFlags2, 0x3d870fffffff);
 impl fmt::Display for AccessFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2309,6 +2350,10 @@ impl fmt::Display for AccessFlags2 {
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
                 (0x8000000000, "INVOCATION_MASK_READ_HUAWEI"),
                 (0x10000000000, "SHADER_BINDING_TABLE_READ_KHR"),
+                (0x100000000000, "MICROMAP_READ_EXT"),
+                (0x200000000000, "MICROMAP_WRITE_EXT"),
+                (0x40000000000, "OPTICAL_FLOW_READ_NV"),
+                (0x80000000000, "OPTICAL_FLOW_WRITE_NV"),
             ],
             f,
         )
@@ -2401,8 +2446,12 @@ impl PipelineStageFlags2 {
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x10000000000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
     pub const ACCELERATION_STRUCTURE_COPY_KHR: Self = Self(0x10000000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_BUILD_EXT: Self = Self(0x40000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_NV: Self = Self(0x20000000);
 }
-impl_bitmask!(PipelineStageFlags2, 0x1ff13ffffff);
+impl_bitmask!(PipelineStageFlags2, 0x1ff73ffffff);
 impl fmt::Display for PipelineStageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2444,6 +2493,8 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
                 (0x10000000000, "INVOCATION_MASK_HUAWEI"),
                 (0x10000000, "ACCELERATION_STRUCTURE_COPY_KHR"),
+                (0x40000000, "MICROMAP_BUILD_EXT"),
+                (0x20000000, "OPTICAL_FLOW_NV"),
             ],
             f,
         )
@@ -2549,8 +2600,14 @@ impl FormatFeatureFlags2 {
     pub const BLOCK_MATCHING_QCOM: Self = Self(0x1000000000);
     /// Added by extension VK_QCOM_image_processing.
     pub const BOX_FILTER_SAMPLED_QCOM: Self = Self(0x2000000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_IMAGE_NV: Self = Self(0x10000000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_VECTOR_NV: Self = Self(0x20000000000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
 }
-impl_bitmask!(FormatFeatureFlags2, 0x7fe1ffffff);
+impl_bitmask!(FormatFeatureFlags2, 0x77fe1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2597,6 +2654,9 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
                 (0x1000000000, "BLOCK_MATCHING_QCOM"),
                 (0x2000000000, "BOX_FILTER_SAMPLED_QCOM"),
+                (0x10000000000, "OPTICAL_FLOW_IMAGE_NV"),
+                (0x20000000000, "OPTICAL_FLOW_VECTOR_NV"),
+                (0x40000000000, "OPTICAL_FLOW_COST_NV"),
             ],
             f,
         )
@@ -2632,6 +2692,40 @@ impl fmt::Display for RenderingFlags {
     }
 }
 pub type RenderingFlagsKHR = RenderingFlags;
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BuildMicromapFlagsEXT(pub(crate) u32);
+impl BuildMicromapFlagsEXT {
+    pub const PREFER_FAST_TRACE: Self = Self(0x1);
+    pub const PREFER_FAST_BUILD: Self = Self(0x2);
+    pub const ALLOW_COMPACTION: Self = Self(0x4);
+}
+impl_bitmask!(BuildMicromapFlagsEXT, 0x7);
+impl fmt::Display for BuildMicromapFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "PREFER_FAST_TRACE"),
+                (0x2, "PREFER_FAST_BUILD"),
+                (0x4, "ALLOW_COMPACTION"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MicromapCreateFlagsEXT(pub(crate) u32);
+impl MicromapCreateFlagsEXT {
+    pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
+}
+impl_bitmask!(MicromapCreateFlagsEXT, 0x1);
+impl fmt::Display for MicromapCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY")], f)
+    }
+}
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(pub(crate) u32);
@@ -3349,13 +3443,20 @@ impl DebugUtilsMessageTypeFlagsEXT {
     pub const GENERAL: Self = Self(0x1);
     pub const VALIDATION: Self = Self(0x2);
     pub const PERFORMANCE: Self = Self(0x4);
+    /// Added by extension VK_EXT_device_address_binding_report.
+    pub const DEVICE_ADDRESS_BINDING: Self = Self(0x8);
 }
-impl_bitmask!(DebugUtilsMessageTypeFlagsEXT, 0x7);
+impl_bitmask!(DebugUtilsMessageTypeFlagsEXT, 0xf);
 impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
-            &[(0x1, "GENERAL"), (0x2, "VALIDATION"), (0x4, "PERFORMANCE")],
+            &[
+                (0x1, "GENERAL"),
+                (0x2, "VALIDATION"),
+                (0x4, "PERFORMANCE"),
+                (0x8, "DEVICE_ADDRESS_BINDING"),
+            ],
             f,
         )
     }
@@ -3716,6 +3817,103 @@ impl fmt::Display for ExportMetalObjectTypeFlagsEXT {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DeviceAddressBindingFlagsEXT(pub(crate) u32);
+impl DeviceAddressBindingFlagsEXT {
+    pub const INTERNAL_OBJECT: Self = Self(0x1);
+}
+impl_bitmask!(DeviceAddressBindingFlagsEXT, 0x1);
+impl fmt::Display for DeviceAddressBindingFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "INTERNAL_OBJECT")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct OpticalFlowGridSizeFlagsNV(pub(crate) u32);
+impl OpticalFlowGridSizeFlagsNV {
+    pub const UNKNOWN: Self = Self(0x0);
+    pub const N1X1: Self = Self(0x1);
+    pub const N2X2: Self = Self(0x2);
+    pub const N4X4: Self = Self(0x4);
+    pub const N8X8: Self = Self(0x8);
+}
+impl_bitmask!(OpticalFlowGridSizeFlagsNV, 0xf);
+impl fmt::Display for OpticalFlowGridSizeFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "N1X1"), (0x2, "N2X2"), (0x4, "N4X4"), (0x8, "N8X8")],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct OpticalFlowUsageFlagsNV(pub(crate) u32);
+impl OpticalFlowUsageFlagsNV {
+    pub const UNKNOWN: Self = Self(0x0);
+    pub const INPUT: Self = Self(0x1);
+    pub const OUTPUT: Self = Self(0x2);
+    pub const HINT: Self = Self(0x4);
+    pub const COST: Self = Self(0x8);
+    pub const GLOBAL_FLOW: Self = Self(0x10);
+}
+impl_bitmask!(OpticalFlowUsageFlagsNV, 0x1f);
+impl fmt::Display for OpticalFlowUsageFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "INPUT"),
+                (0x2, "OUTPUT"),
+                (0x4, "HINT"),
+                (0x8, "COST"),
+                (0x10, "GLOBAL_FLOW"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct OpticalFlowSessionCreateFlagsNV(pub(crate) u32);
+impl OpticalFlowSessionCreateFlagsNV {
+    pub const ENABLE_HINT: Self = Self(0x1);
+    pub const ENABLE_COST: Self = Self(0x2);
+    pub const ENABLE_GLOBAL_FLOW: Self = Self(0x4);
+    pub const ALLOW_REGIONS: Self = Self(0x8);
+    pub const BOTH_DIRECTIONS: Self = Self(0x10);
+}
+impl_bitmask!(OpticalFlowSessionCreateFlagsNV, 0x1f);
+impl fmt::Display for OpticalFlowSessionCreateFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "ENABLE_HINT"),
+                (0x2, "ENABLE_COST"),
+                (0x4, "ENABLE_GLOBAL_FLOW"),
+                (0x8, "ALLOW_REGIONS"),
+                (0x10, "BOTH_DIRECTIONS"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct OpticalFlowExecuteFlagsNV(pub(crate) u32);
+impl OpticalFlowExecuteFlagsNV {
+    pub const DISABLE_TEMPORAL_HINTS: Self = Self(0x1);
+}
+impl_bitmask!(OpticalFlowExecuteFlagsNV, 0x1);
+impl fmt::Display for OpticalFlowExecuteFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "DISABLE_TEMPORAL_HINTS")], f)
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
@@ -4010,6 +4208,22 @@ impl CuModuleNVX {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct CuFunctionNVX(num::NonZeroU64);
 impl CuFunctionNVX {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct OpticalFlowSessionNV(num::NonZeroU64);
+impl OpticalFlowSessionNV {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct MicromapEXT(num::NonZeroU64);
+impl MicromapEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -4618,6 +4832,68 @@ impl DynamicState {
     pub const PRIMITIVE_RESTART_ENABLE_EXT: Self = Self::PRIMITIVE_RESTART_ENABLE;
     /// Added by extension VK_EXT_color_write_enable.
     pub const COLOR_WRITE_ENABLE_EXT: Self = Self(1000381000);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const TESSELLATION_DOMAIN_ORIGIN_EXT: Self = Self(1000455002);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const DEPTH_CLAMP_ENABLE_EXT: Self = Self(1000455003);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const POLYGON_MODE_EXT: Self = Self(1000455004);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const RASTERIZATION_SAMPLES_EXT: Self = Self(1000455005);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const SAMPLE_MASK_EXT: Self = Self(1000455006);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const ALPHA_TO_COVERAGE_ENABLE_EXT: Self = Self(1000455007);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const ALPHA_TO_ONE_ENABLE_EXT: Self = Self(1000455008);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const LOGIC_OP_ENABLE_EXT: Self = Self(1000455009);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COLOR_BLEND_ENABLE_EXT: Self = Self(1000455010);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COLOR_BLEND_EQUATION_EXT: Self = Self(1000455011);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COLOR_WRITE_MASK_EXT: Self = Self(1000455012);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const RASTERIZATION_STREAM_EXT: Self = Self(1000455013);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const CONSERVATIVE_RASTERIZATION_MODE_EXT: Self = Self(1000455014);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const EXTRA_PRIMITIVE_OVERESTIMATION_SIZE_EXT: Self = Self(1000455015);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const DEPTH_CLIP_ENABLE_EXT: Self = Self(1000455016);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const SAMPLE_LOCATIONS_ENABLE_EXT: Self = Self(1000455017);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COLOR_BLEND_ADVANCED_EXT: Self = Self(1000455018);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const PROVOKING_VERTEX_MODE_EXT: Self = Self(1000455019);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const LINE_RASTERIZATION_MODE_EXT: Self = Self(1000455020);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const LINE_STIPPLE_ENABLE_EXT: Self = Self(1000455021);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const DEPTH_CLIP_NEGATIVE_ONE_TO_ONE_EXT: Self = Self(1000455022);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const VIEWPORT_W_SCALING_ENABLE_NV: Self = Self(1000455023);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const VIEWPORT_SWIZZLE_NV: Self = Self(1000455024);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_TO_COLOR_ENABLE_NV: Self = Self(1000455025);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_TO_COLOR_LOCATION_NV: Self = Self(1000455026);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_MODULATION_MODE_NV: Self = Self(1000455027);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_MODULATION_TABLE_ENABLE_NV: Self = Self(1000455028);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_MODULATION_TABLE_NV: Self = Self(1000455029);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const SHADING_RATE_IMAGE_ENABLE_NV: Self = Self(1000455030);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV: Self = Self(1000455031);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const COVERAGE_REDUCTION_MODE_NV: Self = Self(1000455032);
 }
 impl fmt::Display for DynamicState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -4659,6 +4935,37 @@ impl fmt::Display for DynamicState {
             1000377000 => Some(&"PATCH_CONTROL_POINTS_EXT"),
             1000377003 => Some(&"LOGIC_OP_EXT"),
             1000381000 => Some(&"COLOR_WRITE_ENABLE_EXT"),
+            1000455002 => Some(&"TESSELLATION_DOMAIN_ORIGIN_EXT"),
+            1000455003 => Some(&"DEPTH_CLAMP_ENABLE_EXT"),
+            1000455004 => Some(&"POLYGON_MODE_EXT"),
+            1000455005 => Some(&"RASTERIZATION_SAMPLES_EXT"),
+            1000455006 => Some(&"SAMPLE_MASK_EXT"),
+            1000455007 => Some(&"ALPHA_TO_COVERAGE_ENABLE_EXT"),
+            1000455008 => Some(&"ALPHA_TO_ONE_ENABLE_EXT"),
+            1000455009 => Some(&"LOGIC_OP_ENABLE_EXT"),
+            1000455010 => Some(&"COLOR_BLEND_ENABLE_EXT"),
+            1000455011 => Some(&"COLOR_BLEND_EQUATION_EXT"),
+            1000455012 => Some(&"COLOR_WRITE_MASK_EXT"),
+            1000455013 => Some(&"RASTERIZATION_STREAM_EXT"),
+            1000455014 => Some(&"CONSERVATIVE_RASTERIZATION_MODE_EXT"),
+            1000455015 => Some(&"EXTRA_PRIMITIVE_OVERESTIMATION_SIZE_EXT"),
+            1000455016 => Some(&"DEPTH_CLIP_ENABLE_EXT"),
+            1000455017 => Some(&"SAMPLE_LOCATIONS_ENABLE_EXT"),
+            1000455018 => Some(&"COLOR_BLEND_ADVANCED_EXT"),
+            1000455019 => Some(&"PROVOKING_VERTEX_MODE_EXT"),
+            1000455020 => Some(&"LINE_RASTERIZATION_MODE_EXT"),
+            1000455021 => Some(&"LINE_STIPPLE_ENABLE_EXT"),
+            1000455022 => Some(&"DEPTH_CLIP_NEGATIVE_ONE_TO_ONE_EXT"),
+            1000455023 => Some(&"VIEWPORT_W_SCALING_ENABLE_NV"),
+            1000455024 => Some(&"VIEWPORT_SWIZZLE_NV"),
+            1000455025 => Some(&"COVERAGE_TO_COLOR_ENABLE_NV"),
+            1000455026 => Some(&"COVERAGE_TO_COLOR_LOCATION_NV"),
+            1000455027 => Some(&"COVERAGE_MODULATION_MODE_NV"),
+            1000455028 => Some(&"COVERAGE_MODULATION_TABLE_ENABLE_NV"),
+            1000455029 => Some(&"COVERAGE_MODULATION_TABLE_NV"),
+            1000455030 => Some(&"SHADING_RATE_IMAGE_ENABLE_NV"),
+            1000455031 => Some(&"REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV"),
+            1000455032 => Some(&"COVERAGE_REDUCTION_MODE_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -5007,6 +5314,8 @@ impl Format {
     pub const G16_B16R16_2PLANE_444_UNORM_EXT: Self = Self::G16_B16R16_2PLANE_444_UNORM;
     pub const A4R4G4B4_UNORM_PACK16_EXT: Self = Self::A4R4G4B4_UNORM_PACK16;
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
+    /// Added by extension VK_NV_optical_flow.
+    pub const R16G16_S10_5_NV: Self = Self(1000464000);
 }
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5258,6 +5567,7 @@ impl fmt::Display for Format {
             1000054005 => Some(&"PVRTC1_4BPP_SRGB_BLOCK_IMG"),
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
+            1000464000 => Some(&"R16G16_S10_5_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -5670,6 +5980,10 @@ impl QueryType {
     pub const ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR: Self = Self(1000386000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
     pub const ACCELERATION_STRUCTURE_SIZE_KHR: Self = Self(1000386001);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_SERIALIZATION_SIZE_EXT: Self = Self(1000396000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_COMPACTED_SIZE_EXT: Self = Self(1000396001);
 }
 impl fmt::Display for QueryType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5687,6 +6001,8 @@ impl fmt::Display for QueryType {
             1000382000 => Some(&"PRIMITIVES_GENERATED_EXT"),
             1000386000 => Some(&"ACCELERATION_STRUCTURE_SERIALIZATION_BOTTOM_LEVEL_POINTERS_KHR"),
             1000386001 => Some(&"ACCELERATION_STRUCTURE_SIZE_KHR"),
+            1000396000 => Some(&"MICROMAP_SERIALIZATION_SIZE_EXT"),
+            1000396001 => Some(&"MICROMAP_COMPACTED_SIZE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6857,6 +7173,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT: Self = Self(1000287002);
     /// Added by extension VK_KHR_pipeline_library.
     pub const PIPELINE_LIBRARY_CREATE_INFO_KHR: Self = Self(1000290000);
+    /// Added by extension VK_NV_present_barrier.
+    pub const PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV: Self = Self(1000292000);
+    /// Added by extension VK_NV_present_barrier.
+    pub const SURFACE_CAPABILITIES_PRESENT_BARRIER_NV: Self = Self(1000292001);
+    /// Added by extension VK_NV_present_barrier.
+    pub const SWAPCHAIN_PRESENT_BARRIER_CREATE_INFO_NV: Self = Self(1000292002);
     /// Added by extension VK_KHR_present_id.
     pub const PRESENT_ID_KHR: Self = Self(1000294000);
     /// Added by extension VK_KHR_present_id.
@@ -6974,6 +7296,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT: Self = Self(1000339000);
     /// Added by extension VK_EXT_4444_formats.
     pub const PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT: Self = Self(1000340000);
+    /// Added by extension VK_EXT_device_fault.
+    pub const PHYSICAL_DEVICE_FAULT_FEATURES_EXT: Self = Self(1000341000);
+    /// Added by extension VK_EXT_device_fault.
+    pub const DEVICE_FAULT_COUNTS_EXT: Self = Self(1000341001);
+    /// Added by extension VK_EXT_device_fault.
+    pub const DEVICE_FAULT_INFO_EXT: Self = Self(1000341002);
     pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM: Self =
         Self::PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT;
     /// Added by extension VK_EXT_rgba10x6_formats.
@@ -6991,6 +7319,10 @@ impl StructureType {
     pub const VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT: Self = Self(1000352002);
     /// Added by extension VK_EXT_physical_device_drm.
     pub const PHYSICAL_DEVICE_DRM_PROPERTIES_EXT: Self = Self(1000353000);
+    /// Added by extension VK_EXT_device_address_binding_report.
+    pub const PHYSICAL_DEVICE_ADDRESS_BINDING_REPORT_FEATURES_EXT: Self = Self(1000354000);
+    /// Added by extension VK_EXT_device_address_binding_report.
+    pub const DEVICE_ADDRESS_BINDING_CALLBACK_DATA_EXT: Self = Self(1000354001);
     /// Added by extension VK_EXT_depth_clip_control.
     pub const PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT: Self = Self(1000355000);
     /// Added by extension VK_EXT_depth_clip_control.
@@ -7075,6 +7407,26 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
     /// Added by extension VK_EXT_image_2d_view_of_3d.
     pub const PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000393000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_BUILD_INFO_EXT: Self = Self(1000396000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_VERSION_INFO_EXT: Self = Self(1000396001);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const COPY_MICROMAP_INFO_EXT: Self = Self(1000396002);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const COPY_MICROMAP_TO_MEMORY_INFO_EXT: Self = Self(1000396003);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const COPY_MEMORY_TO_MICROMAP_INFO_EXT: Self = Self(1000396004);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT: Self = Self(1000396005);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT: Self = Self(1000396006);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_CREATE_INFO_EXT: Self = Self(1000396007);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_BUILD_SIZES_INFO_EXT: Self = Self(1000396008);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT: Self = Self(1000396009);
     /// Added by extension VK_EXT_border_color_swizzle.
     pub const PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT: Self = Self(1000411000);
     /// Added by extension VK_EXT_border_color_swizzle.
@@ -7111,6 +7463,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM: Self = Self(1000440001);
     /// Added by extension VK_QCOM_image_processing.
     pub const IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM: Self = Self(1000440002);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT: Self = Self(1000455000);
+    /// Added by extension VK_EXT_extended_dynamic_state3.
+    pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT: Self = Self(1000455001);
     /// Added by extension VK_EXT_subpass_merge_feedback.
     pub const PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT: Self = Self(1000458000);
     /// Added by extension VK_EXT_subpass_merge_feedback.
@@ -7129,8 +7485,24 @@ impl StructureType {
     pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
     /// Added by extension VK_EXT_rasterization_order_attachment_access.
     pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT: Self = Self(1000342000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV: Self = Self(1000464000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const PHYSICAL_DEVICE_OPTICAL_FLOW_PROPERTIES_NV: Self = Self(1000464001);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_IMAGE_FORMAT_INFO_NV: Self = Self(1000464002);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV: Self = Self(1000464003);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_SESSION_CREATE_INFO_NV: Self = Self(1000464004);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_EXECUTE_INFO_NV: Self = Self(1000464005);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV: Self = Self(1000464010);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
+    /// Added by extension VK_EXT_pipeline_protected_access.
+    pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
     /// Added by extension VK_QCOM_tile_properties.
     pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
     /// Added by extension VK_QCOM_tile_properties.
@@ -7649,6 +8021,9 @@ impl fmt::Display for StructureType {
             1000287001 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT"),
             1000287002 => Some(&"PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT"),
             1000290000 => Some(&"PIPELINE_LIBRARY_CREATE_INFO_KHR"),
+            1000292000 => Some(&"PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV"),
+            1000292001 => Some(&"SURFACE_CAPABILITIES_PRESENT_BARRIER_NV"),
+            1000292002 => Some(&"SWAPCHAIN_PRESENT_BARRIER_CREATE_INFO_NV"),
             1000294000 => Some(&"PRESENT_ID_KHR"),
             1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
@@ -7694,12 +8069,17 @@ impl fmt::Display for StructureType {
             1000338004 => Some(&"IMAGE_COMPRESSION_PROPERTIES_EXT"),
             1000339000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
+            1000341000 => Some(&"PHYSICAL_DEVICE_FAULT_FEATURES_EXT"),
+            1000341001 => Some(&"DEVICE_FAULT_COUNTS_EXT"),
+            1000341002 => Some(&"DEVICE_FAULT_INFO_EXT"),
             1000344000 => Some(&"PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT"),
             1000346000 => Some(&"DIRECTFB_SURFACE_CREATE_INFO_EXT"),
             1000352000 => Some(&"PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT"),
             1000352001 => Some(&"VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT"),
             1000352002 => Some(&"VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT"),
             1000353000 => Some(&"PHYSICAL_DEVICE_DRM_PROPERTIES_EXT"),
+            1000354000 => Some(&"PHYSICAL_DEVICE_ADDRESS_BINDING_REPORT_FEATURES_EXT"),
+            1000354001 => Some(&"DEVICE_ADDRESS_BINDING_CALLBACK_DATA_EXT"),
             1000355000 => Some(&"PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT"),
             1000355001 => Some(&"PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT"),
             1000356000 => Some(&"PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT"),
@@ -7739,6 +8119,16 @@ impl fmt::Display for StructureType {
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
             1000393000 => Some(&"PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT"),
+            1000396000 => Some(&"MICROMAP_BUILD_INFO_EXT"),
+            1000396001 => Some(&"MICROMAP_VERSION_INFO_EXT"),
+            1000396002 => Some(&"COPY_MICROMAP_INFO_EXT"),
+            1000396003 => Some(&"COPY_MICROMAP_TO_MEMORY_INFO_EXT"),
+            1000396004 => Some(&"COPY_MEMORY_TO_MICROMAP_INFO_EXT"),
+            1000396005 => Some(&"PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT"),
+            1000396006 => Some(&"PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT"),
+            1000396007 => Some(&"MICROMAP_CREATE_INFO_EXT"),
+            1000396008 => Some(&"MICROMAP_BUILD_SIZES_INFO_EXT"),
+            1000396009 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
@@ -7755,6 +8145,8 @@ impl fmt::Display for StructureType {
             1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
             1000440001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM"),
             1000440002 => Some(&"IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM"),
+            1000455000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT"),
+            1000455001 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT"),
             1000458000 => Some(&"PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT"),
             1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
             1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT"),
@@ -7764,7 +8156,15 @@ impl fmt::Display for StructureType {
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
             1000462003 => Some(&"SHADER_MODULE_IDENTIFIER_EXT"),
             1000342000 => Some(&"PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT"),
+            1000464000 => Some(&"PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV"),
+            1000464001 => Some(&"PHYSICAL_DEVICE_OPTICAL_FLOW_PROPERTIES_NV"),
+            1000464002 => Some(&"OPTICAL_FLOW_IMAGE_FORMAT_INFO_NV"),
+            1000464003 => Some(&"OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV"),
+            1000464004 => Some(&"OPTICAL_FLOW_SESSION_CREATE_INFO_NV"),
+            1000464005 => Some(&"OPTICAL_FLOW_EXECUTE_INFO_NV"),
+            1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
+            1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
             1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
@@ -7992,6 +8392,10 @@ impl ObjectType {
     /// VkBufferCollectionFUCHSIA
     /// Added by extension VK_FUCHSIA_buffer_collection.
     pub const BUFFER_COLLECTION_FUCHSIA: Self = Self(1000366000);
+    /// Added by extension VK_EXT_opacity_micromap.
+    pub const MICROMAP_EXT: Self = Self(1000396000);
+    /// Added by extension VK_NV_optical_flow.
+    pub const OPTICAL_FLOW_SESSION_NV: Self = Self(1000464000);
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8040,6 +8444,8 @@ impl fmt::Display for ObjectType {
             1000268000 => Some(&"DEFERRED_OPERATION_KHR"),
             1000277000 => Some(&"INDIRECT_COMMANDS_LAYOUT_NV"),
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
+            1000396000 => Some(&"MICROMAP_EXT"),
+            1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9092,6 +9498,155 @@ impl fmt::Display for PipelineRobustnessImageBehaviorEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DeviceAddressBindingTypeEXT(pub(crate) i32);
+impl DeviceAddressBindingTypeEXT {
+    pub const BIND: Self = Self(0);
+    pub const UNBIND: Self = Self(1);
+}
+impl fmt::Display for DeviceAddressBindingTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BIND"),
+            1 => Some(&"UNBIND"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct MicromapTypeEXT(pub(crate) i32);
+impl MicromapTypeEXT {
+    pub const OPACITY_MICROMAP: Self = Self(0);
+}
+impl fmt::Display for MicromapTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"OPACITY_MICROMAP"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct BuildMicromapModeEXT(pub(crate) i32);
+impl BuildMicromapModeEXT {
+    pub const BUILD: Self = Self(0);
+}
+impl fmt::Display for BuildMicromapModeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BUILD"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct CopyMicromapModeEXT(pub(crate) i32);
+impl CopyMicromapModeEXT {
+    pub const CLONE: Self = Self(0);
+    pub const SERIALIZE: Self = Self(1);
+    pub const DESERIALIZE: Self = Self(2);
+    pub const COMPACT: Self = Self(3);
+}
+impl fmt::Display for CopyMicromapModeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CLONE"),
+            1 => Some(&"SERIALIZE"),
+            2 => Some(&"DESERIALIZE"),
+            3 => Some(&"COMPACT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct OpacityMicromapFormatEXT(pub(crate) i32);
+impl OpacityMicromapFormatEXT {
+    pub const N2_STATE: Self = Self(1);
+    pub const N4_STATE: Self = Self(2);
+}
+impl fmt::Display for OpacityMicromapFormatEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"N2_STATE"),
+            2 => Some(&"N4_STATE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct OpacityMicromapSpecialIndexEXT(pub(crate) i32);
+impl OpacityMicromapSpecialIndexEXT {
+    pub const FULLY_TRANSPARENT: Self = Self(-1);
+    pub const FULLY_OPAQUE: Self = Self(-2);
+    pub const FULLY_UNKNOWN_TRANSPARENT: Self = Self(-3);
+    pub const FULLY_UNKNOWN_OPAQUE: Self = Self(-4);
+}
+impl fmt::Display for OpacityMicromapSpecialIndexEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            -1 => Some(&"FULLY_TRANSPARENT"),
+            -2 => Some(&"FULLY_OPAQUE"),
+            -3 => Some(&"FULLY_UNKNOWN_TRANSPARENT"),
+            -4 => Some(&"FULLY_UNKNOWN_OPAQUE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DeviceFaultVendorBinaryHeaderVersionEXT(pub(crate) i32);
+impl DeviceFaultVendorBinaryHeaderVersionEXT {
+    pub const ONE: Self = Self(1);
+}
+impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"ONE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(pub(crate) i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = Self(0);
@@ -9714,6 +10269,98 @@ impl fmt::Display for FragmentShadingRateCombinerOpKHR {
             2 => Some(&"MIN"),
             3 => Some(&"MAX"),
             4 => Some(&"MUL"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct OpticalFlowPerformanceLevelNV(pub(crate) i32);
+impl OpticalFlowPerformanceLevelNV {
+    pub const UNKNOWN: Self = Self(0);
+    pub const SLOW: Self = Self(1);
+    pub const MEDIUM: Self = Self(2);
+    pub const FAST: Self = Self(3);
+}
+impl fmt::Display for OpticalFlowPerformanceLevelNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"UNKNOWN"),
+            1 => Some(&"SLOW"),
+            2 => Some(&"MEDIUM"),
+            3 => Some(&"FAST"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct OpticalFlowSessionBindingPointNV(pub(crate) i32);
+impl OpticalFlowSessionBindingPointNV {
+    pub const UNKNOWN: Self = Self(0);
+    pub const INPUT: Self = Self(1);
+    pub const REFERENCE: Self = Self(2);
+    pub const HINT: Self = Self(3);
+    pub const FLOW_VECTOR: Self = Self(4);
+    pub const BACKWARD_FLOW_VECTOR: Self = Self(5);
+    pub const COST: Self = Self(6);
+    pub const BACKWARD_COST: Self = Self(7);
+    pub const GLOBAL_FLOW: Self = Self(8);
+}
+impl fmt::Display for OpticalFlowSessionBindingPointNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"UNKNOWN"),
+            1 => Some(&"INPUT"),
+            2 => Some(&"REFERENCE"),
+            3 => Some(&"HINT"),
+            4 => Some(&"FLOW_VECTOR"),
+            5 => Some(&"BACKWARD_FLOW_VECTOR"),
+            6 => Some(&"COST"),
+            7 => Some(&"BACKWARD_COST"),
+            8 => Some(&"GLOBAL_FLOW"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DeviceFaultAddressTypeEXT(pub(crate) i32);
+impl DeviceFaultAddressTypeEXT {
+    /// Currently unused
+    pub const NONE: Self = Self(0);
+    pub const READ_INVALID: Self = Self(1);
+    pub const WRITE_INVALID: Self = Self(2);
+    pub const EXECUTE_INVALID: Self = Self(3);
+    pub const INSTRUCTION_POINTER_UNKNOWN: Self = Self(4);
+    pub const INSTRUCTION_POINTER_INVALID: Self = Self(5);
+    pub const INSTRUCTION_POINTER_FAULT: Self = Self(6);
+}
+impl fmt::Display for DeviceFaultAddressTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"READ_INVALID"),
+            2 => Some(&"WRITE_INVALID"),
+            3 => Some(&"EXECUTE_INVALID"),
+            4 => Some(&"INSTRUCTION_POINTER_UNKNOWN"),
+            5 => Some(&"INSTRUCTION_POINTER_INVALID"),
+            6 => Some(&"INSTRUCTION_POINTER_FAULT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -27151,6 +27798,87 @@ impl fmt::Debug for SurfaceCapabilitiesFullScreenExclusiveEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDevicePresentBarrierFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_barrier: Bool32,
+}
+unsafe impl Send for PhysicalDevicePresentBarrierFeaturesNV {}
+unsafe impl Sync for PhysicalDevicePresentBarrierFeaturesNV {}
+impl Default for PhysicalDevicePresentBarrierFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PRESENT_BARRIER_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            present_barrier: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePresentBarrierFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePresentBarrierFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_barrier", &self.present_barrier)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfaceCapabilitiesPresentBarrierNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_barrier_supported: Bool32,
+}
+unsafe impl Send for SurfaceCapabilitiesPresentBarrierNV {}
+unsafe impl Sync for SurfaceCapabilitiesPresentBarrierNV {}
+impl Default for SurfaceCapabilitiesPresentBarrierNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_CAPABILITIES_PRESENT_BARRIER_NV,
+            p_next: ptr::null_mut(),
+            present_barrier_supported: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfaceCapabilitiesPresentBarrierNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfaceCapabilitiesPresentBarrierNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_barrier_supported", &self.present_barrier_supported)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainPresentBarrierCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_barrier_enable: Bool32,
+}
+unsafe impl Send for SwapchainPresentBarrierCreateInfoNV {}
+unsafe impl Sync for SwapchainPresentBarrierCreateInfoNV {}
+impl Default for SwapchainPresentBarrierCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_PRESENT_BARRIER_CREATE_INFO_NV,
+            p_next: ptr::null_mut(),
+            present_barrier_enable: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainPresentBarrierCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainPresentBarrierCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_barrier_enable", &self.present_barrier_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevicePerformanceQueryFeaturesKHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -30680,6 +31408,288 @@ impl fmt::Debug for PhysicalDeviceExtendedDynamicState2FeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedDynamicState3FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub extended_dynamic_state3_tessellation_domain_origin: Bool32,
+    pub extended_dynamic_state_3d_epth_clamp_enable: Bool32,
+    pub extended_dynamic_state3_polygon_mode: Bool32,
+    pub extended_dynamic_state3_rasterization_samples: Bool32,
+    pub extended_dynamic_state3_sample_mask: Bool32,
+    pub extended_dynamic_state3_alpha_to_coverage_enable: Bool32,
+    pub extended_dynamic_state3_alpha_to_one_enable: Bool32,
+    pub extended_dynamic_state3_logic_op_enable: Bool32,
+    pub extended_dynamic_state3_color_blend_enable: Bool32,
+    pub extended_dynamic_state3_color_blend_equation: Bool32,
+    pub extended_dynamic_state3_color_write_mask: Bool32,
+    pub extended_dynamic_state3_rasterization_stream: Bool32,
+    pub extended_dynamic_state3_conservative_rasterization_mode: Bool32,
+    pub extended_dynamic_state3_extra_primitive_overestimation_size: Bool32,
+    pub extended_dynamic_state_3d_epth_clip_enable: Bool32,
+    pub extended_dynamic_state3_sample_locations_enable: Bool32,
+    pub extended_dynamic_state3_color_blend_advanced: Bool32,
+    pub extended_dynamic_state3_provoking_vertex_mode: Bool32,
+    pub extended_dynamic_state3_line_rasterization_mode: Bool32,
+    pub extended_dynamic_state3_line_stipple_enable: Bool32,
+    pub extended_dynamic_state_3d_epth_clip_negative_one_to_one: Bool32,
+    pub extended_dynamic_state3_viewport_w_scaling_enable: Bool32,
+    pub extended_dynamic_state3_viewport_swizzle: Bool32,
+    pub extended_dynamic_state3_coverage_to_color_enable: Bool32,
+    pub extended_dynamic_state3_coverage_to_color_location: Bool32,
+    pub extended_dynamic_state3_coverage_modulation_mode: Bool32,
+    pub extended_dynamic_state3_coverage_modulation_table_enable: Bool32,
+    pub extended_dynamic_state3_coverage_modulation_table: Bool32,
+    pub extended_dynamic_state3_coverage_reduction_mode: Bool32,
+    pub extended_dynamic_state3_representative_fragment_test_enable: Bool32,
+    pub extended_dynamic_state3_shading_rate_image_enable: Bool32,
+}
+unsafe impl Send for PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceExtendedDynamicState3FeaturesEXT {}
+impl Default for PhysicalDeviceExtendedDynamicState3FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            extended_dynamic_state3_tessellation_domain_origin: Default::default(),
+            extended_dynamic_state_3d_epth_clamp_enable: Default::default(),
+            extended_dynamic_state3_polygon_mode: Default::default(),
+            extended_dynamic_state3_rasterization_samples: Default::default(),
+            extended_dynamic_state3_sample_mask: Default::default(),
+            extended_dynamic_state3_alpha_to_coverage_enable: Default::default(),
+            extended_dynamic_state3_alpha_to_one_enable: Default::default(),
+            extended_dynamic_state3_logic_op_enable: Default::default(),
+            extended_dynamic_state3_color_blend_enable: Default::default(),
+            extended_dynamic_state3_color_blend_equation: Default::default(),
+            extended_dynamic_state3_color_write_mask: Default::default(),
+            extended_dynamic_state3_rasterization_stream: Default::default(),
+            extended_dynamic_state3_conservative_rasterization_mode: Default::default(),
+            extended_dynamic_state3_extra_primitive_overestimation_size: Default::default(),
+            extended_dynamic_state_3d_epth_clip_enable: Default::default(),
+            extended_dynamic_state3_sample_locations_enable: Default::default(),
+            extended_dynamic_state3_color_blend_advanced: Default::default(),
+            extended_dynamic_state3_provoking_vertex_mode: Default::default(),
+            extended_dynamic_state3_line_rasterization_mode: Default::default(),
+            extended_dynamic_state3_line_stipple_enable: Default::default(),
+            extended_dynamic_state_3d_epth_clip_negative_one_to_one: Default::default(),
+            extended_dynamic_state3_viewport_w_scaling_enable: Default::default(),
+            extended_dynamic_state3_viewport_swizzle: Default::default(),
+            extended_dynamic_state3_coverage_to_color_enable: Default::default(),
+            extended_dynamic_state3_coverage_to_color_location: Default::default(),
+            extended_dynamic_state3_coverage_modulation_mode: Default::default(),
+            extended_dynamic_state3_coverage_modulation_table_enable: Default::default(),
+            extended_dynamic_state3_coverage_modulation_table: Default::default(),
+            extended_dynamic_state3_coverage_reduction_mode: Default::default(),
+            extended_dynamic_state3_representative_fragment_test_enable: Default::default(),
+            extended_dynamic_state3_shading_rate_image_enable: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedDynamicState3FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedDynamicState3FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "extended_dynamic_state3_tessellation_domain_origin",
+                &self.extended_dynamic_state3_tessellation_domain_origin,
+            )
+            .field(
+                "extended_dynamic_state_3d_epth_clamp_enable",
+                &self.extended_dynamic_state_3d_epth_clamp_enable,
+            )
+            .field(
+                "extended_dynamic_state3_polygon_mode",
+                &self.extended_dynamic_state3_polygon_mode,
+            )
+            .field(
+                "extended_dynamic_state3_rasterization_samples",
+                &self.extended_dynamic_state3_rasterization_samples,
+            )
+            .field(
+                "extended_dynamic_state3_sample_mask",
+                &self.extended_dynamic_state3_sample_mask,
+            )
+            .field(
+                "extended_dynamic_state3_alpha_to_coverage_enable",
+                &self.extended_dynamic_state3_alpha_to_coverage_enable,
+            )
+            .field(
+                "extended_dynamic_state3_alpha_to_one_enable",
+                &self.extended_dynamic_state3_alpha_to_one_enable,
+            )
+            .field(
+                "extended_dynamic_state3_logic_op_enable",
+                &self.extended_dynamic_state3_logic_op_enable,
+            )
+            .field(
+                "extended_dynamic_state3_color_blend_enable",
+                &self.extended_dynamic_state3_color_blend_enable,
+            )
+            .field(
+                "extended_dynamic_state3_color_blend_equation",
+                &self.extended_dynamic_state3_color_blend_equation,
+            )
+            .field(
+                "extended_dynamic_state3_color_write_mask",
+                &self.extended_dynamic_state3_color_write_mask,
+            )
+            .field(
+                "extended_dynamic_state3_rasterization_stream",
+                &self.extended_dynamic_state3_rasterization_stream,
+            )
+            .field(
+                "extended_dynamic_state3_conservative_rasterization_mode",
+                &self.extended_dynamic_state3_conservative_rasterization_mode,
+            )
+            .field(
+                "extended_dynamic_state3_extra_primitive_overestimation_size",
+                &self.extended_dynamic_state3_extra_primitive_overestimation_size,
+            )
+            .field(
+                "extended_dynamic_state_3d_epth_clip_enable",
+                &self.extended_dynamic_state_3d_epth_clip_enable,
+            )
+            .field(
+                "extended_dynamic_state3_sample_locations_enable",
+                &self.extended_dynamic_state3_sample_locations_enable,
+            )
+            .field(
+                "extended_dynamic_state3_color_blend_advanced",
+                &self.extended_dynamic_state3_color_blend_advanced,
+            )
+            .field(
+                "extended_dynamic_state3_provoking_vertex_mode",
+                &self.extended_dynamic_state3_provoking_vertex_mode,
+            )
+            .field(
+                "extended_dynamic_state3_line_rasterization_mode",
+                &self.extended_dynamic_state3_line_rasterization_mode,
+            )
+            .field(
+                "extended_dynamic_state3_line_stipple_enable",
+                &self.extended_dynamic_state3_line_stipple_enable,
+            )
+            .field(
+                "extended_dynamic_state_3d_epth_clip_negative_one_to_one",
+                &self.extended_dynamic_state_3d_epth_clip_negative_one_to_one,
+            )
+            .field(
+                "extended_dynamic_state3_viewport_w_scaling_enable",
+                &self.extended_dynamic_state3_viewport_w_scaling_enable,
+            )
+            .field(
+                "extended_dynamic_state3_viewport_swizzle",
+                &self.extended_dynamic_state3_viewport_swizzle,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_to_color_enable",
+                &self.extended_dynamic_state3_coverage_to_color_enable,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_to_color_location",
+                &self.extended_dynamic_state3_coverage_to_color_location,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_modulation_mode",
+                &self.extended_dynamic_state3_coverage_modulation_mode,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_modulation_table_enable",
+                &self.extended_dynamic_state3_coverage_modulation_table_enable,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_modulation_table",
+                &self.extended_dynamic_state3_coverage_modulation_table,
+            )
+            .field(
+                "extended_dynamic_state3_coverage_reduction_mode",
+                &self.extended_dynamic_state3_coverage_reduction_mode,
+            )
+            .field(
+                "extended_dynamic_state3_representative_fragment_test_enable",
+                &self.extended_dynamic_state3_representative_fragment_test_enable,
+            )
+            .field(
+                "extended_dynamic_state3_shading_rate_image_enable",
+                &self.extended_dynamic_state3_shading_rate_image_enable,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedDynamicState3PropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub dynamic_primitive_topology_unrestricted: Bool32,
+}
+unsafe impl Send for PhysicalDeviceExtendedDynamicState3PropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceExtendedDynamicState3PropertiesEXT {}
+impl Default for PhysicalDeviceExtendedDynamicState3PropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            dynamic_primitive_topology_unrestricted: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedDynamicState3PropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedDynamicState3PropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "dynamic_primitive_topology_unrestricted",
+                &self.dynamic_primitive_topology_unrestricted,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ColorBlendEquationEXT {
+    pub src_color_blend_factor: BlendFactor,
+    pub dst_color_blend_factor: BlendFactor,
+    pub color_blend_op: BlendOp,
+    pub src_alpha_blend_factor: BlendFactor,
+    pub dst_alpha_blend_factor: BlendFactor,
+    pub alpha_blend_op: BlendOp,
+}
+impl fmt::Debug for ColorBlendEquationEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ColorBlendEquationEXT")
+            .field("src_color_blend_factor", &self.src_color_blend_factor)
+            .field("dst_color_blend_factor", &self.dst_color_blend_factor)
+            .field("color_blend_op", &self.color_blend_op)
+            .field("src_alpha_blend_factor", &self.src_alpha_blend_factor)
+            .field("dst_alpha_blend_factor", &self.dst_alpha_blend_factor)
+            .field("alpha_blend_op", &self.alpha_blend_op)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ColorBlendAdvancedEXT {
+    pub advanced_blend_op: BlendOp,
+    pub src_premultiplied: Bool32,
+    pub dst_premultiplied: Bool32,
+    pub blend_overlap: BlendOverlapEXT,
+    pub clamp_results: Bool32,
+}
+impl fmt::Debug for ColorBlendAdvancedEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ColorBlendAdvancedEXT")
+            .field("advanced_blend_op", &self.advanced_blend_op)
+            .field("src_premultiplied", &self.src_premultiplied)
+            .field("dst_premultiplied", &self.dst_premultiplied)
+            .field("blend_overlap", &self.blend_overlap)
+            .field("clamp_results", &self.clamp_results)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct RenderPassTransformBeginInfoQCOM {
     pub s_type: StructureType,
     /// Pointer to next structure
@@ -32993,6 +34003,33 @@ impl fmt::Debug for MultisampledRenderToSingleSampledInfoEXT {
                 &self.multisampled_render_to_single_sampled_enable,
             )
             .field("rasterization_samples", &self.rasterization_samples)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_protected_access: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePipelineProtectedAccessFeaturesEXT {}
+impl Default for PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_protected_access: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineProtectedAccessFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineProtectedAccessFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_protected_access", &self.pipeline_protected_access)
             .finish()
     }
 }
@@ -35524,6 +36561,416 @@ impl fmt::Debug for PhysicalDeviceSubpassMergeFeedbackFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct MicromapBuildInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: MicromapTypeEXT,
+    pub flags: BuildMicromapFlagsEXT,
+    pub mode: BuildMicromapModeEXT,
+    pub dst_micromap: Option<MicromapEXT>,
+    pub usage_counts_count: u32,
+    pub p_usage_counts: *const MicromapUsageEXT,
+    pub pp_usage_counts: *const *const MicromapUsageEXT,
+    pub data: DeviceOrHostAddressConstKHR,
+    pub scratch_data: DeviceOrHostAddressKHR,
+    pub triangle_array: DeviceOrHostAddressConstKHR,
+    pub triangle_array_stride: DeviceSize,
+}
+unsafe impl Send for MicromapBuildInfoEXT {}
+unsafe impl Sync for MicromapBuildInfoEXT {}
+impl Default for MicromapBuildInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MICROMAP_BUILD_INFO_EXT,
+            p_next: ptr::null(),
+            ty: Default::default(),
+            flags: Default::default(),
+            mode: Default::default(),
+            dst_micromap: Default::default(),
+            usage_counts_count: Default::default(),
+            p_usage_counts: ptr::null(),
+            pp_usage_counts: ptr::null(),
+            data: Default::default(),
+            scratch_data: Default::default(),
+            triangle_array: Default::default(),
+            triangle_array_stride: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MicromapBuildInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapBuildInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("flags", &self.flags)
+            .field("mode", &self.mode)
+            .field("dst_micromap", &self.dst_micromap)
+            .field("usage_counts_count", &self.usage_counts_count)
+            .field("p_usage_counts", &self.p_usage_counts)
+            .field("pp_usage_counts", &self.pp_usage_counts)
+            .field("data", &self.data)
+            .field("scratch_data", &self.scratch_data)
+            .field("triangle_array", &self.triangle_array)
+            .field("triangle_array_stride", &self.triangle_array_stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MicromapCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub create_flags: MicromapCreateFlagsEXT,
+    pub buffer: Option<Buffer>,
+    /// Specified in bytes
+    pub offset: DeviceSize,
+    pub size: DeviceSize,
+    pub ty: MicromapTypeEXT,
+    pub device_address: DeviceAddress,
+}
+unsafe impl Send for MicromapCreateInfoEXT {}
+unsafe impl Sync for MicromapCreateInfoEXT {}
+impl Default for MicromapCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MICROMAP_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            create_flags: Default::default(),
+            buffer: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
+            ty: Default::default(),
+            device_address: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MicromapCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("create_flags", &self.create_flags)
+            .field("buffer", &self.buffer)
+            .field("offset", &self.offset)
+            .field("size", &self.size)
+            .field("ty", &self.ty)
+            .field("device_address", &self.device_address)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MicromapVersionInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_version_data: *const u8,
+}
+unsafe impl Send for MicromapVersionInfoEXT {}
+unsafe impl Sync for MicromapVersionInfoEXT {}
+impl Default for MicromapVersionInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MICROMAP_VERSION_INFO_EXT,
+            p_next: ptr::null(),
+            p_version_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MicromapVersionInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapVersionInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_version_data", &self.p_version_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMicromapInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: Option<MicromapEXT>,
+    pub dst: Option<MicromapEXT>,
+    pub mode: CopyMicromapModeEXT,
+}
+unsafe impl Send for CopyMicromapInfoEXT {}
+unsafe impl Sync for CopyMicromapInfoEXT {}
+impl Default for CopyMicromapInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MICROMAP_INFO_EXT,
+            p_next: ptr::null(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyMicromapInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMicromapInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMicromapToMemoryInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: Option<MicromapEXT>,
+    pub dst: DeviceOrHostAddressKHR,
+    pub mode: CopyMicromapModeEXT,
+}
+unsafe impl Send for CopyMicromapToMemoryInfoEXT {}
+unsafe impl Sync for CopyMicromapToMemoryInfoEXT {}
+impl Default for CopyMicromapToMemoryInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MICROMAP_TO_MEMORY_INFO_EXT,
+            p_next: ptr::null(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyMicromapToMemoryInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMicromapToMemoryInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMemoryToMicromapInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub src: DeviceOrHostAddressConstKHR,
+    pub dst: Option<MicromapEXT>,
+    pub mode: CopyMicromapModeEXT,
+}
+unsafe impl Send for CopyMemoryToMicromapInfoEXT {}
+unsafe impl Sync for CopyMemoryToMicromapInfoEXT {}
+impl Default for CopyMemoryToMicromapInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MEMORY_TO_MICROMAP_INFO_EXT,
+            p_next: ptr::null(),
+            src: Default::default(),
+            dst: Default::default(),
+            mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CopyMemoryToMicromapInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryToMicromapInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("src", &self.src)
+            .field("dst", &self.dst)
+            .field("mode", &self.mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MicromapBuildSizesInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub micromap_size: DeviceSize,
+    pub build_scratch_size: DeviceSize,
+    pub discardable: Bool32,
+}
+unsafe impl Send for MicromapBuildSizesInfoEXT {}
+unsafe impl Sync for MicromapBuildSizesInfoEXT {}
+impl Default for MicromapBuildSizesInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MICROMAP_BUILD_SIZES_INFO_EXT,
+            p_next: ptr::null(),
+            micromap_size: Default::default(),
+            build_scratch_size: Default::default(),
+            discardable: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MicromapBuildSizesInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapBuildSizesInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("micromap_size", &self.micromap_size)
+            .field("build_scratch_size", &self.build_scratch_size)
+            .field("discardable", &self.discardable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MicromapUsageEXT {
+    pub count: u32,
+    pub subdivision_level: u32,
+    /// Interpretation depends on parent type
+    pub format: u32,
+}
+impl fmt::Debug for MicromapUsageEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapUsageEXT")
+            .field("count", &self.count)
+            .field("subdivision_level", &self.subdivision_level)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MicromapTriangleEXT {
+    /// Specified in bytes
+    pub data_offset: u32,
+    pub subdivision_level: u16,
+    pub format: u16,
+}
+impl fmt::Debug for MicromapTriangleEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MicromapTriangleEXT")
+            .field("data_offset", &self.data_offset)
+            .field("subdivision_level", &self.subdivision_level)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpacityMicromapFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub micromap: Bool32,
+    pub micromap_capture_replay: Bool32,
+    pub micromap_host_commands: Bool32,
+}
+unsafe impl Send for PhysicalDeviceOpacityMicromapFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceOpacityMicromapFeaturesEXT {}
+impl Default for PhysicalDeviceOpacityMicromapFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            micromap: Default::default(),
+            micromap_capture_replay: Default::default(),
+            micromap_host_commands: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpacityMicromapFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpacityMicromapFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("micromap", &self.micromap)
+            .field("micromap_capture_replay", &self.micromap_capture_replay)
+            .field("micromap_host_commands", &self.micromap_host_commands)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpacityMicromapPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_opacity2_state_subdivision_level: u32,
+    pub max_opacity4_state_subdivision_level: u32,
+}
+unsafe impl Send for PhysicalDeviceOpacityMicromapPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceOpacityMicromapPropertiesEXT {}
+impl Default for PhysicalDeviceOpacityMicromapPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_opacity2_state_subdivision_level: Default::default(),
+            max_opacity4_state_subdivision_level: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpacityMicromapPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpacityMicromapPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_opacity2_state_subdivision_level",
+                &self.max_opacity2_state_subdivision_level,
+            )
+            .field(
+                "max_opacity4_state_subdivision_level",
+                &self.max_opacity4_state_subdivision_level,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureTrianglesOpacityMicromapEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub index_type: IndexType,
+    pub index_buffer: DeviceOrHostAddressConstKHR,
+    pub index_stride: DeviceSize,
+    pub base_triangle: u32,
+    pub usage_counts_count: u32,
+    pub p_usage_counts: *const MicromapUsageEXT,
+    pub pp_usage_counts: *const *const MicromapUsageEXT,
+    pub micromap: Option<MicromapEXT>,
+}
+unsafe impl Send for AccelerationStructureTrianglesOpacityMicromapEXT {}
+unsafe impl Sync for AccelerationStructureTrianglesOpacityMicromapEXT {}
+impl Default for AccelerationStructureTrianglesOpacityMicromapEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT,
+            p_next: ptr::null_mut(),
+            index_type: Default::default(),
+            index_buffer: Default::default(),
+            index_stride: Default::default(),
+            base_triangle: Default::default(),
+            usage_counts_count: Default::default(),
+            p_usage_counts: ptr::null(),
+            pp_usage_counts: ptr::null(),
+            micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureTrianglesOpacityMicromapEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureTrianglesOpacityMicromapEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("index_type", &self.index_type)
+            .field("index_buffer", &self.index_buffer)
+            .field("index_stride", &self.index_stride)
+            .field("base_triangle", &self.base_triangle)
+            .field("usage_counts_count", &self.usage_counts_count)
+            .field("p_usage_counts", &self.p_usage_counts)
+            .field("pp_usage_counts", &self.pp_usage_counts)
+            .field("micromap", &self.micromap)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PipelinePropertiesIdentifierEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -36362,6 +37809,510 @@ impl fmt::Debug for PhysicalDeviceDepthClampZeroOneFeaturesEXT {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("depth_clamp_zero_one", &self.depth_clamp_zero_one)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceAddressBindingReportFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub report_address_binding: Bool32,
+}
+unsafe impl Send for PhysicalDeviceAddressBindingReportFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceAddressBindingReportFeaturesEXT {}
+impl Default for PhysicalDeviceAddressBindingReportFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ADDRESS_BINDING_REPORT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            report_address_binding: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAddressBindingReportFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAddressBindingReportFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("report_address_binding", &self.report_address_binding)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceAddressBindingCallbackDataEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: DeviceAddressBindingFlagsEXT,
+    pub base_address: DeviceAddress,
+    pub size: DeviceSize,
+    pub binding_type: DeviceAddressBindingTypeEXT,
+}
+unsafe impl Send for DeviceAddressBindingCallbackDataEXT {}
+unsafe impl Sync for DeviceAddressBindingCallbackDataEXT {}
+impl Default for DeviceAddressBindingCallbackDataEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_ADDRESS_BINDING_CALLBACK_DATA_EXT,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            base_address: Default::default(),
+            size: Default::default(),
+            binding_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceAddressBindingCallbackDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceAddressBindingCallbackDataEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("base_address", &self.base_address)
+            .field("size", &self.size)
+            .field("binding_type", &self.binding_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpticalFlowFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub optical_flow: Bool32,
+}
+unsafe impl Send for PhysicalDeviceOpticalFlowFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceOpticalFlowFeaturesNV {}
+impl Default for PhysicalDeviceOpticalFlowFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            optical_flow: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpticalFlowFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpticalFlowFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("optical_flow", &self.optical_flow)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceOpticalFlowPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub supported_output_grid_sizes: OpticalFlowGridSizeFlagsNV,
+    pub supported_hint_grid_sizes: OpticalFlowGridSizeFlagsNV,
+    pub hint_supported: Bool32,
+    pub cost_supported: Bool32,
+    pub bidirectional_flow_supported: Bool32,
+    pub global_flow_supported: Bool32,
+    pub min_width: u32,
+    pub min_height: u32,
+    pub max_width: u32,
+    pub max_height: u32,
+    pub max_num_regions_of_interest: u32,
+}
+unsafe impl Send for PhysicalDeviceOpticalFlowPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceOpticalFlowPropertiesNV {}
+impl Default for PhysicalDeviceOpticalFlowPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_OPTICAL_FLOW_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            supported_output_grid_sizes: Default::default(),
+            supported_hint_grid_sizes: Default::default(),
+            hint_supported: Default::default(),
+            cost_supported: Default::default(),
+            bidirectional_flow_supported: Default::default(),
+            global_flow_supported: Default::default(),
+            min_width: Default::default(),
+            min_height: Default::default(),
+            max_width: Default::default(),
+            max_height: Default::default(),
+            max_num_regions_of_interest: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceOpticalFlowPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceOpticalFlowPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_output_grid_sizes", &self.supported_output_grid_sizes)
+            .field("supported_hint_grid_sizes", &self.supported_hint_grid_sizes)
+            .field("hint_supported", &self.hint_supported)
+            .field("cost_supported", &self.cost_supported)
+            .field("bidirectional_flow_supported", &self.bidirectional_flow_supported)
+            .field("global_flow_supported", &self.global_flow_supported)
+            .field("min_width", &self.min_width)
+            .field("min_height", &self.min_height)
+            .field("max_width", &self.max_width)
+            .field("max_height", &self.max_height)
+            .field("max_num_regions_of_interest", &self.max_num_regions_of_interest)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpticalFlowImageFormatInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage: OpticalFlowUsageFlagsNV,
+}
+unsafe impl Send for OpticalFlowImageFormatInfoNV {}
+unsafe impl Sync for OpticalFlowImageFormatInfoNV {}
+impl Default for OpticalFlowImageFormatInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPTICAL_FLOW_IMAGE_FORMAT_INFO_NV,
+            p_next: ptr::null(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for OpticalFlowImageFormatInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpticalFlowImageFormatInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpticalFlowImageFormatPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub format: Format,
+}
+unsafe impl Send for OpticalFlowImageFormatPropertiesNV {}
+unsafe impl Sync for OpticalFlowImageFormatPropertiesNV {}
+impl Default for OpticalFlowImageFormatPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPTICAL_FLOW_IMAGE_FORMAT_PROPERTIES_NV,
+            p_next: ptr::null(),
+            format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for OpticalFlowImageFormatPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpticalFlowImageFormatPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpticalFlowSessionCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub width: u32,
+    pub height: u32,
+    pub image_format: Format,
+    pub flow_vector_format: Format,
+    pub cost_format: Format,
+    pub output_grid_size: OpticalFlowGridSizeFlagsNV,
+    pub hint_grid_size: OpticalFlowGridSizeFlagsNV,
+    pub performance_level: OpticalFlowPerformanceLevelNV,
+    pub flags: OpticalFlowSessionCreateFlagsNV,
+}
+unsafe impl Send for OpticalFlowSessionCreateInfoNV {}
+unsafe impl Sync for OpticalFlowSessionCreateInfoNV {}
+impl Default for OpticalFlowSessionCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPTICAL_FLOW_SESSION_CREATE_INFO_NV,
+            p_next: ptr::null_mut(),
+            width: Default::default(),
+            height: Default::default(),
+            image_format: Default::default(),
+            flow_vector_format: Default::default(),
+            cost_format: Default::default(),
+            output_grid_size: Default::default(),
+            hint_grid_size: Default::default(),
+            performance_level: Default::default(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for OpticalFlowSessionCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpticalFlowSessionCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("width", &self.width)
+            .field("height", &self.height)
+            .field("image_format", &self.image_format)
+            .field("flow_vector_format", &self.flow_vector_format)
+            .field("cost_format", &self.cost_format)
+            .field("output_grid_size", &self.output_grid_size)
+            .field("hint_grid_size", &self.hint_grid_size)
+            .field("performance_level", &self.performance_level)
+            .field("flags", &self.flags)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpticalFlowSessionCreatePrivateDataInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub id: u32,
+    pub size: u32,
+    pub p_private_data: *const c_void,
+}
+unsafe impl Send for OpticalFlowSessionCreatePrivateDataInfoNV {}
+unsafe impl Sync for OpticalFlowSessionCreatePrivateDataInfoNV {}
+impl Default for OpticalFlowSessionCreatePrivateDataInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV,
+            p_next: ptr::null_mut(),
+            id: Default::default(),
+            size: Default::default(),
+            p_private_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for OpticalFlowSessionCreatePrivateDataInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpticalFlowSessionCreatePrivateDataInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("id", &self.id)
+            .field("size", &self.size)
+            .field("p_private_data", &self.p_private_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpticalFlowExecuteInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: OpticalFlowExecuteFlagsNV,
+    pub region_count: u32,
+    pub p_regions: *const Rect2D,
+}
+unsafe impl Send for OpticalFlowExecuteInfoNV {}
+unsafe impl Sync for OpticalFlowExecuteInfoNV {}
+impl Default for OpticalFlowExecuteInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPTICAL_FLOW_EXECUTE_INFO_NV,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for OpticalFlowExecuteInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpticalFlowExecuteInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFaultFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_fault: Bool32,
+    pub device_fault_vendor_binary: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFaultFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFaultFeaturesEXT {}
+impl Default for PhysicalDeviceFaultFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FAULT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            device_fault: Default::default(),
+            device_fault_vendor_binary: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFaultFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFaultFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_fault", &self.device_fault)
+            .field("device_fault_vendor_binary", &self.device_fault_vendor_binary)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DeviceFaultAddressInfoEXT {
+    pub address_type: DeviceFaultAddressTypeEXT,
+    pub reported_address: DeviceAddress,
+    pub address_precision: DeviceSize,
+}
+impl fmt::Debug for DeviceFaultAddressInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultAddressInfoEXT")
+            .field("address_type", &self.address_type)
+            .field("reported_address", &self.reported_address)
+            .field("address_precision", &self.address_precision)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultVendorInfoEXT {
+    /// Free-form description of the fault
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub vendor_fault_code: u64,
+    pub vendor_fault_data: u64,
+}
+impl Default for DeviceFaultVendorInfoEXT {
+    fn default() -> Self {
+        Self {
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            vendor_fault_code: Default::default(),
+            vendor_fault_data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultVendorInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultVendorInfoEXT")
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("vendor_fault_code", &self.vendor_fault_code)
+            .field("vendor_fault_data", &self.vendor_fault_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultCountsEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub address_info_count: u32,
+    pub vendor_info_count: u32,
+    /// Specified in bytes
+    pub vendor_binary_size: DeviceSize,
+}
+unsafe impl Send for DeviceFaultCountsEXT {}
+unsafe impl Sync for DeviceFaultCountsEXT {}
+impl Default for DeviceFaultCountsEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_FAULT_COUNTS_EXT,
+            p_next: ptr::null_mut(),
+            address_info_count: Default::default(),
+            vendor_info_count: Default::default(),
+            vendor_binary_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultCountsEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultCountsEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address_info_count", &self.address_info_count)
+            .field("vendor_info_count", &self.vendor_info_count)
+            .field("vendor_binary_size", &self.vendor_binary_size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Free-form description of the fault
+    pub description: [c_char; MAX_DESCRIPTION_SIZE],
+    pub p_address_infos: *mut DeviceFaultAddressInfoEXT,
+    pub p_vendor_infos: *mut DeviceFaultVendorInfoEXT,
+    pub p_vendor_binary_data: *mut c_void,
+}
+unsafe impl Send for DeviceFaultInfoEXT {}
+unsafe impl Sync for DeviceFaultInfoEXT {}
+impl Default for DeviceFaultInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_FAULT_INFO_EXT,
+            p_next: ptr::null_mut(),
+            description: [Default::default(); MAX_DESCRIPTION_SIZE],
+            p_address_infos: ptr::null_mut(),
+            p_vendor_infos: ptr::null_mut(),
+            p_vendor_binary_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("description", &unsafe { CStr::from_ptr(self.description.as_ptr()) })
+            .field("p_address_infos", &self.p_address_infos)
+            .field("p_vendor_infos", &self.p_vendor_infos)
+            .field("p_vendor_binary_data", &self.p_vendor_binary_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DeviceFaultVendorBinaryHeaderVersionOneEXT {
+    pub header_size: u32,
+    pub header_version: DeviceFaultVendorBinaryHeaderVersionEXT,
+    pub vendor_id: u32,
+    pub device_id: u32,
+    pub driver_version: u32,
+    pub pipeline_cache_uuid: [u8; UUID_SIZE],
+    pub application_name_offset: u32,
+    pub application_version: u32,
+    pub engine_name_offset: u32,
+}
+impl Default for DeviceFaultVendorBinaryHeaderVersionOneEXT {
+    fn default() -> Self {
+        Self {
+            header_size: Default::default(),
+            header_version: Default::default(),
+            vendor_id: Default::default(),
+            device_id: Default::default(),
+            driver_version: Default::default(),
+            pipeline_cache_uuid: [Default::default(); UUID_SIZE],
+            application_name_offset: Default::default(),
+            application_version: Default::default(),
+            engine_name_offset: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceFaultVendorBinaryHeaderVersionOneEXT")
+            .field("header_size", &self.header_size)
+            .field("header_version", &self.header_version)
+            .field("vendor_id", &self.vendor_id)
+            .field("device_id", &self.device_id)
+            .field("driver_version", &self.driver_version)
+            .field("pipeline_cache_uuid", &self.pipeline_cache_uuid)
+            .field("application_name_offset", &self.application_name_offset)
+            .field("application_version", &self.application_version)
+            .field("engine_name_offset", &self.engine_name_offset)
             .finish()
     }
 }
@@ -38425,6 +40376,98 @@ pub type FnCreatePrivateDataSlot = unsafe extern "system" fn(
     p_allocator: *const AllocationCallbacks,
     p_private_data_slot: *mut PrivateDataSlot,
 ) -> Result;
+pub type FnCmdSetTessellationDomainOriginEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, domain_origin: TessellationDomainOrigin);
+pub type FnCmdSetDepthClampEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_clamp_enable: Bool32);
+pub type FnCmdSetPolygonModeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, polygon_mode: PolygonMode);
+pub type FnCmdSetRasterizationSamplesEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, rasterization_samples: SampleCountFlags);
+pub type FnCmdSetSampleMaskEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    samples: SampleCountFlags,
+    p_sample_mask: *const SampleMask,
+);
+pub type FnCmdSetAlphaToCoverageEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, alpha_to_coverage_enable: Bool32);
+pub type FnCmdSetAlphaToOneEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, alpha_to_one_enable: Bool32);
+pub type FnCmdSetLogicOpEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, logic_op_enable: Bool32);
+pub type FnCmdSetColorBlendEnableEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_attachment: u32,
+    attachment_count: u32,
+    p_color_blend_enables: *const Bool32,
+);
+pub type FnCmdSetColorBlendEquationEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_attachment: u32,
+    attachment_count: u32,
+    p_color_blend_equations: *const ColorBlendEquationEXT,
+);
+pub type FnCmdSetColorWriteMaskEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_attachment: u32,
+    attachment_count: u32,
+    p_color_write_masks: *const ColorComponentFlags,
+);
+pub type FnCmdSetRasterizationStreamEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, rasterization_stream: u32);
+pub type FnCmdSetConservativeRasterizationModeEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    conservative_rasterization_mode: ConservativeRasterizationModeEXT,
+);
+pub type FnCmdSetExtraPrimitiveOverestimationSizeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, extra_primitive_overestimation_size: f32);
+pub type FnCmdSetDepthClipEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, depth_clip_enable: Bool32);
+pub type FnCmdSetSampleLocationsEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, sample_locations_enable: Bool32);
+pub type FnCmdSetColorBlendAdvancedEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_attachment: u32,
+    attachment_count: u32,
+    p_color_blend_advanced: *const ColorBlendAdvancedEXT,
+);
+pub type FnCmdSetProvokingVertexModeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, provoking_vertex_mode: ProvokingVertexModeEXT);
+pub type FnCmdSetLineRasterizationModeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, line_rasterization_mode: LineRasterizationModeEXT);
+pub type FnCmdSetLineStippleEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, stippled_line_enable: Bool32);
+pub type FnCmdSetDepthClipNegativeOneToOneEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, negative_one_to_one: Bool32);
+pub type FnCmdSetViewportWScalingEnableNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, viewport_w_scaling_enable: Bool32);
+pub type FnCmdSetViewportSwizzleNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_viewport: u32,
+    viewport_count: u32,
+    p_viewport_swizzles: *const ViewportSwizzleNV,
+);
+pub type FnCmdSetCoverageToColorEnableNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, coverage_to_color_enable: Bool32);
+pub type FnCmdSetCoverageToColorLocationNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, coverage_to_color_location: u32);
+pub type FnCmdSetCoverageModulationModeNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    coverage_modulation_mode: CoverageModulationModeNV,
+);
+pub type FnCmdSetCoverageModulationTableEnableNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, coverage_modulation_table_enable: Bool32);
+pub type FnCmdSetCoverageModulationTableNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    coverage_modulation_table_count: u32,
+    p_coverage_modulation_table: *const f32,
+);
+pub type FnCmdSetShadingRateImageEnableNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, shading_rate_image_enable: Bool32);
+pub type FnCmdSetCoverageReductionModeNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, coverage_reduction_mode: CoverageReductionModeNV);
+pub type FnCmdSetRepresentativeFragmentTestEnableNV =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, representative_fragment_test_enable: Bool32);
 pub type FnDestroyPrivateDataSlot = unsafe extern "system" fn(
     device: Option<Device>,
     private_data_slot: Option<PrivateDataSlot>,
@@ -38615,6 +40658,77 @@ pub type FnGetDescriptorSetLayoutHostMappingInfoVALVE = unsafe extern "system" f
 );
 pub type FnGetDescriptorSetHostMappingVALVE =
     unsafe extern "system" fn(device: Option<Device>, descriptor_set: Option<DescriptorSet>, pp_data: *mut *mut c_void);
+pub type FnCreateMicromapEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const MicromapCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_micromap: *mut MicromapEXT,
+) -> Result;
+pub type FnCmdBuildMicromapsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    info_count: u32,
+    p_infos: *const MicromapBuildInfoEXT,
+);
+pub type FnBuildMicromapsEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
+    info_count: u32,
+    p_infos: *const MicromapBuildInfoEXT,
+) -> Result;
+pub type FnDestroyMicromapEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    micromap: Option<MicromapEXT>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnCmdCopyMicromapEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_info: *const CopyMicromapInfoEXT);
+pub type FnCopyMicromapEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
+    p_info: *const CopyMicromapInfoEXT,
+) -> Result;
+pub type FnCmdCopyMicromapToMemoryEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_info: *const CopyMicromapToMemoryInfoEXT);
+pub type FnCopyMicromapToMemoryEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
+    p_info: *const CopyMicromapToMemoryInfoEXT,
+) -> Result;
+pub type FnCmdCopyMemoryToMicromapEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_info: *const CopyMemoryToMicromapInfoEXT);
+pub type FnCopyMemoryToMicromapEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    deferred_operation: Option<DeferredOperationKHR>,
+    p_info: *const CopyMemoryToMicromapInfoEXT,
+) -> Result;
+pub type FnCmdWriteMicromapsPropertiesEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    micromap_count: u32,
+    p_micromaps: *const MicromapEXT,
+    query_type: QueryType,
+    query_pool: Option<QueryPool>,
+    first_query: u32,
+);
+pub type FnWriteMicromapsPropertiesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    micromap_count: u32,
+    p_micromaps: *const MicromapEXT,
+    query_type: QueryType,
+    data_size: usize,
+    p_data: *mut c_void,
+    stride: usize,
+) -> Result;
+pub type FnGetDeviceMicromapCompatibilityEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_version_info: *const MicromapVersionInfoEXT,
+    p_compatibility: *mut AccelerationStructureCompatibilityKHR,
+);
+pub type FnGetMicromapBuildSizesEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    build_type: AccelerationStructureBuildTypeKHR,
+    p_build_info: *const MicromapBuildInfoEXT,
+    p_size_info: *mut MicromapBuildSizesInfoEXT,
+);
 pub type FnGetShaderModuleIdentifierEXT = unsafe extern "system" fn(
     device: Option<Device>,
     shader_module: Option<ShaderModule>,
@@ -38648,4 +40762,38 @@ pub type FnGetDynamicRenderingTilePropertiesQCOM = unsafe extern "system" fn(
     device: Option<Device>,
     p_rendering_info: *const RenderingInfo,
     p_properties: *mut TilePropertiesQCOM,
+) -> Result;
+pub type FnGetPhysicalDeviceOpticalFlowImageFormatsNV = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_optical_flow_image_format_info: *const OpticalFlowImageFormatInfoNV,
+    p_format_count: *mut u32,
+    p_image_format_properties: *mut OpticalFlowImageFormatPropertiesNV,
+) -> Result;
+pub type FnCreateOpticalFlowSessionNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const OpticalFlowSessionCreateInfoNV,
+    p_allocator: *const AllocationCallbacks,
+    p_session: *mut OpticalFlowSessionNV,
+) -> Result;
+pub type FnDestroyOpticalFlowSessionNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    session: Option<OpticalFlowSessionNV>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnBindOpticalFlowSessionImageNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    session: Option<OpticalFlowSessionNV>,
+    binding_point: OpticalFlowSessionBindingPointNV,
+    view: Option<ImageView>,
+    layout: ImageLayout,
+) -> Result;
+pub type FnCmdOpticalFlowExecuteNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    session: Option<OpticalFlowSessionNV>,
+    p_execute_info: *const OpticalFlowExecuteInfoNV,
+);
+pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_fault_counts: *mut DeviceFaultCountsEXT,
+    p_fault_info: *mut DeviceFaultInfoEXT,
 ) -> Result;

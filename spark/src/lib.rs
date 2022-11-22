@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 228
+//! Generated from vk.xml with `VK_HEADER_VERSION` 230
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1269,6 +1269,16 @@ impl InstanceExtensions {
         self.enable_khr_display();
         self.enable_khr_surface();
     }
+    pub fn supports_nv_present_barrier(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_surface()
+            && self.supports_khr_get_surface_capabilities2()
+    }
+    pub fn enable_nv_present_barrier(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
+    }
     pub fn supports_khr_present_id(&self) -> bool {
         self.supports_khr_surface()
     }
@@ -1365,6 +1375,12 @@ impl InstanceExtensions {
     pub fn enable_ext_4444_formats(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_device_fault(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_device_fault(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_arm_rasterization_order_attachment_access(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1409,6 +1425,13 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_device_address_binding_report(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() && self.supports_ext_debug_utils()
+    }
+    pub fn enable_ext_device_address_binding_report(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_ext_debug_utils();
     }
     pub fn supports_ext_depth_clip_control(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1522,6 +1545,12 @@ impl InstanceExtensions {
     pub fn enable_khr_portability_enumeration(&mut self) {
         self.khr_portability_enumeration = true;
     }
+    pub fn supports_ext_opacity_micromap(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_opacity_micromap(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1547,6 +1576,12 @@ impl InstanceExtensions {
     pub fn enable_qcom_image_processing(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_extended_dynamic_state3(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_extended_dynamic_state3(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_shader_module_identifier(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1559,10 +1594,22 @@ impl InstanceExtensions {
     pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_nv_optical_flow(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_optical_flow(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_legacy_dithering(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_legacy_dithering(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_pipeline_protected_access(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
@@ -4145,6 +4192,7 @@ pub struct DeviceExtensions {
     pub ext_custom_border_color: bool,
     pub google_user_type: bool,
     pub khr_pipeline_library: bool,
+    pub nv_present_barrier: bool,
     pub khr_shader_non_semantic_info: bool,
     pub khr_present_id: bool,
     pub ext_private_data: bool,
@@ -4170,12 +4218,14 @@ pub struct DeviceExtensions {
     pub ext_image_compression_control: bool,
     pub ext_attachment_feedback_loop_layout: bool,
     pub ext_4444_formats: bool,
+    pub ext_device_fault: bool,
     pub arm_rasterization_order_attachment_access: bool,
     pub ext_rgba10x6_formats: bool,
     pub nv_acquire_winrt_display: bool,
     pub valve_mutable_descriptor_type: bool,
     pub ext_vertex_input_dynamic_state: bool,
     pub ext_physical_device_drm: bool,
+    pub ext_device_address_binding_report: bool,
     pub ext_depth_clip_control: bool,
     pub ext_primitive_topology_list_restart: bool,
     pub khr_format_feature_flags2: bool,
@@ -4195,6 +4245,7 @@ pub struct DeviceExtensions {
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
     pub ext_image_2d_view_of_3d: bool,
+    pub ext_opacity_micromap: bool,
     pub ext_load_store_op_none: bool,
     pub ext_border_color_swizzle: bool,
     pub ext_pageable_device_local_memory: bool,
@@ -4206,10 +4257,13 @@ pub struct DeviceExtensions {
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
+    pub ext_extended_dynamic_state3: bool,
     pub ext_subpass_merge_feedback: bool,
     pub ext_shader_module_identifier: bool,
     pub ext_rasterization_order_attachment_access: bool,
+    pub nv_optical_flow: bool,
     pub ext_legacy_dithering: bool,
+    pub ext_pipeline_protected_access: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
     pub ext_mutable_descriptor_type: bool,
@@ -4405,6 +4459,7 @@ impl DeviceExtensions {
             b"VK_EXT_custom_border_color" => self.ext_custom_border_color = true,
             b"VK_GOOGLE_user_type" => self.google_user_type = true,
             b"VK_KHR_pipeline_library" => self.khr_pipeline_library = true,
+            b"VK_NV_present_barrier" => self.nv_present_barrier = true,
             b"VK_KHR_shader_non_semantic_info" => self.khr_shader_non_semantic_info = true,
             b"VK_KHR_present_id" => self.khr_present_id = true,
             b"VK_EXT_private_data" => self.ext_private_data = true,
@@ -4430,12 +4485,14 @@ impl DeviceExtensions {
             b"VK_EXT_image_compression_control" => self.ext_image_compression_control = true,
             b"VK_EXT_attachment_feedback_loop_layout" => self.ext_attachment_feedback_loop_layout = true,
             b"VK_EXT_4444_formats" => self.ext_4444_formats = true,
+            b"VK_EXT_device_fault" => self.ext_device_fault = true,
             b"VK_ARM_rasterization_order_attachment_access" => self.arm_rasterization_order_attachment_access = true,
             b"VK_EXT_rgba10x6_formats" => self.ext_rgba10x6_formats = true,
             b"VK_NV_acquire_winrt_display" => self.nv_acquire_winrt_display = true,
             b"VK_VALVE_mutable_descriptor_type" => self.valve_mutable_descriptor_type = true,
             b"VK_EXT_vertex_input_dynamic_state" => self.ext_vertex_input_dynamic_state = true,
             b"VK_EXT_physical_device_drm" => self.ext_physical_device_drm = true,
+            b"VK_EXT_device_address_binding_report" => self.ext_device_address_binding_report = true,
             b"VK_EXT_depth_clip_control" => self.ext_depth_clip_control = true,
             b"VK_EXT_primitive_topology_list_restart" => self.ext_primitive_topology_list_restart = true,
             b"VK_KHR_format_feature_flags2" => self.khr_format_feature_flags2 = true,
@@ -4455,6 +4512,7 @@ impl DeviceExtensions {
             b"VK_EXT_image_view_min_lod" => self.ext_image_view_min_lod = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             b"VK_EXT_image_2d_view_of_3d" => self.ext_image_2d_view_of_3d = true,
+            b"VK_EXT_opacity_micromap" => self.ext_opacity_micromap = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
@@ -4466,10 +4524,13 @@ impl DeviceExtensions {
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
+            b"VK_EXT_extended_dynamic_state3" => self.ext_extended_dynamic_state3 = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
             b"VK_EXT_rasterization_order_attachment_access" => self.ext_rasterization_order_attachment_access = true,
+            b"VK_NV_optical_flow" => self.nv_optical_flow = true,
             b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
+            b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
@@ -4665,6 +4726,7 @@ impl DeviceExtensions {
             ext_custom_border_color: false,
             google_user_type: false,
             khr_pipeline_library: false,
+            nv_present_barrier: false,
             khr_shader_non_semantic_info: false,
             khr_present_id: false,
             ext_private_data: false,
@@ -4690,12 +4752,14 @@ impl DeviceExtensions {
             ext_image_compression_control: false,
             ext_attachment_feedback_loop_layout: false,
             ext_4444_formats: false,
+            ext_device_fault: false,
             arm_rasterization_order_attachment_access: false,
             ext_rgba10x6_formats: false,
             nv_acquire_winrt_display: false,
             valve_mutable_descriptor_type: false,
             ext_vertex_input_dynamic_state: false,
             ext_physical_device_drm: false,
+            ext_device_address_binding_report: false,
             ext_depth_clip_control: false,
             ext_primitive_topology_list_restart: false,
             khr_format_feature_flags2: false,
@@ -4715,6 +4779,7 @@ impl DeviceExtensions {
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
             ext_image_2d_view_of_3d: false,
+            ext_opacity_micromap: false,
             ext_load_store_op_none: false,
             ext_border_color_swizzle: false,
             ext_pageable_device_local_memory: false,
@@ -4726,10 +4791,13 @@ impl DeviceExtensions {
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
+            ext_extended_dynamic_state3: false,
             ext_subpass_merge_feedback: false,
             ext_shader_module_identifier: false,
             ext_rasterization_order_attachment_access: false,
+            nv_optical_flow: false,
             ext_legacy_dithering: false,
+            ext_pipeline_protected_access: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
             ext_mutable_descriptor_type: false,
@@ -6141,6 +6209,13 @@ impl DeviceExtensions {
     pub fn enable_khr_pipeline_library(&mut self) {
         self.khr_pipeline_library = true;
     }
+    pub fn supports_nv_present_barrier(&self) -> bool {
+        self.nv_present_barrier && self.supports_khr_swapchain()
+    }
+    pub fn enable_nv_present_barrier(&mut self) {
+        self.nv_present_barrier = true;
+        self.enable_khr_swapchain();
+    }
     pub fn supports_khr_shader_non_semantic_info(&self) -> bool {
         self.khr_shader_non_semantic_info || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6348,6 +6423,12 @@ impl DeviceExtensions {
             self.ext_4444_formats = true;
         }
     }
+    pub fn supports_ext_device_fault(&self) -> bool {
+        self.ext_device_fault
+    }
+    pub fn enable_ext_device_fault(&mut self) {
+        self.ext_device_fault = true;
+    }
     pub fn supports_arm_rasterization_order_attachment_access(&self) -> bool {
         self.arm_rasterization_order_attachment_access
     }
@@ -6392,6 +6473,12 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_physical_device_drm(&mut self) {
         self.ext_physical_device_drm = true;
+    }
+    pub fn supports_ext_device_address_binding_report(&self) -> bool {
+        self.ext_device_address_binding_report
+    }
+    pub fn enable_ext_device_address_binding_report(&mut self) {
+        self.ext_device_address_binding_report = true;
     }
     pub fn supports_ext_depth_clip_control(&self) -> bool {
         self.ext_depth_clip_control
@@ -6574,6 +6661,24 @@ impl DeviceExtensions {
         self.ext_image_2d_view_of_3d = true;
         self.enable_khr_maintenance1();
     }
+    pub fn supports_ext_opacity_micromap(&self) -> bool {
+        self.ext_opacity_micromap
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_synchronization2()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_ext_opacity_micromap(&mut self) {
+        self.ext_opacity_micromap = true;
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_synchronization2();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
+    }
     pub fn supports_ext_load_store_op_none(&self) -> bool {
         self.ext_load_store_op_none
     }
@@ -6648,6 +6753,12 @@ impl DeviceExtensions {
         self.qcom_image_processing = true;
         self.enable_khr_format_feature_flags2();
     }
+    pub fn supports_ext_extended_dynamic_state3(&self) -> bool {
+        self.ext_extended_dynamic_state3
+    }
+    pub fn enable_ext_extended_dynamic_state3(&mut self) {
+        self.ext_extended_dynamic_state3 = true;
+    }
     pub fn supports_ext_subpass_merge_feedback(&self) -> bool {
         self.ext_subpass_merge_feedback
     }
@@ -6667,11 +6778,25 @@ impl DeviceExtensions {
     pub fn enable_ext_rasterization_order_attachment_access(&mut self) {
         self.ext_rasterization_order_attachment_access = true;
     }
+    pub fn supports_nv_optical_flow(&self) -> bool {
+        self.nv_optical_flow && self.supports_khr_format_feature_flags2() && self.supports_khr_synchronization2()
+    }
+    pub fn enable_nv_optical_flow(&mut self) {
+        self.nv_optical_flow = true;
+        self.enable_khr_format_feature_flags2();
+        self.enable_khr_synchronization2();
+    }
     pub fn supports_ext_legacy_dithering(&self) -> bool {
         self.ext_legacy_dithering
     }
     pub fn enable_ext_legacy_dithering(&mut self) {
         self.ext_legacy_dithering = true;
+    }
+    pub fn supports_ext_pipeline_protected_access(&self) -> bool {
+        self.ext_pipeline_protected_access
+    }
+    pub fn enable_ext_pipeline_protected_access(&mut self) {
+        self.ext_pipeline_protected_access = true;
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
@@ -7254,6 +7379,9 @@ impl DeviceExtensions {
         if self.khr_pipeline_library {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_library\0") })
         }
+        if self.nv_present_barrier {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_present_barrier\0") })
+        }
         if self.khr_shader_non_semantic_info {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_shader_non_semantic_info\0") })
         }
@@ -7329,6 +7457,9 @@ impl DeviceExtensions {
         if self.ext_4444_formats {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_4444_formats\0") })
         }
+        if self.ext_device_fault {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_fault\0") })
+        }
         if self.arm_rasterization_order_attachment_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_rasterization_order_attachment_access\0") })
         }
@@ -7346,6 +7477,9 @@ impl DeviceExtensions {
         }
         if self.ext_physical_device_drm {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_physical_device_drm\0") })
+        }
+        if self.ext_device_address_binding_report {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_address_binding_report\0") })
         }
         if self.ext_depth_clip_control {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_clip_control\0") })
@@ -7404,6 +7538,9 @@ impl DeviceExtensions {
         if self.ext_image_2d_view_of_3d {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_2d_view_of_3d\0") })
         }
+        if self.ext_opacity_micromap {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_opacity_micromap\0") })
+        }
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
         }
@@ -7437,6 +7574,9 @@ impl DeviceExtensions {
         if self.qcom_image_processing {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing\0") })
         }
+        if self.ext_extended_dynamic_state3 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state3\0") })
+        }
         if self.ext_subpass_merge_feedback {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_subpass_merge_feedback\0") })
         }
@@ -7446,8 +7586,14 @@ impl DeviceExtensions {
         if self.ext_rasterization_order_attachment_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_rasterization_order_attachment_access\0") })
         }
+        if self.nv_optical_flow {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_optical_flow\0") })
+        }
         if self.ext_legacy_dithering {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_legacy_dithering\0") })
+        }
+        if self.ext_pipeline_protected_access {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_protected_access\0") })
         }
         if self.qcom_tile_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
@@ -7803,6 +7949,37 @@ pub struct Device {
     pub fp_cmd_set_logic_op_ext: Option<vk::FnCmdSetLogicOpEXT>,
     pub fp_cmd_set_primitive_restart_enable: Option<vk::FnCmdSetPrimitiveRestartEnable>,
     pub fp_create_private_data_slot: Option<vk::FnCreatePrivateDataSlot>,
+    pub fp_cmd_set_tessellation_domain_origin_ext: Option<vk::FnCmdSetTessellationDomainOriginEXT>,
+    pub fp_cmd_set_depth_clamp_enable_ext: Option<vk::FnCmdSetDepthClampEnableEXT>,
+    pub fp_cmd_set_polygon_mode_ext: Option<vk::FnCmdSetPolygonModeEXT>,
+    pub fp_cmd_set_rasterization_samples_ext: Option<vk::FnCmdSetRasterizationSamplesEXT>,
+    pub fp_cmd_set_sample_mask_ext: Option<vk::FnCmdSetSampleMaskEXT>,
+    pub fp_cmd_set_alpha_to_coverage_enable_ext: Option<vk::FnCmdSetAlphaToCoverageEnableEXT>,
+    pub fp_cmd_set_alpha_to_one_enable_ext: Option<vk::FnCmdSetAlphaToOneEnableEXT>,
+    pub fp_cmd_set_logic_op_enable_ext: Option<vk::FnCmdSetLogicOpEnableEXT>,
+    pub fp_cmd_set_color_blend_enable_ext: Option<vk::FnCmdSetColorBlendEnableEXT>,
+    pub fp_cmd_set_color_blend_equation_ext: Option<vk::FnCmdSetColorBlendEquationEXT>,
+    pub fp_cmd_set_color_write_mask_ext: Option<vk::FnCmdSetColorWriteMaskEXT>,
+    pub fp_cmd_set_rasterization_stream_ext: Option<vk::FnCmdSetRasterizationStreamEXT>,
+    pub fp_cmd_set_conservative_rasterization_mode_ext: Option<vk::FnCmdSetConservativeRasterizationModeEXT>,
+    pub fp_cmd_set_extra_primitive_overestimation_size_ext: Option<vk::FnCmdSetExtraPrimitiveOverestimationSizeEXT>,
+    pub fp_cmd_set_depth_clip_enable_ext: Option<vk::FnCmdSetDepthClipEnableEXT>,
+    pub fp_cmd_set_sample_locations_enable_ext: Option<vk::FnCmdSetSampleLocationsEnableEXT>,
+    pub fp_cmd_set_color_blend_advanced_ext: Option<vk::FnCmdSetColorBlendAdvancedEXT>,
+    pub fp_cmd_set_provoking_vertex_mode_ext: Option<vk::FnCmdSetProvokingVertexModeEXT>,
+    pub fp_cmd_set_line_rasterization_mode_ext: Option<vk::FnCmdSetLineRasterizationModeEXT>,
+    pub fp_cmd_set_line_stipple_enable_ext: Option<vk::FnCmdSetLineStippleEnableEXT>,
+    pub fp_cmd_set_depth_clip_negative_one_to_one_ext: Option<vk::FnCmdSetDepthClipNegativeOneToOneEXT>,
+    pub fp_cmd_set_viewport_w_scaling_enable_nv: Option<vk::FnCmdSetViewportWScalingEnableNV>,
+    pub fp_cmd_set_viewport_swizzle_nv: Option<vk::FnCmdSetViewportSwizzleNV>,
+    pub fp_cmd_set_coverage_to_color_enable_nv: Option<vk::FnCmdSetCoverageToColorEnableNV>,
+    pub fp_cmd_set_coverage_to_color_location_nv: Option<vk::FnCmdSetCoverageToColorLocationNV>,
+    pub fp_cmd_set_coverage_modulation_mode_nv: Option<vk::FnCmdSetCoverageModulationModeNV>,
+    pub fp_cmd_set_coverage_modulation_table_enable_nv: Option<vk::FnCmdSetCoverageModulationTableEnableNV>,
+    pub fp_cmd_set_coverage_modulation_table_nv: Option<vk::FnCmdSetCoverageModulationTableNV>,
+    pub fp_cmd_set_shading_rate_image_enable_nv: Option<vk::FnCmdSetShadingRateImageEnableNV>,
+    pub fp_cmd_set_coverage_reduction_mode_nv: Option<vk::FnCmdSetCoverageReductionModeNV>,
+    pub fp_cmd_set_representative_fragment_test_enable_nv: Option<vk::FnCmdSetRepresentativeFragmentTestEnableNV>,
     pub fp_destroy_private_data_slot: Option<vk::FnDestroyPrivateDataSlot>,
     pub fp_set_private_data: Option<vk::FnSetPrivateData>,
     pub fp_get_private_data: Option<vk::FnGetPrivateData>,
@@ -7842,6 +8019,20 @@ pub struct Device {
     pub fp_cmd_end_rendering: Option<vk::FnCmdEndRendering>,
     pub fp_get_descriptor_set_layout_host_mapping_info_valve: Option<vk::FnGetDescriptorSetLayoutHostMappingInfoVALVE>,
     pub fp_get_descriptor_set_host_mapping_valve: Option<vk::FnGetDescriptorSetHostMappingVALVE>,
+    pub fp_create_micromap_ext: Option<vk::FnCreateMicromapEXT>,
+    pub fp_cmd_build_micromaps_ext: Option<vk::FnCmdBuildMicromapsEXT>,
+    pub fp_build_micromaps_ext: Option<vk::FnBuildMicromapsEXT>,
+    pub fp_destroy_micromap_ext: Option<vk::FnDestroyMicromapEXT>,
+    pub fp_cmd_copy_micromap_ext: Option<vk::FnCmdCopyMicromapEXT>,
+    pub fp_copy_micromap_ext: Option<vk::FnCopyMicromapEXT>,
+    pub fp_cmd_copy_micromap_to_memory_ext: Option<vk::FnCmdCopyMicromapToMemoryEXT>,
+    pub fp_copy_micromap_to_memory_ext: Option<vk::FnCopyMicromapToMemoryEXT>,
+    pub fp_cmd_copy_memory_to_micromap_ext: Option<vk::FnCmdCopyMemoryToMicromapEXT>,
+    pub fp_copy_memory_to_micromap_ext: Option<vk::FnCopyMemoryToMicromapEXT>,
+    pub fp_cmd_write_micromaps_properties_ext: Option<vk::FnCmdWriteMicromapsPropertiesEXT>,
+    pub fp_write_micromaps_properties_ext: Option<vk::FnWriteMicromapsPropertiesEXT>,
+    pub fp_get_device_micromap_compatibility_ext: Option<vk::FnGetDeviceMicromapCompatibilityEXT>,
+    pub fp_get_micromap_build_sizes_ext: Option<vk::FnGetMicromapBuildSizesEXT>,
     pub fp_get_shader_module_identifier_ext: Option<vk::FnGetShaderModuleIdentifierEXT>,
     pub fp_get_shader_module_create_info_identifier_ext: Option<vk::FnGetShaderModuleCreateInfoIdentifierEXT>,
     pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
@@ -7849,6 +8040,12 @@ pub struct Device {
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
     pub fp_get_framebuffer_tile_properties_qcom: Option<vk::FnGetFramebufferTilePropertiesQCOM>,
     pub fp_get_dynamic_rendering_tile_properties_qcom: Option<vk::FnGetDynamicRenderingTilePropertiesQCOM>,
+    pub fp_get_physical_device_optical_flow_image_formats_nv: Option<vk::FnGetPhysicalDeviceOpticalFlowImageFormatsNV>,
+    pub fp_create_optical_flow_session_nv: Option<vk::FnCreateOpticalFlowSessionNV>,
+    pub fp_destroy_optical_flow_session_nv: Option<vk::FnDestroyOpticalFlowSessionNV>,
+    pub fp_bind_optical_flow_session_image_nv: Option<vk::FnBindOpticalFlowSessionImageNV>,
+    pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
+    pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -10544,6 +10741,226 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_set_tessellation_domain_origin_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetTessellationDomainOriginEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_clamp_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClampEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_polygon_mode_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPolygonModeEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_rasterization_samples_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRasterizationSamplesEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_sample_mask_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetSampleMaskEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_alpha_to_coverage_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetAlphaToCoverageEnableEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_alpha_to_one_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetAlphaToOneEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_logic_op_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLogicOpEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_color_blend_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_color_blend_equation_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendEquationEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_color_write_mask_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorWriteMaskEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_rasterization_stream_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetRasterizationStreamEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_conservative_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetConservativeRasterizationModeEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_extra_primitive_overestimation_size_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetExtraPrimitiveOverestimationSizeEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_clip_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClipEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_sample_locations_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetSampleLocationsEnableEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_color_blend_advanced_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendAdvancedEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_provoking_vertex_mode_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetProvokingVertexModeEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_line_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetLineRasterizationModeEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_line_stipple_enable_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEnableEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_clip_negative_one_to_one_ext: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetDepthClipNegativeOneToOneEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_viewport_w_scaling_enable_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetViewportWScalingEnableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_viewport_swizzle_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportSwizzleNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_to_color_enable_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageToColorEnableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_to_color_location_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageToColorLocationNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_modulation_mode_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageModulationModeNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_modulation_table_enable_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageModulationTableEnableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_modulation_table_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageModulationTableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_shading_rate_image_enable_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetShadingRateImageEnableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_coverage_reduction_mode_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetCoverageReductionModeNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_representative_fragment_test_enable_nv: if extensions.ext_extended_dynamic_state3 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetRepresentativeFragmentTestEnableNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_destroy_private_data_slot: if version >= vk::Version::from_raw_parts(1, 3, 0) {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyPrivateDataSlot\0"));
                 if fp.is_none() {
@@ -10902,6 +11319,94 @@ impl Device {
             } else {
                 None
             },
+            fp_create_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_build_micromaps_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBuildMicromapsEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_build_micromaps_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkBuildMicromapsEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_micromap_to_memory_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyMicromapToMemoryEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_micromap_to_memory_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMicromapToMemoryEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_to_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyMemoryToMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_memory_to_micromap_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMemoryToMicromapEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_write_micromaps_properties_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdWriteMicromapsPropertiesEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_write_micromaps_properties_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkWriteMicromapsPropertiesEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_micromap_compatibility_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceMicromapCompatibilityEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_micromap_build_sizes_ext: if extensions.ext_opacity_micromap {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetMicromapBuildSizesEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_get_shader_module_identifier_ext: if extensions.ext_shader_module_identifier {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderModuleIdentifierEXT\0"));
                 fp.map(|f| mem::transmute(f))
@@ -10948,6 +11453,46 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetDynamicRenderingTilePropertiesQCOM\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_optical_flow_image_formats_nv: if extensions.nv_optical_flow {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceOpticalFlowImageFormatsNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_optical_flow_session_nv: if extensions.nv_optical_flow {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateOpticalFlowSessionNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_optical_flow_session_nv: if extensions.nv_optical_flow {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyOpticalFlowSessionNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_bind_optical_flow_session_image_nv: if extensions.nv_optical_flow {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkBindOpticalFlowSessionImageNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_optical_flow_execute_nv: if extensions.nv_optical_flow {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdOpticalFlowExecuteNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_device_fault_info_ext: if extensions.ext_device_fault {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceFaultInfoEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -16810,6 +17355,388 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn cmd_set_tessellation_domain_origin_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        domain_origin: vk::TessellationDomainOrigin,
+    ) {
+        let fp = self
+            .fp_cmd_set_tessellation_domain_origin_ext
+            .expect("vkCmdSetTessellationDomainOriginEXT is not loaded");
+        (fp)(Some(command_buffer), domain_origin);
+    }
+    pub unsafe fn cmd_set_depth_clamp_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_clamp_enable: bool) {
+        let fp = self
+            .fp_cmd_set_depth_clamp_enable_ext
+            .expect("vkCmdSetDepthClampEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_clamp_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_polygon_mode_ext(&self, command_buffer: vk::CommandBuffer, polygon_mode: vk::PolygonMode) {
+        let fp = self
+            .fp_cmd_set_polygon_mode_ext
+            .expect("vkCmdSetPolygonModeEXT is not loaded");
+        (fp)(Some(command_buffer), polygon_mode);
+    }
+    pub unsafe fn cmd_set_rasterization_samples_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        rasterization_samples: vk::SampleCountFlags,
+    ) {
+        let fp = self
+            .fp_cmd_set_rasterization_samples_ext
+            .expect("vkCmdSetRasterizationSamplesEXT is not loaded");
+        (fp)(Some(command_buffer), rasterization_samples);
+    }
+    pub unsafe fn cmd_set_sample_mask_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        samples: vk::SampleCountFlags,
+        p_sample_mask: &[vk::SampleMask],
+    ) {
+        let fp = self
+            .fp_cmd_set_sample_mask_ext
+            .expect("vkCmdSetSampleMaskEXT is not loaded");
+        assert_eq!(p_sample_mask.len() as u32, (samples.0 + 31) / 32);
+        (fp)(
+            Some(command_buffer),
+            samples,
+            p_sample_mask.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_alpha_to_coverage_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        alpha_to_coverage_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_alpha_to_coverage_enable_ext
+            .expect("vkCmdSetAlphaToCoverageEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if alpha_to_coverage_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_alpha_to_one_enable_ext(&self, command_buffer: vk::CommandBuffer, alpha_to_one_enable: bool) {
+        let fp = self
+            .fp_cmd_set_alpha_to_one_enable_ext
+            .expect("vkCmdSetAlphaToOneEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if alpha_to_one_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_logic_op_enable_ext(&self, command_buffer: vk::CommandBuffer, logic_op_enable: bool) {
+        let fp = self
+            .fp_cmd_set_logic_op_enable_ext
+            .expect("vkCmdSetLogicOpEnableEXT is not loaded");
+        (fp)(Some(command_buffer), if logic_op_enable { vk::TRUE } else { vk::FALSE });
+    }
+    pub unsafe fn cmd_set_color_blend_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_attachment: u32,
+        p_color_blend_enables: &[vk::Bool32],
+    ) {
+        let fp = self
+            .fp_cmd_set_color_blend_enable_ext
+            .expect("vkCmdSetColorBlendEnableEXT is not loaded");
+        let attachment_count = p_color_blend_enables.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            first_attachment,
+            attachment_count,
+            p_color_blend_enables.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_color_blend_equation_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_attachment: u32,
+        p_color_blend_equations: &[vk::ColorBlendEquationEXT],
+    ) {
+        let fp = self
+            .fp_cmd_set_color_blend_equation_ext
+            .expect("vkCmdSetColorBlendEquationEXT is not loaded");
+        let attachment_count = p_color_blend_equations.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            first_attachment,
+            attachment_count,
+            p_color_blend_equations.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_color_write_mask_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_attachment: u32,
+        p_color_write_masks: &[vk::ColorComponentFlags],
+    ) {
+        let fp = self
+            .fp_cmd_set_color_write_mask_ext
+            .expect("vkCmdSetColorWriteMaskEXT is not loaded");
+        let attachment_count = p_color_write_masks.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            first_attachment,
+            attachment_count,
+            p_color_write_masks.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_rasterization_stream_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        rasterization_stream: u32,
+    ) {
+        let fp = self
+            .fp_cmd_set_rasterization_stream_ext
+            .expect("vkCmdSetRasterizationStreamEXT is not loaded");
+        (fp)(Some(command_buffer), rasterization_stream);
+    }
+    pub unsafe fn cmd_set_conservative_rasterization_mode_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        conservative_rasterization_mode: vk::ConservativeRasterizationModeEXT,
+    ) {
+        let fp = self
+            .fp_cmd_set_conservative_rasterization_mode_ext
+            .expect("vkCmdSetConservativeRasterizationModeEXT is not loaded");
+        (fp)(Some(command_buffer), conservative_rasterization_mode);
+    }
+    pub unsafe fn cmd_set_extra_primitive_overestimation_size_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        extra_primitive_overestimation_size: f32,
+    ) {
+        let fp = self
+            .fp_cmd_set_extra_primitive_overestimation_size_ext
+            .expect("vkCmdSetExtraPrimitiveOverestimationSizeEXT is not loaded");
+        (fp)(Some(command_buffer), extra_primitive_overestimation_size);
+    }
+    pub unsafe fn cmd_set_depth_clip_enable_ext(&self, command_buffer: vk::CommandBuffer, depth_clip_enable: bool) {
+        let fp = self
+            .fp_cmd_set_depth_clip_enable_ext
+            .expect("vkCmdSetDepthClipEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if depth_clip_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_sample_locations_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        sample_locations_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_sample_locations_enable_ext
+            .expect("vkCmdSetSampleLocationsEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if sample_locations_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_color_blend_advanced_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_attachment: u32,
+        p_color_blend_advanced: &[vk::ColorBlendAdvancedEXT],
+    ) {
+        let fp = self
+            .fp_cmd_set_color_blend_advanced_ext
+            .expect("vkCmdSetColorBlendAdvancedEXT is not loaded");
+        let attachment_count = p_color_blend_advanced.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            first_attachment,
+            attachment_count,
+            p_color_blend_advanced.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_provoking_vertex_mode_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        provoking_vertex_mode: vk::ProvokingVertexModeEXT,
+    ) {
+        let fp = self
+            .fp_cmd_set_provoking_vertex_mode_ext
+            .expect("vkCmdSetProvokingVertexModeEXT is not loaded");
+        (fp)(Some(command_buffer), provoking_vertex_mode);
+    }
+    pub unsafe fn cmd_set_line_rasterization_mode_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        line_rasterization_mode: vk::LineRasterizationModeEXT,
+    ) {
+        let fp = self
+            .fp_cmd_set_line_rasterization_mode_ext
+            .expect("vkCmdSetLineRasterizationModeEXT is not loaded");
+        (fp)(Some(command_buffer), line_rasterization_mode);
+    }
+    pub unsafe fn cmd_set_line_stipple_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        stippled_line_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_line_stipple_enable_ext
+            .expect("vkCmdSetLineStippleEnableEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if stippled_line_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_depth_clip_negative_one_to_one_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        negative_one_to_one: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_depth_clip_negative_one_to_one_ext
+            .expect("vkCmdSetDepthClipNegativeOneToOneEXT is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if negative_one_to_one { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_viewport_w_scaling_enable_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        viewport_w_scaling_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_viewport_w_scaling_enable_nv
+            .expect("vkCmdSetViewportWScalingEnableNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if viewport_w_scaling_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_viewport_swizzle_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        first_viewport: u32,
+        p_viewport_swizzles: &[vk::ViewportSwizzleNV],
+    ) {
+        let fp = self
+            .fp_cmd_set_viewport_swizzle_nv
+            .expect("vkCmdSetViewportSwizzleNV is not loaded");
+        let viewport_count = p_viewport_swizzles.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            first_viewport,
+            viewport_count,
+            p_viewport_swizzles.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_coverage_to_color_enable_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        coverage_to_color_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_to_color_enable_nv
+            .expect("vkCmdSetCoverageToColorEnableNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if coverage_to_color_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_coverage_to_color_location_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        coverage_to_color_location: u32,
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_to_color_location_nv
+            .expect("vkCmdSetCoverageToColorLocationNV is not loaded");
+        (fp)(Some(command_buffer), coverage_to_color_location);
+    }
+    pub unsafe fn cmd_set_coverage_modulation_mode_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        coverage_modulation_mode: vk::CoverageModulationModeNV,
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_modulation_mode_nv
+            .expect("vkCmdSetCoverageModulationModeNV is not loaded");
+        (fp)(Some(command_buffer), coverage_modulation_mode);
+    }
+    pub unsafe fn cmd_set_coverage_modulation_table_enable_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        coverage_modulation_table_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_modulation_table_enable_nv
+            .expect("vkCmdSetCoverageModulationTableEnableNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if coverage_modulation_table_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            },
+        );
+    }
+    pub unsafe fn cmd_set_coverage_modulation_table_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_coverage_modulation_table: &[f32],
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_modulation_table_nv
+            .expect("vkCmdSetCoverageModulationTableNV is not loaded");
+        let coverage_modulation_table_count = p_coverage_modulation_table.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            coverage_modulation_table_count,
+            p_coverage_modulation_table
+                .first()
+                .map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_shading_rate_image_enable_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        shading_rate_image_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_shading_rate_image_enable_nv
+            .expect("vkCmdSetShadingRateImageEnableNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if shading_rate_image_enable { vk::TRUE } else { vk::FALSE },
+        );
+    }
+    pub unsafe fn cmd_set_coverage_reduction_mode_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        coverage_reduction_mode: vk::CoverageReductionModeNV,
+    ) {
+        let fp = self
+            .fp_cmd_set_coverage_reduction_mode_nv
+            .expect("vkCmdSetCoverageReductionModeNV is not loaded");
+        (fp)(Some(command_buffer), coverage_reduction_mode);
+    }
+    pub unsafe fn cmd_set_representative_fragment_test_enable_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        representative_fragment_test_enable: bool,
+    ) {
+        let fp = self
+            .fp_cmd_set_representative_fragment_test_enable_nv
+            .expect("vkCmdSetRepresentativeFragmentTestEnableNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            if representative_fragment_test_enable {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            },
+        );
+    }
     pub unsafe fn create_private_data_slot_ext(
         &self,
         p_create_info: &vk::PrivateDataSlotCreateInfo,
@@ -17506,6 +18433,210 @@ impl Device {
         (fp)(Some(self.handle), Some(descriptor_set), res.as_mut_ptr());
         res.assume_init()
     }
+    pub unsafe fn create_micromap_ext(
+        &self,
+        p_create_info: &vk::MicromapCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::MicromapEXT> {
+        let fp = self.fp_create_micromap_ext.expect("vkCreateMicromapEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_build_micromaps_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_infos: &[vk::MicromapBuildInfoEXT],
+    ) {
+        let fp = self
+            .fp_cmd_build_micromaps_ext
+            .expect("vkCmdBuildMicromapsEXT is not loaded");
+        let info_count = p_infos.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            info_count,
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn build_micromaps_ext(
+        &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
+        p_infos: &[vk::MicromapBuildInfoEXT],
+    ) -> Result<vk::Result> {
+        let fp = self.fp_build_micromaps_ext.expect("vkBuildMicromapsEXT is not loaded");
+        let info_count = p_infos.len() as u32;
+        let err = (fp)(
+            Some(self.handle),
+            deferred_operation,
+            info_count,
+            p_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_micromap_ext(
+        &self,
+        micromap: Option<vk::MicromapEXT>,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_micromap_ext
+            .expect("vkDestroyMicromapEXT is not loaded");
+        (fp)(Some(self.handle), micromap, p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn cmd_copy_micromap_ext(&self, command_buffer: vk::CommandBuffer, p_info: &vk::CopyMicromapInfoEXT) {
+        let fp = self
+            .fp_cmd_copy_micromap_ext
+            .expect("vkCmdCopyMicromapEXT is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_micromap_ext(
+        &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
+        p_info: &vk::CopyMicromapInfoEXT,
+    ) -> Result<vk::Result> {
+        let fp = self.fp_copy_micromap_ext.expect("vkCopyMicromapEXT is not loaded");
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_copy_micromap_to_memory_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::CopyMicromapToMemoryInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_copy_micromap_to_memory_ext
+            .expect("vkCmdCopyMicromapToMemoryEXT is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_micromap_to_memory_ext(
+        &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
+        p_info: &vk::CopyMicromapToMemoryInfoEXT,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_copy_micromap_to_memory_ext
+            .expect("vkCopyMicromapToMemoryEXT is not loaded");
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_copy_memory_to_micromap_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_info: &vk::CopyMemoryToMicromapInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_to_micromap_ext
+            .expect("vkCmdCopyMemoryToMicromapEXT is not loaded");
+        (fp)(Some(command_buffer), p_info);
+    }
+    pub unsafe fn copy_memory_to_micromap_ext(
+        &self,
+        deferred_operation: Option<vk::DeferredOperationKHR>,
+        p_info: &vk::CopyMemoryToMicromapInfoEXT,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_copy_memory_to_micromap_ext
+            .expect("vkCopyMemoryToMicromapEXT is not loaded");
+        let err = (fp)(Some(self.handle), deferred_operation, p_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::OPERATION_DEFERRED_KHR | vk::Result::OPERATION_NOT_DEFERRED_KHR => {
+                Ok(err)
+            }
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_write_micromaps_properties_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_micromaps: &[vk::MicromapEXT],
+        query_type: vk::QueryType,
+        query_pool: vk::QueryPool,
+        first_query: u32,
+    ) {
+        let fp = self
+            .fp_cmd_write_micromaps_properties_ext
+            .expect("vkCmdWriteMicromapsPropertiesEXT is not loaded");
+        let micromap_count = p_micromaps.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            micromap_count,
+            p_micromaps.first().map_or(ptr::null(), |s| s as *const _),
+            query_type,
+            Some(query_pool),
+            first_query,
+        );
+    }
+    pub unsafe fn write_micromaps_properties_ext<T>(
+        &self,
+        p_micromaps: &[vk::MicromapEXT],
+        query_type: vk::QueryType,
+        p_data: &mut [T],
+        stride: usize,
+    ) -> Result<()> {
+        let fp = self
+            .fp_write_micromaps_properties_ext
+            .expect("vkWriteMicromapsPropertiesEXT is not loaded");
+        let micromap_count = p_micromaps.len() as u32;
+        let data_size = mem::size_of_val(p_data) as usize;
+        let err = (fp)(
+            Some(self.handle),
+            micromap_count,
+            p_micromaps.first().map_or(ptr::null(), |s| s as *const _),
+            query_type,
+            data_size,
+            p_data.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
+            stride,
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_device_micromap_compatibility_ext(
+        &self,
+        p_version_info: &vk::MicromapVersionInfoEXT,
+    ) -> vk::AccelerationStructureCompatibilityKHR {
+        let fp = self
+            .fp_get_device_micromap_compatibility_ext
+            .expect("vkGetDeviceMicromapCompatibilityEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_version_info, res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn get_micromap_build_sizes_ext(
+        &self,
+        build_type: vk::AccelerationStructureBuildTypeKHR,
+        p_build_info: &vk::MicromapBuildInfoEXT,
+        p_size_info: &mut vk::MicromapBuildSizesInfoEXT,
+    ) {
+        let fp = self
+            .fp_get_micromap_build_sizes_ext
+            .expect("vkGetMicromapBuildSizesEXT is not loaded");
+        (fp)(Some(self.handle), build_type, p_build_info, p_size_info);
+    }
     pub unsafe fn get_shader_module_identifier_ext(
         &self,
         shader_module: vk::ShaderModule,
@@ -17593,6 +18724,109 @@ impl Device {
         let err = (fp)(Some(self.handle), p_rendering_info, p_properties);
         match err {
             vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_physical_device_optical_flow_image_formats_nv_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+        p_optical_flow_image_format_info: &vk::OpticalFlowImageFormatInfoNV,
+    ) -> Result<Vec<vk::OpticalFlowImageFormatPropertiesNV>> {
+        let fp = self
+            .fp_get_physical_device_optical_flow_image_formats_nv
+            .expect("vkGetPhysicalDeviceOpticalFlowImageFormatsNV is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(
+            Some(physical_device),
+            p_optical_flow_image_format_info,
+            len.as_mut_ptr(),
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(
+            Some(physical_device),
+            p_optical_flow_image_format_info,
+            &mut len,
+            v.as_mut_ptr(),
+        );
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_optical_flow_session_nv(
+        &self,
+        p_create_info: &vk::OpticalFlowSessionCreateInfoNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::OpticalFlowSessionNV> {
+        let fp = self
+            .fp_create_optical_flow_session_nv
+            .expect("vkCreateOpticalFlowSessionNV is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(
+            Some(self.handle),
+            p_create_info,
+            p_allocator.map_or(ptr::null(), |r| r),
+            res.as_mut_ptr(),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn destroy_optical_flow_session_nv(
+        &self,
+        session: vk::OpticalFlowSessionNV,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) {
+        let fp = self
+            .fp_destroy_optical_flow_session_nv
+            .expect("vkDestroyOpticalFlowSessionNV is not loaded");
+        (fp)(Some(self.handle), Some(session), p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn bind_optical_flow_session_image_nv(
+        &self,
+        session: vk::OpticalFlowSessionNV,
+        binding_point: vk::OpticalFlowSessionBindingPointNV,
+        view: Option<vk::ImageView>,
+        layout: vk::ImageLayout,
+    ) -> Result<()> {
+        let fp = self
+            .fp_bind_optical_flow_session_image_nv
+            .expect("vkBindOpticalFlowSessionImageNV is not loaded");
+        let err = (fp)(Some(self.handle), Some(session), binding_point, view, layout);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_optical_flow_execute_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        session: vk::OpticalFlowSessionNV,
+        p_execute_info: &vk::OpticalFlowExecuteInfoNV,
+    ) {
+        let fp = self
+            .fp_cmd_optical_flow_execute_nv
+            .expect("vkCmdOpticalFlowExecuteNV is not loaded");
+        (fp)(Some(command_buffer), Some(session), p_execute_info);
+    }
+    pub unsafe fn get_device_fault_info_ext(
+        &self,
+        p_fault_counts: &mut vk::DeviceFaultCountsEXT,
+        p_fault_info: *mut vk::DeviceFaultInfoEXT,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_device_fault_info_ext
+            .expect("vkGetDeviceFaultInfoEXT is not loaded");
+        let err = (fp)(Some(self.handle), p_fault_counts, p_fault_info);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
         }
     }
