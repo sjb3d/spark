@@ -145,10 +145,10 @@ pub struct CFunctionDecl<'a> {
 }
 
 #[derive(Debug)]
-pub enum CExpr {
-    Literal(usize),
-    Uint32(u32),
-    Uint64(u64),
+pub enum CConstant {
+    UInt(usize),
+    UInt32(u32),
+    UInt64(u64),
     Float(f32),
 }
 
@@ -388,40 +388,46 @@ pub fn c_try_parse_typedef(i: &str) -> Option<CVariableDecl> {
         .ok()
 }
 
-fn expr_inner(i: &str) -> Res<CExpr> {
+fn constant_expr_inner(i: &str) -> Res<CConstant> {
     alt((
-        map(terminated(float, alt((char('f'), char('F')))), CExpr::Float),
+        map(terminated(float, alt((char('f'), char('F')))), CConstant::Float),
         map(
             terminated(map_res(digit1, str::parse::<u64>), tag("ULL")),
-            CExpr::Uint64,
+            CConstant::UInt64,
         ),
-        map(terminated(map_res(digit1, str::parse::<u32>), tag("U")), CExpr::Uint32),
-        map(map_res(digit1, str::parse::<usize>), CExpr::Literal),
-        delimited(char('('), expr, char(')')),
-        map(preceded(char('~'), expr_inner), |e| match e {
-            CExpr::Uint32(x) => CExpr::Uint32(!x),
-            CExpr::Uint64(x) => CExpr::Uint64(!x),
+        map(
+            terminated(map_res(digit1, str::parse::<u32>), tag("U")),
+            CConstant::UInt32,
+        ),
+        map(map_res(digit1, str::parse::<usize>), CConstant::UInt),
+        delimited(char('('), constant_expr, char(')')),
+        map(preceded(char('~'), constant_expr_inner), |e| match e {
+            CConstant::UInt32(x) => CConstant::UInt32(!x),
+            CConstant::UInt64(x) => CConstant::UInt64(!x),
             _ => panic!("cannot bitwise invert unsized literal"),
         }),
     ))(i)
 }
 
-fn expr(i: &str) -> Res<CExpr> {
+fn constant_expr(i: &str) -> Res<CConstant> {
     alt((
-        map(separated_pair(expr_inner, char('-'), expr_inner), |(a, b)| match a {
-            CExpr::Uint32(x) => match b {
-                CExpr::Uint32(y) => CExpr::Uint32(x - y),
-                CExpr::Literal(y) => CExpr::Uint32(x - y as u32),
-                _ => panic!("bad rhs type in arithmetic"),
+        map(
+            separated_pair(constant_expr_inner, char('-'), constant_expr_inner),
+            |(a, b)| match a {
+                CConstant::UInt32(x) => match b {
+                    CConstant::UInt32(y) => CConstant::UInt32(x - y),
+                    CConstant::UInt(y) => CConstant::UInt32(x - y as u32),
+                    _ => panic!("bad rhs type in arithmetic"),
+                },
+                _ => panic!("bad lhs type in arithmetic"),
             },
-            _ => panic!("bad lhs type in arithmetic"),
-        }),
-        expr_inner,
+        ),
+        constant_expr_inner,
     ))(i)
 }
 
-pub fn c_parse_expr(i: &str) -> CExpr {
-    all_consuming(expr)(i)
+pub fn c_parse_constant_expr(i: &str) -> CConstant {
+    all_consuming(constant_expr)(i)
         .map(ignore_remainder)
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }

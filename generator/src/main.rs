@@ -1079,16 +1079,16 @@ impl<'a> Generator<'a> {
         for en in &self.constant_enums {
             match en.spec {
                 vk::EnumSpec::Value { ref value, .. } => {
-                    let expr = c_parse_expr(value.as_str());
+                    let expr = c_parse_constant_expr(value.as_str());
                     write!(w, "pub const {}: ", en.name.as_str().skip_prefix(CONST_PREFIX))?;
                     match expr {
-                        CExpr::Literal(x) => match en.name.as_str() {
+                        CConstant::UInt(x) => match en.name.as_str() {
                             "VK_TRUE" | "VK_FALSE" => write!(w, "Bool32 = {};", x)?,
                             _ => writeln!(w, "usize = {};", x)?,
                         },
-                        CExpr::Uint32(x) => writeln!(w, "u32 = {:#x};", x)?,
-                        CExpr::Uint64(x) => writeln!(w, "u64 = {:#x};", x)?,
-                        CExpr::Float(x) => writeln!(w, "f32 = {}_f32;", x)?,
+                        CConstant::UInt32(x) => writeln!(w, "u32 = {:#x};", x)?,
+                        CConstant::UInt64(x) => writeln!(w, "u64 = {:#x};", x)?,
+                        CConstant::Float(x) => writeln!(w, "f32 = {}_f32;", x)?,
                     }
                     expr_by_name.insert(en.name.as_str(), expr);
                 }
@@ -1099,10 +1099,10 @@ impl<'a> Generator<'a> {
                             "pub const {}: {} = {};",
                             en.name.as_str().skip_prefix(CONST_PREFIX),
                             match expr {
-                                CExpr::Literal(_) => "usize",
-                                CExpr::Uint32(_) => "u32",
-                                CExpr::Uint64(_) => "u64",
-                                CExpr::Float(_) => "f32",
+                                CConstant::UInt(_) => "usize",
+                                CConstant::UInt32(_) => "u32",
+                                CConstant::UInt64(_) => "u64",
+                                CConstant::Float(_) => "f32",
                             },
                             alias.as_str().skip_prefix(CONST_PREFIX)
                         )?;
