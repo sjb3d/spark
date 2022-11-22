@@ -431,3 +431,76 @@ pub fn c_parse_constant_expr(i: &str) -> CConstant {
         .map(ignore_remainder)
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }
+
+#[derive(Debug)]
+pub enum CExpr<'a> {
+    Bracket(Box<Self>),
+    Mul(Box<(Self, Self)>),
+    Div(Box<(Self, Self)>),
+    Add(Box<(Self, Self)>),
+    Literal(usize),
+    Ident(&'a str),
+}
+
+impl<'a> CExpr<'a> {
+    pub fn write_to(&self, w: &mut impl fmt::Write, f: impl Fn(&'a str) -> String + Copy) -> fmt::Result {
+        match self {
+            Self::Bracket(e) => {
+                write!(w, "(")?;
+                e.write_to(w, f)?;
+                write!(w, ")")
+            }
+            Self::Mul(e) => {
+                e.0.write_to(w, f)?;
+                write!(w, " * ")?;
+                e.1.write_to(w, f)
+            }
+            Self::Div(e) => {
+                e.0.write_to(w, f)?;
+                write!(w, " / ")?;
+                e.1.write_to(w, f)
+            }
+            Self::Add(e) => {
+                e.0.write_to(w, f)?;
+                write!(w, " + ")?;
+                e.1.write_to(w, f)
+            }
+            Self::Literal(n) => write!(w, "{}", n),
+            Self::Ident(s) => write!(w, "{}", f(s)),
+        }
+    }
+}
+
+fn expr_inner<'a>(i: &'a str) -> Res<CExpr<'a>> {
+    preceded(
+        multispace0,
+        alt((
+            map(delimited(char('('), expr, char(')')), |expr| {
+                CExpr::Bracket(Box::new(expr))
+            }),
+            map(map_res(digit1, str::parse::<usize>), CExpr::Literal),
+            map(take_while1(is_ident), CExpr::Ident),
+        )),
+    )(i)
+}
+
+fn expr<'a>(i: &'a str) -> Res<CExpr<'a>> {
+    alt((
+        map(separated_pair(expr_inner, op('+'), expr), |(a, b)| {
+            CExpr::Add(Box::new((a, b)))
+        }),
+        map(separated_pair(expr_inner, op('*'), expr), |(a, b)| {
+            CExpr::Mul(Box::new((a, b)))
+        }),
+        map(separated_pair(expr_inner, op('/'), expr), |(a, b)| {
+            CExpr::Div(Box::new((a, b)))
+        }),
+        expr_inner,
+    ))(i)
+}
+
+pub fn c_parse_expr<'a>(i: &'a str) -> CExpr<'a> {
+    all_consuming(expr)(i)
+        .map(ignore_remainder)
+        .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
+}
