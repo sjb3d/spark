@@ -2691,6 +2691,18 @@ impl fmt::Display for RenderingFlags {
         )
     }
 }
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MemoryDecompressionMethodFlagsNV(pub(crate) u64);
+impl MemoryDecompressionMethodFlagsNV {
+    pub const GDEFLATE_1_0: Self = Self(0x1);
+}
+impl_bitmask!(MemoryDecompressionMethodFlagsNV, 0x1);
+impl fmt::Display for MemoryDecompressionMethodFlagsNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "GDEFLATE_1_0")], f)
+    }
+}
 pub type RenderingFlagsKHR = RenderingFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
@@ -7453,6 +7465,14 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM: Self = Self(1000425001);
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM: Self = Self(1000425002);
+    /// Added by extension VK_NV_copy_memory_indirect.
+    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV: Self = Self(1000426000);
+    /// Added by extension VK_NV_copy_memory_indirect.
+    pub const PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV: Self = Self(1000426001);
+    /// Added by extension VK_NV_memory_decompression.
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV: Self = Self(1000427000);
+    /// Added by extension VK_NV_memory_decompression.
+    pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV: Self = Self(1000427001);
     /// Added by extension VK_NV_linear_color_attachment.
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
     /// Added by extension VK_EXT_image_compression_control_swapchain.
@@ -7511,6 +7531,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC: Self = Self(1000485000);
     /// Added by extension VK_SEC_amigo_profiling.
     pub const AMIGO_PROFILING_SUBMIT_INFO_SEC: Self = Self(1000485001);
+    /// Added by extension VK_NV_ray_tracing_invocation_reorder.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
+    /// Added by extension VK_NV_ray_tracing_invocation_reorder.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
     /// Added by extension VK_EXT_mutable_descriptor_type.
@@ -8144,6 +8168,10 @@ impl fmt::Display for StructureType {
             1000425000 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_FEATURES_QCOM"),
             1000425001 => Some(&"PHYSICAL_DEVICE_FRAGMENT_DENSITY_MAP_OFFSET_PROPERTIES_QCOM"),
             1000425002 => Some(&"SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM"),
+            1000426000 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV"),
+            1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV"),
+            1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV"),
+            1000427001 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV"),
             1000430000 => Some(&"PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV"),
             1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
             1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
@@ -8173,6 +8201,8 @@ impl fmt::Display for StructureType {
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
             1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
+            1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
+            1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
@@ -8452,6 +8482,27 @@ impl fmt::Display for ObjectType {
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             1000396000 => Some(&"MICROMAP_EXT"),
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct RayTracingInvocationReorderModeNV(pub(crate) i32);
+impl RayTracingInvocationReorderModeNV {
+    pub const NONE: Self = Self(0);
+    pub const REORDER: Self = Self(1);
+}
+impl fmt::Display for RayTracingInvocationReorderModeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"REORDER"),
             _ => None,
         };
         if let Some(name) = name {
@@ -12231,6 +12282,48 @@ impl fmt::Debug for BufferImageCopy {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("BufferImageCopy")
             .field("buffer_offset", &self.buffer_offset)
+            .field("buffer_row_length", &self.buffer_row_length)
+            .field("buffer_image_height", &self.buffer_image_height)
+            .field("image_subresource", &self.image_subresource)
+            .field("image_offset", &self.image_offset)
+            .field("image_extent", &self.image_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct CopyMemoryIndirectCommandNV {
+    pub src_address: DeviceAddress,
+    pub dst_address: DeviceAddress,
+    /// Specified in bytes
+    pub size: DeviceSize,
+}
+impl fmt::Debug for CopyMemoryIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryIndirectCommandNV")
+            .field("src_address", &self.src_address)
+            .field("dst_address", &self.dst_address)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct CopyMemoryToImageIndirectCommandNV {
+    pub src_address: DeviceAddress,
+    /// Specified in texels
+    pub buffer_row_length: u32,
+    pub buffer_image_height: u32,
+    pub image_subresource: ImageSubresourceLayers,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub image_offset: Offset3D,
+    /// Specified in pixels for both compressed and uncompressed images
+    pub image_extent: Extent3D,
+}
+impl fmt::Debug for CopyMemoryToImageIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryToImageIndirectCommandNV")
+            .field("src_address", &self.src_address)
             .field("buffer_row_length", &self.buffer_row_length)
             .field("buffer_image_height", &self.buffer_image_height)
             .field("image_subresource", &self.image_subresource)
@@ -24827,6 +24920,121 @@ impl fmt::Debug for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {
             .field(
                 "dedicated_allocation_image_aliasing",
                 &self.dedicated_allocation_image_aliasing,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCopyMemoryIndirectFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub indirect_copy: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCopyMemoryIndirectFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceCopyMemoryIndirectFeaturesNV {}
+impl Default for PhysicalDeviceCopyMemoryIndirectFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            indirect_copy: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCopyMemoryIndirectFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("indirect_copy", &self.indirect_copy)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Bitfield of which queues are supported for indirect copy
+    pub supported_queues: QueueFlags,
+}
+unsafe impl Send for PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
+impl Default for PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            supported_queues: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCopyMemoryIndirectPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCopyMemoryIndirectPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_queues", &self.supported_queues)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMemoryDecompressionFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub memory_decompression: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMemoryDecompressionFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceMemoryDecompressionFeaturesNV {}
+impl Default for PhysicalDeviceMemoryDecompressionFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            memory_decompression: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMemoryDecompressionFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMemoryDecompressionFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("memory_decompression", &self.memory_decompression)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMemoryDecompressionPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub decompression_methods: MemoryDecompressionMethodFlagsNV,
+    pub max_decompression_indirect_count: u64,
+}
+unsafe impl Send for PhysicalDeviceMemoryDecompressionPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceMemoryDecompressionPropertiesNV {}
+impl Default for PhysicalDeviceMemoryDecompressionPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            decompression_methods: Default::default(),
+            max_decompression_indirect_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMemoryDecompressionPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMemoryDecompressionPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("decompression_methods", &self.decompression_methods)
+            .field(
+                "max_decompression_indirect_count",
+                &self.max_decompression_indirect_count,
             )
             .finish()
     }
@@ -38323,6 +38531,28 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DecompressMemoryRegionNV {
+    pub src_address: DeviceAddress,
+    pub dst_address: DeviceAddress,
+    /// Specified in bytes
+    pub compressed_size: DeviceSize,
+    /// Specified in bytes
+    pub decompressed_size: DeviceSize,
+    pub decompression_method: MemoryDecompressionMethodFlagsNV,
+}
+impl fmt::Debug for DecompressMemoryRegionNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DecompressMemoryRegionNV")
+            .field("src_address", &self.src_address)
+            .field("dst_address", &self.dst_address)
+            .field("compressed_size", &self.compressed_size)
+            .field("decompressed_size", &self.decompressed_size)
+            .field("decompression_method", &self.decompression_method)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
     pub s_type: StructureType,
@@ -38379,6 +38609,63 @@ impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_core_builtins", &self.shader_core_builtins)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_invocation_reorder: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl Default for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            ray_tracing_invocation_reorder: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_invocation_reorder", &self.ray_tracing_invocation_reorder)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_invocation_reorder_reordering_hint: RayTracingInvocationReorderModeNV,
+}
+unsafe impl Send for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
+impl Default for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            ray_tracing_invocation_reorder_reordering_hint: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingInvocationReorderPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "ray_tracing_invocation_reorder_reordering_hint",
+                &self.ray_tracing_invocation_reorder_reordering_hint,
+            )
             .finish()
     }
 }
@@ -38989,6 +39276,21 @@ pub type FnCmdCopyImageToBuffer = unsafe extern "system" fn(
     dst_buffer: Option<Buffer>,
     region_count: u32,
     p_regions: *const BufferImageCopy,
+);
+pub type FnCmdCopyMemoryIndirectNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    copy_buffer_address: DeviceAddress,
+    copy_count: u32,
+    stride: u32,
+);
+pub type FnCmdCopyMemoryToImageIndirectNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    copy_buffer_address: DeviceAddress,
+    copy_count: u32,
+    stride: u32,
+    dst_image: Option<Image>,
+    dst_image_layout: ImageLayout,
+    p_image_subresources: *const ImageSubresourceLayers,
 );
 pub type FnCmdUpdateBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
@@ -40644,6 +40946,17 @@ pub type FnGetQueueCheckpointData2NV = unsafe extern "system" fn(
     queue: Option<Queue>,
     p_checkpoint_data_count: *mut u32,
     p_checkpoint_data: *mut CheckpointData2NV,
+);
+pub type FnCmdDecompressMemoryNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    decompress_region_count: u32,
+    p_decompress_memory_regions: *const DecompressMemoryRegionNV,
+);
+pub type FnCmdDecompressMemoryIndirectCountNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    indirect_commands_address: DeviceAddress,
+    indirect_commands_count_address: DeviceAddress,
+    stride: u32,
 );
 pub type FnCreateCuModuleNVX = unsafe extern "system" fn(
     device: Option<Device>,

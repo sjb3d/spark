@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 232
+//! Generated from vk.xml with `VK_HEADER_VERSION` 233
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1563,6 +1563,18 @@ impl InstanceExtensions {
     pub fn enable_qcom_fragment_density_map_offset(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_nv_copy_memory_indirect(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_copy_memory_indirect(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_nv_memory_decompression(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_memory_decompression(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_google_surfaceless_query(&self) -> bool {
         self.google_surfaceless_query && self.supports_khr_surface()
     }
@@ -1622,6 +1634,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_sec_amigo_profiling(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_nv_ray_tracing_invocation_reorder(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_nv_ray_tracing_invocation_reorder(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
@@ -4254,6 +4272,8 @@ pub struct DeviceExtensions {
     pub ext_depth_clamp_zero_one: bool,
     pub ext_non_seamless_cube_map: bool,
     pub qcom_fragment_density_map_offset: bool,
+    pub nv_copy_memory_indirect: bool,
+    pub nv_memory_decompression: bool,
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
@@ -4266,6 +4286,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_protected_access: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
+    pub nv_ray_tracing_invocation_reorder: bool,
     pub ext_mutable_descriptor_type: bool,
     pub arm_shader_core_builtins: bool,
 }
@@ -4522,6 +4543,8 @@ impl DeviceExtensions {
             b"VK_EXT_depth_clamp_zero_one" => self.ext_depth_clamp_zero_one = true,
             b"VK_EXT_non_seamless_cube_map" => self.ext_non_seamless_cube_map = true,
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
+            b"VK_NV_copy_memory_indirect" => self.nv_copy_memory_indirect = true,
+            b"VK_NV_memory_decompression" => self.nv_memory_decompression = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
@@ -4534,6 +4557,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
+            b"VK_NV_ray_tracing_invocation_reorder" => self.nv_ray_tracing_invocation_reorder = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             _ => {}
@@ -4790,6 +4814,8 @@ impl DeviceExtensions {
             ext_depth_clamp_zero_one: false,
             ext_non_seamless_cube_map: false,
             qcom_fragment_density_map_offset: false,
+            nv_copy_memory_indirect: false,
+            nv_memory_decompression: false,
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
@@ -4802,6 +4828,7 @@ impl DeviceExtensions {
             ext_pipeline_protected_access: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
+            nv_ray_tracing_invocation_reorder: false,
             ext_mutable_descriptor_type: false,
             arm_shader_core_builtins: false,
         }
@@ -6736,6 +6763,20 @@ impl DeviceExtensions {
         self.qcom_fragment_density_map_offset = true;
         self.enable_ext_fragment_density_map();
     }
+    pub fn supports_nv_copy_memory_indirect(&self) -> bool {
+        self.nv_copy_memory_indirect && self.supports_khr_buffer_device_address()
+    }
+    pub fn enable_nv_copy_memory_indirect(&mut self) {
+        self.nv_copy_memory_indirect = true;
+        self.enable_khr_buffer_device_address();
+    }
+    pub fn supports_nv_memory_decompression(&self) -> bool {
+        self.nv_memory_decompression && self.supports_khr_buffer_device_address()
+    }
+    pub fn enable_nv_memory_decompression(&mut self) {
+        self.nv_memory_decompression = true;
+        self.enable_khr_buffer_device_address();
+    }
     pub fn supports_nv_linear_color_attachment(&self) -> bool {
         self.nv_linear_color_attachment
     }
@@ -6812,6 +6853,28 @@ impl DeviceExtensions {
     }
     pub fn enable_sec_amigo_profiling(&mut self) {
         self.sec_amigo_profiling = true;
+    }
+    pub fn supports_nv_ray_tracing_invocation_reorder(&self) -> bool {
+        self.nv_ray_tracing_invocation_reorder
+            && self.supports_khr_ray_tracing_pipeline()
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_acceleration_structure()
+            && self.supports_khr_shader_float_controls()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_deferred_host_operations()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_nv_ray_tracing_invocation_reorder(&mut self) {
+        self.nv_ray_tracing_invocation_reorder = true;
+        self.enable_khr_ray_tracing_pipeline();
+        self.enable_khr_spirv_1_4();
+        self.enable_khr_acceleration_structure();
+        self.enable_khr_shader_float_controls();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_deferred_host_operations();
+        self.enable_khr_maintenance3();
     }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
         self.ext_mutable_descriptor_type && self.supports_khr_maintenance3()
@@ -7574,6 +7637,12 @@ impl DeviceExtensions {
         if self.qcom_fragment_density_map_offset {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_fragment_density_map_offset\0") })
         }
+        if self.nv_copy_memory_indirect {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_copy_memory_indirect\0") })
+        }
+        if self.nv_memory_decompression {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_memory_decompression\0") })
+        }
         if self.nv_linear_color_attachment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_linear_color_attachment\0") })
         }
@@ -7609,6 +7678,9 @@ impl DeviceExtensions {
         }
         if self.sec_amigo_profiling {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_SEC_amigo_profiling\0") })
+        }
+        if self.nv_ray_tracing_invocation_reorder {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_invocation_reorder\0") })
         }
         if self.ext_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mutable_descriptor_type\0") })
@@ -7729,6 +7801,8 @@ pub struct Device {
     pub fp_cmd_blit_image: Option<vk::FnCmdBlitImage>,
     pub fp_cmd_copy_buffer_to_image: Option<vk::FnCmdCopyBufferToImage>,
     pub fp_cmd_copy_image_to_buffer: Option<vk::FnCmdCopyImageToBuffer>,
+    pub fp_cmd_copy_memory_indirect_nv: Option<vk::FnCmdCopyMemoryIndirectNV>,
+    pub fp_cmd_copy_memory_to_image_indirect_nv: Option<vk::FnCmdCopyMemoryToImageIndirectNV>,
     pub fp_cmd_update_buffer: Option<vk::FnCmdUpdateBuffer>,
     pub fp_cmd_fill_buffer: Option<vk::FnCmdFillBuffer>,
     pub fp_cmd_clear_color_image: Option<vk::FnCmdClearColorImage>,
@@ -8015,6 +8089,8 @@ pub struct Device {
     pub fp_cmd_write_timestamp2: Option<vk::FnCmdWriteTimestamp2>,
     pub fp_cmd_write_buffer_marker2_amd: Option<vk::FnCmdWriteBufferMarker2AMD>,
     pub fp_get_queue_checkpoint_data2_nv: Option<vk::FnGetQueueCheckpointData2NV>,
+    pub fp_cmd_decompress_memory_nv: Option<vk::FnCmdDecompressMemoryNV>,
+    pub fp_cmd_decompress_memory_indirect_count_nv: Option<vk::FnCmdDecompressMemoryIndirectCountNV>,
     pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
     pub fp_create_cu_function_nvx: Option<vk::FnCreateCuFunctionNVX>,
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
@@ -8823,6 +8899,20 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdCopyImageToBuffer".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_cmd_copy_memory_indirect_nv: if extensions.nv_copy_memory_indirect {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCopyMemoryIndirectNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_copy_memory_to_image_indirect_nv: if extensions.nv_copy_memory_indirect {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdCopyMemoryToImageIndirectNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_cmd_update_buffer: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdUpdateBuffer\0"));
@@ -11209,6 +11299,20 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_decompress_memory_nv: if extensions.nv_memory_decompression {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDecompressMemoryNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_decompress_memory_indirect_count_nv: if extensions.nv_memory_decompression {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDecompressMemoryIndirectCountNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_create_cu_module_nvx: if extensions.nvx_binary_import {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCuModuleNVX\0"));
                 fp.map(|f| mem::transmute(f))
@@ -13159,6 +13263,41 @@ impl Device {
             Some(dst_buffer),
             region_count,
             p_regions.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_copy_memory_indirect_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        copy_buffer_address: vk::DeviceAddress,
+        copy_count: u32,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_indirect_nv
+            .expect("vkCmdCopyMemoryIndirectNV is not loaded");
+        (fp)(Some(command_buffer), copy_buffer_address, copy_count, stride);
+    }
+    pub unsafe fn cmd_copy_memory_to_image_indirect_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        copy_buffer_address: vk::DeviceAddress,
+        stride: u32,
+        dst_image: vk::Image,
+        dst_image_layout: vk::ImageLayout,
+        p_image_subresources: &[vk::ImageSubresourceLayers],
+    ) {
+        let fp = self
+            .fp_cmd_copy_memory_to_image_indirect_nv
+            .expect("vkCmdCopyMemoryToImageIndirectNV is not loaded");
+        let copy_count = p_image_subresources.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            copy_buffer_address,
+            copy_count,
+            stride,
+            Some(dst_image),
+            dst_image_layout,
+            p_image_subresources.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
     pub unsafe fn cmd_update_buffer<T>(
@@ -18241,6 +18380,40 @@ impl Device {
         (fp)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         v
+    }
+    pub unsafe fn cmd_decompress_memory_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_decompress_memory_regions: &[vk::DecompressMemoryRegionNV],
+    ) {
+        let fp = self
+            .fp_cmd_decompress_memory_nv
+            .expect("vkCmdDecompressMemoryNV is not loaded");
+        let decompress_region_count = p_decompress_memory_regions.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            decompress_region_count,
+            p_decompress_memory_regions
+                .first()
+                .map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_decompress_memory_indirect_count_nv(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        indirect_commands_address: vk::DeviceAddress,
+        indirect_commands_count_address: vk::DeviceAddress,
+        stride: u32,
+    ) {
+        let fp = self
+            .fp_cmd_decompress_memory_indirect_count_nv
+            .expect("vkCmdDecompressMemoryIndirectCountNV is not loaded");
+        (fp)(
+            Some(command_buffer),
+            indirect_commands_address,
+            indirect_commands_count_address,
+            stride,
+        );
     }
     pub unsafe fn create_cu_module_nvx(
         &self,

@@ -10487,6 +10487,68 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDedicatedAllocationImageAlias
 impl DeviceCreateInfoNext for PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV {
+    type Type = PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV,
+}
+impl PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn indirect_copy(mut self, indirect_copy: bool) -> Self {
+        self.inner.indirect_copy = if indirect_copy { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCopyMemoryIndirectFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCopyMemoryIndirectFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCopyMemoryIndirectPropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceMemoryDecompressionFeaturesNV {
+    type Type = PhysicalDeviceMemoryDecompressionFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMemoryDecompressionFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceMemoryDecompressionFeaturesNV,
+}
+impl PhysicalDeviceMemoryDecompressionFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn memory_decompression(mut self, memory_decompression: bool) -> Self {
+        self.inner.memory_decompression = if memory_decompression { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMemoryDecompressionFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceMemoryDecompressionFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMemoryDecompressionFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMemoryDecompressionFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMemoryDecompressionFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMemoryDecompressionFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceMemoryDecompressionPropertiesNV {}
 impl<'a> Builder<'a> for vk::ShadingRatePaletteNV {
     type Type = ShadingRatePaletteNVBuilder<'a>;
     fn builder() -> Self::Type {
@@ -21669,3 +21731,38 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderCoreBuiltinsFeaturesARM
 impl DeviceCreateInfoNext for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
+    type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV,
+}
+impl PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_invocation_reorder(mut self, ray_tracing_invocation_reorder: bool) -> Self {
+        self.inner.ray_tracing_invocation_reorder = if ray_tracing_invocation_reorder {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
