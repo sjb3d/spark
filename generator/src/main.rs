@@ -306,6 +306,20 @@ impl Version {
 enum CommandRef<'a> {
     Feature(Version),
     Extension(&'a str),
+    BothExtensions(&'a str, &'a str),
+    EitherExtension(&'a str, &'a str),
+}
+
+impl<'a> CommandRef<'a> {
+    fn from_require_extension(extension: &'a str) -> Self {
+        if let Some((a, b)) = extension.split_once('+') {
+            Self::BothExtensions(a, b)
+        } else if let Some((a, b)) = extension.split_once(',') {
+            Self::EitherExtension(a, b)
+        } else {
+            Self::Extension(extension)
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -914,7 +928,7 @@ impl<'a> Generator<'a> {
                                     .as_deref()
                                     .and_then(Version::try_from_feature)
                                     .map(CommandRef::Feature)
-                                    .or_else(|| extension.as_deref().map(CommandRef::Extension));
+                                    .or_else(|| extension.as_deref().map(CommandRef::from_require_extension));
                                 Some((cmd_ref, items))
                             }
                             _ => None,
@@ -932,7 +946,7 @@ impl<'a> Generator<'a> {
                                 }
 
                                 let ref_pair = CommandRefPair {
-                                    primary: CommandRef::Extension(ext.name.as_str()),
+                                    primary: CommandRef::from_require_extension(ext.name.as_str()),
                                     secondary: cmd_ref,
                                 };
                                 if !info.refs.iter().any(|p| p.matches(&ref_pair)) {
@@ -3063,6 +3077,23 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
+    fn write_extension_condition(&self, category: Category, name: &'a str, w: &mut impl IoWrite) -> WriteResult {
+        let ext = self
+            .extension_by_name
+            .get(name)
+            .expect(&format!("missing extension {name}"));
+        if category == Category::Device && ext.get_category() == Category::Instance {
+            write!(
+                w,
+                "instance.extensions.{}",
+                name.skip_prefix(CONST_PREFIX).to_snake_case()
+            )?;
+        } else {
+            write!(w, "extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
+        }
+        Ok(())
+    }
+
     fn write_command_ref_condition(
         &self,
         category: Category,
@@ -3070,22 +3101,27 @@ impl<'a> Generator<'a> {
         w: &mut impl IoWrite,
     ) -> WriteResult {
         match cmd_ref {
-            CommandRef::Feature(version) => write!(
-                w,
-                "version >= vk::Version::from_raw_parts({}, {}, 0)",
-                version.major, version.minor
-            )?,
-            CommandRef::Extension(name) => {
-                let ext = self.extension_by_name.get(name).expect("missing extension");
-                if category == Category::Device && ext.get_category() == Category::Instance {
-                    write!(
-                        w,
-                        "instance.extensions.{}",
-                        name.skip_prefix(CONST_PREFIX).to_snake_case()
-                    )?;
-                } else {
-                    write!(w, "extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
-                }
+            CommandRef::Feature(version) => {
+                write!(
+                    w,
+                    "version >= vk::Version::from_raw_parts({}, {}, 0)",
+                    version.major, version.minor
+                )?;
+            }
+            CommandRef::Extension(name) => self.write_extension_condition(category, name, w)?,
+            CommandRef::BothExtensions(a, b) => {
+                write!(w, "(")?;
+                self.write_extension_condition(category, a, w)?;
+                write!(w, "&&")?;
+                self.write_extension_condition(category, b, w)?;
+                write!(w, ")")?;
+            }
+            CommandRef::EitherExtension(a, b) => {
+                write!(w, "(")?;
+                self.write_extension_condition(category, a, w)?;
+                write!(w, "||")?;
+                self.write_extension_condition(category, b, w)?;
+                write!(w, ")")?;
             }
         }
         Ok(())
