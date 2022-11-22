@@ -1880,6 +1880,7 @@ impl<'a> Generator<'a> {
                                 });
                                 continue;
                             }
+                            // TODO: try to parse altlen as an expression
                         }
                     }
 
@@ -2281,6 +2282,25 @@ impl<'a> Generator<'a> {
                                 }
                             });
                             None
+                        } else if let Some(alt_len) = vparam.altlen.as_deref() {
+                            let alt_len = c_parse_expr(alt_len);
+                            let mut len_expr = String::new();
+                            alt_len
+                                .write_to(&mut len_expr, |s| {
+                                    let name = get_rust_variable_name(s);
+                                    if decl
+                                        .parameters
+                                        .iter()
+                                        .any(|cparam| cparam.name == s && matches!(cparam.ty.base, CBaseType::Named(_)))
+                                    {
+                                        // assume this is an enum type
+                                        format!("{}.0", name)
+                                    } else {
+                                        name
+                                    }
+                                })
+                                .unwrap();
+                            Some(len_expr)
                         } else {
                             let len_names: Vec<&str> = len_name.split("::").flat_map(|s| s.split("->")).collect();
                             let len_names: Vec<String> = len_names.iter().map(|s| get_rust_variable_name(s)).collect();
