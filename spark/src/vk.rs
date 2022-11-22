@@ -7515,6 +7515,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
+    /// Added by extension VK_ARM_shader_core_builtins.
+    pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM: Self = Self(1000497000);
+    /// Added by extension VK_ARM_shader_core_builtins.
+    pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM: Self = Self(1000497001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8171,6 +8175,8 @@ impl fmt::Display for StructureType {
             1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
+            1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
+            1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -38313,6 +38319,63 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
             .field("application_name_offset", &self.application_name_offset)
             .field("application_version", &self.application_version)
             .field("engine_name_offset", &self.engine_name_offset)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_core_count: u32,
+    pub shader_warps_per_core: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {}
+unsafe impl Sync for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {}
+impl Default for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            shader_core_count: Default::default(),
+            shader_warps_per_core: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsPropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderCoreBuiltinsPropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_core_count", &self.shader_core_count)
+            .field("shader_warps_per_core", &self.shader_warps_per_core)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_core_builtins: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+unsafe impl Sync for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl Default for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM,
+            p_next: ptr::null_mut(),
+            shader_core_builtins: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderCoreBuiltinsFeaturesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_core_builtins", &self.shader_core_builtins)
             .finish()
     }
 }

@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 230
+//! Generated from vk.xml with `VK_HEADER_VERSION` 231
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4267,6 +4267,7 @@ pub struct DeviceExtensions {
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
     pub ext_mutable_descriptor_type: bool,
+    pub arm_shader_core_builtins: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4534,6 +4535,7 @@ impl DeviceExtensions {
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
+            b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             _ => {}
         }
     }
@@ -4801,6 +4803,7 @@ impl DeviceExtensions {
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
             ext_mutable_descriptor_type: false,
+            arm_shader_core_builtins: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -6817,6 +6820,12 @@ impl DeviceExtensions {
         self.ext_mutable_descriptor_type = true;
         self.enable_khr_maintenance3();
     }
+    pub fn supports_arm_shader_core_builtins(&self) -> bool {
+        self.arm_shader_core_builtins
+    }
+    pub fn enable_arm_shader_core_builtins(&mut self) {
+        self.arm_shader_core_builtins = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -7603,6 +7612,9 @@ impl DeviceExtensions {
         }
         if self.ext_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mutable_descriptor_type\0") })
+        }
+        if self.arm_shader_core_builtins {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ARM_shader_core_builtins\0") })
         }
         v
     }

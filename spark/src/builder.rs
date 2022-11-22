@@ -21638,3 +21638,34 @@ impl Deref for DeviceFaultInfoEXTBuilder {
         &self.inner
     }
 }
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCoreBuiltinsPropertiesARM {}
+impl Builder<'_> for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
+    type Type = PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {
+    inner: vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM,
+}
+impl PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_core_builtins(mut self, shader_core_builtins: bool) -> Self {
+        self.inner.shader_core_builtins = if shader_core_builtins { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {
+    type Target = vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
