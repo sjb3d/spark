@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 233
+//! Generated from vk.xml with `VK_HEADER_VERSION` 235
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1297,6 +1297,12 @@ impl InstanceExtensions {
     pub fn enable_khr_synchronization2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_descriptor_buffer(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_descriptor_buffer(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
     pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1328,7 +1334,7 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_mesh_shader(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_mesh_shader(&mut self) {
         self.enable_khr_get_physical_device_properties2();
@@ -4219,6 +4225,7 @@ pub struct DeviceExtensions {
     pub qcom_render_pass_store_ops: bool,
     pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
+    pub ext_descriptor_buffer: bool,
     pub ext_graphics_pipeline_library: bool,
     pub amd_shader_early_and_late_fragment_tests: bool,
     pub khr_fragment_shader_barycentric: bool,
@@ -4490,6 +4497,7 @@ impl DeviceExtensions {
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
             b"VK_EXT_metal_objects" => self.ext_metal_objects = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
+            b"VK_EXT_descriptor_buffer" => self.ext_descriptor_buffer = true,
             b"VK_EXT_graphics_pipeline_library" => self.ext_graphics_pipeline_library = true,
             b"VK_AMD_shader_early_and_late_fragment_tests" => self.amd_shader_early_and_late_fragment_tests = true,
             b"VK_KHR_fragment_shader_barycentric" => self.khr_fragment_shader_barycentric = true,
@@ -4761,6 +4769,7 @@ impl DeviceExtensions {
             qcom_render_pass_store_ops: false,
             ext_metal_objects: false,
             khr_synchronization2: false,
+            ext_descriptor_buffer: false,
             ext_graphics_pipeline_library: false,
             amd_shader_early_and_late_fragment_tests: false,
             khr_fragment_shader_barycentric: false,
@@ -6303,6 +6312,20 @@ impl DeviceExtensions {
             self.khr_synchronization2 = true;
         }
     }
+    pub fn supports_ext_descriptor_buffer(&self) -> bool {
+        self.ext_descriptor_buffer
+            && self.supports_khr_buffer_device_address()
+            && self.supports_khr_synchronization2()
+            && self.supports_ext_descriptor_indexing()
+            && self.supports_khr_maintenance3()
+    }
+    pub fn enable_ext_descriptor_buffer(&mut self) {
+        self.ext_descriptor_buffer = true;
+        self.enable_khr_buffer_device_address();
+        self.enable_khr_synchronization2();
+        self.enable_ext_descriptor_indexing();
+        self.enable_khr_maintenance3();
+    }
     pub fn supports_ext_graphics_pipeline_library(&self) -> bool {
         self.ext_graphics_pipeline_library && self.supports_khr_pipeline_library()
     }
@@ -6373,7 +6396,10 @@ impl DeviceExtensions {
         self.enable_khr_maintenance3();
     }
     pub fn supports_ext_mesh_shader(&self) -> bool {
-        self.ext_mesh_shader && self.supports_khr_spirv_1_4() && self.supports_khr_shader_float_controls()
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.ext_mesh_shader
+            && self.supports_khr_spirv_1_4()
+            && self.supports_khr_shader_float_controls()
     }
     pub fn enable_ext_mesh_shader(&mut self) {
         self.ext_mesh_shader = true;
@@ -7478,6 +7504,9 @@ impl DeviceExtensions {
         if self.khr_synchronization2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_synchronization2\0") })
         }
+        if self.ext_descriptor_buffer {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_descriptor_buffer\0") })
+        }
         if self.ext_graphics_pipeline_library {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_graphics_pipeline_library\0") })
         }
@@ -8096,6 +8125,18 @@ pub struct Device {
     pub fp_destroy_cu_module_nvx: Option<vk::FnDestroyCuModuleNVX>,
     pub fp_destroy_cu_function_nvx: Option<vk::FnDestroyCuFunctionNVX>,
     pub fp_cmd_cu_launch_kernel_nvx: Option<vk::FnCmdCuLaunchKernelNVX>,
+    pub fp_get_descriptor_set_layout_size_ext: Option<vk::FnGetDescriptorSetLayoutSizeEXT>,
+    pub fp_get_descriptor_set_layout_binding_offset_ext: Option<vk::FnGetDescriptorSetLayoutBindingOffsetEXT>,
+    pub fp_get_descriptor_ext: Option<vk::FnGetDescriptorEXT>,
+    pub fp_cmd_bind_descriptor_buffers_ext: Option<vk::FnCmdBindDescriptorBuffersEXT>,
+    pub fp_cmd_set_descriptor_buffer_offsets_ext: Option<vk::FnCmdSetDescriptorBufferOffsetsEXT>,
+    pub fp_cmd_bind_descriptor_buffer_embedded_samplers_ext: Option<vk::FnCmdBindDescriptorBufferEmbeddedSamplersEXT>,
+    pub fp_get_buffer_opaque_capture_descriptor_data_ext: Option<vk::FnGetBufferOpaqueCaptureDescriptorDataEXT>,
+    pub fp_get_image_opaque_capture_descriptor_data_ext: Option<vk::FnGetImageOpaqueCaptureDescriptorDataEXT>,
+    pub fp_get_image_view_opaque_capture_descriptor_data_ext: Option<vk::FnGetImageViewOpaqueCaptureDescriptorDataEXT>,
+    pub fp_get_sampler_opaque_capture_descriptor_data_ext: Option<vk::FnGetSamplerOpaqueCaptureDescriptorDataEXT>,
+    pub fp_get_acceleration_structure_opaque_capture_descriptor_data_ext:
+        Option<vk::FnGetAccelerationStructureOpaqueCaptureDescriptorDataEXT>,
     pub fp_set_device_memory_priority_ext: Option<vk::FnSetDeviceMemoryPriorityEXT>,
     pub fp_wait_for_present_khr: Option<vk::FnWaitForPresentKHR>,
     pub fp_create_buffer_collection_fuchsia: Option<vk::FnCreateBufferCollectionFUCHSIA>,
@@ -11339,6 +11380,92 @@ impl Device {
             },
             fp_cmd_cu_launch_kernel_nvx: if extensions.nvx_binary_import {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdCuLaunchKernelNVX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_layout_size_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetLayoutSizeEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_set_layout_binding_offset_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDescriptorSetLayoutBindingOffsetEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_descriptor_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetDescriptorEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_descriptor_buffers_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindDescriptorBuffersEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_descriptor_buffer_offsets_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetDescriptorBufferOffsetsEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_descriptor_buffer_embedded_samplers_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdBindDescriptorBufferEmbeddedSamplersEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_buffer_opaque_capture_descriptor_data_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetBufferOpaqueCaptureDescriptorDataEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_opaque_capture_descriptor_data_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageOpaqueCaptureDescriptorDataEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_image_view_opaque_capture_descriptor_data_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageViewOpaqueCaptureDescriptorDataEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_sampler_opaque_capture_descriptor_data_ext: if extensions.ext_descriptor_buffer {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetSamplerOpaqueCaptureDescriptorDataEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_acceleration_structure_opaque_capture_descriptor_data_ext: if extensions.ext_descriptor_buffer
+                && (extensions.khr_acceleration_structure || extensions.nv_ray_tracing)
+            {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -18482,6 +18609,157 @@ impl Device {
             .fp_cmd_cu_launch_kernel_nvx
             .expect("vkCmdCuLaunchKernelNVX is not loaded");
         (fp)(Some(command_buffer), p_launch_info);
+    }
+    pub unsafe fn get_descriptor_set_layout_size_ext(&self, layout: vk::DescriptorSetLayout) -> vk::DeviceSize {
+        let fp = self
+            .fp_get_descriptor_set_layout_size_ext
+            .expect("vkGetDescriptorSetLayoutSizeEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(layout), res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn get_descriptor_set_layout_binding_offset_ext(
+        &self,
+        layout: vk::DescriptorSetLayout,
+        binding: u32,
+    ) -> vk::DeviceSize {
+        let fp = self
+            .fp_get_descriptor_set_layout_binding_offset_ext
+            .expect("vkGetDescriptorSetLayoutBindingOffsetEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), Some(layout), binding, res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn get_descriptor_ext<T>(&self, p_descriptor_info: &vk::DescriptorGetInfoEXT, p_descriptor: &mut [T]) {
+        let fp = self.fp_get_descriptor_ext.expect("vkGetDescriptorEXT is not loaded");
+        let data_size = mem::size_of_val(p_descriptor) as usize;
+        (fp)(
+            Some(self.handle),
+            p_descriptor_info,
+            data_size,
+            p_descriptor.first_mut().map_or(ptr::null_mut(), |s| s as *mut _) as *mut _,
+        );
+    }
+    pub unsafe fn cmd_bind_descriptor_buffers_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_binding_infos: &[vk::DescriptorBufferBindingInfoEXT],
+    ) {
+        let fp = self
+            .fp_cmd_bind_descriptor_buffers_ext
+            .expect("vkCmdBindDescriptorBuffersEXT is not loaded");
+        let buffer_count = p_binding_infos.len() as u32;
+        (fp)(
+            Some(command_buffer),
+            buffer_count,
+            p_binding_infos.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_set_descriptor_buffer_offsets_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        layout: vk::PipelineLayout,
+        first_set: u32,
+        p_buffer_indices: &[u32],
+        p_offsets: &[vk::DeviceSize],
+    ) {
+        let fp = self
+            .fp_cmd_set_descriptor_buffer_offsets_ext
+            .expect("vkCmdSetDescriptorBufferOffsetsEXT is not loaded");
+        let set_count = p_buffer_indices.len() as u32;
+        assert_eq!(set_count, p_offsets.len() as u32);
+        (fp)(
+            Some(command_buffer),
+            pipeline_bind_point,
+            Some(layout),
+            first_set,
+            set_count,
+            p_buffer_indices.first().map_or(ptr::null(), |s| s as *const _),
+            p_offsets.first().map_or(ptr::null(), |s| s as *const _),
+        );
+    }
+    pub unsafe fn cmd_bind_descriptor_buffer_embedded_samplers_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        layout: vk::PipelineLayout,
+        set: u32,
+    ) {
+        let fp = self
+            .fp_cmd_bind_descriptor_buffer_embedded_samplers_ext
+            .expect("vkCmdBindDescriptorBufferEmbeddedSamplersEXT is not loaded");
+        (fp)(Some(command_buffer), pipeline_bind_point, Some(layout), set);
+    }
+    pub unsafe fn get_buffer_opaque_capture_descriptor_data_ext(
+        &self,
+        p_info: &vk::BufferCaptureDescriptorDataInfoEXT,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_buffer_opaque_capture_descriptor_data_ext
+            .expect("vkGetBufferOpaqueCaptureDescriptorDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_image_opaque_capture_descriptor_data_ext(
+        &self,
+        p_info: &vk::ImageCaptureDescriptorDataInfoEXT,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_image_opaque_capture_descriptor_data_ext
+            .expect("vkGetImageOpaqueCaptureDescriptorDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_image_view_opaque_capture_descriptor_data_ext(
+        &self,
+        p_info: &vk::ImageViewCaptureDescriptorDataInfoEXT,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_image_view_opaque_capture_descriptor_data_ext
+            .expect("vkGetImageViewOpaqueCaptureDescriptorDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_sampler_opaque_capture_descriptor_data_ext(
+        &self,
+        p_info: &vk::SamplerCaptureDescriptorDataInfoEXT,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_sampler_opaque_capture_descriptor_data_ext
+            .expect("vkGetSamplerOpaqueCaptureDescriptorDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_acceleration_structure_opaque_capture_descriptor_data_ext(
+        &self,
+        p_info: &vk::AccelerationStructureCaptureDescriptorDataInfoEXT,
+    ) -> Result<c_void> {
+        let fp = self
+            .fp_get_acceleration_structure_opaque_capture_descriptor_data_ext
+            .expect("vkGetAccelerationStructureOpaqueCaptureDescriptorDataEXT is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn set_device_memory_priority_ext(&self, memory: vk::DeviceMemory, priority: f32) {
         let fp = self

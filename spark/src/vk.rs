@@ -280,12 +280,14 @@ impl SamplerCreateFlags {
     pub const SUBSAMPLED_EXT: Self = Self(0x1);
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_COARSE_RECONSTRUCTION_EXT: Self = Self(0x2);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x8);
     /// Added by extension VK_EXT_non_seamless_cube_map.
     pub const NON_SEAMLESS_CUBE_MAP_EXT: Self = Self(0x4);
     /// Added by extension VK_QCOM_image_processing.
     pub const IMAGE_PROCESSING_QCOM: Self = Self(0x10);
 }
-impl_bitmask!(SamplerCreateFlags, 0x17);
+impl_bitmask!(SamplerCreateFlags, 0x1f);
 impl fmt::Display for SamplerCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -293,6 +295,7 @@ impl fmt::Display for SamplerCreateFlags {
             &[
                 (0x1, "SUBSAMPLED_EXT"),
                 (0x2, "SUBSAMPLED_COARSE_RECONSTRUCTION_EXT"),
+                (0x8, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
                 (0x4, "NON_SEAMLESS_CUBE_MAP_EXT"),
                 (0x10, "IMAGE_PROCESSING_QCOM"),
             ],
@@ -464,11 +467,15 @@ impl DescriptorSetLayoutCreateFlags {
     /// Added by extension VK_KHR_push_descriptor.
     pub const PUSH_DESCRIPTOR_KHR: Self = Self(0x1);
     pub const UPDATE_AFTER_BIND_POOL_EXT: Self = Self::UPDATE_AFTER_BIND_POOL;
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x10);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const EMBEDDED_IMMUTABLE_SAMPLERS_EXT: Self = Self(0x20);
     pub const HOST_ONLY_POOL_VALVE: Self = Self::HOST_ONLY_POOL_EXT;
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const HOST_ONLY_POOL_EXT: Self = Self(0x4);
 }
-impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x7);
+impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x37);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -476,6 +483,8 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
             &[
                 (0x2, "UPDATE_AFTER_BIND_POOL"),
                 (0x1, "PUSH_DESCRIPTOR_KHR"),
+                (0x10, "DESCRIPTOR_BUFFER_EXT"),
+                (0x20, "EMBEDDED_IMMUTABLE_SAMPLERS_EXT"),
                 (0x4, "HOST_ONLY_POOL_EXT"),
             ],
             f,
@@ -766,12 +775,18 @@ impl BufferUsageFlags {
     pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE_KHR;
     pub const SHADER_DEVICE_ADDRESS_EXT: Self = Self::SHADER_DEVICE_ADDRESS;
     pub const SHADER_DEVICE_ADDRESS_KHR: Self = Self::SHADER_DEVICE_ADDRESS;
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const SAMPLER_DESCRIPTOR_BUFFER_EXT: Self = Self(0x200000);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const RESOURCE_DESCRIPTOR_BUFFER_EXT: Self = Self(0x400000);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT: Self = Self(0x4000000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
 }
-impl_bitmask!(BufferUsageFlags, 0x19a1fff);
+impl_bitmask!(BufferUsageFlags, 0x5fa1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -793,6 +808,9 @@ impl fmt::Display for BufferUsageFlags {
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
+                (0x200000, "SAMPLER_DESCRIPTOR_BUFFER_EXT"),
+                (0x400000, "RESOURCE_DESCRIPTOR_BUFFER_EXT"),
+                (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
                 (0x1000000, "MICROMAP_STORAGE_EXT"),
             ],
@@ -815,8 +833,10 @@ impl BufferCreateFlags {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x10);
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_EXT: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY_KHR: Self = Self::DEVICE_ADDRESS_CAPTURE_REPLAY;
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x20);
 }
-impl_bitmask!(BufferCreateFlags, 0x1f);
+impl_bitmask!(BufferCreateFlags, 0x3f);
 impl fmt::Display for BufferCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -827,6 +847,7 @@ impl fmt::Display for BufferCreateFlags {
                 (0x4, "SPARSE_ALIASED"),
                 (0x8, "PROTECTED"),
                 (0x10, "DEVICE_ADDRESS_CAPTURE_REPLAY"),
+                (0x20, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
             ],
             f,
         )
@@ -994,6 +1015,8 @@ impl ImageCreateFlags {
     pub const ALIAS_KHR: Self = Self::ALIAS;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x4000);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x10000);
     /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
     pub const MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT: Self = Self(0x40000);
     /// Image is created with a layout where individual slices are capable of being used as 2D images
@@ -1002,7 +1025,7 @@ impl ImageCreateFlags {
     /// Added by extension VK_QCOM_fragment_density_map_offset.
     pub const FRAGMENT_DENSITY_MAP_OFFSET_QCOM: Self = Self(0x8000);
 }
-impl_bitmask!(ImageCreateFlags, 0x6ffff);
+impl_bitmask!(ImageCreateFlags, 0x7ffff);
 impl fmt::Display for ImageCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1023,6 +1046,7 @@ impl fmt::Display for ImageCreateFlags {
                 (0x2000, "CORNER_SAMPLED_NV"),
                 (0x1000, "SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_EXT"),
                 (0x4000, "SUBSAMPLED_EXT"),
+                (0x10000, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
                 (0x40000, "MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_EXT"),
                 (0x20000, "N2D_VIEW_COMPATIBLE_EXT"),
                 (0x8000, "FRAGMENT_DENSITY_MAP_OFFSET_QCOM"),
@@ -1037,16 +1061,19 @@ pub struct ImageViewCreateFlags(pub(crate) u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x4);
     /// Added by extension VK_EXT_fragment_density_map2.
     pub const FRAGMENT_DENSITY_MAP_DEFERRED_EXT: Self = Self(0x2);
 }
-impl_bitmask!(ImageViewCreateFlags, 0x3);
+impl_bitmask!(ImageViewCreateFlags, 0x7);
 impl fmt::Display for ImageViewCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
             &[
                 (0x1, "FRAGMENT_DENSITY_MAP_DYNAMIC_EXT"),
+                (0x4, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
                 (0x2, "FRAGMENT_DENSITY_MAP_DEFERRED_EXT"),
             ],
             f,
@@ -1100,6 +1127,8 @@ impl PipelineCreateFlags {
     pub const LIBRARY_KHR: Self = Self(0x800);
     pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::FAIL_ON_PIPELINE_COMPILE_REQUIRED;
     pub const EARLY_RETURN_ON_FAILURE_EXT: Self = Self::EARLY_RETURN_ON_FAILURE;
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
     /// Added by extension VK_EXT_graphics_pipeline_library.
     pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT: Self = Self(0x800000);
     /// Added by extension VK_EXT_graphics_pipeline_library.
@@ -1117,7 +1146,7 @@ impl PipelineCreateFlags {
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
 }
-impl_bitmask!(PipelineCreateFlags, 0x4fffffff);
+impl_bitmask!(PipelineCreateFlags, 0x6fffffff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1144,6 +1173,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS_KHR"),
                 (0x40000, "INDIRECT_BINDABLE_NV"),
                 (0x800, "LIBRARY_KHR"),
+                (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
                 (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT"),
                 (0x400, "LINK_TIME_OPTIMIZATION_EXT"),
                 (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
@@ -2091,15 +2121,21 @@ pub type PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
 pub struct AccelerationStructureCreateFlagsKHR(pub(crate) u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT: Self = Self(0x8);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
     pub const MOTION_NV: Self = Self(0x4);
 }
-impl_bitmask!(AccelerationStructureCreateFlagsKHR, 0x5);
+impl_bitmask!(AccelerationStructureCreateFlagsKHR, 0xd);
 impl fmt::Display for AccelerationStructureCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
-            &[(0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"), (0x4, "MOTION_NV")],
+            &[
+                (0x1, "DEVICE_ADDRESS_CAPTURE_REPLAY"),
+                (0x8, "DESCRIPTOR_BUFFER_CAPTURE_REPLAY_EXT"),
+                (0x4, "MOTION_NV"),
+            ],
             f,
         )
     }
@@ -2298,6 +2334,8 @@ impl AccessFlags2 {
     pub const FRAGMENT_DENSITY_MAP_READ_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_synchronization2.
     pub const COLOR_ATTACHMENT_READ_NONCOHERENT_EXT: Self = Self(0x80000);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_READ_EXT: Self = Self(0x20000000000);
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_READ_HUAWEI: Self = Self(0x8000000000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
@@ -2311,7 +2349,7 @@ impl AccessFlags2 {
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_WRITE_NV: Self = Self(0x80000000000);
 }
-impl_bitmask!(AccessFlags2, 0x3d870fffffff);
+impl_bitmask!(AccessFlags2, 0x3f870fffffff);
 impl fmt::Display for AccessFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2348,6 +2386,7 @@ impl fmt::Display for AccessFlags2 {
                 (0x400000, "ACCELERATION_STRUCTURE_WRITE_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_READ_EXT"),
                 (0x80000, "COLOR_ATTACHMENT_READ_NONCOHERENT_EXT"),
+                (0x20000000000, "DESCRIPTOR_BUFFER_READ_EXT"),
                 (0x8000000000, "INVOCATION_MASK_READ_HUAWEI"),
                 (0x10000000000, "SHADER_BINDING_TABLE_READ_KHR"),
                 (0x100000000000, "MICROMAP_READ_EXT"),
@@ -7240,6 +7279,32 @@ impl StructureType {
     pub const QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV: Self = Self(1000314008);
     /// Added by extension VK_KHR_synchronization2.
     pub const CHECKPOINT_DATA_2_NV: Self = Self(1000314009);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT: Self = Self(1000316000);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT: Self = Self(1000316001);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT: Self = Self(1000316002);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_ADDRESS_INFO_EXT: Self = Self(1000316003);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_GET_INFO_EXT: Self = Self(1000316004);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316005);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316006);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316007);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316008);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT: Self = Self(1000316010);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_BINDING_INFO_EXT: Self = Self(1000316011);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT: Self = Self(1000316012);
+    /// Added by extension VK_EXT_descriptor_buffer.
+    pub const ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT: Self = Self(1000316009);
     /// Added by extension VK_EXT_graphics_pipeline_library.
     pub const PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT: Self = Self(1000320000);
     /// Added by extension VK_EXT_graphics_pipeline_library.
@@ -8070,6 +8135,19 @@ impl fmt::Display for StructureType {
             1000311011 => Some(&"IMPORT_METAL_SHARED_EVENT_INFO_EXT"),
             1000314008 => Some(&"QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV"),
             1000314009 => Some(&"CHECKPOINT_DATA_2_NV"),
+            1000316000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT"),
+            1000316001 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT"),
+            1000316002 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT"),
+            1000316003 => Some(&"DESCRIPTOR_ADDRESS_INFO_EXT"),
+            1000316004 => Some(&"DESCRIPTOR_GET_INFO_EXT"),
+            1000316005 => Some(&"BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
+            1000316006 => Some(&"IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
+            1000316007 => Some(&"IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
+            1000316008 => Some(&"SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
+            1000316010 => Some(&"OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT"),
+            1000316011 => Some(&"DESCRIPTOR_BUFFER_BINDING_INFO_EXT"),
+            1000316012 => Some(&"DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT"),
+            1000316009 => Some(&"ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT"),
             1000320000 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT"),
             1000320001 => Some(&"PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT"),
             1000320002 => Some(&"GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT"),
@@ -34552,6 +34630,601 @@ impl fmt::Debug for CuLaunchInfoNVX {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorBufferFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_buffer: Bool32,
+    pub descriptor_buffer_capture_replay: Bool32,
+    pub descriptor_buffer_image_layout_ignored: Bool32,
+    pub descriptor_buffer_push_descriptors: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorBufferFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDescriptorBufferFeaturesEXT {}
+impl Default for PhysicalDeviceDescriptorBufferFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            descriptor_buffer: Default::default(),
+            descriptor_buffer_capture_replay: Default::default(),
+            descriptor_buffer_image_layout_ignored: Default::default(),
+            descriptor_buffer_push_descriptors: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorBufferFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorBufferFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_buffer", &self.descriptor_buffer)
+            .field(
+                "descriptor_buffer_capture_replay",
+                &self.descriptor_buffer_capture_replay,
+            )
+            .field(
+                "descriptor_buffer_image_layout_ignored",
+                &self.descriptor_buffer_image_layout_ignored,
+            )
+            .field(
+                "descriptor_buffer_push_descriptors",
+                &self.descriptor_buffer_push_descriptors,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorBufferPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub combined_image_sampler_descriptor_single_array: Bool32,
+    pub bufferless_push_descriptors: Bool32,
+    pub allow_sampler_image_view_post_submit_creation: Bool32,
+    pub descriptor_buffer_offset_alignment: DeviceSize,
+    pub max_descriptor_buffer_bindings: u32,
+    pub max_resource_descriptor_buffer_bindings: u32,
+    pub max_sampler_descriptor_buffer_bindings: u32,
+    pub max_embedded_immutable_sampler_bindings: u32,
+    pub max_embedded_immutable_samplers: u32,
+    pub buffer_capture_replay_descriptor_data_size: usize,
+    pub image_capture_replay_descriptor_data_size: usize,
+    pub image_view_capture_replay_descriptor_data_size: usize,
+    pub sampler_capture_replay_descriptor_data_size: usize,
+    pub acceleration_structure_capture_replay_descriptor_data_size: usize,
+    pub sampler_descriptor_size: usize,
+    pub combined_image_sampler_descriptor_size: usize,
+    pub sampled_image_descriptor_size: usize,
+    pub storage_image_descriptor_size: usize,
+    pub uniform_texel_buffer_descriptor_size: usize,
+    pub robust_uniform_texel_buffer_descriptor_size: usize,
+    pub storage_texel_buffer_descriptor_size: usize,
+    pub robust_storage_texel_buffer_descriptor_size: usize,
+    pub uniform_buffer_descriptor_size: usize,
+    pub robust_uniform_buffer_descriptor_size: usize,
+    pub storage_buffer_descriptor_size: usize,
+    pub robust_storage_buffer_descriptor_size: usize,
+    pub input_attachment_descriptor_size: usize,
+    pub acceleration_structure_descriptor_size: usize,
+    pub max_sampler_descriptor_buffer_range: DeviceSize,
+    pub max_resource_descriptor_buffer_range: DeviceSize,
+    pub sampler_descriptor_buffer_address_space_size: DeviceSize,
+    pub resource_descriptor_buffer_address_space_size: DeviceSize,
+    pub descriptor_buffer_address_space_size: DeviceSize,
+}
+unsafe impl Send for PhysicalDeviceDescriptorBufferPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDescriptorBufferPropertiesEXT {}
+impl Default for PhysicalDeviceDescriptorBufferPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            combined_image_sampler_descriptor_single_array: Default::default(),
+            bufferless_push_descriptors: Default::default(),
+            allow_sampler_image_view_post_submit_creation: Default::default(),
+            descriptor_buffer_offset_alignment: Default::default(),
+            max_descriptor_buffer_bindings: Default::default(),
+            max_resource_descriptor_buffer_bindings: Default::default(),
+            max_sampler_descriptor_buffer_bindings: Default::default(),
+            max_embedded_immutable_sampler_bindings: Default::default(),
+            max_embedded_immutable_samplers: Default::default(),
+            buffer_capture_replay_descriptor_data_size: Default::default(),
+            image_capture_replay_descriptor_data_size: Default::default(),
+            image_view_capture_replay_descriptor_data_size: Default::default(),
+            sampler_capture_replay_descriptor_data_size: Default::default(),
+            acceleration_structure_capture_replay_descriptor_data_size: Default::default(),
+            sampler_descriptor_size: Default::default(),
+            combined_image_sampler_descriptor_size: Default::default(),
+            sampled_image_descriptor_size: Default::default(),
+            storage_image_descriptor_size: Default::default(),
+            uniform_texel_buffer_descriptor_size: Default::default(),
+            robust_uniform_texel_buffer_descriptor_size: Default::default(),
+            storage_texel_buffer_descriptor_size: Default::default(),
+            robust_storage_texel_buffer_descriptor_size: Default::default(),
+            uniform_buffer_descriptor_size: Default::default(),
+            robust_uniform_buffer_descriptor_size: Default::default(),
+            storage_buffer_descriptor_size: Default::default(),
+            robust_storage_buffer_descriptor_size: Default::default(),
+            input_attachment_descriptor_size: Default::default(),
+            acceleration_structure_descriptor_size: Default::default(),
+            max_sampler_descriptor_buffer_range: Default::default(),
+            max_resource_descriptor_buffer_range: Default::default(),
+            sampler_descriptor_buffer_address_space_size: Default::default(),
+            resource_descriptor_buffer_address_space_size: Default::default(),
+            descriptor_buffer_address_space_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorBufferPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorBufferPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "combined_image_sampler_descriptor_single_array",
+                &self.combined_image_sampler_descriptor_single_array,
+            )
+            .field("bufferless_push_descriptors", &self.bufferless_push_descriptors)
+            .field(
+                "allow_sampler_image_view_post_submit_creation",
+                &self.allow_sampler_image_view_post_submit_creation,
+            )
+            .field(
+                "descriptor_buffer_offset_alignment",
+                &self.descriptor_buffer_offset_alignment,
+            )
+            .field("max_descriptor_buffer_bindings", &self.max_descriptor_buffer_bindings)
+            .field(
+                "max_resource_descriptor_buffer_bindings",
+                &self.max_resource_descriptor_buffer_bindings,
+            )
+            .field(
+                "max_sampler_descriptor_buffer_bindings",
+                &self.max_sampler_descriptor_buffer_bindings,
+            )
+            .field(
+                "max_embedded_immutable_sampler_bindings",
+                &self.max_embedded_immutable_sampler_bindings,
+            )
+            .field("max_embedded_immutable_samplers", &self.max_embedded_immutable_samplers)
+            .field(
+                "buffer_capture_replay_descriptor_data_size",
+                &self.buffer_capture_replay_descriptor_data_size,
+            )
+            .field(
+                "image_capture_replay_descriptor_data_size",
+                &self.image_capture_replay_descriptor_data_size,
+            )
+            .field(
+                "image_view_capture_replay_descriptor_data_size",
+                &self.image_view_capture_replay_descriptor_data_size,
+            )
+            .field(
+                "sampler_capture_replay_descriptor_data_size",
+                &self.sampler_capture_replay_descriptor_data_size,
+            )
+            .field(
+                "acceleration_structure_capture_replay_descriptor_data_size",
+                &self.acceleration_structure_capture_replay_descriptor_data_size,
+            )
+            .field("sampler_descriptor_size", &self.sampler_descriptor_size)
+            .field(
+                "combined_image_sampler_descriptor_size",
+                &self.combined_image_sampler_descriptor_size,
+            )
+            .field("sampled_image_descriptor_size", &self.sampled_image_descriptor_size)
+            .field("storage_image_descriptor_size", &self.storage_image_descriptor_size)
+            .field(
+                "uniform_texel_buffer_descriptor_size",
+                &self.uniform_texel_buffer_descriptor_size,
+            )
+            .field(
+                "robust_uniform_texel_buffer_descriptor_size",
+                &self.robust_uniform_texel_buffer_descriptor_size,
+            )
+            .field(
+                "storage_texel_buffer_descriptor_size",
+                &self.storage_texel_buffer_descriptor_size,
+            )
+            .field(
+                "robust_storage_texel_buffer_descriptor_size",
+                &self.robust_storage_texel_buffer_descriptor_size,
+            )
+            .field("uniform_buffer_descriptor_size", &self.uniform_buffer_descriptor_size)
+            .field(
+                "robust_uniform_buffer_descriptor_size",
+                &self.robust_uniform_buffer_descriptor_size,
+            )
+            .field("storage_buffer_descriptor_size", &self.storage_buffer_descriptor_size)
+            .field(
+                "robust_storage_buffer_descriptor_size",
+                &self.robust_storage_buffer_descriptor_size,
+            )
+            .field(
+                "input_attachment_descriptor_size",
+                &self.input_attachment_descriptor_size,
+            )
+            .field(
+                "acceleration_structure_descriptor_size",
+                &self.acceleration_structure_descriptor_size,
+            )
+            .field(
+                "max_sampler_descriptor_buffer_range",
+                &self.max_sampler_descriptor_buffer_range,
+            )
+            .field(
+                "max_resource_descriptor_buffer_range",
+                &self.max_resource_descriptor_buffer_range,
+            )
+            .field(
+                "sampler_descriptor_buffer_address_space_size",
+                &self.sampler_descriptor_buffer_address_space_size,
+            )
+            .field(
+                "resource_descriptor_buffer_address_space_size",
+                &self.resource_descriptor_buffer_address_space_size,
+            )
+            .field(
+                "descriptor_buffer_address_space_size",
+                &self.descriptor_buffer_address_space_size,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub combined_image_sampler_density_map_descriptor_size: usize,
+}
+unsafe impl Send for PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {}
+impl Default for PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            combined_image_sampler_density_map_descriptor_size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "combined_image_sampler_density_map_descriptor_size",
+                &self.combined_image_sampler_density_map_descriptor_size,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorAddressInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub address: DeviceAddress,
+    pub range: DeviceSize,
+    pub format: Format,
+}
+unsafe impl Send for DescriptorAddressInfoEXT {}
+unsafe impl Sync for DescriptorAddressInfoEXT {}
+impl Default for DescriptorAddressInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_ADDRESS_INFO_EXT,
+            p_next: ptr::null_mut(),
+            address: Default::default(),
+            range: Default::default(),
+            format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorAddressInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorAddressInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address", &self.address)
+            .field("range", &self.range)
+            .field("format", &self.format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorBufferBindingInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub address: DeviceAddress,
+    pub usage: BufferUsageFlags,
+}
+unsafe impl Send for DescriptorBufferBindingInfoEXT {}
+unsafe impl Sync for DescriptorBufferBindingInfoEXT {}
+impl Default for DescriptorBufferBindingInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_BUFFER_BINDING_INFO_EXT,
+            p_next: ptr::null_mut(),
+            address: Default::default(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorBufferBindingInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorBufferBindingInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("address", &self.address)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorBufferBindingPushDescriptorBufferHandleEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub buffer: Option<Buffer>,
+}
+unsafe impl Send for DescriptorBufferBindingPushDescriptorBufferHandleEXT {}
+unsafe impl Sync for DescriptorBufferBindingPushDescriptorBufferHandleEXT {}
+impl Default for DescriptorBufferBindingPushDescriptorBufferHandleEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT,
+            p_next: ptr::null_mut(),
+            buffer: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorBufferBindingPushDescriptorBufferHandleEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorBufferBindingPushDescriptorBufferHandleEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer", &self.buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union DescriptorDataEXT {
+    pub p_sampler: *const Sampler,
+    pub p_combined_image_sampler: *const DescriptorImageInfo,
+    pub p_input_attachment_image: *const DescriptorImageInfo,
+    pub p_sampled_image: *const DescriptorImageInfo,
+    pub p_storage_image: *const DescriptorImageInfo,
+    pub p_uniform_texel_buffer: *const DescriptorAddressInfoEXT,
+    pub p_storage_texel_buffer: *const DescriptorAddressInfoEXT,
+    pub p_uniform_buffer: *const DescriptorAddressInfoEXT,
+    pub p_storage_buffer: *const DescriptorAddressInfoEXT,
+    pub acceleration_structure: DeviceAddress,
+}
+unsafe impl Send for DescriptorDataEXT {}
+unsafe impl Sync for DescriptorDataEXT {}
+impl Default for DescriptorDataEXT {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for DescriptorDataEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorDataEXT")
+            .field("p_sampler", unsafe { &self.p_sampler })
+            .field("p_combined_image_sampler", unsafe { &self.p_combined_image_sampler })
+            .field("p_input_attachment_image", unsafe { &self.p_input_attachment_image })
+            .field("p_sampled_image", unsafe { &self.p_sampled_image })
+            .field("p_storage_image", unsafe { &self.p_storage_image })
+            .field("p_uniform_texel_buffer", unsafe { &self.p_uniform_texel_buffer })
+            .field("p_storage_texel_buffer", unsafe { &self.p_storage_texel_buffer })
+            .field("p_uniform_buffer", unsafe { &self.p_uniform_buffer })
+            .field("p_storage_buffer", unsafe { &self.p_storage_buffer })
+            .field("acceleration_structure", unsafe { &self.acceleration_structure })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DescriptorGetInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub ty: DescriptorType,
+    pub data: DescriptorDataEXT,
+}
+unsafe impl Send for DescriptorGetInfoEXT {}
+unsafe impl Sync for DescriptorGetInfoEXT {}
+impl Default for DescriptorGetInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DESCRIPTOR_GET_INFO_EXT,
+            p_next: ptr::null(),
+            ty: Default::default(),
+            data: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DescriptorGetInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DescriptorGetInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ty", &self.ty)
+            .field("data", &self.data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BufferCaptureDescriptorDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub buffer: Option<Buffer>,
+}
+unsafe impl Send for BufferCaptureDescriptorDataInfoEXT {}
+unsafe impl Sync for BufferCaptureDescriptorDataInfoEXT {}
+impl Default for BufferCaptureDescriptorDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            buffer: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferCaptureDescriptorDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferCaptureDescriptorDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("buffer", &self.buffer)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageCaptureDescriptorDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image: Option<Image>,
+}
+unsafe impl Send for ImageCaptureDescriptorDataInfoEXT {}
+unsafe impl Sync for ImageCaptureDescriptorDataInfoEXT {}
+impl Default for ImageCaptureDescriptorDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            image: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageCaptureDescriptorDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageCaptureDescriptorDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image", &self.image)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewCaptureDescriptorDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image_view: Option<ImageView>,
+}
+unsafe impl Send for ImageViewCaptureDescriptorDataInfoEXT {}
+unsafe impl Sync for ImageViewCaptureDescriptorDataInfoEXT {}
+impl Default for ImageViewCaptureDescriptorDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            image_view: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewCaptureDescriptorDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewCaptureDescriptorDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_view", &self.image_view)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SamplerCaptureDescriptorDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub sampler: Option<Sampler>,
+}
+unsafe impl Send for SamplerCaptureDescriptorDataInfoEXT {}
+unsafe impl Sync for SamplerCaptureDescriptorDataInfoEXT {}
+impl Default for SamplerCaptureDescriptorDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            sampler: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerCaptureDescriptorDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerCaptureDescriptorDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("sampler", &self.sampler)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureCaptureDescriptorDataInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub acceleration_structure: Option<AccelerationStructureKHR>,
+    pub acceleration_structure_nv: Option<AccelerationStructureNV>,
+}
+unsafe impl Send for AccelerationStructureCaptureDescriptorDataInfoEXT {}
+unsafe impl Sync for AccelerationStructureCaptureDescriptorDataInfoEXT {}
+impl Default for AccelerationStructureCaptureDescriptorDataInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+            p_next: ptr::null(),
+            acceleration_structure: Default::default(),
+            acceleration_structure_nv: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureCaptureDescriptorDataInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureCaptureDescriptorDataInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("acceleration_structure", &self.acceleration_structure)
+            .field("acceleration_structure_nv", &self.acceleration_structure_nv)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OpaqueCaptureDescriptorDataCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub opaque_capture_descriptor_data: *const c_void,
+}
+unsafe impl Send for OpaqueCaptureDescriptorDataCreateInfoEXT {}
+unsafe impl Sync for OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl Default for OpaqueCaptureDescriptorDataCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            opaque_capture_descriptor_data: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for OpaqueCaptureDescriptorDataCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OpaqueCaptureDescriptorDataCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("opaque_capture_descriptor_data", &self.opaque_capture_descriptor_data)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderIntegerDotProductFeatures {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -40982,6 +41655,68 @@ pub type FnDestroyCuFunctionNVX = unsafe extern "system" fn(
 );
 pub type FnCmdCuLaunchKernelNVX =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_launch_info: *const CuLaunchInfoNVX);
+pub type FnGetDescriptorSetLayoutSizeEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    layout: Option<DescriptorSetLayout>,
+    p_layout_size_in_bytes: *mut DeviceSize,
+);
+pub type FnGetDescriptorSetLayoutBindingOffsetEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    layout: Option<DescriptorSetLayout>,
+    binding: u32,
+    p_offset: *mut DeviceSize,
+);
+pub type FnGetDescriptorEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_descriptor_info: *const DescriptorGetInfoEXT,
+    data_size: usize,
+    p_descriptor: *mut c_void,
+);
+pub type FnCmdBindDescriptorBuffersEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer_count: u32,
+    p_binding_infos: *const DescriptorBufferBindingInfoEXT,
+);
+pub type FnCmdSetDescriptorBufferOffsetsEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    layout: Option<PipelineLayout>,
+    first_set: u32,
+    set_count: u32,
+    p_buffer_indices: *const u32,
+    p_offsets: *const DeviceSize,
+);
+pub type FnCmdBindDescriptorBufferEmbeddedSamplersEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    layout: Option<PipelineLayout>,
+    set: u32,
+);
+pub type FnGetBufferOpaqueCaptureDescriptorDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const BufferCaptureDescriptorDataInfoEXT,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetImageOpaqueCaptureDescriptorDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageCaptureDescriptorDataInfoEXT,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetImageViewOpaqueCaptureDescriptorDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const ImageViewCaptureDescriptorDataInfoEXT,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetSamplerOpaqueCaptureDescriptorDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const SamplerCaptureDescriptorDataInfoEXT,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnGetAccelerationStructureOpaqueCaptureDescriptorDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const AccelerationStructureCaptureDescriptorDataInfoEXT,
+    p_data: *mut c_void,
+) -> Result;
 pub type FnSetDeviceMemoryPriorityEXT =
     unsafe extern "system" fn(device: Option<Device>, memory: Option<DeviceMemory>, priority: f32);
 pub type FnAcquireDrmDisplayEXT = unsafe extern "system" fn(

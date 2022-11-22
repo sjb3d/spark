@@ -11237,17 +11237,25 @@ impl<'a> Deref for AccelerationStructureInfoNVBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::AccelerationStructureCreateInfoNV {
-    type Type = AccelerationStructureCreateInfoNVBuilder;
+impl<'a> Builder<'a> for vk::AccelerationStructureCreateInfoNV {
+    type Type = AccelerationStructureCreateInfoNVBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait AccelerationStructureCreateInfoNVNext {}
 #[derive(Default)]
-pub struct AccelerationStructureCreateInfoNVBuilder {
+pub struct AccelerationStructureCreateInfoNVBuilder<'a> {
     inner: vk::AccelerationStructureCreateInfoNV,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl AccelerationStructureCreateInfoNVBuilder {
+impl<'a> AccelerationStructureCreateInfoNVBuilder<'a> {
+    pub fn insert_next<T: AccelerationStructureCreateInfoNVNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -11261,7 +11269,7 @@ impl AccelerationStructureCreateInfoNVBuilder {
         self
     }
 }
-impl Deref for AccelerationStructureCreateInfoNVBuilder {
+impl<'a> Deref for AccelerationStructureCreateInfoNVBuilder<'a> {
     type Target = vk::AccelerationStructureCreateInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -18412,6 +18420,364 @@ impl<'a> Deref for CuLaunchInfoNVXBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceDescriptorBufferFeaturesEXT {
+    type Type = PhysicalDeviceDescriptorBufferFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorBufferFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDescriptorBufferFeaturesEXT,
+}
+impl PhysicalDeviceDescriptorBufferFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_buffer(mut self, descriptor_buffer: bool) -> Self {
+        self.inner.descriptor_buffer = if descriptor_buffer { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn descriptor_buffer_capture_replay(mut self, descriptor_buffer_capture_replay: bool) -> Self {
+        self.inner.descriptor_buffer_capture_replay = if descriptor_buffer_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn descriptor_buffer_image_layout_ignored(mut self, descriptor_buffer_image_layout_ignored: bool) -> Self {
+        self.inner.descriptor_buffer_image_layout_ignored = if descriptor_buffer_image_layout_ignored {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn descriptor_buffer_push_descriptors(mut self, descriptor_buffer_push_descriptors: bool) -> Self {
+        self.inner.descriptor_buffer_push_descriptors = if descriptor_buffer_push_descriptors {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorBufferFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDescriptorBufferFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorBufferFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorBufferFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorBufferFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorBufferFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorBufferPropertiesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT {}
+impl Builder<'_> for vk::DescriptorAddressInfoEXT {
+    type Type = DescriptorAddressInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorAddressInfoEXTBuilder {
+    inner: vk::DescriptorAddressInfoEXT,
+}
+impl DescriptorAddressInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
+        self.inner.address = address;
+        self
+    }
+    pub fn range(mut self, range: vk::DeviceSize) -> Self {
+        self.inner.range = range;
+        self
+    }
+    pub fn format(mut self, format: vk::Format) -> Self {
+        self.inner.format = format;
+        self
+    }
+}
+impl Deref for DescriptorAddressInfoEXTBuilder {
+    type Target = vk::DescriptorAddressInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DescriptorBufferBindingInfoEXT {
+    type Type = DescriptorBufferBindingInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DescriptorBufferBindingInfoEXTNext {}
+#[derive(Default)]
+pub struct DescriptorBufferBindingInfoEXTBuilder<'a> {
+    inner: vk::DescriptorBufferBindingInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DescriptorBufferBindingInfoEXTBuilder<'a> {
+    pub fn insert_next<T: DescriptorBufferBindingInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn address(mut self, address: vk::DeviceAddress) -> Self {
+        self.inner.address = address;
+        self
+    }
+    pub fn usage(mut self, usage: vk::BufferUsageFlags) -> Self {
+        self.inner.usage = usage;
+        self
+    }
+}
+impl<'a> Deref for DescriptorBufferBindingInfoEXTBuilder<'a> {
+    type Target = vk::DescriptorBufferBindingInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT {
+    type Type = DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
+    inner: vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT,
+}
+impl DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
+        self.inner.buffer = Some(buffer);
+        self
+    }
+}
+impl Deref for DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {
+    type Target = vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DescriptorBufferBindingInfoEXTNext for DescriptorBufferBindingPushDescriptorBufferHandleEXTBuilder {}
+impl DescriptorBufferBindingInfoEXTNext for vk::DescriptorBufferBindingPushDescriptorBufferHandleEXT {}
+impl Builder<'_> for vk::DescriptorGetInfoEXT {
+    type Type = DescriptorGetInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DescriptorGetInfoEXTBuilder {
+    inner: vk::DescriptorGetInfoEXT,
+}
+impl DescriptorGetInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ty(mut self, ty: vk::DescriptorType) -> Self {
+        self.inner.ty = ty;
+        self
+    }
+    pub fn data(mut self, data: vk::DescriptorDataEXT) -> Self {
+        self.inner.data = data;
+        self
+    }
+}
+impl Deref for DescriptorGetInfoEXTBuilder {
+    type Target = vk::DescriptorGetInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::BufferCaptureDescriptorDataInfoEXT {
+    type Type = BufferCaptureDescriptorDataInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BufferCaptureDescriptorDataInfoEXTBuilder {
+    inner: vk::BufferCaptureDescriptorDataInfoEXT,
+}
+impl BufferCaptureDescriptorDataInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn buffer(mut self, buffer: vk::Buffer) -> Self {
+        self.inner.buffer = Some(buffer);
+        self
+    }
+}
+impl Deref for BufferCaptureDescriptorDataInfoEXTBuilder {
+    type Target = vk::BufferCaptureDescriptorDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageCaptureDescriptorDataInfoEXT {
+    type Type = ImageCaptureDescriptorDataInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageCaptureDescriptorDataInfoEXTBuilder {
+    inner: vk::ImageCaptureDescriptorDataInfoEXT,
+}
+impl ImageCaptureDescriptorDataInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image(mut self, image: vk::Image) -> Self {
+        self.inner.image = Some(image);
+        self
+    }
+}
+impl Deref for ImageCaptureDescriptorDataInfoEXTBuilder {
+    type Target = vk::ImageCaptureDescriptorDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageViewCaptureDescriptorDataInfoEXT {
+    type Type = ImageViewCaptureDescriptorDataInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageViewCaptureDescriptorDataInfoEXTBuilder {
+    inner: vk::ImageViewCaptureDescriptorDataInfoEXT,
+}
+impl ImageViewCaptureDescriptorDataInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_view(mut self, image_view: vk::ImageView) -> Self {
+        self.inner.image_view = Some(image_view);
+        self
+    }
+}
+impl Deref for ImageViewCaptureDescriptorDataInfoEXTBuilder {
+    type Target = vk::ImageViewCaptureDescriptorDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::SamplerCaptureDescriptorDataInfoEXT {
+    type Type = SamplerCaptureDescriptorDataInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerCaptureDescriptorDataInfoEXTBuilder {
+    inner: vk::SamplerCaptureDescriptorDataInfoEXT,
+}
+impl SamplerCaptureDescriptorDataInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn sampler(mut self, sampler: vk::Sampler) -> Self {
+        self.inner.sampler = Some(sampler);
+        self
+    }
+}
+impl Deref for SamplerCaptureDescriptorDataInfoEXTBuilder {
+    type Target = vk::SamplerCaptureDescriptorDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::AccelerationStructureCaptureDescriptorDataInfoEXT {
+    type Type = AccelerationStructureCaptureDescriptorDataInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureCaptureDescriptorDataInfoEXTBuilder {
+    inner: vk::AccelerationStructureCaptureDescriptorDataInfoEXT,
+}
+impl AccelerationStructureCaptureDescriptorDataInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn acceleration_structure(mut self, acceleration_structure: Option<vk::AccelerationStructureKHR>) -> Self {
+        self.inner.acceleration_structure = acceleration_structure;
+        self
+    }
+    pub fn acceleration_structure_nv(mut self, acceleration_structure_nv: Option<vk::AccelerationStructureNV>) -> Self {
+        self.inner.acceleration_structure_nv = acceleration_structure_nv;
+        self
+    }
+}
+impl Deref for AccelerationStructureCaptureDescriptorDataInfoEXTBuilder {
+    type Target = vk::AccelerationStructureCaptureDescriptorDataInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {
+    type Type = OpaqueCaptureDescriptorDataCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {
+    inner: vk::OpaqueCaptureDescriptorDataCreateInfoEXT,
+}
+impl OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn opaque_capture_descriptor_data(mut self, opaque_capture_descriptor_data: *const c_void) -> Self {
+        self.inner.opaque_capture_descriptor_data = opaque_capture_descriptor_data;
+        self
+    }
+}
+impl Deref for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {
+    type Target = vk::OpaqueCaptureDescriptorDataCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BufferCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl ImageCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl ImageViewCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl SamplerCreateInfoNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl AccelerationStructureCreateInfoKHRNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl AccelerationStructureCreateInfoNVNext for OpaqueCaptureDescriptorDataCreateInfoEXTBuilder {}
+impl BufferCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl ImageCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl ImageViewCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl SamplerCreateInfoNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl AccelerationStructureCreateInfoKHRNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
+impl AccelerationStructureCreateInfoNVNext for vk::OpaqueCaptureDescriptorDataCreateInfoEXT {}
 impl Builder<'_> for vk::PhysicalDeviceShaderIntegerDotProductFeatures {
     type Type = PhysicalDeviceShaderIntegerDotProductFeaturesBuilder;
     fn builder() -> Self::Type {
