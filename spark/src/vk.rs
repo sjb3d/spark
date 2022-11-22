@@ -238,7 +238,7 @@ pub type DeviceSize = u64;
 pub type DeviceAddress = u64;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct FramebufferCreateFlags(u32);
+pub struct FramebufferCreateFlags(pub(crate) u32);
 impl FramebufferCreateFlags {
     pub const IMAGELESS: Self = Self(0x1);
     pub const IMAGELESS_KHR: Self = Self::IMAGELESS;
@@ -251,7 +251,7 @@ impl fmt::Display for FramebufferCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct QueryPoolCreateFlags(u32);
+pub struct QueryPoolCreateFlags(pub(crate) u32);
 impl QueryPoolCreateFlags {}
 impl_bitmask!(QueryPoolCreateFlags, 0x0);
 impl fmt::Display for QueryPoolCreateFlags {
@@ -261,7 +261,7 @@ impl fmt::Display for QueryPoolCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct RenderPassCreateFlags(u32);
+pub struct RenderPassCreateFlags(pub(crate) u32);
 impl RenderPassCreateFlags {
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const TRANSFORM_QCOM: Self = Self(0x2);
@@ -274,7 +274,7 @@ impl fmt::Display for RenderPassCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SamplerCreateFlags(u32);
+pub struct SamplerCreateFlags(pub(crate) u32);
 impl SamplerCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const SUBSAMPLED_EXT: Self = Self(0x1);
@@ -302,7 +302,7 @@ impl fmt::Display for SamplerCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineLayoutCreateFlags(u32);
+pub struct PipelineLayoutCreateFlags(pub(crate) u32);
 impl PipelineLayoutCreateFlags {
     /// Added by extension VK_EXT_graphics_pipeline_library.
     pub const INDEPENDENT_SETS_EXT: Self = Self(0x2);
@@ -315,7 +315,7 @@ impl fmt::Display for PipelineLayoutCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCacheCreateFlags(u32);
+pub struct PipelineCacheCreateFlags(pub(crate) u32);
 impl PipelineCacheCreateFlags {
     pub const EXTERNALLY_SYNCHRONIZED: Self = Self(0x1);
     pub const EXTERNALLY_SYNCHRONIZED_EXT: Self = Self::EXTERNALLY_SYNCHRONIZED;
@@ -328,7 +328,7 @@ impl fmt::Display for PipelineCacheCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineDepthStencilStateCreateFlags(u32);
+pub struct PipelineDepthStencilStateCreateFlags(pub(crate) u32);
 impl PipelineDepthStencilStateCreateFlags {
     pub const RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_ARM: Self =
         Self::RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_EXT;
@@ -354,7 +354,7 @@ impl fmt::Display for PipelineDepthStencilStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineDynamicStateCreateFlags(u32);
+pub struct PipelineDynamicStateCreateFlags(pub(crate) u32);
 impl PipelineDynamicStateCreateFlags {}
 impl_bitmask!(PipelineDynamicStateCreateFlags, 0x0);
 impl fmt::Display for PipelineDynamicStateCreateFlags {
@@ -364,7 +364,7 @@ impl fmt::Display for PipelineDynamicStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineColorBlendStateCreateFlags(u32);
+pub struct PipelineColorBlendStateCreateFlags(pub(crate) u32);
 impl PipelineColorBlendStateCreateFlags {
     pub const RASTERIZATION_ORDER_ATTACHMENT_ACCESS_ARM: Self = Self::RASTERIZATION_ORDER_ATTACHMENT_ACCESS_EXT;
     /// Added by extension VK_EXT_rasterization_order_attachment_access.
@@ -378,7 +378,7 @@ impl fmt::Display for PipelineColorBlendStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineMultisampleStateCreateFlags(u32);
+pub struct PipelineMultisampleStateCreateFlags(pub(crate) u32);
 impl PipelineMultisampleStateCreateFlags {}
 impl_bitmask!(PipelineMultisampleStateCreateFlags, 0x0);
 impl fmt::Display for PipelineMultisampleStateCreateFlags {
@@ -388,7 +388,7 @@ impl fmt::Display for PipelineMultisampleStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineRasterizationStateCreateFlags(u32);
+pub struct PipelineRasterizationStateCreateFlags(pub(crate) u32);
 impl PipelineRasterizationStateCreateFlags {}
 impl_bitmask!(PipelineRasterizationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineRasterizationStateCreateFlags {
@@ -398,7 +398,7 @@ impl fmt::Display for PipelineRasterizationStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineViewportStateCreateFlags(u32);
+pub struct PipelineViewportStateCreateFlags(pub(crate) u32);
 impl PipelineViewportStateCreateFlags {}
 impl_bitmask!(PipelineViewportStateCreateFlags, 0x0);
 impl fmt::Display for PipelineViewportStateCreateFlags {
@@ -408,7 +408,7 @@ impl fmt::Display for PipelineViewportStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineTessellationStateCreateFlags(u32);
+pub struct PipelineTessellationStateCreateFlags(pub(crate) u32);
 impl PipelineTessellationStateCreateFlags {}
 impl_bitmask!(PipelineTessellationStateCreateFlags, 0x0);
 impl fmt::Display for PipelineTessellationStateCreateFlags {
@@ -418,7 +418,7 @@ impl fmt::Display for PipelineTessellationStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineInputAssemblyStateCreateFlags(u32);
+pub struct PipelineInputAssemblyStateCreateFlags(pub(crate) u32);
 impl PipelineInputAssemblyStateCreateFlags {}
 impl_bitmask!(PipelineInputAssemblyStateCreateFlags, 0x0);
 impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
@@ -428,7 +428,7 @@ impl fmt::Display for PipelineInputAssemblyStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineVertexInputStateCreateFlags(u32);
+pub struct PipelineVertexInputStateCreateFlags(pub(crate) u32);
 impl PipelineVertexInputStateCreateFlags {}
 impl_bitmask!(PipelineVertexInputStateCreateFlags, 0x0);
 impl fmt::Display for PipelineVertexInputStateCreateFlags {
@@ -438,7 +438,7 @@ impl fmt::Display for PipelineVertexInputStateCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineShaderStageCreateFlags(u32);
+pub struct PipelineShaderStageCreateFlags(pub(crate) u32);
 impl PipelineShaderStageCreateFlags {
     pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x1);
     pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x2);
@@ -457,7 +457,7 @@ impl fmt::Display for PipelineShaderStageCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DescriptorSetLayoutCreateFlags(u32);
+pub struct DescriptorSetLayoutCreateFlags(pub(crate) u32);
 impl DescriptorSetLayoutCreateFlags {
     pub const UPDATE_AFTER_BIND_POOL: Self = Self(0x2);
     /// Descriptors are pushed via flink:vkCmdPushDescriptorSetKHR
@@ -484,7 +484,7 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct BufferViewCreateFlags(u32);
+pub struct BufferViewCreateFlags(pub(crate) u32);
 impl BufferViewCreateFlags {}
 impl_bitmask!(BufferViewCreateFlags, 0x0);
 impl fmt::Display for BufferViewCreateFlags {
@@ -494,7 +494,7 @@ impl fmt::Display for BufferViewCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct InstanceCreateFlags(u32);
+pub struct InstanceCreateFlags(pub(crate) u32);
 impl InstanceCreateFlags {
     /// Added by extension VK_KHR_portability_enumeration.
     pub const ENUMERATE_PORTABILITY_KHR: Self = Self(0x1);
@@ -507,7 +507,7 @@ impl fmt::Display for InstanceCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DeviceCreateFlags(u32);
+pub struct DeviceCreateFlags(pub(crate) u32);
 impl DeviceCreateFlags {}
 impl_bitmask!(DeviceCreateFlags, 0x0);
 impl fmt::Display for DeviceCreateFlags {
@@ -517,7 +517,7 @@ impl fmt::Display for DeviceCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DeviceQueueCreateFlags(u32);
+pub struct DeviceQueueCreateFlags(pub(crate) u32);
 impl DeviceQueueCreateFlags {
     /// Queue is a protected-capable device queue
     pub const PROTECTED: Self = Self(0x1);
@@ -530,7 +530,7 @@ impl fmt::Display for DeviceQueueCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct QueueFlags(u32);
+pub struct QueueFlags(pub(crate) u32);
 impl QueueFlags {
     /// Queue supports graphics operations
     pub const GRAPHICS: Self = Self(0x1);
@@ -561,7 +561,7 @@ impl fmt::Display for QueueFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryPropertyFlags(u32);
+pub struct MemoryPropertyFlags(pub(crate) u32);
 impl MemoryPropertyFlags {
     /// If otherwise stated, then allocate memory on device
     pub const DEVICE_LOCAL: Self = Self(0x1);
@@ -604,7 +604,7 @@ impl fmt::Display for MemoryPropertyFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryHeapFlags(u32);
+pub struct MemoryHeapFlags(pub(crate) u32);
 impl MemoryHeapFlags {
     /// If set, heap represents device memory
     pub const DEVICE_LOCAL: Self = Self(0x1);
@@ -620,7 +620,7 @@ impl fmt::Display for MemoryHeapFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AccessFlags(u32);
+pub struct AccessFlags(pub(crate) u32);
 impl AccessFlags {
     /// Controls coherency of indirect command reads
     pub const INDIRECT_COMMAND_READ: Self = Self(0x1);
@@ -726,7 +726,7 @@ impl fmt::Display for AccessFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct BufferUsageFlags(u32);
+pub struct BufferUsageFlags(pub(crate) u32);
 impl BufferUsageFlags {
     /// Can be used as a source of transfer operations
     pub const TRANSFER_SRC: Self = Self(0x1);
@@ -793,7 +793,7 @@ impl fmt::Display for BufferUsageFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct BufferCreateFlags(u32);
+pub struct BufferCreateFlags(pub(crate) u32);
 impl BufferCreateFlags {
     /// Buffer should support sparse backing
     pub const SPARSE_BINDING: Self = Self(0x1);
@@ -825,7 +825,7 @@ impl fmt::Display for BufferCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ShaderStageFlags(u32);
+pub struct ShaderStageFlags(pub(crate) u32);
 impl ShaderStageFlags {
     pub const VERTEX: Self = Self(0x1);
     pub const TESSELLATION_CONTROL: Self = Self(0x2);
@@ -892,7 +892,7 @@ impl fmt::Display for ShaderStageFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageUsageFlags(u32);
+pub struct ImageUsageFlags(pub(crate) u32);
 impl ImageUsageFlags {
     /// Can be used as a source of transfer operations
     pub const TRANSFER_SRC: Self = Self(0x1);
@@ -951,7 +951,7 @@ impl fmt::Display for ImageUsageFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageCreateFlags(u32);
+pub struct ImageCreateFlags(pub(crate) u32);
 impl ImageCreateFlags {
     /// Image should support sparse backing
     pub const SPARSE_BINDING: Self = Self(0x1);
@@ -1024,7 +1024,7 @@ impl fmt::Display for ImageCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageViewCreateFlags(u32);
+pub struct ImageViewCreateFlags(pub(crate) u32);
 impl ImageViewCreateFlags {
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_DYNAMIC_EXT: Self = Self(0x1);
@@ -1046,7 +1046,7 @@ impl fmt::Display for ImageViewCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCreateFlags(u32);
+pub struct PipelineCreateFlags(pub(crate) u32);
 impl PipelineCreateFlags {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
@@ -1141,7 +1141,7 @@ impl fmt::Display for PipelineCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ColorComponentFlags(u32);
+pub struct ColorComponentFlags(pub(crate) u32);
 impl ColorComponentFlags {
     pub const R: Self = Self(0x1);
     pub const G: Self = Self(0x2);
@@ -1156,7 +1156,7 @@ impl fmt::Display for ColorComponentFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct FenceCreateFlags(u32);
+pub struct FenceCreateFlags(pub(crate) u32);
 impl FenceCreateFlags {
     pub const SIGNALED: Self = Self(0x1);
 }
@@ -1168,7 +1168,7 @@ impl fmt::Display for FenceCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SemaphoreCreateFlags(u32);
+pub struct SemaphoreCreateFlags(pub(crate) u32);
 impl SemaphoreCreateFlags {}
 impl_bitmask!(SemaphoreCreateFlags, 0x0);
 impl fmt::Display for SemaphoreCreateFlags {
@@ -1178,7 +1178,7 @@ impl fmt::Display for SemaphoreCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct FormatFeatureFlags(u32);
+pub struct FormatFeatureFlags(pub(crate) u32);
 impl FormatFeatureFlags {
     /// Format can be used for sampled images (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
     pub const SAMPLED_IMAGE: Self = Self(0x1);
@@ -1294,7 +1294,7 @@ impl fmt::Display for FormatFeatureFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct QueryControlFlags(u32);
+pub struct QueryControlFlags(pub(crate) u32);
 impl QueryControlFlags {
     /// Require precise results to be collected by the query
     pub const PRECISE: Self = Self(0x1);
@@ -1307,7 +1307,7 @@ impl fmt::Display for QueryControlFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct QueryResultFlags(u32);
+pub struct QueryResultFlags(pub(crate) u32);
 impl QueryResultFlags {
     /// Results of the queries are written to the destination buffer as 64-bit values
     pub const N64: Self = Self(0x1);
@@ -1335,7 +1335,7 @@ impl fmt::Display for QueryResultFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ShaderModuleCreateFlags(u32);
+pub struct ShaderModuleCreateFlags(pub(crate) u32);
 impl ShaderModuleCreateFlags {}
 impl_bitmask!(ShaderModuleCreateFlags, 0x0);
 impl fmt::Display for ShaderModuleCreateFlags {
@@ -1345,7 +1345,7 @@ impl fmt::Display for ShaderModuleCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct EventCreateFlags(u32);
+pub struct EventCreateFlags(pub(crate) u32);
 impl EventCreateFlags {
     pub const DEVICE_ONLY: Self = Self(0x1);
     pub const DEVICE_ONLY_KHR: Self = Self::DEVICE_ONLY;
@@ -1358,7 +1358,7 @@ impl fmt::Display for EventCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CommandPoolCreateFlags(u32);
+pub struct CommandPoolCreateFlags(pub(crate) u32);
 impl CommandPoolCreateFlags {
     /// Command buffers have a short lifetime
     pub const TRANSIENT: Self = Self(0x1);
@@ -1379,7 +1379,7 @@ impl fmt::Display for CommandPoolCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CommandPoolResetFlags(u32);
+pub struct CommandPoolResetFlags(pub(crate) u32);
 impl CommandPoolResetFlags {
     /// Release resources owned by the pool
     pub const RELEASE_RESOURCES: Self = Self(0x1);
@@ -1392,7 +1392,7 @@ impl fmt::Display for CommandPoolResetFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CommandBufferResetFlags(u32);
+pub struct CommandBufferResetFlags(pub(crate) u32);
 impl CommandBufferResetFlags {
     /// Release resources owned by the buffer
     pub const RELEASE_RESOURCES: Self = Self(0x1);
@@ -1405,7 +1405,7 @@ impl fmt::Display for CommandBufferResetFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CommandBufferUsageFlags(u32);
+pub struct CommandBufferUsageFlags(pub(crate) u32);
 impl CommandBufferUsageFlags {
     pub const ONE_TIME_SUBMIT: Self = Self(0x1);
     pub const RENDER_PASS_CONTINUE: Self = Self(0x2);
@@ -1428,7 +1428,7 @@ impl fmt::Display for CommandBufferUsageFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct QueryPipelineStatisticFlags(u32);
+pub struct QueryPipelineStatisticFlags(pub(crate) u32);
 impl QueryPipelineStatisticFlags {
     /// Optional
     pub const INPUT_ASSEMBLY_VERTICES: Self = Self(0x1);
@@ -1483,7 +1483,7 @@ impl fmt::Display for QueryPipelineStatisticFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryMapFlags(u32);
+pub struct MemoryMapFlags(pub(crate) u32);
 impl MemoryMapFlags {}
 impl_bitmask!(MemoryMapFlags, 0x0);
 impl fmt::Display for MemoryMapFlags {
@@ -1493,7 +1493,7 @@ impl fmt::Display for MemoryMapFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageAspectFlags(u32);
+pub struct ImageAspectFlags(pub(crate) u32);
 impl ImageAspectFlags {
     pub const COLOR: Self = Self(0x1);
     pub const DEPTH: Self = Self(0x2);
@@ -1540,7 +1540,7 @@ impl fmt::Display for ImageAspectFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SparseMemoryBindFlags(u32);
+pub struct SparseMemoryBindFlags(pub(crate) u32);
 impl SparseMemoryBindFlags {
     /// Operation binds resource metadata to memory
     pub const METADATA: Self = Self(0x1);
@@ -1553,7 +1553,7 @@ impl fmt::Display for SparseMemoryBindFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SparseImageFormatFlags(u32);
+pub struct SparseImageFormatFlags(pub(crate) u32);
 impl SparseImageFormatFlags {
     /// Image uses a single mip tail region for all array layers
     pub const SINGLE_MIPTAIL: Self = Self(0x1);
@@ -1578,7 +1578,7 @@ impl fmt::Display for SparseImageFormatFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SubpassDescriptionFlags(u32);
+pub struct SubpassDescriptionFlags(pub(crate) u32);
 impl SubpassDescriptionFlags {
     /// Added by extension VK_NVX_multiview_per_view_attributes.
     pub const PER_VIEW_ATTRIBUTES_NVX: Self = Self(0x1);
@@ -1624,7 +1624,7 @@ impl fmt::Display for SubpassDescriptionFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineStageFlags(u32);
+pub struct PipelineStageFlags(pub(crate) u32);
 impl PipelineStageFlags {
     /// Before subsequent commands are processed
     pub const TOP_OF_PIPE: Self = Self(0x1);
@@ -1726,7 +1726,7 @@ impl fmt::Display for PipelineStageFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SampleCountFlags(u32);
+pub struct SampleCountFlags(pub(crate) u32);
 impl SampleCountFlags {
     /// Sample count 1 supported
     pub const N1: Self = Self(0x1);
@@ -1763,7 +1763,7 @@ impl fmt::Display for SampleCountFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AttachmentDescriptionFlags(u32);
+pub struct AttachmentDescriptionFlags(pub(crate) u32);
 impl AttachmentDescriptionFlags {
     /// The attachment may alias physical memory of another attachment in the same render pass
     pub const MAY_ALIAS: Self = Self(0x1);
@@ -1776,7 +1776,7 @@ impl fmt::Display for AttachmentDescriptionFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct StencilFaceFlags(u32);
+pub struct StencilFaceFlags(pub(crate) u32);
 impl StencilFaceFlags {
     /// Front face
     pub const FRONT: Self = Self(0x1);
@@ -1797,7 +1797,7 @@ impl fmt::Display for StencilFaceFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CullModeFlags(u32);
+pub struct CullModeFlags(pub(crate) u32);
 impl CullModeFlags {
     pub const NONE: Self = Self(0x0);
     pub const FRONT: Self = Self(0x1);
@@ -1816,7 +1816,7 @@ impl fmt::Display for CullModeFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DescriptorPoolCreateFlags(u32);
+pub struct DescriptorPoolCreateFlags(pub(crate) u32);
 impl DescriptorPoolCreateFlags {
     /// Descriptor sets may be freed individually
     pub const FREE_DESCRIPTOR_SET: Self = Self(0x1);
@@ -1842,7 +1842,7 @@ impl fmt::Display for DescriptorPoolCreateFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DescriptorPoolResetFlags(u32);
+pub struct DescriptorPoolResetFlags(pub(crate) u32);
 impl DescriptorPoolResetFlags {}
 impl_bitmask!(DescriptorPoolResetFlags, 0x0);
 impl fmt::Display for DescriptorPoolResetFlags {
@@ -1852,7 +1852,7 @@ impl fmt::Display for DescriptorPoolResetFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DependencyFlags(u32);
+pub struct DependencyFlags(pub(crate) u32);
 impl DependencyFlags {
     /// Dependency is per pixel region
     pub const BY_REGION: Self = Self(0x1);
@@ -1882,7 +1882,7 @@ impl fmt::Display for DependencyFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SubgroupFeatureFlags(u32);
+pub struct SubgroupFeatureFlags(pub(crate) u32);
 impl SubgroupFeatureFlags {
     /// Basic subgroup operations
     pub const BASIC: Self = Self(0x1);
@@ -1925,7 +1925,7 @@ impl fmt::Display for SubgroupFeatureFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct IndirectCommandsLayoutUsageFlagsNV(u32);
+pub struct IndirectCommandsLayoutUsageFlagsNV(pub(crate) u32);
 impl IndirectCommandsLayoutUsageFlagsNV {
     pub const EXPLICIT_PREPROCESS: Self = Self(0x1);
     pub const INDEXED_SEQUENCES: Self = Self(0x2);
@@ -1947,7 +1947,7 @@ impl fmt::Display for IndirectCommandsLayoutUsageFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct IndirectStateFlagsNV(u32);
+pub struct IndirectStateFlagsNV(pub(crate) u32);
 impl IndirectStateFlagsNV {
     pub const FRONTFACE: Self = Self(0x1);
 }
@@ -1959,7 +1959,7 @@ impl fmt::Display for IndirectStateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct GeometryFlagsKHR(u32);
+pub struct GeometryFlagsKHR(pub(crate) u32);
 impl GeometryFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const NO_DUPLICATE_ANY_HIT_INVOCATION: Self = Self(0x2);
@@ -1979,7 +1979,7 @@ impl fmt::Display for GeometryFlagsKHR {
 pub type GeometryFlagsNV = GeometryFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct GeometryInstanceFlagsKHR(u32);
+pub struct GeometryInstanceFlagsKHR(pub(crate) u32);
 impl GeometryInstanceFlagsKHR {
     pub const TRIANGLE_FACING_CULL_DISABLE: Self = Self(0x1);
     pub const TRIANGLE_FLIP_FACING: Self = Self(0x2);
@@ -2009,7 +2009,7 @@ impl fmt::Display for GeometryInstanceFlagsKHR {
 pub type GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct BuildAccelerationStructureFlagsKHR(u32);
+pub struct BuildAccelerationStructureFlagsKHR(pub(crate) u32);
 impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_UPDATE: Self = Self(0x1);
     pub const ALLOW_COMPACTION: Self = Self(0x2);
@@ -2044,7 +2044,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
 pub type BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PrivateDataSlotCreateFlags(u32);
+pub struct PrivateDataSlotCreateFlags(pub(crate) u32);
 impl PrivateDataSlotCreateFlags {}
 impl_bitmask!(PrivateDataSlotCreateFlags, 0x0);
 impl fmt::Display for PrivateDataSlotCreateFlags {
@@ -2055,7 +2055,7 @@ impl fmt::Display for PrivateDataSlotCreateFlags {
 pub type PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureCreateFlagsKHR(u32);
+pub struct AccelerationStructureCreateFlagsKHR(pub(crate) u32);
 impl AccelerationStructureCreateFlagsKHR {
     pub const DEVICE_ADDRESS_CAPTURE_REPLAY: Self = Self(0x1);
     /// Added by extension VK_NV_ray_tracing_motion_blur.
@@ -2073,7 +2073,7 @@ impl fmt::Display for AccelerationStructureCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DescriptorUpdateTemplateCreateFlags(u32);
+pub struct DescriptorUpdateTemplateCreateFlags(pub(crate) u32);
 impl DescriptorUpdateTemplateCreateFlags {}
 impl_bitmask!(DescriptorUpdateTemplateCreateFlags, 0x0);
 impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
@@ -2084,7 +2084,7 @@ impl fmt::Display for DescriptorUpdateTemplateCreateFlags {
 pub type DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCreationFeedbackFlags(u32);
+pub struct PipelineCreationFeedbackFlags(pub(crate) u32);
 impl PipelineCreationFeedbackFlags {
     pub const VALID: Self = Self(0x1);
     pub const VALID_EXT: Self = Self::VALID;
@@ -2110,7 +2110,7 @@ impl fmt::Display for PipelineCreationFeedbackFlags {
 pub type PipelineCreationFeedbackFlagsEXT = PipelineCreationFeedbackFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PerformanceCounterDescriptionFlagsKHR(u32);
+pub struct PerformanceCounterDescriptionFlagsKHR(pub(crate) u32);
 impl PerformanceCounterDescriptionFlagsKHR {
     pub const PERFORMANCE_IMPACTING: Self = Self(0x1);
     pub const CONCURRENTLY_IMPACTED: Self = Self(0x2);
@@ -2127,7 +2127,7 @@ impl fmt::Display for PerformanceCounterDescriptionFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AcquireProfilingLockFlagsKHR(u32);
+pub struct AcquireProfilingLockFlagsKHR(pub(crate) u32);
 impl AcquireProfilingLockFlagsKHR {}
 impl_bitmask!(AcquireProfilingLockFlagsKHR, 0x0);
 impl fmt::Display for AcquireProfilingLockFlagsKHR {
@@ -2137,7 +2137,7 @@ impl fmt::Display for AcquireProfilingLockFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SemaphoreWaitFlags(u32);
+pub struct SemaphoreWaitFlags(pub(crate) u32);
 impl SemaphoreWaitFlags {
     pub const ANY: Self = Self(0x1);
     pub const ANY_KHR: Self = Self::ANY;
@@ -2151,7 +2151,7 @@ impl fmt::Display for SemaphoreWaitFlags {
 pub type SemaphoreWaitFlagsKHR = SemaphoreWaitFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCompilerControlFlagsAMD(u32);
+pub struct PipelineCompilerControlFlagsAMD(pub(crate) u32);
 impl PipelineCompilerControlFlagsAMD {}
 impl_bitmask!(PipelineCompilerControlFlagsAMD, 0x0);
 impl fmt::Display for PipelineCompilerControlFlagsAMD {
@@ -2161,7 +2161,7 @@ impl fmt::Display for PipelineCompilerControlFlagsAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ShaderCorePropertiesFlagsAMD(u32);
+pub struct ShaderCorePropertiesFlagsAMD(pub(crate) u32);
 impl ShaderCorePropertiesFlagsAMD {}
 impl_bitmask!(ShaderCorePropertiesFlagsAMD, 0x0);
 impl fmt::Display for ShaderCorePropertiesFlagsAMD {
@@ -2171,7 +2171,7 @@ impl fmt::Display for ShaderCorePropertiesFlagsAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DeviceDiagnosticsConfigFlagsNV(u32);
+pub struct DeviceDiagnosticsConfigFlagsNV(pub(crate) u32);
 impl DeviceDiagnosticsConfigFlagsNV {
     pub const ENABLE_SHADER_DEBUG_INFO: Self = Self(0x1);
     pub const ENABLE_RESOURCE_TRACKING: Self = Self(0x2);
@@ -2195,7 +2195,7 @@ impl fmt::Display for DeviceDiagnosticsConfigFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AccessFlags2(u64);
+pub struct AccessFlags2(pub(crate) u64);
 impl AccessFlags2 {
     pub const NONE: Self = Self(0x0);
     pub const NONE_KHR: Self = Self::NONE;
@@ -2317,7 +2317,7 @@ impl fmt::Display for AccessFlags2 {
 pub type AccessFlags2KHR = AccessFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineStageFlags2(u64);
+pub struct PipelineStageFlags2(pub(crate) u64);
 impl PipelineStageFlags2 {
     pub const NONE: Self = Self(0x0);
     pub const NONE_KHR: Self = Self::NONE;
@@ -2452,7 +2452,7 @@ impl fmt::Display for PipelineStageFlags2 {
 pub type PipelineStageFlags2KHR = PipelineStageFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMotionInfoFlagsNV(u32);
+pub struct AccelerationStructureMotionInfoFlagsNV(pub(crate) u32);
 impl AccelerationStructureMotionInfoFlagsNV {}
 impl_bitmask!(AccelerationStructureMotionInfoFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
@@ -2462,7 +2462,7 @@ impl fmt::Display for AccelerationStructureMotionInfoFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMotionInstanceFlagsNV(u32);
+pub struct AccelerationStructureMotionInstanceFlagsNV(pub(crate) u32);
 impl AccelerationStructureMotionInstanceFlagsNV {}
 impl_bitmask!(AccelerationStructureMotionInstanceFlagsNV, 0x0);
 impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
@@ -2472,7 +2472,7 @@ impl fmt::Display for AccelerationStructureMotionInstanceFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct FormatFeatureFlags2(u64);
+pub struct FormatFeatureFlags2(pub(crate) u64);
 impl FormatFeatureFlags2 {
     pub const SAMPLED_IMAGE: Self = Self(0x1);
     pub const SAMPLED_IMAGE_KHR: Self = Self::SAMPLED_IMAGE;
@@ -2605,7 +2605,7 @@ impl fmt::Display for FormatFeatureFlags2 {
 pub type FormatFeatureFlags2KHR = FormatFeatureFlags2;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct RenderingFlags(u32);
+pub struct RenderingFlags(pub(crate) u32);
 impl RenderingFlags {
     pub const CONTENTS_SECONDARY_COMMAND_BUFFERS: Self = Self(0x1);
     pub const CONTENTS_SECONDARY_COMMAND_BUFFERS_KHR: Self = Self::CONTENTS_SECONDARY_COMMAND_BUFFERS;
@@ -2634,7 +2634,7 @@ impl fmt::Display for RenderingFlags {
 pub type RenderingFlagsKHR = RenderingFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CompositeAlphaFlagsKHR(u32);
+pub struct CompositeAlphaFlagsKHR(pub(crate) u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const PRE_MULTIPLIED: Self = Self(0x2);
@@ -2658,7 +2658,7 @@ impl fmt::Display for CompositeAlphaFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DisplayPlaneAlphaFlagsKHR(u32);
+pub struct DisplayPlaneAlphaFlagsKHR(pub(crate) u32);
 impl DisplayPlaneAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
     pub const GLOBAL: Self = Self(0x2);
@@ -2682,7 +2682,7 @@ impl fmt::Display for DisplayPlaneAlphaFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SurfaceTransformFlagsKHR(u32);
+pub struct SurfaceTransformFlagsKHR(pub(crate) u32);
 impl SurfaceTransformFlagsKHR {
     pub const IDENTITY: Self = Self(0x1);
     pub const ROTATE_90: Self = Self(0x2);
@@ -2716,7 +2716,7 @@ impl fmt::Display for SurfaceTransformFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SwapchainCreateFlagsKHR(u32);
+pub struct SwapchainCreateFlagsKHR(pub(crate) u32);
 impl SwapchainCreateFlagsKHR {
     /// Allow images with VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT
     /// Added by extension VK_KHR_device_group.
@@ -2743,7 +2743,7 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DisplayModeCreateFlagsKHR(u32);
+pub struct DisplayModeCreateFlagsKHR(pub(crate) u32);
 impl DisplayModeCreateFlagsKHR {}
 impl_bitmask!(DisplayModeCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplayModeCreateFlagsKHR {
@@ -2753,7 +2753,7 @@ impl fmt::Display for DisplayModeCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DisplaySurfaceCreateFlagsKHR(u32);
+pub struct DisplaySurfaceCreateFlagsKHR(pub(crate) u32);
 impl DisplaySurfaceCreateFlagsKHR {}
 impl_bitmask!(DisplaySurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
@@ -2763,7 +2763,7 @@ impl fmt::Display for DisplaySurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct AndroidSurfaceCreateFlagsKHR(u32);
+pub struct AndroidSurfaceCreateFlagsKHR(pub(crate) u32);
 impl AndroidSurfaceCreateFlagsKHR {}
 impl_bitmask!(AndroidSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
@@ -2773,7 +2773,7 @@ impl fmt::Display for AndroidSurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ViSurfaceCreateFlagsNN(u32);
+pub struct ViSurfaceCreateFlagsNN(pub(crate) u32);
 impl ViSurfaceCreateFlagsNN {}
 impl_bitmask!(ViSurfaceCreateFlagsNN, 0x0);
 impl fmt::Display for ViSurfaceCreateFlagsNN {
@@ -2783,7 +2783,7 @@ impl fmt::Display for ViSurfaceCreateFlagsNN {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct WaylandSurfaceCreateFlagsKHR(u32);
+pub struct WaylandSurfaceCreateFlagsKHR(pub(crate) u32);
 impl WaylandSurfaceCreateFlagsKHR {}
 impl_bitmask!(WaylandSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
@@ -2793,7 +2793,7 @@ impl fmt::Display for WaylandSurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct Win32SurfaceCreateFlagsKHR(u32);
+pub struct Win32SurfaceCreateFlagsKHR(pub(crate) u32);
 impl Win32SurfaceCreateFlagsKHR {}
 impl_bitmask!(Win32SurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for Win32SurfaceCreateFlagsKHR {
@@ -2803,7 +2803,7 @@ impl fmt::Display for Win32SurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct XlibSurfaceCreateFlagsKHR(u32);
+pub struct XlibSurfaceCreateFlagsKHR(pub(crate) u32);
 impl XlibSurfaceCreateFlagsKHR {}
 impl_bitmask!(XlibSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XlibSurfaceCreateFlagsKHR {
@@ -2813,7 +2813,7 @@ impl fmt::Display for XlibSurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct XcbSurfaceCreateFlagsKHR(u32);
+pub struct XcbSurfaceCreateFlagsKHR(pub(crate) u32);
 impl XcbSurfaceCreateFlagsKHR {}
 impl_bitmask!(XcbSurfaceCreateFlagsKHR, 0x0);
 impl fmt::Display for XcbSurfaceCreateFlagsKHR {
@@ -2823,7 +2823,7 @@ impl fmt::Display for XcbSurfaceCreateFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DirectFBSurfaceCreateFlagsEXT(u32);
+pub struct DirectFBSurfaceCreateFlagsEXT(pub(crate) u32);
 impl DirectFBSurfaceCreateFlagsEXT {}
 impl_bitmask!(DirectFBSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
@@ -2833,7 +2833,7 @@ impl fmt::Display for DirectFBSurfaceCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct IOSSurfaceCreateFlagsMVK(u32);
+pub struct IOSSurfaceCreateFlagsMVK(pub(crate) u32);
 impl IOSSurfaceCreateFlagsMVK {}
 impl_bitmask!(IOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for IOSSurfaceCreateFlagsMVK {
@@ -2843,7 +2843,7 @@ impl fmt::Display for IOSSurfaceCreateFlagsMVK {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MacOSSurfaceCreateFlagsMVK(u32);
+pub struct MacOSSurfaceCreateFlagsMVK(pub(crate) u32);
 impl MacOSSurfaceCreateFlagsMVK {}
 impl_bitmask!(MacOSSurfaceCreateFlagsMVK, 0x0);
 impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
@@ -2853,7 +2853,7 @@ impl fmt::Display for MacOSSurfaceCreateFlagsMVK {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MetalSurfaceCreateFlagsEXT(u32);
+pub struct MetalSurfaceCreateFlagsEXT(pub(crate) u32);
 impl MetalSurfaceCreateFlagsEXT {}
 impl_bitmask!(MetalSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for MetalSurfaceCreateFlagsEXT {
@@ -2863,7 +2863,7 @@ impl fmt::Display for MetalSurfaceCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(u32);
+pub struct ImagePipeSurfaceCreateFlagsFUCHSIA(pub(crate) u32);
 impl ImagePipeSurfaceCreateFlagsFUCHSIA {}
 impl_bitmask!(ImagePipeSurfaceCreateFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
@@ -2873,7 +2873,7 @@ impl fmt::Display for ImagePipeSurfaceCreateFlagsFUCHSIA {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct HeadlessSurfaceCreateFlagsEXT(u32);
+pub struct HeadlessSurfaceCreateFlagsEXT(pub(crate) u32);
 impl HeadlessSurfaceCreateFlagsEXT {}
 impl_bitmask!(HeadlessSurfaceCreateFlagsEXT, 0x0);
 impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
@@ -2883,7 +2883,7 @@ impl fmt::Display for HeadlessSurfaceCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PeerMemoryFeatureFlags(u32);
+pub struct PeerMemoryFeatureFlags(pub(crate) u32);
 impl PeerMemoryFeatureFlags {
     /// Can read with vkCmdCopy commands
     pub const COPY_SRC: Self = Self(0x1);
@@ -2916,7 +2916,7 @@ impl fmt::Display for PeerMemoryFeatureFlags {
 pub type PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryAllocateFlags(u32);
+pub struct MemoryAllocateFlags(pub(crate) u32);
 impl MemoryAllocateFlags {
     /// Force allocation on specific devices
     pub const DEVICE_MASK: Self = Self(0x1);
@@ -2943,7 +2943,7 @@ impl fmt::Display for MemoryAllocateFlags {
 pub type MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DeviceGroupPresentModeFlagsKHR(u32);
+pub struct DeviceGroupPresentModeFlagsKHR(pub(crate) u32);
 impl DeviceGroupPresentModeFlagsKHR {
     /// Present from local memory
     pub const LOCAL: Self = Self(0x1);
@@ -2971,7 +2971,7 @@ impl fmt::Display for DeviceGroupPresentModeFlagsKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DebugReportFlagsEXT(u32);
+pub struct DebugReportFlagsEXT(pub(crate) u32);
 impl DebugReportFlagsEXT {
     pub const INFORMATION: Self = Self(0x1);
     pub const WARNING: Self = Self(0x2);
@@ -2997,7 +2997,7 @@ impl fmt::Display for DebugReportFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct CommandPoolTrimFlags(u32);
+pub struct CommandPoolTrimFlags(pub(crate) u32);
 impl CommandPoolTrimFlags {}
 impl_bitmask!(CommandPoolTrimFlags, 0x0);
 impl fmt::Display for CommandPoolTrimFlags {
@@ -3008,7 +3008,7 @@ impl fmt::Display for CommandPoolTrimFlags {
 pub type CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalMemoryHandleTypeFlagsNV(u32);
+pub struct ExternalMemoryHandleTypeFlagsNV(pub(crate) u32);
 impl ExternalMemoryHandleTypeFlagsNV {
     pub const OPAQUE_WIN32: Self = Self(0x1);
     pub const OPAQUE_WIN32_KMT: Self = Self(0x2);
@@ -3032,7 +3032,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalMemoryFeatureFlagsNV(u32);
+pub struct ExternalMemoryFeatureFlagsNV(pub(crate) u32);
 impl ExternalMemoryFeatureFlagsNV {
     pub const DEDICATED_ONLY: Self = Self(0x1);
     pub const EXPORTABLE: Self = Self(0x2);
@@ -3050,7 +3050,7 @@ impl fmt::Display for ExternalMemoryFeatureFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalMemoryHandleTypeFlags(u32);
+pub struct ExternalMemoryHandleTypeFlags(pub(crate) u32);
 impl ExternalMemoryHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
     pub const OPAQUE_WIN32: Self = Self(0x2);
@@ -3106,7 +3106,7 @@ impl fmt::Display for ExternalMemoryHandleTypeFlags {
 pub type ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalMemoryFeatureFlags(u32);
+pub struct ExternalMemoryFeatureFlags(pub(crate) u32);
 impl ExternalMemoryFeatureFlags {
     pub const DEDICATED_ONLY: Self = Self(0x1);
     pub const EXPORTABLE: Self = Self(0x2);
@@ -3128,7 +3128,7 @@ impl fmt::Display for ExternalMemoryFeatureFlags {
 pub type ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalSemaphoreHandleTypeFlags(u32);
+pub struct ExternalSemaphoreHandleTypeFlags(pub(crate) u32);
 impl ExternalSemaphoreHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
     pub const OPAQUE_WIN32: Self = Self(0x2);
@@ -3164,7 +3164,7 @@ impl fmt::Display for ExternalSemaphoreHandleTypeFlags {
 pub type ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalSemaphoreFeatureFlags(u32);
+pub struct ExternalSemaphoreFeatureFlags(pub(crate) u32);
 impl ExternalSemaphoreFeatureFlags {
     pub const EXPORTABLE: Self = Self(0x1);
     pub const IMPORTABLE: Self = Self(0x2);
@@ -3180,7 +3180,7 @@ impl fmt::Display for ExternalSemaphoreFeatureFlags {
 pub type ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SemaphoreImportFlags(u32);
+pub struct SemaphoreImportFlags(pub(crate) u32);
 impl SemaphoreImportFlags {
     pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
@@ -3194,7 +3194,7 @@ impl fmt::Display for SemaphoreImportFlags {
 pub type SemaphoreImportFlagsKHR = SemaphoreImportFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalFenceHandleTypeFlags(u32);
+pub struct ExternalFenceHandleTypeFlags(pub(crate) u32);
 impl ExternalFenceHandleTypeFlags {
     pub const OPAQUE_FD: Self = Self(0x1);
     pub const OPAQUE_WIN32: Self = Self(0x2);
@@ -3223,7 +3223,7 @@ impl fmt::Display for ExternalFenceHandleTypeFlags {
 pub type ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExternalFenceFeatureFlags(u32);
+pub struct ExternalFenceFeatureFlags(pub(crate) u32);
 impl ExternalFenceFeatureFlags {
     pub const EXPORTABLE: Self = Self(0x1);
     pub const IMPORTABLE: Self = Self(0x2);
@@ -3239,7 +3239,7 @@ impl fmt::Display for ExternalFenceFeatureFlags {
 pub type ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct FenceImportFlags(u32);
+pub struct FenceImportFlags(pub(crate) u32);
 impl FenceImportFlags {
     pub const TEMPORARY: Self = Self(0x1);
     pub const TEMPORARY_KHR: Self = Self::TEMPORARY;
@@ -3253,7 +3253,7 @@ impl fmt::Display for FenceImportFlags {
 pub type FenceImportFlagsKHR = FenceImportFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SurfaceCounterFlagsEXT(u32);
+pub struct SurfaceCounterFlagsEXT(pub(crate) u32);
 impl SurfaceCounterFlagsEXT {
     pub const VBLANK: Self = Self(0x1);
 }
@@ -3265,7 +3265,7 @@ impl fmt::Display for SurfaceCounterFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineViewportSwizzleStateCreateFlagsNV(u32);
+pub struct PipelineViewportSwizzleStateCreateFlagsNV(pub(crate) u32);
 impl PipelineViewportSwizzleStateCreateFlagsNV {}
 impl_bitmask!(PipelineViewportSwizzleStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
@@ -3275,7 +3275,7 @@ impl fmt::Display for PipelineViewportSwizzleStateCreateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineDiscardRectangleStateCreateFlagsEXT(u32);
+pub struct PipelineDiscardRectangleStateCreateFlagsEXT(pub(crate) u32);
 impl PipelineDiscardRectangleStateCreateFlagsEXT {}
 impl_bitmask!(PipelineDiscardRectangleStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
@@ -3285,7 +3285,7 @@ impl fmt::Display for PipelineDiscardRectangleStateCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCoverageToColorStateCreateFlagsNV(u32);
+pub struct PipelineCoverageToColorStateCreateFlagsNV(pub(crate) u32);
 impl PipelineCoverageToColorStateCreateFlagsNV {}
 impl_bitmask!(PipelineCoverageToColorStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
@@ -3295,7 +3295,7 @@ impl fmt::Display for PipelineCoverageToColorStateCreateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCoverageModulationStateCreateFlagsNV(u32);
+pub struct PipelineCoverageModulationStateCreateFlagsNV(pub(crate) u32);
 impl PipelineCoverageModulationStateCreateFlagsNV {}
 impl_bitmask!(PipelineCoverageModulationStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
@@ -3305,7 +3305,7 @@ impl fmt::Display for PipelineCoverageModulationStateCreateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineCoverageReductionStateCreateFlagsNV(u32);
+pub struct PipelineCoverageReductionStateCreateFlagsNV(pub(crate) u32);
 impl PipelineCoverageReductionStateCreateFlagsNV {}
 impl_bitmask!(PipelineCoverageReductionStateCreateFlagsNV, 0x0);
 impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
@@ -3315,7 +3315,7 @@ impl fmt::Display for PipelineCoverageReductionStateCreateFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ValidationCacheCreateFlagsEXT(u32);
+pub struct ValidationCacheCreateFlagsEXT(pub(crate) u32);
 impl ValidationCacheCreateFlagsEXT {}
 impl_bitmask!(ValidationCacheCreateFlagsEXT, 0x0);
 impl fmt::Display for ValidationCacheCreateFlagsEXT {
@@ -3325,7 +3325,7 @@ impl fmt::Display for ValidationCacheCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DebugUtilsMessageSeverityFlagsEXT(u32);
+pub struct DebugUtilsMessageSeverityFlagsEXT(pub(crate) u32);
 impl DebugUtilsMessageSeverityFlagsEXT {
     pub const VERBOSE: Self = Self(0x1);
     pub const INFO: Self = Self(0x10);
@@ -3344,7 +3344,7 @@ impl fmt::Display for DebugUtilsMessageSeverityFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DebugUtilsMessageTypeFlagsEXT(u32);
+pub struct DebugUtilsMessageTypeFlagsEXT(pub(crate) u32);
 impl DebugUtilsMessageTypeFlagsEXT {
     pub const GENERAL: Self = Self(0x1);
     pub const VALIDATION: Self = Self(0x2);
@@ -3362,7 +3362,7 @@ impl fmt::Display for DebugUtilsMessageTypeFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DebugUtilsMessengerCreateFlagsEXT(u32);
+pub struct DebugUtilsMessengerCreateFlagsEXT(pub(crate) u32);
 impl DebugUtilsMessengerCreateFlagsEXT {}
 impl_bitmask!(DebugUtilsMessengerCreateFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
@@ -3372,7 +3372,7 @@ impl fmt::Display for DebugUtilsMessengerCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DebugUtilsMessengerCallbackDataFlagsEXT(u32);
+pub struct DebugUtilsMessengerCallbackDataFlagsEXT(pub(crate) u32);
 impl DebugUtilsMessengerCallbackDataFlagsEXT {}
 impl_bitmask!(DebugUtilsMessengerCallbackDataFlagsEXT, 0x0);
 impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
@@ -3382,7 +3382,7 @@ impl fmt::Display for DebugUtilsMessengerCallbackDataFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DeviceMemoryReportFlagsEXT(u32);
+pub struct DeviceMemoryReportFlagsEXT(pub(crate) u32);
 impl DeviceMemoryReportFlagsEXT {}
 impl_bitmask!(DeviceMemoryReportFlagsEXT, 0x0);
 impl fmt::Display for DeviceMemoryReportFlagsEXT {
@@ -3392,7 +3392,7 @@ impl fmt::Display for DeviceMemoryReportFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineRasterizationConservativeStateCreateFlagsEXT(u32);
+pub struct PipelineRasterizationConservativeStateCreateFlagsEXT(pub(crate) u32);
 impl PipelineRasterizationConservativeStateCreateFlagsEXT {}
 impl_bitmask!(PipelineRasterizationConservativeStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
@@ -3402,7 +3402,7 @@ impl fmt::Display for PipelineRasterizationConservativeStateCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct DescriptorBindingFlags(u32);
+pub struct DescriptorBindingFlags(pub(crate) u32);
 impl DescriptorBindingFlags {
     pub const UPDATE_AFTER_BIND: Self = Self(0x1);
     pub const UPDATE_UNUSED_WHILE_PENDING: Self = Self(0x2);
@@ -3431,7 +3431,7 @@ impl fmt::Display for DescriptorBindingFlags {
 pub type DescriptorBindingFlagsEXT = DescriptorBindingFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ConditionalRenderingFlagsEXT(u32);
+pub struct ConditionalRenderingFlagsEXT(pub(crate) u32);
 impl ConditionalRenderingFlagsEXT {
     pub const INVERTED: Self = Self(0x1);
 }
@@ -3443,7 +3443,7 @@ impl fmt::Display for ConditionalRenderingFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ResolveModeFlags(u32);
+pub struct ResolveModeFlags(pub(crate) u32);
 impl ResolveModeFlags {
     pub const NONE: Self = Self(0x0);
     pub const SAMPLE_ZERO: Self = Self(0x1);
@@ -3469,7 +3469,7 @@ impl fmt::Display for ResolveModeFlags {
 pub type ResolveModeFlagsKHR = ResolveModeFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineRasterizationStateStreamCreateFlagsEXT(u32);
+pub struct PipelineRasterizationStateStreamCreateFlagsEXT(pub(crate) u32);
 impl PipelineRasterizationStateStreamCreateFlagsEXT {}
 impl_bitmask!(PipelineRasterizationStateStreamCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
@@ -3479,7 +3479,7 @@ impl fmt::Display for PipelineRasterizationStateStreamCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct PipelineRasterizationDepthClipStateCreateFlagsEXT(u32);
+pub struct PipelineRasterizationDepthClipStateCreateFlagsEXT(pub(crate) u32);
 impl PipelineRasterizationDepthClipStateCreateFlagsEXT {}
 impl_bitmask!(PipelineRasterizationDepthClipStateCreateFlagsEXT, 0x0);
 impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
@@ -3489,7 +3489,7 @@ impl fmt::Display for PipelineRasterizationDepthClipStateCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ToolPurposeFlags(u32);
+pub struct ToolPurposeFlags(pub(crate) u32);
 impl ToolPurposeFlags {
     pub const VALIDATION: Self = Self(0x1);
     pub const VALIDATION_EXT: Self = Self::VALIDATION;
@@ -3527,7 +3527,7 @@ impl fmt::Display for ToolPurposeFlags {
 pub type ToolPurposeFlagsEXT = ToolPurposeFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct SubmitFlags(u32);
+pub struct SubmitFlags(pub(crate) u32);
 impl SubmitFlags {
     pub const PROTECTED: Self = Self(0x1);
     pub const PROTECTED_KHR: Self = Self::PROTECTED;
@@ -3541,7 +3541,7 @@ impl fmt::Display for SubmitFlags {
 pub type SubmitFlagsKHR = SubmitFlags;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageFormatConstraintsFlagsFUCHSIA(u32);
+pub struct ImageFormatConstraintsFlagsFUCHSIA(pub(crate) u32);
 impl ImageFormatConstraintsFlagsFUCHSIA {}
 impl_bitmask!(ImageFormatConstraintsFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
@@ -3551,7 +3551,7 @@ impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageConstraintsInfoFlagsFUCHSIA(u32);
+pub struct ImageConstraintsInfoFlagsFUCHSIA(pub(crate) u32);
 impl ImageConstraintsInfoFlagsFUCHSIA {
     pub const CPU_READ_RARELY: Self = Self(0x1);
     pub const CPU_READ_OFTEN: Self = Self(0x2);
@@ -3577,7 +3577,7 @@ impl fmt::Display for ImageConstraintsInfoFlagsFUCHSIA {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct GraphicsPipelineLibraryFlagsEXT(u32);
+pub struct GraphicsPipelineLibraryFlagsEXT(pub(crate) u32);
 impl GraphicsPipelineLibraryFlagsEXT {
     pub const VERTEX_INPUT_INTERFACE: Self = Self(0x1);
     pub const PRE_RASTERIZATION_SHADERS: Self = Self(0x2);
@@ -3601,7 +3601,7 @@ impl fmt::Display for GraphicsPipelineLibraryFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageCompressionFlagsEXT(u32);
+pub struct ImageCompressionFlagsEXT(pub(crate) u32);
 impl ImageCompressionFlagsEXT {
     pub const DEFAULT: Self = Self(0x0);
     pub const FIXED_RATE_DEFAULT: Self = Self(0x1);
@@ -3624,7 +3624,7 @@ impl fmt::Display for ImageCompressionFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ImageCompressionFixedRateFlagsEXT(u32);
+pub struct ImageCompressionFixedRateFlagsEXT(pub(crate) u32);
 impl ImageCompressionFixedRateFlagsEXT {
     pub const NONE: Self = Self(0x0);
     pub const N1BPC: Self = Self(0x1);
@@ -3689,7 +3689,7 @@ impl fmt::Display for ImageCompressionFixedRateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct ExportMetalObjectTypeFlagsEXT(u32);
+pub struct ExportMetalObjectTypeFlagsEXT(pub(crate) u32);
 impl ExportMetalObjectTypeFlagsEXT {
     pub const METAL_DEVICE: Self = Self(0x1);
     pub const METAL_COMMAND_QUEUE: Self = Self(0x2);
@@ -4080,7 +4080,7 @@ impl VideoSessionParametersKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AttachmentLoadOp(i32);
+pub struct AttachmentLoadOp(pub(crate) i32);
 impl AttachmentLoadOp {
     pub const LOAD: Self = Self(0);
     pub const CLEAR: Self = Self(1);
@@ -4106,7 +4106,7 @@ impl fmt::Display for AttachmentLoadOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AttachmentStoreOp(i32);
+pub struct AttachmentStoreOp(pub(crate) i32);
 impl AttachmentStoreOp {
     pub const STORE: Self = Self(0);
     pub const DONT_CARE: Self = Self(1);
@@ -4132,7 +4132,7 @@ impl fmt::Display for AttachmentStoreOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct BlendFactor(i32);
+pub struct BlendFactor(pub(crate) i32);
 impl BlendFactor {
     pub const ZERO: Self = Self(0);
     pub const ONE: Self = Self(1);
@@ -4187,7 +4187,7 @@ impl fmt::Display for BlendFactor {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct BlendOp(i32);
+pub struct BlendOp(pub(crate) i32);
 impl BlendOp {
     pub const ADD: Self = Self(0);
     pub const SUBTRACT: Self = Self(1);
@@ -4352,7 +4352,7 @@ impl fmt::Display for BlendOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct BorderColor(i32);
+pub struct BorderColor(pub(crate) i32);
 impl BorderColor {
     pub const FLOAT_TRANSPARENT_BLACK: Self = Self(0);
     pub const INT_TRANSPARENT_BLACK: Self = Self(1);
@@ -4387,7 +4387,7 @@ impl fmt::Display for BorderColor {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineCacheHeaderVersion(i32);
+pub struct PipelineCacheHeaderVersion(pub(crate) i32);
 impl PipelineCacheHeaderVersion {
     pub const ONE: Self = Self(1);
 }
@@ -4406,7 +4406,7 @@ impl fmt::Display for PipelineCacheHeaderVersion {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ComponentSwizzle(i32);
+pub struct ComponentSwizzle(pub(crate) i32);
 impl ComponentSwizzle {
     pub const IDENTITY: Self = Self(0);
     pub const ZERO: Self = Self(1);
@@ -4437,7 +4437,7 @@ impl fmt::Display for ComponentSwizzle {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CommandBufferLevel(i32);
+pub struct CommandBufferLevel(pub(crate) i32);
 impl CommandBufferLevel {
     pub const PRIMARY: Self = Self(0);
     pub const SECONDARY: Self = Self(1);
@@ -4458,7 +4458,7 @@ impl fmt::Display for CommandBufferLevel {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CompareOp(i32);
+pub struct CompareOp(pub(crate) i32);
 impl CompareOp {
     pub const NEVER: Self = Self(0);
     pub const LESS: Self = Self(1);
@@ -4491,7 +4491,7 @@ impl fmt::Display for CompareOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DescriptorType(i32);
+pub struct DescriptorType(pub(crate) i32);
 impl DescriptorType {
     pub const SAMPLER: Self = Self(0);
     pub const COMBINED_IMAGE_SAMPLER: Self = Self(1);
@@ -4549,7 +4549,7 @@ impl fmt::Display for DescriptorType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DynamicState(i32);
+pub struct DynamicState(pub(crate) i32);
 impl DynamicState {
     pub const VIEWPORT: Self = Self(0);
     pub const SCISSOR: Self = Self(1);
@@ -4670,7 +4670,7 @@ impl fmt::Display for DynamicState {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PolygonMode(i32);
+pub struct PolygonMode(pub(crate) i32);
 impl PolygonMode {
     pub const FILL: Self = Self(0);
     pub const LINE: Self = Self(1);
@@ -4696,7 +4696,7 @@ impl fmt::Display for PolygonMode {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct Format(i32);
+pub struct Format(pub(crate) i32);
 impl Format {
     pub const UNDEFINED: Self = Self(0);
     pub const R4G4_UNORM_PACK8: Self = Self(1);
@@ -5269,7 +5269,7 @@ impl fmt::Display for Format {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FrontFace(i32);
+pub struct FrontFace(pub(crate) i32);
 impl FrontFace {
     pub const COUNTER_CLOCKWISE: Self = Self(0);
     pub const CLOCKWISE: Self = Self(1);
@@ -5290,7 +5290,7 @@ impl fmt::Display for FrontFace {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ImageLayout(i32);
+pub struct ImageLayout(pub(crate) i32);
 impl ImageLayout {
     /// Implicit layout an image is when its contents are undefined due to various reasons (e.g. right after creation)
     pub const UNDEFINED: Self = Self(0);
@@ -5374,7 +5374,7 @@ impl fmt::Display for ImageLayout {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ImageTiling(i32);
+pub struct ImageTiling(pub(crate) i32);
 impl ImageTiling {
     pub const OPTIMAL: Self = Self(0);
     pub const LINEAR: Self = Self(1);
@@ -5398,7 +5398,7 @@ impl fmt::Display for ImageTiling {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ImageType(i32);
+pub struct ImageType(pub(crate) i32);
 impl ImageType {
     pub const N1D: Self = Self(0);
     pub const N2D: Self = Self(1);
@@ -5421,7 +5421,7 @@ impl fmt::Display for ImageType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ImageViewType(i32);
+pub struct ImageViewType(pub(crate) i32);
 impl ImageViewType {
     pub const N1D: Self = Self(0);
     pub const N2D: Self = Self(1);
@@ -5452,7 +5452,7 @@ impl fmt::Display for ImageViewType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SharingMode(i32);
+pub struct SharingMode(pub(crate) i32);
 impl SharingMode {
     pub const EXCLUSIVE: Self = Self(0);
     pub const CONCURRENT: Self = Self(1);
@@ -5473,7 +5473,7 @@ impl fmt::Display for SharingMode {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct IndexType(i32);
+pub struct IndexType(pub(crate) i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
     pub const UINT32: Self = Self(1);
@@ -5501,7 +5501,7 @@ impl fmt::Display for IndexType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct LogicOp(i32);
+pub struct LogicOp(pub(crate) i32);
 impl LogicOp {
     pub const CLEAR: Self = Self(0);
     pub const AND: Self = Self(1);
@@ -5550,7 +5550,7 @@ impl fmt::Display for LogicOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PhysicalDeviceType(i32);
+pub struct PhysicalDeviceType(pub(crate) i32);
 impl PhysicalDeviceType {
     pub const OTHER: Self = Self(0);
     pub const INTEGRATED_GPU: Self = Self(1);
@@ -5577,7 +5577,7 @@ impl fmt::Display for PhysicalDeviceType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineBindPoint(i32);
+pub struct PipelineBindPoint(pub(crate) i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
     pub const COMPUTE: Self = Self(1);
@@ -5605,7 +5605,7 @@ impl fmt::Display for PipelineBindPoint {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PrimitiveTopology(i32);
+pub struct PrimitiveTopology(pub(crate) i32);
 impl PrimitiveTopology {
     pub const POINT_LIST: Self = Self(0);
     pub const LINE_LIST: Self = Self(1);
@@ -5644,7 +5644,7 @@ impl fmt::Display for PrimitiveTopology {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct QueryType(i32);
+pub struct QueryType(pub(crate) i32);
 impl QueryType {
     pub const OCCLUSION: Self = Self(0);
     /// Optional
@@ -5698,7 +5698,7 @@ impl fmt::Display for QueryType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SubpassContents(i32);
+pub struct SubpassContents(pub(crate) i32);
 impl SubpassContents {
     pub const INLINE: Self = Self(0);
     pub const SECONDARY_COMMAND_BUFFERS: Self = Self(1);
@@ -5719,7 +5719,7 @@ impl fmt::Display for SubpassContents {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct Result(i32);
+pub struct Result(pub(crate) i32);
 impl Result {
     /// Command completed successfully
     pub const SUCCESS: Self = Self(0);
@@ -5856,7 +5856,7 @@ impl fmt::Display for Result {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct StencilOp(i32);
+pub struct StencilOp(pub(crate) i32);
 impl StencilOp {
     pub const KEEP: Self = Self(0);
     pub const ZERO: Self = Self(1);
@@ -5889,7 +5889,7 @@ impl fmt::Display for StencilOp {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct StructureType(i32);
+pub struct StructureType(pub(crate) i32);
 impl StructureType {
     pub const APPLICATION_INFO: Self = Self(0);
     pub const INSTANCE_CREATE_INFO: Self = Self(1);
@@ -7782,7 +7782,7 @@ impl fmt::Display for StructureType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SystemAllocationScope(i32);
+pub struct SystemAllocationScope(pub(crate) i32);
 impl SystemAllocationScope {
     pub const COMMAND: Self = Self(0);
     pub const OBJECT: Self = Self(1);
@@ -7809,7 +7809,7 @@ impl fmt::Display for SystemAllocationScope {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct InternalAllocationType(i32);
+pub struct InternalAllocationType(pub(crate) i32);
 impl InternalAllocationType {
     pub const EXECUTABLE: Self = Self(0);
 }
@@ -7828,7 +7828,7 @@ impl fmt::Display for InternalAllocationType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerAddressMode(i32);
+pub struct SamplerAddressMode(pub(crate) i32);
 impl SamplerAddressMode {
     pub const REPEAT: Self = Self(0);
     pub const MIRRORED_REPEAT: Self = Self(1);
@@ -7858,7 +7858,7 @@ impl fmt::Display for SamplerAddressMode {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct Filter(i32);
+pub struct Filter(pub(crate) i32);
 impl Filter {
     pub const NEAREST: Self = Self(0);
     pub const LINEAR: Self = Self(1);
@@ -7883,7 +7883,7 @@ impl fmt::Display for Filter {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerMipmapMode(i32);
+pub struct SamplerMipmapMode(pub(crate) i32);
 impl SamplerMipmapMode {
     /// Choose nearest mip level
     pub const NEAREST: Self = Self(0);
@@ -7906,7 +7906,7 @@ impl fmt::Display for SamplerMipmapMode {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct VertexInputRate(i32);
+pub struct VertexInputRate(pub(crate) i32);
 impl VertexInputRate {
     pub const VERTEX: Self = Self(0);
     pub const INSTANCE: Self = Self(1);
@@ -7927,7 +7927,7 @@ impl fmt::Display for VertexInputRate {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ObjectType(i32);
+pub struct ObjectType(pub(crate) i32);
 impl ObjectType {
     pub const UNKNOWN: Self = Self(0);
     pub const INSTANCE: Self = Self(1);
@@ -8051,7 +8051,7 @@ impl fmt::Display for ObjectType {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct IndirectCommandsTokenTypeNV(i32);
+pub struct IndirectCommandsTokenTypeNV(pub(crate) i32);
 impl IndirectCommandsTokenTypeNV {
     pub const SHADER_GROUP: Self = Self(0);
     pub const STATE_FLAGS: Self = Self(1);
@@ -8087,7 +8087,7 @@ impl fmt::Display for IndirectCommandsTokenTypeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DescriptorUpdateTemplateType(i32);
+pub struct DescriptorUpdateTemplateType(pub(crate) i32);
 impl DescriptorUpdateTemplateType {
     /// Create descriptor update template for descriptor set updates
     pub const DESCRIPTOR_SET: Self = Self(0);
@@ -8113,7 +8113,7 @@ impl fmt::Display for DescriptorUpdateTemplateType {
 pub type DescriptorUpdateTemplateTypeKHR = DescriptorUpdateTemplateType;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ViewportCoordinateSwizzleNV(i32);
+pub struct ViewportCoordinateSwizzleNV(pub(crate) i32);
 impl ViewportCoordinateSwizzleNV {
     pub const POSITIVE_X: Self = Self(0);
     pub const NEGATIVE_X: Self = Self(1);
@@ -8146,7 +8146,7 @@ impl fmt::Display for ViewportCoordinateSwizzleNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DiscardRectangleModeEXT(i32);
+pub struct DiscardRectangleModeEXT(pub(crate) i32);
 impl DiscardRectangleModeEXT {
     pub const INCLUSIVE: Self = Self(0);
     pub const EXCLUSIVE: Self = Self(1);
@@ -8167,7 +8167,7 @@ impl fmt::Display for DiscardRectangleModeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PointClippingBehavior(i32);
+pub struct PointClippingBehavior(pub(crate) i32);
 impl PointClippingBehavior {
     pub const ALL_CLIP_PLANES: Self = Self(0);
     pub const USER_CLIP_PLANES_ONLY: Self = Self(1);
@@ -8191,7 +8191,7 @@ impl fmt::Display for PointClippingBehavior {
 pub type PointClippingBehaviorKHR = PointClippingBehavior;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CoverageModulationModeNV(i32);
+pub struct CoverageModulationModeNV(pub(crate) i32);
 impl CoverageModulationModeNV {
     pub const NONE: Self = Self(0);
     pub const RGB: Self = Self(1);
@@ -8216,7 +8216,7 @@ impl fmt::Display for CoverageModulationModeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CoverageReductionModeNV(i32);
+pub struct CoverageReductionModeNV(pub(crate) i32);
 impl CoverageReductionModeNV {
     pub const MERGE: Self = Self(0);
     pub const TRUNCATE: Self = Self(1);
@@ -8237,7 +8237,7 @@ impl fmt::Display for CoverageReductionModeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ValidationCacheHeaderVersionEXT(i32);
+pub struct ValidationCacheHeaderVersionEXT(pub(crate) i32);
 impl ValidationCacheHeaderVersionEXT {
     pub const ONE: Self = Self(1);
 }
@@ -8256,7 +8256,7 @@ impl fmt::Display for ValidationCacheHeaderVersionEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ShaderInfoTypeAMD(i32);
+pub struct ShaderInfoTypeAMD(pub(crate) i32);
 impl ShaderInfoTypeAMD {
     pub const STATISTICS: Self = Self(0);
     pub const BINARY: Self = Self(1);
@@ -8279,7 +8279,7 @@ impl fmt::Display for ShaderInfoTypeAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct QueueGlobalPriorityKHR(i32);
+pub struct QueueGlobalPriorityKHR(pub(crate) i32);
 impl QueueGlobalPriorityKHR {
     pub const LOW: Self = Self(128);
     pub const MEDIUM: Self = Self(256);
@@ -8309,7 +8309,7 @@ impl fmt::Display for QueueGlobalPriorityKHR {
 pub type QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct TimeDomainEXT(i32);
+pub struct TimeDomainEXT(pub(crate) i32);
 impl TimeDomainEXT {
     pub const DEVICE: Self = Self(0);
     pub const CLOCK_MONOTONIC: Self = Self(1);
@@ -8334,7 +8334,7 @@ impl fmt::Display for TimeDomainEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ConservativeRasterizationModeEXT(i32);
+pub struct ConservativeRasterizationModeEXT(pub(crate) i32);
 impl ConservativeRasterizationModeEXT {
     pub const DISABLED: Self = Self(0);
     pub const OVERESTIMATE: Self = Self(1);
@@ -8357,7 +8357,7 @@ impl fmt::Display for ConservativeRasterizationModeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SemaphoreType(i32);
+pub struct SemaphoreType(pub(crate) i32);
 impl SemaphoreType {
     pub const BINARY: Self = Self(0);
     pub const TIMELINE: Self = Self(1);
@@ -8381,7 +8381,7 @@ impl fmt::Display for SemaphoreType {
 pub type SemaphoreTypeKHR = SemaphoreType;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct BuildAccelerationStructureModeKHR(i32);
+pub struct BuildAccelerationStructureModeKHR(pub(crate) i32);
 impl BuildAccelerationStructureModeKHR {
     pub const BUILD: Self = Self(0);
     pub const UPDATE: Self = Self(1);
@@ -8402,7 +8402,7 @@ impl fmt::Display for BuildAccelerationStructureModeKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CopyAccelerationStructureModeKHR(i32);
+pub struct CopyAccelerationStructureModeKHR(pub(crate) i32);
 impl CopyAccelerationStructureModeKHR {
     pub const CLONE: Self = Self(0);
     pub const COMPACT: Self = Self(1);
@@ -8430,7 +8430,7 @@ impl fmt::Display for CopyAccelerationStructureModeKHR {
 pub type CopyAccelerationStructureModeNV = CopyAccelerationStructureModeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureTypeKHR(i32);
+pub struct AccelerationStructureTypeKHR(pub(crate) i32);
 impl AccelerationStructureTypeKHR {
     pub const TOP_LEVEL: Self = Self(0);
     pub const BOTTOM_LEVEL: Self = Self(1);
@@ -8456,7 +8456,7 @@ impl fmt::Display for AccelerationStructureTypeKHR {
 pub type AccelerationStructureTypeNV = AccelerationStructureTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct GeometryTypeKHR(i32);
+pub struct GeometryTypeKHR(pub(crate) i32);
 impl GeometryTypeKHR {
     pub const TRIANGLES: Self = Self(0);
     pub const AABBS: Self = Self(1);
@@ -8482,7 +8482,7 @@ impl fmt::Display for GeometryTypeKHR {
 pub type GeometryTypeNV = GeometryTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RayTracingShaderGroupTypeKHR(i32);
+pub struct RayTracingShaderGroupTypeKHR(pub(crate) i32);
 impl RayTracingShaderGroupTypeKHR {
     pub const GENERAL: Self = Self(0);
     pub const TRIANGLES_HIT_GROUP: Self = Self(1);
@@ -8509,7 +8509,7 @@ impl fmt::Display for RayTracingShaderGroupTypeKHR {
 pub type RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMemoryRequirementsTypeNV(i32);
+pub struct AccelerationStructureMemoryRequirementsTypeNV(pub(crate) i32);
 impl AccelerationStructureMemoryRequirementsTypeNV {
     pub const OBJECT: Self = Self(0);
     pub const BUILD_SCRATCH: Self = Self(1);
@@ -8532,7 +8532,7 @@ impl fmt::Display for AccelerationStructureMemoryRequirementsTypeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureBuildTypeKHR(i32);
+pub struct AccelerationStructureBuildTypeKHR(pub(crate) i32);
 impl AccelerationStructureBuildTypeKHR {
     pub const HOST: Self = Self(0);
     pub const DEVICE: Self = Self(1);
@@ -8555,7 +8555,7 @@ impl fmt::Display for AccelerationStructureBuildTypeKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureCompatibilityKHR(i32);
+pub struct AccelerationStructureCompatibilityKHR(pub(crate) i32);
 impl AccelerationStructureCompatibilityKHR {
     pub const COMPATIBLE: Self = Self(0);
     pub const INCOMPATIBLE: Self = Self(1);
@@ -8576,7 +8576,7 @@ impl fmt::Display for AccelerationStructureCompatibilityKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ShaderGroupShaderKHR(i32);
+pub struct ShaderGroupShaderKHR(pub(crate) i32);
 impl ShaderGroupShaderKHR {
     pub const GENERAL: Self = Self(0);
     pub const CLOSEST_HIT: Self = Self(1);
@@ -8601,7 +8601,7 @@ impl fmt::Display for ShaderGroupShaderKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct MemoryOverallocationBehaviorAMD(i32);
+pub struct MemoryOverallocationBehaviorAMD(pub(crate) i32);
 impl MemoryOverallocationBehaviorAMD {
     pub const DEFAULT: Self = Self(0);
     pub const ALLOWED: Self = Self(1);
@@ -8624,7 +8624,7 @@ impl fmt::Display for MemoryOverallocationBehaviorAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ScopeNV(i32);
+pub struct ScopeNV(pub(crate) i32);
 impl ScopeNV {
     pub const DEVICE: Self = Self(1);
     pub const WORKGROUP: Self = Self(2);
@@ -8649,7 +8649,7 @@ impl fmt::Display for ScopeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ComponentTypeNV(i32);
+pub struct ComponentTypeNV(pub(crate) i32);
 impl ComponentTypeNV {
     pub const FLOAT16: Self = Self(0);
     pub const FLOAT32: Self = Self(1);
@@ -8688,7 +8688,7 @@ impl fmt::Display for ComponentTypeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceCounterScopeKHR(i32);
+pub struct PerformanceCounterScopeKHR(pub(crate) i32);
 impl PerformanceCounterScopeKHR {
     pub const COMMAND_BUFFER: Self = Self(0);
     pub const RENDER_PASS: Self = Self(1);
@@ -8714,7 +8714,7 @@ impl fmt::Display for PerformanceCounterScopeKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceCounterUnitKHR(i32);
+pub struct PerformanceCounterUnitKHR(pub(crate) i32);
 impl PerformanceCounterUnitKHR {
     pub const GENERIC: Self = Self(0);
     pub const PERCENTAGE: Self = Self(1);
@@ -8753,7 +8753,7 @@ impl fmt::Display for PerformanceCounterUnitKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceCounterStorageKHR(i32);
+pub struct PerformanceCounterStorageKHR(pub(crate) i32);
 impl PerformanceCounterStorageKHR {
     pub const INT32: Self = Self(0);
     pub const INT64: Self = Self(1);
@@ -8782,7 +8782,7 @@ impl fmt::Display for PerformanceCounterStorageKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceConfigurationTypeINTEL(i32);
+pub struct PerformanceConfigurationTypeINTEL(pub(crate) i32);
 impl PerformanceConfigurationTypeINTEL {
     pub const COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED: Self = Self(0);
 }
@@ -8801,7 +8801,7 @@ impl fmt::Display for PerformanceConfigurationTypeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct QueryPoolSamplingModeINTEL(i32);
+pub struct QueryPoolSamplingModeINTEL(pub(crate) i32);
 impl QueryPoolSamplingModeINTEL {
     pub const MANUAL: Self = Self(0);
 }
@@ -8820,7 +8820,7 @@ impl fmt::Display for QueryPoolSamplingModeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceOverrideTypeINTEL(i32);
+pub struct PerformanceOverrideTypeINTEL(pub(crate) i32);
 impl PerformanceOverrideTypeINTEL {
     pub const NULL_HARDWARE: Self = Self(0);
     pub const FLUSH_GPU_CACHES: Self = Self(1);
@@ -8841,7 +8841,7 @@ impl fmt::Display for PerformanceOverrideTypeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceParameterTypeINTEL(i32);
+pub struct PerformanceParameterTypeINTEL(pub(crate) i32);
 impl PerformanceParameterTypeINTEL {
     pub const HW_COUNTERS_SUPPORTED: Self = Self(0);
     pub const STREAM_MARKER_VALID_BITS: Self = Self(1);
@@ -8862,7 +8862,7 @@ impl fmt::Display for PerformanceParameterTypeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PerformanceValueTypeINTEL(i32);
+pub struct PerformanceValueTypeINTEL(pub(crate) i32);
 impl PerformanceValueTypeINTEL {
     pub const UINT32: Self = Self(0);
     pub const UINT64: Self = Self(1);
@@ -8889,7 +8889,7 @@ impl fmt::Display for PerformanceValueTypeINTEL {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct LineRasterizationModeEXT(i32);
+pub struct LineRasterizationModeEXT(pub(crate) i32);
 impl LineRasterizationModeEXT {
     pub const DEFAULT: Self = Self(0);
     pub const RECTANGULAR: Self = Self(1);
@@ -8914,7 +8914,7 @@ impl fmt::Display for LineRasterizationModeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FragmentShadingRateNV(i32);
+pub struct FragmentShadingRateNV(pub(crate) i32);
 impl FragmentShadingRateNV {
     pub const N1_INVOCATION_PER_PIXEL: Self = Self(0);
     pub const N1_INVOCATION_PER_1X2_PIXELS: Self = Self(1);
@@ -8955,7 +8955,7 @@ impl fmt::Display for FragmentShadingRateNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FragmentShadingRateTypeNV(i32);
+pub struct FragmentShadingRateTypeNV(pub(crate) i32);
 impl FragmentShadingRateTypeNV {
     pub const FRAGMENT_SIZE: Self = Self(0);
     pub const ENUMS: Self = Self(1);
@@ -8976,7 +8976,7 @@ impl fmt::Display for FragmentShadingRateTypeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SubpassMergeStatusEXT(i32);
+pub struct SubpassMergeStatusEXT(pub(crate) i32);
 impl SubpassMergeStatusEXT {
     pub const MERGED: Self = Self(0);
     pub const DISALLOWED: Self = Self(1);
@@ -9021,7 +9021,7 @@ impl fmt::Display for SubpassMergeStatusEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ProvokingVertexModeEXT(i32);
+pub struct ProvokingVertexModeEXT(pub(crate) i32);
 impl ProvokingVertexModeEXT {
     pub const FIRST_VERTEX: Self = Self(0);
     pub const LAST_VERTEX: Self = Self(1);
@@ -9042,7 +9042,7 @@ impl fmt::Display for ProvokingVertexModeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineRobustnessBufferBehaviorEXT(i32);
+pub struct PipelineRobustnessBufferBehaviorEXT(pub(crate) i32);
 impl PipelineRobustnessBufferBehaviorEXT {
     pub const DEVICE_DEFAULT: Self = Self(0);
     pub const DISABLED: Self = Self(1);
@@ -9067,7 +9067,7 @@ impl fmt::Display for PipelineRobustnessBufferBehaviorEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineRobustnessImageBehaviorEXT(i32);
+pub struct PipelineRobustnessImageBehaviorEXT(pub(crate) i32);
 impl PipelineRobustnessImageBehaviorEXT {
     pub const DEVICE_DEFAULT: Self = Self(0);
     pub const DISABLED: Self = Self(1);
@@ -9092,7 +9092,7 @@ impl fmt::Display for PipelineRobustnessImageBehaviorEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ColorSpaceKHR(i32);
+pub struct ColorSpaceKHR(pub(crate) i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = Self(0);
     pub const COLORSPACE_SRGB_NONLINEAR: Self = Self::SRGB_NONLINEAR;
@@ -9158,7 +9158,7 @@ impl fmt::Display for ColorSpaceKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PresentModeKHR(i32);
+pub struct PresentModeKHR(pub(crate) i32);
 impl PresentModeKHR {
     pub const IMMEDIATE: Self = Self(0);
     pub const MAILBOX: Self = Self(1);
@@ -9189,7 +9189,7 @@ impl fmt::Display for PresentModeKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DebugReportObjectTypeEXT(i32);
+pub struct DebugReportObjectTypeEXT(pub(crate) i32);
 impl DebugReportObjectTypeEXT {
     pub const UNKNOWN: Self = Self(0);
     pub const INSTANCE: Self = Self(1);
@@ -9295,7 +9295,7 @@ impl fmt::Display for DebugReportObjectTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DeviceMemoryReportEventTypeEXT(i32);
+pub struct DeviceMemoryReportEventTypeEXT(pub(crate) i32);
 impl DeviceMemoryReportEventTypeEXT {
     pub const ALLOCATE: Self = Self(0);
     pub const FREE: Self = Self(1);
@@ -9322,7 +9322,7 @@ impl fmt::Display for DeviceMemoryReportEventTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RasterizationOrderAMD(i32);
+pub struct RasterizationOrderAMD(pub(crate) i32);
 impl RasterizationOrderAMD {
     pub const STRICT: Self = Self(0);
     pub const RELAXED: Self = Self(1);
@@ -9343,7 +9343,7 @@ impl fmt::Display for RasterizationOrderAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ValidationCheckEXT(i32);
+pub struct ValidationCheckEXT(pub(crate) i32);
 impl ValidationCheckEXT {
     pub const ALL: Self = Self(0);
     pub const SHADERS: Self = Self(1);
@@ -9364,7 +9364,7 @@ impl fmt::Display for ValidationCheckEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ValidationFeatureEnableEXT(i32);
+pub struct ValidationFeatureEnableEXT(pub(crate) i32);
 impl ValidationFeatureEnableEXT {
     pub const GPU_ASSISTED: Self = Self(0);
     pub const GPU_ASSISTED_RESERVE_BINDING_SLOT: Self = Self(1);
@@ -9391,7 +9391,7 @@ impl fmt::Display for ValidationFeatureEnableEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ValidationFeatureDisableEXT(i32);
+pub struct ValidationFeatureDisableEXT(pub(crate) i32);
 impl ValidationFeatureDisableEXT {
     pub const ALL: Self = Self(0);
     pub const SHADERS: Self = Self(1);
@@ -9424,7 +9424,7 @@ impl fmt::Display for ValidationFeatureDisableEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DisplayPowerStateEXT(i32);
+pub struct DisplayPowerStateEXT(pub(crate) i32);
 impl DisplayPowerStateEXT {
     pub const OFF: Self = Self(0);
     pub const SUSPEND: Self = Self(1);
@@ -9447,7 +9447,7 @@ impl fmt::Display for DisplayPowerStateEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DeviceEventTypeEXT(i32);
+pub struct DeviceEventTypeEXT(pub(crate) i32);
 impl DeviceEventTypeEXT {
     pub const DISPLAY_HOTPLUG: Self = Self(0);
 }
@@ -9466,7 +9466,7 @@ impl fmt::Display for DeviceEventTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DisplayEventTypeEXT(i32);
+pub struct DisplayEventTypeEXT(pub(crate) i32);
 impl DisplayEventTypeEXT {
     pub const FIRST_PIXEL_OUT: Self = Self(0);
 }
@@ -9485,7 +9485,7 @@ impl fmt::Display for DisplayEventTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct TessellationDomainOrigin(i32);
+pub struct TessellationDomainOrigin(pub(crate) i32);
 impl TessellationDomainOrigin {
     pub const UPPER_LEFT: Self = Self(0);
     pub const LOWER_LEFT: Self = Self(1);
@@ -9509,7 +9509,7 @@ impl fmt::Display for TessellationDomainOrigin {
 pub type TessellationDomainOriginKHR = TessellationDomainOrigin;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerYcbcrModelConversion(i32);
+pub struct SamplerYcbcrModelConversion(pub(crate) i32);
 impl SamplerYcbcrModelConversion {
     pub const RGB_IDENTITY: Self = Self(0);
     /// just range expansion
@@ -9546,7 +9546,7 @@ impl fmt::Display for SamplerYcbcrModelConversion {
 pub type SamplerYcbcrModelConversionKHR = SamplerYcbcrModelConversion;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerYcbcrRange(i32);
+pub struct SamplerYcbcrRange(pub(crate) i32);
 impl SamplerYcbcrRange {
     /// Luma 0..1 maps to 0..255, chroma -0.5..0.5 to 1..255 (clamped)
     pub const ITU_FULL: Self = Self(0);
@@ -9572,7 +9572,7 @@ impl fmt::Display for SamplerYcbcrRange {
 pub type SamplerYcbcrRangeKHR = SamplerYcbcrRange;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ChromaLocation(i32);
+pub struct ChromaLocation(pub(crate) i32);
 impl ChromaLocation {
     pub const COSITED_EVEN: Self = Self(0);
     pub const MIDPOINT: Self = Self(1);
@@ -9596,7 +9596,7 @@ impl fmt::Display for ChromaLocation {
 pub type ChromaLocationKHR = ChromaLocation;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct SamplerReductionMode(i32);
+pub struct SamplerReductionMode(pub(crate) i32);
 impl SamplerReductionMode {
     pub const WEIGHTED_AVERAGE: Self = Self(0);
     pub const MIN: Self = Self(1);
@@ -9623,7 +9623,7 @@ impl fmt::Display for SamplerReductionMode {
 pub type SamplerReductionModeEXT = SamplerReductionMode;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct BlendOverlapEXT(i32);
+pub struct BlendOverlapEXT(pub(crate) i32);
 impl BlendOverlapEXT {
     pub const UNCORRELATED: Self = Self(0);
     pub const DISJOINT: Self = Self(1);
@@ -9646,7 +9646,7 @@ impl fmt::Display for BlendOverlapEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FullScreenExclusiveEXT(i32);
+pub struct FullScreenExclusiveEXT(pub(crate) i32);
 impl FullScreenExclusiveEXT {
     pub const DEFAULT: Self = Self(0);
     pub const ALLOWED: Self = Self(1);
@@ -9671,7 +9671,7 @@ impl fmt::Display for FullScreenExclusiveEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ShaderFloatControlsIndependence(i32);
+pub struct ShaderFloatControlsIndependence(pub(crate) i32);
 impl ShaderFloatControlsIndependence {
     pub const N32_BIT_ONLY: Self = Self(0);
     pub const ALL: Self = Self(1);
@@ -9698,7 +9698,7 @@ impl fmt::Display for ShaderFloatControlsIndependence {
 pub type ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct FragmentShadingRateCombinerOpKHR(i32);
+pub struct FragmentShadingRateCombinerOpKHR(pub(crate) i32);
 impl FragmentShadingRateCombinerOpKHR {
     pub const KEEP: Self = Self(0);
     pub const REPLACE: Self = Self(1);
@@ -9725,7 +9725,7 @@ impl fmt::Display for FragmentShadingRateCombinerOpKHR {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct VendorId(i32);
+pub struct VendorId(pub(crate) i32);
 impl VendorId {
     /// Vivante vendor ID
     pub const VIV: Self = Self(65537);
@@ -9760,7 +9760,7 @@ impl fmt::Display for VendorId {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct DriverId(i32);
+pub struct DriverId(pub(crate) i32);
 impl DriverId {
     /// Advanced Micro Devices, Inc.
     pub const AMD_PROPRIETARY: Self = Self(1);
@@ -9859,7 +9859,7 @@ impl fmt::Display for DriverId {
 pub type DriverIdKHR = DriverId;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ShadingRatePaletteEntryNV(i32);
+pub struct ShadingRatePaletteEntryNV(pub(crate) i32);
 impl ShadingRatePaletteEntryNV {
     pub const NO_INVOCATIONS: Self = Self(0);
     pub const N16_INVOCATIONS_PER_PIXEL: Self = Self(1);
@@ -9900,7 +9900,7 @@ impl fmt::Display for ShadingRatePaletteEntryNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CoarseSampleOrderTypeNV(i32);
+pub struct CoarseSampleOrderTypeNV(pub(crate) i32);
 impl CoarseSampleOrderTypeNV {
     pub const DEFAULT: Self = Self(0);
     pub const CUSTOM: Self = Self(1);
@@ -9925,7 +9925,7 @@ impl fmt::Display for CoarseSampleOrderTypeNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct PipelineExecutableStatisticFormatKHR(i32);
+pub struct PipelineExecutableStatisticFormatKHR(pub(crate) i32);
 impl PipelineExecutableStatisticFormatKHR {
     pub const BOOL32: Self = Self(0);
     pub const INT64: Self = Self(1);
@@ -33666,7 +33666,7 @@ impl fmt::Debug for PhysicalDeviceRayTracingMotionBlurFeaturesNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct AccelerationStructureMotionInstanceTypeNV(i32);
+pub struct AccelerationStructureMotionInstanceTypeNV(pub(crate) i32);
 impl AccelerationStructureMotionInstanceTypeNV {
     pub const STATIC: Self = Self(0);
     pub const MATRIX_MOTION: Self = Self(1);

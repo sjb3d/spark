@@ -1282,7 +1282,7 @@ impl<'a> Generator<'a> {
             let enum_name = type_name.skip_prefix(TYPE_PREFIX);
             writeln!(
                 w,
-                "#[repr(transparent)] #[derive({derives})] pub struct {enum_name}({interior_type});\nimpl {enum_name} {{",
+                "#[repr(transparent)] #[derive({derives})] pub struct {enum_name}(pub(crate) {interior_type});\nimpl {enum_name} {{",
                 derives=derives, enum_name=enum_name, interior_type=interior_type
             )?;
             let mut all_bits = 0;
