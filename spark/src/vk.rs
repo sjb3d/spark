@@ -2779,6 +2779,16 @@ impl fmt::Display for MicromapCreateFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct DirectDriverLoadingFlagsLUNARG(pub(crate) u32);
+impl DirectDriverLoadingFlagsLUNARG {}
+impl_bitmask!(DirectDriverLoadingFlagsLUNARG, 0x0);
+impl fmt::Display for DirectDriverLoadingFlagsLUNARG {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct CompositeAlphaFlagsKHR(pub(crate) u32);
 impl CompositeAlphaFlagsKHR {
     pub const OPAQUE: Self = Self(0x1);
@@ -2871,8 +2881,10 @@ impl SwapchainCreateFlagsKHR {
     pub const PROTECTED: Self = Self(0x2);
     /// Added by extension VK_KHR_swapchain_mutable_format.
     pub const MUTABLE_FORMAT: Self = Self(0x4);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const DEFERRED_MEMORY_ALLOCATION_EXT: Self = Self(0x8);
 }
-impl_bitmask!(SwapchainCreateFlagsKHR, 0x7);
+impl_bitmask!(SwapchainCreateFlagsKHR, 0xf);
 impl fmt::Display for SwapchainCreateFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2881,6 +2893,7 @@ impl fmt::Display for SwapchainCreateFlagsKHR {
                 (0x1, "SPLIT_INSTANCE_BIND_REGIONS"),
                 (0x2, "PROTECTED"),
                 (0x4, "MUTABLE_FORMAT"),
+                (0x8, "DEFERRED_MEMORY_ALLOCATION_EXT"),
             ],
             f,
         )
@@ -3962,6 +3975,38 @@ impl_bitmask!(OpticalFlowExecuteFlagsNV, 0x1);
 impl fmt::Display for OpticalFlowExecuteFlagsNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[(0x1, "DISABLE_TEMPORAL_HINTS")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PresentScalingFlagsEXT(pub(crate) u32);
+impl PresentScalingFlagsEXT {
+    pub const ONE_TO_ONE: Self = Self(0x1);
+    pub const ASPECT_RATIO_STRETCH: Self = Self(0x2);
+    pub const STRETCH: Self = Self(0x4);
+}
+impl_bitmask!(PresentScalingFlagsEXT, 0x7);
+impl fmt::Display for PresentScalingFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[(0x1, "ONE_TO_ONE"), (0x2, "ASPECT_RATIO_STRETCH"), (0x4, "STRETCH")],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PresentGravityFlagsEXT(pub(crate) u32);
+impl PresentGravityFlagsEXT {
+    pub const MIN: Self = Self(0x1);
+    pub const MAX: Self = Self(0x2);
+    pub const CENTERED: Self = Self(0x4);
+}
+impl_bitmask!(PresentGravityFlagsEXT, 0x7);
+impl fmt::Display for PresentGravityFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "MIN"), (0x2, "MAX"), (0x4, "CENTERED")], f)
     }
 }
 #[repr(transparent)]
@@ -7171,6 +7216,24 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
     /// Added by extension VK_EXT_shader_atomic_float2.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT: Self = Self(1000273000);
+    /// Added by extension VK_EXT_surface_maintenance1.
+    pub const SURFACE_PRESENT_MODE_EXT: Self = Self(1000274000);
+    /// Added by extension VK_EXT_surface_maintenance1.
+    pub const SURFACE_PRESENT_SCALING_CAPABILITIES_EXT: Self = Self(1000274001);
+    /// Added by extension VK_EXT_surface_maintenance1.
+    pub const SURFACE_PRESENT_MODE_COMPATIBILITY_EXT: Self = Self(1000274002);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT: Self = Self(1000275000);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const SWAPCHAIN_PRESENT_FENCE_INFO_EXT: Self = Self(1000275001);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT: Self = Self(1000275002);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const SWAPCHAIN_PRESENT_MODE_INFO_EXT: Self = Self(1000275003);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT: Self = Self(1000275004);
+    /// Added by extension VK_EXT_swapchain_maintenance1.
+    pub const RELEASE_SWAPCHAIN_IMAGES_INFO_EXT: Self = Self(1000275005);
     pub const PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES;
     /// Added by extension VK_NV_device_generated_commands.
@@ -7560,6 +7623,10 @@ impl StructureType {
     pub const RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458002);
     /// Added by extension VK_EXT_subpass_merge_feedback.
     pub const RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT: Self = Self(1000458003);
+    /// Added by extension VK_LUNARG_direct_driver_loading.
+    pub const DIRECT_DRIVER_LOADING_INFO_LUNARG: Self = Self(1000459000);
+    /// Added by extension VK_LUNARG_direct_driver_loading.
+    pub const DIRECT_DRIVER_LOADING_LIST_LUNARG: Self = Self(1000459001);
     /// Added by extension VK_EXT_shader_module_identifier.
     pub const PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT: Self = Self(1000462000);
     /// Added by extension VK_EXT_shader_module_identifier.
@@ -7596,6 +7663,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC: Self = Self(1000485000);
     /// Added by extension VK_SEC_amigo_profiling.
     pub const AMIGO_PROFILING_SUBMIT_INFO_SEC: Self = Self(1000485001);
+    /// Added by extension VK_QCOM_multiview_per_view_viewports.
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM: Self = Self(1000488000);
     /// Added by extension VK_NV_ray_tracing_invocation_reorder.
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     /// Added by extension VK_NV_ray_tracing_invocation_reorder.
@@ -8092,6 +8161,15 @@ impl fmt::Display for StructureType {
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
             1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
+            1000274000 => Some(&"SURFACE_PRESENT_MODE_EXT"),
+            1000274001 => Some(&"SURFACE_PRESENT_SCALING_CAPABILITIES_EXT"),
+            1000274002 => Some(&"SURFACE_PRESENT_MODE_COMPATIBILITY_EXT"),
+            1000275000 => Some(&"PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT"),
+            1000275001 => Some(&"SWAPCHAIN_PRESENT_FENCE_INFO_EXT"),
+            1000275002 => Some(&"SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT"),
+            1000275003 => Some(&"SWAPCHAIN_PRESENT_MODE_INFO_EXT"),
+            1000275004 => Some(&"SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT"),
+            1000275005 => Some(&"RELEASE_SWAPCHAIN_IMAGES_INFO_EXT"),
             1000277000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_PROPERTIES_NV"),
             1000277001 => Some(&"GRAPHICS_SHADER_GROUP_CREATE_INFO_NV"),
             1000277002 => Some(&"GRAPHICS_PIPELINE_SHADER_GROUPS_CREATE_INFO_NV"),
@@ -8261,6 +8339,8 @@ impl fmt::Display for StructureType {
             1000458001 => Some(&"RENDER_PASS_CREATION_CONTROL_EXT"),
             1000458002 => Some(&"RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT"),
             1000458003 => Some(&"RENDER_PASS_SUBPASS_FEEDBACK_CREATE_INFO_EXT"),
+            1000459000 => Some(&"DIRECT_DRIVER_LOADING_INFO_LUNARG"),
+            1000459001 => Some(&"DIRECT_DRIVER_LOADING_LIST_LUNARG"),
             1000462000 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_FEATURES_EXT"),
             1000462001 => Some(&"PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT"),
             1000462002 => Some(&"PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT"),
@@ -8279,6 +8359,7 @@ impl fmt::Display for StructureType {
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
             1000485001 => Some(&"AMIGO_PROFILING_SUBMIT_INFO_SEC"),
+            1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
             1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
@@ -9782,6 +9863,27 @@ impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DirectDriverLoadingModeLUNARG(pub(crate) i32);
+impl DirectDriverLoadingModeLUNARG {
+    pub const EXCLUSIVE: Self = Self(0);
+    pub const INCLUSIVE: Self = Self(1);
+}
+impl fmt::Display for DirectDriverLoadingModeLUNARG {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"EXCLUSIVE"),
+            1 => Some(&"INCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(pub(crate) i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = Self(0);
@@ -10590,6 +10692,8 @@ impl DriverId {
     pub const MESA_VENUS: Self = Self(22);
     /// Mesa open source project
     pub const MESA_DOZEN: Self = Self(23);
+    /// Mesa open source project
+    pub const MESA_NVK: Self = Self(24);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -10629,6 +10733,7 @@ impl fmt::Display for DriverId {
             21 => Some(&"SAMSUNG_PROPRIETARY"),
             22 => Some(&"MESA_VENUS"),
             23 => Some(&"MESA_DOZEN"),
+            24 => Some(&"MESA_NVK"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10775,6 +10880,8 @@ pub type FnDebugUtilsMessengerCallbackEXT = unsafe extern "system" fn(
 ) -> Bool32;
 pub type FnDeviceMemoryReportCallbackEXT =
     unsafe extern "system" fn(p_callback_data: *const DeviceMemoryReportCallbackDataEXT, p_user_data: *mut c_void);
+pub type FnGetInstanceProcAddrLUNARG =
+    unsafe extern "system" fn(instance: Option<Instance>, p_name: *const c_char) -> Option<FnVoidFunction>;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct BaseOutStructure {
@@ -39287,6 +39394,295 @@ impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct SurfacePresentModeEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_mode: PresentModeKHR,
+}
+unsafe impl Send for SurfacePresentModeEXT {}
+unsafe impl Sync for SurfacePresentModeEXT {}
+impl Default for SurfacePresentModeEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_PRESENT_MODE_EXT,
+            p_next: ptr::null_mut(),
+            present_mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfacePresentModeEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfacePresentModeEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_mode", &self.present_mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfacePresentScalingCapabilitiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub supported_present_scaling: PresentScalingFlagsEXT,
+    pub supported_present_gravity_x: PresentGravityFlagsEXT,
+    pub supported_present_gravity_y: PresentGravityFlagsEXT,
+    /// Supported minimum image width and height for the surface when scaling is used
+    pub min_scaled_image_extent: Extent2D,
+    /// Supported maximum image width and height for the surface when scaling is used
+    pub max_scaled_image_extent: Extent2D,
+}
+unsafe impl Send for SurfacePresentScalingCapabilitiesEXT {}
+unsafe impl Sync for SurfacePresentScalingCapabilitiesEXT {}
+impl Default for SurfacePresentScalingCapabilitiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_PRESENT_SCALING_CAPABILITIES_EXT,
+            p_next: ptr::null_mut(),
+            supported_present_scaling: Default::default(),
+            supported_present_gravity_x: Default::default(),
+            supported_present_gravity_y: Default::default(),
+            min_scaled_image_extent: Default::default(),
+            max_scaled_image_extent: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SurfacePresentScalingCapabilitiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfacePresentScalingCapabilitiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("supported_present_scaling", &self.supported_present_scaling)
+            .field("supported_present_gravity_x", &self.supported_present_gravity_x)
+            .field("supported_present_gravity_y", &self.supported_present_gravity_y)
+            .field("min_scaled_image_extent", &self.min_scaled_image_extent)
+            .field("max_scaled_image_extent", &self.max_scaled_image_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SurfacePresentModeCompatibilityEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_mode_count: u32,
+    /// Output list of present modes compatible with the one specified in VkSurfacePresentModeEXT
+    pub p_present_modes: *mut PresentModeKHR,
+}
+unsafe impl Send for SurfacePresentModeCompatibilityEXT {}
+unsafe impl Sync for SurfacePresentModeCompatibilityEXT {}
+impl Default for SurfacePresentModeCompatibilityEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SURFACE_PRESENT_MODE_COMPATIBILITY_EXT,
+            p_next: ptr::null_mut(),
+            present_mode_count: Default::default(),
+            p_present_modes: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for SurfacePresentModeCompatibilityEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SurfacePresentModeCompatibilityEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_mode_count", &self.present_mode_count)
+            .field("p_present_modes", &self.p_present_modes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub swapchain_maintenance1: Bool32,
+}
+unsafe impl Send for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
+impl Default for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SWAPCHAIN_MAINTENANCE_1_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            swapchain_maintenance1: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceSwapchainMaintenance1FeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_maintenance1", &self.swapchain_maintenance1)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainPresentFenceInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Copy of VkPresentInfoKHR::swapchainCount
+    pub swapchain_count: u32,
+    /// Fence to signal for each swapchain
+    pub p_fences: *const Fence,
+}
+unsafe impl Send for SwapchainPresentFenceInfoEXT {}
+unsafe impl Sync for SwapchainPresentFenceInfoEXT {}
+impl Default for SwapchainPresentFenceInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_PRESENT_FENCE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            swapchain_count: Default::default(),
+            p_fences: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainPresentFenceInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainPresentFenceInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_count", &self.swapchain_count)
+            .field("p_fences", &self.p_fences)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainPresentModesCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub present_mode_count: u32,
+    pub p_present_modes: *const PresentModeKHR,
+}
+unsafe impl Send for SwapchainPresentModesCreateInfoEXT {}
+unsafe impl Sync for SwapchainPresentModesCreateInfoEXT {}
+impl Default for SwapchainPresentModesCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            present_mode_count: Default::default(),
+            p_present_modes: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainPresentModesCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainPresentModesCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_mode_count", &self.present_mode_count)
+            .field("p_present_modes", &self.p_present_modes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainPresentModeInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Copy of VkPresentInfoKHR::swapchainCount
+    pub swapchain_count: u32,
+    /// Presentation mode for each swapchain
+    pub p_present_modes: *const PresentModeKHR,
+}
+unsafe impl Send for SwapchainPresentModeInfoEXT {}
+unsafe impl Sync for SwapchainPresentModeInfoEXT {}
+impl Default for SwapchainPresentModeInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_PRESENT_MODE_INFO_EXT,
+            p_next: ptr::null_mut(),
+            swapchain_count: Default::default(),
+            p_present_modes: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainPresentModeInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainPresentModeInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain_count", &self.swapchain_count)
+            .field("p_present_modes", &self.p_present_modes)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainPresentScalingCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub scaling_behavior: PresentScalingFlagsEXT,
+    pub present_gravity_x: PresentGravityFlagsEXT,
+    pub present_gravity_y: PresentGravityFlagsEXT,
+}
+unsafe impl Send for SwapchainPresentScalingCreateInfoEXT {}
+unsafe impl Sync for SwapchainPresentScalingCreateInfoEXT {}
+impl Default for SwapchainPresentScalingCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_PRESENT_SCALING_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            scaling_behavior: Default::default(),
+            present_gravity_x: Default::default(),
+            present_gravity_y: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainPresentScalingCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainPresentScalingCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("scaling_behavior", &self.scaling_behavior)
+            .field("present_gravity_x", &self.present_gravity_x)
+            .field("present_gravity_y", &self.present_gravity_y)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ReleaseSwapchainImagesInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Swapchain for which images are being released
+    pub swapchain: Option<SwapchainKHR>,
+    /// Number of indices to release
+    pub image_index_count: u32,
+    /// Indices of which presentable images to release
+    pub p_image_indices: *const u32,
+}
+unsafe impl Send for ReleaseSwapchainImagesInfoEXT {}
+unsafe impl Sync for ReleaseSwapchainImagesInfoEXT {}
+impl Default for ReleaseSwapchainImagesInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RELEASE_SWAPCHAIN_IMAGES_INFO_EXT,
+            p_next: ptr::null(),
+            swapchain: Default::default(),
+            image_index_count: Default::default(),
+            p_image_indices: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ReleaseSwapchainImagesInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ReleaseSwapchainImagesInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("swapchain", &self.swapchain)
+            .field("image_index_count", &self.image_index_count)
+            .field("p_image_indices", &self.p_image_indices)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -39339,6 +39735,103 @@ impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
                 "ray_tracing_invocation_reorder_reordering_hint",
                 &self.ray_tracing_invocation_reorder_reordering_hint,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DirectDriverLoadingInfoLUNARG {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub flags: DirectDriverLoadingFlagsLUNARG,
+    pub pfn_get_instance_proc_addr: Option<FnGetInstanceProcAddrLUNARG>,
+}
+unsafe impl Send for DirectDriverLoadingInfoLUNARG {}
+unsafe impl Sync for DirectDriverLoadingInfoLUNARG {}
+impl Default for DirectDriverLoadingInfoLUNARG {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DIRECT_DRIVER_LOADING_INFO_LUNARG,
+            p_next: ptr::null_mut(),
+            flags: Default::default(),
+            pfn_get_instance_proc_addr: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DirectDriverLoadingInfoLUNARG {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DirectDriverLoadingInfoLUNARG")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field(
+                "pfn_get_instance_proc_addr",
+                if self.pfn_get_instance_proc_addr.is_some() {
+                    &"Some"
+                } else {
+                    &"None"
+                },
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DirectDriverLoadingListLUNARG {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub mode: DirectDriverLoadingModeLUNARG,
+    pub driver_count: u32,
+    pub p_drivers: *const DirectDriverLoadingInfoLUNARG,
+}
+unsafe impl Send for DirectDriverLoadingListLUNARG {}
+unsafe impl Sync for DirectDriverLoadingListLUNARG {}
+impl Default for DirectDriverLoadingListLUNARG {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DIRECT_DRIVER_LOADING_LIST_LUNARG,
+            p_next: ptr::null_mut(),
+            mode: Default::default(),
+            driver_count: Default::default(),
+            p_drivers: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DirectDriverLoadingListLUNARG {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DirectDriverLoadingListLUNARG")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("mode", &self.mode)
+            .field("driver_count", &self.driver_count)
+            .field("p_drivers", &self.p_drivers)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub multiview_per_view_viewports: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
+impl Default for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            multiview_per_view_viewports: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("multiview_per_view_viewports", &self.multiview_per_view_viewports)
             .finish()
     }
 }
@@ -41911,3 +42404,5 @@ pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
     p_fault_counts: *mut DeviceFaultCountsEXT,
     p_fault_info: *mut DeviceFaultInfoEXT,
 ) -> Result;
+pub type FnReleaseSwapchainImagesEXT =
+    unsafe extern "system" fn(device: Option<Device>, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;

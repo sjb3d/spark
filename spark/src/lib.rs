@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 235
+//! Generated from vk.xml with `VK_HEADER_VERSION` 238
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -259,10 +259,12 @@ pub struct InstanceExtensions {
     pub khr_surface_protected_capabilities: bool,
     pub ext_validation_features: bool,
     pub ext_headless_surface: bool,
+    pub ext_surface_maintenance1: bool,
     pub ext_acquire_drm_display: bool,
     pub ext_directfb_surface: bool,
     pub khr_portability_enumeration: bool,
     pub google_surfaceless_query: bool,
+    pub lunarg_direct_driver_loading: bool,
 }
 impl InstanceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -297,10 +299,12 @@ impl InstanceExtensions {
             b"VK_KHR_surface_protected_capabilities" => self.khr_surface_protected_capabilities = true,
             b"VK_EXT_validation_features" => self.ext_validation_features = true,
             b"VK_EXT_headless_surface" => self.ext_headless_surface = true,
+            b"VK_EXT_surface_maintenance1" => self.ext_surface_maintenance1 = true,
             b"VK_EXT_acquire_drm_display" => self.ext_acquire_drm_display = true,
             b"VK_EXT_directfb_surface" => self.ext_directfb_surface = true,
             b"VK_KHR_portability_enumeration" => self.khr_portability_enumeration = true,
             b"VK_GOOGLE_surfaceless_query" => self.google_surfaceless_query = true,
+            b"VK_LUNARG_direct_driver_loading" => self.lunarg_direct_driver_loading = true,
             _ => {}
         }
     }
@@ -337,10 +341,12 @@ impl InstanceExtensions {
             khr_surface_protected_capabilities: false,
             ext_validation_features: false,
             ext_headless_surface: false,
+            ext_surface_maintenance1: false,
             ext_acquire_drm_display: false,
             ext_directfb_surface: false,
             khr_portability_enumeration: false,
             google_surfaceless_query: false,
+            lunarg_direct_driver_loading: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -1221,6 +1227,26 @@ impl InstanceExtensions {
     pub fn enable_ext_shader_atomic_float2(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_surface_maintenance1(&self) -> bool {
+        self.ext_surface_maintenance1 && self.supports_khr_surface() && self.supports_khr_get_surface_capabilities2()
+    }
+    pub fn enable_ext_surface_maintenance1(&mut self) {
+        self.ext_surface_maintenance1 = true;
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
+    }
+    pub fn supports_ext_swapchain_maintenance1(&self) -> bool {
+        self.supports_ext_surface_maintenance1()
+            && self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_surface()
+            && self.supports_khr_get_surface_capabilities2()
+    }
+    pub fn enable_ext_swapchain_maintenance1(&mut self) {
+        self.enable_ext_surface_maintenance1();
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_surface();
+        self.enable_khr_get_surface_capabilities2();
+    }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1600,6 +1626,12 @@ impl InstanceExtensions {
     pub fn enable_ext_extended_dynamic_state3(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_lunarg_direct_driver_loading(&self) -> bool {
+        self.lunarg_direct_driver_loading
+    }
+    pub fn enable_lunarg_direct_driver_loading(&mut self) {
+        self.lunarg_direct_driver_loading = true;
+    }
     pub fn supports_ext_shader_module_identifier(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -1746,6 +1778,9 @@ impl InstanceExtensions {
         if self.ext_headless_surface {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_headless_surface\0") })
         }
+        if self.ext_surface_maintenance1 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_surface_maintenance1\0") })
+        }
         if self.ext_acquire_drm_display {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_acquire_drm_display\0") })
         }
@@ -1757,6 +1792,9 @@ impl InstanceExtensions {
         }
         if self.google_surfaceless_query {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_GOOGLE_surfaceless_query\0") })
+        }
+        if self.lunarg_direct_driver_loading {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_LUNARG_direct_driver_loading\0") })
         }
         v
     }
@@ -4205,6 +4243,7 @@ pub struct DeviceExtensions {
     pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
     pub ext_shader_atomic_float2: bool,
+    pub ext_swapchain_maintenance1: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
     pub nv_device_generated_commands: bool,
     pub nv_inherited_viewport_scissor: bool,
@@ -4293,6 +4332,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_protected_access: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
+    pub qcom_multiview_per_view_viewports: bool,
     pub nv_ray_tracing_invocation_reorder: bool,
     pub ext_mutable_descriptor_type: bool,
     pub arm_shader_core_builtins: bool,
@@ -4477,6 +4517,7 @@ impl DeviceExtensions {
             b"VK_KHR_deferred_host_operations" => self.khr_deferred_host_operations = true,
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
             b"VK_EXT_shader_atomic_float2" => self.ext_shader_atomic_float2 = true,
+            b"VK_EXT_swapchain_maintenance1" => self.ext_swapchain_maintenance1 = true,
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
             b"VK_NV_device_generated_commands" => self.nv_device_generated_commands = true,
             b"VK_NV_inherited_viewport_scissor" => self.nv_inherited_viewport_scissor = true,
@@ -4565,6 +4606,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
+            b"VK_QCOM_multiview_per_view_viewports" => self.qcom_multiview_per_view_viewports = true,
             b"VK_NV_ray_tracing_invocation_reorder" => self.nv_ray_tracing_invocation_reorder = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
@@ -4749,6 +4791,7 @@ impl DeviceExtensions {
             khr_deferred_host_operations: false,
             khr_pipeline_executable_properties: false,
             ext_shader_atomic_float2: false,
+            ext_swapchain_maintenance1: false,
             ext_shader_demote_to_helper_invocation: false,
             nv_device_generated_commands: false,
             nv_inherited_viewport_scissor: false,
@@ -4837,6 +4880,7 @@ impl DeviceExtensions {
             ext_pipeline_protected_access: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
+            qcom_multiview_per_view_viewports: false,
             nv_ray_tracing_invocation_reorder: false,
             ext_mutable_descriptor_type: false,
             arm_shader_core_builtins: false,
@@ -6172,6 +6216,13 @@ impl DeviceExtensions {
         self.ext_shader_atomic_float2 = true;
         self.enable_ext_shader_atomic_float();
     }
+    pub fn supports_ext_swapchain_maintenance1(&self) -> bool {
+        self.ext_swapchain_maintenance1 && self.supports_khr_swapchain()
+    }
+    pub fn enable_ext_swapchain_maintenance1(&mut self) {
+        self.ext_swapchain_maintenance1 = true;
+        self.enable_khr_swapchain();
+    }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
         self.ext_shader_demote_to_helper_invocation || self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
     }
@@ -6880,6 +6931,12 @@ impl DeviceExtensions {
     pub fn enable_sec_amigo_profiling(&mut self) {
         self.sec_amigo_profiling = true;
     }
+    pub fn supports_qcom_multiview_per_view_viewports(&self) -> bool {
+        self.qcom_multiview_per_view_viewports
+    }
+    pub fn enable_qcom_multiview_per_view_viewports(&mut self) {
+        self.qcom_multiview_per_view_viewports = true;
+    }
     pub fn supports_nv_ray_tracing_invocation_reorder(&self) -> bool {
         self.nv_ray_tracing_invocation_reorder
             && self.supports_khr_ray_tracing_pipeline()
@@ -7444,6 +7501,9 @@ impl DeviceExtensions {
         if self.ext_shader_atomic_float2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float2\0") })
         }
+        if self.ext_swapchain_maintenance1 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_swapchain_maintenance1\0") })
+        }
         if self.ext_shader_demote_to_helper_invocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_demote_to_helper_invocation\0") })
         }
@@ -7707,6 +7767,9 @@ impl DeviceExtensions {
         }
         if self.sec_amigo_profiling {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_SEC_amigo_profiling\0") })
+        }
+        if self.qcom_multiview_per_view_viewports {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_viewports\0") })
         }
         if self.nv_ray_tracing_invocation_reorder {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_invocation_reorder\0") })
@@ -8175,6 +8238,7 @@ pub struct Device {
     pub fp_bind_optical_flow_session_image_nv: Option<vk::FnBindOpticalFlowSessionImageNV>,
     pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
+    pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -11736,6 +11800,12 @@ impl Device {
             },
             fp_get_device_fault_info_ext: if extensions.ext_device_fault {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceFaultInfoEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_release_swapchain_images_ext: if extensions.ext_swapchain_maintenance1 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseSwapchainImagesEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19290,6 +19360,19 @@ impl Device {
         let err = (fp)(Some(self.handle), p_fault_counts, p_fault_info);
         match err {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn release_swapchain_images_ext(
+        &self,
+        p_release_info: &vk::ReleaseSwapchainImagesInfoEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_release_swapchain_images_ext
+            .expect("vkReleaseSwapchainImagesEXT is not loaded");
+        let err = (fp)(Some(self.handle), p_release_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
     }

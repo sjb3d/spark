@@ -22097,6 +22097,298 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderCoreBuiltinsFeaturesARM
 impl DeviceCreateInfoNext for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl Builder<'_> for vk::SurfacePresentModeEXT {
+    type Type = SurfacePresentModeEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfacePresentModeEXTBuilder {
+    inner: vk::SurfacePresentModeEXT,
+}
+impl SurfacePresentModeEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_mode(mut self, present_mode: vk::PresentModeKHR) -> Self {
+        self.inner.present_mode = present_mode;
+        self
+    }
+}
+impl Deref for SurfacePresentModeEXTBuilder {
+    type Target = vk::SurfacePresentModeEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceSurfaceInfo2KHRNext for SurfacePresentModeEXTBuilder {}
+impl PhysicalDeviceSurfaceInfo2KHRNext for vk::SurfacePresentModeEXT {}
+impl Builder<'_> for vk::SurfacePresentScalingCapabilitiesEXT {
+    type Type = SurfacePresentScalingCapabilitiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfacePresentScalingCapabilitiesEXTBuilder {
+    inner: vk::SurfacePresentScalingCapabilitiesEXT,
+}
+impl SurfacePresentScalingCapabilitiesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn supported_present_scaling(mut self, supported_present_scaling: vk::PresentScalingFlagsEXT) -> Self {
+        self.inner.supported_present_scaling = supported_present_scaling;
+        self
+    }
+    pub fn supported_present_gravity_x(mut self, supported_present_gravity_x: vk::PresentGravityFlagsEXT) -> Self {
+        self.inner.supported_present_gravity_x = supported_present_gravity_x;
+        self
+    }
+    pub fn supported_present_gravity_y(mut self, supported_present_gravity_y: vk::PresentGravityFlagsEXT) -> Self {
+        self.inner.supported_present_gravity_y = supported_present_gravity_y;
+        self
+    }
+    pub fn min_scaled_image_extent(mut self, min_scaled_image_extent: vk::Extent2D) -> Self {
+        self.inner.min_scaled_image_extent = min_scaled_image_extent;
+        self
+    }
+    pub fn max_scaled_image_extent(mut self, max_scaled_image_extent: vk::Extent2D) -> Self {
+        self.inner.max_scaled_image_extent = max_scaled_image_extent;
+        self
+    }
+}
+impl Deref for SurfacePresentScalingCapabilitiesEXTBuilder {
+    type Target = vk::SurfacePresentScalingCapabilitiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for SurfacePresentScalingCapabilitiesEXTBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfacePresentScalingCapabilitiesEXT {}
+impl Builder<'_> for vk::SurfacePresentModeCompatibilityEXT {
+    type Type = SurfacePresentModeCompatibilityEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SurfacePresentModeCompatibilityEXTBuilder {
+    inner: vk::SurfacePresentModeCompatibilityEXT,
+}
+impl SurfacePresentModeCompatibilityEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_mode_count(mut self, present_mode_count: u32) -> Self {
+        self.inner.present_mode_count = present_mode_count;
+        self
+    }
+    pub fn p_present_modes(mut self, p_present_modes: *mut vk::PresentModeKHR) -> Self {
+        self.inner.p_present_modes = p_present_modes;
+        self
+    }
+}
+impl Deref for SurfacePresentModeCompatibilityEXTBuilder {
+    type Target = vk::SurfacePresentModeCompatibilityEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for SurfacePresentModeCompatibilityEXTBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::SurfacePresentModeCompatibilityEXT {}
+impl Builder<'_> for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
+    type Type = PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT,
+}
+impl PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn swapchain_maintenance1(mut self, swapchain_maintenance1: bool) -> Self {
+        self.inner.swapchain_maintenance1 = if swapchain_maintenance1 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceSwapchainMaintenance1FeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceSwapchainMaintenance1FeaturesEXT {}
+impl<'a> Builder<'a> for vk::SwapchainPresentFenceInfoEXT {
+    type Type = SwapchainPresentFenceInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainPresentFenceInfoEXTBuilder<'a> {
+    inner: vk::SwapchainPresentFenceInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SwapchainPresentFenceInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_fences(mut self, p_fences: &'a [vk::Fence]) -> Self {
+        self.inner.swapchain_count = p_fences.len() as u32;
+        self.inner.p_fences = p_fences.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for SwapchainPresentFenceInfoEXTBuilder<'a> {
+    type Target = vk::SwapchainPresentFenceInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PresentInfoKHRNext for SwapchainPresentFenceInfoEXTBuilder<'a> {}
+impl PresentInfoKHRNext for vk::SwapchainPresentFenceInfoEXT {}
+impl<'a> Builder<'a> for vk::SwapchainPresentModesCreateInfoEXT {
+    type Type = SwapchainPresentModesCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainPresentModesCreateInfoEXTBuilder<'a> {
+    inner: vk::SwapchainPresentModesCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SwapchainPresentModesCreateInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_present_modes(mut self, p_present_modes: &'a [vk::PresentModeKHR]) -> Self {
+        self.inner.present_mode_count = p_present_modes.len() as u32;
+        self.inner.p_present_modes = p_present_modes.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for SwapchainPresentModesCreateInfoEXTBuilder<'a> {
+    type Target = vk::SwapchainPresentModesCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> SwapchainCreateInfoKHRNext for SwapchainPresentModesCreateInfoEXTBuilder<'a> {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentModesCreateInfoEXT {}
+impl<'a> Builder<'a> for vk::SwapchainPresentModeInfoEXT {
+    type Type = SwapchainPresentModeInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainPresentModeInfoEXTBuilder<'a> {
+    inner: vk::SwapchainPresentModeInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> SwapchainPresentModeInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_present_modes(mut self, p_present_modes: &'a [vk::PresentModeKHR]) -> Self {
+        self.inner.swapchain_count = p_present_modes.len() as u32;
+        self.inner.p_present_modes = p_present_modes.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for SwapchainPresentModeInfoEXTBuilder<'a> {
+    type Target = vk::SwapchainPresentModeInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> PresentInfoKHRNext for SwapchainPresentModeInfoEXTBuilder<'a> {}
+impl PresentInfoKHRNext for vk::SwapchainPresentModeInfoEXT {}
+impl Builder<'_> for vk::SwapchainPresentScalingCreateInfoEXT {
+    type Type = SwapchainPresentScalingCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainPresentScalingCreateInfoEXTBuilder {
+    inner: vk::SwapchainPresentScalingCreateInfoEXT,
+}
+impl SwapchainPresentScalingCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn scaling_behavior(mut self, scaling_behavior: vk::PresentScalingFlagsEXT) -> Self {
+        self.inner.scaling_behavior = scaling_behavior;
+        self
+    }
+    pub fn present_gravity_x(mut self, present_gravity_x: vk::PresentGravityFlagsEXT) -> Self {
+        self.inner.present_gravity_x = present_gravity_x;
+        self
+    }
+    pub fn present_gravity_y(mut self, present_gravity_y: vk::PresentGravityFlagsEXT) -> Self {
+        self.inner.present_gravity_y = present_gravity_y;
+        self
+    }
+}
+impl Deref for SwapchainPresentScalingCreateInfoEXTBuilder {
+    type Target = vk::SwapchainPresentScalingCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SwapchainCreateInfoKHRNext for SwapchainPresentScalingCreateInfoEXTBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainPresentScalingCreateInfoEXT {}
+impl<'a> Builder<'a> for vk::ReleaseSwapchainImagesInfoEXT {
+    type Type = ReleaseSwapchainImagesInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ReleaseSwapchainImagesInfoEXTBuilder<'a> {
+    inner: vk::ReleaseSwapchainImagesInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ReleaseSwapchainImagesInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn swapchain(mut self, swapchain: vk::SwapchainKHR) -> Self {
+        self.inner.swapchain = Some(swapchain);
+        self
+    }
+    pub fn p_image_indices(mut self, p_image_indices: &'a [u32]) -> Self {
+        self.inner.image_index_count = p_image_indices.len() as u32;
+        self.inner.p_image_indices = p_image_indices.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for ReleaseSwapchainImagesInfoEXTBuilder<'a> {
+    type Target = vk::ReleaseSwapchainImagesInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
     type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder;
     fn builder() -> Self::Type {
@@ -22132,3 +22424,101 @@ impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesN
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
+impl Builder<'_> for vk::DirectDriverLoadingInfoLUNARG {
+    type Type = DirectDriverLoadingInfoLUNARGBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DirectDriverLoadingInfoLUNARGBuilder {
+    inner: vk::DirectDriverLoadingInfoLUNARG,
+}
+impl DirectDriverLoadingInfoLUNARGBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::DirectDriverLoadingFlagsLUNARG) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn pfn_get_instance_proc_addr(mut self, pfn_get_instance_proc_addr: vk::FnGetInstanceProcAddrLUNARG) -> Self {
+        self.inner.pfn_get_instance_proc_addr = Some(pfn_get_instance_proc_addr);
+        self
+    }
+}
+impl Deref for DirectDriverLoadingInfoLUNARGBuilder {
+    type Target = vk::DirectDriverLoadingInfoLUNARG;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::DirectDriverLoadingListLUNARG {
+    type Type = DirectDriverLoadingListLUNARGBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DirectDriverLoadingListLUNARGBuilder<'a> {
+    inner: vk::DirectDriverLoadingListLUNARG,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DirectDriverLoadingListLUNARGBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn mode(mut self, mode: vk::DirectDriverLoadingModeLUNARG) -> Self {
+        self.inner.mode = mode;
+        self
+    }
+    pub fn p_drivers(mut self, p_drivers: &'a [vk::DirectDriverLoadingInfoLUNARG]) -> Self {
+        self.inner.driver_count = p_drivers.len() as u32;
+        self.inner.p_drivers = p_drivers.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for DirectDriverLoadingListLUNARGBuilder<'a> {
+    type Target = vk::DirectDriverLoadingListLUNARG;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> InstanceCreateInfoNext for DirectDriverLoadingListLUNARGBuilder<'a> {}
+impl InstanceCreateInfoNext for vk::DirectDriverLoadingListLUNARG {}
+impl Builder<'_> for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
+    type Type = PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM,
+}
+impl PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multiview_per_view_viewports(mut self, multiview_per_view_viewports: bool) -> Self {
+        self.inner.multiview_per_view_viewports = if multiview_per_view_viewports {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
