@@ -891,6 +891,8 @@ impl ShaderStageFlags {
     pub const MESH_EXT: Self = Self(0x80);
     /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x4000);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const CLUSTER_CULLING_HUAWEI: Self = Self(0x80000);
 }
 impl_bitmask!(ShaderStageFlags, 0x7fffffff);
 impl fmt::Display for ShaderStageFlags {
@@ -915,6 +917,7 @@ impl fmt::Display for ShaderStageFlags {
                 (0x40, "TASK_EXT"),
                 (0x80, "MESH_EXT"),
                 (0x4000, "SUBPASS_SHADING_HUAWEI"),
+                (0x80000, "CLUSTER_CULLING_HUAWEI"),
             ],
             f,
         )
@@ -1504,8 +1507,10 @@ impl QueryPipelineStatisticFlags {
     pub const TASK_SHADER_INVOCATIONS_EXT: Self = Self(0x800);
     /// Added by extension VK_EXT_mesh_shader.
     pub const MESH_SHADER_INVOCATIONS_EXT: Self = Self(0x1000);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const CLUSTER_CULLING_SHADER_INVOCATIONS_HUAWEI: Self = Self(0x2000);
 }
-impl_bitmask!(QueryPipelineStatisticFlags, 0x1fff);
+impl_bitmask!(QueryPipelineStatisticFlags, 0x3fff);
 impl fmt::Display for QueryPipelineStatisticFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1524,6 +1529,7 @@ impl fmt::Display for QueryPipelineStatisticFlags {
                 (0x400, "COMPUTE_SHADER_INVOCATIONS"),
                 (0x800, "TASK_SHADER_INVOCATIONS_EXT"),
                 (0x1000, "MESH_SHADER_INVOCATIONS_EXT"),
+                (0x2000, "CLUSTER_CULLING_SHADER_INVOCATIONS_HUAWEI"),
             ],
             f,
         )
@@ -2487,10 +2493,12 @@ impl PipelineStageFlags2 {
     pub const ACCELERATION_STRUCTURE_COPY_KHR: Self = Self(0x10000000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_BUILD_EXT: Self = Self(0x40000000);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const CLUSTER_CULLING_SHADER_HUAWEI: Self = Self(0x20000000000);
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_NV: Self = Self(0x20000000);
 }
-impl_bitmask!(PipelineStageFlags2, 0x1ff73ffffff);
+impl_bitmask!(PipelineStageFlags2, 0x3ff73ffffff);
 impl fmt::Display for PipelineStageFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2533,6 +2541,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x10000000000, "INVOCATION_MASK_HUAWEI"),
                 (0x10000000, "ACCELERATION_STRUCTURE_COPY_KHR"),
                 (0x40000000, "MICROMAP_BUILD_EXT"),
+                (0x20000000000, "CLUSTER_CULLING_SHADER_HUAWEI"),
                 (0x20000000, "OPTICAL_FLOW_NV"),
             ],
             f,
@@ -7567,6 +7576,10 @@ impl StructureType {
     pub const MICROMAP_BUILD_SIZES_INFO_EXT: Self = Self(1000396008);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT: Self = Self(1000396009);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI: Self = Self(1000404000);
+    /// Added by extension VK_HUAWEI_cluster_culling_shader.
+    pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI: Self = Self(1000404001);
     /// Added by extension VK_EXT_border_color_swizzle.
     pub const PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT: Self = Self(1000411000);
     /// Added by extension VK_EXT_border_color_swizzle.
@@ -8313,6 +8326,8 @@ impl fmt::Display for StructureType {
             1000396007 => Some(&"MICROMAP_CREATE_INFO_EXT"),
             1000396008 => Some(&"MICROMAP_BUILD_SIZES_INFO_EXT"),
             1000396009 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT"),
+            1000404000 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI"),
+            1000404001 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
@@ -10694,6 +10709,8 @@ impl DriverId {
     pub const MESA_DOZEN: Self = Self(23);
     /// Mesa open source project
     pub const MESA_NVK: Self = Self(24);
+    /// Imagination Technologies
+    pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -10734,6 +10751,7 @@ impl fmt::Display for DriverId {
             22 => Some(&"MESA_VENUS"),
             23 => Some(&"MESA_DOZEN"),
             24 => Some(&"MESA_NVK"),
+            25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29653,6 +29671,39 @@ impl fmt::Debug for PhysicalDeviceSubpassShadingPropertiesHUAWEI {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_work_group_count: [u32; 3],
+    pub max_work_group_size: [u32; 3],
+    pub max_output_cluster_count: u32,
+}
+unsafe impl Send for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
+impl Default for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI,
+            p_next: ptr::null_mut(),
+            max_work_group_count: [Default::default(); 3],
+            max_work_group_size: [Default::default(); 3],
+            max_output_cluster_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceClusterCullingShaderPropertiesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_work_group_count", &self.max_work_group_count)
+            .field("max_work_group_size", &self.max_work_group_size)
+            .field("max_output_cluster_count", &self.max_output_cluster_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct MemoryOpaqueCaptureAddressAllocateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -32598,6 +32649,39 @@ impl fmt::Debug for PhysicalDeviceSubpassShadingFeaturesHUAWEI {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("subpass_shading", &self.subpass_shading)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub clusterculling_shader: Bool32,
+    pub multiview_cluster_culling_shader: Bool32,
+}
+unsafe impl Send for PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
+unsafe impl Sync for PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
+impl Default for PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI,
+            p_next: ptr::null_mut(),
+            clusterculling_shader: Default::default(),
+            multiview_cluster_culling_shader: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceClusterCullingShaderFeaturesHUAWEI")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("clusterculling_shader", &self.clusterculling_shader)
+            .field(
+                "multiview_cluster_culling_shader",
+                &self.multiview_cluster_culling_shader,
+            )
             .finish()
     }
 }
@@ -40401,6 +40485,14 @@ pub type FnCmdDispatch = unsafe extern "system" fn(
 pub type FnCmdDispatchIndirect =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize);
 pub type FnCmdSubpassShadingHUAWEI = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>);
+pub type FnCmdDrawClusterHUAWEI = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    group_count_x: u32,
+    group_count_y: u32,
+    group_count_z: u32,
+);
+pub type FnCmdDrawClusterIndirectHUAWEI =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize);
 pub type FnCmdCopyBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     src_buffer: Option<Buffer>,

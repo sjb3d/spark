@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 238
+//! Generated from vk.xml with `VK_HEADER_VERSION` 239
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1581,6 +1581,12 @@ impl InstanceExtensions {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_ext_opacity_micromap(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_huawei_cluster_culling_shader(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_huawei_cluster_culling_shader(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_pageable_device_local_memory(&self) -> bool {
@@ -4311,6 +4317,7 @@ pub struct DeviceExtensions {
     pub ext_image_2d_view_of_3d: bool,
     pub ext_opacity_micromap: bool,
     pub ext_load_store_op_none: bool,
+    pub huawei_cluster_culling_shader: bool,
     pub ext_border_color_swizzle: bool,
     pub ext_pageable_device_local_memory: bool,
     pub khr_maintenance4: bool,
@@ -4585,6 +4592,7 @@ impl DeviceExtensions {
             b"VK_EXT_image_2d_view_of_3d" => self.ext_image_2d_view_of_3d = true,
             b"VK_EXT_opacity_micromap" => self.ext_opacity_micromap = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
+            b"VK_HUAWEI_cluster_culling_shader" => self.huawei_cluster_culling_shader = true,
             b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
             b"VK_EXT_pageable_device_local_memory" => self.ext_pageable_device_local_memory = true,
             b"VK_KHR_maintenance4" => self.khr_maintenance4 = true,
@@ -4859,6 +4867,7 @@ impl DeviceExtensions {
             ext_image_2d_view_of_3d: false,
             ext_opacity_micromap: false,
             ext_load_store_op_none: false,
+            huawei_cluster_culling_shader: false,
             ext_border_color_swizzle: false,
             ext_pageable_device_local_memory: false,
             khr_maintenance4: false,
@@ -6792,6 +6801,12 @@ impl DeviceExtensions {
     pub fn enable_ext_load_store_op_none(&mut self) {
         self.ext_load_store_op_none = true;
     }
+    pub fn supports_huawei_cluster_culling_shader(&self) -> bool {
+        self.huawei_cluster_culling_shader
+    }
+    pub fn enable_huawei_cluster_culling_shader(&mut self) {
+        self.huawei_cluster_culling_shader = true;
+    }
     pub fn supports_ext_border_color_swizzle(&self) -> bool {
         self.ext_border_color_swizzle && self.supports_ext_custom_border_color()
     }
@@ -7705,6 +7720,9 @@ impl DeviceExtensions {
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })
         }
+        if self.huawei_cluster_culling_shader {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_HUAWEI_cluster_culling_shader\0") })
+        }
         if self.ext_border_color_swizzle {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_border_color_swizzle\0") })
         }
@@ -7888,6 +7906,8 @@ pub struct Device {
     pub fp_cmd_dispatch: Option<vk::FnCmdDispatch>,
     pub fp_cmd_dispatch_indirect: Option<vk::FnCmdDispatchIndirect>,
     pub fp_cmd_subpass_shading_huawei: Option<vk::FnCmdSubpassShadingHUAWEI>,
+    pub fp_cmd_draw_cluster_huawei: Option<vk::FnCmdDrawClusterHUAWEI>,
+    pub fp_cmd_draw_cluster_indirect_huawei: Option<vk::FnCmdDrawClusterIndirectHUAWEI>,
     pub fp_cmd_copy_buffer: Option<vk::FnCmdCopyBuffer>,
     pub fp_cmd_copy_image: Option<vk::FnCmdCopyImage>,
     pub fp_cmd_blit_image: Option<vk::FnCmdBlitImage>,
@@ -8966,6 +8986,18 @@ impl Device {
             },
             fp_cmd_subpass_shading_huawei: if extensions.huawei_subpass_shading {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSubpassShadingHUAWEI\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_cluster_huawei: if extensions.huawei_cluster_culling_shader {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawClusterHUAWEI\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_draw_cluster_indirect_huawei: if extensions.huawei_cluster_culling_shader {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawClusterIndirectHUAWEI\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -13358,6 +13390,29 @@ impl Device {
             .fp_cmd_subpass_shading_huawei
             .expect("vkCmdSubpassShadingHUAWEI is not loaded");
         (fp)(Some(command_buffer));
+    }
+    pub unsafe fn cmd_draw_cluster_huawei(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        group_count_x: u32,
+        group_count_y: u32,
+        group_count_z: u32,
+    ) {
+        let fp = self
+            .fp_cmd_draw_cluster_huawei
+            .expect("vkCmdDrawClusterHUAWEI is not loaded");
+        (fp)(Some(command_buffer), group_count_x, group_count_y, group_count_z);
+    }
+    pub unsafe fn cmd_draw_cluster_indirect_huawei(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+    ) {
+        let fp = self
+            .fp_cmd_draw_cluster_indirect_huawei
+            .expect("vkCmdDrawClusterIndirectHUAWEI is not loaded");
+        (fp)(Some(command_buffer), Some(buffer), offset);
     }
     pub unsafe fn cmd_copy_buffer(
         &self,

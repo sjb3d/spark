@@ -13860,6 +13860,7 @@ impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlProp
 impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
 impl ComputePipelineCreateInfoNext for vk::SubpassShadingPipelineCreateInfoHUAWEI {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
 impl Builder<'_> for vk::MemoryOpaqueCaptureAddressAllocateInfo {
     type Type = MemoryOpaqueCaptureAddressAllocateInfoBuilder;
     fn builder() -> Self::Type {
@@ -16390,6 +16391,44 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSubpassShadingFeaturesHUAWEIB
 impl DeviceCreateInfoNext for PhysicalDeviceSubpassShadingFeaturesHUAWEIBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubpassShadingFeaturesHUAWEI {}
+impl Builder<'_> for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {
+    type Type = PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+    inner: vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI,
+}
+impl PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn clusterculling_shader(mut self, clusterculling_shader: bool) -> Self {
+        self.inner.clusterculling_shader = if clusterculling_shader { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn multiview_cluster_culling_shader(mut self, multiview_cluster_culling_shader: bool) -> Self {
+        self.inner.multiview_cluster_culling_shader = if multiview_cluster_culling_shader {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {
+    type Target = vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceClusterCullingShaderFeaturesHUAWEIBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI {}
 impl Builder<'_> for vk::BufferCopy2 {
     type Type = BufferCopy2Builder;
     fn builder() -> Self::Type {
