@@ -821,7 +821,13 @@ impl<'a> Generator<'a> {
                                 }
                                 vk::InterfaceItem::Enum(en) if en.api.is_empty_or_contains_vulkan() => {
                                     self.collect_extension_enum(en);
-                                    self.extension_by_enum_name.insert(en.name.as_str(), ext);
+                                    let from_this_ext = match en.spec {
+                                        vk::EnumSpec::Offset { extnumber, .. } => extnumber.is_none(),
+                                        _ => true,
+                                    };
+                                    if from_this_ext {
+                                        self.extension_by_enum_name.insert(en.name.as_str(), ext);
+                                    }
                                 }
                                 _ => {}
                             }

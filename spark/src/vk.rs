@@ -4829,7 +4829,6 @@ impl DescriptorType {
     pub const SAMPLE_WEIGHT_IMAGE_QCOM: Self = Self(1000440000);
     /// Added by extension VK_QCOM_image_processing.
     pub const BLOCK_MATCH_IMAGE_QCOM: Self = Self(1000440001);
-    /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const MUTABLE_EXT: Self = Self(1000351000);
 }
 impl fmt::Display for DescriptorType {
@@ -5746,7 +5745,6 @@ impl ImageLayout {
     pub const SHADING_RATE_OPTIMAL_NV: Self = Self::FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
     /// Added by extension VK_EXT_fragment_density_map.
     pub const FRAGMENT_DENSITY_MAP_OPTIMAL_EXT: Self = Self(1000218000);
-    /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR: Self = Self(1000164003);
     pub const DEPTH_ATTACHMENT_OPTIMAL_KHR: Self = Self::DEPTH_ATTACHMENT_OPTIMAL;
     pub const DEPTH_READ_ONLY_OPTIMAL_KHR: Self = Self::DEPTH_READ_ONLY_OPTIMAL;
@@ -5896,7 +5894,6 @@ pub struct IndexType(pub(crate) i32);
 impl IndexType {
     pub const UINT16: Self = Self(0);
     pub const UINT32: Self = Self(1);
-    /// Added by extension VK_KHR_acceleration_structure.
     pub const NONE_KHR: Self = Self(1000165000);
     pub const NONE_NV: Self = Self::NONE_KHR;
     /// Added by extension VK_EXT_index_type_uint8.
@@ -6000,10 +5997,8 @@ pub struct PipelineBindPoint(pub(crate) i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
     pub const COMPUTE: Self = Self(1);
-    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_KHR: Self = Self(1000165000);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
-    /// Added by extension VK_HUAWEI_subpass_shading.
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(1000369003);
 }
 impl fmt::Display for PipelineBindPoint {
@@ -6209,7 +6204,6 @@ impl Result {
     pub const ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: Self = Self(-1000158000);
     pub const ERROR_FRAGMENTATION_EXT: Self = Self::ERROR_FRAGMENTATION;
     pub const ERROR_NOT_PERMITTED_EXT: Self = Self::ERROR_NOT_PERMITTED_KHR;
-    /// Added by extension VK_KHR_global_priority.
     pub const ERROR_NOT_PERMITTED_KHR: Self = Self(-1000174001);
     pub const ERROR_INVALID_DEVICE_ADDRESS_EXT: Self = Self::ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS;
     /// Added by extension VK_EXT_full_screen_exclusive.
@@ -6609,14 +6603,10 @@ impl StructureType {
     pub const PIPELINE_RENDERING_CREATE_INFO_KHR: Self = Self::PIPELINE_RENDERING_CREATE_INFO;
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR: Self = Self::PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES;
     pub const COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR: Self = Self::COMMAND_BUFFER_INHERITANCE_RENDERING_INFO;
-    /// Added by extension VK_KHR_dynamic_rendering.
     pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR: Self = Self(1000044006);
-    /// Added by extension VK_KHR_dynamic_rendering.
     pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT: Self = Self(1000044007);
-    /// Added by extension VK_KHR_dynamic_rendering.
     pub const ATTACHMENT_SAMPLE_COUNT_INFO_AMD: Self = Self(1000044008);
     pub const ATTACHMENT_SAMPLE_COUNT_INFO_NV: Self = Self::ATTACHMENT_SAMPLE_COUNT_INFO_AMD;
-    /// Added by extension VK_KHR_dynamic_rendering.
     pub const MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX: Self = Self(1000044009);
     /// Added by extension VK_NV_corner_sampled_image.
     pub const PHYSICAL_DEVICE_CORNER_SAMPLED_IMAGE_FEATURES_NV: Self = Self(1000050000);
@@ -6920,11 +6910,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR: Self = Self(1000347000);
     /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR: Self = Self(1000347001);
-    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_PIPELINE_CREATE_INFO_KHR: Self = Self(1000150015);
-    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR: Self = Self(1000150016);
-    /// Added by extension VK_KHR_ray_tracing_pipeline.
     pub const RAY_TRACING_PIPELINE_INTERFACE_CREATE_INFO_KHR: Self = Self(1000150018);
     /// Added by extension VK_KHR_ray_query.
     pub const PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR: Self = Self(1000348013);
@@ -7034,11 +7021,8 @@ impl StructureType {
     pub const CALIBRATED_TIMESTAMP_INFO_EXT: Self = Self(1000184000);
     /// Added by extension VK_AMD_shader_core_properties.
     pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD: Self = Self(1000185000);
-    /// Added by extension VK_KHR_global_priority.
     pub const DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR: Self = Self(1000174000);
-    /// Added by extension VK_KHR_global_priority.
     pub const PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR: Self = Self(1000388000);
-    /// Added by extension VK_KHR_global_priority.
     pub const QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR: Self = Self(1000388001);
     /// Added by extension VK_AMD_memory_overallocation_behavior.
     pub const DEVICE_MEMORY_OVERALLOCATION_CREATE_INFO_AMD: Self = Self(1000189000);
@@ -7397,7 +7381,6 @@ impl StructureType {
     pub const GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT: Self = Self(1000320002);
     /// Added by extension VK_AMD_shader_early_and_late_fragment_tests.
     pub const PHYSICAL_DEVICE_SHADER_EARLY_AND_LATE_FRAGMENT_TESTS_FEATURES_AMD: Self = Self(1000321000);
-    /// Added by extension VK_KHR_fragment_shader_barycentric.
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_FEATURES_KHR: Self = Self(1000203000);
     /// Added by extension VK_KHR_fragment_shader_barycentric.
     pub const PHYSICAL_DEVICE_FRAGMENT_SHADER_BARYCENTRIC_PROPERTIES_KHR: Self = Self(1000322000);
@@ -7666,7 +7649,6 @@ impl StructureType {
     pub const PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT: Self = Self(1000462002);
     /// Added by extension VK_EXT_shader_module_identifier.
     pub const SHADER_MODULE_IDENTIFIER_EXT: Self = Self(1000462003);
-    /// Added by extension VK_EXT_rasterization_order_attachment_access.
     pub const PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_EXT: Self = Self(1000342000);
     /// Added by extension VK_NV_optical_flow.
     pub const PHYSICAL_DEVICE_OPTICAL_FLOW_FEATURES_NV: Self = Self(1000464000);
@@ -7700,9 +7682,7 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     /// Added by extension VK_NV_ray_tracing_invocation_reorder.
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
-    /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
-    /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
     /// Added by extension VK_ARM_shader_core_builtins.
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM: Self = Self(1000497000);
@@ -8507,7 +8487,6 @@ impl Filter {
     pub const NEAREST: Self = Self(0);
     pub const LINEAR: Self = Self(1);
     pub const CUBIC_IMG: Self = Self::CUBIC_EXT;
-    /// Added by extension VK_EXT_filter_cubic.
     pub const CUBIC_EXT: Self = Self(1000015000);
 }
 impl fmt::Display for Filter {
@@ -10068,7 +10047,6 @@ impl DebugReportObjectTypeEXT {
     pub const VALIDATION_CACHE: Self = Self::VALIDATION_CACHE_EXT;
     /// Added by extension VK_KHR_sampler_ycbcr_conversion.
     pub const SAMPLER_YCBCR_CONVERSION: Self = Self(1000156000);
-    /// Added by extension VK_EXT_debug_report.
     pub const DESCRIPTOR_UPDATE_TEMPLATE: Self = Self(1000085000);
     /// Added by extension VK_NVX_binary_import.
     pub const CU_MODULE_NVX: Self = Self(1000029000);
