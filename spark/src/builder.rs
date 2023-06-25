@@ -22765,3 +22765,31 @@ impl<'a> RenderPassBeginInfoNext for MultiviewPerViewRenderAreasRenderPassBeginI
 impl<'a> RenderingInfoNext for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {}
 impl RenderPassBeginInfoNext for vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
 impl RenderingInfoNext for vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
+impl Builder<'_> for vk::QueryLowLatencySupportNV {
+    type Type = QueryLowLatencySupportNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct QueryLowLatencySupportNVBuilder {
+    inner: vk::QueryLowLatencySupportNV,
+}
+impl QueryLowLatencySupportNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_queried_low_latency_data(mut self, p_queried_low_latency_data: *mut c_void) -> Self {
+        self.inner.p_queried_low_latency_data = p_queried_low_latency_data;
+        self
+    }
+}
+impl Deref for QueryLowLatencySupportNVBuilder {
+    type Target = vk::QueryLowLatencySupportNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SemaphoreCreateInfoNext for QueryLowLatencySupportNVBuilder {}
+impl SemaphoreCreateInfoNext for vk::QueryLowLatencySupportNV {}

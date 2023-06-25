@@ -7311,6 +7311,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV: Self = Self(1000300000);
     /// Added by extension VK_NV_device_diagnostics_config.
     pub const DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV: Self = Self(1000300001);
+    /// Added by extension VK_NV_low_latency.
+    pub const QUERY_LOW_LATENCY_SUPPORT_NV: Self = Self(1000310000);
     /// Added by extension VK_EXT_metal_objects.
     pub const EXPORT_METAL_OBJECT_CREATE_INFO_EXT: Self = Self(1000311000);
     /// Added by extension VK_EXT_metal_objects.
@@ -8221,6 +8223,7 @@ impl fmt::Display for StructureType {
             1000294001 => Some(&"PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR"),
             1000300000 => Some(&"PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV"),
             1000300001 => Some(&"DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV"),
+            1000310000 => Some(&"QUERY_LOW_LATENCY_SUPPORT_NV"),
             1000311000 => Some(&"EXPORT_METAL_OBJECT_CREATE_INFO_EXT"),
             1000311001 => Some(&"EXPORT_METAL_OBJECTS_INFO_EXT"),
             1000311002 => Some(&"EXPORT_METAL_DEVICE_INFO_EXT"),
@@ -40136,6 +40139,33 @@ impl fmt::Debug for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
             .field("p_next", &self.p_next)
             .field("per_view_render_area_count", &self.per_view_render_area_count)
             .field("p_per_view_render_areas", &self.p_per_view_render_areas)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct QueryLowLatencySupportNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_queried_low_latency_data: *mut c_void,
+}
+unsafe impl Send for QueryLowLatencySupportNV {}
+unsafe impl Sync for QueryLowLatencySupportNV {}
+impl Default for QueryLowLatencySupportNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::QUERY_LOW_LATENCY_SUPPORT_NV,
+            p_next: ptr::null(),
+            p_queried_low_latency_data: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for QueryLowLatencySupportNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("QueryLowLatencySupportNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_queried_low_latency_data", &self.p_queried_low_latency_data)
             .finish()
     }
 }

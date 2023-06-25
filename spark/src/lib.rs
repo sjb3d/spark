@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 241
+//! Generated from vk.xml with `VK_HEADER_VERSION` 242
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4456,6 +4456,7 @@ pub struct DeviceExtensions {
     pub ext_pipeline_creation_cache_control: bool,
     pub nv_device_diagnostics_config: bool,
     pub qcom_render_pass_store_ops: bool,
+    pub nv_low_latency: bool,
     pub ext_metal_objects: bool,
     pub khr_synchronization2: bool,
     pub ext_descriptor_buffer: bool,
@@ -4735,6 +4736,7 @@ impl DeviceExtensions {
             b"VK_EXT_pipeline_creation_cache_control" => self.ext_pipeline_creation_cache_control = true,
             b"VK_NV_device_diagnostics_config" => self.nv_device_diagnostics_config = true,
             b"VK_QCOM_render_pass_store_ops" => self.qcom_render_pass_store_ops = true,
+            b"VK_NV_low_latency" => self.nv_low_latency = true,
             b"VK_EXT_metal_objects" => self.ext_metal_objects = true,
             b"VK_KHR_synchronization2" => self.khr_synchronization2 = true,
             b"VK_EXT_descriptor_buffer" => self.ext_descriptor_buffer = true,
@@ -5014,6 +5016,7 @@ impl DeviceExtensions {
             ext_pipeline_creation_cache_control: false,
             nv_device_diagnostics_config: false,
             qcom_render_pass_store_ops: false,
+            nv_low_latency: false,
             ext_metal_objects: false,
             khr_synchronization2: false,
             ext_descriptor_buffer: false,
@@ -6490,6 +6493,12 @@ impl DeviceExtensions {
     pub fn enable_qcom_render_pass_store_ops(&mut self) {
         self.qcom_render_pass_store_ops = true;
     }
+    pub fn supports_nv_low_latency(&self) -> bool {
+        self.nv_low_latency
+    }
+    pub fn enable_nv_low_latency(&mut self) {
+        self.nv_low_latency = true;
+    }
     pub fn supports_ext_metal_objects(&self) -> bool {
         self.ext_metal_objects
     }
@@ -7623,6 +7632,9 @@ impl DeviceExtensions {
         }
         if self.qcom_render_pass_store_ops {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_store_ops\0") })
+        }
+        if self.nv_low_latency {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_low_latency\0") })
         }
         if self.ext_metal_objects {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_metal_objects\0") })
