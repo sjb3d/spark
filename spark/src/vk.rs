@@ -7767,6 +7767,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
     /// Added by extension VK_EXT_dynamic_rendering_unused_attachments.
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT: Self = Self(1000499000);
+    /// Added by extension VK_KHR_cooperative_matrix.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR: Self = Self(1000506000);
+    /// Added by extension VK_KHR_cooperative_matrix.
+    pub const COOPERATIVE_MATRIX_PROPERTIES_KHR: Self = Self(1000506001);
+    /// Added by extension VK_KHR_cooperative_matrix.
+    pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR: Self = Self(1000506002);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
@@ -8483,6 +8489,9 @@ impl fmt::Display for StructureType {
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
             1000499000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT"),
+            1000506000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR"),
+            1000506001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_KHR"),
+            1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
@@ -10039,6 +10048,70 @@ impl fmt::Display for ShaderCodeTypeEXT {
         let name = match self.0 {
             0 => Some(&"BINARY"),
             1 => Some(&"SPIRV"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ScopeKHR(pub(crate) i32);
+impl ScopeKHR {
+    pub const DEVICE: Self = Self(1);
+    pub const WORKGROUP: Self = Self(2);
+    pub const SUBGROUP: Self = Self(3);
+    pub const QUEUE_FAMILY: Self = Self(5);
+}
+impl fmt::Display for ScopeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"DEVICE"),
+            2 => Some(&"WORKGROUP"),
+            3 => Some(&"SUBGROUP"),
+            5 => Some(&"QUEUE_FAMILY"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ComponentTypeKHR(pub(crate) i32);
+impl ComponentTypeKHR {
+    pub const FLOAT16: Self = Self(0);
+    pub const FLOAT32: Self = Self(1);
+    pub const FLOAT64: Self = Self(2);
+    pub const SINT8: Self = Self(3);
+    pub const SINT16: Self = Self(4);
+    pub const SINT32: Self = Self(5);
+    pub const SINT64: Self = Self(6);
+    pub const UINT8: Self = Self(7);
+    pub const UINT16: Self = Self(8);
+    pub const UINT32: Self = Self(9);
+    pub const UINT64: Self = Self(10);
+}
+impl fmt::Display for ComponentTypeKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"FLOAT16"),
+            1 => Some(&"FLOAT32"),
+            2 => Some(&"FLOAT64"),
+            3 => Some(&"SINT8"),
+            4 => Some(&"SINT16"),
+            5 => Some(&"SINT32"),
+            6 => Some(&"SINT64"),
+            7 => Some(&"UINT8"),
+            8 => Some(&"UINT16"),
+            9 => Some(&"UINT32"),
+            10 => Some(&"UINT64"),
             _ => None,
         };
         if let Some(name) = name {
@@ -40800,6 +40873,120 @@ impl fmt::Debug for PhysicalDeviceShaderTileImagePropertiesEXT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix: Bool32,
+    pub cooperative_matrix_robust_buffer_access: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixFeaturesKHR {}
+impl Default for PhysicalDeviceCooperativeMatrixFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            cooperative_matrix: Default::default(),
+            cooperative_matrix_robust_buffer_access: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cooperative_matrix", &self.cooperative_matrix)
+            .field(
+                "cooperative_matrix_robust_buffer_access",
+                &self.cooperative_matrix_robust_buffer_access,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CooperativeMatrixPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub m_size: u32,
+    pub n_size: u32,
+    pub k_size: u32,
+    pub a_type: ComponentTypeKHR,
+    pub b_type: ComponentTypeKHR,
+    pub c_type: ComponentTypeKHR,
+    pub result_type: ComponentTypeKHR,
+    pub saturating_accumulation: Bool32,
+    pub scope: ScopeKHR,
+}
+unsafe impl Send for CooperativeMatrixPropertiesKHR {}
+unsafe impl Sync for CooperativeMatrixPropertiesKHR {}
+impl Default for CooperativeMatrixPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COOPERATIVE_MATRIX_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            m_size: Default::default(),
+            n_size: Default::default(),
+            k_size: Default::default(),
+            a_type: Default::default(),
+            b_type: Default::default(),
+            c_type: Default::default(),
+            result_type: Default::default(),
+            saturating_accumulation: Default::default(),
+            scope: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for CooperativeMatrixPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CooperativeMatrixPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("m_size", &self.m_size)
+            .field("n_size", &self.n_size)
+            .field("k_size", &self.k_size)
+            .field("a_type", &self.a_type)
+            .field("b_type", &self.b_type)
+            .field("c_type", &self.c_type)
+            .field("result_type", &self.result_type)
+            .field("saturating_accumulation", &self.saturating_accumulation)
+            .field("scope", &self.scope)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCooperativeMatrixPropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cooperative_matrix_supported_stages: ShaderStageFlags,
+}
+unsafe impl Send for PhysicalDeviceCooperativeMatrixPropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceCooperativeMatrixPropertiesKHR {}
+impl Default for PhysicalDeviceCooperativeMatrixPropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            cooperative_matrix_supported_stages: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCooperativeMatrixPropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCooperativeMatrixPropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "cooperative_matrix_supported_stages",
+                &self.cooperative_matrix_supported_stages,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -43424,3 +43611,8 @@ pub type FnCmdBindShadersEXT = unsafe extern "system" fn(
     p_stages: *const ShaderStageFlags,
     p_shaders: *const ShaderEXT,
 );
+pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR = unsafe extern "system" fn(
+    physical_device: Option<PhysicalDevice>,
+    p_property_count: *mut u32,
+    p_properties: *mut CooperativeMatrixPropertiesKHR,
+) -> Result;

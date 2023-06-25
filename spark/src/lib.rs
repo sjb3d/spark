@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 254
+//! Generated from vk.xml with `VK_HEADER_VERSION` 255
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2018,6 +2018,12 @@ impl InstanceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+    pub fn supports_khr_cooperative_matrix(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_khr_cooperative_matrix(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() && self.supports_ext_attachment_feedback_loop_layout()
@@ -4688,6 +4694,7 @@ pub struct DeviceExtensions {
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
     pub ext_dynamic_rendering_unused_attachments: bool,
+    pub khr_cooperative_matrix: bool,
     pub qcom_multiview_per_view_render_areas: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
 }
@@ -4976,6 +4983,7 @@ impl DeviceExtensions {
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
             b"VK_EXT_dynamic_rendering_unused_attachments" => self.ext_dynamic_rendering_unused_attachments = true,
+            b"VK_KHR_cooperative_matrix" => self.khr_cooperative_matrix = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             _ => {}
@@ -5264,6 +5272,7 @@ impl DeviceExtensions {
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
             ext_dynamic_rendering_unused_attachments: false,
+            khr_cooperative_matrix: false,
             qcom_multiview_per_view_render_areas: false,
             ext_attachment_feedback_loop_dynamic_state: false,
         }
@@ -7296,6 +7305,12 @@ impl DeviceExtensions {
             self.enable_khr_dynamic_rendering();
         }
     }
+    pub fn supports_khr_cooperative_matrix(&self) -> bool {
+        self.khr_cooperative_matrix
+    }
+    pub fn enable_khr_cooperative_matrix(&mut self) {
+        self.khr_cooperative_matrix = true;
+    }
     pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
         self.qcom_multiview_per_view_render_areas
     }
@@ -8153,6 +8168,9 @@ impl DeviceExtensions {
         if self.ext_dynamic_rendering_unused_attachments {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_dynamic_rendering_unused_attachments\0") })
         }
+        if self.khr_cooperative_matrix {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_cooperative_matrix\0") })
+        }
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })
         }
@@ -8631,6 +8649,8 @@ pub struct Device {
     pub fp_destroy_shader_ext: Option<vk::FnDestroyShaderEXT>,
     pub fp_get_shader_binary_data_ext: Option<vk::FnGetShaderBinaryDataEXT>,
     pub fp_cmd_bind_shaders_ext: Option<vk::FnCmdBindShadersEXT>,
+    pub fp_get_physical_device_cooperative_matrix_properties_khr:
+        Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -12335,6 +12355,14 @@ impl Device {
             },
             fp_cmd_bind_shaders_ext: if extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindShadersEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_physical_device_cooperative_matrix_properties_khr: if extensions.khr_cooperative_matrix {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -20122,6 +20150,27 @@ impl Device {
             p_stages.first().map_or(ptr::null(), |s| s as *const _),
             p_shaders.first().map_or(ptr::null(), |s| s as *const _),
         );
+    }
+    pub unsafe fn get_physical_device_cooperative_matrix_properties_khr_to_vec(
+        &self,
+        physical_device: vk::PhysicalDevice,
+    ) -> Result<Vec<vk::CooperativeMatrixPropertiesKHR>> {
+        let fp = self
+            .fp_get_physical_device_cooperative_matrix_properties_khr
+            .expect("vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR is not loaded");
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(physical_device), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(physical_device), &mut len, v.as_mut_ptr());
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
+        }
     }
 }
 

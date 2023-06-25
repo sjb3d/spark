@@ -23293,3 +23293,100 @@ impl DeviceCreateInfoNext for PhysicalDeviceShaderTileImageFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderTileImageFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderTileImageFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderTileImagePropertiesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {
+    type Type = PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceCooperativeMatrixFeaturesKHR,
+}
+impl PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cooperative_matrix(mut self, cooperative_matrix: bool) -> Self {
+        self.inner.cooperative_matrix = if cooperative_matrix { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn cooperative_matrix_robust_buffer_access(mut self, cooperative_matrix_robust_buffer_access: bool) -> Self {
+        self.inner.cooperative_matrix_robust_buffer_access = if cooperative_matrix_robust_buffer_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceCooperativeMatrixFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCooperativeMatrixFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCooperativeMatrixFeaturesKHR {}
+impl Builder<'_> for vk::CooperativeMatrixPropertiesKHR {
+    type Type = CooperativeMatrixPropertiesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CooperativeMatrixPropertiesKHRBuilder {
+    inner: vk::CooperativeMatrixPropertiesKHR,
+}
+impl CooperativeMatrixPropertiesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn m_size(mut self, m_size: u32) -> Self {
+        self.inner.m_size = m_size;
+        self
+    }
+    pub fn n_size(mut self, n_size: u32) -> Self {
+        self.inner.n_size = n_size;
+        self
+    }
+    pub fn k_size(mut self, k_size: u32) -> Self {
+        self.inner.k_size = k_size;
+        self
+    }
+    pub fn a_type(mut self, a_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.a_type = a_type;
+        self
+    }
+    pub fn b_type(mut self, b_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.b_type = b_type;
+        self
+    }
+    pub fn c_type(mut self, c_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.c_type = c_type;
+        self
+    }
+    pub fn result_type(mut self, result_type: vk::ComponentTypeKHR) -> Self {
+        self.inner.result_type = result_type;
+        self
+    }
+    pub fn saturating_accumulation(mut self, saturating_accumulation: bool) -> Self {
+        self.inner.saturating_accumulation = if saturating_accumulation { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn scope(mut self, scope: vk::ScopeKHR) -> Self {
+        self.inner.scope = scope;
+        self
+    }
+}
+impl Deref for CooperativeMatrixPropertiesKHRBuilder {
+    type Target = vk::CooperativeMatrixPropertiesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceCooperativeMatrixPropertiesKHR {}
