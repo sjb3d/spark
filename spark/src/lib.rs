@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 249
+//! Generated from vk.xml with `VK_HEADER_VERSION` 250
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1993,6 +1993,13 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_library_group_handles(&mut self) {
         self.enable_khr_ray_tracing_pipeline();
+    }
+    pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() && self.supports_ext_attachment_feedback_loop_layout()
+    }
+    pub fn enable_ext_attachment_feedback_loop_dynamic_state(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_ext_attachment_feedback_loop_layout();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -4654,6 +4661,7 @@ pub struct DeviceExtensions {
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
     pub qcom_multiview_per_view_render_areas: bool,
+    pub ext_attachment_feedback_loop_dynamic_state: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -4938,6 +4946,7 @@ impl DeviceExtensions {
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
+            b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             _ => {}
         }
     }
@@ -5222,6 +5231,7 @@ impl DeviceExtensions {
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
             qcom_multiview_per_view_render_areas: false,
+            ext_attachment_feedback_loop_dynamic_state: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -7235,6 +7245,13 @@ impl DeviceExtensions {
     pub fn enable_qcom_multiview_per_view_render_areas(&mut self) {
         self.qcom_multiview_per_view_render_areas = true;
     }
+    pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
+        self.ext_attachment_feedback_loop_dynamic_state && self.supports_ext_attachment_feedback_loop_layout()
+    }
+    pub fn enable_ext_attachment_feedback_loop_dynamic_state(&mut self) {
+        self.ext_attachment_feedback_loop_dynamic_state = true;
+        self.enable_ext_attachment_feedback_loop_layout();
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -8073,6 +8090,9 @@ impl DeviceExtensions {
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })
         }
+        if self.ext_attachment_feedback_loop_dynamic_state {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_dynamic_state\0") })
+        }
         v
     }
 }
@@ -8160,6 +8180,7 @@ pub struct Device {
     pub fp_end_command_buffer: Option<vk::FnEndCommandBuffer>,
     pub fp_reset_command_buffer: Option<vk::FnResetCommandBuffer>,
     pub fp_cmd_bind_pipeline: Option<vk::FnCmdBindPipeline>,
+    pub fp_cmd_set_attachment_feedback_loop_enable_ext: Option<vk::FnCmdSetAttachmentFeedbackLoopEnableEXT>,
     pub fp_cmd_set_viewport: Option<vk::FnCmdSetViewport>,
     pub fp_cmd_set_scissor: Option<vk::FnCmdSetScissor>,
     pub fp_cmd_set_line_width: Option<vk::FnCmdSetLineWidth>,
@@ -9129,6 +9150,14 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdBindPipeline".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_cmd_set_attachment_feedback_loop_enable_ext: if extensions.ext_attachment_feedback_loop_dynamic_state {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdSetAttachmentFeedbackLoopEnableEXT\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_cmd_set_viewport: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewport\0"));
@@ -13502,6 +13531,16 @@ impl Device {
     ) {
         let fp = self.fp_cmd_bind_pipeline.expect("vkCmdBindPipeline is not loaded");
         (fp)(Some(command_buffer), pipeline_bind_point, Some(pipeline));
+    }
+    pub unsafe fn cmd_set_attachment_feedback_loop_enable_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        aspect_mask: vk::ImageAspectFlags,
+    ) {
+        let fp = self
+            .fp_cmd_set_attachment_feedback_loop_enable_ext
+            .expect("vkCmdSetAttachmentFeedbackLoopEnableEXT is not loaded");
+        (fp)(Some(command_buffer), aspect_mask);
     }
     pub unsafe fn cmd_set_viewport(
         &self,

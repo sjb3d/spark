@@ -17367,6 +17367,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageSlicedViewOf3DFeaturesEX
 impl DeviceCreateInfoNext for PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {
+    type Type = PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT,
+}
+impl PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn attachment_feedback_loop_dynamic_state(mut self, attachment_feedback_loop_dynamic_state: bool) -> Self {
+        self.inner.attachment_feedback_loop_dynamic_state = if attachment_feedback_loop_dynamic_state {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     type Type = PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder;
     fn builder() -> Self::Type {

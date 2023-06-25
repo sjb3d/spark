@@ -5046,6 +5046,8 @@ impl DynamicState {
     pub const REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV: Self = Self(1000455031);
     /// Added by extension VK_EXT_extended_dynamic_state3.
     pub const COVERAGE_REDUCTION_MODE_NV: Self = Self(1000455032);
+    /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
+    pub const ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT: Self = Self(1000524000);
 }
 impl fmt::Display for DynamicState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5121,6 +5123,7 @@ impl fmt::Display for DynamicState {
             1000455030 => Some(&"SHADING_RATE_IMAGE_ENABLE_NV"),
             1000455031 => Some(&"REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV"),
             1000455032 => Some(&"COVERAGE_REDUCTION_MODE_NV"),
+            1000524000 => Some(&"ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7758,6 +7761,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
+    /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
+    pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8465,6 +8470,7 @@ impl fmt::Display for StructureType {
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
+            1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -33821,6 +33827,36 @@ impl fmt::Debug for PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub attachment_feedback_loop_dynamic_state: Bool32,
+}
+unsafe impl Send for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {}
+impl Default for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            attachment_feedback_loop_dynamic_state: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "attachment_feedback_loop_dynamic_state",
+                &self.attachment_feedback_loop_dynamic_state,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -41026,6 +41062,8 @@ pub type FnCmdBindPipeline = unsafe extern "system" fn(
     pipeline_bind_point: PipelineBindPoint,
     pipeline: Option<Pipeline>,
 );
+pub type FnCmdSetAttachmentFeedbackLoopEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, aspect_mask: ImageAspectFlags);
 pub type FnCmdSetViewport = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     first_viewport: u32,
