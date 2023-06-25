@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 243
+//! Generated from vk.xml with `VK_HEADER_VERSION` 244
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4531,6 +4531,7 @@ pub struct DeviceExtensions {
     pub ext_extended_dynamic_state: bool,
     pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
+    pub khr_map_memory2: bool,
     pub ext_shader_atomic_float2: bool,
     pub ext_swapchain_maintenance1: bool,
     pub ext_shader_demote_to_helper_invocation: bool,
@@ -4811,6 +4812,7 @@ impl DeviceExtensions {
             b"VK_EXT_extended_dynamic_state" => self.ext_extended_dynamic_state = true,
             b"VK_KHR_deferred_host_operations" => self.khr_deferred_host_operations = true,
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
+            b"VK_KHR_map_memory2" => self.khr_map_memory2 = true,
             b"VK_EXT_shader_atomic_float2" => self.ext_shader_atomic_float2 = true,
             b"VK_EXT_swapchain_maintenance1" => self.ext_swapchain_maintenance1 = true,
             b"VK_EXT_shader_demote_to_helper_invocation" => self.ext_shader_demote_to_helper_invocation = true,
@@ -5091,6 +5093,7 @@ impl DeviceExtensions {
             ext_extended_dynamic_state: false,
             khr_deferred_host_operations: false,
             khr_pipeline_executable_properties: false,
+            khr_map_memory2: false,
             ext_shader_atomic_float2: false,
             ext_swapchain_maintenance1: false,
             ext_shader_demote_to_helper_invocation: false,
@@ -6478,6 +6481,12 @@ impl DeviceExtensions {
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
         self.khr_pipeline_executable_properties = true;
     }
+    pub fn supports_khr_map_memory2(&self) -> bool {
+        self.khr_map_memory2
+    }
+    pub fn enable_khr_map_memory2(&mut self) {
+        self.khr_map_memory2 = true;
+    }
     pub fn supports_ext_shader_atomic_float2(&self) -> bool {
         self.ext_shader_atomic_float2 && self.supports_ext_shader_atomic_float()
     }
@@ -7701,6 +7710,9 @@ impl DeviceExtensions {
         if self.khr_pipeline_executable_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") })
         }
+        if self.khr_map_memory2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_map_memory2\0") })
+        }
         if self.ext_shader_atomic_float2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_atomic_float2\0") })
         }
@@ -8465,6 +8477,8 @@ pub struct Device {
     pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
     pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
+    pub fp_map_memory2_khr: Option<vk::FnMapMemory2KHR>,
+    pub fp_unmap_memory2_khr: Option<vk::FnUnmapMemory2KHR>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -12068,6 +12082,18 @@ impl Device {
             },
             fp_release_swapchain_images_ext: if extensions.ext_swapchain_maintenance1 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkReleaseSwapchainImagesEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_map_memory2_khr: if extensions.khr_map_memory2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkMapMemory2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_unmap_memory2_khr: if extensions.khr_map_memory2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory2KHR\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19698,6 +19724,23 @@ impl Device {
             .fp_release_swapchain_images_ext
             .expect("vkReleaseSwapchainImagesEXT is not loaded");
         let err = (fp)(Some(self.handle), p_release_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn map_memory2_khr(&self, p_memory_map_info: &vk::MemoryMapInfoKHR) -> Result<*mut c_void> {
+        let fp = self.fp_map_memory2_khr.expect("vkMapMemory2KHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), p_memory_map_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn unmap_memory2_khr(&self, p_memory_unmap_info: &vk::MemoryUnmapInfoKHR) -> Result<()> {
+        let fp = self.fp_unmap_memory2_khr.expect("vkUnmapMemory2KHR is not loaded");
+        let err = (fp)(Some(self.handle), p_memory_unmap_info);
         match err {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),

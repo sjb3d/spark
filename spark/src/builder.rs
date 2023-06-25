@@ -22793,3 +22793,71 @@ impl Deref for QueryLowLatencySupportNVBuilder {
 }
 impl SemaphoreCreateInfoNext for QueryLowLatencySupportNVBuilder {}
 impl SemaphoreCreateInfoNext for vk::QueryLowLatencySupportNV {}
+impl Builder<'_> for vk::MemoryMapInfoKHR {
+    type Type = MemoryMapInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryMapInfoKHRBuilder {
+    inner: vk::MemoryMapInfoKHR,
+}
+impl MemoryMapInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::MemoryMapFlags) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+    pub fn offset(mut self, offset: vk::DeviceSize) -> Self {
+        self.inner.offset = offset;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+}
+impl Deref for MemoryMapInfoKHRBuilder {
+    type Target = vk::MemoryMapInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::MemoryUnmapInfoKHR {
+    type Type = MemoryUnmapInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryUnmapInfoKHRBuilder {
+    inner: vk::MemoryUnmapInfoKHR,
+}
+impl MemoryUnmapInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::MemoryUnmapFlagsKHR) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn memory(mut self, memory: vk::DeviceMemory) -> Self {
+        self.inner.memory = Some(memory);
+        self
+    }
+}
+impl Deref for MemoryUnmapInfoKHRBuilder {
+    type Target = vk::MemoryUnmapInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}

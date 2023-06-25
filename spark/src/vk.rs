@@ -4020,6 +4020,16 @@ impl fmt::Display for PresentGravityFlagsEXT {
     }
 }
 #[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
+impl MemoryUnmapFlagsKHR {}
+impl_bitmask!(MemoryUnmapFlagsKHR, 0x0);
+impl fmt::Display for MemoryUnmapFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Instance(num::NonZeroUsize);
 impl Instance {
@@ -7219,6 +7229,10 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = Self(1000269004);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
+    /// Added by extension VK_KHR_map_memory2.
+    pub const MEMORY_MAP_INFO_KHR: Self = Self(1000271000);
+    /// Added by extension VK_KHR_map_memory2.
+    pub const MEMORY_UNMAP_INFO_KHR: Self = Self(1000271001);
     /// Added by extension VK_EXT_shader_atomic_float2.
     pub const PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT: Self = Self(1000273000);
     /// Added by extension VK_EXT_surface_maintenance1.
@@ -8184,6 +8198,8 @@ impl fmt::Display for StructureType {
             1000269003 => Some(&"PIPELINE_EXECUTABLE_INFO_KHR"),
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
+            1000271000 => Some(&"MEMORY_MAP_INFO_KHR"),
+            1000271001 => Some(&"MEMORY_UNMAP_INFO_KHR"),
             1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
             1000274000 => Some(&"SURFACE_PRESENT_MODE_EXT"),
             1000274001 => Some(&"SURFACE_PRESENT_SCALING_CAPABILITIES_EXT"),
@@ -40178,6 +40194,72 @@ impl fmt::Debug for QueryLowLatencySupportNV {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryMapInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: MemoryMapFlags,
+    pub memory: Option<DeviceMemory>,
+    pub offset: DeviceSize,
+    pub size: DeviceSize,
+}
+unsafe impl Send for MemoryMapInfoKHR {}
+unsafe impl Sync for MemoryMapInfoKHR {}
+impl Default for MemoryMapInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_MAP_INFO_KHR,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            memory: Default::default(),
+            offset: Default::default(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryMapInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryMapInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("memory", &self.memory)
+            .field("offset", &self.offset)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryUnmapInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: MemoryUnmapFlagsKHR,
+    pub memory: Option<DeviceMemory>,
+}
+unsafe impl Send for MemoryUnmapInfoKHR {}
+unsafe impl Sync for MemoryUnmapInfoKHR {}
+impl Default for MemoryUnmapInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_UNMAP_INFO_KHR,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryUnmapInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryUnmapInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("memory", &self.memory)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -42767,3 +42849,10 @@ pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
 ) -> Result;
 pub type FnReleaseSwapchainImagesEXT =
     unsafe extern "system" fn(device: Option<Device>, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;
+pub type FnMapMemory2KHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_memory_map_info: *const MemoryMapInfoKHR,
+    pp_data: *mut *mut c_void,
+) -> Result;
+pub type FnUnmapMemory2KHR =
+    unsafe extern "system" fn(device: Option<Device>, p_memory_unmap_info: *const MemoryUnmapInfoKHR) -> Result;
