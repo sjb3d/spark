@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 252
+//! Generated from vk.xml with `VK_HEADER_VERSION` 254
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1405,6 +1405,12 @@ impl InstanceExtensions {
     pub fn enable_qcom_render_pass_transform(&mut self) {
         self.enable_khr_swapchain();
         self.enable_khr_surface();
+    }
+    pub fn supports_ext_depth_bias_control(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_depth_bias_control(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_device_memory_report(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -4585,6 +4591,7 @@ pub struct DeviceExtensions {
     pub khr_shader_integer_dot_product: bool,
     pub ext_texel_buffer_alignment: bool,
     pub qcom_render_pass_transform: bool,
+    pub ext_depth_bias_control: bool,
     pub ext_device_memory_report: bool,
     pub ext_robustness2: bool,
     pub ext_custom_border_color: bool,
@@ -4872,6 +4879,7 @@ impl DeviceExtensions {
             b"VK_KHR_shader_integer_dot_product" => self.khr_shader_integer_dot_product = true,
             b"VK_EXT_texel_buffer_alignment" => self.ext_texel_buffer_alignment = true,
             b"VK_QCOM_render_pass_transform" => self.qcom_render_pass_transform = true,
+            b"VK_EXT_depth_bias_control" => self.ext_depth_bias_control = true,
             b"VK_EXT_device_memory_report" => self.ext_device_memory_report = true,
             b"VK_EXT_robustness2" => self.ext_robustness2 = true,
             b"VK_EXT_custom_border_color" => self.ext_custom_border_color = true,
@@ -5159,6 +5167,7 @@ impl DeviceExtensions {
             khr_shader_integer_dot_product: false,
             ext_texel_buffer_alignment: false,
             qcom_render_pass_transform: false,
+            ext_depth_bias_control: false,
             ext_device_memory_report: false,
             ext_robustness2: false,
             ext_custom_border_color: false,
@@ -6610,6 +6619,12 @@ impl DeviceExtensions {
         self.qcom_render_pass_transform = true;
         self.enable_khr_swapchain();
     }
+    pub fn supports_ext_depth_bias_control(&self) -> bool {
+        self.ext_depth_bias_control
+    }
+    pub fn enable_ext_depth_bias_control(&mut self) {
+        self.ext_depth_bias_control = true;
+    }
     pub fn supports_ext_device_memory_report(&self) -> bool {
         self.ext_device_memory_report
     }
@@ -7847,6 +7862,9 @@ impl DeviceExtensions {
         if self.qcom_render_pass_transform {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_render_pass_transform\0") })
         }
+        if self.ext_depth_bias_control {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_depth_bias_control\0") })
+        }
         if self.ext_device_memory_report {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_device_memory_report\0") })
         }
@@ -8605,6 +8623,7 @@ pub struct Device {
     pub fp_bind_optical_flow_session_image_nv: Option<vk::FnBindOpticalFlowSessionImageNV>,
     pub fp_cmd_optical_flow_execute_nv: Option<vk::FnCmdOpticalFlowExecuteNV>,
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
+    pub fp_cmd_set_depth_bias2_ext: Option<vk::FnCmdSetDepthBias2EXT>,
     pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
     pub fp_map_memory2_khr: Option<vk::FnMapMemory2KHR>,
     pub fp_unmap_memory2_khr: Option<vk::FnUnmapMemory2KHR>,
@@ -12268,6 +12287,12 @@ impl Device {
             },
             fp_get_device_fault_info_ext: if extensions.ext_device_fault {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetDeviceFaultInfoEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_set_depth_bias2_ext: if extensions.ext_depth_bias_control {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBias2EXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19941,6 +19966,16 @@ impl Device {
             vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
             _ => Err(err),
         }
+    }
+    pub unsafe fn cmd_set_depth_bias2_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_depth_bias_info: &vk::DepthBiasInfoEXT,
+    ) {
+        let fp = self
+            .fp_cmd_set_depth_bias2_ext
+            .expect("vkCmdSetDepthBias2EXT is not loaded");
+        (fp)(Some(command_buffer), p_depth_bias_info);
     }
     pub unsafe fn release_swapchain_images_ext(
         &self,

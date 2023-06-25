@@ -22329,6 +22329,82 @@ impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineLibraryGroupHandlesFe
 impl DeviceCreateInfoNext for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
+impl<'a> Builder<'a> for vk::DepthBiasInfoEXT {
+    type Type = DepthBiasInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait DepthBiasInfoEXTNext {}
+#[derive(Default)]
+pub struct DepthBiasInfoEXTBuilder<'a> {
+    inner: vk::DepthBiasInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> DepthBiasInfoEXTBuilder<'a> {
+    pub fn insert_next<T: DepthBiasInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_bias_constant_factor(mut self, depth_bias_constant_factor: f32) -> Self {
+        self.inner.depth_bias_constant_factor = depth_bias_constant_factor;
+        self
+    }
+    pub fn depth_bias_clamp(mut self, depth_bias_clamp: f32) -> Self {
+        self.inner.depth_bias_clamp = depth_bias_clamp;
+        self
+    }
+    pub fn depth_bias_slope_factor(mut self, depth_bias_slope_factor: f32) -> Self {
+        self.inner.depth_bias_slope_factor = depth_bias_slope_factor;
+        self
+    }
+}
+impl<'a> Deref for DepthBiasInfoEXTBuilder<'a> {
+    type Target = vk::DepthBiasInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::DepthBiasRepresentationInfoEXT {
+    type Type = DepthBiasRepresentationInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct DepthBiasRepresentationInfoEXTBuilder {
+    inner: vk::DepthBiasRepresentationInfoEXT,
+}
+impl DepthBiasRepresentationInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_bias_representation(mut self, depth_bias_representation: vk::DepthBiasRepresentationEXT) -> Self {
+        self.inner.depth_bias_representation = depth_bias_representation;
+        self
+    }
+    pub fn depth_bias_exact(mut self, depth_bias_exact: bool) -> Self {
+        self.inner.depth_bias_exact = if depth_bias_exact { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for DepthBiasRepresentationInfoEXTBuilder {
+    type Target = vk::DepthBiasRepresentationInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl DepthBiasInfoEXTNext for DepthBiasRepresentationInfoEXTBuilder {}
+impl PipelineRasterizationStateCreateInfoNext for DepthBiasRepresentationInfoEXTBuilder {}
+impl DepthBiasInfoEXTNext for vk::DepthBiasRepresentationInfoEXT {}
+impl PipelineRasterizationStateCreateInfoNext for vk::DepthBiasRepresentationInfoEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCoreBuiltinsPropertiesARM {}
 impl Builder<'_> for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
     type Type = PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder;
@@ -22686,6 +22762,56 @@ impl<'a> Deref for ReleaseSwapchainImagesInfoEXTBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceDepthBiasControlFeaturesEXT {
+    type Type = PhysicalDeviceDepthBiasControlFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDepthBiasControlFeaturesEXT,
+}
+impl PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn depth_bias_control(mut self, depth_bias_control: bool) -> Self {
+        self.inner.depth_bias_control = if depth_bias_control { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn least_representable_value_force_unorm_representation(
+        mut self,
+        least_representable_value_force_unorm_representation: bool,
+    ) -> Self {
+        self.inner.least_representable_value_force_unorm_representation =
+            if least_representable_value_force_unorm_representation {
+                vk::TRUE
+            } else {
+                vk::FALSE
+            };
+        self
+    }
+    pub fn float_representation(mut self, float_representation: bool) -> Self {
+        self.inner.float_representation = if float_representation { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn depth_bias_exact(mut self, depth_bias_exact: bool) -> Self {
+        self.inner.depth_bias_exact = if depth_bias_exact { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDepthBiasControlFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDepthBiasControlFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDepthBiasControlFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDepthBiasControlFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {
     type Type = PhysicalDeviceRayTracingInvocationReorderFeaturesNVBuilder;
     fn builder() -> Self::Type {

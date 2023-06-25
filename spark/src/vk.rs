@@ -1548,6 +1548,16 @@ impl fmt::Display for MemoryMapFlags {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
+impl MemoryUnmapFlagsKHR {}
+impl_bitmask!(MemoryUnmapFlagsKHR, 0x0);
+impl fmt::Display for MemoryUnmapFlagsKHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct ImageAspectFlags(pub(crate) u32);
 impl ImageAspectFlags {
     pub const COLOR: Self = Self(0x1);
@@ -4056,16 +4066,6 @@ impl fmt::Display for ShaderCreateFlagsEXT {
             ],
             f,
         )
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
-pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
-impl MemoryUnmapFlagsKHR {}
-impl_bitmask!(MemoryUnmapFlagsKHR, 0x0);
-impl fmt::Display for MemoryUnmapFlagsKHR {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        display_bitmask(self.0 as _, &[], f)
     }
 }
 #[repr(transparent)]
@@ -7325,6 +7325,12 @@ impl StructureType {
     pub const COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM: Self = Self(1000282000);
     /// Added by extension VK_QCOM_render_pass_transform.
     pub const RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM: Self = Self(1000282001);
+    /// Added by extension VK_EXT_depth_bias_control.
+    pub const PHYSICAL_DEVICE_DEPTH_BIAS_CONTROL_FEATURES_EXT: Self = Self(1000283000);
+    /// Added by extension VK_EXT_depth_bias_control.
+    pub const DEPTH_BIAS_INFO_EXT: Self = Self(1000283001);
+    /// Added by extension VK_EXT_depth_bias_control.
+    pub const DEPTH_BIAS_REPRESENTATION_INFO_EXT: Self = Self(1000283002);
     /// Added by extension VK_EXT_device_memory_report.
     pub const PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT: Self = Self(1000284000);
     /// Added by extension VK_EXT_device_memory_report.
@@ -8276,6 +8282,9 @@ impl fmt::Display for StructureType {
             1000281000 => Some(&"PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT"),
             1000282000 => Some(&"COMMAND_BUFFER_INHERITANCE_RENDER_PASS_TRANSFORM_INFO_QCOM"),
             1000282001 => Some(&"RENDER_PASS_TRANSFORM_BEGIN_INFO_QCOM"),
+            1000283000 => Some(&"PHYSICAL_DEVICE_DEPTH_BIAS_CONTROL_FEATURES_EXT"),
+            1000283001 => Some(&"DEPTH_BIAS_INFO_EXT"),
+            1000283002 => Some(&"DEPTH_BIAS_REPRESENTATION_INFO_EXT"),
             1000284000 => Some(&"PHYSICAL_DEVICE_DEVICE_MEMORY_REPORT_FEATURES_EXT"),
             1000284001 => Some(&"DEVICE_DEVICE_MEMORY_REPORT_CREATE_INFO_EXT"),
             1000284002 => Some(&"DEVICE_MEMORY_REPORT_CALLBACK_DATA_EXT"),
@@ -9965,6 +9974,29 @@ impl fmt::Display for DeviceFaultVendorBinaryHeaderVersionEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             1 => Some(&"ONE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DepthBiasRepresentationEXT(pub(crate) i32);
+impl DepthBiasRepresentationEXT {
+    pub const LEAST_REPRESENTABLE_VALUE_FORMAT: Self = Self(0);
+    pub const LEAST_REPRESENTABLE_VALUE_FORCE_UNORM: Self = Self(1);
+    pub const FLOAT: Self = Self(2);
+}
+impl fmt::Display for DepthBiasRepresentationEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"LEAST_REPRESENTABLE_VALUE_FORMAT"),
+            1 => Some(&"LEAST_REPRESENTABLE_VALUE_FORCE_UNORM"),
+            2 => Some(&"FLOAT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -39701,6 +39733,69 @@ impl fmt::Debug for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DepthBiasInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub depth_bias_constant_factor: f32,
+    pub depth_bias_clamp: f32,
+    pub depth_bias_slope_factor: f32,
+}
+unsafe impl Send for DepthBiasInfoEXT {}
+unsafe impl Sync for DepthBiasInfoEXT {}
+impl Default for DepthBiasInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEPTH_BIAS_INFO_EXT,
+            p_next: ptr::null(),
+            depth_bias_constant_factor: Default::default(),
+            depth_bias_clamp: Default::default(),
+            depth_bias_slope_factor: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DepthBiasInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DepthBiasInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_bias_constant_factor", &self.depth_bias_constant_factor)
+            .field("depth_bias_clamp", &self.depth_bias_clamp)
+            .field("depth_bias_slope_factor", &self.depth_bias_slope_factor)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct DepthBiasRepresentationInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub depth_bias_representation: DepthBiasRepresentationEXT,
+    pub depth_bias_exact: Bool32,
+}
+unsafe impl Send for DepthBiasRepresentationInfoEXT {}
+unsafe impl Sync for DepthBiasRepresentationInfoEXT {}
+impl Default for DepthBiasRepresentationInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEPTH_BIAS_REPRESENTATION_INFO_EXT,
+            p_next: ptr::null(),
+            depth_bias_representation: Default::default(),
+            depth_bias_exact: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for DepthBiasRepresentationInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DepthBiasRepresentationInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_bias_representation", &self.depth_bias_representation)
+            .field("depth_bias_exact", &self.depth_bias_exact)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DecompressMemoryRegionNV {
     pub src_address: DeviceAddress,
@@ -40098,6 +40193,45 @@ impl fmt::Debug for ReleaseSwapchainImagesInfoEXT {
             .field("swapchain", &self.swapchain)
             .field("image_index_count", &self.image_index_count)
             .field("p_image_indices", &self.p_image_indices)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDepthBiasControlFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub depth_bias_control: Bool32,
+    pub least_representable_value_force_unorm_representation: Bool32,
+    pub float_representation: Bool32,
+    pub depth_bias_exact: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDepthBiasControlFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDepthBiasControlFeaturesEXT {}
+impl Default for PhysicalDeviceDepthBiasControlFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEPTH_BIAS_CONTROL_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            depth_bias_control: Default::default(),
+            least_representable_value_force_unorm_representation: Default::default(),
+            float_representation: Default::default(),
+            depth_bias_exact: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDepthBiasControlFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDepthBiasControlFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("depth_bias_control", &self.depth_bias_control)
+            .field(
+                "least_representable_value_force_unorm_representation",
+                &self.least_representable_value_force_unorm_representation,
+            )
+            .field("float_representation", &self.float_representation)
+            .field("depth_bias_exact", &self.depth_bias_exact)
             .finish()
     }
 }
@@ -43255,6 +43389,8 @@ pub type FnGetDeviceFaultInfoEXT = unsafe extern "system" fn(
     p_fault_counts: *mut DeviceFaultCountsEXT,
     p_fault_info: *mut DeviceFaultInfoEXT,
 ) -> Result;
+pub type FnCmdSetDepthBias2EXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_depth_bias_info: *const DepthBiasInfoEXT);
 pub type FnReleaseSwapchainImagesEXT =
     unsafe extern "system" fn(device: Option<Device>, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;
 pub type FnMapMemory2KHR = unsafe extern "system" fn(
