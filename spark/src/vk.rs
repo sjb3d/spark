@@ -4024,11 +4024,17 @@ impl fmt::Display for PresentGravityFlagsEXT {
 pub struct ShaderCreateFlagsEXT(pub(crate) u32);
 impl ShaderCreateFlagsEXT {
     pub const LINK_STAGE: Self = Self(0x1);
+    /// Added by extension VK_EXT_shader_object.
     pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x2);
+    /// Added by extension VK_EXT_shader_object.
     pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x4);
+    /// Added by extension VK_EXT_shader_object.
     pub const NO_TASK_SHADER: Self = Self(0x8);
+    /// Added by extension VK_EXT_shader_object.
     pub const DISPATCH_BASE: Self = Self(0x10);
+    /// Added by extension VK_EXT_shader_object.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x20);
+    /// Added by extension VK_EXT_shader_object.
     pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
 }
 impl_bitmask!(ShaderCreateFlagsEXT, 0x7f);
@@ -39555,6 +39561,8 @@ pub struct DeviceFaultVendorBinaryHeaderVersionOneEXT {
     pub application_name_offset: u32,
     pub application_version: u32,
     pub engine_name_offset: u32,
+    pub engine_version: u32,
+    pub api_version: Version,
 }
 impl Default for DeviceFaultVendorBinaryHeaderVersionOneEXT {
     fn default() -> Self {
@@ -39568,6 +39576,8 @@ impl Default for DeviceFaultVendorBinaryHeaderVersionOneEXT {
             application_name_offset: Default::default(),
             application_version: Default::default(),
             engine_name_offset: Default::default(),
+            engine_version: Default::default(),
+            api_version: Default::default(),
         }
     }
 }
@@ -39583,6 +39593,8 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
             .field("application_name_offset", &self.application_name_offset)
             .field("application_version", &self.application_version)
             .field("engine_name_offset", &self.engine_name_offset)
+            .field("engine_version", &self.engine_version)
+            .field("api_version", &self.api_version)
             .finish()
     }
 }
