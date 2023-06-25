@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 250
+//! Generated from vk.xml with `VK_HEADER_VERSION` 251
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1993,6 +1993,19 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_library_group_handles(&mut self) {
         self.enable_khr_ray_tracing_pipeline();
+    }
+    pub fn supports_ext_dynamic_rendering_unused_attachments(&self) -> bool {
+        (self.supports_khr_get_physical_device_properties2()
+            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+    }
+    pub fn enable_ext_dynamic_rendering_unused_attachments(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
+        }
     }
     pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() && self.supports_ext_attachment_feedback_loop_layout()
@@ -4660,6 +4673,7 @@ pub struct DeviceExtensions {
     pub ext_mutable_descriptor_type: bool,
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
+    pub ext_dynamic_rendering_unused_attachments: bool,
     pub qcom_multiview_per_view_render_areas: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
 }
@@ -4945,6 +4959,7 @@ impl DeviceExtensions {
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
+            b"VK_EXT_dynamic_rendering_unused_attachments" => self.ext_dynamic_rendering_unused_attachments = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             _ => {}
@@ -5230,6 +5245,7 @@ impl DeviceExtensions {
             ext_mutable_descriptor_type: false,
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
+            ext_dynamic_rendering_unused_attachments: false,
             qcom_multiview_per_view_render_areas: false,
             ext_attachment_feedback_loop_dynamic_state: false,
         }
@@ -7239,6 +7255,16 @@ impl DeviceExtensions {
         self.enable_khr_ray_tracing_pipeline();
         self.enable_khr_pipeline_library();
     }
+    pub fn supports_ext_dynamic_rendering_unused_attachments(&self) -> bool {
+        self.ext_dynamic_rendering_unused_attachments
+            && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+    }
+    pub fn enable_ext_dynamic_rendering_unused_attachments(&mut self) {
+        self.ext_dynamic_rendering_unused_attachments = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
+        }
+    }
     pub fn supports_qcom_multiview_per_view_render_areas(&self) -> bool {
         self.qcom_multiview_per_view_render_areas
     }
@@ -8086,6 +8112,9 @@ impl DeviceExtensions {
         }
         if self.ext_pipeline_library_group_handles {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_library_group_handles\0") })
+        }
+        if self.ext_dynamic_rendering_unused_attachments {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_dynamic_rendering_unused_attachments\0") })
         }
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })

@@ -7757,6 +7757,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM: Self = Self(1000497001);
     /// Added by extension VK_EXT_pipeline_library_group_handles.
     pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
+    /// Added by extension VK_EXT_dynamic_rendering_unused_attachments.
+    pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT: Self = Self(1000499000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
@@ -8468,6 +8470,7 @@ impl fmt::Display for StructureType {
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
+            1000499000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
@@ -39746,6 +39749,36 @@ impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("shader_core_builtins", &self.shader_core_builtins)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub dynamic_rendering_unused_attachments: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {}
+impl Default for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            dynamic_rendering_unused_attachments: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "dynamic_rendering_unused_attachments",
+                &self.dynamic_rendering_unused_attachments,
+            )
             .finish()
     }
 }

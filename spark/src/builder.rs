@@ -22308,6 +22308,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderCoreBuiltinsFeaturesARM
 impl DeviceCreateInfoNext for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl Builder<'_> for vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
+    type Type = PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT,
+}
+impl PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn dynamic_rendering_unused_attachments(mut self, dynamic_rendering_unused_attachments: bool) -> Self {
+        self.inner.dynamic_rendering_unused_attachments = if dynamic_rendering_unused_attachments {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {}
 impl Builder<'_> for vk::SurfacePresentModeEXT {
     type Type = SurfacePresentModeEXTBuilder;
     fn builder() -> Self::Type {
