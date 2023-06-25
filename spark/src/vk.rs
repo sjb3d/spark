@@ -210,6 +210,7 @@ pub const MAX_MEMORY_HEAPS: usize = 16;
 pub const LOD_CLAMP_NONE: f32 = 1000_f32;
 pub const REMAINING_MIP_LEVELS: u32 = 0xffffffff;
 pub const REMAINING_ARRAY_LAYERS: u32 = 0xffffffff;
+pub const REMAINING_3D_SLICES_EXT: u32 = 0xffffffff;
 pub const WHOLE_SIZE: u64 = 0xffffffffffffffff;
 pub const ATTACHMENT_UNUSED: u32 = 0xffffffff;
 pub const TRUE: Bool32 = 1;
@@ -4382,22 +4383,6 @@ impl DebugUtilsMessengerEXT {
     }
 }
 #[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct VideoSessionKHR(num::NonZeroU64);
-impl VideoSessionKHR {
-    pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Self)
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct VideoSessionParametersKHR(num::NonZeroU64);
-impl VideoSessionParametersKHR {
-    pub fn from_raw(x: u64) -> Option<Self> {
-        num::NonZeroU64::new(x).map(Self)
-    }
-}
-#[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct AttachmentLoadOp(pub(crate) i32);
 impl AttachmentLoadOp {
@@ -4898,6 +4883,10 @@ impl DynamicState {
     pub const VIEWPORT_W_SCALING_NV: Self = Self(1000087000);
     /// Added by extension VK_EXT_discard_rectangles.
     pub const DISCARD_RECTANGLE_EXT: Self = Self(1000099000);
+    /// Added by extension VK_EXT_discard_rectangles.
+    pub const DISCARD_RECTANGLE_ENABLE_EXT: Self = Self(1000099001);
+    /// Added by extension VK_EXT_discard_rectangles.
+    pub const DISCARD_RECTANGLE_MODE_EXT: Self = Self(1000099002);
     /// Added by extension VK_EXT_sample_locations.
     pub const SAMPLE_LOCATIONS_EXT: Self = Self(1000143000);
     /// Added by extension VK_KHR_ray_tracing_pipeline.
@@ -4906,6 +4895,8 @@ impl DynamicState {
     pub const VIEWPORT_SHADING_RATE_PALETTE_NV: Self = Self(1000164004);
     /// Added by extension VK_NV_shading_rate_image.
     pub const VIEWPORT_COARSE_SAMPLE_ORDER_NV: Self = Self(1000164006);
+    /// Added by extension VK_NV_scissor_exclusive.
+    pub const EXCLUSIVE_SCISSOR_ENABLE_NV: Self = Self(1000205000);
     /// Added by extension VK_NV_scissor_exclusive.
     pub const EXCLUSIVE_SCISSOR_NV: Self = Self(1000205001);
     /// Added by extension VK_KHR_fragment_shading_rate.
@@ -5029,10 +5020,13 @@ impl fmt::Display for DynamicState {
             1000377004 => Some(&"PRIMITIVE_RESTART_ENABLE"),
             1000087000 => Some(&"VIEWPORT_W_SCALING_NV"),
             1000099000 => Some(&"DISCARD_RECTANGLE_EXT"),
+            1000099001 => Some(&"DISCARD_RECTANGLE_ENABLE_EXT"),
+            1000099002 => Some(&"DISCARD_RECTANGLE_MODE_EXT"),
             1000143000 => Some(&"SAMPLE_LOCATIONS_EXT"),
             1000347000 => Some(&"RAY_TRACING_PIPELINE_STACK_SIZE_KHR"),
             1000164004 => Some(&"VIEWPORT_SHADING_RATE_PALETTE_NV"),
             1000164006 => Some(&"VIEWPORT_COARSE_SAMPLE_ORDER_NV"),
+            1000205000 => Some(&"EXCLUSIVE_SCISSOR_ENABLE_NV"),
             1000205001 => Some(&"EXCLUSIVE_SCISSOR_NV"),
             1000226000 => Some(&"FRAGMENT_SHADING_RATE_KHR"),
             1000259000 => Some(&"LINE_STIPPLE_EXT"),
@@ -6791,6 +6785,8 @@ impl StructureType {
     pub const PERFORMANCE_COUNTER_KHR: Self = Self(1000116005);
     /// Added by extension VK_KHR_performance_query.
     pub const PERFORMANCE_COUNTER_DESCRIPTION_KHR: Self = Self(1000116006);
+    /// Added by extension VK_KHR_performance_query.
+    pub const PERFORMANCE_QUERY_RESERVATION_INFO_KHR: Self = Self(1000116007);
     pub const PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES;
     pub const RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO_KHR: Self =
         Self::RENDER_PASS_INPUT_ATTACHMENT_ASPECT_CREATE_INFO;
@@ -7590,6 +7586,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR: Self = Self::PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES;
     pub const DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_BUFFER_MEMORY_REQUIREMENTS;
     pub const DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR: Self = Self::DEVICE_IMAGE_MEMORY_REQUIREMENTS;
+    /// Added by extension VK_ARM_shader_core_properties.
+    pub const PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM: Self = Self(1000415000);
+    /// Added by extension VK_EXT_image_sliced_view_of_3d.
+    pub const PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000418000);
+    /// Added by extension VK_EXT_image_sliced_view_of_3d.
+    pub const IMAGE_VIEW_SLICED_CREATE_INFO_EXT: Self = Self(1000418001);
     /// Added by extension VK_VALVE_descriptor_set_host_mapping.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE: Self = Self(1000420000);
     /// Added by extension VK_VALVE_descriptor_set_host_mapping.
@@ -7690,6 +7692,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM: Self = Self(1000497000);
     /// Added by extension VK_ARM_shader_core_builtins.
     pub const PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM: Self = Self(1000497001);
+    /// Added by extension VK_EXT_pipeline_library_group_handles.
+    pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
+    /// Added by extension VK_QCOM_multiview_per_view_render_areas.
+    pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
+    /// Added by extension VK_QCOM_multiview_per_view_render_areas.
+    pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8008,6 +8016,7 @@ impl fmt::Display for StructureType {
             1000116004 => Some(&"ACQUIRE_PROFILING_LOCK_INFO_KHR"),
             1000116005 => Some(&"PERFORMANCE_COUNTER_KHR"),
             1000116006 => Some(&"PERFORMANCE_COUNTER_DESCRIPTION_KHR"),
+            1000116007 => Some(&"PERFORMANCE_QUERY_RESERVATION_INFO_KHR"),
             1000119000 => Some(&"PHYSICAL_DEVICE_SURFACE_INFO_2_KHR"),
             1000119001 => Some(&"SURFACE_CAPABILITIES_2_KHR"),
             1000119002 => Some(&"SURFACE_FORMAT_2_KHR"),
@@ -8331,6 +8340,9 @@ impl fmt::Display for StructureType {
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
             1000411001 => Some(&"SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT"),
             1000412000 => Some(&"PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT"),
+            1000415000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM"),
+            1000418000 => Some(&"PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT"),
+            1000418001 => Some(&"IMAGE_VIEW_SLICED_CREATE_INFO_EXT"),
             1000420000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE"),
             1000420001 => Some(&"DESCRIPTOR_SET_BINDING_REFERENCE_VALVE"),
             1000420002 => Some(&"DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE"),
@@ -8381,6 +8393,9 @@ impl fmt::Display for StructureType {
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
+            1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
+            1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
+            1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -20755,6 +20770,36 @@ impl fmt::Debug for ImageViewUsageCreateInfo {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageViewSlicedCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub slice_offset: u32,
+    pub slice_count: u32,
+}
+unsafe impl Send for ImageViewSlicedCreateInfoEXT {}
+unsafe impl Sync for ImageViewSlicedCreateInfoEXT {}
+impl Default for ImageViewSlicedCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_VIEW_SLICED_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            slice_offset: Default::default(),
+            slice_count: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageViewSlicedCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageViewSlicedCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("slice_offset", &self.slice_offset)
+            .field("slice_count", &self.slice_count)
+            .finish()
+    }
+}
 pub type ImageViewUsageCreateInfoKHR = ImageViewUsageCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -28554,6 +28599,37 @@ impl fmt::Debug for PerformanceQuerySubmitInfoKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PerformanceQueryReservationInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    /// Maximum number of VK_QUERY_TYPE_PERFORMANCE_QUERY_KHR queries in a query pool
+    pub max_performance_queries_per_pool: u32,
+}
+unsafe impl Send for PerformanceQueryReservationInfoKHR {}
+unsafe impl Sync for PerformanceQueryReservationInfoKHR {}
+impl Default for PerformanceQueryReservationInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PERFORMANCE_QUERY_RESERVATION_INFO_KHR,
+            p_next: ptr::null(),
+            max_performance_queries_per_pool: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PerformanceQueryReservationInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PerformanceQueryReservationInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_performance_queries_per_pool",
+                &self.max_performance_queries_per_pool,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct HeadlessSurfaceCreateInfoEXT {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -33612,6 +33688,33 @@ impl fmt::Debug for PhysicalDeviceImage2DViewOf3DFeaturesEXT {
             .field("p_next", &self.p_next)
             .field("image_2d_view_of_3d", &self.image_2d_view_of_3d)
             .field("sampler_2d_view_of_3d", &self.sampler_2d_view_of_3d)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub image_sliced_view_of_3d: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
+impl Default for PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            image_sliced_view_of_3d: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageSlicedViewOf3DFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image_sliced_view_of_3d", &self.image_sliced_view_of_3d)
             .finish()
     }
 }
@@ -39395,6 +39498,33 @@ impl fmt::Debug for DeviceFaultVendorBinaryHeaderVersionOneEXT {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pipeline_library_group_handles: Bool32,
+}
+unsafe impl Send for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
+unsafe impl Sync for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
+impl Default for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            pipeline_library_group_handles: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_library_group_handles", &self.pipeline_library_group_handles)
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct DecompressMemoryRegionNV {
     pub src_address: DeviceAddress,
@@ -39916,6 +40046,96 @@ impl fmt::Debug for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("multiview_per_view_viewports", &self.multiview_per_view_viewports)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderCorePropertiesARM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub pixel_rate: u32,
+    pub texel_rate: u32,
+    pub fma_rate: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderCorePropertiesARM {}
+unsafe impl Sync for PhysicalDeviceShaderCorePropertiesARM {}
+impl Default for PhysicalDeviceShaderCorePropertiesARM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM,
+            p_next: ptr::null_mut(),
+            pixel_rate: Default::default(),
+            texel_rate: Default::default(),
+            fma_rate: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderCorePropertiesARM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderCorePropertiesARM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pixel_rate", &self.pixel_rate)
+            .field("texel_rate", &self.texel_rate)
+            .field("fma_rate", &self.fma_rate)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub multiview_per_view_render_areas: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {}
+impl Default for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            multiview_per_view_render_areas: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("multiview_per_view_render_areas", &self.multiview_per_view_render_areas)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub per_view_render_area_count: u32,
+    pub p_per_view_render_areas: *const Rect2D,
+}
+unsafe impl Send for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
+unsafe impl Sync for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
+impl Default for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM,
+            p_next: ptr::null(),
+            per_view_render_area_count: Default::default(),
+            p_per_view_render_areas: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("per_view_render_area_count", &self.per_view_render_area_count)
+            .field("p_per_view_render_areas", &self.p_per_view_render_areas)
             .finish()
     }
 }
@@ -41247,6 +41467,10 @@ pub type FnCmdSetDiscardRectangleEXT = unsafe extern "system" fn(
     discard_rectangle_count: u32,
     p_discard_rectangles: *const Rect2D,
 );
+pub type FnCmdSetDiscardRectangleEnableEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, discard_rectangle_enable: Bool32);
+pub type FnCmdSetDiscardRectangleModeEXT =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, discard_rectangle_mode: DiscardRectangleModeEXT);
 pub type FnCmdSetSampleLocationsEXT = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     p_sample_locations_info: *const SampleLocationsInfoEXT,
@@ -41535,6 +41759,12 @@ pub type FnCmdSetExclusiveScissorNV = unsafe extern "system" fn(
     first_exclusive_scissor: u32,
     exclusive_scissor_count: u32,
     p_exclusive_scissors: *const Rect2D,
+);
+pub type FnCmdSetExclusiveScissorEnableNV = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    first_exclusive_scissor: u32,
+    exclusive_scissor_count: u32,
+    p_exclusive_scissor_enables: *const Bool32,
 );
 pub type FnCmdBindShadingRateImageNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,

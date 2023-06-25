@@ -80,12 +80,19 @@ impl<'a> Builder<'a> for vk::ApplicationInfo {
         Default::default()
     }
 }
+pub trait ApplicationInfoNext {}
 #[derive(Default)]
 pub struct ApplicationInfoBuilder<'a> {
     inner: vk::ApplicationInfo,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> ApplicationInfoBuilder<'a> {
+    pub fn insert_next<T: ApplicationInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2076,17 +2083,25 @@ impl<'a> Deref for SamplerCreateInfoBuilder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::CommandPoolCreateInfo {
-    type Type = CommandPoolCreateInfoBuilder;
+impl<'a> Builder<'a> for vk::CommandPoolCreateInfo {
+    type Type = CommandPoolCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait CommandPoolCreateInfoNext {}
 #[derive(Default)]
-pub struct CommandPoolCreateInfoBuilder {
+pub struct CommandPoolCreateInfoBuilder<'a> {
     inner: vk::CommandPoolCreateInfo,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl CommandPoolCreateInfoBuilder {
+impl<'a> CommandPoolCreateInfoBuilder<'a> {
+    pub fn insert_next<T: CommandPoolCreateInfoNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -2100,7 +2115,7 @@ impl CommandPoolCreateInfoBuilder {
         self
     }
 }
-impl Deref for CommandPoolCreateInfoBuilder {
+impl<'a> Deref for CommandPoolCreateInfoBuilder<'a> {
     type Target = vk::CommandPoolCreateInfo;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -7084,6 +7099,38 @@ impl Deref for ImageViewUsageCreateInfoBuilder {
 }
 impl ImageViewCreateInfoNext for ImageViewUsageCreateInfoBuilder {}
 impl ImageViewCreateInfoNext for vk::ImageViewUsageCreateInfo {}
+impl Builder<'_> for vk::ImageViewSlicedCreateInfoEXT {
+    type Type = ImageViewSlicedCreateInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageViewSlicedCreateInfoEXTBuilder {
+    inner: vk::ImageViewSlicedCreateInfoEXT,
+}
+impl ImageViewSlicedCreateInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn slice_offset(mut self, slice_offset: u32) -> Self {
+        self.inner.slice_offset = slice_offset;
+        self
+    }
+    pub fn slice_count(mut self, slice_count: u32) -> Self {
+        self.inner.slice_count = slice_count;
+        self
+    }
+}
+impl Deref for ImageViewSlicedCreateInfoEXTBuilder {
+    type Target = vk::ImageViewSlicedCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl ImageViewCreateInfoNext for ImageViewSlicedCreateInfoEXTBuilder {}
+impl ImageViewCreateInfoNext for vk::ImageViewSlicedCreateInfoEXT {}
 impl Builder<'_> for vk::PipelineTessellationDomainOriginStateCreateInfo {
     type Type = PipelineTessellationDomainOriginStateCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -13103,6 +13150,32 @@ impl SubmitInfoNext for PerformanceQuerySubmitInfoKHRBuilder {}
 impl SubmitInfo2Next for PerformanceQuerySubmitInfoKHRBuilder {}
 impl SubmitInfoNext for vk::PerformanceQuerySubmitInfoKHR {}
 impl SubmitInfo2Next for vk::PerformanceQuerySubmitInfoKHR {}
+impl Builder<'_> for vk::PerformanceQueryReservationInfoKHR {
+    type Type = PerformanceQueryReservationInfoKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PerformanceQueryReservationInfoKHRBuilder {
+    inner: vk::PerformanceQueryReservationInfoKHR,
+}
+impl PerformanceQueryReservationInfoKHRBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_performance_queries_per_pool(mut self, max_performance_queries_per_pool: u32) -> Self {
+        self.inner.max_performance_queries_per_pool = max_performance_queries_per_pool;
+        self
+    }
+}
+impl Deref for PerformanceQueryReservationInfoKHRBuilder {
+    type Target = vk::PerformanceQueryReservationInfoKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl Builder<'_> for vk::HeadlessSurfaceCreateInfoEXT {
     type Type = HeadlessSurfaceCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -17263,6 +17336,36 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceImage2DViewOf3DFeaturesEXTBui
 impl DeviceCreateInfoNext for PhysicalDeviceImage2DViewOf3DFeaturesEXTBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceImage2DViewOf3DFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {
+    type Type = PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT,
+}
+impl PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image_sliced_view_of_3d(mut self, image_sliced_view_of_3d: bool) -> Self {
+        self.inner.image_sliced_view_of_3d = if image_sliced_view_of_3d { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageSlicedViewOf3DFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageSlicedViewOf3DFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceMutableDescriptorTypeFeaturesEXT {
     type Type = PhysicalDeviceMutableDescriptorTypeFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -22105,6 +22208,40 @@ impl Deref for DeviceFaultInfoEXTBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {
+    type Type = PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
+    inner: vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT,
+}
+impl PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_library_group_handles(mut self, pipeline_library_group_handles: bool) -> Self {
+        self.inner.pipeline_library_group_handles = if pipeline_library_group_handles {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {
+    type Target = vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCoreBuiltinsPropertiesARM {}
 impl Builder<'_> for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
     type Type = PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder;
@@ -22561,3 +22698,70 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiviewPerViewViewportsFeat
 impl DeviceCreateInfoNext for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCorePropertiesARM {}
+impl Builder<'_> for vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {
+    type Type = PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM,
+}
+impl PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn multiview_per_view_render_areas(mut self, multiview_per_view_render_areas: bool) -> Self {
+        self.inner.multiview_per_view_render_areas = if multiview_per_view_render_areas {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {}
+impl<'a> Builder<'a> for vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
+    type Type = MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {
+    inner: vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_per_view_render_areas(mut self, p_per_view_render_areas: &'a [vk::Rect2D]) -> Self {
+        self.inner.per_view_render_area_count = p_per_view_render_areas.len() as u32;
+        self.inner.p_per_view_render_areas = p_per_view_render_areas.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {
+    type Target = vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> RenderPassBeginInfoNext for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {}
+impl<'a> RenderingInfoNext for MultiviewPerViewRenderAreasRenderPassBeginInfoQCOMBuilder<'a> {}
+impl RenderPassBeginInfoNext for vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
+impl RenderingInfoNext for vk::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {}
