@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 242
+//! Generated from vk.xml with `VK_HEADER_VERSION` 243
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -515,16 +515,20 @@ impl InstanceExtensions {
         self.enable_khr_surface();
     }
     pub fn supports_ext_texture_compression_astc_hdr(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_texture_compression_astc_hdr(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_astc_decode_mode(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_astc_decode_mode(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_pipeline_robustness(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -563,10 +567,12 @@ impl InstanceExtensions {
         self.enable_khr_external_memory();
     }
     pub fn supports_khr_external_memory_fd(&self) -> bool {
-        self.supports_khr_external_memory()
+        self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_memory_fd(&mut self) {
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_khr_win32_keyed_mutex(&self) -> bool {
         self.supports_khr_external_memory_win32()
@@ -597,10 +603,12 @@ impl InstanceExtensions {
         self.enable_khr_external_semaphore();
     }
     pub fn supports_khr_external_semaphore_fd(&self) -> bool {
-        self.supports_khr_external_semaphore()
+        self.supports_khr_external_semaphore() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_semaphore_fd(&mut self) {
-        self.enable_khr_external_semaphore();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_semaphore();
+        }
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -673,22 +681,28 @@ impl InstanceExtensions {
         self.enable_khr_multiview();
     }
     pub fn supports_ext_discard_rectangles(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_discard_rectangles(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_conservative_rasterization(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_conservative_rasterization(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_depth_clip_enable(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_depth_clip_enable(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_swapchain_colorspace(&self) -> bool {
         self.ext_swapchain_colorspace && self.supports_khr_surface()
@@ -717,13 +731,16 @@ impl InstanceExtensions {
     }
     pub fn supports_khr_shared_presentable_image(&self) -> bool {
         self.supports_khr_swapchain()
-            && self.supports_khr_get_physical_device_properties2()
             && self.supports_khr_get_surface_capabilities2()
+            && (self.supports_khr_get_physical_device_properties2()
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_shared_presentable_image(&mut self) {
         self.enable_khr_swapchain();
-        self.enable_khr_get_physical_device_properties2();
         self.enable_khr_get_surface_capabilities2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_external_fence_capabilities(&self) -> bool {
         (self.khr_external_fence_capabilities || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
@@ -748,16 +765,20 @@ impl InstanceExtensions {
         self.enable_khr_external_fence();
     }
     pub fn supports_khr_external_fence_fd(&self) -> bool {
-        self.supports_khr_external_fence()
+        self.supports_khr_external_fence() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_external_fence_fd(&mut self) {
-        self.enable_khr_external_fence();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_fence();
+        }
     }
     pub fn supports_khr_performance_query(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_performance_query(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_get_surface_capabilities2(&self) -> bool {
         self.khr_get_surface_capabilities2 && self.supports_khr_surface()
@@ -800,10 +821,12 @@ impl InstanceExtensions {
         self.enable_khr_external_memory_fd();
     }
     pub fn supports_ext_queue_family_foreign(&self) -> bool {
-        self.supports_khr_external_memory()
+        self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_queue_family_foreign(&mut self) {
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_ext_debug_utils(&self) -> bool {
         self.ext_debug_utils
@@ -834,16 +857,20 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_sample_locations(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_sample_locations(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_blend_operation_advanced(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_blend_operation_advanced(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_acceleration_structure(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -875,11 +902,14 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2() && self.supports_khr_sampler_ycbcr_conversion()
+        (self.supports_khr_get_physical_device_properties2() && self.supports_khr_sampler_ycbcr_conversion())
+            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_image_drm_format_modifier(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
     }
     pub fn supports_ext_descriptor_indexing(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() && self.supports_khr_maintenance3()
@@ -925,10 +955,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_external_memory_host(&self) -> bool {
-        self.supports_khr_external_memory()
+        self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_external_memory_host(&mut self) {
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_khr_shader_atomic_int64(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -937,16 +969,20 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_shader_clock(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_shader_clock(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_calibrated_timestamps(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_calibrated_timestamps(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_amd_shader_core_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -961,10 +997,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_vertex_attribute_divisor(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_vertex_attribute_divisor(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_driver_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1045,10 +1083,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_pci_bus_info(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_pci_bus_info(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_amd_display_native_hdr(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1068,10 +1108,12 @@ impl InstanceExtensions {
         self.enable_khr_surface();
     }
     pub fn supports_khr_shader_terminate_invocation(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_shader_terminate_invocation(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_metal_surface(&self) -> bool {
         self.ext_metal_surface && self.supports_khr_surface()
@@ -1093,11 +1135,17 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_fragment_shading_rate(&self) -> bool {
-        self.supports_khr_create_renderpass2() && self.supports_khr_get_physical_device_properties2()
+        (self.supports_khr_create_renderpass2() || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
+            && (self.supports_khr_get_physical_device_properties2()
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_fragment_shading_rate(&mut self) {
-        self.enable_khr_create_renderpass2();
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_create_renderpass2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_amd_shader_core_properties2(&self) -> bool {
         self.supports_amd_shader_core_properties()
@@ -1112,10 +1160,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_shader_image_atomic_int64(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_shader_image_atomic_int64(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_spirv_1_4(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_shader_float_controls()
@@ -1124,10 +1174,12 @@ impl InstanceExtensions {
         self.enable_khr_shader_float_controls();
     }
     pub fn supports_ext_memory_budget(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_memory_budget(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_memory_priority(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1189,16 +1241,20 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_fragment_shader_interlock(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_fragment_shader_interlock(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_ycbcr_image_arrays(&self) -> bool {
-        self.supports_khr_sampler_ycbcr_conversion()
+        self.supports_khr_sampler_ycbcr_conversion() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_ycbcr_image_arrays(&mut self) {
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
     }
     pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1242,16 +1298,20 @@ impl InstanceExtensions {
         }
     }
     pub fn supports_ext_line_rasterization(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_line_rasterization(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_shader_atomic_float(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_shader_atomic_float(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_host_query_reset(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1260,16 +1320,20 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_index_type_uint8(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_index_type_uint8(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_extended_dynamic_state(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_extended_dynamic_state(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_pipeline_executable_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1302,10 +1366,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_shader_demote_to_helper_invocation(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_shader_demote_to_helper_invocation(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_nv_device_generated_commands(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_buffer_device_address()
@@ -1326,10 +1392,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_texel_buffer_alignment(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_texel_buffer_alignment(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_qcom_render_pass_transform(&self) -> bool {
         self.supports_khr_swapchain() && self.supports_khr_surface()
@@ -1352,16 +1420,20 @@ impl InstanceExtensions {
         self.enable_ext_direct_mode_display();
     }
     pub fn supports_ext_robustness2(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_robustness2(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_custom_border_color(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_custom_border_color(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_nv_present_barrier(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1401,10 +1473,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_khr_synchronization2(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_khr_synchronization2(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_descriptor_buffer(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1461,10 +1535,12 @@ impl InstanceExtensions {
         self.enable_khr_spirv_1_4();
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
-        self.supports_khr_sampler_ycbcr_conversion()
+        self.supports_khr_sampler_ycbcr_conversion() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_ycbcr_2plane_444_formats(&mut self) {
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
     }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
         self.supports_ext_fragment_density_map()
@@ -1473,22 +1549,33 @@ impl InstanceExtensions {
         self.enable_ext_fragment_density_map();
     }
     pub fn supports_qcom_rotated_copy_commands(&self) -> bool {
-        self.supports_khr_swapchain()
+        self.supports_khr_swapchain() && self.supports_khr_copy_commands2()
     }
     pub fn enable_qcom_rotated_copy_commands(&mut self) {
         self.enable_khr_swapchain();
+        self.enable_khr_copy_commands2();
     }
     pub fn supports_ext_image_robustness(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_image_robustness(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_khr_workgroup_memory_explicit_layout(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
     pub fn enable_khr_workgroup_memory_explicit_layout(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_copy_commands2(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_khr_copy_commands2(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_image_compression_control(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1503,10 +1590,12 @@ impl InstanceExtensions {
         self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_4444_formats(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_4444_formats(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_device_fault(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1546,10 +1635,12 @@ impl InstanceExtensions {
         self.enable_khr_maintenance3();
     }
     pub fn supports_ext_vertex_input_dynamic_state(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_vertex_input_dynamic_state(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_physical_device_drm(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1637,16 +1728,20 @@ impl InstanceExtensions {
         self.enable_khr_depth_stencil_resolve();
     }
     pub fn supports_ext_extended_dynamic_state2(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_extended_dynamic_state2(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_color_write_enable(&self) -> bool {
-        self.supports_khr_get_physical_device_properties2()
+        self.supports_khr_get_physical_device_properties2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
     }
     pub fn enable_ext_color_write_enable(&mut self) {
-        self.enable_khr_get_physical_device_properties2();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
     }
     pub fn supports_ext_primitives_generated_query(&self) -> bool {
         self.supports_ext_transform_feedback()
@@ -5365,11 +5460,14 @@ impl DeviceExtensions {
         self.enable_khr_external_memory();
     }
     pub fn supports_khr_external_memory_fd(&self) -> bool {
-        self.khr_external_memory_fd && self.supports_khr_external_memory()
+        self.khr_external_memory_fd
+            && (self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_external_memory_fd(&mut self) {
         self.khr_external_memory_fd = true;
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_khr_win32_keyed_mutex(&self) -> bool {
         self.khr_win32_keyed_mutex && self.supports_khr_external_memory_win32()
@@ -5394,11 +5492,14 @@ impl DeviceExtensions {
         self.enable_khr_external_semaphore();
     }
     pub fn supports_khr_external_semaphore_fd(&self) -> bool {
-        self.khr_external_semaphore_fd && self.supports_khr_external_semaphore()
+        self.khr_external_semaphore_fd
+            && (self.supports_khr_external_semaphore() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_external_semaphore_fd(&mut self) {
         self.khr_external_semaphore_fd = true;
-        self.enable_khr_external_semaphore();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_semaphore();
+        }
     }
     pub fn supports_khr_push_descriptor(&self) -> bool {
         self.khr_push_descriptor
@@ -5568,11 +5669,14 @@ impl DeviceExtensions {
         self.enable_khr_external_fence();
     }
     pub fn supports_khr_external_fence_fd(&self) -> bool {
-        self.khr_external_fence_fd && self.supports_khr_external_fence()
+        self.khr_external_fence_fd
+            && (self.supports_khr_external_fence() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_khr_external_fence_fd(&mut self) {
         self.khr_external_fence_fd = true;
-        self.enable_khr_external_fence();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_fence();
+        }
     }
     pub fn supports_khr_performance_query(&self) -> bool {
         self.khr_performance_query
@@ -5606,11 +5710,14 @@ impl DeviceExtensions {
         self.enable_khr_external_memory_fd();
     }
     pub fn supports_ext_queue_family_foreign(&self) -> bool {
-        self.ext_queue_family_foreign && self.supports_khr_external_memory()
+        self.ext_queue_family_foreign
+            && (self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_ext_queue_family_foreign(&mut self) {
         self.ext_queue_family_foreign = true;
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_khr_dedicated_allocation(&self) -> bool {
         (self.khr_dedicated_allocation || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
@@ -5805,15 +5912,19 @@ impl DeviceExtensions {
     }
     pub fn supports_ext_image_drm_format_modifier(&self) -> bool {
         self.ext_image_drm_format_modifier
-            && self.supports_khr_bind_memory2()
-            && self.supports_khr_image_format_list()
-            && self.supports_khr_sampler_ycbcr_conversion()
+            && ((self.supports_khr_bind_memory2() && self.supports_khr_sampler_ycbcr_conversion())
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && (self.supports_khr_image_format_list() || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
     }
     pub fn enable_ext_image_drm_format_modifier(&mut self) {
         self.ext_image_drm_format_modifier = true;
-        self.enable_khr_bind_memory2();
-        self.enable_khr_image_format_list();
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_bind_memory2();
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_image_format_list();
+        }
     }
     pub fn supports_ext_validation_cache(&self) -> bool {
         self.ext_validation_cache
@@ -5918,11 +6029,14 @@ impl DeviceExtensions {
         self.enable_khr_storage_buffer_storage_class();
     }
     pub fn supports_ext_external_memory_host(&self) -> bool {
-        self.ext_external_memory_host && self.supports_khr_external_memory()
+        self.ext_external_memory_host
+            && (self.supports_khr_external_memory() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_ext_external_memory_host(&mut self) {
         self.ext_external_memory_host = true;
-        self.enable_khr_external_memory();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_external_memory();
+        }
     }
     pub fn supports_amd_buffer_marker(&self) -> bool {
         self.amd_buffer_marker
@@ -6023,14 +6137,18 @@ impl DeviceExtensions {
     pub fn supports_khr_swapchain_mutable_format(&self) -> bool {
         self.khr_swapchain_mutable_format
             && self.supports_khr_swapchain()
-            && self.supports_khr_maintenance2()
-            && self.supports_khr_image_format_list()
+            && (self.supports_khr_maintenance2() || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && (self.supports_khr_image_format_list() || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
     }
     pub fn enable_khr_swapchain_mutable_format(&mut self) {
         self.khr_swapchain_mutable_format = true;
         self.enable_khr_swapchain();
-        self.enable_khr_maintenance2();
-        self.enable_khr_image_format_list();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_maintenance2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_image_format_list();
+        }
     }
     pub fn supports_nv_compute_shader_derivatives(&self) -> bool {
         self.nv_compute_shader_derivatives
@@ -6153,11 +6271,14 @@ impl DeviceExtensions {
         }
     }
     pub fn supports_khr_fragment_shading_rate(&self) -> bool {
-        self.khr_fragment_shading_rate && self.supports_khr_create_renderpass2()
+        self.khr_fragment_shading_rate
+            && (self.supports_khr_create_renderpass2() || self.core_version >= vk::Version::from_raw_parts(1, 2, 0))
     }
     pub fn enable_khr_fragment_shading_rate(&mut self) {
         self.khr_fragment_shading_rate = true;
-        self.enable_khr_create_renderpass2();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_khr_create_renderpass2();
+        }
     }
     pub fn supports_amd_shader_core_properties2(&self) -> bool {
         self.amd_shader_core_properties2 && self.supports_amd_shader_core_properties()
@@ -6268,11 +6389,15 @@ impl DeviceExtensions {
         self.ext_fragment_shader_interlock = true;
     }
     pub fn supports_ext_ycbcr_image_arrays(&self) -> bool {
-        self.ext_ycbcr_image_arrays && self.supports_khr_sampler_ycbcr_conversion()
+        self.ext_ycbcr_image_arrays
+            && (self.supports_khr_sampler_ycbcr_conversion()
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_ext_ycbcr_image_arrays(&mut self) {
         self.ext_ycbcr_image_arrays = true;
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
     }
     pub fn supports_khr_uniform_buffer_standard_layout(&self) -> bool {
         self.khr_uniform_buffer_standard_layout || self.core_version >= vk::Version::from_raw_parts(1, 2, 0)
@@ -6581,13 +6706,16 @@ impl DeviceExtensions {
     }
     pub fn supports_ext_ycbcr_2plane_444_formats(&self) -> bool {
         (self.ext_ycbcr_2plane_444_formats || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
-            && self.supports_khr_sampler_ycbcr_conversion()
+            && (self.supports_khr_sampler_ycbcr_conversion()
+                || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
     }
     pub fn enable_ext_ycbcr_2plane_444_formats(&mut self) {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.ext_ycbcr_2plane_444_formats = true;
         }
-        self.enable_khr_sampler_ycbcr_conversion();
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_sampler_ycbcr_conversion();
+        }
     }
     pub fn supports_ext_fragment_density_map2(&self) -> bool {
         self.ext_fragment_density_map2 && self.supports_ext_fragment_density_map()

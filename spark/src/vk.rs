@@ -10656,6 +10656,8 @@ impl VendorId {
     pub const MESA: Self = Self(65541);
     /// PoCL vendor ID
     pub const POCL: Self = Self(65542);
+    /// Mobileye vendor ID
+    pub const MOBILEYE: Self = Self(65543);
 }
 impl fmt::Display for VendorId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10666,6 +10668,7 @@ impl fmt::Display for VendorId {
             65540 => Some(&"CODEPLAY"),
             65541 => Some(&"MESA"),
             65542 => Some(&"POCL"),
+            65543 => Some(&"MOBILEYE"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29756,6 +29759,7 @@ pub struct PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
     pub max_work_group_count: [u32; 3],
     pub max_work_group_size: [u32; 3],
     pub max_output_cluster_count: u32,
+    pub indirect_buffer_offset_alignment: DeviceSize,
 }
 unsafe impl Send for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
 unsafe impl Sync for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
@@ -29767,6 +29771,7 @@ impl Default for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
             max_work_group_count: [Default::default(); 3],
             max_work_group_size: [Default::default(); 3],
             max_output_cluster_count: Default::default(),
+            indirect_buffer_offset_alignment: Default::default(),
         }
     }
 }
@@ -29778,6 +29783,10 @@ impl fmt::Debug for PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {
             .field("max_work_group_count", &self.max_work_group_count)
             .field("max_work_group_size", &self.max_work_group_size)
             .field("max_output_cluster_count", &self.max_output_cluster_count)
+            .field(
+                "indirect_buffer_offset_alignment",
+                &self.indirect_buffer_offset_alignment,
+            )
             .finish()
     }
 }
@@ -39739,7 +39748,7 @@ impl fmt::Debug for PhysicalDeviceSwapchainMaintenance1FeaturesEXT {
 #[derive(Copy, Clone)]
 pub struct SwapchainPresentFenceInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     /// Copy of VkPresentInfoKHR::swapchainCount
     pub swapchain_count: u32,
     /// Fence to signal for each swapchain
@@ -39751,7 +39760,7 @@ impl Default for SwapchainPresentFenceInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_PRESENT_FENCE_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             swapchain_count: Default::default(),
             p_fences: ptr::null(),
         }
@@ -39771,7 +39780,7 @@ impl fmt::Debug for SwapchainPresentFenceInfoEXT {
 #[derive(Copy, Clone)]
 pub struct SwapchainPresentModesCreateInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub present_mode_count: u32,
     pub p_present_modes: *const PresentModeKHR,
 }
@@ -39781,7 +39790,7 @@ impl Default for SwapchainPresentModesCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_PRESENT_MODES_CREATE_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             present_mode_count: Default::default(),
             p_present_modes: ptr::null(),
         }
@@ -39801,7 +39810,7 @@ impl fmt::Debug for SwapchainPresentModesCreateInfoEXT {
 #[derive(Copy, Clone)]
 pub struct SwapchainPresentModeInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     /// Copy of VkPresentInfoKHR::swapchainCount
     pub swapchain_count: u32,
     /// Presentation mode for each swapchain
@@ -39813,7 +39822,7 @@ impl Default for SwapchainPresentModeInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::SWAPCHAIN_PRESENT_MODE_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             swapchain_count: Default::default(),
             p_present_modes: ptr::null(),
         }

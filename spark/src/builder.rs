@@ -22419,7 +22419,7 @@ pub struct SwapchainPresentFenceInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SwapchainPresentFenceInfoEXTBuilder<'a> {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -22449,7 +22449,7 @@ pub struct SwapchainPresentModesCreateInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SwapchainPresentModesCreateInfoEXTBuilder<'a> {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
@@ -22479,7 +22479,7 @@ pub struct SwapchainPresentModeInfoEXTBuilder<'a> {
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> SwapchainPresentModeInfoEXTBuilder<'a> {
-    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
     }
