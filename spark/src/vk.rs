@@ -2090,8 +2090,10 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x80);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT: Self = Self(0x100);
+    /// Added by extension VK_KHR_ray_tracing_position_fetch.
+    pub const ALLOW_DATA_ACCESS: Self = Self(0x800);
 }
-impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x1ff);
+impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x9ff);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2106,6 +2108,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x40, "ALLOW_OPACITY_MICROMAP_UPDATE_EXT"),
                 (0x80, "ALLOW_DISABLE_OPACITY_MICROMAPS_EXT"),
                 (0x100, "ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT"),
+                (0x800, "ALLOW_DATA_ACCESS"),
             ],
             f,
         )
@@ -7719,6 +7722,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
+    /// Added by extension VK_KHR_ray_tracing_position_fetch.
+    pub const PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR: Self = Self(1000481000);
     /// Added by extension VK_EXT_shader_object.
     pub const PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT: Self = Self(1000482000);
     /// Added by extension VK_EXT_shader_object.
@@ -8442,6 +8447,7 @@ impl fmt::Display for StructureType {
             1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
             1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
+            1000481000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR"),
             1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
             1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
             1000482002 => Some(&"SHADER_CREATE_INFO_EXT"),
@@ -40147,6 +40153,33 @@ impl fmt::Debug for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("multiview_per_view_viewports", &self.multiview_per_view_viewports)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ray_tracing_position_fetch: Bool32,
+}
+unsafe impl Send for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {}
+impl Default for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            ray_tracing_position_fetch: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceRayTracingPositionFetchFeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ray_tracing_position_fetch", &self.ray_tracing_position_fetch)
             .finish()
     }
 }

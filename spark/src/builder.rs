@@ -20965,8 +20965,8 @@ impl<'a> AccelerationStructureTrianglesOpacityMicromapEXTBuilder<'a> {
         self.inner.pp_usage_counts = pp_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
         self
     }
-    pub fn micromap(mut self, micromap: vk::MicromapEXT) -> Self {
-        self.inner.micromap = Some(micromap);
+    pub fn micromap(mut self, micromap: Option<vk::MicromapEXT>) -> Self {
+        self.inner.micromap = micromap;
         self
     }
 }
@@ -22699,6 +22699,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceMultiviewPerViewViewportsFeat
 impl DeviceCreateInfoNext for PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
+    type Type = PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder {
+    inner: vk::PhysicalDeviceRayTracingPositionFetchFeaturesKHR,
+}
+impl PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ray_tracing_position_fetch(mut self, ray_tracing_position_fetch: bool) -> Self {
+        self.inner.ray_tracing_position_fetch = if ray_tracing_position_fetch {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder {
+    type Target = vk::PhysicalDeviceRayTracingPositionFetchFeaturesKHR;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceRayTracingPositionFetchFeaturesKHRBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingPositionFetchFeaturesKHR {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingPositionFetchFeaturesKHR {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderCorePropertiesARM {}
 impl Builder<'_> for vk::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM {
     type Type = PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOMBuilder;

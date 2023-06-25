@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 247
+//! Generated from vk.xml with `VK_HEADER_VERSION` 249
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1932,6 +1932,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
+        self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_khr_ray_tracing_position_fetch(&mut self) {
+        self.enable_khr_acceleration_structure();
     }
     pub fn supports_ext_shader_object(&self) -> bool {
         (self.supports_khr_get_physical_device_properties2()
@@ -4638,6 +4644,7 @@ pub struct DeviceExtensions {
     pub nv_optical_flow: bool,
     pub ext_legacy_dithering: bool,
     pub ext_pipeline_protected_access: bool,
+    pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
@@ -4921,6 +4928,7 @@ impl DeviceExtensions {
             b"VK_NV_optical_flow" => self.nv_optical_flow = true,
             b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
+            b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
@@ -5204,6 +5212,7 @@ impl DeviceExtensions {
             nv_optical_flow: false,
             ext_legacy_dithering: false,
             ext_pipeline_protected_access: false,
+            khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
@@ -7155,6 +7164,13 @@ impl DeviceExtensions {
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.ext_pipeline_protected_access = true;
     }
+    pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
+        self.khr_ray_tracing_position_fetch && self.supports_khr_acceleration_structure()
+    }
+    pub fn enable_khr_ray_tracing_position_fetch(&mut self) {
+        self.khr_ray_tracing_position_fetch = true;
+        self.enable_khr_acceleration_structure();
+    }
     pub fn supports_ext_shader_object(&self) -> bool {
         self.ext_shader_object
             && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
@@ -8026,6 +8042,9 @@ impl DeviceExtensions {
         }
         if self.ext_pipeline_protected_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_protected_access\0") })
+        }
+        if self.khr_ray_tracing_position_fetch {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_position_fetch\0") })
         }
         if self.ext_shader_object {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_object\0") })
