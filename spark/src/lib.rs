@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 244
+//! Generated from vk.xml with `VK_HEADER_VERSION` 246
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1932,6 +1932,19 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_ext_shader_object(&self) -> bool {
+        (self.supports_khr_get_physical_device_properties2()
+            || self.core_version >= vk::Version::from_raw_parts(1, 1, 0))
+            && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+    }
+    pub fn enable_ext_shader_object(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 1, 0) {
+            self.enable_khr_get_physical_device_properties2();
+        }
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
+        }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -4600,6 +4613,7 @@ pub struct DeviceExtensions {
     pub ext_image_view_min_lod: bool,
     pub ext_multi_draw: bool,
     pub ext_image_2d_view_of_3d: bool,
+    pub ext_shader_tile_image: bool,
     pub ext_opacity_micromap: bool,
     pub ext_load_store_op_none: bool,
     pub huawei_cluster_culling_shader: bool,
@@ -4624,6 +4638,7 @@ pub struct DeviceExtensions {
     pub nv_optical_flow: bool,
     pub ext_legacy_dithering: bool,
     pub ext_pipeline_protected_access: bool,
+    pub ext_shader_object: bool,
     pub qcom_tile_properties: bool,
     pub sec_amigo_profiling: bool,
     pub qcom_multiview_per_view_viewports: bool,
@@ -4881,6 +4896,7 @@ impl DeviceExtensions {
             b"VK_EXT_image_view_min_lod" => self.ext_image_view_min_lod = true,
             b"VK_EXT_multi_draw" => self.ext_multi_draw = true,
             b"VK_EXT_image_2d_view_of_3d" => self.ext_image_2d_view_of_3d = true,
+            b"VK_EXT_shader_tile_image" => self.ext_shader_tile_image = true,
             b"VK_EXT_opacity_micromap" => self.ext_opacity_micromap = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             b"VK_HUAWEI_cluster_culling_shader" => self.huawei_cluster_culling_shader = true,
@@ -4905,6 +4921,7 @@ impl DeviceExtensions {
             b"VK_NV_optical_flow" => self.nv_optical_flow = true,
             b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
+            b"VK_EXT_shader_object" => self.ext_shader_object = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_QCOM_multiview_per_view_viewports" => self.qcom_multiview_per_view_viewports = true,
@@ -5162,6 +5179,7 @@ impl DeviceExtensions {
             ext_image_view_min_lod: false,
             ext_multi_draw: false,
             ext_image_2d_view_of_3d: false,
+            ext_shader_tile_image: false,
             ext_opacity_micromap: false,
             ext_load_store_op_none: false,
             huawei_cluster_culling_shader: false,
@@ -5186,6 +5204,7 @@ impl DeviceExtensions {
             nv_optical_flow: false,
             ext_legacy_dithering: false,
             ext_pipeline_protected_access: false,
+            ext_shader_object: false,
             qcom_tile_properties: false,
             sec_amigo_profiling: false,
             qcom_multiview_per_view_viewports: false,
@@ -6970,6 +6989,12 @@ impl DeviceExtensions {
         self.ext_image_2d_view_of_3d = true;
         self.enable_khr_maintenance1();
     }
+    pub fn supports_ext_shader_tile_image(&self) -> bool {
+        self.ext_shader_tile_image && self.core_version >= vk::Version::from_raw_parts(1, 3, 0)
+    }
+    pub fn enable_ext_shader_tile_image(&mut self) {
+        self.ext_shader_tile_image = true;
+    }
     pub fn supports_ext_opacity_micromap(&self) -> bool {
         self.ext_opacity_micromap && self.supports_khr_acceleration_structure() && self.supports_khr_synchronization2()
     }
@@ -7129,6 +7154,16 @@ impl DeviceExtensions {
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.ext_pipeline_protected_access = true;
+    }
+    pub fn supports_ext_shader_object(&self) -> bool {
+        self.ext_shader_object
+            && (self.supports_khr_dynamic_rendering() || self.core_version >= vk::Version::from_raw_parts(1, 3, 0))
+    }
+    pub fn enable_ext_shader_object(&mut self) {
+        self.ext_shader_object = true;
+        if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
+            self.enable_khr_dynamic_rendering();
+        }
     }
     pub fn supports_qcom_tile_properties(&self) -> bool {
         self.qcom_tile_properties
@@ -7917,6 +7952,9 @@ impl DeviceExtensions {
         if self.ext_image_2d_view_of_3d {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_image_2d_view_of_3d\0") })
         }
+        if self.ext_shader_tile_image {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_tile_image\0") })
+        }
         if self.ext_opacity_micromap {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_opacity_micromap\0") })
         }
@@ -7988,6 +8026,9 @@ impl DeviceExtensions {
         }
         if self.ext_pipeline_protected_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_protected_access\0") })
+        }
+        if self.ext_shader_object {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_shader_object\0") })
         }
         if self.qcom_tile_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_tile_properties\0") })
@@ -8479,6 +8520,10 @@ pub struct Device {
     pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
     pub fp_map_memory2_khr: Option<vk::FnMapMemory2KHR>,
     pub fp_unmap_memory2_khr: Option<vk::FnUnmapMemory2KHR>,
+    pub fp_create_shaders_ext: Option<vk::FnCreateShadersEXT>,
+    pub fp_destroy_shader_ext: Option<vk::FnDestroyShaderEXT>,
+    pub fp_get_shader_binary_data_ext: Option<vk::FnGetShaderBinaryDataEXT>,
+    pub fp_cmd_bind_shaders_ext: Option<vk::FnCmdBindShadersEXT>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -11016,7 +11061,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetCullMode".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCullModeEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11028,7 +11073,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetFrontFace".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetFrontFaceEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11040,7 +11085,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetPrimitiveTopology".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPrimitiveTopologyEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11052,7 +11097,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetViewportWithCount".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportWithCountEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11064,7 +11109,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetScissorWithCount".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetScissorWithCountEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11076,7 +11121,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdBindVertexBuffers2".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindVertexBuffers2EXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11088,7 +11133,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetDepthTestEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthTestEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11100,7 +11145,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetDepthWriteEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthWriteEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11112,7 +11157,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetDepthCompareOp".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthCompareOpEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11124,7 +11169,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetDepthBoundsTestEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetDepthBoundsTestEnableEXT\0",
                 ));
@@ -11138,7 +11183,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetStencilTestEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilTestEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11150,13 +11195,15 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetStencilOp".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state {
+            } else if extensions.ext_extended_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetStencilOpEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_patch_control_points_ext: if extensions.ext_extended_dynamic_state2 {
+            fp_cmd_set_patch_control_points_ext: if extensions.ext_extended_dynamic_state2
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPatchControlPointsEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11172,7 +11219,7 @@ impl Device {
                     ));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state2 {
+            } else if extensions.ext_extended_dynamic_state2 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRasterizerDiscardEnableEXT\0",
                 ));
@@ -11186,13 +11233,13 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetDepthBiasEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state2 {
+            } else if extensions.ext_extended_dynamic_state2 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthBiasEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_logic_op_ext: if extensions.ext_extended_dynamic_state2 {
+            fp_cmd_set_logic_op_ext: if extensions.ext_extended_dynamic_state2 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLogicOpEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -11204,7 +11251,7 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkCmdSetPrimitiveRestartEnable".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
-            } else if extensions.ext_extended_dynamic_state2 {
+            } else if extensions.ext_extended_dynamic_state2 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetPrimitiveRestartEnableEXT\0",
                 ));
@@ -11212,7 +11259,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_tessellation_domain_origin_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_tessellation_domain_origin_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetTessellationDomainOriginEXT\0",
                 ));
@@ -11220,19 +11269,22 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_depth_clamp_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_depth_clamp_enable_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClampEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_polygon_mode_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_polygon_mode_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetPolygonModeEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_rasterization_samples_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_rasterization_samples_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRasterizationSamplesEXT\0",
                 ));
@@ -11240,13 +11292,15 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_sample_mask_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_sample_mask_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetSampleMaskEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_alpha_to_coverage_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_alpha_to_coverage_enable_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetAlphaToCoverageEnableEXT\0",
                 ));
@@ -11254,43 +11308,52 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_alpha_to_one_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_alpha_to_one_enable_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetAlphaToOneEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_logic_op_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_logic_op_enable_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLogicOpEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_color_blend_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_color_blend_enable_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_color_blend_equation_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_color_blend_equation_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendEquationEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_color_write_mask_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_color_write_mask_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorWriteMaskEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_rasterization_stream_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_rasterization_stream_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetRasterizationStreamEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_conservative_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_conservative_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetConservativeRasterizationModeEXT\0",
                 ));
@@ -11298,7 +11361,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_extra_primitive_overestimation_size_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_extra_primitive_overestimation_size_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetExtraPrimitiveOverestimationSizeEXT\0",
                 ));
@@ -11306,13 +11371,16 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_depth_clip_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_depth_clip_enable_ext: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetDepthClipEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_sample_locations_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_sample_locations_enable_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetSampleLocationsEnableEXT\0",
                 ));
@@ -11320,19 +11388,25 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_color_blend_advanced_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_color_blend_advanced_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetColorBlendAdvancedEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_provoking_vertex_mode_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_provoking_vertex_mode_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetProvokingVertexModeEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_line_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_line_rasterization_mode_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetLineRasterizationModeEXT\0",
                 ));
@@ -11340,13 +11414,17 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_line_stipple_enable_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_line_stipple_enable_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetLineStippleEnableEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_depth_clip_negative_one_to_one_ext: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_depth_clip_negative_one_to_one_ext: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetDepthClipNegativeOneToOneEXT\0",
                 ));
@@ -11354,7 +11432,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_viewport_w_scaling_enable_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_viewport_w_scaling_enable_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetViewportWScalingEnableNV\0",
                 ));
@@ -11362,13 +11442,15 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_viewport_swizzle_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_viewport_swizzle_nv: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportSwizzleNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_coverage_to_color_enable_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_to_color_enable_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageToColorEnableNV\0",
                 ));
@@ -11376,7 +11458,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_to_color_location_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_to_color_location_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageToColorLocationNV\0",
                 ));
@@ -11384,7 +11468,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_mode_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_modulation_mode_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationModeNV\0",
                 ));
@@ -11392,7 +11478,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_table_enable_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_modulation_table_enable_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationTableEnableNV\0",
                 ));
@@ -11400,7 +11488,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_table_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_modulation_table_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationTableNV\0",
                 ));
@@ -11408,7 +11498,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_shading_rate_image_enable_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_shading_rate_image_enable_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetShadingRateImageEnableNV\0",
                 ));
@@ -11416,7 +11508,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_reduction_mode_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_coverage_reduction_mode_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageReductionModeNV\0",
                 ));
@@ -11424,7 +11518,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_representative_fragment_test_enable_nv: if extensions.ext_extended_dynamic_state3 {
+            fp_cmd_set_representative_fragment_test_enable_nv: if extensions.ext_extended_dynamic_state3
+                || extensions.ext_shader_object
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRepresentativeFragmentTestEnableNV\0",
                 ));
@@ -11582,7 +11678,7 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_vertex_input_ext: if extensions.ext_vertex_input_dynamic_state {
+            fp_cmd_set_vertex_input_ext: if extensions.ext_vertex_input_dynamic_state || extensions.ext_shader_object {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetVertexInputEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -12094,6 +12190,30 @@ impl Device {
             },
             fp_unmap_memory2_khr: if extensions.khr_map_memory2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkUnmapMemory2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_shaders_ext: if extensions.ext_shader_object {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateShadersEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_destroy_shader_ext: if extensions.ext_shader_object {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkDestroyShaderEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_shader_binary_data_ext: if extensions.ext_shader_object {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetShaderBinaryDataEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_bind_shaders_ext: if extensions.ext_shader_object {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindShadersEXT\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -19745,6 +19865,122 @@ impl Device {
             vk::Result::SUCCESS => Ok(()),
             _ => Err(err),
         }
+    }
+    pub unsafe fn create_shaders_ext(
+        &self,
+        p_create_infos: &[vk::ShaderCreateInfoEXT],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+        p_shaders: *mut vk::ShaderEXT,
+    ) -> Result<()> {
+        let fp = self.fp_create_shaders_ext.expect("vkCreateShadersEXT is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let v_err = (fp)(
+            Some(self.handle),
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_shaders,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_shaders_ext_to_vec(
+        &self,
+        p_create_infos: &[vk::ShaderCreateInfoEXT],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<Vec<vk::ShaderEXT>> {
+        let fp = self.fp_create_shaders_ext.expect("vkCreateShadersEXT is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_shaders_ext_array<const N: usize>(
+        &self,
+        p_create_infos: &[vk::ShaderCreateInfoEXT],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<[vk::ShaderEXT; N]> {
+        let fp = self.fp_create_shaders_ext.expect("vkCreateShadersEXT is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr() as *mut _,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_shaders_ext_single(
+        &self,
+        p_create_infos: &vk::ShaderCreateInfoEXT,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::ShaderEXT> {
+        let fp = self.fp_create_shaders_ext.expect("vkCreateShadersEXT is not loaded");
+        let create_info_count = 1;
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            create_info_count,
+            p_create_infos,
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn destroy_shader_ext(&self, shader: vk::ShaderEXT, p_allocator: Option<&vk::AllocationCallbacks>) {
+        let fp = self.fp_destroy_shader_ext.expect("vkDestroyShaderEXT is not loaded");
+        (fp)(Some(self.handle), Some(shader), p_allocator.map_or(ptr::null(), |r| r));
+    }
+    pub unsafe fn get_shader_binary_data_ext(
+        &self,
+        shader: vk::ShaderEXT,
+        p_data_size: *mut usize,
+        p_data: *mut c_void,
+    ) -> Result<vk::Result> {
+        let fp = self
+            .fp_get_shader_binary_data_ext
+            .expect("vkGetShaderBinaryDataEXT is not loaded");
+        let err = (fp)(Some(self.handle), Some(shader), p_data_size, p_data);
+        match err {
+            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn cmd_bind_shaders_ext(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        p_stages: &[vk::ShaderStageFlags],
+        p_shaders: &[vk::ShaderEXT],
+    ) {
+        let fp = self.fp_cmd_bind_shaders_ext.expect("vkCmdBindShadersEXT is not loaded");
+        let stage_count = p_stages.len() as u32;
+        assert_eq!(stage_count, p_shaders.len() as u32);
+        (fp)(
+            Some(command_buffer),
+            stage_count,
+            p_stages.first().map_or(ptr::null(), |s| s as *const _),
+            p_shaders.first().map_or(ptr::null(), |s| s as *const _),
+        );
     }
 }
 

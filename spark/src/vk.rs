@@ -4021,6 +4021,36 @@ impl fmt::Display for PresentGravityFlagsEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct ShaderCreateFlagsEXT(pub(crate) u32);
+impl ShaderCreateFlagsEXT {
+    pub const LINK_STAGE: Self = Self(0x1);
+    pub const ALLOW_VARYING_SUBGROUP_SIZE: Self = Self(0x2);
+    pub const REQUIRE_FULL_SUBGROUPS: Self = Self(0x4);
+    pub const NO_TASK_SHADER: Self = Self(0x8);
+    pub const DISPATCH_BASE: Self = Self(0x10);
+    pub const FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x20);
+    pub const FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x40);
+}
+impl_bitmask!(ShaderCreateFlagsEXT, 0x7f);
+impl fmt::Display for ShaderCreateFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "LINK_STAGE"),
+                (0x2, "ALLOW_VARYING_SUBGROUP_SIZE"),
+                (0x4, "REQUIRE_FULL_SUBGROUPS"),
+                (0x8, "NO_TASK_SHADER"),
+                (0x10, "DISPATCH_BASE"),
+                (0x20, "FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x40, "FRAGMENT_DENSITY_MAP_ATTACHMENT"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct MemoryUnmapFlagsKHR(pub(crate) u32);
 impl MemoryUnmapFlagsKHR {}
 impl_bitmask!(MemoryUnmapFlagsKHR, 0x0);
@@ -4340,6 +4370,14 @@ impl OpticalFlowSessionNV {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct MicromapEXT(num::NonZeroU64);
 impl MicromapEXT {
+    pub fn from_raw(x: u64) -> Option<Self> {
+        num::NonZeroU64::new(x).map(Self)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub struct ShaderEXT(num::NonZeroU64);
+impl ShaderEXT {
     pub fn from_raw(x: u64) -> Option<Self> {
         num::NonZeroU64::new(x).map(Self)
     }
@@ -6221,6 +6259,8 @@ impl Result {
     pub const ERROR_PIPELINE_COMPILE_REQUIRED_EXT: Self = Self::PIPELINE_COMPILE_REQUIRED;
     /// Added by extension VK_EXT_image_compression_control.
     pub const ERROR_COMPRESSION_EXHAUSTED_EXT: Self = Self(-1000338000);
+    /// Added by extension VK_EXT_shader_object.
+    pub const ERROR_INCOMPATIBLE_SHADER_BINARY_EXT: Self = Self(1000482000);
 }
 impl fmt::Display for Result {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -6264,6 +6304,7 @@ impl fmt::Display for Result {
             1000268002 => Some(&"OPERATION_DEFERRED_KHR"),
             1000268003 => Some(&"OPERATION_NOT_DEFERRED_KHR"),
             -1000338000 => Some(&"ERROR_COMPRESSION_EXHAUSTED_EXT"),
+            1000482000 => Some(&"ERROR_INCOMPATIBLE_SHADER_BINARY_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7551,6 +7592,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT: Self = Self(1000392001);
     /// Added by extension VK_EXT_image_2d_view_of_3d.
     pub const PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT: Self = Self(1000393000);
+    /// Added by extension VK_EXT_shader_tile_image.
+    pub const PHYSICAL_DEVICE_SHADER_TILE_IMAGE_FEATURES_EXT: Self = Self(1000395000);
+    /// Added by extension VK_EXT_shader_tile_image.
+    pub const PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT: Self = Self(1000395001);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_BUILD_INFO_EXT: Self = Self(1000396000);
     /// Added by extension VK_EXT_opacity_micromap.
@@ -7668,6 +7713,14 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
+    /// Added by extension VK_EXT_shader_object.
+    pub const PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT: Self = Self(1000482000);
+    /// Added by extension VK_EXT_shader_object.
+    pub const PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT: Self = Self(1000482001);
+    /// Added by extension VK_EXT_shader_object.
+    pub const SHADER_CREATE_INFO_EXT: Self = Self(1000482002);
+    pub const SHADER_REQUIRED_SUBGROUP_SIZE_CREATE_INFO_EXT: Self =
+        Self::PIPELINE_SHADER_STAGE_REQUIRED_SUBGROUP_SIZE_CREATE_INFO;
     /// Added by extension VK_QCOM_tile_properties.
     pub const PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM: Self = Self(1000484000);
     /// Added by extension VK_QCOM_tile_properties.
@@ -8324,6 +8377,8 @@ impl fmt::Display for StructureType {
             1000392000 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT"),
             1000392001 => Some(&"PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT"),
             1000393000 => Some(&"PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT"),
+            1000395000 => Some(&"PHYSICAL_DEVICE_SHADER_TILE_IMAGE_FEATURES_EXT"),
+            1000395001 => Some(&"PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT"),
             1000396000 => Some(&"MICROMAP_BUILD_INFO_EXT"),
             1000396001 => Some(&"MICROMAP_VERSION_INFO_EXT"),
             1000396002 => Some(&"COPY_MICROMAP_INFO_EXT"),
@@ -8381,6 +8436,9 @@ impl fmt::Display for StructureType {
             1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
             1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
+            1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
+            1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
+            1000482002 => Some(&"SHADER_CREATE_INFO_EXT"),
             1000484000 => Some(&"PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM"),
             1000484001 => Some(&"TILE_PROPERTIES_QCOM"),
             1000485000 => Some(&"PHYSICAL_DEVICE_AMIGO_PROFILING_FEATURES_SEC"),
@@ -8619,6 +8677,8 @@ impl ObjectType {
     pub const MICROMAP_EXT: Self = Self(1000396000);
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_SESSION_NV: Self = Self(1000464000);
+    /// Added by extension VK_EXT_shader_object.
+    pub const SHADER_EXT: Self = Self(1000482000);
 }
 impl fmt::Display for ObjectType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8669,6 +8729,7 @@ impl fmt::Display for ObjectType {
             1000366000 => Some(&"BUFFER_COLLECTION_FUCHSIA"),
             1000396000 => Some(&"MICROMAP_EXT"),
             1000464000 => Some(&"OPTICAL_FLOW_SESSION_NV"),
+            1000482000 => Some(&"SHADER_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -9901,6 +9962,27 @@ impl fmt::Display for DirectDriverLoadingModeLUNARG {
         let name = match self.0 {
             0 => Some(&"EXCLUSIVE"),
             1 => Some(&"INCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ShaderCodeTypeEXT(pub(crate) i32);
+impl ShaderCodeTypeEXT {
+    pub const BINARY: Self = Self(0);
+    pub const SPIRV: Self = Self(1);
+}
+impl fmt::Display for ShaderCodeTypeEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"BINARY"),
+            1 => Some(&"SPIRV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -29685,6 +29767,7 @@ impl fmt::Debug for PipelineShaderStageRequiredSubgroupSizeCreateInfo {
     }
 }
 pub type PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
+pub type ShaderRequiredSubgroupSizeCreateInfoEXT = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct SubpassShadingPipelineCreateInfoHUAWEI {
@@ -40238,6 +40321,207 @@ impl fmt::Debug for MemoryUnmapInfoKHR {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderObjectFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_object: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderObjectFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderObjectFeaturesEXT {}
+impl Default for PhysicalDeviceShaderObjectFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_object: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderObjectFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderObjectFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_object", &self.shader_object)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderObjectPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_binary_uuid: [u8; UUID_SIZE],
+    pub shader_binary_version: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderObjectPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderObjectPropertiesEXT {}
+impl Default for PhysicalDeviceShaderObjectPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            shader_binary_uuid: [Default::default(); UUID_SIZE],
+            shader_binary_version: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderObjectPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderObjectPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_binary_uuid", &self.shader_binary_uuid)
+            .field("shader_binary_version", &self.shader_binary_version)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ShaderCreateInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: ShaderCreateFlagsEXT,
+    pub stage: ShaderStageFlags,
+    pub next_stage: ShaderStageFlags,
+    pub code_type: ShaderCodeTypeEXT,
+    pub code_size: usize,
+    pub p_code: *const c_void,
+    pub p_name: *const c_char,
+    pub set_layout_count: u32,
+    pub p_set_layouts: *const DescriptorSetLayout,
+    pub push_constant_range_count: u32,
+    pub p_push_constant_ranges: *const PushConstantRange,
+    pub p_specialization_info: *const SpecializationInfo,
+}
+unsafe impl Send for ShaderCreateInfoEXT {}
+unsafe impl Sync for ShaderCreateInfoEXT {}
+impl Default for ShaderCreateInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SHADER_CREATE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            stage: Default::default(),
+            next_stage: Default::default(),
+            code_type: Default::default(),
+            code_size: Default::default(),
+            p_code: ptr::null(),
+            p_name: ptr::null(),
+            set_layout_count: Default::default(),
+            p_set_layouts: ptr::null(),
+            push_constant_range_count: Default::default(),
+            p_push_constant_ranges: ptr::null(),
+            p_specialization_info: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for ShaderCreateInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ShaderCreateInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("stage", &self.stage)
+            .field("next_stage", &self.next_stage)
+            .field("code_type", &self.code_type)
+            .field("code_size", &self.code_size)
+            .field("p_code", &self.p_code)
+            .field("p_name", &self.p_name)
+            .field("set_layout_count", &self.set_layout_count)
+            .field("p_set_layouts", &self.p_set_layouts)
+            .field("push_constant_range_count", &self.push_constant_range_count)
+            .field("p_push_constant_ranges", &self.p_push_constant_ranges)
+            .field("p_specialization_info", &self.p_specialization_info)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderTileImageFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_tile_image_color_read_access: Bool32,
+    pub shader_tile_image_depth_read_access: Bool32,
+    pub shader_tile_image_stencil_read_access: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderTileImageFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderTileImageFeaturesEXT {}
+impl Default for PhysicalDeviceShaderTileImageFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_TILE_IMAGE_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            shader_tile_image_color_read_access: Default::default(),
+            shader_tile_image_depth_read_access: Default::default(),
+            shader_tile_image_stencil_read_access: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderTileImageFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderTileImageFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_tile_image_color_read_access",
+                &self.shader_tile_image_color_read_access,
+            )
+            .field(
+                "shader_tile_image_depth_read_access",
+                &self.shader_tile_image_depth_read_access,
+            )
+            .field(
+                "shader_tile_image_stencil_read_access",
+                &self.shader_tile_image_stencil_read_access,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderTileImagePropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_tile_image_coherent_read_accelerated: Bool32,
+    pub shader_tile_image_read_sample_from_pixel_rate_invocation: Bool32,
+    pub shader_tile_image_read_from_helper_invocation: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderTileImagePropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceShaderTileImagePropertiesEXT {}
+impl Default for PhysicalDeviceShaderTileImagePropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_TILE_IMAGE_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            shader_tile_image_coherent_read_accelerated: Default::default(),
+            shader_tile_image_read_sample_from_pixel_rate_invocation: Default::default(),
+            shader_tile_image_read_from_helper_invocation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderTileImagePropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderTileImagePropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "shader_tile_image_coherent_read_accelerated",
+                &self.shader_tile_image_coherent_read_accelerated,
+            )
+            .field(
+                "shader_tile_image_read_sample_from_pixel_rate_invocation",
+                &self.shader_tile_image_read_sample_from_pixel_rate_invocation,
+            )
+            .field(
+                "shader_tile_image_read_from_helper_invocation",
+                &self.shader_tile_image_read_from_helper_invocation,
+            )
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -42834,3 +43118,27 @@ pub type FnMapMemory2KHR = unsafe extern "system" fn(
 ) -> Result;
 pub type FnUnmapMemory2KHR =
     unsafe extern "system" fn(device: Option<Device>, p_memory_unmap_info: *const MemoryUnmapInfoKHR) -> Result;
+pub type FnCreateShadersEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    create_info_count: u32,
+    p_create_infos: *const ShaderCreateInfoEXT,
+    p_allocator: *const AllocationCallbacks,
+    p_shaders: *mut ShaderEXT,
+) -> Result;
+pub type FnDestroyShaderEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    shader: Option<ShaderEXT>,
+    p_allocator: *const AllocationCallbacks,
+);
+pub type FnGetShaderBinaryDataEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    shader: Option<ShaderEXT>,
+    p_data_size: *mut usize,
+    p_data: *mut c_void,
+) -> Result;
+pub type FnCmdBindShadersEXT = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    stage_count: u32,
+    p_stages: *const ShaderStageFlags,
+    p_shaders: *const ShaderEXT,
+);

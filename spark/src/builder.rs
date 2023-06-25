@@ -13931,6 +13931,7 @@ impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSubgroupSizeControlFeatur
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSubgroupSizeControlFeatures {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubgroupSizeControlProperties {}
 impl PipelineShaderStageCreateInfoNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
+impl ShaderCreateInfoEXTNext for vk::PipelineShaderStageRequiredSubgroupSizeCreateInfo {}
 impl ComputePipelineCreateInfoNext for vk::SubpassShadingPipelineCreateInfoHUAWEI {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceSubpassShadingPropertiesHUAWEI {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI {}
@@ -22861,3 +22862,154 @@ impl Deref for MemoryUnmapInfoKHRBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceShaderObjectFeaturesEXT {
+    type Type = PhysicalDeviceShaderObjectFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderObjectFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderObjectFeaturesEXT,
+}
+impl PhysicalDeviceShaderObjectFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_object(mut self, shader_object: bool) -> Self {
+        self.inner.shader_object = if shader_object { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderObjectFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderObjectFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderObjectFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderObjectFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderObjectFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderObjectFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderObjectPropertiesEXT {}
+impl<'a> Builder<'a> for vk::ShaderCreateInfoEXT {
+    type Type = ShaderCreateInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+pub trait ShaderCreateInfoEXTNext {}
+#[derive(Default)]
+pub struct ShaderCreateInfoEXTBuilder<'a> {
+    inner: vk::ShaderCreateInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> ShaderCreateInfoEXTBuilder<'a> {
+    pub fn insert_next<T: ShaderCreateInfoEXTNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::ShaderCreateFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn stage(mut self, stage: vk::ShaderStageFlags) -> Self {
+        self.inner.stage = stage;
+        self
+    }
+    pub fn next_stage(mut self, next_stage: vk::ShaderStageFlags) -> Self {
+        self.inner.next_stage = next_stage;
+        self
+    }
+    pub fn code_type(mut self, code_type: vk::ShaderCodeTypeEXT) -> Self {
+        self.inner.code_type = code_type;
+        self
+    }
+    pub fn p_code<T>(mut self, p_code: &'a [T]) -> Self {
+        self.inner.code_size = mem::size_of_val(p_code) as usize;
+        self.inner.p_code = p_code.first().map_or(ptr::null(), |s| s as *const _) as *const _;
+        self
+    }
+    pub fn p_name(mut self, p_name: Option<&'a CStr>) -> Self {
+        self.inner.p_name = p_name.map_or(ptr::null(), |s| s.as_ptr());
+        self
+    }
+    pub fn p_set_layouts(mut self, p_set_layouts: &'a [vk::DescriptorSetLayout]) -> Self {
+        self.inner.set_layout_count = p_set_layouts.len() as u32;
+        self.inner.p_set_layouts = p_set_layouts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_push_constant_ranges(mut self, p_push_constant_ranges: &'a [vk::PushConstantRange]) -> Self {
+        self.inner.push_constant_range_count = p_push_constant_ranges.len() as u32;
+        self.inner.p_push_constant_ranges = p_push_constant_ranges.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_specialization_info(mut self, p_specialization_info: Option<&'a vk::SpecializationInfo>) -> Self {
+        self.inner.p_specialization_info = p_specialization_info.map_or(ptr::null(), |p| p);
+        self
+    }
+}
+impl<'a> Deref for ShaderCreateInfoEXTBuilder<'a> {
+    type Target = vk::ShaderCreateInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PhysicalDeviceShaderTileImageFeaturesEXT {
+    type Type = PhysicalDeviceShaderTileImageFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceShaderTileImageFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceShaderTileImageFeaturesEXT,
+}
+impl PhysicalDeviceShaderTileImageFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn shader_tile_image_color_read_access(mut self, shader_tile_image_color_read_access: bool) -> Self {
+        self.inner.shader_tile_image_color_read_access = if shader_tile_image_color_read_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_tile_image_depth_read_access(mut self, shader_tile_image_depth_read_access: bool) -> Self {
+        self.inner.shader_tile_image_depth_read_access = if shader_tile_image_depth_read_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn shader_tile_image_stencil_read_access(mut self, shader_tile_image_stencil_read_access: bool) -> Self {
+        self.inner.shader_tile_image_stencil_read_access = if shader_tile_image_stencil_read_access {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceShaderTileImageFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceShaderTileImageFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderTileImageFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceShaderTileImageFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderTileImageFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderTileImageFeaturesEXT {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceShaderTileImagePropertiesEXT {}
