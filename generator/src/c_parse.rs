@@ -11,6 +11,130 @@ use nom::{
 };
 use std::fmt;
 
+#[derive(Debug, Clone)]
+pub enum DependencyExpr<'a> {
+    False,
+    True,
+    Version((u16, u16)),
+    Extension(&'a str),
+    And(Vec<DependencyExpr<'a>>),
+    Or(Vec<DependencyExpr<'a>>),
+}
+
+impl<'a> DependencyExpr<'a> {
+    pub fn is_false(&self) -> bool {
+        matches!(self, DependencyExpr::False)
+    }
+
+    pub fn is_true(&self) -> bool {
+        matches!(self, DependencyExpr::True)
+    }
+
+    pub fn visit_leaves(&mut self, f: &impl Fn(&mut DependencyExpr)) {
+        match self {
+            Self::False | Self::True | Self::Version(_) | Self::Extension(_) => f(self),
+            Self::And(v) | Self::Or(v) => {
+                for dep in v.iter_mut() {
+                    dep.visit_leaves(f)
+                }
+            }
+        }
+    }
+
+    fn matches(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::False, Self::False) | (Self::True, Self::True) => true,
+            (Self::Version(a), Self::Version(b)) => a == b,
+            (Self::Extension(a), Self::Extension(b)) => a == b,
+            (Self::And(ref a), Self::And(ref b)) | (Self::Or(ref a), Self::Or(ref b)) => match (a.len(), b.len()) {
+                (0, 0) => true,
+                (1, 1) => a[0].matches(&b[0]),
+                (2, 2) => (a[0].matches(&b[0]) && a[1].matches(&b[1])) || (a[0].matches(&b[1]) && a[1].matches(&b[0])),
+                _ => false,
+            },
+            _ => false,
+        }
+    }
+
+    pub fn simplify(&mut self) {
+        match self {
+            Self::False => {}
+            Self::True => {}
+            Self::Version(v) => {
+                if *v == (1, 0) {
+                    *self = Self::True;
+                }
+            }
+            Self::Extension(_) => {}
+            Self::And(v) => {
+                let mut tmp = Vec::new();
+                for mut dep in v.drain(..) {
+                    dep.simplify();
+                    match dep {
+                        Self::False => {
+                            tmp.clear();
+                            tmp.push(dep);
+                            break;
+                        }
+                        Self::True => {}
+                        Self::And(mut dep_v) => {
+                            for dep in dep_v.drain(..) {
+                                if !tmp.iter().any(|existing| existing.matches(&dep)) {
+                                    tmp.push(dep);
+                                }
+                            }
+                        }
+                        _ => {
+                            if !tmp.iter().any(|existing| existing.matches(&dep)) {
+                                tmp.push(dep);
+                            }
+                        }
+                    }
+                }
+                match tmp.len() {
+                    0 => *self = Self::True,
+                    1 => *self = tmp.pop().unwrap(),
+                    _ => *v = tmp,
+                }
+            }
+            Self::Or(v) => {
+                for dep in v.iter_mut() {
+                    dep.simplify();
+                }
+                let mut tmp = Vec::new();
+                for mut dep in v.drain(..) {
+                    dep.simplify();
+                    match dep {
+                        Self::False => {}
+                        Self::True => {
+                            tmp.clear();
+                            tmp.push(dep);
+                            break;
+                        }
+                        Self::Or(mut dep_v) => {
+                            for dep in dep_v.drain(..) {
+                                if !tmp.iter().any(|existing| existing.matches(&dep)) {
+                                    tmp.push(dep);
+                                }
+                            }
+                        }
+                        _ => {
+                            if !tmp.iter().any(|existing| existing.matches(&dep)) {
+                                tmp.push(dep);
+                            }
+                        }
+                    }
+                }
+                match tmp.len() {
+                    0 => *self = Self::False,
+                    1 => *self = tmp.pop().unwrap(),
+                    _ => *v = tmp,
+                }
+            }
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CDecoration {
     None,
@@ -173,8 +297,36 @@ pub fn c_try_parse_version(i: &str) -> Option<(u16, u16)> {
     all_consuming(version)(i).map(ignore_remainder).ok()
 }
 
-pub fn c_parse_version_decimal(i: &str) -> (u16, u16) {
-    all_consuming(separated_pair(version_num, char('.'), version_num))(i)
+fn depends_expr_inner(i: &str) -> Res<DependencyExpr> {
+    alt((
+        delimited(char('('), depends_expr, char(')')),
+        map(version, DependencyExpr::Version),
+        map(take_while1(is_ident), DependencyExpr::Extension),
+    ))(i)
+}
+
+fn depends_expr(i: &str) -> Res<DependencyExpr> {
+    let (mut i, mut dep) = depends_expr_inner(i)?;
+    loop {
+        // equal precedence!
+        let (op_i, op_c) = opt(alt((char('+'), char(','))))(i)?;
+        if let Some(c) = op_c {
+            let (other_i, other) = depends_expr_inner(op_i)?;
+            i = other_i;
+            dep = match c {
+                '+' => DependencyExpr::And(vec![dep, other]),
+                ',' => DependencyExpr::Or(vec![dep, other]),
+                _ => unreachable!(),
+            }
+        } else {
+            break;
+        }
+    }
+    Ok((i, dep))
+}
+
+pub fn c_parse_depends(i: &str) -> DependencyExpr {
+    all_consuming(depends_expr)(i)
         .map(ignore_remainder)
         .unwrap_or_else(|res| panic!("parse fail: {} -> {:?}", i, res))
 }

@@ -1,7 +1,7 @@
 mod c_parse;
 
 use crate::c_parse::*;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fmt;
 use std::fmt::Write as FmtWrite;
@@ -129,6 +129,26 @@ impl SkipPrefix for CArraySize<'_> {
     }
 }
 
+trait ApiList {
+    fn contains_vulkan(&self) -> bool;
+}
+
+impl ApiList for str {
+    fn contains_vulkan(&self) -> bool {
+        self.split(',').any(|a| a == "vulkan")
+    }
+}
+
+trait OptionalApiList {
+    fn is_empty_or_contains_vulkan(&self) -> bool;
+}
+
+impl OptionalApiList for Option<String> {
+    fn is_empty_or_contains_vulkan(&self) -> bool {
+        self.as_deref().map(|s| s.contains_vulkan()).unwrap_or(true)
+    }
+}
+
 trait GetTypeName {
     fn get_type_name(&self) -> &str;
 }
@@ -209,7 +229,7 @@ impl ExtensionExtra for vk::Extension {
         }
     }
     fn is_supported(&self) -> bool {
-        self.supported.as_deref() == Some("vulkan")
+        self.supported.as_deref().map(|s| s.contains_vulkan()).unwrap_or(false)
     }
     fn is_blacklisted(&self) -> bool {
         matches!(self.author.as_deref(), Some("GGP") | Some("QNX"))
@@ -287,71 +307,12 @@ impl GuessCommandCategory for vk::CommandDefinition {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-struct Version {
-    major: u16,
-    minor: u16,
-}
-
-impl Version {
-    const fn from_raw_parts(major: u16, minor: u16) -> Self {
-        Self { major, minor }
-    }
-
-    fn try_from_feature(s: &str) -> Option<Self> {
-        c_try_parse_version(s).map(|(major, minor)| Version::from_raw_parts(major, minor))
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-enum CommandRef<'a> {
-    Feature(Version),
-    Extension(&'a str),
-    BothExtensions(&'a str, &'a str),
-    EitherExtension(&'a str, &'a str),
-}
-
-impl<'a> CommandRef<'a> {
-    fn from_require_extension(extension: &'a str) -> Self {
-        if let Some((a, b)) = extension.split_once('+') {
-            Self::BothExtensions(a, b)
-        } else if let Some((a, b)) = extension.split_once(',') {
-            Self::EitherExtension(a, b)
-        } else {
-            Self::Extension(extension)
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone)]
-struct CommandRefPair<'a> {
-    primary: CommandRef<'a>,
-    secondary: Option<CommandRef<'a>>,
-}
-
-impl<'a> CommandRefPair<'a> {
-    fn is_core_vulkan_1_0(&self) -> bool {
-        self.primary == CommandRef::Feature(Version::from_raw_parts(1, 0)) && self.secondary.is_none()
-    }
-
-    fn matches(&self, other: &CommandRefPair<'a>) -> bool {
-        (self.primary == other.primary && self.secondary == other.secondary)
-            || (Some(self.primary) == other.secondary && self.secondary == Some(other.primary))
-    }
-}
-
 #[derive(Debug)]
 struct CommandInfo<'a> {
     cmd_def: &'a vk::CommandDefinition,
     alias: Option<&'a str>,
     category: Option<Category>,
-    refs: Vec<CommandRefPair<'a>>,
-}
-
-impl<'a> CommandInfo<'a> {
-    fn is_core_vulkan_1_0(&self) -> bool {
-        self.refs[0].is_core_vulkan_1_0()
-    }
+    depends: DependencyExpr<'a>,
 }
 
 fn type_name_is_void(type_name: &str) -> bool {
@@ -557,8 +518,8 @@ struct Generator<'a> {
     registry: &'a vk::Registry,
     extension_by_name: HashMap<&'a str, &'a vk::Extension>,
     type_by_name: HashMap<&'a str, &'a vk::Type>,
-    used_type_names: HashMap<&'a str, TypeUsage>,
-    type_name_blacklist: HashSet<&'a str>,
+    type_usage_by_name: HashMap<&'a str, TypeUsage>,
+    type_name_whitelist: HashSet<&'a str>,
     tag_names: HashSet<&'a str>,
     bitmask_from_value: HashMap<String, &'a str>,
     enums_by_name: HashMap<&'a str, Vec<&'a vk::Enum>>,
@@ -582,6 +543,7 @@ impl<'a> Generator<'a> {
                 vk::TypesChild::Type(ty) => Some(ty),
                 _ => None,
             })
+            .filter(|ty| ty.api.is_empty_or_contains_vulkan())
     }
 
     fn non_alias_type_name(&self, mut type_name: &'a str) -> &'a str {
@@ -625,7 +587,11 @@ impl<'a> Generator<'a> {
                                 members
                                     .iter()
                                     .filter_map(|member| match member {
-                                        vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                                        vk::TypeMember::Definition(ref member_def)
+                                            if member_def.api.is_empty_or_contains_vulkan() =>
+                                        {
+                                            Some(member_def)
+                                        }
                                         _ => None,
                                     })
                                     .map(|member_def| c_parse_variable_decl(member_def.code.as_str()))
@@ -668,11 +634,11 @@ impl<'a> Generator<'a> {
                     if let vk::TypeSpec::Code(ref code) = ty.spec {
                         let decl = c_parse_func_pointer_typedef(code.code.as_str());
                         if let CBaseType::Named(name) = decl.proto.ty.base {
-                            self.used_type_names.entry(name).or_default();
+                            self.type_usage_by_name.entry(name).or_default();
                         }
                         for param in decl.parameters.iter() {
                             if let CBaseType::Named(name) = param.ty.base {
-                                self.used_type_names
+                                self.type_usage_by_name
                                     .entry(name)
                                     .or_default()
                                     .record_mutable(param.ty.decoration.is_mutable());
@@ -683,22 +649,28 @@ impl<'a> Generator<'a> {
                 if let Some("struct") | Some("union") = category {
                     if let vk::TypeSpec::Members(ref members) = ty.spec {
                         for member_def in members.iter().filter_map(|member| match member {
-                            vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                            vk::TypeMember::Definition(ref member_def)
+                                if member_def.api.is_empty_or_contains_vulkan() =>
+                            {
+                                Some(member_def)
+                            }
                             _ => None,
                         }) {
                             let decl = c_parse_variable_decl(member_def.code.as_str());
                             if let CBaseType::Named(name) = decl.ty.base {
-                                self.used_type_names.entry(name).or_default();
+                                self.type_usage_by_name.entry(name).or_default();
                             }
                         }
                     }
                 }
             }
         }
+
+        let mut type_name_blacklist: HashSet<&'a str> = HashSet::new();
         for registry_child in &self.registry.0 {
-            if let vk::RegistryChild::Extensions(extensions) = registry_child {
-                for ext in extensions.children.iter().filter(|ext| ext.is_blacklisted()) {
-                    for item in ext
+            match registry_child {
+                vk::RegistryChild::Feature(feature) if feature.api.contains_vulkan() => {
+                    for item in feature
                         .children
                         .iter()
                         .filter_map(|ext_child| match ext_child {
@@ -708,15 +680,39 @@ impl<'a> Generator<'a> {
                         .flat_map(|items| items.iter())
                     {
                         if let vk::InterfaceItem::Type { name, .. } = item {
-                            self.type_name_blacklist.insert(name.as_str());
+                            self.type_name_whitelist.insert(name.as_str());
                         }
                     }
                 }
+                vk::RegistryChild::Extensions(extensions) => {
+                    for ext in extensions.children.iter() {
+                        for item in ext
+                            .children
+                            .iter()
+                            .filter_map(|ext_child| match ext_child {
+                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                                _ => None,
+                            })
+                            .flat_map(|items| items.iter())
+                        {
+                            if let vk::InterfaceItem::Type { name, .. } = item {
+                                if ext.is_blacklisted() {
+                                    type_name_blacklist.insert(name.as_str());
+                                } else if ext.is_supported() {
+                                    self.type_name_whitelist.insert(name.as_str());
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
             }
         }
-        for name in self.type_name_blacklist.iter() {
+        for name in type_name_blacklist.iter() {
             println!("Blacklisted: {}", name);
         }
+        self.type_name_whitelist
+            .retain(|name| !type_name_blacklist.contains(name));
     }
 
     fn collect_tags(&mut self) {
@@ -765,7 +761,7 @@ impl<'a> Generator<'a> {
                             .children
                             .iter()
                             .filter_map(|enums_child| match enums_child {
-                                vk::EnumsChild::Enum(en) => Some(en),
+                                vk::EnumsChild::Enum(en) if en.api.is_empty_or_contains_vulkan() => Some(en),
                                 _ => None,
                             })
                             .collect();
@@ -782,28 +778,34 @@ impl<'a> Generator<'a> {
                     }
                 },
                 vk::RegistryChild::Feature(feature) => {
-                    for item in feature
-                        .children
-                        .iter()
-                        .filter_map(|ext_child| match ext_child {
-                            vk::ExtensionChild::Require { items, .. } => Some(items),
-                            _ => None,
-                        })
-                        .flat_map(|items| items.iter())
-                    {
-                        match item {
-                            vk::InterfaceItem::Type { name, .. } => {
-                                self.used_type_names.entry(name.as_str()).or_default();
+                    if feature.api.contains_vulkan() {
+                        for item in feature
+                            .children
+                            .iter()
+                            .filter_map(|ext_child| match ext_child {
+                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                                _ => None,
+                            })
+                            .flat_map(|items| items.iter())
+                        {
+                            match item {
+                                vk::InterfaceItem::Type { name, .. } => {
+                                    self.type_usage_by_name.entry(name.as_str()).or_default();
+                                }
+                                vk::InterfaceItem::Enum(en) if en.api.is_empty_or_contains_vulkan() => {
+                                    self.collect_extension_enum(en);
+                                }
+                                _ => {}
                             }
-                            vk::InterfaceItem::Enum(en) => {
-                                self.collect_extension_enum(en);
-                            }
-                            _ => {}
                         }
                     }
                 }
                 vk::RegistryChild::Extensions(extensions) => {
-                    for ext in extensions.children.iter().filter(|ext| !ext.is_blacklisted()) {
+                    for ext in extensions
+                        .children
+                        .iter()
+                        .filter(|ext| ext.is_supported() && !ext.is_blacklisted())
+                    {
                         for item in ext
                             .children
                             .iter()
@@ -815,9 +817,9 @@ impl<'a> Generator<'a> {
                         {
                             match item {
                                 vk::InterfaceItem::Type { name, .. } => {
-                                    self.used_type_names.entry(name.as_str()).or_default();
+                                    self.type_usage_by_name.entry(name.as_str()).or_default();
                                 }
-                                vk::InterfaceItem::Enum(en) => {
+                                vk::InterfaceItem::Enum(en) if en.api.is_empty_or_contains_vulkan() => {
                                     self.collect_extension_enum(en);
                                     self.extension_by_enum_name.insert(en.name.as_str(), ext);
                                 }
@@ -842,26 +844,28 @@ impl<'a> Generator<'a> {
                             cmd_aliases.push((name.as_str(), alias.as_str()));
                         }
                         vk::Command::Definition(cmd_def) => {
-                            self.cmd_names.push(cmd_def.proto.name.as_str());
-                            self.cmd_info_by_name.insert(
-                                cmd_def.proto.name.as_str(),
-                                CommandInfo {
-                                    cmd_def,
-                                    alias: None,
-                                    category: None,
-                                    refs: Vec::new(),
-                                },
-                            );
-                            let decl = c_parse_function_decl(cmd_def.code.as_str());
-                            if let CBaseType::Named(name) = decl.proto.ty.base {
-                                self.used_type_names.entry(name).or_default();
-                            }
-                            for param in decl.parameters.iter() {
-                                if let CBaseType::Named(name) = param.ty.base {
-                                    self.used_type_names
-                                        .entry(name)
-                                        .or_default()
-                                        .record_mutable(param.ty.decoration.is_mutable());
+                            if cmd_def.api.is_empty_or_contains_vulkan() {
+                                self.cmd_names.push(cmd_def.proto.name.as_str());
+                                self.cmd_info_by_name.insert(
+                                    cmd_def.proto.name.as_str(),
+                                    CommandInfo {
+                                        cmd_def,
+                                        alias: None,
+                                        category: None,
+                                        depends: DependencyExpr::False,
+                                    },
+                                );
+                                let decl = c_parse_function_decl(cmd_def.code.as_str());
+                                if let CBaseType::Named(name) = decl.proto.ty.base {
+                                    self.type_usage_by_name.entry(name).or_default();
+                                }
+                                for param in decl.parameters.iter() {
+                                    if let CBaseType::Named(name) = param.ty.base {
+                                        self.type_usage_by_name
+                                            .entry(name)
+                                            .or_default()
+                                            .record_mutable(param.ty.decoration.is_mutable());
+                                    }
                                 }
                             }
                         }
@@ -882,32 +886,34 @@ impl<'a> Generator<'a> {
                     cmd_def,
                     alias: Some(alias),
                     category: None,
-                    refs: Vec::new(),
+                    depends: DependencyExpr::False,
                 },
             );
         }
         for registry_child in &self.registry.0 {
             match registry_child {
                 vk::RegistryChild::Feature(feature) => {
-                    for name in feature
-                        .children
-                        .iter()
-                        .filter_map(|ext_child| match ext_child {
-                            vk::ExtensionChild::Require { items, .. } => Some(items),
-                            _ => None,
-                        })
-                        .flat_map(|items| items.iter())
-                        .filter_map(|item| match item {
-                            vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
-                            _ => None,
-                        })
-                    {
-                        let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
-
-                        info.refs.push(CommandRefPair {
-                            primary: CommandRef::Feature(Version::try_from_feature(&feature.name).unwrap()),
-                            secondary: None,
-                        });
+                    if feature.api.contains_vulkan() {
+                        for name in feature
+                            .children
+                            .iter()
+                            .filter_map(|ext_child| match ext_child {
+                                vk::ExtensionChild::Require { items, .. } => Some(items),
+                                _ => None,
+                            })
+                            .flat_map(|items| items.iter())
+                            .filter_map(|item| match item {
+                                vk::InterfaceItem::Command { name, .. } => Some(name.as_str()),
+                                _ => None,
+                            })
+                        {
+                            let info = self.cmd_info_by_name.get_mut(name).expect("missing command info");
+                            let version = c_try_parse_version(&feature.name).unwrap();
+                            take_mut::take(&mut info.depends, |prev| {
+                                DependencyExpr::Or(vec![prev, DependencyExpr::Version(version)])
+                            });
+                            info.depends.simplify();
+                        }
                     }
                 }
                 vk::RegistryChild::Extensions(extensions) => {
@@ -917,20 +923,10 @@ impl<'a> Generator<'a> {
                         .filter(|ext| ext.is_supported() && !ext.is_blacklisted())
                     {
                         let ext_category = ext.get_category();
-
-                        for (cmd_ref, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
-                            vk::ExtensionChild::Require {
-                                feature,
-                                extension,
-                                items,
-                                ..
-                            } => {
-                                let cmd_ref = feature
-                                    .as_deref()
-                                    .and_then(Version::try_from_feature)
-                                    .map(CommandRef::Feature)
-                                    .or_else(|| extension.as_deref().map(CommandRef::from_require_extension));
-                                Some((cmd_ref, items))
+                        for (check, items) in ext.children.iter().filter_map(|ext_child| match ext_child {
+                            vk::ExtensionChild::Require { depends, items, .. } => {
+                                let check = depends.as_deref().map(c_parse_depends).unwrap_or(DependencyExpr::True);
+                                Some((check, items))
                             }
                             _ => None,
                         }) {
@@ -946,13 +942,16 @@ impl<'a> Generator<'a> {
                                     info.category = Some(ext_category);
                                 }
 
-                                let ref_pair = CommandRefPair {
-                                    primary: CommandRef::from_require_extension(ext.name.as_str()),
-                                    secondary: cmd_ref,
-                                };
-                                if !info.refs.iter().any(|p| p.matches(&ref_pair)) {
-                                    info.refs.push(ref_pair);
-                                }
+                                take_mut::take(&mut info.depends, |prev| {
+                                    DependencyExpr::Or(vec![
+                                        prev,
+                                        DependencyExpr::And(vec![
+                                            DependencyExpr::Extension(ext.name.as_str()),
+                                            check.clone(),
+                                        ]),
+                                    ])
+                                });
+                                info.depends.simplify();
                             }
                         }
                     }
@@ -994,7 +993,7 @@ impl<'a> Generator<'a> {
 
         // fill in missing command categories
         for info in self.cmd_info_by_name.values_mut() {
-            if info.refs.is_empty() {
+            if info.depends.is_false() {
                 info.category = None;
             } else if info.category.is_none() {
                 info.category = Some(info.cmd_def.guess_command_category());
@@ -1007,8 +1006,8 @@ impl<'a> Generator<'a> {
             registry,
             extension_by_name: HashMap::new(),
             type_by_name: HashMap::new(),
-            used_type_names: HashMap::new(),
-            type_name_blacklist: HashSet::new(),
+            type_usage_by_name: HashMap::new(),
+            type_name_whitelist: HashSet::new(),
             tag_names: HashSet::new(),
             bitmask_from_value: HashMap::new(),
             enums_by_name: HashMap::new(),
@@ -1150,7 +1149,7 @@ impl<'a> Generator<'a> {
 
     fn is_enum_value_type_used(&self, type_name: &'a str) -> bool {
         // not replaced by a bitmask and used as a parameter or member
-        self.bitmask_from_value.get(type_name).is_none() && self.used_type_names.get(type_name).is_some()
+        self.bitmask_from_value.get(type_name).is_none() && self.type_usage_by_name.get(type_name).is_some()
     }
 
     fn get_enum_entry_name(&self, type_name: &str, enum_type: EnumType, enum_name: &str) -> String {
@@ -1225,7 +1224,7 @@ impl<'a> Generator<'a> {
 
     fn write_enum_type(&self, w: &mut impl IoWrite, ty: &vk::Type) -> WriteResult {
         let type_name = ty.get_type_name();
-        if self.type_name_blacklist.contains(type_name) {
+        if !self.type_name_whitelist.contains(type_name) {
             return Ok(());
         }
         if let Some(ref comment) = ty.comment {
@@ -1380,6 +1379,9 @@ impl<'a> Generator<'a> {
     fn write_handle_type(&self, w: &mut impl IoWrite, ty: &'a vk::Type) -> WriteResult {
         if let Some(ref alias) = ty.alias {
             let type_name = ty.name.as_deref().expect("missing handle alias name");
+            if !self.type_name_whitelist.contains(type_name) {
+                return Ok(());
+            }
             writeln!(
                 w,
                 "pub type {} = {};",
@@ -1404,6 +1406,9 @@ impl<'a> Generator<'a> {
             }
             let type_name = type_name.expect("missing handle name");
             let handle_name = type_name.skip_prefix(TYPE_PREFIX);
+            if !self.type_name_whitelist.contains(type_name) {
+                return Ok(());
+            }
             match handle_def {
                 Some("VK_DEFINE_HANDLE") => {
                     writeln!(
@@ -1446,6 +1451,9 @@ impl<'a> Generator<'a> {
     }
 
     fn write_function_pointer_type(&self, w: &mut impl IoWrite, ty: &'a vk::Type) -> WriteResult {
+        if !self.type_name_whitelist.contains(ty.get_type_name()) {
+            return Ok(());
+        }
         if let vk::TypeSpec::Code(ref code) = ty.spec {
             let function_decl = c_parse_func_pointer_typedef(code.code.as_str());
             write!(
@@ -1487,14 +1495,14 @@ impl<'a> Generator<'a> {
 
     fn write_aggregrate_type(&self, w: &mut impl IoWrite, ty: &vk::Type, agg_type: AggregateType) -> WriteResult {
         let type_name = ty.name.as_deref().expect("missing struct name");
-        if self.type_name_blacklist.contains(type_name) {
+        if !self.type_name_whitelist.contains(type_name) {
             return Ok(());
         }
         if let Some(ref comment) = ty.comment {
             writeln!(w, "/// {}", comment.as_str().trim_start_matches('/'))?;
         }
         if let Some(ref alias) = ty.alias {
-            if !self.type_name_blacklist.contains(alias.as_str()) {
+            if self.type_name_whitelist.contains(alias.as_str()) {
                 writeln!(
                     w,
                     "pub type {} = {};",
@@ -1508,7 +1516,9 @@ impl<'a> Generator<'a> {
                 let mut members: Vec<_> = members
                     .iter()
                     .filter_map(|member| match member {
-                        vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                        vk::TypeMember::Definition(ref member_def) if member_def.api.is_empty_or_contains_vulkan() => {
+                            Some(member_def)
+                        }
                         _ => None,
                     })
                     .map(|member_def| {
@@ -1726,6 +1736,10 @@ impl<'a> Generator<'a> {
         }) {
             if info.alias.is_none() {
                 let mut decl = c_parse_function_decl(info.cmd_def.code.as_str());
+                decl.parameters.retain({
+                    let mut viter = info.cmd_def.params.iter();
+                    move |_| viter.next().unwrap().api.is_empty_or_contains_vulkan()
+                });
                 let context = decl.proto.name;
                 for param in decl.parameters.iter_mut() {
                     take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
@@ -1765,7 +1779,7 @@ impl<'a> Generator<'a> {
         for ty in self
             .get_type_iterator()
             .filter(|ty| ty.category.as_deref() == Some("struct") && ty.alias.is_none())
-            .filter(|ty| !self.type_name_blacklist.contains(ty.get_type_name()))
+            .filter(|ty| self.type_name_whitelist.contains(ty.get_type_name()))
         {
             if let vk::TypeSpec::Members(ref members) = ty.spec {
                 let type_name = ty.name.as_deref().expect("missing struct name");
@@ -1773,7 +1787,9 @@ impl<'a> Generator<'a> {
                 let member_defs: Vec<&vk::TypeMemberDefinition> = members
                     .iter()
                     .filter_map(|member| match member {
-                        vk::TypeMember::Definition(ref member_def) => Some(member_def),
+                        vk::TypeMember::Definition(ref member_def) if member_def.api.is_empty_or_contains_vulkan() => {
+                            Some(member_def)
+                        }
                         _ => None,
                     })
                     .collect();
@@ -1929,7 +1945,7 @@ impl<'a> Generator<'a> {
                     });
                 let needs_setters =
                     ty.returnedonly.is_none() && decls.iter().any(|decl| decl.ty.decoration != CDecoration::None);
-                let is_mutable_parameter = self.used_type_names.get(type_name).unwrap().is_mutable;
+                let is_mutable_parameter = self.type_usage_by_name.get(type_name).unwrap().is_mutable;
                 if is_extended || needs_setters {
                     let generics_decl = if needs_lifetime { "<'a>" } else { "" };
 
@@ -2157,7 +2173,7 @@ impl<'a> Generator<'a> {
                         for base_type_name in structextends
                             .split(',')
                             .map(|type_name| self.non_alias_type_name(type_name))
-                            .filter(|type_name| !self.type_name_blacklist.contains(type_name))
+                            .filter(|type_name| self.type_name_whitelist.contains(type_name))
                         {
                             writeln!(
                                 w,
@@ -2175,7 +2191,7 @@ impl<'a> Generator<'a> {
                     for base_type_name in structextends
                         .split(',')
                         .map(|type_name| self.non_alias_type_name(type_name))
-                        .filter(|type_name| !self.type_name_blacklist.contains(type_name))
+                        .filter(|type_name| self.type_name_whitelist.contains(type_name))
                     {
                         writeln!(
                             w,
@@ -2208,13 +2224,14 @@ impl<'a> Generator<'a> {
         cmd_def: &vk::CommandDefinition,
         cmd_return_value: CommandReturnValue,
         decl: &CFunctionDecl,
+        vparams: &[&'a vk::CommandParam],
         params: &mut [LibParam],
     ) -> (LibReturnType, LibReturnTransform, String) {
         let mut return_type = LibReturnType::CDecl;
         let mut return_transform = LibReturnTransform::None;
         let mut return_type_name = self.get_rust_parameter_type(&decl.proto.ty, Some("vk::"));
         for (i, cparam) in decl.parameters.iter().enumerate() {
-            let vparam = &cmd_def.params[i];
+            let vparam = vparams[i];
             let inner_type_name =
                 self.get_rust_type_name(cparam.ty.base, cparam.ty.decoration == CDecoration::None, Some("vk::"));
 
@@ -2341,7 +2358,7 @@ impl<'a> Generator<'a> {
                         .position(|cparam| cparam.name == len_name)
                         .expect("missing len variable");
                     let len_cparam = &decl.parameters[len_index];
-                    let len_vparam = &cmd_def.params[len_index];
+                    let len_vparam = vparams[len_index];
                     if len_cparam.ty.decoration == CDecoration::Pointer
                         && len_vparam.optional.as_deref() == Some("false,true")
                     {
@@ -2423,10 +2440,16 @@ impl<'a> Generator<'a> {
 
             // match generic mutable reference (via BaseOutStructure)
             if cparam.ty.decoration == CDecoration::Pointer {
-                if let Some(validstructs) = vparam.validstructs.as_deref() {
-                    // HACK: assume one type
+                if !vparam.validstructs.is_empty() {
+                    if vparam.validstructs.len() > 1 {
+                        panic!("more than one valid struct in {:?}", vparam.validstructs);
+                    }
                     params[i].ty = LibParamType::GenericMutRef {
-                        inner_type_name: self.get_rust_type_name(CBaseType::Named(validstructs), false, Some("vk::")),
+                        inner_type_name: self.get_rust_type_name(
+                            CBaseType::Named(&vparam.validstructs[0]),
+                            false,
+                            Some("vk::"),
+                        ),
                     };
                     continue;
                 }
@@ -2462,7 +2485,9 @@ impl<'a> Generator<'a> {
                         members
                             .iter()
                             .filter_map(|member| match member {
-                                vk::TypeMember::Definition(ref def) => Some(def),
+                                vk::TypeMember::Definition(ref def) if def.api.is_empty_or_contains_vulkan() => {
+                                    Some(def)
+                                }
                                 _ => None,
                             })
                             .any(|def| def.values.is_some())
@@ -2546,13 +2571,30 @@ impl<'a> Generator<'a> {
     fn write_command(&self, w: &mut impl IoWrite, category: Category, cmd_name: &str) -> WriteResult {
         let cmd_info = self.cmd_info_by_name.get(cmd_name).expect("missing command info");
         let cmd_def = cmd_info.cmd_def;
-        let decl = {
+
+        let (decl, vparams) = {
             let mut decl = c_parse_function_decl(cmd_def.code.as_str());
+
+            let mut vparams = Vec::new();
+            decl.parameters.retain({
+                let mut viter = cmd_def.params.iter();
+                let vparams_mut_ref = &mut vparams;
+                move |_| {
+                    let vparam = viter.next().unwrap();
+                    let is_valid = vparam.api.is_empty_or_contains_vulkan();
+                    if is_valid {
+                        vparams_mut_ref.push(vparam);
+                    }
+                    is_valid
+                }
+            });
+
             let context = decl.proto.name;
             for param in decl.parameters.iter_mut() {
                 take_mut::take(param, |v| self.rewrite_variable_decl(context, v));
             }
-            decl
+
+            (decl, vparams)
         };
         let mut params: Vec<LibParam> = decl
             .parameters
@@ -2571,7 +2613,7 @@ impl<'a> Generator<'a> {
         };
 
         let (return_type, return_transform, return_type_name) =
-            self.wrap_command_arguments(category, cmd_def, cmd_return_value, &decl, &mut params);
+            self.wrap_command_arguments(category, cmd_def, cmd_return_value, &decl, &vparams, &mut params);
 
         let fn_name = cmd_name.skip_prefix(FN_PREFIX).to_snake_case();
         let fp_name = cmd_info
@@ -3078,76 +3120,156 @@ impl<'a> Generator<'a> {
         Ok(())
     }
 
-    fn write_extension_condition(&self, category: Category, name: &'a str, w: &mut impl IoWrite) -> WriteResult {
-        let ext = self
-            .extension_by_name
-            .get(name)
-            .expect(&format!("missing extension {name}"));
-        if category == Category::Device && ext.get_category() == Category::Instance {
-            write!(
-                w,
-                "instance.extensions.{}",
-                name.skip_prefix(CONST_PREFIX).to_snake_case()
-            )?;
-        } else {
-            write!(w, "extensions.{}", name.skip_prefix(CONST_PREFIX).to_snake_case())?;
+    fn write_command_dependency(&self, category: Category, expr: &DependencyExpr, w: &mut impl IoWrite) -> WriteResult {
+        match expr {
+            DependencyExpr::False => {
+                write!(w, "false")?;
+            }
+            DependencyExpr::True => {
+                write!(w, "true")?;
+            }
+            DependencyExpr::Version(v) => {
+                write!(w, "version >= vk::Version::from_raw_parts({}, {}, 0)", v.0, v.1)?;
+            }
+            DependencyExpr::Extension(name) => {
+                let ext = self
+                    .extension_by_name
+                    .get(name)
+                    .expect(&format!("missing extension {name}"));
+                let rust_name = name.skip_prefix(CONST_PREFIX).to_snake_case();
+                if category == Category::Device && ext.get_category() == Category::Instance {
+                    write!(w, "instance.extensions.{}", rust_name)?;
+                } else {
+                    write!(w, "extensions.{}", rust_name)?;
+                }
+            }
+            DependencyExpr::And(v) => {
+                for (i, dep) in v.iter().enumerate() {
+                    if i != 0 {
+                        write!(w, " && ")?;
+                    }
+                    let bracket = matches!(dep, DependencyExpr::Or(_));
+                    if bracket {
+                        write!(w, "(")?;
+                    }
+                    self.write_command_dependency(category, dep, w)?;
+                    if bracket {
+                        write!(w, ")")?;
+                    }
+                }
+            }
+            DependencyExpr::Or(v) => {
+                for (i, dep) in v.iter().enumerate() {
+                    if i != 0 {
+                        write!(w, " || ")?;
+                    }
+                    let bracket = matches!(dep, DependencyExpr::And(_));
+                    if bracket {
+                        write!(w, "(")?;
+                    }
+                    self.write_command_dependency(category, dep, w)?;
+                    if bracket {
+                        write!(w, ")")?;
+                    }
+                }
+            }
         }
         Ok(())
     }
 
-    fn write_command_ref_condition(
-        &self,
-        category: Category,
-        cmd_ref: CommandRef,
-        w: &mut impl IoWrite,
-    ) -> WriteResult {
-        match cmd_ref {
-            CommandRef::Feature(version) => {
+    fn write_support_impl(w: &mut impl IoWrite, current_name: &'a str, expr: &DependencyExpr) -> WriteResult {
+        match expr {
+            DependencyExpr::False => {
+                write!(w, "false")?;
+            }
+            DependencyExpr::True => {
+                write!(w, "true")?;
+            }
+            DependencyExpr::Version(v) => {
                 write!(
                     w,
-                    "version >= vk::Version::from_raw_parts({}, {}, 0)",
-                    version.major, version.minor
+                    "self.core_version >= vk::Version::from_raw_parts({}, {}, 0)",
+                    v.0, v.1
                 )?;
             }
-            CommandRef::Extension(name) => self.write_extension_condition(category, name, w)?,
-            CommandRef::BothExtensions(a, b) => {
-                write!(w, "(")?;
-                self.write_extension_condition(category, a, w)?;
-                write!(w, "&&")?;
-                self.write_extension_condition(category, b, w)?;
-                write!(w, ")")?;
+            DependencyExpr::Extension(n) => {
+                let rust_name = n.skip_prefix(CONST_PREFIX).to_snake_case();
+                if *n == current_name {
+                    write!(w, "self.{}", rust_name)?;
+                } else {
+                    write!(w, "self.supports_{}()", rust_name)?;
+                }
             }
-            CommandRef::EitherExtension(a, b) => {
-                write!(w, "(")?;
-                self.write_extension_condition(category, a, w)?;
-                write!(w, "||")?;
-                self.write_extension_condition(category, b, w)?;
-                write!(w, ")")?;
+            DependencyExpr::And(v) => {
+                for (i, dep) in v.iter().enumerate() {
+                    if i != 0 {
+                        write!(w, " && ")?;
+                    }
+                    let bracket = matches!(dep, DependencyExpr::Or(_));
+                    if bracket {
+                        write!(w, "(")?;
+                    }
+                    Self::write_support_impl(w, current_name, dep)?;
+                    if bracket {
+                        write!(w, ")")?;
+                    }
+                }
+            }
+            DependencyExpr::Or(v) => {
+                for (i, dep) in v.iter().enumerate() {
+                    if i != 0 {
+                        write!(w, " || ")?;
+                    }
+                    let bracket = matches!(dep, DependencyExpr::And(_));
+                    if bracket {
+                        write!(w, "(")?;
+                    }
+                    Self::write_support_impl(w, current_name, dep)?;
+                    if bracket {
+                        write!(w, ")")?;
+                    }
+                }
             }
         }
         Ok(())
     }
 
-    fn write_command_ref_condition_array(&self, info: &CommandInfo, w: &mut impl IoWrite) -> WriteResult {
-        let category = info.category.unwrap();
-        let mut is_first = true;
-        for cmd_ref_pair in info.refs.iter() {
-            let want_brackets = (info.refs.len() > 1) && cmd_ref_pair.secondary.is_some();
-            if is_first {
-                is_first = false;
-            } else {
-                write!(w, " || ")?;
+    fn write_enable_impl(w: &mut impl IoWrite, current_name: &'a str, expr: &DependencyExpr) -> WriteResult {
+        match expr {
+            DependencyExpr::False | DependencyExpr::True | DependencyExpr::Version(_) => {}
+            DependencyExpr::Extension(n) => {
+                let rust_name = n.skip_prefix(CONST_PREFIX).to_snake_case();
+                if *n == current_name {
+                    writeln!(w, "self.{} = true;", rust_name)?;
+                } else {
+                    writeln!(w, "self.enable_{}();", rust_name)?;
+                }
             }
-            if want_brackets {
-                write!(w, "(")?;
+            DependencyExpr::And(deps) => {
+                for dep in deps.iter() {
+                    Self::write_enable_impl(w, current_name, dep)?;
+                }
             }
-            self.write_command_ref_condition(category, cmd_ref_pair.primary, w)?;
-            if let Some(secondary) = cmd_ref_pair.secondary {
-                write!(w, " && ")?;
-                self.write_command_ref_condition(category, secondary, w)?;
-            }
-            if want_brackets {
-                write!(w, ")")?;
+            DependencyExpr::Or(deps) => {
+                // only handle pairs
+                if deps.len() == 2 {
+                    let (v, other) = if let DependencyExpr::Version(v) = &deps[0] {
+                        (v, &deps[1])
+                    } else if let DependencyExpr::Version(v) = &deps[1] {
+                        (v, &deps[0])
+                    } else {
+                        unimplemented!()
+                    };
+                    writeln!(
+                        w,
+                        "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{",
+                        v.0, v.1
+                    )?;
+                    Self::write_enable_impl(w, current_name, other)?;
+                    writeln!(w, "}}")?;
+                } else {
+                    unimplemented!();
+                }
             }
         }
         Ok(())
@@ -3215,93 +3337,84 @@ impl<'a> Generator<'a> {
                  ext }}"
             )?;
 
-            for ext in all_supported_extensions.iter() {
-                let mut queue: VecDeque<&'a vk::Extension> = VecDeque::new();
-                let mut queued_names: HashSet<&'a str> = HashSet::new();
-                queue.push_back(ext);
-                queued_names.insert(ext.name.as_str());
+            let needs_support_check = {
+                let mut needs_support_check: HashSet<&'a str> = HashSet::new();
+                let mut dependencies_stacked: HashSet<&'a str> = HashSet::new();
+                let mut updated_self: HashSet<&'a str> = HashSet::new();
 
-                let mut dependencies: Vec<&'a vk::Extension> = Vec::new();
-                while let Some(ext) = queue.pop_front() {
-                    for req in ext
-                        .requires
-                        .as_deref()
-                        .iter()
-                        .flat_map(|s| s.split(','))
-                        .filter_map(|s| self.extension_by_name.get(s))
-                    {
-                        if queued_names.insert(req.name.as_str()) {
-                            dependencies.push(req);
-                            queue.push_back(req);
+                let mut stack = all_supported_extensions.clone();
+                while let Some(ext) = stack.pop() {
+                    if dependencies_stacked.insert(&ext.name) {
+                        stack.push(ext);
+                        if let Some(depends) = ext.depends.as_deref() {
+                            for name in depends.split(&['+', ',', '(', ')', ' ']) {
+                                if let Some(dep) = self.extension_by_name.get(name) {
+                                    if dep.is_supported() && !dep.is_blacklisted() {
+                                        stack.push(dep);
+                                    }
+                                }
+                            }
+                            continue;
                         }
                     }
-                }
-                dependencies
-                    .retain(|ext| ext.is_supported() && !ext.is_blacklisted() && ext.get_category() == category);
-
-                if ext.get_category() == category || !dependencies.is_empty() {
-                    let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
-                    let promoted_to_version = ext.promotedto.as_deref().and_then(c_try_parse_version);
-                    let min_version = ext.requires_core.as_deref().map(c_parse_version_decimal);
-
-                    let mut support_checks = Vec::new();
-                    if let Some(version) = min_version {
-                        support_checks.push(format!(
-                            "self.core_version >= vk::Version::from_raw_parts({}, {}, 0)",
-                            version.0, version.1
-                        ))
-                    }
-                    if ext.get_category() == category {
-                        support_checks.push(if let Some(version) = promoted_to_version {
-                            format!(
-                                "self.{} || self.core_version >= vk::Version::from_raw_parts({}, {}, 0)",
-                                var_name, version.0, version.1
-                            )
-                        } else {
-                            format!("self.{}", var_name)
-                        });
-                    }
-                    support_checks.extend(dependencies.iter().map(|ext| {
-                        format!(
-                            "self.supports_{}()",
-                            ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()
-                        )
-                    }));
-                    if support_checks.len() > 1 {
-                        for check in support_checks.iter_mut() {
-                            if check.contains("||") {
-                                *check = format!("({})", check);
+                    if updated_self.insert(&ext.name) {
+                        let mut needs_check = ext.get_category() == category;
+                        if !needs_check {
+                            if let Some(depends) = ext.depends.as_deref() {
+                                for name in depends.split(&['+', ',', '(', ')', ' ']) {
+                                    if let Some(dep) = self.extension_by_name.get(name) {
+                                        if dep.is_supported() && !dep.is_blacklisted() {
+                                            if needs_support_check.contains(name) {
+                                                needs_check = true;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                    }
-                    writeln!(
-                        w,
-                        "pub fn supports_{}(&self) -> bool {{ {} }}",
-                        var_name,
-                        support_checks.join("&&")
-                    )?;
-
-                    writeln!(w, "pub fn enable_{}(&mut self) {{", var_name,)?;
-                    if ext.get_category() == category {
-                        if let Some(version) = promoted_to_version {
-                            writeln!(
-                                w,
-                                "if self.core_version < vk::Version::from_raw_parts({}, {}, 0) {{ self.{} = true; }}",
-                                version.0, version.1, var_name
-                            )?;
-                        } else {
-                            writeln!(w, "self.{} = true;", var_name)?;
+                        if needs_check {
+                            needs_support_check.insert(&ext.name);
                         }
                     }
-                    for ext in dependencies {
-                        writeln!(
-                            w,
-                            "self.enable_{}();",
-                            ext.name.as_str().skip_prefix(CONST_PREFIX).to_snake_case()
-                        )?;
-                    }
-                    writeln!(w, "}}")?;
                 }
+                needs_support_check
+            };
+
+            for ext in all_supported_extensions
+                .iter()
+                .filter(|ext| needs_support_check.contains(ext.name.as_str()))
+            {
+                let var_name = ext.name.skip_prefix(CONST_PREFIX).to_snake_case();
+                let promoted_to_version = ext.promotedto.as_deref().and_then(c_try_parse_version);
+
+                let mut check = ext
+                    .depends
+                    .as_deref()
+                    .map(c_parse_depends)
+                    .unwrap_or(DependencyExpr::True);
+                check.visit_leaves(&|dep| {
+                    if let DependencyExpr::Extension(s) = dep {
+                        if !needs_support_check.contains(s) {
+                            *dep = DependencyExpr::True;
+                        }
+                    }
+                });
+                if ext.get_category() == category {
+                    let mut self_check = DependencyExpr::Extension(&ext.name);
+                    if let Some(version) = promoted_to_version {
+                        self_check = DependencyExpr::Or(vec![self_check, DependencyExpr::Version(version)]);
+                    }
+                    check = DependencyExpr::And(vec![self_check, check]);
+                }
+                check.simplify();
+
+                writeln!(w, "pub fn supports_{}(&self) -> bool {{", var_name,)?;
+                Self::write_support_impl(w, &ext.name, &check)?;
+                writeln!(w, "}}")?;
+
+                writeln!(w, "pub fn enable_{}(&mut self) {{", var_name,)?;
+                Self::write_enable_impl(w, &ext.name, &check)?;
+                writeln!(w, "}}")?;
             }
 
             writeln!(
@@ -3400,14 +3513,14 @@ impl<'a> Generator<'a> {
         }) {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
-            let always_load = info.is_core_vulkan_1_0() || category == Category::Loader;
+            let always_load = info.depends.is_true() || category == Category::Loader;
             let load_on_instance = name == "vkGetPhysicalDeviceToolProperties";
             if name == "vkGetInstanceProcAddr" {
                 writeln!(w, "Some(lib.fp_{})", fn_name)?;
             } else {
                 if !always_load {
                     writeln!(w, "if ")?;
-                    self.write_command_ref_condition_array(info, w)?;
+                    self.write_command_dependency(info.category.unwrap(), &info.depends, w)?;
                 }
                 writeln!(
                     w,
@@ -3415,10 +3528,7 @@ impl<'a> Generator<'a> {
                     if load_on_instance { "f_instance" } else { "f" },
                     name
                 )?;
-                let is_core = info
-                    .refs
-                    .iter()
-                    .all(|cmd_ref_pair| matches!(cmd_ref_pair.primary, CommandRef::Feature(_)));
+                let is_core = matches!(info.depends, DependencyExpr::True | DependencyExpr::Version(_));
                 if is_core && category != Category::Loader {
                     writeln!(
                         w,
@@ -3437,7 +3547,7 @@ impl<'a> Generator<'a> {
                         }
                     }) {
                         writeln!(w, "else if ")?;
-                        self.write_command_ref_condition_array(other_info, w)?;
+                        self.write_command_dependency(other_info.category.unwrap(), &other_info.depends, w)?;
                         writeln!(
                             w,
                             r#"{{ let fp = f(CStr::from_bytes_with_nul_unchecked(b"{}\0"));"#,
