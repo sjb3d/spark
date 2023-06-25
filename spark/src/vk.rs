@@ -7682,6 +7682,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM: Self = Self(1000440001);
     /// Added by extension VK_QCOM_image_processing.
     pub const IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM: Self = Self(1000440002);
+    /// Added by extension VK_EXT_external_memory_acquire_unmodified.
+    pub const EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT: Self = Self(1000453000);
     /// Added by extension VK_EXT_extended_dynamic_state3.
     pub const PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT: Self = Self(1000455000);
     /// Added by extension VK_EXT_extended_dynamic_state3.
@@ -8432,6 +8434,7 @@ impl fmt::Display for StructureType {
             1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
             1000440001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM"),
             1000440002 => Some(&"IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM"),
+            1000453000 => Some(&"EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT"),
             1000455000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT"),
             1000455001 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT"),
             1000458000 => Some(&"PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT"),
@@ -38371,6 +38374,33 @@ impl fmt::Debug for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {
                 "shader_early_and_late_fragment_tests",
                 &self.shader_early_and_late_fragment_tests,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExternalMemoryAcquireUnmodifiedEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub acquire_unmodified_memory: Bool32,
+}
+unsafe impl Send for ExternalMemoryAcquireUnmodifiedEXT {}
+unsafe impl Sync for ExternalMemoryAcquireUnmodifiedEXT {}
+impl Default for ExternalMemoryAcquireUnmodifiedEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT,
+            p_next: ptr::null(),
+            acquire_unmodified_memory: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExternalMemoryAcquireUnmodifiedEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExternalMemoryAcquireUnmodifiedEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("acquire_unmodified_memory", &self.acquire_unmodified_memory)
             .finish()
     }
 }

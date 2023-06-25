@@ -631,17 +631,25 @@ impl Deref for MemoryBarrierBuilder {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BufferMemoryBarrier {
-    type Type = BufferMemoryBarrierBuilder;
+impl<'a> Builder<'a> for vk::BufferMemoryBarrier {
+    type Type = BufferMemoryBarrierBuilder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BufferMemoryBarrierNext {}
 #[derive(Default)]
-pub struct BufferMemoryBarrierBuilder {
+pub struct BufferMemoryBarrierBuilder<'a> {
     inner: vk::BufferMemoryBarrier,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BufferMemoryBarrierBuilder {
+impl<'a> BufferMemoryBarrierBuilder<'a> {
+    pub fn insert_next<T: BufferMemoryBarrierNext>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -675,7 +683,7 @@ impl BufferMemoryBarrierBuilder {
         self
     }
 }
-impl Deref for BufferMemoryBarrierBuilder {
+impl<'a> Deref for BufferMemoryBarrierBuilder<'a> {
     type Target = vk::BufferMemoryBarrier;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -13176,6 +13184,8 @@ impl Deref for PerformanceQueryReservationInfoKHRBuilder {
         &self.inner
     }
 }
+impl DeviceCreateInfoNext for PerformanceQueryReservationInfoKHRBuilder {}
+impl DeviceCreateInfoNext for vk::PerformanceQueryReservationInfoKHR {}
 impl Builder<'_> for vk::HeadlessSurfaceCreateInfoEXT {
     type Type = HeadlessSurfaceCreateInfoEXTBuilder;
     fn builder() -> Self::Type {
@@ -17860,17 +17870,25 @@ impl<'a> Deref for ImageMemoryBarrier2Builder<'a> {
         &self.inner
     }
 }
-impl Builder<'_> for vk::BufferMemoryBarrier2 {
-    type Type = BufferMemoryBarrier2Builder;
+impl<'a> Builder<'a> for vk::BufferMemoryBarrier2 {
+    type Type = BufferMemoryBarrier2Builder<'a>;
     fn builder() -> Self::Type {
         Default::default()
     }
 }
+pub trait BufferMemoryBarrier2Next {}
 #[derive(Default)]
-pub struct BufferMemoryBarrier2Builder {
+pub struct BufferMemoryBarrier2Builder<'a> {
     inner: vk::BufferMemoryBarrier2,
+    phantom: PhantomData<&'a vk::Never>,
 }
-impl BufferMemoryBarrier2Builder {
+impl<'a> BufferMemoryBarrier2Builder<'a> {
+    pub fn insert_next<T: BufferMemoryBarrier2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -17912,7 +17930,7 @@ impl BufferMemoryBarrier2Builder {
         self
     }
 }
-impl Deref for BufferMemoryBarrier2Builder {
+impl<'a> Deref for BufferMemoryBarrier2Builder<'a> {
     type Target = vk::BufferMemoryBarrier2;
     fn deref(&self) -> &Self::Target {
         &self.inner
@@ -21105,6 +21123,40 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderEarlyAndLateFragmentTes
 impl DeviceCreateInfoNext for PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMDBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD {}
+impl Builder<'_> for vk::ExternalMemoryAcquireUnmodifiedEXT {
+    type Type = ExternalMemoryAcquireUnmodifiedEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ExternalMemoryAcquireUnmodifiedEXTBuilder {
+    inner: vk::ExternalMemoryAcquireUnmodifiedEXT,
+}
+impl ExternalMemoryAcquireUnmodifiedEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn acquire_unmodified_memory(mut self, acquire_unmodified_memory: bool) -> Self {
+        self.inner.acquire_unmodified_memory = if acquire_unmodified_memory { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for ExternalMemoryAcquireUnmodifiedEXTBuilder {
+    type Target = vk::ExternalMemoryAcquireUnmodifiedEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BufferMemoryBarrierNext for ExternalMemoryAcquireUnmodifiedEXTBuilder {}
+impl BufferMemoryBarrier2Next for ExternalMemoryAcquireUnmodifiedEXTBuilder {}
+impl ImageMemoryBarrierNext for ExternalMemoryAcquireUnmodifiedEXTBuilder {}
+impl ImageMemoryBarrier2Next for ExternalMemoryAcquireUnmodifiedEXTBuilder {}
+impl BufferMemoryBarrierNext for vk::ExternalMemoryAcquireUnmodifiedEXT {}
+impl BufferMemoryBarrier2Next for vk::ExternalMemoryAcquireUnmodifiedEXT {}
+impl ImageMemoryBarrierNext for vk::ExternalMemoryAcquireUnmodifiedEXT {}
+impl ImageMemoryBarrier2Next for vk::ExternalMemoryAcquireUnmodifiedEXT {}
 impl Builder<'_> for vk::ExportMetalObjectCreateInfoEXT {
     type Type = ExportMetalObjectCreateInfoEXTBuilder;
     fn builder() -> Self::Type {

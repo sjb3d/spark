@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 251
+//! Generated from vk.xml with `VK_HEADER_VERSION` 252
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1879,6 +1879,12 @@ impl InstanceExtensions {
     }
     pub fn enable_qcom_image_processing(&mut self) {
         self.enable_khr_format_feature_flags2();
+    }
+    pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
+        self.supports_khr_external_memory()
+    }
+    pub fn enable_ext_external_memory_acquire_unmodified(&mut self) {
+        self.enable_khr_external_memory();
     }
     pub fn supports_ext_extended_dynamic_state3(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -4657,6 +4663,7 @@ pub struct DeviceExtensions {
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
+    pub ext_external_memory_acquire_unmodified: bool,
     pub ext_extended_dynamic_state3: bool,
     pub ext_subpass_merge_feedback: bool,
     pub ext_shader_module_identifier: bool,
@@ -4943,6 +4950,7 @@ impl DeviceExtensions {
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
+            b"VK_EXT_external_memory_acquire_unmodified" => self.ext_external_memory_acquire_unmodified = true,
             b"VK_EXT_extended_dynamic_state3" => self.ext_extended_dynamic_state3 = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
             b"VK_EXT_shader_module_identifier" => self.ext_shader_module_identifier = true,
@@ -5229,6 +5237,7 @@ impl DeviceExtensions {
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
+            ext_external_memory_acquire_unmodified: false,
             ext_extended_dynamic_state3: false,
             ext_subpass_merge_feedback: false,
             ext_shader_module_identifier: false,
@@ -7145,6 +7154,13 @@ impl DeviceExtensions {
         self.qcom_image_processing = true;
         self.enable_khr_format_feature_flags2();
     }
+    pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
+        self.ext_external_memory_acquire_unmodified && self.supports_khr_external_memory()
+    }
+    pub fn enable_ext_external_memory_acquire_unmodified(&mut self) {
+        self.ext_external_memory_acquire_unmodified = true;
+        self.enable_khr_external_memory();
+    }
     pub fn supports_ext_extended_dynamic_state3(&self) -> bool {
         self.ext_extended_dynamic_state3
     }
@@ -8064,6 +8080,9 @@ impl DeviceExtensions {
         }
         if self.qcom_image_processing {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing\0") })
+        }
+        if self.ext_external_memory_acquire_unmodified {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_acquire_unmodified\0") })
         }
         if self.ext_extended_dynamic_state3 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_extended_dynamic_state3\0") })
