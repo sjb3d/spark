@@ -3520,7 +3520,8 @@ impl<'a> Generator<'a> {
             let fn_name = name.skip_prefix(FN_PREFIX).to_snake_case();
             writeln!(w, "fp_{}:", fn_name)?;
             let always_load = info.depends.is_true() || category == Category::Loader;
-            let load_on_instance = name == "vkGetPhysicalDeviceToolProperties";
+            let load_on_instance =
+                category == Category::Device && info.cmd_def.guess_command_category() == Category::Instance;
             if name == "vkGetInstanceProcAddr" {
                 writeln!(w, "Some(lib.fp_{})", fn_name)?;
             } else {

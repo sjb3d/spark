@@ -9856,13 +9856,13 @@ impl Device {
                 None
             },
             fp_acquire_winrt_display_nv: if extensions.nv_acquire_winrt_display {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkAcquireWinrtDisplayNV\0"));
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(b"vkAcquireWinrtDisplayNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
             fp_get_winrt_display_nv: if extensions.nv_acquire_winrt_display {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetWinrtDisplayNV\0"));
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(b"vkGetWinrtDisplayNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -9991,7 +9991,7 @@ impl Device {
                 && version >= vk::Version::from_raw_parts(1, 1, 0))
                 || (extensions.khr_device_group && instance.extensions.khr_surface)
             {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDevicePresentRectanglesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10126,7 +10126,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_multisample_properties_ext: if extensions.ext_sample_locations {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceMultisamplePropertiesEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10329,7 +10329,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_calibrateable_time_domains_ext: if extensions.ext_calibrated_timestamps {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10809,7 +10809,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_cooperative_matrix_properties_nv: if extensions.nv_cooperative_matrix {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10867,7 +10867,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_surface_present_modes2_ext: if extensions.ext_full_screen_exclusive {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceSurfacePresentModes2EXT\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10904,7 +10904,7 @@ impl Device {
             fp_enumerate_physical_device_queue_family_performance_query_counters_khr: if extensions
                 .khr_performance_query
             {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10912,7 +10912,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_queue_family_performance_query_passes_khr: if extensions.khr_performance_query {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -10975,7 +10975,7 @@ impl Device {
             fp_get_physical_device_supported_framebuffer_mixed_samples_combinations_nv: if extensions
                 .nv_coverage_reduction_mode
             {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -11790,7 +11790,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_fragment_shading_rates_khr: if extensions.khr_fragment_shading_rate {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceFragmentShadingRatesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -12272,7 +12272,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_optical_flow_image_formats_nv: if extensions.nv_optical_flow {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceOpticalFlowImageFormatsNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
@@ -12360,7 +12360,7 @@ impl Device {
                 None
             },
             fp_get_physical_device_cooperative_matrix_properties_khr: if extensions.khr_cooperative_matrix {
-                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR\0",
                 ));
                 fp.map(|f| mem::transmute(f))
