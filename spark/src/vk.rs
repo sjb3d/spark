@@ -2500,7 +2500,8 @@ impl PipelineStageFlags2 {
     /// Added by extension VK_KHR_synchronization2.
     pub const MESH_SHADER_EXT: Self = Self(0x100000);
     /// Added by extension VK_HUAWEI_subpass_shading.
-    pub const SUBPASS_SHADING_HUAWEI: Self = Self(0x8000000000);
+    pub const SUBPASS_SHADER_HUAWEI: Self = Self(0x8000000000);
+    pub const SUBPASS_SHADING_HUAWEI: Self = Self::SUBPASS_SHADER_HUAWEI;
     /// Added by extension VK_HUAWEI_invocation_mask.
     pub const INVOCATION_MASK_HUAWEI: Self = Self(0x10000000000);
     /// Added by extension VK_KHR_ray_tracing_maintenance1.
@@ -2551,7 +2552,7 @@ impl fmt::Display for PipelineStageFlags2 {
                 (0x800000, "FRAGMENT_DENSITY_PROCESS_EXT"),
                 (0x80000, "TASK_SHADER_EXT"),
                 (0x100000, "MESH_SHADER_EXT"),
-                (0x8000000000, "SUBPASS_SHADING_HUAWEI"),
+                (0x8000000000, "SUBPASS_SHADER_HUAWEI"),
                 (0x10000000000, "INVOCATION_MASK_HUAWEI"),
                 (0x10000000, "ACCELERATION_STRUCTURE_COPY_KHR"),
                 (0x40000000, "MICROMAP_BUILD_EXT"),
