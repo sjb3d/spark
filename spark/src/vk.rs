@@ -9378,70 +9378,6 @@ impl fmt::Display for MemoryOverallocationBehaviorAMD {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ScopeNV(pub(crate) i32);
-impl ScopeNV {
-    pub const DEVICE: Self = Self(1);
-    pub const WORKGROUP: Self = Self(2);
-    pub const SUBGROUP: Self = Self(3);
-    pub const QUEUE_FAMILY: Self = Self(5);
-}
-impl fmt::Display for ScopeNV {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.0 {
-            1 => Some(&"DEVICE"),
-            2 => Some(&"WORKGROUP"),
-            3 => Some(&"SUBGROUP"),
-            5 => Some(&"QUEUE_FAMILY"),
-            _ => None,
-        };
-        if let Some(name) = name {
-            write!(f, "{}", name)
-        } else {
-            write!(f, "{}", self.0)
-        }
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct ComponentTypeNV(pub(crate) i32);
-impl ComponentTypeNV {
-    pub const FLOAT16: Self = Self(0);
-    pub const FLOAT32: Self = Self(1);
-    pub const FLOAT64: Self = Self(2);
-    pub const SINT8: Self = Self(3);
-    pub const SINT16: Self = Self(4);
-    pub const SINT32: Self = Self(5);
-    pub const SINT64: Self = Self(6);
-    pub const UINT8: Self = Self(7);
-    pub const UINT16: Self = Self(8);
-    pub const UINT32: Self = Self(9);
-    pub const UINT64: Self = Self(10);
-}
-impl fmt::Display for ComponentTypeNV {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.0 {
-            0 => Some(&"FLOAT16"),
-            1 => Some(&"FLOAT32"),
-            2 => Some(&"FLOAT64"),
-            3 => Some(&"SINT8"),
-            4 => Some(&"SINT16"),
-            5 => Some(&"SINT32"),
-            6 => Some(&"SINT64"),
-            7 => Some(&"UINT8"),
-            8 => Some(&"UINT16"),
-            9 => Some(&"UINT32"),
-            10 => Some(&"UINT64"),
-            _ => None,
-        };
-        if let Some(name) = name {
-            write!(f, "{}", name)
-        } else {
-            write!(f, "{}", self.0)
-        }
-    }
-}
-#[repr(transparent)]
-#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PerformanceCounterScopeKHR(pub(crate) i32);
 impl PerformanceCounterScopeKHR {
     pub const COMMAND_BUFFER: Self = Self(0);
@@ -10066,6 +10002,10 @@ impl ScopeKHR {
     pub const WORKGROUP: Self = Self(2);
     pub const SUBGROUP: Self = Self(3);
     pub const QUEUE_FAMILY: Self = Self(5);
+    pub const DEVICE_NV: Self = Self::DEVICE;
+    pub const WORKGROUP_NV: Self = Self::WORKGROUP;
+    pub const SUBGROUP_NV: Self = Self::SUBGROUP;
+    pub const QUEUE_FAMILY_NV: Self = Self::QUEUE_FAMILY;
 }
 impl fmt::Display for ScopeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10098,6 +10038,17 @@ impl ComponentTypeKHR {
     pub const UINT16: Self = Self(8);
     pub const UINT32: Self = Self(9);
     pub const UINT64: Self = Self(10);
+    pub const FLOAT16_NV: Self = Self::FLOAT16;
+    pub const FLOAT32_NV: Self = Self::FLOAT32;
+    pub const FLOAT64_NV: Self = Self::FLOAT64;
+    pub const SINT8_NV: Self = Self::SINT8;
+    pub const SINT16_NV: Self = Self::SINT16;
+    pub const SINT32_NV: Self = Self::SINT32;
+    pub const SINT64_NV: Self = Self::SINT64;
+    pub const UINT8_NV: Self = Self::UINT8;
+    pub const UINT16_NV: Self = Self::UINT16;
+    pub const UINT32_NV: Self = Self::UINT32;
+    pub const UINT64_NV: Self = Self::UINT64;
 }
 impl fmt::Display for ComponentTypeKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10122,6 +10073,8 @@ impl fmt::Display for ComponentTypeKHR {
         }
     }
 }
+pub type ScopeNV = ScopeKHR;
+pub type ComponentTypeNV = ComponentTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(pub(crate) i32);
