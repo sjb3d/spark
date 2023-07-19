@@ -2352,8 +2352,7 @@ impl<'a> Generator<'a> {
                     };
                     continue;
                 }
-                if cparam.ty.base != CBaseType::Void
-                    && cparam.ty.decoration == CDecoration::Pointer
+                if cparam.ty.decoration == CDecoration::Pointer
                     && vparam.optional.as_deref() == Some("true")
                     && (cmd_return_value == CommandReturnValue::Void
                         || cmd_def.successcodes.as_deref() == Some("VK_SUCCESS,VK_INCOMPLETE"))
@@ -2388,7 +2387,13 @@ impl<'a> Generator<'a> {
                         });
                         return_type_name = match return_type {
                             LibReturnType::ResultMultiVecUnknownLen => "vk::Result".to_string(),
-                            _ => inner_type_name,
+                            _ => {
+                                if cparam.ty.base == CBaseType::Void {
+                                    "u8".to_string()
+                                } else {
+                                    inner_type_name
+                                }
+                            }
                         };
                         continue;
                     }
@@ -3008,6 +3013,9 @@ impl<'a> Generator<'a> {
                                     write!(w, "ptr::null_mut()")?;
                                 } else {
                                     write!(w, "v.as_mut_ptr()")?;
+                                    if cparam.ty.base == CBaseType::Void {
+                                        write!(w, " as *mut _")?;
+                                    }
                                 }
                             }
                             LibCommandStyle::Array => {

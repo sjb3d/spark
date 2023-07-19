@@ -12933,19 +12933,32 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
-    pub unsafe fn get_pipeline_cache_data(
-        &self,
-        pipeline_cache: vk::PipelineCache,
-        p_data_size: *mut usize,
-        p_data: *mut c_void,
-    ) -> Result<vk::Result> {
+    pub unsafe fn get_pipeline_cache_data_to_vec(&self, pipeline_cache: vk::PipelineCache) -> Result<Vec<u8>> {
         let fp = self
             .fp_get_pipeline_cache_data
             .expect("vkGetPipelineCacheData is not loaded");
-        let err = (fp)(Some(self.handle), Some(pipeline_cache), p_data_size, p_data);
-        match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(
+            Some(self.handle),
+            Some(pipeline_cache),
+            len.as_mut_ptr(),
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            Some(pipeline_cache),
+            &mut len,
+            v.as_mut_ptr() as *mut _,
+        );
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
     pub unsafe fn merge_pipeline_caches(
@@ -15779,19 +15792,35 @@ impl Device {
             p_allocator.map_or(ptr::null(), |r| r),
         );
     }
-    pub unsafe fn get_validation_cache_data_ext(
+    pub unsafe fn get_validation_cache_data_ext_to_vec(
         &self,
         validation_cache: vk::ValidationCacheEXT,
-        p_data_size: *mut usize,
-        p_data: *mut c_void,
-    ) -> Result<vk::Result> {
+    ) -> Result<Vec<u8>> {
         let fp = self
             .fp_get_validation_cache_data_ext
             .expect("vkGetValidationCacheDataEXT is not loaded");
-        let err = (fp)(Some(self.handle), Some(validation_cache), p_data_size, p_data);
-        match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(
+            Some(self.handle),
+            Some(validation_cache),
+            len.as_mut_ptr(),
+            ptr::null_mut(),
+        );
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            Some(validation_cache),
+            &mut len,
+            v.as_mut_ptr() as *mut _,
+        );
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
     pub unsafe fn merge_validation_caches_ext(
@@ -15834,26 +15863,39 @@ impl Device {
             .expect("vkGetDescriptorSetLayoutSupportKHR is not loaded");
         (fp)(Some(self.handle), p_create_info, p_support);
     }
-    pub unsafe fn get_shader_info_amd(
+    pub unsafe fn get_shader_info_amd_to_vec(
         &self,
         pipeline: vk::Pipeline,
         shader_stage: vk::ShaderStageFlags,
         info_type: vk::ShaderInfoTypeAMD,
-        p_info_size: *mut usize,
-        p_info: *mut c_void,
-    ) -> Result<vk::Result> {
+    ) -> Result<Vec<u8>> {
         let fp = self.fp_get_shader_info_amd.expect("vkGetShaderInfoAMD is not loaded");
-        let err = (fp)(
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(
             Some(self.handle),
             Some(pipeline),
             shader_stage,
             info_type,
-            p_info_size,
-            p_info,
+            len.as_mut_ptr(),
+            ptr::null_mut(),
         );
-        match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            Some(pipeline),
+            shader_stage,
+            info_type,
+            &mut len,
+            v.as_mut_ptr() as *mut _,
+        );
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
     pub unsafe fn set_local_dimming_amd(&self, swap_chain: vk::SwapchainKHR, local_dimming_enable: bool) {
@@ -20120,19 +20162,22 @@ impl Device {
         let fp = self.fp_destroy_shader_ext.expect("vkDestroyShaderEXT is not loaded");
         (fp)(Some(self.handle), Some(shader), p_allocator.map_or(ptr::null(), |r| r));
     }
-    pub unsafe fn get_shader_binary_data_ext(
-        &self,
-        shader: vk::ShaderEXT,
-        p_data_size: *mut usize,
-        p_data: *mut c_void,
-    ) -> Result<vk::Result> {
+    pub unsafe fn get_shader_binary_data_ext_to_vec(&self, shader: vk::ShaderEXT) -> Result<Vec<u8>> {
         let fp = self
             .fp_get_shader_binary_data_ext
             .expect("vkGetShaderBinaryDataEXT is not loaded");
-        let err = (fp)(Some(self.handle), Some(shader), p_data_size, p_data);
-        match err {
-            vk::Result::SUCCESS | vk::Result::INCOMPLETE => Ok(err),
-            _ => Err(err),
+        let mut len = MaybeUninit::<_>::uninit();
+        let len_err = (fp)(Some(self.handle), Some(shader), len.as_mut_ptr(), ptr::null_mut());
+        if len_err != vk::Result::SUCCESS {
+            return Err(len_err);
+        }
+        let mut len = len.assume_init();
+        let mut v = Vec::with_capacity(len as usize);
+        let v_err = (fp)(Some(self.handle), Some(shader), &mut len, v.as_mut_ptr() as *mut _);
+        v.set_len(len as usize);
+        match v_err {
+            vk::Result::SUCCESS => Ok(v),
+            _ => Err(v_err),
         }
     }
     pub unsafe fn cmd_bind_shaders_ext(
