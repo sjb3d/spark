@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 257
+//! Generated from vk.xml with `VK_HEADER_VERSION` 258
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1341,6 +1341,16 @@ impl InstanceExtensions {
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
         self.enable_khr_get_physical_device_properties2();
     }
+    pub fn supports_ext_host_image_copy(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_copy_commands2()
+            && self.supports_khr_format_feature_flags2()
+    }
+    pub fn enable_ext_host_image_copy(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_copy_commands2();
+        self.enable_khr_format_feature_flags2();
+    }
     pub fn supports_ext_shader_atomic_float2(&self) -> bool {
         self.supports_ext_shader_atomic_float()
     }
@@ -1860,6 +1870,12 @@ impl InstanceExtensions {
     pub fn enable_nv_memory_decompression(&mut self) {
         self.enable_khr_get_physical_device_properties2();
         self.enable_khr_buffer_device_address();
+    }
+    pub fn supports_nv_device_generated_commands_compute(&self) -> bool {
+        self.supports_nv_device_generated_commands()
+    }
+    pub fn enable_nv_device_generated_commands_compute(&mut self) {
+        self.enable_nv_device_generated_commands();
     }
     pub fn supports_nv_linear_color_attachment(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -4588,6 +4604,7 @@ pub struct DeviceExtensions {
     pub ext_extended_dynamic_state: bool,
     pub khr_deferred_host_operations: bool,
     pub khr_pipeline_executable_properties: bool,
+    pub ext_host_image_copy: bool,
     pub khr_map_memory2: bool,
     pub ext_shader_atomic_float2: bool,
     pub ext_swapchain_maintenance1: bool,
@@ -4673,6 +4690,7 @@ pub struct DeviceExtensions {
     pub qcom_fragment_density_map_offset: bool,
     pub nv_copy_memory_indirect: bool,
     pub nv_memory_decompression: bool,
+    pub nv_device_generated_commands_compute: bool,
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
@@ -4877,6 +4895,7 @@ impl DeviceExtensions {
             b"VK_EXT_extended_dynamic_state" => self.ext_extended_dynamic_state = true,
             b"VK_KHR_deferred_host_operations" => self.khr_deferred_host_operations = true,
             b"VK_KHR_pipeline_executable_properties" => self.khr_pipeline_executable_properties = true,
+            b"VK_EXT_host_image_copy" => self.ext_host_image_copy = true,
             b"VK_KHR_map_memory2" => self.khr_map_memory2 = true,
             b"VK_EXT_shader_atomic_float2" => self.ext_shader_atomic_float2 = true,
             b"VK_EXT_swapchain_maintenance1" => self.ext_swapchain_maintenance1 = true,
@@ -4962,6 +4981,7 @@ impl DeviceExtensions {
             b"VK_QCOM_fragment_density_map_offset" => self.qcom_fragment_density_map_offset = true,
             b"VK_NV_copy_memory_indirect" => self.nv_copy_memory_indirect = true,
             b"VK_NV_memory_decompression" => self.nv_memory_decompression = true,
+            b"VK_NV_device_generated_commands_compute" => self.nv_device_generated_commands_compute = true,
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
@@ -5166,6 +5186,7 @@ impl DeviceExtensions {
             ext_extended_dynamic_state: false,
             khr_deferred_host_operations: false,
             khr_pipeline_executable_properties: false,
+            ext_host_image_copy: false,
             khr_map_memory2: false,
             ext_shader_atomic_float2: false,
             ext_swapchain_maintenance1: false,
@@ -5251,6 +5272,7 @@ impl DeviceExtensions {
             qcom_fragment_density_map_offset: false,
             nv_copy_memory_indirect: false,
             nv_memory_decompression: false,
+            nv_device_generated_commands_compute: false,
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
@@ -6562,6 +6584,14 @@ impl DeviceExtensions {
     pub fn enable_khr_pipeline_executable_properties(&mut self) {
         self.khr_pipeline_executable_properties = true;
     }
+    pub fn supports_ext_host_image_copy(&self) -> bool {
+        self.ext_host_image_copy && self.supports_khr_copy_commands2() && self.supports_khr_format_feature_flags2()
+    }
+    pub fn enable_ext_host_image_copy(&mut self) {
+        self.ext_host_image_copy = true;
+        self.enable_khr_copy_commands2();
+        self.enable_khr_format_feature_flags2();
+    }
     pub fn supports_khr_map_memory2(&self) -> bool {
         self.khr_map_memory2
     }
@@ -7157,6 +7187,13 @@ impl DeviceExtensions {
     pub fn enable_nv_memory_decompression(&mut self) {
         self.nv_memory_decompression = true;
         self.enable_khr_buffer_device_address();
+    }
+    pub fn supports_nv_device_generated_commands_compute(&self) -> bool {
+        self.nv_device_generated_commands_compute && self.supports_nv_device_generated_commands()
+    }
+    pub fn enable_nv_device_generated_commands_compute(&mut self) {
+        self.nv_device_generated_commands_compute = true;
+        self.enable_nv_device_generated_commands();
     }
     pub fn supports_nv_linear_color_attachment(&self) -> bool {
         self.nv_linear_color_attachment
@@ -7850,6 +7887,9 @@ impl DeviceExtensions {
         if self.khr_pipeline_executable_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_pipeline_executable_properties\0") })
         }
+        if self.ext_host_image_copy {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_host_image_copy\0") })
+        }
         if self.khr_map_memory2 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_map_memory2\0") })
         }
@@ -8105,6 +8145,9 @@ impl DeviceExtensions {
         if self.nv_memory_decompression {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_memory_decompression\0") })
         }
+        if self.nv_device_generated_commands_compute {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_device_generated_commands_compute\0") })
+        }
         if self.nv_linear_color_attachment {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_linear_color_attachment\0") })
         }
@@ -8288,6 +8331,7 @@ pub struct Device {
     pub fp_cmd_subpass_shading_huawei: Option<vk::FnCmdSubpassShadingHUAWEI>,
     pub fp_cmd_draw_cluster_huawei: Option<vk::FnCmdDrawClusterHUAWEI>,
     pub fp_cmd_draw_cluster_indirect_huawei: Option<vk::FnCmdDrawClusterIndirectHUAWEI>,
+    pub fp_cmd_update_pipeline_indirect_buffer: Option<vk::FnCmdUpdatePipelineIndirectBuffer>,
     pub fp_cmd_copy_buffer: Option<vk::FnCmdCopyBuffer>,
     pub fp_cmd_copy_image: Option<vk::FnCmdCopyImage>,
     pub fp_cmd_blit_image: Option<vk::FnCmdBlitImage>,
@@ -8512,6 +8556,8 @@ pub struct Device {
     pub fp_get_deferred_operation_max_concurrency_khr: Option<vk::FnGetDeferredOperationMaxConcurrencyKHR>,
     pub fp_get_deferred_operation_result_khr: Option<vk::FnGetDeferredOperationResultKHR>,
     pub fp_deferred_operation_join_khr: Option<vk::FnDeferredOperationJoinKHR>,
+    pub fp_get_pipeline_indirect_memory_requirements_nv: Option<vk::FnGetPipelineIndirectMemoryRequirementsNV>,
+    pub fp_get_pipeline_indirect_device_address_nv: Option<vk::FnGetPipelineIndirectDeviceAddressNV>,
     pub fp_cmd_set_cull_mode: Option<vk::FnCmdSetCullMode>,
     pub fp_cmd_set_front_face: Option<vk::FnCmdSetFrontFace>,
     pub fp_cmd_set_primitive_topology: Option<vk::FnCmdSetPrimitiveTopology>,
@@ -8584,6 +8630,10 @@ pub struct Device {
     pub fp_cmd_write_timestamp2: Option<vk::FnCmdWriteTimestamp2>,
     pub fp_cmd_write_buffer_marker2_amd: Option<vk::FnCmdWriteBufferMarker2AMD>,
     pub fp_get_queue_checkpoint_data2_nv: Option<vk::FnGetQueueCheckpointData2NV>,
+    pub fp_copy_memory_to_image_ext: Option<vk::FnCopyMemoryToImageEXT>,
+    pub fp_copy_image_to_memory_ext: Option<vk::FnCopyImageToMemoryEXT>,
+    pub fp_copy_image_to_image_ext: Option<vk::FnCopyImageToImageEXT>,
+    pub fp_transition_image_layout_ext: Option<vk::FnTransitionImageLayoutEXT>,
     pub fp_cmd_decompress_memory_nv: Option<vk::FnCmdDecompressMemoryNV>,
     pub fp_cmd_decompress_memory_indirect_count_nv: Option<vk::FnCmdDecompressMemoryIndirectCountNV>,
     pub fp_create_cu_module_nvx: Option<vk::FnCreateCuModuleNVX>,
@@ -9398,6 +9448,14 @@ impl Device {
             },
             fp_cmd_draw_cluster_indirect_huawei: if extensions.huawei_cluster_culling_shader {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDrawClusterIndirectHUAWEI\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_update_pipeline_indirect_buffer: if extensions.nv_device_generated_commands_compute {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdUpdatePipelineIndirectBuffer\0",
+                ));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -11190,6 +11248,22 @@ impl Device {
             } else {
                 None
             },
+            fp_get_pipeline_indirect_memory_requirements_nv: if extensions.nv_device_generated_commands_compute {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPipelineIndirectMemoryRequirementsNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_pipeline_indirect_device_address_nv: if extensions.nv_device_generated_commands_compute {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetPipelineIndirectDeviceAddressNV\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_set_cull_mode: if version >= vk::Version::from_raw_parts(1, 3, 0) {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetCullMode\0"));
                 if fp.is_none() {
@@ -11911,6 +11985,30 @@ impl Device {
             } else {
                 None
             },
+            fp_copy_memory_to_image_ext: if extensions.ext_host_image_copy {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyMemoryToImageEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_image_to_memory_ext: if extensions.ext_host_image_copy {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToMemoryEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_copy_image_to_image_ext: if extensions.ext_host_image_copy {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCopyImageToImageEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_transition_image_layout_ext: if extensions.ext_host_image_copy {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkTransitionImageLayoutEXT\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_decompress_memory_nv: if extensions.nv_memory_decompression {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDecompressMemoryNV\0"));
                 fp.map(|f| mem::transmute(f))
@@ -12235,7 +12333,9 @@ impl Device {
             } else {
                 None
             },
-            fp_get_image_subresource_layout2_ext: if extensions.ext_image_compression_control {
+            fp_get_image_subresource_layout2_ext: if extensions.ext_host_image_copy
+                || extensions.ext_image_compression_control
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetImageSubresourceLayout2EXT\0",
                 ));
@@ -13961,6 +14061,17 @@ impl Device {
             .fp_cmd_draw_cluster_indirect_huawei
             .expect("vkCmdDrawClusterIndirectHUAWEI is not loaded");
         (fp)(Some(command_buffer), Some(buffer), offset);
+    }
+    pub unsafe fn cmd_update_pipeline_indirect_buffer(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        pipeline_bind_point: vk::PipelineBindPoint,
+        pipeline: vk::Pipeline,
+    ) {
+        let fp = self
+            .fp_cmd_update_pipeline_indirect_buffer
+            .expect("vkCmdUpdatePipelineIndirectBuffer is not loaded");
+        (fp)(Some(command_buffer), pipeline_bind_point, Some(pipeline));
     }
     pub unsafe fn cmd_copy_buffer(
         &self,
@@ -17995,6 +18106,25 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_pipeline_indirect_memory_requirements_nv(
+        &self,
+        p_create_info: &vk::ComputePipelineCreateInfo,
+        p_memory_requirements: &mut vk::MemoryRequirements2,
+    ) {
+        let fp = self
+            .fp_get_pipeline_indirect_memory_requirements_nv
+            .expect("vkGetPipelineIndirectMemoryRequirementsNV is not loaded");
+        (fp)(Some(self.handle), p_create_info, p_memory_requirements);
+    }
+    pub unsafe fn get_pipeline_indirect_device_address_nv(
+        &self,
+        p_info: &vk::PipelineIndirectDeviceAddressInfoNV,
+    ) -> vk::DeviceAddress {
+        let fp = self
+            .fp_get_pipeline_indirect_device_address_nv
+            .expect("vkGetPipelineIndirectDeviceAddressNV is not loaded");
+        (fp)(Some(self.handle), p_info)
+    }
     pub unsafe fn cmd_set_cull_mode(&self, command_buffer: vk::CommandBuffer, cull_mode: vk::CullModeFlags) {
         let fp = self.fp_cmd_set_cull_mode.expect("vkCmdSetCullMode is not loaded");
         (fp)(Some(command_buffer), cull_mode);
@@ -19251,6 +19381,63 @@ impl Device {
         (fp)(Some(queue), &mut len, v.as_mut_ptr());
         v.set_len(len as usize);
         v
+    }
+    pub unsafe fn copy_memory_to_image_ext(
+        &self,
+        p_copy_memory_to_image_info: &vk::CopyMemoryToImageInfoEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_copy_memory_to_image_ext
+            .expect("vkCopyMemoryToImageEXT is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_memory_to_image_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn copy_image_to_memory_ext(
+        &self,
+        p_copy_image_to_memory_info: &vk::CopyImageToMemoryInfoEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_copy_image_to_memory_ext
+            .expect("vkCopyImageToMemoryEXT is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_image_to_memory_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn copy_image_to_image_ext(
+        &self,
+        p_copy_image_to_image_info: &vk::CopyImageToImageInfoEXT,
+    ) -> Result<()> {
+        let fp = self
+            .fp_copy_image_to_image_ext
+            .expect("vkCopyImageToImageEXT is not loaded");
+        let err = (fp)(Some(self.handle), p_copy_image_to_image_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn transition_image_layout_ext(
+        &self,
+        p_transitions: &[vk::HostImageLayoutTransitionInfoEXT],
+    ) -> Result<()> {
+        let fp = self
+            .fp_transition_image_layout_ext
+            .expect("vkTransitionImageLayoutEXT is not loaded");
+        let transition_count = p_transitions.len() as u32;
+        let err = (fp)(
+            Some(self.handle),
+            transition_count,
+            p_transitions.first().map_or(ptr::null(), |s| s as *const _),
+        );
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
     }
     pub unsafe fn cmd_decompress_memory_nv(
         &self,

@@ -1357,6 +1357,43 @@ impl<'a> Deref for ComputePipelineCreateInfoBuilder<'a> {
         &self.inner
     }
 }
+impl Builder<'_> for vk::ComputePipelineIndirectBufferInfoNV {
+    type Type = ComputePipelineIndirectBufferInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ComputePipelineIndirectBufferInfoNVBuilder {
+    inner: vk::ComputePipelineIndirectBufferInfoNV,
+}
+impl ComputePipelineIndirectBufferInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_address(mut self, device_address: vk::DeviceAddress) -> Self {
+        self.inner.device_address = device_address;
+        self
+    }
+    pub fn size(mut self, size: vk::DeviceSize) -> Self {
+        self.inner.size = size;
+        self
+    }
+    pub fn pipeline_device_address_capture_replay(
+        mut self,
+        pipeline_device_address_capture_replay: vk::DeviceAddress,
+    ) -> Self {
+        self.inner.pipeline_device_address_capture_replay = pipeline_device_address_capture_replay;
+        self
+    }
+}
+impl Deref for ComputePipelineIndirectBufferInfoNVBuilder {
+    type Target = vk::ComputePipelineIndirectBufferInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
 impl<'a> Builder<'a> for vk::PipelineVertexInputStateCreateInfo {
     type Type = PipelineVertexInputStateCreateInfoBuilder<'a>;
     fn builder() -> Self::Type {
@@ -3713,6 +3750,52 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceGeneratedCommandsFeatur
 impl DeviceCreateInfoNext for PhysicalDeviceDeviceGeneratedCommandsFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {}
+impl Builder<'_> for vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {
+    type Type = PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV,
+}
+impl PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn device_generated_compute(mut self, device_generated_compute: bool) -> Self {
+        self.inner.device_generated_compute = if device_generated_compute { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn device_generated_compute_pipelines(mut self, device_generated_compute_pipelines: bool) -> Self {
+        self.inner.device_generated_compute_pipelines = if device_generated_compute_pipelines {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn device_generated_compute_capture_replay(mut self, device_generated_compute_capture_replay: bool) -> Self {
+        self.inner.device_generated_compute_capture_replay = if device_generated_compute_capture_replay {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {}
 impl Builder<'_> for vk::DevicePrivateDataCreateInfo {
     type Type = DevicePrivateDataCreateInfoBuilder;
     fn builder() -> Self::Type {
@@ -4078,8 +4161,8 @@ impl GeneratedCommandsMemoryRequirementsInfoNVBuilder {
         self.inner.pipeline_bind_point = pipeline_bind_point;
         self
     }
-    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
-        self.inner.pipeline = Some(pipeline);
+    pub fn pipeline(mut self, pipeline: Option<vk::Pipeline>) -> Self {
+        self.inner.pipeline = pipeline;
         self
     }
     pub fn indirect_commands_layout(mut self, indirect_commands_layout: vk::IndirectCommandsLayoutNV) -> Self {
@@ -4093,6 +4176,36 @@ impl GeneratedCommandsMemoryRequirementsInfoNVBuilder {
 }
 impl Deref for GeneratedCommandsMemoryRequirementsInfoNVBuilder {
     type Target = vk::GeneratedCommandsMemoryRequirementsInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::PipelineIndirectDeviceAddressInfoNV {
+    type Type = PipelineIndirectDeviceAddressInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PipelineIndirectDeviceAddressInfoNVBuilder {
+    inner: vk::PipelineIndirectDeviceAddressInfoNV,
+}
+impl PipelineIndirectDeviceAddressInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn pipeline_bind_point(mut self, pipeline_bind_point: vk::PipelineBindPoint) -> Self {
+        self.inner.pipeline_bind_point = pipeline_bind_point;
+        self
+    }
+    pub fn pipeline(mut self, pipeline: vk::Pipeline) -> Self {
+        self.inner.pipeline = Some(pipeline);
+        self
+    }
+}
+impl Deref for PipelineIndirectDeviceAddressInfoNVBuilder {
+    type Target = vk::PipelineIndirectDeviceAddressInfoNV;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -18126,6 +18239,344 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceSynchronization2FeaturesBuild
 impl DeviceCreateInfoNext for PhysicalDeviceSynchronization2FeaturesBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceSynchronization2Features {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceSynchronization2Features {}
+impl Builder<'_> for vk::PhysicalDeviceHostImageCopyFeaturesEXT {
+    type Type = PhysicalDeviceHostImageCopyFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceHostImageCopyFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceHostImageCopyFeaturesEXT,
+}
+impl PhysicalDeviceHostImageCopyFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn host_image_copy(mut self, host_image_copy: bool) -> Self {
+        self.inner.host_image_copy = if host_image_copy { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceHostImageCopyFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceHostImageCopyFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceHostImageCopyFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceHostImageCopyFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceHostImageCopyFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceHostImageCopyFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceHostImageCopyPropertiesEXT {
+    type Type = PhysicalDeviceHostImageCopyPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceHostImageCopyPropertiesEXTBuilder {
+    inner: vk::PhysicalDeviceHostImageCopyPropertiesEXT,
+}
+impl PhysicalDeviceHostImageCopyPropertiesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn copy_src_layout_count(mut self, copy_src_layout_count: u32) -> Self {
+        self.inner.copy_src_layout_count = copy_src_layout_count;
+        self
+    }
+    pub fn p_copy_src_layouts(mut self, p_copy_src_layouts: *mut vk::ImageLayout) -> Self {
+        self.inner.p_copy_src_layouts = p_copy_src_layouts;
+        self
+    }
+    pub fn copy_dst_layout_count(mut self, copy_dst_layout_count: u32) -> Self {
+        self.inner.copy_dst_layout_count = copy_dst_layout_count;
+        self
+    }
+    pub fn p_copy_dst_layouts(mut self, p_copy_dst_layouts: *mut vk::ImageLayout) -> Self {
+        self.inner.p_copy_dst_layouts = p_copy_dst_layouts;
+        self
+    }
+    pub fn identical_memory_type_requirements(mut self, identical_memory_type_requirements: bool) -> Self {
+        self.inner.identical_memory_type_requirements = if identical_memory_type_requirements {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceHostImageCopyPropertiesEXTBuilder {
+    type Target = vk::PhysicalDeviceHostImageCopyPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceHostImageCopyPropertiesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceHostImageCopyPropertiesEXT {}
+impl Builder<'_> for vk::MemoryToImageCopyEXT {
+    type Type = MemoryToImageCopyEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct MemoryToImageCopyEXTBuilder {
+    inner: vk::MemoryToImageCopyEXT,
+}
+impl MemoryToImageCopyEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_host_pointer(mut self, p_host_pointer: *const c_void) -> Self {
+        self.inner.p_host_pointer = p_host_pointer;
+        self
+    }
+    pub fn memory_row_length(mut self, memory_row_length: u32) -> Self {
+        self.inner.memory_row_length = memory_row_length;
+        self
+    }
+    pub fn memory_image_height(mut self, memory_image_height: u32) -> Self {
+        self.inner.memory_image_height = memory_image_height;
+        self
+    }
+    pub fn image_subresource(mut self, image_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.image_subresource = image_subresource;
+        self
+    }
+    pub fn image_offset(mut self, image_offset: vk::Offset3D) -> Self {
+        self.inner.image_offset = image_offset;
+        self
+    }
+    pub fn image_extent(mut self, image_extent: vk::Extent3D) -> Self {
+        self.inner.image_extent = image_extent;
+        self
+    }
+}
+impl Deref for MemoryToImageCopyEXTBuilder {
+    type Target = vk::MemoryToImageCopyEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::ImageToMemoryCopyEXT {
+    type Type = ImageToMemoryCopyEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct ImageToMemoryCopyEXTBuilder {
+    inner: vk::ImageToMemoryCopyEXT,
+}
+impl ImageToMemoryCopyEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_host_pointer(mut self, p_host_pointer: *mut c_void) -> Self {
+        self.inner.p_host_pointer = p_host_pointer;
+        self
+    }
+    pub fn memory_row_length(mut self, memory_row_length: u32) -> Self {
+        self.inner.memory_row_length = memory_row_length;
+        self
+    }
+    pub fn memory_image_height(mut self, memory_image_height: u32) -> Self {
+        self.inner.memory_image_height = memory_image_height;
+        self
+    }
+    pub fn image_subresource(mut self, image_subresource: vk::ImageSubresourceLayers) -> Self {
+        self.inner.image_subresource = image_subresource;
+        self
+    }
+    pub fn image_offset(mut self, image_offset: vk::Offset3D) -> Self {
+        self.inner.image_offset = image_offset;
+        self
+    }
+    pub fn image_extent(mut self, image_extent: vk::Extent3D) -> Self {
+        self.inner.image_extent = image_extent;
+        self
+    }
+}
+impl Deref for ImageToMemoryCopyEXTBuilder {
+    type Target = vk::ImageToMemoryCopyEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyMemoryToImageInfoEXT {
+    type Type = CopyMemoryToImageInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyMemoryToImageInfoEXTBuilder<'a> {
+    inner: vk::CopyMemoryToImageInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyMemoryToImageInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::HostImageCopyFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::MemoryToImageCopyEXT]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for CopyMemoryToImageInfoEXTBuilder<'a> {
+    type Target = vk::CopyMemoryToImageInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyImageToMemoryInfoEXT {
+    type Type = CopyImageToMemoryInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyImageToMemoryInfoEXTBuilder<'a> {
+    inner: vk::CopyImageToMemoryInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyImageToMemoryInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::HostImageCopyFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::ImageToMemoryCopyEXT]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for CopyImageToMemoryInfoEXTBuilder<'a> {
+    type Target = vk::CopyImageToMemoryInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> Builder<'a> for vk::CopyImageToImageInfoEXT {
+    type Type = CopyImageToImageInfoEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct CopyImageToImageInfoEXTBuilder<'a> {
+    inner: vk::CopyImageToImageInfoEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> CopyImageToImageInfoEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::HostImageCopyFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn src_image(mut self, src_image: vk::Image) -> Self {
+        self.inner.src_image = Some(src_image);
+        self
+    }
+    pub fn src_image_layout(mut self, src_image_layout: vk::ImageLayout) -> Self {
+        self.inner.src_image_layout = src_image_layout;
+        self
+    }
+    pub fn dst_image(mut self, dst_image: vk::Image) -> Self {
+        self.inner.dst_image = Some(dst_image);
+        self
+    }
+    pub fn dst_image_layout(mut self, dst_image_layout: vk::ImageLayout) -> Self {
+        self.inner.dst_image_layout = dst_image_layout;
+        self
+    }
+    pub fn p_regions(mut self, p_regions: &'a [vk::ImageCopy2]) -> Self {
+        self.inner.region_count = p_regions.len() as u32;
+        self.inner.p_regions = p_regions.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+}
+impl<'a> Deref for CopyImageToImageInfoEXTBuilder<'a> {
+    type Target = vk::CopyImageToImageInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::HostImageLayoutTransitionInfoEXT {
+    type Type = HostImageLayoutTransitionInfoEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct HostImageLayoutTransitionInfoEXTBuilder {
+    inner: vk::HostImageLayoutTransitionInfoEXT,
+}
+impl HostImageLayoutTransitionInfoEXTBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn image(mut self, image: vk::Image) -> Self {
+        self.inner.image = Some(image);
+        self
+    }
+    pub fn old_layout(mut self, old_layout: vk::ImageLayout) -> Self {
+        self.inner.old_layout = old_layout;
+        self
+    }
+    pub fn new_layout(mut self, new_layout: vk::ImageLayout) -> Self {
+        self.inner.new_layout = new_layout;
+        self
+    }
+    pub fn subresource_range(mut self, subresource_range: vk::ImageSubresourceRange) -> Self {
+        self.inner.subresource_range = subresource_range;
+        self
+    }
+}
+impl Deref for HostImageLayoutTransitionInfoEXTBuilder {
+    type Target = vk::HostImageLayoutTransitionInfoEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubresourceLayout2EXTNext for vk::SubresourceHostMemcpySizeEXT {}
+impl ImageFormatProperties2Next for vk::HostImageCopyDevicePerformanceQueryEXT {}
 impl Builder<'_> for vk::PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
     type Type = PhysicalDevicePrimitivesGeneratedQueryFeaturesEXTBuilder;
     fn builder() -> Self::Type {

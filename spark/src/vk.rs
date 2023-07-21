@@ -473,10 +473,12 @@ impl DescriptorSetLayoutCreateFlags {
     /// Added by extension VK_EXT_descriptor_buffer.
     pub const EMBEDDED_IMMUTABLE_SAMPLERS_EXT: Self = Self(0x20);
     pub const HOST_ONLY_POOL_VALVE: Self = Self::HOST_ONLY_POOL_EXT;
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const INDIRECT_BINDABLE_NV: Self = Self(0x80);
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const HOST_ONLY_POOL_EXT: Self = Self(0x4);
 }
-impl_bitmask!(DescriptorSetLayoutCreateFlags, 0x37);
+impl_bitmask!(DescriptorSetLayoutCreateFlags, 0xb7);
 impl fmt::Display for DescriptorSetLayoutCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -486,6 +488,7 @@ impl fmt::Display for DescriptorSetLayoutCreateFlags {
                 (0x1, "PUSH_DESCRIPTOR_KHR"),
                 (0x10, "DESCRIPTOR_BUFFER_EXT"),
                 (0x20, "EMBEDDED_IMMUTABLE_SAMPLERS_EXT"),
+                (0x80, "INDIRECT_BINDABLE_NV"),
                 (0x4, "HOST_ONLY_POOL_EXT"),
             ],
             f,
@@ -949,6 +952,9 @@ impl ImageUsageFlags {
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x100);
+    /// Can be used with host image copies
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const HOST_TRANSFER_EXT: Self = Self(0x400000);
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
     pub const ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x80000);
     /// Added by extension VK_HUAWEI_invocation_mask.
@@ -958,7 +964,7 @@ impl ImageUsageFlags {
     /// Added by extension VK_QCOM_image_processing.
     pub const SAMPLE_BLOCK_MATCH_QCOM: Self = Self(0x200000);
 }
-impl_bitmask!(ImageUsageFlags, 0x3c03ff);
+impl_bitmask!(ImageUsageFlags, 0x7c03ff);
 impl fmt::Display for ImageUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -974,6 +980,7 @@ impl fmt::Display for ImageUsageFlags {
                 (0x80, "INPUT_ATTACHMENT"),
                 (0x200, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x100, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x400000, "HOST_TRANSFER_EXT"),
                 (0x80000, "ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x40000, "INVOCATION_MASK_HUAWEI"),
                 (0x100000, "SAMPLE_WEIGHT_QCOM"),
@@ -2652,6 +2659,9 @@ impl FormatFeatureFlags2 {
     pub const FRAGMENT_DENSITY_MAP_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_fragment_shading_rate.
     pub const FRAGMENT_SHADING_RATE_ATTACHMENT_KHR: Self = Self(0x40000000);
+    /// Host image copies are supported
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const HOST_IMAGE_TRANSFER_EXT: Self = Self(0x400000000000);
     /// Format support linear image as render target, it cannot be mixed with non linear attachment
     /// Added by extension VK_NV_linear_color_attachment.
     pub const LINEAR_COLOR_ATTACHMENT_NV: Self = Self(0x4000000000);
@@ -2670,7 +2680,7 @@ impl FormatFeatureFlags2 {
     /// Added by extension VK_NV_optical_flow.
     pub const OPTICAL_FLOW_COST_NV: Self = Self(0x40000000000);
 }
-impl_bitmask!(FormatFeatureFlags2, 0x77fe1ffffff);
+impl_bitmask!(FormatFeatureFlags2, 0x477fe1ffffff);
 impl fmt::Display for FormatFeatureFlags2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2712,6 +2722,7 @@ impl fmt::Display for FormatFeatureFlags2 {
                 (0x20000000, "ACCELERATION_STRUCTURE_VERTEX_BUFFER_KHR"),
                 (0x1000000, "FRAGMENT_DENSITY_MAP_EXT"),
                 (0x40000000, "FRAGMENT_SHADING_RATE_ATTACHMENT_KHR"),
+                (0x400000000000, "HOST_IMAGE_TRANSFER_EXT"),
                 (0x4000000000, "LINEAR_COLOR_ATTACHMENT_NV"),
                 (0x400000000, "WEIGHT_IMAGE_QCOM"),
                 (0x800000000, "WEIGHT_SAMPLED_IMAGE_QCOM"),
@@ -3736,6 +3747,18 @@ impl_bitmask!(ImageFormatConstraintsFlagsFUCHSIA, 0x0);
 impl fmt::Display for ImageFormatConstraintsFlagsFUCHSIA {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct HostImageCopyFlagsEXT(pub(crate) u32);
+impl HostImageCopyFlagsEXT {
+    pub const MEMCPY: Self = Self(0x1);
+}
+impl_bitmask!(HostImageCopyFlagsEXT, 0x1);
+impl fmt::Display for HostImageCopyFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "MEMCPY")], f)
     }
 }
 #[repr(transparent)]
@@ -7267,6 +7290,26 @@ impl StructureType {
     pub const PIPELINE_EXECUTABLE_STATISTIC_KHR: Self = Self(1000269004);
     /// Added by extension VK_KHR_pipeline_executable_properties.
     pub const PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR: Self = Self(1000269005);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT: Self = Self(1000270000);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT: Self = Self(1000270001);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const MEMORY_TO_IMAGE_COPY_EXT: Self = Self(1000270002);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const IMAGE_TO_MEMORY_COPY_EXT: Self = Self(1000270003);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const COPY_IMAGE_TO_MEMORY_INFO_EXT: Self = Self(1000270004);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const COPY_MEMORY_TO_IMAGE_INFO_EXT: Self = Self(1000270005);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT: Self = Self(1000270006);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const COPY_IMAGE_TO_IMAGE_INFO_EXT: Self = Self(1000270007);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const SUBRESOURCE_HOST_MEMCPY_SIZE_EXT: Self = Self(1000270008);
+    /// Added by extension VK_EXT_host_image_copy.
+    pub const HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT: Self = Self(1000270009);
     /// Added by extension VK_KHR_map_memory2.
     pub const MEMORY_MAP_INFO_KHR: Self = Self(1000271000);
     /// Added by extension VK_KHR_map_memory2.
@@ -7679,6 +7722,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV: Self = Self(1000427000);
     /// Added by extension VK_NV_memory_decompression.
     pub const PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV: Self = Self(1000427001);
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV: Self = Self(1000428000);
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV: Self = Self(1000428001);
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV: Self = Self(1000428002);
     /// Added by extension VK_NV_linear_color_attachment.
     pub const PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV: Self = Self(1000430000);
     /// Added by extension VK_EXT_image_compression_control_swapchain.
@@ -8264,6 +8313,16 @@ impl fmt::Display for StructureType {
             1000269003 => Some(&"PIPELINE_EXECUTABLE_INFO_KHR"),
             1000269004 => Some(&"PIPELINE_EXECUTABLE_STATISTIC_KHR"),
             1000269005 => Some(&"PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR"),
+            1000270000 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT"),
+            1000270001 => Some(&"PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT"),
+            1000270002 => Some(&"MEMORY_TO_IMAGE_COPY_EXT"),
+            1000270003 => Some(&"IMAGE_TO_MEMORY_COPY_EXT"),
+            1000270004 => Some(&"COPY_IMAGE_TO_MEMORY_INFO_EXT"),
+            1000270005 => Some(&"COPY_MEMORY_TO_IMAGE_INFO_EXT"),
+            1000270006 => Some(&"HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT"),
+            1000270007 => Some(&"COPY_IMAGE_TO_IMAGE_INFO_EXT"),
+            1000270008 => Some(&"SUBRESOURCE_HOST_MEMCPY_SIZE_EXT"),
+            1000270009 => Some(&"HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT"),
             1000271000 => Some(&"MEMORY_MAP_INFO_KHR"),
             1000271001 => Some(&"MEMORY_UNMAP_INFO_KHR"),
             1000273000 => Some(&"PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT"),
@@ -8445,6 +8504,9 @@ impl fmt::Display for StructureType {
             1000426001 => Some(&"PHYSICAL_DEVICE_COPY_MEMORY_INDIRECT_PROPERTIES_NV"),
             1000427000 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_FEATURES_NV"),
             1000427001 => Some(&"PHYSICAL_DEVICE_MEMORY_DECOMPRESSION_PROPERTIES_NV"),
+            1000428000 => Some(&"PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV"),
+            1000428001 => Some(&"COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV"),
+            1000428002 => Some(&"PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV"),
             1000430000 => Some(&"PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV"),
             1000437000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT"),
             1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
@@ -8817,6 +8879,10 @@ impl IndirectCommandsTokenTypeNV {
     pub const DRAW_TASKS: Self = Self(7);
     /// Added by extension VK_EXT_mesh_shader.
     pub const DRAW_MESH_TASKS: Self = Self(1000328000);
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const PIPELINE: Self = Self(1000428003);
+    /// Added by extension VK_NV_device_generated_commands_compute.
+    pub const DISPATCH: Self = Self(1000428004);
 }
 impl fmt::Display for IndirectCommandsTokenTypeNV {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8830,6 +8896,8 @@ impl fmt::Display for IndirectCommandsTokenTypeNV {
             6 => Some(&"DRAW"),
             7 => Some(&"DRAW_TASKS"),
             1000328000 => Some(&"DRAW_MESH_TASKS"),
+            1000428003 => Some(&"PIPELINE"),
+            1000428004 => Some(&"DISPATCH"),
             _ => None,
         };
         if let Some(name) = name {
@@ -13066,6 +13134,42 @@ impl fmt::Debug for ComputePipelineCreateInfo {
     }
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ComputePipelineIndirectBufferInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub device_address: DeviceAddress,
+    pub size: DeviceSize,
+    pub pipeline_device_address_capture_replay: DeviceAddress,
+}
+unsafe impl Send for ComputePipelineIndirectBufferInfoNV {}
+unsafe impl Sync for ComputePipelineIndirectBufferInfoNV {}
+impl Default for ComputePipelineIndirectBufferInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COMPUTE_PIPELINE_INDIRECT_BUFFER_INFO_NV,
+            p_next: ptr::null(),
+            device_address: Default::default(),
+            size: Default::default(),
+            pipeline_device_address_capture_replay: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ComputePipelineIndirectBufferInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ComputePipelineIndirectBufferInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_address", &self.device_address)
+            .field("size", &self.size)
+            .field(
+                "pipeline_device_address_capture_replay",
+                &self.pipeline_device_address_capture_replay,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct VertexInputBindingDescription {
     /// Vertex buffer binding id
@@ -16470,6 +16574,45 @@ impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsFeaturesNV {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub device_generated_compute: Bool32,
+    pub device_generated_compute_pipelines: Bool32,
+    pub device_generated_compute_capture_replay: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {}
+impl Default for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DEVICE_GENERATED_COMMANDS_COMPUTE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            device_generated_compute: Default::default(),
+            device_generated_compute_pipelines: Default::default(),
+            device_generated_compute_capture_replay: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("device_generated_compute", &self.device_generated_compute)
+            .field(
+                "device_generated_compute_pipelines",
+                &self.device_generated_compute_pipelines,
+            )
+            .field(
+                "device_generated_compute_capture_replay",
+                &self.device_generated_compute_capture_replay,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct DevicePrivateDataCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -16994,6 +17137,48 @@ impl fmt::Debug for GeneratedCommandsMemoryRequirementsInfoNV {
             .field("pipeline", &self.pipeline)
             .field("indirect_commands_layout", &self.indirect_commands_layout)
             .field("max_sequences_count", &self.max_sequences_count)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineIndirectDeviceAddressInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub pipeline_bind_point: PipelineBindPoint,
+    pub pipeline: Option<Pipeline>,
+}
+unsafe impl Send for PipelineIndirectDeviceAddressInfoNV {}
+unsafe impl Sync for PipelineIndirectDeviceAddressInfoNV {}
+impl Default for PipelineIndirectDeviceAddressInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_INDIRECT_DEVICE_ADDRESS_INFO_NV,
+            p_next: ptr::null(),
+            pipeline_bind_point: Default::default(),
+            pipeline: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineIndirectDeviceAddressInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineIndirectDeviceAddressInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("pipeline_bind_point", &self.pipeline_bind_point)
+            .field("pipeline", &self.pipeline)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BindPipelineIndirectCommandNV {
+    pub pipeline_address: DeviceAddress,
+}
+impl fmt::Debug for BindPipelineIndirectCommandNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindPipelineIndirectCommandNV")
+            .field("pipeline_address", &self.pipeline_address)
             .finish()
     }
 }
@@ -34640,6 +34825,383 @@ impl fmt::Debug for PhysicalDeviceSynchronization2Features {
 pub type PhysicalDeviceSynchronization2FeaturesKHR = PhysicalDeviceSynchronization2Features;
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceHostImageCopyFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub host_image_copy: Bool32,
+}
+unsafe impl Send for PhysicalDeviceHostImageCopyFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceHostImageCopyFeaturesEXT {}
+impl Default for PhysicalDeviceHostImageCopyFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            host_image_copy: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceHostImageCopyFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceHostImageCopyFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("host_image_copy", &self.host_image_copy)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceHostImageCopyPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub copy_src_layout_count: u32,
+    pub p_copy_src_layouts: *mut ImageLayout,
+    pub copy_dst_layout_count: u32,
+    pub p_copy_dst_layouts: *mut ImageLayout,
+    pub optimal_tiling_layout_uuid: [u8; UUID_SIZE],
+    pub identical_memory_type_requirements: Bool32,
+}
+unsafe impl Send for PhysicalDeviceHostImageCopyPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceHostImageCopyPropertiesEXT {}
+impl Default for PhysicalDeviceHostImageCopyPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_HOST_IMAGE_COPY_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            copy_src_layout_count: Default::default(),
+            p_copy_src_layouts: ptr::null_mut(),
+            copy_dst_layout_count: Default::default(),
+            p_copy_dst_layouts: ptr::null_mut(),
+            optimal_tiling_layout_uuid: [Default::default(); UUID_SIZE],
+            identical_memory_type_requirements: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceHostImageCopyPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceHostImageCopyPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("copy_src_layout_count", &self.copy_src_layout_count)
+            .field("p_copy_src_layouts", &self.p_copy_src_layouts)
+            .field("copy_dst_layout_count", &self.copy_dst_layout_count)
+            .field("p_copy_dst_layouts", &self.p_copy_dst_layouts)
+            .field("optimal_tiling_layout_uuid", &self.optimal_tiling_layout_uuid)
+            .field(
+                "identical_memory_type_requirements",
+                &self.identical_memory_type_requirements,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct MemoryToImageCopyEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_host_pointer: *const c_void,
+    /// Specified in texels
+    pub memory_row_length: u32,
+    pub memory_image_height: u32,
+    pub image_subresource: ImageSubresourceLayers,
+    pub image_offset: Offset3D,
+    pub image_extent: Extent3D,
+}
+unsafe impl Send for MemoryToImageCopyEXT {}
+unsafe impl Sync for MemoryToImageCopyEXT {}
+impl Default for MemoryToImageCopyEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::MEMORY_TO_IMAGE_COPY_EXT,
+            p_next: ptr::null(),
+            p_host_pointer: ptr::null(),
+            memory_row_length: Default::default(),
+            memory_image_height: Default::default(),
+            image_subresource: Default::default(),
+            image_offset: Default::default(),
+            image_extent: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for MemoryToImageCopyEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("MemoryToImageCopyEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_host_pointer", &self.p_host_pointer)
+            .field("memory_row_length", &self.memory_row_length)
+            .field("memory_image_height", &self.memory_image_height)
+            .field("image_subresource", &self.image_subresource)
+            .field("image_offset", &self.image_offset)
+            .field("image_extent", &self.image_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ImageToMemoryCopyEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_host_pointer: *mut c_void,
+    /// Specified in texels
+    pub memory_row_length: u32,
+    pub memory_image_height: u32,
+    pub image_subresource: ImageSubresourceLayers,
+    pub image_offset: Offset3D,
+    pub image_extent: Extent3D,
+}
+unsafe impl Send for ImageToMemoryCopyEXT {}
+unsafe impl Sync for ImageToMemoryCopyEXT {}
+impl Default for ImageToMemoryCopyEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::IMAGE_TO_MEMORY_COPY_EXT,
+            p_next: ptr::null(),
+            p_host_pointer: ptr::null_mut(),
+            memory_row_length: Default::default(),
+            memory_image_height: Default::default(),
+            image_subresource: Default::default(),
+            image_offset: Default::default(),
+            image_extent: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ImageToMemoryCopyEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ImageToMemoryCopyEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_host_pointer", &self.p_host_pointer)
+            .field("memory_row_length", &self.memory_row_length)
+            .field("memory_image_height", &self.memory_image_height)
+            .field("image_subresource", &self.image_subresource)
+            .field("image_offset", &self.image_offset)
+            .field("image_extent", &self.image_extent)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyMemoryToImageInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: HostImageCopyFlagsEXT,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const MemoryToImageCopyEXT,
+}
+unsafe impl Send for CopyMemoryToImageInfoEXT {}
+unsafe impl Sync for CopyMemoryToImageInfoEXT {}
+impl Default for CopyMemoryToImageInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_MEMORY_TO_IMAGE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyMemoryToImageInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyMemoryToImageInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyImageToMemoryInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: HostImageCopyFlagsEXT,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const ImageToMemoryCopyEXT,
+}
+unsafe impl Send for CopyImageToMemoryInfoEXT {}
+unsafe impl Sync for CopyImageToMemoryInfoEXT {}
+impl Default for CopyImageToMemoryInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_IMAGE_TO_MEMORY_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyImageToMemoryInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyImageToMemoryInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct CopyImageToImageInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: HostImageCopyFlagsEXT,
+    pub src_image: Option<Image>,
+    pub src_image_layout: ImageLayout,
+    pub dst_image: Option<Image>,
+    pub dst_image_layout: ImageLayout,
+    pub region_count: u32,
+    pub p_regions: *const ImageCopy2,
+}
+unsafe impl Send for CopyImageToImageInfoEXT {}
+unsafe impl Sync for CopyImageToImageInfoEXT {}
+impl Default for CopyImageToImageInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::COPY_IMAGE_TO_IMAGE_INFO_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            src_image: Default::default(),
+            src_image_layout: Default::default(),
+            dst_image: Default::default(),
+            dst_image_layout: Default::default(),
+            region_count: Default::default(),
+            p_regions: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for CopyImageToImageInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("CopyImageToImageInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("src_image", &self.src_image)
+            .field("src_image_layout", &self.src_image_layout)
+            .field("dst_image", &self.dst_image)
+            .field("dst_image_layout", &self.dst_image_layout)
+            .field("region_count", &self.region_count)
+            .field("p_regions", &self.p_regions)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HostImageLayoutTransitionInfoEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub image: Option<Image>,
+    pub old_layout: ImageLayout,
+    pub new_layout: ImageLayout,
+    pub subresource_range: ImageSubresourceRange,
+}
+unsafe impl Send for HostImageLayoutTransitionInfoEXT {}
+unsafe impl Sync for HostImageLayoutTransitionInfoEXT {}
+impl Default for HostImageLayoutTransitionInfoEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::HOST_IMAGE_LAYOUT_TRANSITION_INFO_EXT,
+            p_next: ptr::null(),
+            image: Default::default(),
+            old_layout: Default::default(),
+            new_layout: Default::default(),
+            subresource_range: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for HostImageLayoutTransitionInfoEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HostImageLayoutTransitionInfoEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("image", &self.image)
+            .field("old_layout", &self.old_layout)
+            .field("new_layout", &self.new_layout)
+            .field("subresource_range", &self.subresource_range)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SubresourceHostMemcpySizeEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Specified in bytes
+    pub size: DeviceSize,
+}
+unsafe impl Send for SubresourceHostMemcpySizeEXT {}
+unsafe impl Sync for SubresourceHostMemcpySizeEXT {}
+impl Default for SubresourceHostMemcpySizeEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SUBRESOURCE_HOST_MEMCPY_SIZE_EXT,
+            p_next: ptr::null_mut(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SubresourceHostMemcpySizeEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SubresourceHostMemcpySizeEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct HostImageCopyDevicePerformanceQueryEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Specifies if device access is optimal
+    pub optimal_device_access: Bool32,
+    /// Specifies if memory layout is identical
+    pub identical_memory_layout: Bool32,
+}
+unsafe impl Send for HostImageCopyDevicePerformanceQueryEXT {}
+unsafe impl Sync for HostImageCopyDevicePerformanceQueryEXT {}
+impl Default for HostImageCopyDevicePerformanceQueryEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT,
+            p_next: ptr::null_mut(),
+            optimal_device_access: Default::default(),
+            identical_memory_layout: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for HostImageCopyDevicePerformanceQueryEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("HostImageCopyDevicePerformanceQueryEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("optimal_device_access", &self.optimal_device_access)
+            .field("identical_memory_layout", &self.identical_memory_layout)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -41517,6 +42079,11 @@ pub type FnCmdDrawClusterHUAWEI = unsafe extern "system" fn(
 );
 pub type FnCmdDrawClusterIndirectHUAWEI =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize);
+pub type FnCmdUpdatePipelineIndirectBuffer = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    pipeline_bind_point: PipelineBindPoint,
+    pipeline: Option<Pipeline>,
+);
 pub type FnCmdCopyBuffer = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     src_buffer: Option<Buffer>,
@@ -42986,6 +43553,15 @@ pub type FnGetDeferredOperationResultKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
 pub type FnDeferredOperationJoinKHR =
     unsafe extern "system" fn(device: Option<Device>, operation: Option<DeferredOperationKHR>) -> Result;
+pub type FnGetPipelineIndirectMemoryRequirementsNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_create_info: *const ComputePipelineCreateInfo,
+    p_memory_requirements: *mut MemoryRequirements2,
+);
+pub type FnGetPipelineIndirectDeviceAddressNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const PipelineIndirectDeviceAddressInfoNV,
+) -> DeviceAddress;
 pub type FnCmdSetCullMode = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, cull_mode: CullModeFlags);
 pub type FnCmdSetFrontFace = unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, front_face: FrontFace);
 pub type FnCmdSetPrimitiveTopology =
@@ -43239,6 +43815,23 @@ pub type FnGetQueueCheckpointData2NV = unsafe extern "system" fn(
     p_checkpoint_data_count: *mut u32,
     p_checkpoint_data: *mut CheckpointData2NV,
 );
+pub type FnCopyMemoryToImageEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_copy_memory_to_image_info: *const CopyMemoryToImageInfoEXT,
+) -> Result;
+pub type FnCopyImageToMemoryEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_copy_image_to_memory_info: *const CopyImageToMemoryInfoEXT,
+) -> Result;
+pub type FnCopyImageToImageEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_copy_image_to_image_info: *const CopyImageToImageInfoEXT,
+) -> Result;
+pub type FnTransitionImageLayoutEXT = unsafe extern "system" fn(
+    device: Option<Device>,
+    transition_count: u32,
+    p_transitions: *const HostImageLayoutTransitionInfoEXT,
+) -> Result;
 pub type FnCmdDecompressMemoryNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     decompress_region_count: u32,
