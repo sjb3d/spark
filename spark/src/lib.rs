@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 258
+//! Generated from vk.xml with `VK_HEADER_VERSION` 259
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -8331,7 +8331,7 @@ pub struct Device {
     pub fp_cmd_subpass_shading_huawei: Option<vk::FnCmdSubpassShadingHUAWEI>,
     pub fp_cmd_draw_cluster_huawei: Option<vk::FnCmdDrawClusterHUAWEI>,
     pub fp_cmd_draw_cluster_indirect_huawei: Option<vk::FnCmdDrawClusterIndirectHUAWEI>,
-    pub fp_cmd_update_pipeline_indirect_buffer: Option<vk::FnCmdUpdatePipelineIndirectBuffer>,
+    pub fp_cmd_update_pipeline_indirect_buffer_nv: Option<vk::FnCmdUpdatePipelineIndirectBufferNV>,
     pub fp_cmd_copy_buffer: Option<vk::FnCmdCopyBuffer>,
     pub fp_cmd_copy_image: Option<vk::FnCmdCopyImage>,
     pub fp_cmd_blit_image: Option<vk::FnCmdBlitImage>,
@@ -9452,9 +9452,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_update_pipeline_indirect_buffer: if extensions.nv_device_generated_commands_compute {
+            fp_cmd_update_pipeline_indirect_buffer_nv: if extensions.nv_device_generated_commands_compute {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
-                    b"vkCmdUpdatePipelineIndirectBuffer\0",
+                    b"vkCmdUpdatePipelineIndirectBufferNV\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -14062,15 +14062,15 @@ impl Device {
             .expect("vkCmdDrawClusterIndirectHUAWEI is not loaded");
         (fp)(Some(command_buffer), Some(buffer), offset);
     }
-    pub unsafe fn cmd_update_pipeline_indirect_buffer(
+    pub unsafe fn cmd_update_pipeline_indirect_buffer_nv(
         &self,
         command_buffer: vk::CommandBuffer,
         pipeline_bind_point: vk::PipelineBindPoint,
         pipeline: vk::Pipeline,
     ) {
         let fp = self
-            .fp_cmd_update_pipeline_indirect_buffer
-            .expect("vkCmdUpdatePipelineIndirectBuffer is not loaded");
+            .fp_cmd_update_pipeline_indirect_buffer_nv
+            .expect("vkCmdUpdatePipelineIndirectBufferNV is not loaded");
         (fp)(Some(command_buffer), pipeline_bind_point, Some(pipeline));
     }
     pub unsafe fn cmd_copy_buffer(

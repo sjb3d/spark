@@ -42079,7 +42079,7 @@ pub type FnCmdDrawClusterHUAWEI = unsafe extern "system" fn(
 );
 pub type FnCmdDrawClusterIndirectHUAWEI =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, buffer: Option<Buffer>, offset: DeviceSize);
-pub type FnCmdUpdatePipelineIndirectBuffer = unsafe extern "system" fn(
+pub type FnCmdUpdatePipelineIndirectBufferNV = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     pipeline_bind_point: PipelineBindPoint,
     pipeline: Option<Pipeline>,
