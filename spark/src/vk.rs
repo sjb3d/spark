@@ -1152,12 +1152,14 @@ impl PipelineCreateFlags {
     pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const NO_PROTECTED_ACCESS_EXT: Self = Self(0x8000000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
 }
-impl_bitmask!(PipelineCreateFlags, 0x6fffffff);
+impl_bitmask!(PipelineCreateFlags, 0x7fffffff);
 impl fmt::Display for PipelineCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1191,6 +1193,7 @@ impl fmt::Display for PipelineCreateFlags {
                 (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
                 (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
+                (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
                 (0x8000000, "NO_PROTECTED_ACCESS_EXT"),
                 (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
             ],
@@ -2107,10 +2110,12 @@ impl BuildAccelerationStructureFlagsKHR {
     pub const ALLOW_DISABLE_OPACITY_MICROMAPS_EXT: Self = Self(0x80);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT: Self = Self(0x100);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV: Self = Self(0x200);
     /// Added by extension VK_KHR_ray_tracing_position_fetch.
     pub const ALLOW_DATA_ACCESS: Self = Self(0x800);
 }
-impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0x9ff);
+impl_bitmask!(BuildAccelerationStructureFlagsKHR, 0xbff);
 impl fmt::Display for BuildAccelerationStructureFlagsKHR {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2125,6 +2130,7 @@ impl fmt::Display for BuildAccelerationStructureFlagsKHR {
                 (0x40, "ALLOW_OPACITY_MICROMAP_UPDATE_EXT"),
                 (0x80, "ALLOW_DISABLE_OPACITY_MICROMAPS_EXT"),
                 (0x100, "ALLOW_OPACITY_MICROMAP_DATA_UPDATE_EXT"),
+                (0x200, "ALLOW_DISPLACEMENT_MICROMAP_UPDATE_NV"),
                 (0x800, "ALLOW_DATA_ACCESS"),
             ],
             f,
@@ -7678,6 +7684,12 @@ impl StructureType {
     pub const MICROMAP_BUILD_SIZES_INFO_EXT: Self = Self(1000396008);
     /// Added by extension VK_EXT_opacity_micromap.
     pub const ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT: Self = Self(1000396009);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_FEATURES_NV: Self = Self(1000397000);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_PROPERTIES_NV: Self = Self(1000397001);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV: Self = Self(1000397002);
     /// Added by extension VK_HUAWEI_cluster_culling_shader.
     pub const PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI: Self = Self(1000404000);
     /// Added by extension VK_HUAWEI_cluster_culling_shader.
@@ -8484,6 +8496,9 @@ impl fmt::Display for StructureType {
             1000396007 => Some(&"MICROMAP_CREATE_INFO_EXT"),
             1000396008 => Some(&"MICROMAP_BUILD_SIZES_INFO_EXT"),
             1000396009 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT"),
+            1000397000 => Some(&"PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_FEATURES_NV"),
+            1000397001 => Some(&"PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_PROPERTIES_NV"),
+            1000397002 => Some(&"ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV"),
             1000404000 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI"),
             1000404001 => Some(&"PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI"),
             1000411000 => Some(&"PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT"),
@@ -9874,11 +9889,14 @@ impl fmt::Display for DeviceAddressBindingTypeEXT {
 pub struct MicromapTypeEXT(pub(crate) i32);
 impl MicromapTypeEXT {
     pub const OPACITY_MICROMAP: Self = Self(0);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const DISPLACEMENT_MICROMAP_NV: Self = Self(1000397000);
 }
 impl fmt::Display for MicromapTypeEXT {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"OPACITY_MICROMAP"),
+            1000397000 => Some(&"DISPLACEMENT_MICROMAP_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -10032,6 +10050,29 @@ impl fmt::Display for DirectDriverLoadingModeLUNARG {
         let name = match self.0 {
             0 => Some(&"EXCLUSIVE"),
             1 => Some(&"INCLUSIVE"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DisplacementMicromapFormatNV(pub(crate) i32);
+impl DisplacementMicromapFormatNV {
+    pub const N64_TRIANGLES_64_BYTES: Self = Self(1);
+    pub const N256_TRIANGLES_128_BYTES: Self = Self(2);
+    pub const N1024_TRIANGLES_128_BYTES: Self = Self(3);
+}
+impl fmt::Display for DisplacementMicromapFormatNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            1 => Some(&"N64_TRIANGLES_64_BYTES"),
+            2 => Some(&"N256_TRIANGLES_128_BYTES"),
+            3 => Some(&"N1024_TRIANGLES_128_BYTES"),
             _ => None,
         };
         if let Some(name) = name {
@@ -38903,6 +38944,150 @@ impl fmt::Debug for AccelerationStructureTrianglesOpacityMicromapEXT {
         fmt.debug_struct("AccelerationStructureTrianglesOpacityMicromapEXT")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
+            .field("index_type", &self.index_type)
+            .field("index_buffer", &self.index_buffer)
+            .field("index_stride", &self.index_stride)
+            .field("base_triangle", &self.base_triangle)
+            .field("usage_counts_count", &self.usage_counts_count)
+            .field("p_usage_counts", &self.p_usage_counts)
+            .field("pp_usage_counts", &self.pp_usage_counts)
+            .field("micromap", &self.micromap)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDisplacementMicromapFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub displacement_micromap: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDisplacementMicromapFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDisplacementMicromapFeaturesNV {}
+impl Default for PhysicalDeviceDisplacementMicromapFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            displacement_micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDisplacementMicromapFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDisplacementMicromapFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("displacement_micromap", &self.displacement_micromap)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDisplacementMicromapPropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_displacement_micromap_subdivision_level: u32,
+}
+unsafe impl Send for PhysicalDeviceDisplacementMicromapPropertiesNV {}
+unsafe impl Sync for PhysicalDeviceDisplacementMicromapPropertiesNV {}
+impl Default for PhysicalDeviceDisplacementMicromapPropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DISPLACEMENT_MICROMAP_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            max_displacement_micromap_subdivision_level: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDisplacementMicromapPropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDisplacementMicromapPropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_displacement_micromap_subdivision_level",
+                &self.max_displacement_micromap_subdivision_level,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AccelerationStructureTrianglesDisplacementMicromapNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub displacement_bias_and_scale_format: Format,
+    pub displacement_vector_format: Format,
+    pub displacement_bias_and_scale_buffer: DeviceOrHostAddressConstKHR,
+    pub displacement_bias_and_scale_stride: DeviceSize,
+    pub displacement_vector_buffer: DeviceOrHostAddressConstKHR,
+    pub displacement_vector_stride: DeviceSize,
+    pub displaced_micromap_primitive_flags: DeviceOrHostAddressConstKHR,
+    pub displaced_micromap_primitive_flags_stride: DeviceSize,
+    pub index_type: IndexType,
+    pub index_buffer: DeviceOrHostAddressConstKHR,
+    pub index_stride: DeviceSize,
+    pub base_triangle: u32,
+    pub usage_counts_count: u32,
+    pub p_usage_counts: *const MicromapUsageEXT,
+    pub pp_usage_counts: *const *const MicromapUsageEXT,
+    pub micromap: Option<MicromapEXT>,
+}
+unsafe impl Send for AccelerationStructureTrianglesDisplacementMicromapNV {}
+unsafe impl Sync for AccelerationStructureTrianglesDisplacementMicromapNV {}
+impl Default for AccelerationStructureTrianglesDisplacementMicromapNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ACCELERATION_STRUCTURE_TRIANGLES_DISPLACEMENT_MICROMAP_NV,
+            p_next: ptr::null_mut(),
+            displacement_bias_and_scale_format: Default::default(),
+            displacement_vector_format: Default::default(),
+            displacement_bias_and_scale_buffer: Default::default(),
+            displacement_bias_and_scale_stride: Default::default(),
+            displacement_vector_buffer: Default::default(),
+            displacement_vector_stride: Default::default(),
+            displaced_micromap_primitive_flags: Default::default(),
+            displaced_micromap_primitive_flags_stride: Default::default(),
+            index_type: Default::default(),
+            index_buffer: Default::default(),
+            index_stride: Default::default(),
+            base_triangle: Default::default(),
+            usage_counts_count: Default::default(),
+            p_usage_counts: ptr::null(),
+            pp_usage_counts: ptr::null(),
+            micromap: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AccelerationStructureTrianglesDisplacementMicromapNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AccelerationStructureTrianglesDisplacementMicromapNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "displacement_bias_and_scale_format",
+                &self.displacement_bias_and_scale_format,
+            )
+            .field("displacement_vector_format", &self.displacement_vector_format)
+            .field(
+                "displacement_bias_and_scale_buffer",
+                &self.displacement_bias_and_scale_buffer,
+            )
+            .field(
+                "displacement_bias_and_scale_stride",
+                &self.displacement_bias_and_scale_stride,
+            )
+            .field("displacement_vector_buffer", &self.displacement_vector_buffer)
+            .field("displacement_vector_stride", &self.displacement_vector_stride)
+            .field(
+                "displaced_micromap_primitive_flags",
+                &self.displaced_micromap_primitive_flags,
+            )
+            .field(
+                "displaced_micromap_primitive_flags_stride",
+                &self.displaced_micromap_primitive_flags_stride,
+            )
             .field("index_type", &self.index_type)
             .field("index_buffer", &self.index_buffer)
             .field("index_stride", &self.index_stride)

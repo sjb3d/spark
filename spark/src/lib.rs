@@ -1808,6 +1808,12 @@ impl InstanceExtensions {
         self.enable_khr_acceleration_structure();
         self.enable_khr_synchronization2();
     }
+    pub fn supports_nv_displacement_micromap(&self) -> bool {
+        self.supports_ext_opacity_micromap()
+    }
+    pub fn enable_nv_displacement_micromap(&mut self) {
+        self.enable_ext_opacity_micromap();
+    }
     pub fn supports_huawei_cluster_culling_shader(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
     }
@@ -4677,6 +4683,7 @@ pub struct DeviceExtensions {
     pub ext_image_2d_view_of_3d: bool,
     pub ext_shader_tile_image: bool,
     pub ext_opacity_micromap: bool,
+    pub nv_displacement_micromap: bool,
     pub ext_load_store_op_none: bool,
     pub huawei_cluster_culling_shader: bool,
     pub ext_border_color_swizzle: bool,
@@ -4968,6 +4975,7 @@ impl DeviceExtensions {
             b"VK_EXT_image_2d_view_of_3d" => self.ext_image_2d_view_of_3d = true,
             b"VK_EXT_shader_tile_image" => self.ext_shader_tile_image = true,
             b"VK_EXT_opacity_micromap" => self.ext_opacity_micromap = true,
+            b"VK_NV_displacement_micromap" => self.nv_displacement_micromap = true,
             b"VK_EXT_load_store_op_none" => self.ext_load_store_op_none = true,
             b"VK_HUAWEI_cluster_culling_shader" => self.huawei_cluster_culling_shader = true,
             b"VK_EXT_border_color_swizzle" => self.ext_border_color_swizzle = true,
@@ -5259,6 +5267,7 @@ impl DeviceExtensions {
             ext_image_2d_view_of_3d: false,
             ext_shader_tile_image: false,
             ext_opacity_micromap: false,
+            nv_displacement_micromap: false,
             ext_load_store_op_none: false,
             huawei_cluster_culling_shader: false,
             ext_border_color_swizzle: false,
@@ -7101,6 +7110,13 @@ impl DeviceExtensions {
         self.enable_khr_acceleration_structure();
         self.enable_khr_synchronization2();
     }
+    pub fn supports_nv_displacement_micromap(&self) -> bool {
+        self.nv_displacement_micromap && self.supports_ext_opacity_micromap()
+    }
+    pub fn enable_nv_displacement_micromap(&mut self) {
+        self.nv_displacement_micromap = true;
+        self.enable_ext_opacity_micromap();
+    }
     pub fn supports_ext_load_store_op_none(&self) -> bool {
         self.ext_load_store_op_none
     }
@@ -8105,6 +8121,9 @@ impl DeviceExtensions {
         }
         if self.ext_opacity_micromap {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_opacity_micromap\0") })
+        }
+        if self.nv_displacement_micromap {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_displacement_micromap\0") })
         }
         if self.ext_load_store_op_none {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_load_store_op_none\0") })

@@ -233,8 +233,8 @@ impl ExtensionExtra for vk::Extension {
     }
     fn is_blacklisted(&self) -> bool {
         matches!(self.author.as_deref(), Some("GGP") | Some("QNX"))
-            || (self.provisional && self.name != "VK_KHR_portability_subset")
             || self.name.contains("KHR_video")
+            || self.name.contains("EXT_video")
             || self.supported.as_deref() == Some("disabled")
     }
 }

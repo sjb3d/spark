@@ -21484,6 +21484,136 @@ impl<'a> AccelerationStructureGeometryTrianglesDataKHRNext
 {
 }
 impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureTrianglesOpacityMicromapEXT {}
+impl Builder<'_> for vk::PhysicalDeviceDisplacementMicromapFeaturesNV {
+    type Type = PhysicalDeviceDisplacementMicromapFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDisplacementMicromapFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceDisplacementMicromapFeaturesNV,
+}
+impl PhysicalDeviceDisplacementMicromapFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn displacement_micromap(mut self, displacement_micromap: bool) -> Self {
+        self.inner.displacement_micromap = if displacement_micromap { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDisplacementMicromapFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceDisplacementMicromapFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDisplacementMicromapFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDisplacementMicromapFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDisplacementMicromapFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDisplacementMicromapFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceDisplacementMicromapPropertiesNV {}
+impl<'a> Builder<'a> for vk::AccelerationStructureTrianglesDisplacementMicromapNV {
+    type Type = AccelerationStructureTrianglesDisplacementMicromapNVBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct AccelerationStructureTrianglesDisplacementMicromapNVBuilder<'a> {
+    inner: vk::AccelerationStructureTrianglesDisplacementMicromapNV,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> AccelerationStructureTrianglesDisplacementMicromapNVBuilder<'a> {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn displacement_bias_and_scale_format(mut self, displacement_bias_and_scale_format: vk::Format) -> Self {
+        self.inner.displacement_bias_and_scale_format = displacement_bias_and_scale_format;
+        self
+    }
+    pub fn displacement_vector_format(mut self, displacement_vector_format: vk::Format) -> Self {
+        self.inner.displacement_vector_format = displacement_vector_format;
+        self
+    }
+    pub fn displacement_bias_and_scale_buffer(
+        mut self,
+        displacement_bias_and_scale_buffer: vk::DeviceOrHostAddressConstKHR,
+    ) -> Self {
+        self.inner.displacement_bias_and_scale_buffer = displacement_bias_and_scale_buffer;
+        self
+    }
+    pub fn displacement_bias_and_scale_stride(mut self, displacement_bias_and_scale_stride: vk::DeviceSize) -> Self {
+        self.inner.displacement_bias_and_scale_stride = displacement_bias_and_scale_stride;
+        self
+    }
+    pub fn displacement_vector_buffer(mut self, displacement_vector_buffer: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.displacement_vector_buffer = displacement_vector_buffer;
+        self
+    }
+    pub fn displacement_vector_stride(mut self, displacement_vector_stride: vk::DeviceSize) -> Self {
+        self.inner.displacement_vector_stride = displacement_vector_stride;
+        self
+    }
+    pub fn displaced_micromap_primitive_flags(
+        mut self,
+        displaced_micromap_primitive_flags: vk::DeviceOrHostAddressConstKHR,
+    ) -> Self {
+        self.inner.displaced_micromap_primitive_flags = displaced_micromap_primitive_flags;
+        self
+    }
+    pub fn displaced_micromap_primitive_flags_stride(
+        mut self,
+        displaced_micromap_primitive_flags_stride: vk::DeviceSize,
+    ) -> Self {
+        self.inner.displaced_micromap_primitive_flags_stride = displaced_micromap_primitive_flags_stride;
+        self
+    }
+    pub fn index_type(mut self, index_type: vk::IndexType) -> Self {
+        self.inner.index_type = index_type;
+        self
+    }
+    pub fn index_buffer(mut self, index_buffer: vk::DeviceOrHostAddressConstKHR) -> Self {
+        self.inner.index_buffer = index_buffer;
+        self
+    }
+    pub fn index_stride(mut self, index_stride: vk::DeviceSize) -> Self {
+        self.inner.index_stride = index_stride;
+        self
+    }
+    pub fn base_triangle(mut self, base_triangle: u32) -> Self {
+        self.inner.base_triangle = base_triangle;
+        self
+    }
+    pub fn p_usage_counts(mut self, p_usage_counts: &'a [vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = p_usage_counts.len() as u32;
+        self.inner.p_usage_counts = p_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn pp_usage_counts(mut self, pp_usage_counts: &'a [*const vk::MicromapUsageEXT]) -> Self {
+        self.inner.usage_counts_count = pp_usage_counts.len() as u32;
+        self.inner.pp_usage_counts = pp_usage_counts.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn micromap(mut self, micromap: Option<vk::MicromapEXT>) -> Self {
+        self.inner.micromap = micromap;
+        self
+    }
+}
+impl<'a> Deref for AccelerationStructureTrianglesDisplacementMicromapNVBuilder<'a> {
+    type Target = vk::AccelerationStructureTrianglesDisplacementMicromapNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> AccelerationStructureGeometryTrianglesDataKHRNext
+    for AccelerationStructureTrianglesDisplacementMicromapNVBuilder<'a>
+{
+}
+impl AccelerationStructureGeometryTrianglesDataKHRNext for vk::AccelerationStructureTrianglesDisplacementMicromapNV {}
 impl Builder<'_> for vk::PipelinePropertiesIdentifierEXT {
     type Type = PipelinePropertiesIdentifierEXTBuilder;
     fn builder() -> Self::Type {
