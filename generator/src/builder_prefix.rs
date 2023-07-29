@@ -15,7 +15,7 @@ pub trait Builder<'a> {
     fn builder() -> Self::Type;
 }
 
-unsafe fn insert_next(mut head: *mut vk::BaseOutStructure, other: *mut vk::BaseOutStructure) {
+unsafe fn insert_next(head: *mut vk::BaseOutStructure, other: *mut vk::BaseOutStructure) {
     assert!((*other).p_next.is_null());
     (*other).p_next = (*head).p_next;
     (*head).p_next = other as *mut _;
