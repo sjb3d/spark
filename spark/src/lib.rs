@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 259
+//! Generated from vk.xml with `VK_HEADER_VERSION` 260
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -849,6 +849,16 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_sampler_filter_minmax(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_amdx_shader_enqueue(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+            && self.supports_khr_synchronization2()
+            && self.supports_khr_spirv_1_4()
+    }
+    pub fn enable_amdx_shader_enqueue(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
+        self.enable_khr_synchronization2();
+        self.enable_khr_spirv_1_4();
     }
     pub fn supports_ext_inline_uniform_block(&self) -> bool {
         self.supports_khr_get_physical_device_properties2()
@@ -1966,6 +1976,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_khr_maintenance5(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_dynamic_rendering()
+    }
+    pub fn enable_khr_maintenance5(&mut self) {
+        self.enable_khr_dynamic_rendering();
     }
     pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
         self.supports_khr_acceleration_structure()
@@ -4514,6 +4530,7 @@ pub struct DeviceExtensions {
     pub ext_sampler_filter_minmax: bool,
     pub khr_storage_buffer_storage_class: bool,
     pub amd_gpu_shader_int16: bool,
+    pub amdx_shader_enqueue: bool,
     pub amd_mixed_attachment_samples: bool,
     pub amd_shader_fragment_mask: bool,
     pub ext_inline_uniform_block: bool,
@@ -4709,6 +4726,7 @@ pub struct DeviceExtensions {
     pub nv_optical_flow: bool,
     pub ext_legacy_dithering: bool,
     pub ext_pipeline_protected_access: bool,
+    pub khr_maintenance5: bool,
     pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
     pub qcom_tile_properties: bool,
@@ -4806,6 +4824,7 @@ impl DeviceExtensions {
             b"VK_EXT_sampler_filter_minmax" => self.ext_sampler_filter_minmax = true,
             b"VK_KHR_storage_buffer_storage_class" => self.khr_storage_buffer_storage_class = true,
             b"VK_AMD_gpu_shader_int16" => self.amd_gpu_shader_int16 = true,
+            b"VK_AMDX_shader_enqueue" => self.amdx_shader_enqueue = true,
             b"VK_AMD_mixed_attachment_samples" => self.amd_mixed_attachment_samples = true,
             b"VK_AMD_shader_fragment_mask" => self.amd_shader_fragment_mask = true,
             b"VK_EXT_inline_uniform_block" => self.ext_inline_uniform_block = true,
@@ -5001,6 +5020,7 @@ impl DeviceExtensions {
             b"VK_NV_optical_flow" => self.nv_optical_flow = true,
             b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
+            b"VK_KHR_maintenance5" => self.khr_maintenance5 = true,
             b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
             b"VK_QCOM_tile_properties" => self.qcom_tile_properties = true,
@@ -5098,6 +5118,7 @@ impl DeviceExtensions {
             ext_sampler_filter_minmax: false,
             khr_storage_buffer_storage_class: false,
             amd_gpu_shader_int16: false,
+            amdx_shader_enqueue: false,
             amd_mixed_attachment_samples: false,
             amd_shader_fragment_mask: false,
             ext_inline_uniform_block: false,
@@ -5293,6 +5314,7 @@ impl DeviceExtensions {
             nv_optical_flow: false,
             ext_legacy_dithering: false,
             ext_pipeline_protected_access: false,
+            khr_maintenance5: false,
             khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
             qcom_tile_properties: false,
@@ -5879,6 +5901,18 @@ impl DeviceExtensions {
     }
     pub fn enable_amd_gpu_shader_int16(&mut self) {
         self.amd_gpu_shader_int16 = true;
+    }
+    pub fn supports_amdx_shader_enqueue(&self) -> bool {
+        self.amdx_shader_enqueue
+            && self.supports_khr_synchronization2()
+            && self.supports_khr_pipeline_library()
+            && self.supports_khr_spirv_1_4()
+    }
+    pub fn enable_amdx_shader_enqueue(&mut self) {
+        self.amdx_shader_enqueue = true;
+        self.enable_khr_synchronization2();
+        self.enable_khr_pipeline_library();
+        self.enable_khr_spirv_1_4();
     }
     pub fn supports_amd_mixed_attachment_samples(&self) -> bool {
         self.amd_mixed_attachment_samples
@@ -7283,6 +7317,15 @@ impl DeviceExtensions {
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.ext_pipeline_protected_access = true;
     }
+    pub fn supports_khr_maintenance5(&self) -> bool {
+        self.khr_maintenance5
+            && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+            && self.supports_khr_dynamic_rendering()
+    }
+    pub fn enable_khr_maintenance5(&mut self) {
+        self.khr_maintenance5 = true;
+        self.enable_khr_dynamic_rendering();
+    }
     pub fn supports_khr_ray_tracing_position_fetch(&self) -> bool {
         self.khr_ray_tracing_position_fetch && self.supports_khr_acceleration_structure()
     }
@@ -7614,6 +7657,9 @@ impl DeviceExtensions {
         }
         if self.amd_gpu_shader_int16 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_gpu_shader_int16\0") })
+        }
+        if self.amdx_shader_enqueue {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMDX_shader_enqueue\0") })
         }
         if self.amd_mixed_attachment_samples {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_AMD_mixed_attachment_samples\0") })
@@ -8200,6 +8246,9 @@ impl DeviceExtensions {
         if self.ext_pipeline_protected_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_protected_access\0") })
         }
+        if self.khr_maintenance5 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance5\0") })
+        }
         if self.khr_ray_tracing_position_fetch {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_ray_tracing_position_fetch\0") })
         }
@@ -8317,6 +8366,7 @@ pub struct Device {
     pub fp_create_render_pass: Option<vk::FnCreateRenderPass>,
     pub fp_destroy_render_pass: Option<vk::FnDestroyRenderPass>,
     pub fp_get_render_area_granularity: Option<vk::FnGetRenderAreaGranularity>,
+    pub fp_get_rendering_area_granularity_khr: Option<vk::FnGetRenderingAreaGranularityKHR>,
     pub fp_create_command_pool: Option<vk::FnCreateCommandPool>,
     pub fp_destroy_command_pool: Option<vk::FnDestroyCommandPool>,
     pub fp_reset_command_pool: Option<vk::FnResetCommandPool>,
@@ -8582,6 +8632,7 @@ pub struct Device {
     pub fp_cmd_set_primitive_topology: Option<vk::FnCmdSetPrimitiveTopology>,
     pub fp_cmd_set_viewport_with_count: Option<vk::FnCmdSetViewportWithCount>,
     pub fp_cmd_set_scissor_with_count: Option<vk::FnCmdSetScissorWithCount>,
+    pub fp_cmd_bind_index_buffer2_khr: Option<vk::FnCmdBindIndexBuffer2KHR>,
     pub fp_cmd_bind_vertex_buffers2: Option<vk::FnCmdBindVertexBuffers2>,
     pub fp_cmd_set_depth_test_enable: Option<vk::FnCmdSetDepthTestEnable>,
     pub fp_cmd_set_depth_write_enable: Option<vk::FnCmdSetDepthWriteEnable>,
@@ -8699,7 +8750,7 @@ pub struct Device {
     pub fp_get_micromap_build_sizes_ext: Option<vk::FnGetMicromapBuildSizesEXT>,
     pub fp_get_shader_module_identifier_ext: Option<vk::FnGetShaderModuleIdentifierEXT>,
     pub fp_get_shader_module_create_info_identifier_ext: Option<vk::FnGetShaderModuleCreateInfoIdentifierEXT>,
-    pub fp_get_image_subresource_layout2_ext: Option<vk::FnGetImageSubresourceLayout2EXT>,
+    pub fp_get_image_subresource_layout2_khr: Option<vk::FnGetImageSubresourceLayout2KHR>,
     pub fp_get_pipeline_properties_ext: Option<vk::FnGetPipelinePropertiesEXT>,
     pub fp_export_metal_objects_ext: Option<vk::FnExportMetalObjectsEXT>,
     pub fp_get_framebuffer_tile_properties_qcom: Option<vk::FnGetFramebufferTilePropertiesQCOM>,
@@ -8712,6 +8763,7 @@ pub struct Device {
     pub fp_get_device_fault_info_ext: Option<vk::FnGetDeviceFaultInfoEXT>,
     pub fp_cmd_set_depth_bias2_ext: Option<vk::FnCmdSetDepthBias2EXT>,
     pub fp_release_swapchain_images_ext: Option<vk::FnReleaseSwapchainImagesEXT>,
+    pub fp_get_device_image_subresource_layout_khr: Option<vk::FnGetDeviceImageSubresourceLayoutKHR>,
     pub fp_map_memory2_khr: Option<vk::FnMapMemory2KHR>,
     pub fp_unmap_memory2_khr: Option<vk::FnUnmapMemory2KHR>,
     pub fp_create_shaders_ext: Option<vk::FnCreateShadersEXT>,
@@ -8720,6 +8772,13 @@ pub struct Device {
     pub fp_cmd_bind_shaders_ext: Option<vk::FnCmdBindShadersEXT>,
     pub fp_get_physical_device_cooperative_matrix_properties_khr:
         Option<vk::FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR>,
+    pub fp_get_execution_graph_pipeline_scratch_size_amdx: Option<vk::FnGetExecutionGraphPipelineScratchSizeAMDX>,
+    pub fp_get_execution_graph_pipeline_node_index_amdx: Option<vk::FnGetExecutionGraphPipelineNodeIndexAMDX>,
+    pub fp_create_execution_graph_pipelines_amdx: Option<vk::FnCreateExecutionGraphPipelinesAMDX>,
+    pub fp_cmd_initialize_graph_scratch_memory_amdx: Option<vk::FnCmdInitializeGraphScratchMemoryAMDX>,
+    pub fp_cmd_dispatch_graph_amdx: Option<vk::FnCmdDispatchGraphAMDX>,
+    pub fp_cmd_dispatch_graph_indirect_amdx: Option<vk::FnCmdDispatchGraphIndirectAMDX>,
+    pub fp_cmd_dispatch_graph_indirect_count_amdx: Option<vk::FnCmdDispatchGraphIndirectCountAMDX>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -9243,6 +9302,14 @@ impl Device {
                     return Err(LoaderError::MissingSymbol("vkGetRenderAreaGranularity".to_string()));
                 }
                 fp.map(|f| mem::transmute(f))
+            },
+            fp_get_rendering_area_granularity_khr: if extensions.khr_maintenance5 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetRenderingAreaGranularityKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
             },
             fp_create_command_pool: {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCreateCommandPool\0"));
@@ -11343,6 +11410,12 @@ impl Device {
             } else {
                 None
             },
+            fp_cmd_bind_index_buffer2_khr: if extensions.khr_maintenance5 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindIndexBuffer2KHR\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_cmd_bind_vertex_buffers2: if version >= vk::Version::from_raw_parts(1, 3, 0) {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdBindVertexBuffers2\0"));
                 if fp.is_none() {
@@ -11660,8 +11733,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_viewport_w_scaling_enable_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_viewport_w_scaling_enable_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_clip_space_w_scaling)
+                || (extensions.ext_shader_object && extensions.nv_clip_space_w_scaling)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetViewportWScalingEnableNV\0",
@@ -11670,14 +11744,18 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_viewport_swizzle_nv: if extensions.ext_extended_dynamic_state3 || extensions.ext_shader_object {
+            fp_cmd_set_viewport_swizzle_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_viewport_swizzle)
+                || (extensions.ext_shader_object && extensions.nv_viewport_swizzle)
+            {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdSetViewportSwizzleNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
             },
-            fp_cmd_set_coverage_to_color_enable_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_to_color_enable_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_fragment_coverage_to_color)
+                || (extensions.ext_shader_object && extensions.nv_fragment_coverage_to_color)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageToColorEnableNV\0",
@@ -11686,8 +11764,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_to_color_location_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_to_color_location_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_fragment_coverage_to_color)
+                || (extensions.ext_shader_object && extensions.nv_fragment_coverage_to_color)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageToColorLocationNV\0",
@@ -11696,8 +11775,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_mode_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_modulation_mode_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_framebuffer_mixed_samples)
+                || (extensions.ext_shader_object && extensions.nv_framebuffer_mixed_samples)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationModeNV\0",
@@ -11706,8 +11786,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_table_enable_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_modulation_table_enable_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_framebuffer_mixed_samples)
+                || (extensions.ext_shader_object && extensions.nv_framebuffer_mixed_samples)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationTableEnableNV\0",
@@ -11716,8 +11797,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_modulation_table_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_modulation_table_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_framebuffer_mixed_samples)
+                || (extensions.ext_shader_object && extensions.nv_framebuffer_mixed_samples)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageModulationTableNV\0",
@@ -11726,8 +11808,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_shading_rate_image_enable_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_shading_rate_image_enable_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_shading_rate_image)
+                || (extensions.ext_shader_object && extensions.nv_shading_rate_image)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetShadingRateImageEnableNV\0",
@@ -11736,8 +11819,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_coverage_reduction_mode_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_coverage_reduction_mode_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_coverage_reduction_mode)
+                || (extensions.ext_shader_object && extensions.nv_coverage_reduction_mode)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetCoverageReductionModeNV\0",
@@ -11746,8 +11830,9 @@ impl Device {
             } else {
                 None
             },
-            fp_cmd_set_representative_fragment_test_enable_nv: if extensions.ext_extended_dynamic_state3
-                || extensions.ext_shader_object
+            fp_cmd_set_representative_fragment_test_enable_nv: if (extensions.ext_extended_dynamic_state3
+                && extensions.nv_representative_fragment_test)
+                || (extensions.ext_shader_object && extensions.nv_representative_fragment_test)
             {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdSetRepresentativeFragmentTestEnableNV\0",
@@ -12352,9 +12437,12 @@ impl Device {
             } else {
                 None
             },
-            fp_get_image_subresource_layout2_ext: if extensions.ext_host_image_copy
-                || extensions.ext_image_compression_control
-            {
+            fp_get_image_subresource_layout2_khr: if extensions.khr_maintenance5 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetImageSubresourceLayout2KHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else if extensions.ext_host_image_copy || extensions.ext_image_compression_control {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetImageSubresourceLayout2EXT\0",
                 ));
@@ -12442,6 +12530,14 @@ impl Device {
             } else {
                 None
             },
+            fp_get_device_image_subresource_layout_khr: if extensions.khr_maintenance5 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetDeviceImageSubresourceLayoutKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
             fp_map_memory2_khr: if extensions.khr_map_memory2 {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkMapMemory2KHR\0"));
                 fp.map(|f| mem::transmute(f))
@@ -12481,6 +12577,58 @@ impl Device {
             fp_get_physical_device_cooperative_matrix_properties_khr: if extensions.khr_cooperative_matrix {
                 let fp = f_instance(CStr::from_bytes_with_nul_unchecked(
                     b"vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_execution_graph_pipeline_scratch_size_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetExecutionGraphPipelineScratchSizeAMDX\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_execution_graph_pipeline_node_index_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkGetExecutionGraphPipelineNodeIndexAMDX\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_create_execution_graph_pipelines_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCreateExecutionGraphPipelinesAMDX\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_initialize_graph_scratch_memory_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdInitializeGraphScratchMemoryAMDX\0",
+                ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_graph_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchGraphAMDX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_graph_indirect_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkCmdDispatchGraphIndirectAMDX\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_cmd_dispatch_graph_indirect_count_amdx: if extensions.amdx_shader_enqueue {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(
+                    b"vkCmdDispatchGraphIndirectCountAMDX\0",
                 ));
                 fp.map(|f| mem::transmute(f))
             } else {
@@ -13608,6 +13756,17 @@ impl Device {
             .expect("vkGetRenderAreaGranularity is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
         (fp)(Some(self.handle), Some(render_pass), res.as_mut_ptr());
+        res.assume_init()
+    }
+    pub unsafe fn get_rendering_area_granularity_khr(
+        &self,
+        p_rendering_area_info: &vk::RenderingAreaInfoKHR,
+    ) -> vk::Extent2D {
+        let fp = self
+            .fp_get_rendering_area_granularity_khr
+            .expect("vkGetRenderingAreaGranularityKHR is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        (fp)(Some(self.handle), p_rendering_area_info, res.as_mut_ptr());
         res.assume_init()
     }
     pub unsafe fn create_command_pool(
@@ -18228,6 +18387,19 @@ impl Device {
             p_scissors.first().map_or(ptr::null(), |s| s as *const _),
         );
     }
+    pub unsafe fn cmd_bind_index_buffer2_khr(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        buffer: vk::Buffer,
+        offset: vk::DeviceSize,
+        size: vk::DeviceSize,
+        index_type: vk::IndexType,
+    ) {
+        let fp = self
+            .fp_cmd_bind_index_buffer2_khr
+            .expect("vkCmdBindIndexBuffer2KHR is not loaded");
+        (fp)(Some(command_buffer), Some(buffer), offset, size, index_type);
+    }
     pub unsafe fn cmd_bind_vertex_buffers2(
         &self,
         command_buffer: vk::CommandBuffer,
@@ -20070,14 +20242,25 @@ impl Device {
             .expect("vkGetShaderModuleCreateInfoIdentifierEXT is not loaded");
         (fp)(Some(self.handle), p_create_info, p_identifier);
     }
+    pub unsafe fn get_image_subresource_layout2_khr(
+        &self,
+        image: vk::Image,
+        p_subresource: &vk::ImageSubresource2KHR,
+        p_layout: &mut vk::SubresourceLayout2KHR,
+    ) {
+        let fp = self
+            .fp_get_image_subresource_layout2_khr
+            .expect("vkGetImageSubresourceLayout2KHR is not loaded");
+        (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
+    }
     pub unsafe fn get_image_subresource_layout2_ext(
         &self,
         image: vk::Image,
-        p_subresource: &vk::ImageSubresource2EXT,
-        p_layout: &mut vk::SubresourceLayout2EXT,
+        p_subresource: &vk::ImageSubresource2KHR,
+        p_layout: &mut vk::SubresourceLayout2KHR,
     ) {
         let fp = self
-            .fp_get_image_subresource_layout2_ext
+            .fp_get_image_subresource_layout2_khr
             .expect("vkGetImageSubresourceLayout2EXT is not loaded");
         (fp)(Some(self.handle), Some(image), p_subresource, p_layout);
     }
@@ -20266,6 +20449,16 @@ impl Device {
             _ => Err(err),
         }
     }
+    pub unsafe fn get_device_image_subresource_layout_khr(
+        &self,
+        p_info: &vk::DeviceImageSubresourceInfoKHR,
+        p_layout: &mut vk::SubresourceLayout2KHR,
+    ) {
+        let fp = self
+            .fp_get_device_image_subresource_layout_khr
+            .expect("vkGetDeviceImageSubresourceLayoutKHR is not loaded");
+        (fp)(Some(self.handle), p_info, p_layout);
+    }
     pub unsafe fn map_memory2_khr(&self, p_memory_map_info: &vk::MemoryMapInfoKHR) -> Result<*mut c_void> {
         let fp = self.fp_map_memory2_khr.expect("vkMapMemory2KHR is not loaded");
         let mut res = MaybeUninit::<_>::uninit();
@@ -20422,6 +20615,175 @@ impl Device {
             vk::Result::SUCCESS => Ok(v),
             _ => Err(v_err),
         }
+    }
+    pub unsafe fn get_execution_graph_pipeline_scratch_size_amdx(
+        &self,
+        execution_graph: vk::Pipeline,
+        p_size_info: &mut vk::ExecutionGraphPipelineScratchSizeAMDX,
+    ) -> Result<()> {
+        let fp = self
+            .fp_get_execution_graph_pipeline_scratch_size_amdx
+            .expect("vkGetExecutionGraphPipelineScratchSizeAMDX is not loaded");
+        let err = (fp)(Some(self.handle), Some(execution_graph), p_size_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn get_execution_graph_pipeline_node_index_amdx(
+        &self,
+        execution_graph: vk::Pipeline,
+        p_node_info: &vk::PipelineShaderStageNodeCreateInfoAMDX,
+    ) -> Result<u32> {
+        let fp = self
+            .fp_get_execution_graph_pipeline_node_index_amdx
+            .expect("vkGetExecutionGraphPipelineNodeIndexAMDX is not loaded");
+        let mut res = MaybeUninit::<_>::uninit();
+        let err = (fp)(Some(self.handle), Some(execution_graph), p_node_info, res.as_mut_ptr());
+        match err {
+            vk::Result::SUCCESS => Ok(res.assume_init()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn create_execution_graph_pipelines_amdx(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ExecutionGraphPipelineCreateInfoAMDX],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+        p_pipelines: *mut vk::Pipeline,
+    ) -> Result<()> {
+        let fp = self
+            .fp_create_execution_graph_pipelines_amdx
+            .expect("vkCreateExecutionGraphPipelinesAMDX is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            p_pipelines,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_execution_graph_pipelines_amdx_to_vec(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ExecutionGraphPipelineCreateInfoAMDX],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<Vec<vk::Pipeline>> {
+        let fp = self
+            .fp_create_execution_graph_pipelines_amdx
+            .expect("vkCreateExecutionGraphPipelinesAMDX is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        let mut v = VecMaybeUninit::with_len(create_info_count as usize);
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_execution_graph_pipelines_amdx_array<const N: usize>(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &[vk::ExecutionGraphPipelineCreateInfoAMDX],
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<[vk::Pipeline; N]> {
+        let fp = self
+            .fp_create_execution_graph_pipelines_amdx
+            .expect("vkCreateExecutionGraphPipelinesAMDX is not loaded");
+        let create_info_count = p_create_infos.len() as u32;
+        assert_eq!(create_info_count, N as u32);
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos.first().map_or(ptr::null(), |s| s as *const _),
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr() as *mut _,
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn create_execution_graph_pipelines_amdx_single(
+        &self,
+        pipeline_cache: Option<vk::PipelineCache>,
+        p_create_infos: &vk::ExecutionGraphPipelineCreateInfoAMDX,
+        p_allocator: Option<&vk::AllocationCallbacks>,
+    ) -> Result<vk::Pipeline> {
+        let fp = self
+            .fp_create_execution_graph_pipelines_amdx
+            .expect("vkCreateExecutionGraphPipelinesAMDX is not loaded");
+        let create_info_count = 1;
+        let mut v = MaybeUninit::<_>::uninit();
+        let v_err = (fp)(
+            Some(self.handle),
+            pipeline_cache,
+            create_info_count,
+            p_create_infos,
+            p_allocator.map_or(ptr::null(), |r| r),
+            v.as_mut_ptr(),
+        );
+        match v_err {
+            vk::Result::SUCCESS => Ok(v.assume_init()),
+            _ => Err(v_err),
+        }
+    }
+    pub unsafe fn cmd_initialize_graph_scratch_memory_amdx(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        scratch: vk::DeviceAddress,
+    ) {
+        let fp = self
+            .fp_cmd_initialize_graph_scratch_memory_amdx
+            .expect("vkCmdInitializeGraphScratchMemoryAMDX is not loaded");
+        (fp)(Some(command_buffer), scratch);
+    }
+    pub unsafe fn cmd_dispatch_graph_amdx(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        scratch: vk::DeviceAddress,
+        p_count_info: &vk::DispatchGraphCountInfoAMDX,
+    ) {
+        let fp = self
+            .fp_cmd_dispatch_graph_amdx
+            .expect("vkCmdDispatchGraphAMDX is not loaded");
+        (fp)(Some(command_buffer), scratch, p_count_info);
+    }
+    pub unsafe fn cmd_dispatch_graph_indirect_amdx(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        scratch: vk::DeviceAddress,
+        p_count_info: &vk::DispatchGraphCountInfoAMDX,
+    ) {
+        let fp = self
+            .fp_cmd_dispatch_graph_indirect_amdx
+            .expect("vkCmdDispatchGraphIndirectAMDX is not loaded");
+        (fp)(Some(command_buffer), scratch, p_count_info);
+    }
+    pub unsafe fn cmd_dispatch_graph_indirect_count_amdx(
+        &self,
+        command_buffer: vk::CommandBuffer,
+        scratch: vk::DeviceAddress,
+        count_info: vk::DeviceAddress,
+    ) {
+        let fp = self
+            .fp_cmd_dispatch_graph_indirect_count_amdx
+            .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
+        (fp)(Some(command_buffer), scratch, count_info);
     }
 }
 

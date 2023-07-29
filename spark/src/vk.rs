@@ -231,6 +231,7 @@ pub const SHADER_UNUSED_NV: u32 = SHADER_UNUSED_KHR;
 pub const MAX_GLOBAL_PRIORITY_SIZE_KHR: usize = 16;
 pub const MAX_GLOBAL_PRIORITY_SIZE_EXT: usize = MAX_GLOBAL_PRIORITY_SIZE_KHR;
 pub const MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT: usize = 32;
+pub const SHADER_INDEX_UNUSED_AMDX: u32 = 0xffffffff;
 pub type SampleMask = u32;
 pub type Bool32 = u32;
 pub type Flags = u32;
@@ -770,6 +771,8 @@ impl BufferUsageFlags {
     /// Specifies the buffer can be used as predicate in conditional rendering
     /// Added by extension VK_EXT_conditional_rendering.
     pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
     /// Added by extension VK_KHR_acceleration_structure.
     pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR: Self = Self(0x80000);
     /// Added by extension VK_KHR_acceleration_structure.
@@ -790,7 +793,7 @@ impl BufferUsageFlags {
     /// Added by extension VK_EXT_opacity_micromap.
     pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
 }
-impl_bitmask!(BufferUsageFlags, 0x5fa1fff);
+impl_bitmask!(BufferUsageFlags, 0x7fa1fff);
 impl fmt::Display for BufferUsageFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -809,6 +812,7 @@ impl fmt::Display for BufferUsageFlags {
                 (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
                 (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x200, "CONDITIONAL_RENDERING_EXT"),
+                (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_KHR"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE_KHR"),
                 (0x400, "SHADER_BINDING_TABLE_KHR"),
@@ -2826,6 +2830,198 @@ impl_bitmask!(DirectDriverLoadingFlagsLUNARG, 0x0);
 impl fmt::Display for DirectDriverLoadingFlagsLUNARG {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(self.0 as _, &[], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct PipelineCreateFlags2KHR(pub(crate) u64);
+impl PipelineCreateFlags2KHR {
+    pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
+    pub const ALLOW_DERIVATIVES: Self = Self(0x2);
+    pub const DERIVATIVE: Self = Self(0x4);
+    /// Added by extension VK_NV_displacement_micromap.
+    pub const RESERVED_BIT_28_NV: Self = Self(0x10000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DISPATCH_BASE: Self = Self(0x10);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DEFER_COMPILE: Self = Self(0x20);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const CAPTURE_STATISTICS: Self = Self(0x40);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const CAPTURE_INTERNAL_REPRESENTATIONS: Self = Self(0x80);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const FAIL_ON_PIPELINE_COMPILE_REQUIRED: Self = Self(0x100);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const LINK_TIME_OPTIMIZATION: Self = Self(0x400);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO: Self = Self(0x800000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const LIBRARY: Self = Self(0x800);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_SKIP_TRIANGLES: Self = Self(0x1000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_SKIP_AABBS: Self = Self(0x2000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_NO_NULL_ANY_HIT_SHADERS: Self = Self(0x4000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS: Self = Self(0x8000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_NO_NULL_MISS_SHADERS: Self = Self(0x10000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_NO_NULL_INTERSECTION_SHADERS: Self = Self(0x20000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY: Self = Self(0x80000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const INDIRECT_BINDABLE: Self = Self(0x40000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_ALLOW_MOTION: Self = Self(0x100000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x200000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x400000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RAY_TRACING_OPACITY_MICROMAP: Self = Self(0x1000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const COLOR_ATTACHMENT_FEEDBACK_LOOP: Self = Self(0x2000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP: Self = Self(0x4000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DESCRIPTOR_BUFFER: Self = Self(0x20000000);
+}
+impl_bitmask!(PipelineCreateFlags2KHR, 0x7fffffff);
+impl fmt::Display for PipelineCreateFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "DISABLE_OPTIMIZATION"),
+                (0x2, "ALLOW_DERIVATIVES"),
+                (0x4, "DERIVATIVE"),
+                (0x10000000, "RESERVED_BIT_28_NV"),
+                (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
+                (0x10, "DISPATCH_BASE"),
+                (0x20, "DEFER_COMPILE"),
+                (0x40, "CAPTURE_STATISTICS"),
+                (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS"),
+                (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED"),
+                (0x200, "EARLY_RETURN_ON_FAILURE"),
+                (0x400, "LINK_TIME_OPTIMIZATION"),
+                (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO"),
+                (0x800, "LIBRARY"),
+                (0x1000, "RAY_TRACING_SKIP_TRIANGLES"),
+                (0x2000, "RAY_TRACING_SKIP_AABBS"),
+                (0x4000, "RAY_TRACING_NO_NULL_ANY_HIT_SHADERS"),
+                (0x8000, "RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS"),
+                (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS"),
+                (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS"),
+                (0x80000, "RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY"),
+                (0x40000, "INDIRECT_BINDABLE"),
+                (0x100000, "RAY_TRACING_ALLOW_MOTION"),
+                (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT"),
+                (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT"),
+                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP"),
+                (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP"),
+                (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP"),
+                (0x8000000, "NO_PROTECTED_ACCESS"),
+                (0x40000000, "PROTECTED_ACCESS_ONLY"),
+                (0x20000000, "DESCRIPTOR_BUFFER"),
+            ],
+            f,
+        )
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct BufferUsageFlags2KHR(pub(crate) u64);
+impl BufferUsageFlags2KHR {
+    pub const TRANSFER_SRC: Self = Self(0x1);
+    pub const TRANSFER_DST: Self = Self(0x2);
+    pub const UNIFORM_TEXEL_BUFFER: Self = Self(0x4);
+    pub const STORAGE_TEXEL_BUFFER: Self = Self(0x8);
+    pub const UNIFORM_BUFFER: Self = Self(0x10);
+    pub const STORAGE_BUFFER: Self = Self(0x20);
+    pub const INDEX_BUFFER: Self = Self(0x40);
+    pub const VERTEX_BUFFER: Self = Self(0x80);
+    pub const INDIRECT_BUFFER: Self = Self(0x100);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const CONDITIONAL_RENDERING: Self = Self(0x200);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const SHADER_BINDING_TABLE: Self = Self(0x400);
+    pub const RAY_TRACING: Self = Self::SHADER_BINDING_TABLE;
+    /// Added by extension VK_KHR_maintenance5.
+    pub const TRANSFORM_FEEDBACK_BUFFER: Self = Self(0x800);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER: Self = Self(0x1000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const VIDEO_DECODE_SRC: Self = Self(0x2000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const VIDEO_DECODE_DST: Self = Self(0x4000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const VIDEO_ENCODE_DST: Self = Self(0x8000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const VIDEO_ENCODE_SRC: Self = Self(0x10000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const SHADER_DEVICE_ADDRESS: Self = Self(0x20000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY: Self = Self(0x80000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const ACCELERATION_STRUCTURE_STORAGE: Self = Self(0x100000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const SAMPLER_DESCRIPTOR_BUFFER: Self = Self(0x200000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RESOURCE_DESCRIPTOR_BUFFER: Self = Self(0x400000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER: Self = Self(0x4000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const MICROMAP_BUILD_INPUT_READ_ONLY: Self = Self(0x800000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const MICROMAP_STORAGE: Self = Self(0x1000000);
+}
+impl_bitmask!(BufferUsageFlags2KHR, 0x7fbffff);
+impl fmt::Display for BufferUsageFlags2KHR {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(
+            self.0 as _,
+            &[
+                (0x1, "TRANSFER_SRC"),
+                (0x2, "TRANSFER_DST"),
+                (0x4, "UNIFORM_TEXEL_BUFFER"),
+                (0x8, "STORAGE_TEXEL_BUFFER"),
+                (0x10, "UNIFORM_BUFFER"),
+                (0x20, "STORAGE_BUFFER"),
+                (0x40, "INDEX_BUFFER"),
+                (0x80, "VERTEX_BUFFER"),
+                (0x100, "INDIRECT_BUFFER"),
+                (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
+                (0x200, "CONDITIONAL_RENDERING"),
+                (0x400, "SHADER_BINDING_TABLE"),
+                (0x800, "TRANSFORM_FEEDBACK_BUFFER"),
+                (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER"),
+                (0x2000, "VIDEO_DECODE_SRC"),
+                (0x4000, "VIDEO_DECODE_DST"),
+                (0x8000, "VIDEO_ENCODE_DST"),
+                (0x10000, "VIDEO_ENCODE_SRC"),
+                (0x20000, "SHADER_DEVICE_ADDRESS"),
+                (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY"),
+                (0x100000, "ACCELERATION_STRUCTURE_STORAGE"),
+                (0x200000, "SAMPLER_DESCRIPTOR_BUFFER"),
+                (0x400000, "RESOURCE_DESCRIPTOR_BUFFER"),
+                (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER"),
+                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY"),
+                (0x1000000, "MICROMAP_STORAGE"),
+            ],
+            f,
+        )
     }
 }
 #[repr(transparent)]
@@ -5504,6 +5700,10 @@ impl Format {
     pub const A4B4G4R4_UNORM_PACK16_EXT: Self = Self::A4B4G4R4_UNORM_PACK16;
     /// Added by extension VK_NV_optical_flow.
     pub const R16G16_S10_5_NV: Self = Self(1000464000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const A1B5G5R5_UNORM_PACK16_KHR: Self = Self(1000470000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const A8_UNORM_KHR: Self = Self(1000470001);
 }
 impl fmt::Display for Format {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -5756,6 +5956,8 @@ impl fmt::Display for Format {
             1000054006 => Some(&"PVRTC2_2BPP_SRGB_BLOCK_IMG"),
             1000054007 => Some(&"PVRTC2_4BPP_SRGB_BLOCK_IMG"),
             1000464000 => Some(&"R16G16_S10_5_NV"),
+            1000470000 => Some(&"A1B5G5R5_UNORM_PACK16_KHR"),
+            1000470001 => Some(&"A8_UNORM_KHR"),
             _ => None,
         };
         if let Some(name) = name {
@@ -6077,6 +6279,8 @@ pub struct PipelineBindPoint(pub(crate) i32);
 impl PipelineBindPoint {
     pub const GRAPHICS: Self = Self(0);
     pub const COMPUTE: Self = Self(1);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_AMDX: Self = Self(1000134000);
     pub const RAY_TRACING_KHR: Self = Self(1000165000);
     pub const RAY_TRACING_NV: Self = Self::RAY_TRACING_KHR;
     pub const SUBPASS_SHADING_HUAWEI: Self = Self(1000369003);
@@ -6086,6 +6290,7 @@ impl fmt::Display for PipelineBindPoint {
         let name = match self.0 {
             0 => Some(&"GRAPHICS"),
             1 => Some(&"COMPUTE"),
+            1000134000 => Some(&"EXECUTION_GRAPH_AMDX"),
             1000165000 => Some(&"RAY_TRACING_KHR"),
             1000369003 => Some(&"SUBPASS_SHADING_HUAWEI"),
             _ => None,
@@ -6928,6 +7133,16 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT: Self =
         Self::PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES;
     pub const SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT: Self = Self::SAMPLER_REDUCTION_MODE_CREATE_INFO;
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX: Self = Self(1000134000);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const PHYSICAL_DEVICE_SHADER_ENQUEUE_PROPERTIES_AMDX: Self = Self(1000134001);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX: Self = Self(1000134002);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX: Self = Self(1000134003);
+    /// Added by extension VK_AMDX_shader_enqueue.
+    pub const PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX: Self = Self(1000134004);
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT: Self =
         Self::PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES;
     pub const PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT: Self =
@@ -7539,10 +7754,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT: Self = Self(1000338000);
     /// Added by extension VK_EXT_image_compression_control.
     pub const IMAGE_COMPRESSION_CONTROL_EXT: Self = Self(1000338001);
-    /// Added by extension VK_EXT_image_compression_control.
-    pub const SUBRESOURCE_LAYOUT_2_EXT: Self = Self(1000338002);
-    /// Added by extension VK_EXT_image_compression_control.
-    pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self(1000338003);
+    pub const SUBRESOURCE_LAYOUT_2_EXT: Self = Self::SUBRESOURCE_LAYOUT_2_KHR;
+    pub const IMAGE_SUBRESOURCE_2_EXT: Self = Self::IMAGE_SUBRESOURCE_2_KHR;
     /// Added by extension VK_EXT_image_compression_control.
     pub const IMAGE_COMPRESSION_PROPERTIES_EXT: Self = Self(1000338004);
     /// Added by extension VK_EXT_attachment_feedback_loop_layout.
@@ -7795,6 +8008,20 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR: Self = Self(1000470000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR: Self = Self(1000470001);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const RENDERING_AREA_INFO_KHR: Self = Self(1000470003);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DEVICE_IMAGE_SUBRESOURCE_INFO_KHR: Self = Self(1000470004);
+    pub const SUBRESOURCE_LAYOUT_2_KHR: Self = Self(1000338002);
+    pub const IMAGE_SUBRESOURCE_2_KHR: Self = Self(1000338003);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470005);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR: Self = Self(1000470006);
     /// Added by extension VK_KHR_ray_tracing_position_fetch.
     pub const PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR: Self = Self(1000481000);
     /// Added by extension VK_EXT_shader_object.
@@ -8182,6 +8409,11 @@ impl fmt::Display for StructureType {
             1000129004 => Some(&"MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID"),
             1000129005 => Some(&"EXTERNAL_FORMAT_ANDROID"),
             1000129006 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID"),
+            1000134000 => Some(&"PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX"),
+            1000134001 => Some(&"PHYSICAL_DEVICE_SHADER_ENQUEUE_PROPERTIES_AMDX"),
+            1000134002 => Some(&"EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX"),
+            1000134003 => Some(&"EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX"),
+            1000134004 => Some(&"PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX"),
             1000143000 => Some(&"SAMPLE_LOCATIONS_INFO_EXT"),
             1000143001 => Some(&"RENDER_PASS_SAMPLE_LOCATIONS_BEGIN_INFO_EXT"),
             1000143002 => Some(&"PIPELINE_SAMPLE_LOCATIONS_STATE_CREATE_INFO_EXT"),
@@ -8429,8 +8661,6 @@ impl fmt::Display for StructureType {
             1000336000 => Some(&"PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR"),
             1000338000 => Some(&"PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_FEATURES_EXT"),
             1000338001 => Some(&"IMAGE_COMPRESSION_CONTROL_EXT"),
-            1000338002 => Some(&"SUBRESOURCE_LAYOUT_2_EXT"),
-            1000338003 => Some(&"IMAGE_SUBRESOURCE_2_EXT"),
             1000338004 => Some(&"IMAGE_COMPRESSION_PROPERTIES_EXT"),
             1000339000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_LAYOUT_FEATURES_EXT"),
             1000340000 => Some(&"PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT"),
@@ -8550,6 +8780,14 @@ impl fmt::Display for StructureType {
             1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
             1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
+            1000470000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR"),
+            1000470001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR"),
+            1000470003 => Some(&"RENDERING_AREA_INFO_KHR"),
+            1000470004 => Some(&"DEVICE_IMAGE_SUBRESOURCE_INFO_KHR"),
+            1000338002 => Some(&"SUBRESOURCE_LAYOUT_2_KHR"),
+            1000338003 => Some(&"IMAGE_SUBRESOURCE_2_KHR"),
+            1000470005 => Some(&"PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR"),
+            1000470006 => Some(&"BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR"),
             1000481000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR"),
             1000482000 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT"),
             1000482001 => Some(&"PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT"),
@@ -12098,6 +12336,33 @@ impl fmt::Debug for CopyDescriptorSet {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct BufferUsageFlags2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub usage: BufferUsageFlags2KHR,
+}
+unsafe impl Send for BufferUsageFlags2CreateInfoKHR {}
+unsafe impl Sync for BufferUsageFlags2CreateInfoKHR {}
+impl Default for BufferUsageFlags2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            usage: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BufferUsageFlags2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BufferUsageFlags2CreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("usage", &self.usage)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct BufferCreateInfo {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -13207,6 +13472,33 @@ impl fmt::Debug for ComputePipelineIndirectBufferInfoNV {
                 "pipeline_device_address_capture_replay",
                 &self.pipeline_device_address_capture_replay,
             )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineCreateFlags2CreateInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineCreateFlags2KHR,
+}
+unsafe impl Send for PipelineCreateFlags2CreateInfoKHR {}
+unsafe impl Sync for PipelineCreateFlags2CreateInfoKHR {}
+impl Default for PipelineCreateFlags2CreateInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR,
+            p_next: ptr::null(),
+            flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineCreateFlags2CreateInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineCreateFlags2CreateInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
             .finish()
     }
 }
@@ -22426,6 +22718,129 @@ impl fmt::Debug for PhysicalDeviceMaintenance4Properties {
     }
 }
 pub type PhysicalDeviceMaintenance4PropertiesKHR = PhysicalDeviceMaintenance4Properties;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance5FeaturesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub maintenance5: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance5FeaturesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance5FeaturesKHR {}
+impl Default for PhysicalDeviceMaintenance5FeaturesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR,
+            p_next: ptr::null_mut(),
+            maintenance5: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance5FeaturesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance5FeaturesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("maintenance5", &self.maintenance5)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceMaintenance5PropertiesKHR {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub early_fragment_multisample_coverage_after_sample_counting: Bool32,
+    pub early_fragment_sample_mask_test_before_sample_counting: Bool32,
+    pub depth_stencil_swizzle_one_support: Bool32,
+    pub polygon_mode_point_size: Bool32,
+    pub non_strict_single_pixel_wide_lines_use_parallelogram: Bool32,
+    pub non_strict_wide_lines_use_parallelogram: Bool32,
+}
+unsafe impl Send for PhysicalDeviceMaintenance5PropertiesKHR {}
+unsafe impl Sync for PhysicalDeviceMaintenance5PropertiesKHR {}
+impl Default for PhysicalDeviceMaintenance5PropertiesKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR,
+            p_next: ptr::null_mut(),
+            early_fragment_multisample_coverage_after_sample_counting: Default::default(),
+            early_fragment_sample_mask_test_before_sample_counting: Default::default(),
+            depth_stencil_swizzle_one_support: Default::default(),
+            polygon_mode_point_size: Default::default(),
+            non_strict_single_pixel_wide_lines_use_parallelogram: Default::default(),
+            non_strict_wide_lines_use_parallelogram: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceMaintenance5PropertiesKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceMaintenance5PropertiesKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "early_fragment_multisample_coverage_after_sample_counting",
+                &self.early_fragment_multisample_coverage_after_sample_counting,
+            )
+            .field(
+                "early_fragment_sample_mask_test_before_sample_counting",
+                &self.early_fragment_sample_mask_test_before_sample_counting,
+            )
+            .field(
+                "depth_stencil_swizzle_one_support",
+                &self.depth_stencil_swizzle_one_support,
+            )
+            .field("polygon_mode_point_size", &self.polygon_mode_point_size)
+            .field(
+                "non_strict_single_pixel_wide_lines_use_parallelogram",
+                &self.non_strict_single_pixel_wide_lines_use_parallelogram,
+            )
+            .field(
+                "non_strict_wide_lines_use_parallelogram",
+                &self.non_strict_wide_lines_use_parallelogram,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RenderingAreaInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub view_mask: u32,
+    pub color_attachment_count: u32,
+    pub p_color_attachment_formats: *const Format,
+    pub depth_attachment_format: Format,
+    pub stencil_attachment_format: Format,
+}
+unsafe impl Send for RenderingAreaInfoKHR {}
+unsafe impl Sync for RenderingAreaInfoKHR {}
+impl Default for RenderingAreaInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::RENDERING_AREA_INFO_KHR,
+            p_next: ptr::null(),
+            view_mask: Default::default(),
+            color_attachment_count: Default::default(),
+            p_color_attachment_formats: ptr::null(),
+            depth_attachment_format: Default::default(),
+            stencil_attachment_format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for RenderingAreaInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("RenderingAreaInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("view_mask", &self.view_mask)
+            .field("color_attachment_count", &self.color_attachment_count)
+            .field("p_color_attachment_formats", &self.p_color_attachment_formats)
+            .field("depth_attachment_format", &self.depth_attachment_format)
+            .field("stencil_attachment_format", &self.stencil_attachment_format)
+            .finish()
+    }
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DescriptorSetLayoutSupport {
@@ -31718,6 +32133,27 @@ impl fmt::Debug for DeviceOrHostAddressConstKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub union DeviceOrHostAddressConstAMDX {
+    pub device_address: DeviceAddress,
+    pub host_address: *const c_void,
+}
+unsafe impl Send for DeviceOrHostAddressConstAMDX {}
+unsafe impl Sync for DeviceOrHostAddressConstAMDX {}
+impl Default for DeviceOrHostAddressConstAMDX {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+impl fmt::Debug for DeviceOrHostAddressConstAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceOrHostAddressConstAMDX")
+            .field("device_address", unsafe { &self.device_address })
+            .field("host_address", unsafe { &self.host_address })
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct AccelerationStructureGeometryTrianglesDataKHR {
     pub s_type: StructureType,
     pub p_next: *const c_void,
@@ -37996,7 +38432,7 @@ impl fmt::Debug for PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT {
 #[derive(Copy, Clone)]
 pub struct GraphicsPipelineLibraryCreateInfoEXT {
     pub s_type: StructureType,
-    pub p_next: *mut c_void,
+    pub p_next: *const c_void,
     pub flags: GraphicsPipelineLibraryFlagsEXT,
 }
 unsafe impl Send for GraphicsPipelineLibraryCreateInfoEXT {}
@@ -38005,7 +38441,7 @@ impl Default for GraphicsPipelineLibraryCreateInfoEXT {
     fn default() -> Self {
         Self {
             s_type: StructureType::GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT,
-            p_next: ptr::null_mut(),
+            p_next: ptr::null(),
             flags: Default::default(),
         }
     }
@@ -38348,58 +38784,60 @@ impl fmt::Debug for PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct ImageSubresource2EXT {
+pub struct ImageSubresource2KHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub image_subresource: ImageSubresource,
 }
-unsafe impl Send for ImageSubresource2EXT {}
-unsafe impl Sync for ImageSubresource2EXT {}
-impl Default for ImageSubresource2EXT {
+unsafe impl Send for ImageSubresource2KHR {}
+unsafe impl Sync for ImageSubresource2KHR {}
+impl Default for ImageSubresource2KHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::IMAGE_SUBRESOURCE_2_EXT,
+            s_type: StructureType::IMAGE_SUBRESOURCE_2_KHR,
             p_next: ptr::null_mut(),
             image_subresource: Default::default(),
         }
     }
 }
-impl fmt::Debug for ImageSubresource2EXT {
+impl fmt::Debug for ImageSubresource2KHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("ImageSubresource2EXT")
+        fmt.debug_struct("ImageSubresource2KHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("image_subresource", &self.image_subresource)
             .finish()
     }
 }
+pub type ImageSubresource2EXT = ImageSubresource2KHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct SubresourceLayout2EXT {
+pub struct SubresourceLayout2KHR {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
     pub subresource_layout: SubresourceLayout,
 }
-unsafe impl Send for SubresourceLayout2EXT {}
-unsafe impl Sync for SubresourceLayout2EXT {}
-impl Default for SubresourceLayout2EXT {
+unsafe impl Send for SubresourceLayout2KHR {}
+unsafe impl Sync for SubresourceLayout2KHR {}
+impl Default for SubresourceLayout2KHR {
     fn default() -> Self {
         Self {
-            s_type: StructureType::SUBRESOURCE_LAYOUT_2_EXT,
+            s_type: StructureType::SUBRESOURCE_LAYOUT_2_KHR,
             p_next: ptr::null_mut(),
             subresource_layout: Default::default(),
         }
     }
 }
-impl fmt::Debug for SubresourceLayout2EXT {
+impl fmt::Debug for SubresourceLayout2KHR {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        fmt.debug_struct("SubresourceLayout2EXT")
+        fmt.debug_struct("SubresourceLayout2KHR")
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("subresource_layout", &self.subresource_layout)
             .finish()
     }
 }
+pub type SubresourceLayout2EXT = SubresourceLayout2KHR;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct RenderPassCreationControlEXT {
@@ -41192,6 +41630,36 @@ impl fmt::Debug for PhysicalDeviceRayTracingPositionFetchFeaturesKHR {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct DeviceImageSubresourceInfoKHR {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_create_info: *const ImageCreateInfo,
+    pub p_subresource: *const ImageSubresource2KHR,
+}
+unsafe impl Send for DeviceImageSubresourceInfoKHR {}
+unsafe impl Sync for DeviceImageSubresourceInfoKHR {}
+impl Default for DeviceImageSubresourceInfoKHR {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::DEVICE_IMAGE_SUBRESOURCE_INFO_KHR,
+            p_next: ptr::null(),
+            p_create_info: ptr::null(),
+            p_subresource: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for DeviceImageSubresourceInfoKHR {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DeviceImageSubresourceInfoKHR")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_create_info", &self.p_create_info)
+            .field("p_subresource", &self.p_subresource)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderCorePropertiesARM {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -41688,6 +42156,220 @@ impl fmt::Debug for PhysicalDeviceCooperativeMatrixPropertiesKHR {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderEnqueuePropertiesAMDX {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_execution_graph_depth: u32,
+    pub max_execution_graph_shader_output_nodes: u32,
+    pub max_execution_graph_shader_payload_size: u32,
+    pub max_execution_graph_shader_payload_count: u32,
+    pub execution_graph_dispatch_address_alignment: u32,
+}
+unsafe impl Send for PhysicalDeviceShaderEnqueuePropertiesAMDX {}
+unsafe impl Sync for PhysicalDeviceShaderEnqueuePropertiesAMDX {}
+impl Default for PhysicalDeviceShaderEnqueuePropertiesAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ENQUEUE_PROPERTIES_AMDX,
+            p_next: ptr::null_mut(),
+            max_execution_graph_depth: Default::default(),
+            max_execution_graph_shader_output_nodes: Default::default(),
+            max_execution_graph_shader_payload_size: Default::default(),
+            max_execution_graph_shader_payload_count: Default::default(),
+            execution_graph_dispatch_address_alignment: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderEnqueuePropertiesAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderEnqueuePropertiesAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_execution_graph_depth", &self.max_execution_graph_depth)
+            .field(
+                "max_execution_graph_shader_output_nodes",
+                &self.max_execution_graph_shader_output_nodes,
+            )
+            .field(
+                "max_execution_graph_shader_payload_size",
+                &self.max_execution_graph_shader_payload_size,
+            )
+            .field(
+                "max_execution_graph_shader_payload_count",
+                &self.max_execution_graph_shader_payload_count,
+            )
+            .field(
+                "execution_graph_dispatch_address_alignment",
+                &self.execution_graph_dispatch_address_alignment,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceShaderEnqueueFeaturesAMDX {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub shader_enqueue: Bool32,
+}
+unsafe impl Send for PhysicalDeviceShaderEnqueueFeaturesAMDX {}
+unsafe impl Sync for PhysicalDeviceShaderEnqueueFeaturesAMDX {}
+impl Default for PhysicalDeviceShaderEnqueueFeaturesAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_SHADER_ENQUEUE_FEATURES_AMDX,
+            p_next: ptr::null_mut(),
+            shader_enqueue: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceShaderEnqueueFeaturesAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceShaderEnqueueFeaturesAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("shader_enqueue", &self.shader_enqueue)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExecutionGraphPipelineCreateInfoAMDX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: PipelineCreateFlags,
+    pub stage_count: u32,
+    pub p_stages: *const PipelineShaderStageCreateInfo,
+    pub p_library_info: *const PipelineLibraryCreateInfoKHR,
+    pub layout: Option<PipelineLayout>,
+    pub base_pipeline_handle: Option<Pipeline>,
+    pub base_pipeline_index: i32,
+}
+unsafe impl Send for ExecutionGraphPipelineCreateInfoAMDX {}
+unsafe impl Sync for ExecutionGraphPipelineCreateInfoAMDX {}
+impl Default for ExecutionGraphPipelineCreateInfoAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXECUTION_GRAPH_PIPELINE_CREATE_INFO_AMDX,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            stage_count: Default::default(),
+            p_stages: ptr::null(),
+            p_library_info: ptr::null(),
+            layout: Default::default(),
+            base_pipeline_handle: Default::default(),
+            base_pipeline_index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExecutionGraphPipelineCreateInfoAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExecutionGraphPipelineCreateInfoAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("stage_count", &self.stage_count)
+            .field("p_stages", &self.p_stages)
+            .field("p_library_info", &self.p_library_info)
+            .field("layout", &self.layout)
+            .field("base_pipeline_handle", &self.base_pipeline_handle)
+            .field("base_pipeline_index", &self.base_pipeline_index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PipelineShaderStageNodeCreateInfoAMDX {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_name: *const c_char,
+    pub index: u32,
+}
+unsafe impl Send for PipelineShaderStageNodeCreateInfoAMDX {}
+unsafe impl Sync for PipelineShaderStageNodeCreateInfoAMDX {}
+impl Default for PipelineShaderStageNodeCreateInfoAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PIPELINE_SHADER_STAGE_NODE_CREATE_INFO_AMDX,
+            p_next: ptr::null(),
+            p_name: ptr::null(),
+            index: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PipelineShaderStageNodeCreateInfoAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PipelineShaderStageNodeCreateInfoAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_name", &self.p_name)
+            .field("index", &self.index)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct ExecutionGraphPipelineScratchSizeAMDX {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub size: DeviceSize,
+}
+unsafe impl Send for ExecutionGraphPipelineScratchSizeAMDX {}
+unsafe impl Sync for ExecutionGraphPipelineScratchSizeAMDX {}
+impl Default for ExecutionGraphPipelineScratchSizeAMDX {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::EXECUTION_GRAPH_PIPELINE_SCRATCH_SIZE_AMDX,
+            p_next: ptr::null_mut(),
+            size: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for ExecutionGraphPipelineScratchSizeAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("ExecutionGraphPipelineScratchSizeAMDX")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("size", &self.size)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+pub struct DispatchGraphInfoAMDX {
+    pub node_index: u32,
+    pub payload_count: u32,
+    pub payloads: DeviceOrHostAddressConstAMDX,
+    pub payload_stride: u64,
+}
+impl fmt::Debug for DispatchGraphInfoAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DispatchGraphInfoAMDX")
+            .field("node_index", &self.node_index)
+            .field("payload_count", &self.payload_count)
+            .field("payloads", &self.payloads)
+            .field("payload_stride", &self.payload_stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+pub struct DispatchGraphCountInfoAMDX {
+    pub count: u32,
+    pub infos: DeviceOrHostAddressConstAMDX,
+    pub stride: u64,
+}
+impl fmt::Debug for DispatchGraphCountInfoAMDX {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("DispatchGraphCountInfoAMDX")
+            .field("count", &self.count)
+            .field("infos", &self.infos)
+            .field("stride", &self.stride)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -42108,6 +42790,11 @@ pub type FnDestroyRenderPass = unsafe extern "system" fn(
 );
 pub type FnGetRenderAreaGranularity =
     unsafe extern "system" fn(device: Option<Device>, render_pass: Option<RenderPass>, p_granularity: *mut Extent2D);
+pub type FnGetRenderingAreaGranularityKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_rendering_area_info: *const RenderingAreaInfoKHR,
+    p_granularity: *mut Extent2D,
+);
 pub type FnCreateCommandPool = unsafe extern "system" fn(
     device: Option<Device>,
     p_create_info: *const CommandPoolCreateInfo,
@@ -43755,6 +44442,13 @@ pub type FnCmdSetViewportWithCount =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, viewport_count: u32, p_viewports: *const Viewport);
 pub type FnCmdSetScissorWithCount =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scissor_count: u32, p_scissors: *const Rect2D);
+pub type FnCmdBindIndexBuffer2KHR = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    buffer: Option<Buffer>,
+    offset: DeviceSize,
+    size: DeviceSize,
+    index_type: IndexType,
+);
 pub type FnCmdBindVertexBuffers2 = unsafe extern "system" fn(
     command_buffer: Option<CommandBuffer>,
     first_binding: u32,
@@ -44250,11 +44944,11 @@ pub type FnGetShaderModuleCreateInfoIdentifierEXT = unsafe extern "system" fn(
     p_create_info: *const ShaderModuleCreateInfo,
     p_identifier: *mut ShaderModuleIdentifierEXT,
 );
-pub type FnGetImageSubresourceLayout2EXT = unsafe extern "system" fn(
+pub type FnGetImageSubresourceLayout2KHR = unsafe extern "system" fn(
     device: Option<Device>,
     image: Option<Image>,
-    p_subresource: *const ImageSubresource2EXT,
-    p_layout: *mut SubresourceLayout2EXT,
+    p_subresource: *const ImageSubresource2KHR,
+    p_layout: *mut SubresourceLayout2KHR,
 );
 pub type FnGetPipelinePropertiesEXT = unsafe extern "system" fn(
     device: Option<Device>,
@@ -44312,6 +45006,11 @@ pub type FnCmdSetDepthBias2EXT =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, p_depth_bias_info: *const DepthBiasInfoEXT);
 pub type FnReleaseSwapchainImagesEXT =
     unsafe extern "system" fn(device: Option<Device>, p_release_info: *const ReleaseSwapchainImagesInfoEXT) -> Result;
+pub type FnGetDeviceImageSubresourceLayoutKHR = unsafe extern "system" fn(
+    device: Option<Device>,
+    p_info: *const DeviceImageSubresourceInfoKHR,
+    p_layout: *mut SubresourceLayout2KHR,
+);
 pub type FnMapMemory2KHR = unsafe extern "system" fn(
     device: Option<Device>,
     p_memory_map_info: *const MemoryMapInfoKHR,
@@ -44348,3 +45047,36 @@ pub type FnGetPhysicalDeviceCooperativeMatrixPropertiesKHR = unsafe extern "syst
     p_property_count: *mut u32,
     p_properties: *mut CooperativeMatrixPropertiesKHR,
 ) -> Result;
+pub type FnGetExecutionGraphPipelineScratchSizeAMDX = unsafe extern "system" fn(
+    device: Option<Device>,
+    execution_graph: Option<Pipeline>,
+    p_size_info: *mut ExecutionGraphPipelineScratchSizeAMDX,
+) -> Result;
+pub type FnGetExecutionGraphPipelineNodeIndexAMDX = unsafe extern "system" fn(
+    device: Option<Device>,
+    execution_graph: Option<Pipeline>,
+    p_node_info: *const PipelineShaderStageNodeCreateInfoAMDX,
+    p_node_index: *mut u32,
+) -> Result;
+pub type FnCreateExecutionGraphPipelinesAMDX = unsafe extern "system" fn(
+    device: Option<Device>,
+    pipeline_cache: Option<PipelineCache>,
+    create_info_count: u32,
+    p_create_infos: *const ExecutionGraphPipelineCreateInfoAMDX,
+    p_allocator: *const AllocationCallbacks,
+    p_pipelines: *mut Pipeline,
+) -> Result;
+pub type FnCmdInitializeGraphScratchMemoryAMDX =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress);
+pub type FnCmdDispatchGraphAMDX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    scratch: DeviceAddress,
+    p_count_info: *const DispatchGraphCountInfoAMDX,
+);
+pub type FnCmdDispatchGraphIndirectAMDX = unsafe extern "system" fn(
+    command_buffer: Option<CommandBuffer>,
+    scratch: DeviceAddress,
+    p_count_info: *const DispatchGraphCountInfoAMDX,
+);
+pub type FnCmdDispatchGraphIndirectCountAMDX =
+    unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress, count_info: DeviceAddress);
