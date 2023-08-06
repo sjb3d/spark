@@ -2839,14 +2839,12 @@ impl PipelineCreateFlags2KHR {
     pub const DISABLE_OPTIMIZATION: Self = Self(0x1);
     pub const ALLOW_DERIVATIVES: Self = Self(0x2);
     pub const DERIVATIVE: Self = Self(0x4);
-    /// Added by extension VK_NV_displacement_micromap.
-    pub const RESERVED_BIT_28_NV: Self = Self(0x10000000);
     /// Added by extension VK_KHR_maintenance5.
     pub const VIEW_INDEX_FROM_DEVICE_INDEX: Self = Self(0x8);
     /// Added by extension VK_KHR_maintenance5.
     pub const DISPATCH_BASE: Self = Self(0x10);
     /// Added by extension VK_KHR_maintenance5.
-    pub const DEFER_COMPILE: Self = Self(0x20);
+    pub const DEFER_COMPILE_NV: Self = Self(0x20);
     /// Added by extension VK_KHR_maintenance5.
     pub const CAPTURE_STATISTICS: Self = Self(0x40);
     /// Added by extension VK_KHR_maintenance5.
@@ -2856,9 +2854,9 @@ impl PipelineCreateFlags2KHR {
     /// Added by extension VK_KHR_maintenance5.
     pub const EARLY_RETURN_ON_FAILURE: Self = Self(0x200);
     /// Added by extension VK_KHR_maintenance5.
-    pub const LINK_TIME_OPTIMIZATION: Self = Self(0x400);
+    pub const LINK_TIME_OPTIMIZATION_EXT: Self = Self(0x400);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO: Self = Self(0x800000);
+    pub const RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_maintenance5.
     pub const LIBRARY: Self = Self(0x800);
     /// Added by extension VK_KHR_maintenance5.
@@ -2876,25 +2874,27 @@ impl PipelineCreateFlags2KHR {
     /// Added by extension VK_KHR_maintenance5.
     pub const RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY: Self = Self(0x80000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const INDIRECT_BINDABLE: Self = Self(0x40000);
+    pub const INDIRECT_BINDABLE_NV: Self = Self(0x40000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_ALLOW_MOTION: Self = Self(0x100000);
+    pub const RAY_TRACING_ALLOW_MOTION_NV: Self = Self(0x100000);
     /// Added by extension VK_KHR_maintenance5.
     pub const RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT: Self = Self(0x200000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT: Self = Self(0x400000);
+    pub const RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT: Self = Self(0x400000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RAY_TRACING_OPACITY_MICROMAP: Self = Self(0x1000000);
+    pub const RAY_TRACING_OPACITY_MICROMAP_EXT: Self = Self(0x1000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const COLOR_ATTACHMENT_FEEDBACK_LOOP: Self = Self(0x2000000);
+    pub const COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x2000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP: Self = Self(0x4000000);
+    pub const DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT: Self = Self(0x4000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const NO_PROTECTED_ACCESS: Self = Self(0x8000000);
+    pub const NO_PROTECTED_ACCESS_EXT: Self = Self(0x8000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const PROTECTED_ACCESS_ONLY: Self = Self(0x40000000);
+    pub const PROTECTED_ACCESS_ONLY_EXT: Self = Self(0x40000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const DESCRIPTOR_BUFFER: Self = Self(0x20000000);
+    pub const RAY_TRACING_DISPLACEMENT_MICROMAP_NV: Self = Self(0x10000000);
+    /// Added by extension VK_KHR_maintenance5.
+    pub const DESCRIPTOR_BUFFER_EXT: Self = Self(0x20000000);
 }
 impl_bitmask!(PipelineCreateFlags2KHR, 0x7fffffff);
 impl fmt::Display for PipelineCreateFlags2KHR {
@@ -2905,16 +2905,15 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x1, "DISABLE_OPTIMIZATION"),
                 (0x2, "ALLOW_DERIVATIVES"),
                 (0x4, "DERIVATIVE"),
-                (0x10000000, "RESERVED_BIT_28_NV"),
                 (0x8, "VIEW_INDEX_FROM_DEVICE_INDEX"),
                 (0x10, "DISPATCH_BASE"),
-                (0x20, "DEFER_COMPILE"),
+                (0x20, "DEFER_COMPILE_NV"),
                 (0x40, "CAPTURE_STATISTICS"),
                 (0x80, "CAPTURE_INTERNAL_REPRESENTATIONS"),
                 (0x100, "FAIL_ON_PIPELINE_COMPILE_REQUIRED"),
                 (0x200, "EARLY_RETURN_ON_FAILURE"),
-                (0x400, "LINK_TIME_OPTIMIZATION"),
-                (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO"),
+                (0x400, "LINK_TIME_OPTIMIZATION_EXT"),
+                (0x800000, "RETAIN_LINK_TIME_OPTIMIZATION_INFO_EXT"),
                 (0x800, "LIBRARY"),
                 (0x1000, "RAY_TRACING_SKIP_TRIANGLES"),
                 (0x2000, "RAY_TRACING_SKIP_AABBS"),
@@ -2923,16 +2922,17 @@ impl fmt::Display for PipelineCreateFlags2KHR {
                 (0x10000, "RAY_TRACING_NO_NULL_MISS_SHADERS"),
                 (0x20000, "RAY_TRACING_NO_NULL_INTERSECTION_SHADERS"),
                 (0x80000, "RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY"),
-                (0x40000, "INDIRECT_BINDABLE"),
-                (0x100000, "RAY_TRACING_ALLOW_MOTION"),
+                (0x40000, "INDIRECT_BINDABLE_NV"),
+                (0x100000, "RAY_TRACING_ALLOW_MOTION_NV"),
                 (0x200000, "RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT"),
-                (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT"),
-                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP"),
-                (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP"),
-                (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP"),
-                (0x8000000, "NO_PROTECTED_ACCESS"),
-                (0x40000000, "PROTECTED_ACCESS_ONLY"),
-                (0x20000000, "DESCRIPTOR_BUFFER"),
+                (0x400000, "RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_EXT"),
+                (0x1000000, "RAY_TRACING_OPACITY_MICROMAP_EXT"),
+                (0x2000000, "COLOR_ATTACHMENT_FEEDBACK_LOOP_EXT"),
+                (0x4000000, "DEPTH_STENCIL_ATTACHMENT_FEEDBACK_LOOP_EXT"),
+                (0x8000000, "NO_PROTECTED_ACCESS_EXT"),
+                (0x40000000, "PROTECTED_ACCESS_ONLY_EXT"),
+                (0x10000000, "RAY_TRACING_DISPLACEMENT_MICROMAP_NV"),
+                (0x20000000, "DESCRIPTOR_BUFFER_EXT"),
             ],
             f,
         )
@@ -2954,14 +2954,14 @@ impl BufferUsageFlags2KHR {
     /// Added by extension VK_AMDX_shader_enqueue.
     pub const EXECUTION_GRAPH_SCRATCH_AMDX: Self = Self(0x2000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const CONDITIONAL_RENDERING: Self = Self(0x200);
+    pub const CONDITIONAL_RENDERING_EXT: Self = Self(0x200);
     /// Added by extension VK_KHR_maintenance5.
     pub const SHADER_BINDING_TABLE: Self = Self(0x400);
-    pub const RAY_TRACING: Self = Self::SHADER_BINDING_TABLE;
+    pub const RAY_TRACING_NV: Self = Self::SHADER_BINDING_TABLE;
     /// Added by extension VK_KHR_maintenance5.
-    pub const TRANSFORM_FEEDBACK_BUFFER: Self = Self(0x800);
+    pub const TRANSFORM_FEEDBACK_BUFFER_EXT: Self = Self(0x800);
     /// Added by extension VK_KHR_maintenance5.
-    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER: Self = Self(0x1000);
+    pub const TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT: Self = Self(0x1000);
     /// Added by extension VK_KHR_maintenance5.
     pub const VIDEO_DECODE_SRC: Self = Self(0x2000);
     /// Added by extension VK_KHR_maintenance5.
@@ -2977,15 +2977,15 @@ impl BufferUsageFlags2KHR {
     /// Added by extension VK_KHR_maintenance5.
     pub const ACCELERATION_STRUCTURE_STORAGE: Self = Self(0x100000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const SAMPLER_DESCRIPTOR_BUFFER: Self = Self(0x200000);
+    pub const SAMPLER_DESCRIPTOR_BUFFER_EXT: Self = Self(0x200000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const RESOURCE_DESCRIPTOR_BUFFER: Self = Self(0x400000);
+    pub const RESOURCE_DESCRIPTOR_BUFFER_EXT: Self = Self(0x400000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER: Self = Self(0x4000000);
+    pub const PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT: Self = Self(0x4000000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const MICROMAP_BUILD_INPUT_READ_ONLY: Self = Self(0x800000);
+    pub const MICROMAP_BUILD_INPUT_READ_ONLY_EXT: Self = Self(0x800000);
     /// Added by extension VK_KHR_maintenance5.
-    pub const MICROMAP_STORAGE: Self = Self(0x1000000);
+    pub const MICROMAP_STORAGE_EXT: Self = Self(0x1000000);
 }
 impl_bitmask!(BufferUsageFlags2KHR, 0x7fbffff);
 impl fmt::Display for BufferUsageFlags2KHR {
@@ -3003,10 +3003,10 @@ impl fmt::Display for BufferUsageFlags2KHR {
                 (0x80, "VERTEX_BUFFER"),
                 (0x100, "INDIRECT_BUFFER"),
                 (0x2000000, "EXECUTION_GRAPH_SCRATCH_AMDX"),
-                (0x200, "CONDITIONAL_RENDERING"),
+                (0x200, "CONDITIONAL_RENDERING_EXT"),
                 (0x400, "SHADER_BINDING_TABLE"),
-                (0x800, "TRANSFORM_FEEDBACK_BUFFER"),
-                (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER"),
+                (0x800, "TRANSFORM_FEEDBACK_BUFFER_EXT"),
+                (0x1000, "TRANSFORM_FEEDBACK_COUNTER_BUFFER_EXT"),
                 (0x2000, "VIDEO_DECODE_SRC"),
                 (0x4000, "VIDEO_DECODE_DST"),
                 (0x8000, "VIDEO_ENCODE_DST"),
@@ -3014,11 +3014,11 @@ impl fmt::Display for BufferUsageFlags2KHR {
                 (0x20000, "SHADER_DEVICE_ADDRESS"),
                 (0x80000, "ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY"),
                 (0x100000, "ACCELERATION_STRUCTURE_STORAGE"),
-                (0x200000, "SAMPLER_DESCRIPTOR_BUFFER"),
-                (0x400000, "RESOURCE_DESCRIPTOR_BUFFER"),
-                (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER"),
-                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY"),
-                (0x1000000, "MICROMAP_STORAGE"),
+                (0x200000, "SAMPLER_DESCRIPTOR_BUFFER_EXT"),
+                (0x400000, "RESOURCE_DESCRIPTOR_BUFFER_EXT"),
+                (0x4000000, "PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_EXT"),
+                (0x800000, "MICROMAP_BUILD_INPUT_READ_ONLY_EXT"),
+                (0x1000000, "MICROMAP_STORAGE_EXT"),
             ],
             f,
         )
