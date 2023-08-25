@@ -17075,12 +17075,19 @@ impl<'a> Builder<'a> for vk::BlitImageInfo2 {
         Default::default()
     }
 }
+pub trait BlitImageInfo2Next {}
 #[derive(Default)]
 pub struct BlitImageInfo2Builder<'a> {
     inner: vk::BlitImageInfo2,
     phantom: PhantomData<&'a vk::Never>,
 }
 impl<'a> BlitImageInfo2Builder<'a> {
+    pub fn insert_next<T: BlitImageInfo2Next>(mut self, next: &'a mut T) -> Self {
+        unsafe {
+            insert_next(&mut self as *mut Self as *mut _, next as *mut T as *mut _);
+        }
+        self
+    }
     pub fn p_next(mut self, p_next: *const c_void) -> Self {
         self.inner.p_next = p_next;
         self
@@ -24346,3 +24353,244 @@ impl Deref for ExecutionGraphPipelineScratchSizeAMDXBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceCubicClampFeaturesQCOM {
+    type Type = PhysicalDeviceCubicClampFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCubicClampFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceCubicClampFeaturesQCOM,
+}
+impl PhysicalDeviceCubicClampFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cubic_range_clamp(mut self, cubic_range_clamp: bool) -> Self {
+        self.inner.cubic_range_clamp = if cubic_range_clamp { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCubicClampFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceCubicClampFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCubicClampFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCubicClampFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCubicClampFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCubicClampFeaturesQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceYcbcrDegammaFeaturesQCOM {
+    type Type = PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceYcbcrDegammaFeaturesQCOM,
+}
+impl PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn ycbcr_degamma(mut self, ycbcr_degamma: bool) -> Self {
+        self.inner.ycbcr_degamma = if ycbcr_degamma { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceYcbcrDegammaFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceYcbcrDegammaFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceYcbcrDegammaFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceYcbcrDegammaFeaturesQCOM {}
+impl Builder<'_> for vk::SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {
+    type Type = SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOMBuilder {
+    inner: vk::SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM,
+}
+impl SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn enable_y_degamma(mut self, enable_y_degamma: bool) -> Self {
+        self.inner.enable_y_degamma = if enable_y_degamma { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn enable_cb_cr_degamma(mut self, enable_cb_cr_degamma: bool) -> Self {
+        self.inner.enable_cb_cr_degamma = if enable_cb_cr_degamma { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOMBuilder {
+    type Target = vk::SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SamplerYcbcrConversionCreateInfoNext for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOMBuilder {}
+impl SamplerYcbcrConversionCreateInfoNext for vk::SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceCubicWeightsFeaturesQCOM {
+    type Type = PhysicalDeviceCubicWeightsFeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceCubicWeightsFeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceCubicWeightsFeaturesQCOM,
+}
+impl PhysicalDeviceCubicWeightsFeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn selectable_cubic_weights(mut self, selectable_cubic_weights: bool) -> Self {
+        self.inner.selectable_cubic_weights = if selectable_cubic_weights { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceCubicWeightsFeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceCubicWeightsFeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceCubicWeightsFeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceCubicWeightsFeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceCubicWeightsFeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceCubicWeightsFeaturesQCOM {}
+impl Builder<'_> for vk::SamplerCubicWeightsCreateInfoQCOM {
+    type Type = SamplerCubicWeightsCreateInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerCubicWeightsCreateInfoQCOMBuilder {
+    inner: vk::SamplerCubicWeightsCreateInfoQCOM,
+}
+impl SamplerCubicWeightsCreateInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cubic_weights(mut self, cubic_weights: vk::CubicFilterWeightsQCOM) -> Self {
+        self.inner.cubic_weights = cubic_weights;
+        self
+    }
+}
+impl Deref for SamplerCubicWeightsCreateInfoQCOMBuilder {
+    type Target = vk::SamplerCubicWeightsCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SamplerCreateInfoNext for SamplerCubicWeightsCreateInfoQCOMBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerCubicWeightsCreateInfoQCOM {}
+impl Builder<'_> for vk::BlitImageCubicWeightsInfoQCOM {
+    type Type = BlitImageCubicWeightsInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct BlitImageCubicWeightsInfoQCOMBuilder {
+    inner: vk::BlitImageCubicWeightsInfoQCOM,
+}
+impl BlitImageCubicWeightsInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn cubic_weights(mut self, cubic_weights: vk::CubicFilterWeightsQCOM) -> Self {
+        self.inner.cubic_weights = cubic_weights;
+        self
+    }
+}
+impl Deref for BlitImageCubicWeightsInfoQCOMBuilder {
+    type Target = vk::BlitImageCubicWeightsInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl BlitImageInfo2Next for BlitImageCubicWeightsInfoQCOMBuilder {}
+impl BlitImageInfo2Next for vk::BlitImageCubicWeightsInfoQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceImageProcessing2FeaturesQCOM {
+    type Type = PhysicalDeviceImageProcessing2FeaturesQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceImageProcessing2FeaturesQCOMBuilder {
+    inner: vk::PhysicalDeviceImageProcessing2FeaturesQCOM,
+}
+impl PhysicalDeviceImageProcessing2FeaturesQCOMBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn texture_block_match2(mut self, texture_block_match2: bool) -> Self {
+        self.inner.texture_block_match2 = if texture_block_match2 { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceImageProcessing2FeaturesQCOMBuilder {
+    type Target = vk::PhysicalDeviceImageProcessing2FeaturesQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceImageProcessing2FeaturesQCOMBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceImageProcessing2FeaturesQCOMBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceImageProcessing2FeaturesQCOM {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceImageProcessing2FeaturesQCOM {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceImageProcessing2PropertiesQCOM {}
+impl Builder<'_> for vk::SamplerBlockMatchWindowCreateInfoQCOM {
+    type Type = SamplerBlockMatchWindowCreateInfoQCOMBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SamplerBlockMatchWindowCreateInfoQCOMBuilder {
+    inner: vk::SamplerBlockMatchWindowCreateInfoQCOM,
+}
+impl SamplerBlockMatchWindowCreateInfoQCOMBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn window_extent(mut self, window_extent: vk::Extent2D) -> Self {
+        self.inner.window_extent = window_extent;
+        self
+    }
+    pub fn window_compare_mode(mut self, window_compare_mode: vk::BlockMatchWindowCompareModeQCOM) -> Self {
+        self.inner.window_compare_mode = window_compare_mode;
+        self
+    }
+}
+impl Deref for SamplerBlockMatchWindowCreateInfoQCOMBuilder {
+    type Target = vk::SamplerBlockMatchWindowCreateInfoQCOM;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SamplerCreateInfoNext for SamplerBlockMatchWindowCreateInfoQCOMBuilder {}
+impl SamplerCreateInfoNext for vk::SamplerBlockMatchWindowCreateInfoQCOM {}

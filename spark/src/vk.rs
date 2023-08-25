@@ -8066,6 +8066,24 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM: Self = Self(1000510000);
     /// Added by extension VK_QCOM_multiview_per_view_render_areas.
     pub const MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM: Self = Self(1000510001);
+    /// Added by extension VK_QCOM_image_processing2.
+    pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM: Self = Self(1000518000);
+    /// Added by extension VK_QCOM_image_processing2.
+    pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_2_PROPERTIES_QCOM: Self = Self(1000518001);
+    /// Added by extension VK_QCOM_image_processing2.
+    pub const SAMPLER_BLOCK_MATCH_WINDOW_CREATE_INFO_QCOM: Self = Self(1000518002);
+    /// Added by extension VK_QCOM_filter_cubic_weights.
+    pub const SAMPLER_CUBIC_WEIGHTS_CREATE_INFO_QCOM: Self = Self(1000519000);
+    /// Added by extension VK_QCOM_filter_cubic_weights.
+    pub const PHYSICAL_DEVICE_CUBIC_WEIGHTS_FEATURES_QCOM: Self = Self(1000519001);
+    /// Added by extension VK_QCOM_filter_cubic_weights.
+    pub const BLIT_IMAGE_CUBIC_WEIGHTS_INFO_QCOM: Self = Self(1000519002);
+    /// Added by extension VK_QCOM_ycbcr_degamma.
+    pub const PHYSICAL_DEVICE_YCBCR_DEGAMMA_FEATURES_QCOM: Self = Self(1000520000);
+    /// Added by extension VK_QCOM_ycbcr_degamma.
+    pub const SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM: Self = Self(1000520001);
+    /// Added by extension VK_QCOM_filter_cubic_clamp.
+    pub const PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM: Self = Self(1000521000);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
 }
@@ -8810,6 +8828,15 @@ impl fmt::Display for StructureType {
             1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000510000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM"),
             1000510001 => Some(&"MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM"),
+            1000518000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM"),
+            1000518001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_2_PROPERTIES_QCOM"),
+            1000518002 => Some(&"SAMPLER_BLOCK_MATCH_WINDOW_CREATE_INFO_QCOM"),
+            1000519000 => Some(&"SAMPLER_CUBIC_WEIGHTS_CREATE_INFO_QCOM"),
+            1000519001 => Some(&"PHYSICAL_DEVICE_CUBIC_WEIGHTS_FEATURES_QCOM"),
+            1000519002 => Some(&"BLIT_IMAGE_CUBIC_WEIGHTS_INFO_QCOM"),
+            1000520000 => Some(&"PHYSICAL_DEVICE_YCBCR_DEGAMMA_FEATURES_QCOM"),
+            1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
+            1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
             _ => None,
         };
@@ -10424,6 +10451,52 @@ pub type ScopeNV = ScopeKHR;
 pub type ComponentTypeNV = ComponentTypeKHR;
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct CubicFilterWeightsQCOM(pub(crate) i32);
+impl CubicFilterWeightsQCOM {
+    pub const CATMULL_ROM: Self = Self(0);
+    pub const ZERO_TANGENT_CARDINAL: Self = Self(1);
+    pub const B_SPLINE: Self = Self(2);
+    pub const MITCHELL_NETRAVALI: Self = Self(3);
+}
+impl fmt::Display for CubicFilterWeightsQCOM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"CATMULL_ROM"),
+            1 => Some(&"ZERO_TANGENT_CARDINAL"),
+            2 => Some(&"B_SPLINE"),
+            3 => Some(&"MITCHELL_NETRAVALI"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct BlockMatchWindowCompareModeQCOM(pub(crate) i32);
+impl BlockMatchWindowCompareModeQCOM {
+    pub const MIN: Self = Self(0);
+    pub const MAX: Self = Self(1);
+}
+impl fmt::Display for BlockMatchWindowCompareModeQCOM {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"MIN"),
+            1 => Some(&"MAX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct ColorSpaceKHR(pub(crate) i32);
 impl ColorSpaceKHR {
     pub const SRGB_NONLINEAR: Self = Self(0);
@@ -10935,6 +11008,8 @@ impl SamplerReductionMode {
     pub const WEIGHTED_AVERAGE_EXT: Self = Self::WEIGHTED_AVERAGE;
     pub const MIN_EXT: Self = Self::MIN;
     pub const MAX_EXT: Self = Self::MAX;
+    /// Added by extension VK_QCOM_filter_cubic_clamp.
+    pub const WEIGHTED_AVERAGE_RANGECLAMP_QCOM: Self = Self(1000521000);
 }
 impl fmt::Display for SamplerReductionMode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10942,6 +11017,7 @@ impl fmt::Display for SamplerReductionMode {
             0 => Some(&"WEIGHTED_AVERAGE"),
             1 => Some(&"MIN"),
             2 => Some(&"MAX"),
+            1000521000 => Some(&"WEIGHTED_AVERAGE_RANGECLAMP_QCOM"),
             _ => None,
         };
         if let Some(name) = name {
@@ -42367,6 +42443,255 @@ impl fmt::Debug for DispatchGraphCountInfoAMDX {
             .field("count", &self.count)
             .field("infos", &self.infos)
             .field("stride", &self.stride)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCubicClampFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub cubic_range_clamp: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCubicClampFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceCubicClampFeaturesQCOM {}
+impl Default for PhysicalDeviceCubicClampFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            cubic_range_clamp: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCubicClampFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCubicClampFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cubic_range_clamp", &self.cubic_range_clamp)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceYcbcrDegammaFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub ycbcr_degamma: Bool32,
+}
+unsafe impl Send for PhysicalDeviceYcbcrDegammaFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceYcbcrDegammaFeaturesQCOM {}
+impl Default for PhysicalDeviceYcbcrDegammaFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_YCBCR_DEGAMMA_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            ycbcr_degamma: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceYcbcrDegammaFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceYcbcrDegammaFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("ycbcr_degamma", &self.ycbcr_degamma)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub enable_y_degamma: Bool32,
+    pub enable_cb_cr_degamma: Bool32,
+}
+unsafe impl Send for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {}
+unsafe impl Sync for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {}
+impl Default for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM,
+            p_next: ptr::null_mut(),
+            enable_y_degamma: Default::default(),
+            enable_cb_cr_degamma: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("enable_y_degamma", &self.enable_y_degamma)
+            .field("enable_cb_cr_degamma", &self.enable_cb_cr_degamma)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceCubicWeightsFeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub selectable_cubic_weights: Bool32,
+}
+unsafe impl Send for PhysicalDeviceCubicWeightsFeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceCubicWeightsFeaturesQCOM {}
+impl Default for PhysicalDeviceCubicWeightsFeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_CUBIC_WEIGHTS_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            selectable_cubic_weights: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceCubicWeightsFeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceCubicWeightsFeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("selectable_cubic_weights", &self.selectable_cubic_weights)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SamplerCubicWeightsCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub cubic_weights: CubicFilterWeightsQCOM,
+}
+unsafe impl Send for SamplerCubicWeightsCreateInfoQCOM {}
+unsafe impl Sync for SamplerCubicWeightsCreateInfoQCOM {}
+impl Default for SamplerCubicWeightsCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_CUBIC_WEIGHTS_CREATE_INFO_QCOM,
+            p_next: ptr::null(),
+            cubic_weights: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerCubicWeightsCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerCubicWeightsCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cubic_weights", &self.cubic_weights)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct BlitImageCubicWeightsInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub cubic_weights: CubicFilterWeightsQCOM,
+}
+unsafe impl Send for BlitImageCubicWeightsInfoQCOM {}
+unsafe impl Sync for BlitImageCubicWeightsInfoQCOM {}
+impl Default for BlitImageCubicWeightsInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::BLIT_IMAGE_CUBIC_WEIGHTS_INFO_QCOM,
+            p_next: ptr::null(),
+            cubic_weights: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for BlitImageCubicWeightsInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BlitImageCubicWeightsInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("cubic_weights", &self.cubic_weights)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageProcessing2FeaturesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub texture_block_match2: Bool32,
+}
+unsafe impl Send for PhysicalDeviceImageProcessing2FeaturesQCOM {}
+unsafe impl Sync for PhysicalDeviceImageProcessing2FeaturesQCOM {}
+impl Default for PhysicalDeviceImageProcessing2FeaturesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_PROCESSING_2_FEATURES_QCOM,
+            p_next: ptr::null_mut(),
+            texture_block_match2: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageProcessing2FeaturesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageProcessing2FeaturesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("texture_block_match2", &self.texture_block_match2)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceImageProcessing2PropertiesQCOM {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_block_match_window: Extent2D,
+}
+unsafe impl Send for PhysicalDeviceImageProcessing2PropertiesQCOM {}
+unsafe impl Sync for PhysicalDeviceImageProcessing2PropertiesQCOM {}
+impl Default for PhysicalDeviceImageProcessing2PropertiesQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_IMAGE_PROCESSING_2_PROPERTIES_QCOM,
+            p_next: ptr::null_mut(),
+            max_block_match_window: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceImageProcessing2PropertiesQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceImageProcessing2PropertiesQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("max_block_match_window", &self.max_block_match_window)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SamplerBlockMatchWindowCreateInfoQCOM {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub window_extent: Extent2D,
+    pub window_compare_mode: BlockMatchWindowCompareModeQCOM,
+}
+unsafe impl Send for SamplerBlockMatchWindowCreateInfoQCOM {}
+unsafe impl Sync for SamplerBlockMatchWindowCreateInfoQCOM {}
+impl Default for SamplerBlockMatchWindowCreateInfoQCOM {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SAMPLER_BLOCK_MATCH_WINDOW_CREATE_INFO_QCOM,
+            p_next: ptr::null(),
+            window_extent: Default::default(),
+            window_compare_mode: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SamplerBlockMatchWindowCreateInfoQCOM {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SamplerBlockMatchWindowCreateInfoQCOM")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("window_extent", &self.window_extent)
+            .field("window_compare_mode", &self.window_compare_mode)
             .finish()
     }
 }

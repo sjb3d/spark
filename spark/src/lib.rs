@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 261
+//! Generated from vk.xml with `VK_HEADER_VERSION` 262
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2062,6 +2062,20 @@ impl InstanceExtensions {
     }
     pub fn enable_khr_cooperative_matrix(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_qcom_image_processing2(&self) -> bool {
+        self.supports_qcom_image_processing()
+    }
+    pub fn enable_qcom_image_processing2(&mut self) {
+        self.enable_qcom_image_processing();
+    }
+    pub fn supports_qcom_filter_cubic_clamp(&self) -> bool {
+        self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_ext_sampler_filter_minmax()
+    }
+    pub fn enable_qcom_filter_cubic_clamp(&mut self) {
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_ext_sampler_filter_minmax();
+        }
     }
     pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
         self.supports_khr_get_physical_device_properties2() && self.supports_ext_attachment_feedback_loop_layout()
@@ -4739,6 +4753,10 @@ pub struct DeviceExtensions {
     pub ext_dynamic_rendering_unused_attachments: bool,
     pub khr_cooperative_matrix: bool,
     pub qcom_multiview_per_view_render_areas: bool,
+    pub qcom_image_processing2: bool,
+    pub qcom_filter_cubic_weights: bool,
+    pub qcom_ycbcr_degamma: bool,
+    pub qcom_filter_cubic_clamp: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
 }
 impl DeviceExtensions {
@@ -5033,6 +5051,10 @@ impl DeviceExtensions {
             b"VK_EXT_dynamic_rendering_unused_attachments" => self.ext_dynamic_rendering_unused_attachments = true,
             b"VK_KHR_cooperative_matrix" => self.khr_cooperative_matrix = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
+            b"VK_QCOM_image_processing2" => self.qcom_image_processing2 = true,
+            b"VK_QCOM_filter_cubic_weights" => self.qcom_filter_cubic_weights = true,
+            b"VK_QCOM_ycbcr_degamma" => self.qcom_ycbcr_degamma = true,
+            b"VK_QCOM_filter_cubic_clamp" => self.qcom_filter_cubic_clamp = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
             _ => {}
         }
@@ -5327,6 +5349,10 @@ impl DeviceExtensions {
             ext_dynamic_rendering_unused_attachments: false,
             khr_cooperative_matrix: false,
             qcom_multiview_per_view_render_areas: false,
+            qcom_image_processing2: false,
+            qcom_filter_cubic_weights: false,
+            qcom_ycbcr_degamma: false,
+            qcom_filter_cubic_clamp: false,
             ext_attachment_feedback_loop_dynamic_state: false,
         }
     }
@@ -7413,6 +7439,38 @@ impl DeviceExtensions {
     pub fn enable_qcom_multiview_per_view_render_areas(&mut self) {
         self.qcom_multiview_per_view_render_areas = true;
     }
+    pub fn supports_qcom_image_processing2(&self) -> bool {
+        self.qcom_image_processing2 && self.supports_qcom_image_processing()
+    }
+    pub fn enable_qcom_image_processing2(&mut self) {
+        self.qcom_image_processing2 = true;
+        self.enable_qcom_image_processing();
+    }
+    pub fn supports_qcom_filter_cubic_weights(&self) -> bool {
+        self.qcom_filter_cubic_weights && self.supports_ext_filter_cubic()
+    }
+    pub fn enable_qcom_filter_cubic_weights(&mut self) {
+        self.qcom_filter_cubic_weights = true;
+        self.enable_ext_filter_cubic();
+    }
+    pub fn supports_qcom_ycbcr_degamma(&self) -> bool {
+        self.qcom_ycbcr_degamma
+    }
+    pub fn enable_qcom_ycbcr_degamma(&mut self) {
+        self.qcom_ycbcr_degamma = true;
+    }
+    pub fn supports_qcom_filter_cubic_clamp(&self) -> bool {
+        self.qcom_filter_cubic_clamp
+            && self.supports_ext_filter_cubic()
+            && (self.core_version >= vk::Version::from_raw_parts(1, 2, 0) || self.supports_ext_sampler_filter_minmax())
+    }
+    pub fn enable_qcom_filter_cubic_clamp(&mut self) {
+        self.qcom_filter_cubic_clamp = true;
+        self.enable_ext_filter_cubic();
+        if self.core_version < vk::Version::from_raw_parts(1, 2, 0) {
+            self.enable_ext_sampler_filter_minmax();
+        }
+    }
     pub fn supports_ext_attachment_feedback_loop_dynamic_state(&self) -> bool {
         self.ext_attachment_feedback_loop_dynamic_state && self.supports_ext_attachment_feedback_loop_layout()
     }
@@ -8284,6 +8342,18 @@ impl DeviceExtensions {
         }
         if self.qcom_multiview_per_view_render_areas {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_multiview_per_view_render_areas\0") })
+        }
+        if self.qcom_image_processing2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing2\0") })
+        }
+        if self.qcom_filter_cubic_weights {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_filter_cubic_weights\0") })
+        }
+        if self.qcom_ycbcr_degamma {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_ycbcr_degamma\0") })
+        }
+        if self.qcom_filter_cubic_clamp {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_filter_cubic_clamp\0") })
         }
         if self.ext_attachment_feedback_loop_dynamic_state {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_dynamic_state\0") })
