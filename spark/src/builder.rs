@@ -24594,3 +24594,37 @@ impl Deref for SamplerBlockMatchWindowCreateInfoQCOMBuilder {
 }
 impl SamplerCreateInfoNext for SamplerBlockMatchWindowCreateInfoQCOMBuilder {}
 impl SamplerCreateInfoNext for vk::SamplerBlockMatchWindowCreateInfoQCOM {}
+impl Builder<'_> for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {
+    type Type = PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV,
+}
+impl PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn descriptor_pool_overallocation(mut self, descriptor_pool_overallocation: bool) -> Self {
+        self.inner.descriptor_pool_overallocation = if descriptor_pool_overallocation {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}

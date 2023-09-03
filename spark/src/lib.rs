@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 262
+//! Generated from vk.xml with `VK_HEADER_VERSION` 263
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -4758,6 +4758,7 @@ pub struct DeviceExtensions {
     pub qcom_ycbcr_degamma: bool,
     pub qcom_filter_cubic_clamp: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
+    pub nv_descriptor_pool_overallocation: bool,
 }
 impl DeviceExtensions {
     fn enable_by_name(&mut self, name: &CStr) {
@@ -5056,6 +5057,7 @@ impl DeviceExtensions {
             b"VK_QCOM_ycbcr_degamma" => self.qcom_ycbcr_degamma = true,
             b"VK_QCOM_filter_cubic_clamp" => self.qcom_filter_cubic_clamp = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
+            b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             _ => {}
         }
     }
@@ -5354,6 +5356,7 @@ impl DeviceExtensions {
             qcom_ycbcr_degamma: false,
             qcom_filter_cubic_clamp: false,
             ext_attachment_feedback_loop_dynamic_state: false,
+            nv_descriptor_pool_overallocation: false,
         }
     }
     pub fn from_properties(core_version: vk::Version, properties: &[vk::ExtensionProperties]) -> Self {
@@ -7478,6 +7481,12 @@ impl DeviceExtensions {
         self.ext_attachment_feedback_loop_dynamic_state = true;
         self.enable_ext_attachment_feedback_loop_layout();
     }
+    pub fn supports_nv_descriptor_pool_overallocation(&self) -> bool {
+        self.nv_descriptor_pool_overallocation && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
+    }
+    pub fn enable_nv_descriptor_pool_overallocation(&mut self) {
+        self.nv_descriptor_pool_overallocation = true;
+    }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
         if self.khr_swapchain {
@@ -8357,6 +8366,9 @@ impl DeviceExtensions {
         }
         if self.ext_attachment_feedback_loop_dynamic_state {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_dynamic_state\0") })
+        }
+        if self.nv_descriptor_pool_overallocation {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })
         }
         v
     }

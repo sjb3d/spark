@@ -1904,8 +1904,12 @@ impl DescriptorPoolCreateFlags {
     pub const HOST_ONLY_VALVE: Self = Self::HOST_ONLY_EXT;
     /// Added by extension VK_EXT_mutable_descriptor_type.
     pub const HOST_ONLY_EXT: Self = Self(0x4);
+    /// Added by extension VK_NV_descriptor_pool_overallocation.
+    pub const ALLOW_OVERALLOCATION_SETS_NV: Self = Self(0x8);
+    /// Added by extension VK_NV_descriptor_pool_overallocation.
+    pub const ALLOW_OVERALLOCATION_POOLS_NV: Self = Self(0x10);
 }
-impl_bitmask!(DescriptorPoolCreateFlags, 0x7);
+impl_bitmask!(DescriptorPoolCreateFlags, 0x1f);
 impl fmt::Display for DescriptorPoolCreateFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -1914,6 +1918,8 @@ impl fmt::Display for DescriptorPoolCreateFlags {
                 (0x1, "FREE_DESCRIPTOR_SET"),
                 (0x2, "UPDATE_AFTER_BIND"),
                 (0x4, "HOST_ONLY_EXT"),
+                (0x8, "ALLOW_OVERALLOCATION_SETS_NV"),
+                (0x10, "ALLOW_OVERALLOCATION_POOLS_NV"),
             ],
             f,
         )
@@ -8086,6 +8092,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM: Self = Self(1000521000);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
+    /// Added by extension VK_NV_descriptor_pool_overallocation.
+    pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
 }
 impl fmt::Display for StructureType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -8838,6 +8846,7 @@ impl fmt::Display for StructureType {
             1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
             1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
+            1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -42692,6 +42701,33 @@ impl fmt::Debug for SamplerBlockMatchWindowCreateInfoQCOM {
             .field("p_next", &self.p_next)
             .field("window_extent", &self.window_extent)
             .field("window_compare_mode", &self.window_compare_mode)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub descriptor_pool_overallocation: Bool32,
+}
+unsafe impl Send for PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
+impl Default for PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            descriptor_pool_overallocation: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceDescriptorPoolOverallocationFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("descriptor_pool_overallocation", &self.descriptor_pool_overallocation)
             .finish()
     }
 }
