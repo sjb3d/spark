@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 263
+//! Generated from vk.xml with `VK_HEADER_VERSION` 264
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -2083,6 +2083,12 @@ impl InstanceExtensions {
     pub fn enable_ext_attachment_feedback_loop_dynamic_state(&mut self) {
         self.enable_khr_get_physical_device_properties2();
         self.enable_ext_attachment_feedback_loop_layout();
+    }
+    pub fn supports_msft_layered_driver(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_msft_layered_driver(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn to_name_vec(&self) -> Vec<&'static CStr> {
         let mut v = Vec::new();
@@ -4703,6 +4709,7 @@ pub struct DeviceExtensions {
     pub huawei_invocation_mask: bool,
     pub nv_external_memory_rdma: bool,
     pub ext_pipeline_properties: bool,
+    pub ext_frame_boundary: bool,
     pub ext_multisampled_render_to_single_sampled: bool,
     pub ext_extended_dynamic_state2: bool,
     pub ext_color_write_enable: bool,
@@ -4758,6 +4765,7 @@ pub struct DeviceExtensions {
     pub qcom_ycbcr_degamma: bool,
     pub qcom_filter_cubic_clamp: bool,
     pub ext_attachment_feedback_loop_dynamic_state: bool,
+    pub msft_layered_driver: bool,
     pub nv_descriptor_pool_overallocation: bool,
 }
 impl DeviceExtensions {
@@ -5002,6 +5010,7 @@ impl DeviceExtensions {
             b"VK_HUAWEI_invocation_mask" => self.huawei_invocation_mask = true,
             b"VK_NV_external_memory_rdma" => self.nv_external_memory_rdma = true,
             b"VK_EXT_pipeline_properties" => self.ext_pipeline_properties = true,
+            b"VK_EXT_frame_boundary" => self.ext_frame_boundary = true,
             b"VK_EXT_multisampled_render_to_single_sampled" => self.ext_multisampled_render_to_single_sampled = true,
             b"VK_EXT_extended_dynamic_state2" => self.ext_extended_dynamic_state2 = true,
             b"VK_EXT_color_write_enable" => self.ext_color_write_enable = true,
@@ -5057,6 +5066,7 @@ impl DeviceExtensions {
             b"VK_QCOM_ycbcr_degamma" => self.qcom_ycbcr_degamma = true,
             b"VK_QCOM_filter_cubic_clamp" => self.qcom_filter_cubic_clamp = true,
             b"VK_EXT_attachment_feedback_loop_dynamic_state" => self.ext_attachment_feedback_loop_dynamic_state = true,
+            b"VK_MSFT_layered_driver" => self.msft_layered_driver = true,
             b"VK_NV_descriptor_pool_overallocation" => self.nv_descriptor_pool_overallocation = true,
             _ => {}
         }
@@ -5301,6 +5311,7 @@ impl DeviceExtensions {
             huawei_invocation_mask: false,
             nv_external_memory_rdma: false,
             ext_pipeline_properties: false,
+            ext_frame_boundary: false,
             ext_multisampled_render_to_single_sampled: false,
             ext_extended_dynamic_state2: false,
             ext_color_write_enable: false,
@@ -5356,6 +5367,7 @@ impl DeviceExtensions {
             qcom_ycbcr_degamma: false,
             qcom_filter_cubic_clamp: false,
             ext_attachment_feedback_loop_dynamic_state: false,
+            msft_layered_driver: false,
             nv_descriptor_pool_overallocation: false,
         }
     }
@@ -7095,6 +7107,12 @@ impl DeviceExtensions {
     pub fn enable_ext_pipeline_properties(&mut self) {
         self.ext_pipeline_properties = true;
     }
+    pub fn supports_ext_frame_boundary(&self) -> bool {
+        self.ext_frame_boundary
+    }
+    pub fn enable_ext_frame_boundary(&mut self) {
+        self.ext_frame_boundary = true;
+    }
     pub fn supports_ext_multisampled_render_to_single_sampled(&self) -> bool {
         self.ext_multisampled_render_to_single_sampled
             && self.supports_khr_create_renderpass2()
@@ -7480,6 +7498,12 @@ impl DeviceExtensions {
     pub fn enable_ext_attachment_feedback_loop_dynamic_state(&mut self) {
         self.ext_attachment_feedback_loop_dynamic_state = true;
         self.enable_ext_attachment_feedback_loop_layout();
+    }
+    pub fn supports_msft_layered_driver(&self) -> bool {
+        self.msft_layered_driver
+    }
+    pub fn enable_msft_layered_driver(&mut self) {
+        self.msft_layered_driver = true;
     }
     pub fn supports_nv_descriptor_pool_overallocation(&self) -> bool {
         self.nv_descriptor_pool_overallocation && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -8202,6 +8226,9 @@ impl DeviceExtensions {
         if self.ext_pipeline_properties {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_properties\0") })
         }
+        if self.ext_frame_boundary {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_frame_boundary\0") })
+        }
         if self.ext_multisampled_render_to_single_sampled {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_multisampled_render_to_single_sampled\0") })
         }
@@ -8366,6 +8393,9 @@ impl DeviceExtensions {
         }
         if self.ext_attachment_feedback_loop_dynamic_state {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_attachment_feedback_loop_dynamic_state\0") })
+        }
+        if self.msft_layered_driver {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_MSFT_layered_driver\0") })
         }
         if self.nv_descriptor_pool_overallocation {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_descriptor_pool_overallocation\0") })

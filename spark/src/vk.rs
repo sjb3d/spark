@@ -4234,6 +4234,18 @@ impl fmt::Display for OpticalFlowExecuteFlagsNV {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
+pub struct FrameBoundaryFlagsEXT(pub(crate) u32);
+impl FrameBoundaryFlagsEXT {
+    pub const FRAME_END: Self = Self(0x1);
+}
+impl_bitmask!(FrameBoundaryFlagsEXT, 0x1);
+impl fmt::Display for FrameBoundaryFlagsEXT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        display_bitmask(self.0 as _, &[(0x1, "FRAME_END")], f)
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, Hash)]
 pub struct PresentScalingFlagsEXT(pub(crate) u32);
 impl PresentScalingFlagsEXT {
     pub const ONE_TO_ONE: Self = Self(0x1);
@@ -7849,6 +7861,10 @@ impl StructureType {
     /// Added by extension VK_EXT_pipeline_properties.
     pub const PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT: Self = Self(1000372001);
     pub const PIPELINE_INFO_EXT: Self = Self::PIPELINE_INFO_KHR;
+    /// Added by extension VK_EXT_frame_boundary.
+    pub const PHYSICAL_DEVICE_FRAME_BOUNDARY_FEATURES_EXT: Self = Self(1000375000);
+    /// Added by extension VK_EXT_frame_boundary.
+    pub const FRAME_BOUNDARY_EXT: Self = Self(1000375001);
     /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
     pub const PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT: Self = Self(1000376000);
     /// Added by extension VK_EXT_multisampled_render_to_single_sampled.
@@ -8092,6 +8108,8 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM: Self = Self(1000521000);
     /// Added by extension VK_EXT_attachment_feedback_loop_dynamic_state.
     pub const PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT: Self = Self(1000524000);
+    /// Added by extension VK_MSFT_layered_driver.
+    pub const PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT: Self = Self(1000530000);
     /// Added by extension VK_NV_descriptor_pool_overallocation.
     pub const PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV: Self = Self(1000546000);
 }
@@ -8727,6 +8745,8 @@ impl fmt::Display for StructureType {
             1000371001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV"),
             1000372000 => Some(&"PIPELINE_PROPERTIES_IDENTIFIER_EXT"),
             1000372001 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT"),
+            1000375000 => Some(&"PHYSICAL_DEVICE_FRAME_BOUNDARY_FEATURES_EXT"),
+            1000375001 => Some(&"FRAME_BOUNDARY_EXT"),
             1000376000 => Some(&"PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT"),
             1000376001 => Some(&"SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT"),
             1000376002 => Some(&"MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT"),
@@ -8846,6 +8866,7 @@ impl fmt::Display for StructureType {
             1000520001 => Some(&"SAMPLER_YCBCR_CONVERSION_YCBCR_DEGAMMA_CREATE_INFO_QCOM"),
             1000521000 => Some(&"PHYSICAL_DEVICE_CUBIC_CLAMP_FEATURES_QCOM"),
             1000524000 => Some(&"PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT"),
+            1000530000 => Some(&"PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT"),
             1000546000 => Some(&"PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV"),
             _ => None,
         };
@@ -10495,6 +10516,27 @@ impl fmt::Display for BlockMatchWindowCompareModeQCOM {
         let name = match self.0 {
             0 => Some(&"MIN"),
             1 => Some(&"MAX"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct LayeredDriverUnderlyingApiMSFT(pub(crate) i32);
+impl LayeredDriverUnderlyingApiMSFT {
+    pub const NONE: Self = Self(0);
+    pub const D3D12: Self = Self(1);
+}
+impl fmt::Display for LayeredDriverUnderlyingApiMSFT {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"NONE"),
+            1 => Some(&"D3D12"),
             _ => None,
         };
         if let Some(name) = name {
@@ -41176,6 +41218,84 @@ impl fmt::Debug for PhysicalDeviceShaderCoreBuiltinsFeaturesARM {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct FrameBoundaryEXT {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub flags: FrameBoundaryFlagsEXT,
+    pub frame_id: u64,
+    pub image_count: u32,
+    pub p_images: *const Image,
+    pub buffer_count: u32,
+    pub p_buffers: *const Buffer,
+    pub tag_name: u64,
+    pub tag_size: usize,
+    pub p_tag: *const c_void,
+}
+unsafe impl Send for FrameBoundaryEXT {}
+unsafe impl Sync for FrameBoundaryEXT {}
+impl Default for FrameBoundaryEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::FRAME_BOUNDARY_EXT,
+            p_next: ptr::null(),
+            flags: Default::default(),
+            frame_id: Default::default(),
+            image_count: Default::default(),
+            p_images: ptr::null(),
+            buffer_count: Default::default(),
+            p_buffers: ptr::null(),
+            tag_name: Default::default(),
+            tag_size: Default::default(),
+            p_tag: ptr::null(),
+        }
+    }
+}
+impl fmt::Debug for FrameBoundaryEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("FrameBoundaryEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("flags", &self.flags)
+            .field("frame_id", &self.frame_id)
+            .field("image_count", &self.image_count)
+            .field("p_images", &self.p_images)
+            .field("buffer_count", &self.buffer_count)
+            .field("p_buffers", &self.p_buffers)
+            .field("tag_name", &self.tag_name)
+            .field("tag_size", &self.tag_size)
+            .field("p_tag", &self.p_tag)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceFrameBoundaryFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub frame_boundary: Bool32,
+}
+unsafe impl Send for PhysicalDeviceFrameBoundaryFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceFrameBoundaryFeaturesEXT {}
+impl Default for PhysicalDeviceFrameBoundaryFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_FRAME_BOUNDARY_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            frame_boundary: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceFrameBoundaryFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceFrameBoundaryFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("frame_boundary", &self.frame_boundary)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -42728,6 +42848,33 @@ impl fmt::Debug for PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {
             .field("s_type", &self.s_type)
             .field("p_next", &self.p_next)
             .field("descriptor_pool_overallocation", &self.descriptor_pool_overallocation)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceLayeredDriverPropertiesMSFT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub underlying_api: LayeredDriverUnderlyingApiMSFT,
+}
+unsafe impl Send for PhysicalDeviceLayeredDriverPropertiesMSFT {}
+unsafe impl Sync for PhysicalDeviceLayeredDriverPropertiesMSFT {}
+impl Default for PhysicalDeviceLayeredDriverPropertiesMSFT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT,
+            p_next: ptr::null_mut(),
+            underlying_api: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceLayeredDriverPropertiesMSFT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceLayeredDriverPropertiesMSFT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("underlying_api", &self.underlying_api)
             .finish()
     }
 }

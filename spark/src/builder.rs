@@ -23177,6 +23177,97 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceShaderCoreBuiltinsFeaturesARM
 impl DeviceCreateInfoNext for PhysicalDeviceShaderCoreBuiltinsFeaturesARMBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceShaderCoreBuiltinsFeaturesARM {}
+impl<'a> Builder<'a> for vk::FrameBoundaryEXT {
+    type Type = FrameBoundaryEXTBuilder<'a>;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct FrameBoundaryEXTBuilder<'a> {
+    inner: vk::FrameBoundaryEXT,
+    phantom: PhantomData<&'a vk::Never>,
+}
+impl<'a> FrameBoundaryEXTBuilder<'a> {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn flags(mut self, flags: vk::FrameBoundaryFlagsEXT) -> Self {
+        self.inner.flags = flags;
+        self
+    }
+    pub fn frame_id(mut self, frame_id: u64) -> Self {
+        self.inner.frame_id = frame_id;
+        self
+    }
+    pub fn p_images(mut self, p_images: &'a [vk::Image]) -> Self {
+        self.inner.image_count = p_images.len() as u32;
+        self.inner.p_images = p_images.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn p_buffers(mut self, p_buffers: &'a [vk::Buffer]) -> Self {
+        self.inner.buffer_count = p_buffers.len() as u32;
+        self.inner.p_buffers = p_buffers.first().map_or(ptr::null(), |s| s as *const _);
+        self
+    }
+    pub fn tag_name(mut self, tag_name: u64) -> Self {
+        self.inner.tag_name = tag_name;
+        self
+    }
+    pub fn tag_size(mut self, tag_size: usize) -> Self {
+        self.inner.tag_size = tag_size;
+        self
+    }
+    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
+        self.inner.p_tag = p_tag;
+        self
+    }
+}
+impl<'a> Deref for FrameBoundaryEXTBuilder<'a> {
+    type Target = vk::FrameBoundaryEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl<'a> SubmitInfoNext for FrameBoundaryEXTBuilder<'a> {}
+impl<'a> SubmitInfo2Next for FrameBoundaryEXTBuilder<'a> {}
+impl<'a> PresentInfoKHRNext for FrameBoundaryEXTBuilder<'a> {}
+impl<'a> BindSparseInfoNext for FrameBoundaryEXTBuilder<'a> {}
+impl SubmitInfoNext for vk::FrameBoundaryEXT {}
+impl SubmitInfo2Next for vk::FrameBoundaryEXT {}
+impl PresentInfoKHRNext for vk::FrameBoundaryEXT {}
+impl BindSparseInfoNext for vk::FrameBoundaryEXT {}
+impl Builder<'_> for vk::PhysicalDeviceFrameBoundaryFeaturesEXT {
+    type Type = PhysicalDeviceFrameBoundaryFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceFrameBoundaryFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceFrameBoundaryFeaturesEXT,
+}
+impl PhysicalDeviceFrameBoundaryFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn frame_boundary(mut self, frame_boundary: bool) -> Self {
+        self.inner.frame_boundary = if frame_boundary { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceFrameBoundaryFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceFrameBoundaryFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceFrameBoundaryFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceFrameBoundaryFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceFrameBoundaryFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceFrameBoundaryFeaturesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT {
     type Type = PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -24628,3 +24719,4 @@ impl PhysicalDeviceFeatures2Next for PhysicalDeviceDescriptorPoolOverallocationF
 impl DeviceCreateInfoNext for PhysicalDeviceDescriptorPoolOverallocationFeaturesNVBuilder {}
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLayeredDriverPropertiesMSFT {}
