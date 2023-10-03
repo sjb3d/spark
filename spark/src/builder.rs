@@ -9904,8 +9904,14 @@ impl Deref for ExternalFormatANDROIDBuilder {
 }
 impl ImageCreateInfoNext for ExternalFormatANDROIDBuilder {}
 impl SamplerYcbcrConversionCreateInfoNext for ExternalFormatANDROIDBuilder {}
+impl AttachmentDescription2Next for ExternalFormatANDROIDBuilder {}
+impl GraphicsPipelineCreateInfoNext for ExternalFormatANDROIDBuilder {}
+impl CommandBufferInheritanceInfoNext for ExternalFormatANDROIDBuilder {}
 impl ImageCreateInfoNext for vk::ExternalFormatANDROID {}
 impl SamplerYcbcrConversionCreateInfoNext for vk::ExternalFormatANDROID {}
+impl AttachmentDescription2Next for vk::ExternalFormatANDROID {}
+impl GraphicsPipelineCreateInfoNext for vk::ExternalFormatANDROID {}
+impl CommandBufferInheritanceInfoNext for vk::ExternalFormatANDROID {}
 impl Builder<'_> for vk::PhysicalDevice8BitStorageFeatures {
     type Type = PhysicalDevice8BitStorageFeaturesBuilder;
     fn builder() -> Self::Type {
@@ -24720,3 +24726,349 @@ impl DeviceCreateInfoNext for PhysicalDeviceDescriptorPoolOverallocationFeatures
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceLayeredDriverPropertiesMSFT {}
+impl Builder<'_> for vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID {
+    type Type = PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder {
+    inner: vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID,
+}
+impl PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn external_format_resolve(mut self, external_format_resolve: bool) -> Self {
+        self.inner.external_format_resolve = if external_format_resolve { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder {
+    type Target = vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExternalFormatResolveFeaturesANDROIDBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExternalFormatResolveFeaturesANDROID {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExternalFormatResolvePropertiesANDROID {}
+impl AndroidHardwareBufferPropertiesANDROIDNext for vk::AndroidHardwareBufferFormatResolvePropertiesANDROID {}
+impl Builder<'_> for vk::LatencySleepModeInfoNV {
+    type Type = LatencySleepModeInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LatencySleepModeInfoNVBuilder {
+    inner: vk::LatencySleepModeInfoNV,
+}
+impl LatencySleepModeInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn low_latency_mode(mut self, low_latency_mode: bool) -> Self {
+        self.inner.low_latency_mode = if low_latency_mode { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn low_latency_boost(mut self, low_latency_boost: bool) -> Self {
+        self.inner.low_latency_boost = if low_latency_boost { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn minimum_interval_us(mut self, minimum_interval_us: u32) -> Self {
+        self.inner.minimum_interval_us = minimum_interval_us;
+        self
+    }
+}
+impl Deref for LatencySleepModeInfoNVBuilder {
+    type Target = vk::LatencySleepModeInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::LatencySleepInfoNV {
+    type Type = LatencySleepInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LatencySleepInfoNVBuilder {
+    inner: vk::LatencySleepInfoNV,
+}
+impl LatencySleepInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn signal_semaphore(mut self, signal_semaphore: vk::Semaphore) -> Self {
+        self.inner.signal_semaphore = Some(signal_semaphore);
+        self
+    }
+    pub fn value(mut self, value: u64) -> Self {
+        self.inner.value = value;
+        self
+    }
+}
+impl Deref for LatencySleepInfoNVBuilder {
+    type Target = vk::LatencySleepInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::SetLatencyMarkerInfoNV {
+    type Type = SetLatencyMarkerInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SetLatencyMarkerInfoNVBuilder {
+    inner: vk::SetLatencyMarkerInfoNV,
+}
+impl SetLatencyMarkerInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: u64) -> Self {
+        self.inner.present_id = present_id;
+        self
+    }
+    pub fn marker(mut self, marker: vk::LatencyMarkerNV) -> Self {
+        self.inner.marker = marker;
+        self
+    }
+}
+impl Deref for SetLatencyMarkerInfoNVBuilder {
+    type Target = vk::SetLatencyMarkerInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::GetLatencyMarkerInfoNV {
+    type Type = GetLatencyMarkerInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct GetLatencyMarkerInfoNVBuilder {
+    inner: vk::GetLatencyMarkerInfoNV,
+}
+impl GetLatencyMarkerInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn p_timings(mut self, p_timings: *mut vk::LatencyTimingsFrameReportNV) -> Self {
+        self.inner.p_timings = p_timings;
+        self
+    }
+}
+impl Deref for GetLatencyMarkerInfoNVBuilder {
+    type Target = vk::GetLatencyMarkerInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::LatencyTimingsFrameReportNV {
+    type Type = LatencyTimingsFrameReportNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LatencyTimingsFrameReportNVBuilder {
+    inner: vk::LatencyTimingsFrameReportNV,
+}
+impl LatencyTimingsFrameReportNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: u64) -> Self {
+        self.inner.present_id = present_id;
+        self
+    }
+    pub fn input_sample_time_us(mut self, input_sample_time_us: u64) -> Self {
+        self.inner.input_sample_time_us = input_sample_time_us;
+        self
+    }
+    pub fn sim_start_time_us(mut self, sim_start_time_us: u64) -> Self {
+        self.inner.sim_start_time_us = sim_start_time_us;
+        self
+    }
+    pub fn sim_end_time_us(mut self, sim_end_time_us: u64) -> Self {
+        self.inner.sim_end_time_us = sim_end_time_us;
+        self
+    }
+    pub fn render_submit_start_time_us(mut self, render_submit_start_time_us: u64) -> Self {
+        self.inner.render_submit_start_time_us = render_submit_start_time_us;
+        self
+    }
+    pub fn render_submit_end_time_us(mut self, render_submit_end_time_us: u64) -> Self {
+        self.inner.render_submit_end_time_us = render_submit_end_time_us;
+        self
+    }
+    pub fn present_start_time_us(mut self, present_start_time_us: u64) -> Self {
+        self.inner.present_start_time_us = present_start_time_us;
+        self
+    }
+    pub fn present_end_time_us(mut self, present_end_time_us: u64) -> Self {
+        self.inner.present_end_time_us = present_end_time_us;
+        self
+    }
+    pub fn driver_start_time_us(mut self, driver_start_time_us: u64) -> Self {
+        self.inner.driver_start_time_us = driver_start_time_us;
+        self
+    }
+    pub fn driver_end_time_us(mut self, driver_end_time_us: u64) -> Self {
+        self.inner.driver_end_time_us = driver_end_time_us;
+        self
+    }
+    pub fn os_render_queue_start_time_us(mut self, os_render_queue_start_time_us: u64) -> Self {
+        self.inner.os_render_queue_start_time_us = os_render_queue_start_time_us;
+        self
+    }
+    pub fn os_render_queue_end_time_us(mut self, os_render_queue_end_time_us: u64) -> Self {
+        self.inner.os_render_queue_end_time_us = os_render_queue_end_time_us;
+        self
+    }
+    pub fn gpu_render_start_time_us(mut self, gpu_render_start_time_us: u64) -> Self {
+        self.inner.gpu_render_start_time_us = gpu_render_start_time_us;
+        self
+    }
+    pub fn gpu_render_end_time_us(mut self, gpu_render_end_time_us: u64) -> Self {
+        self.inner.gpu_render_end_time_us = gpu_render_end_time_us;
+        self
+    }
+}
+impl Deref for LatencyTimingsFrameReportNVBuilder {
+    type Target = vk::LatencyTimingsFrameReportNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::OutOfBandQueueTypeInfoNV {
+    type Type = OutOfBandQueueTypeInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct OutOfBandQueueTypeInfoNVBuilder {
+    inner: vk::OutOfBandQueueTypeInfoNV,
+}
+impl OutOfBandQueueTypeInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn queue_type(mut self, queue_type: vk::OutOfBandQueueTypeNV) -> Self {
+        self.inner.queue_type = queue_type;
+        self
+    }
+}
+impl Deref for OutOfBandQueueTypeInfoNVBuilder {
+    type Target = vk::OutOfBandQueueTypeInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl Builder<'_> for vk::LatencySubmissionPresentIdNV {
+    type Type = LatencySubmissionPresentIdNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LatencySubmissionPresentIdNVBuilder {
+    inner: vk::LatencySubmissionPresentIdNV,
+}
+impl LatencySubmissionPresentIdNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_id(mut self, present_id: u64) -> Self {
+        self.inner.present_id = present_id;
+        self
+    }
+}
+impl Deref for LatencySubmissionPresentIdNVBuilder {
+    type Target = vk::LatencySubmissionPresentIdNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SubmitInfoNext for LatencySubmissionPresentIdNVBuilder {}
+impl SubmitInfo2Next for LatencySubmissionPresentIdNVBuilder {}
+impl SubmitInfoNext for vk::LatencySubmissionPresentIdNV {}
+impl SubmitInfo2Next for vk::LatencySubmissionPresentIdNV {}
+impl Builder<'_> for vk::SwapchainLatencyCreateInfoNV {
+    type Type = SwapchainLatencyCreateInfoNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct SwapchainLatencyCreateInfoNVBuilder {
+    inner: vk::SwapchainLatencyCreateInfoNV,
+}
+impl SwapchainLatencyCreateInfoNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn latency_mode_enable(mut self, latency_mode_enable: bool) -> Self {
+        self.inner.latency_mode_enable = if latency_mode_enable { vk::TRUE } else { vk::FALSE };
+        self
+    }
+}
+impl Deref for SwapchainLatencyCreateInfoNVBuilder {
+    type Target = vk::SwapchainLatencyCreateInfoNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SwapchainCreateInfoKHRNext for SwapchainLatencyCreateInfoNVBuilder {}
+impl SwapchainCreateInfoKHRNext for vk::SwapchainLatencyCreateInfoNV {}
+impl Builder<'_> for vk::LatencySurfaceCapabilitiesNV {
+    type Type = LatencySurfaceCapabilitiesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct LatencySurfaceCapabilitiesNVBuilder {
+    inner: vk::LatencySurfaceCapabilitiesNV,
+}
+impl LatencySurfaceCapabilitiesNVBuilder {
+    pub fn p_next(mut self, p_next: *const c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn present_mode_count(mut self, present_mode_count: u32) -> Self {
+        self.inner.present_mode_count = present_mode_count;
+        self
+    }
+    pub fn p_present_modes(mut self, p_present_modes: *mut vk::PresentModeKHR) -> Self {
+        self.inner.p_present_modes = p_present_modes;
+        self
+    }
+}
+impl Deref for LatencySurfaceCapabilitiesNVBuilder {
+    type Target = vk::LatencySurfaceCapabilitiesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl SurfaceCapabilities2KHRNext for LatencySurfaceCapabilitiesNVBuilder {}
+impl SurfaceCapabilities2KHRNext for vk::LatencySurfaceCapabilitiesNV {}

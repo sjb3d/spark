@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 264
+//! Generated from vk.xml with `VK_HEADER_VERSION` 266
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1976,6 +1976,12 @@ impl InstanceExtensions {
     }
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.enable_khr_get_physical_device_properties2();
+    }
+    pub fn supports_android_external_format_resolve(&self) -> bool {
+        self.supports_android_external_memory_android_hardware_buffer()
+    }
+    pub fn enable_android_external_format_resolve(&mut self) {
+        self.enable_android_external_memory_android_hardware_buffer();
     }
     pub fn supports_khr_maintenance5(&self) -> bool {
         self.core_version >= vk::Version::from_raw_parts(1, 1, 0) && self.supports_khr_dynamic_rendering()
@@ -4747,6 +4753,7 @@ pub struct DeviceExtensions {
     pub nv_optical_flow: bool,
     pub ext_legacy_dithering: bool,
     pub ext_pipeline_protected_access: bool,
+    pub android_external_format_resolve: bool,
     pub khr_maintenance5: bool,
     pub khr_ray_tracing_position_fetch: bool,
     pub ext_shader_object: bool,
@@ -4758,6 +4765,7 @@ pub struct DeviceExtensions {
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
     pub ext_dynamic_rendering_unused_attachments: bool,
+    pub nv_low_latency2: bool,
     pub khr_cooperative_matrix: bool,
     pub qcom_multiview_per_view_render_areas: bool,
     pub qcom_image_processing2: bool,
@@ -5048,6 +5056,7 @@ impl DeviceExtensions {
             b"VK_NV_optical_flow" => self.nv_optical_flow = true,
             b"VK_EXT_legacy_dithering" => self.ext_legacy_dithering = true,
             b"VK_EXT_pipeline_protected_access" => self.ext_pipeline_protected_access = true,
+            b"VK_ANDROID_external_format_resolve" => self.android_external_format_resolve = true,
             b"VK_KHR_maintenance5" => self.khr_maintenance5 = true,
             b"VK_KHR_ray_tracing_position_fetch" => self.khr_ray_tracing_position_fetch = true,
             b"VK_EXT_shader_object" => self.ext_shader_object = true,
@@ -5059,6 +5068,7 @@ impl DeviceExtensions {
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
             b"VK_EXT_dynamic_rendering_unused_attachments" => self.ext_dynamic_rendering_unused_attachments = true,
+            b"VK_NV_low_latency2" => self.nv_low_latency2 = true,
             b"VK_KHR_cooperative_matrix" => self.khr_cooperative_matrix = true,
             b"VK_QCOM_multiview_per_view_render_areas" => self.qcom_multiview_per_view_render_areas = true,
             b"VK_QCOM_image_processing2" => self.qcom_image_processing2 = true,
@@ -5349,6 +5359,7 @@ impl DeviceExtensions {
             nv_optical_flow: false,
             ext_legacy_dithering: false,
             ext_pipeline_protected_access: false,
+            android_external_format_resolve: false,
             khr_maintenance5: false,
             khr_ray_tracing_position_fetch: false,
             ext_shader_object: false,
@@ -5360,6 +5371,7 @@ impl DeviceExtensions {
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
             ext_dynamic_rendering_unused_attachments: false,
+            nv_low_latency2: false,
             khr_cooperative_matrix: false,
             qcom_multiview_per_view_render_areas: false,
             qcom_image_processing2: false,
@@ -7364,6 +7376,13 @@ impl DeviceExtensions {
     pub fn enable_ext_pipeline_protected_access(&mut self) {
         self.ext_pipeline_protected_access = true;
     }
+    pub fn supports_android_external_format_resolve(&self) -> bool {
+        self.android_external_format_resolve && self.supports_android_external_memory_android_hardware_buffer()
+    }
+    pub fn enable_android_external_format_resolve(&mut self) {
+        self.android_external_format_resolve = true;
+        self.enable_android_external_memory_android_hardware_buffer();
+    }
     pub fn supports_khr_maintenance5(&self) -> bool {
         self.khr_maintenance5
             && self.core_version >= vk::Version::from_raw_parts(1, 1, 0)
@@ -7447,6 +7466,12 @@ impl DeviceExtensions {
         if self.core_version < vk::Version::from_raw_parts(1, 3, 0) {
             self.enable_khr_dynamic_rendering();
         }
+    }
+    pub fn supports_nv_low_latency2(&self) -> bool {
+        self.nv_low_latency2
+    }
+    pub fn enable_nv_low_latency2(&mut self) {
+        self.nv_low_latency2 = true;
     }
     pub fn supports_khr_cooperative_matrix(&self) -> bool {
         self.khr_cooperative_matrix
@@ -8340,6 +8365,9 @@ impl DeviceExtensions {
         if self.ext_pipeline_protected_access {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_pipeline_protected_access\0") })
         }
+        if self.android_external_format_resolve {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_ANDROID_external_format_resolve\0") })
+        }
         if self.khr_maintenance5 {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_maintenance5\0") })
         }
@@ -8372,6 +8400,9 @@ impl DeviceExtensions {
         }
         if self.ext_dynamic_rendering_unused_attachments {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_dynamic_rendering_unused_attachments\0") })
+        }
+        if self.nv_low_latency2 {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_low_latency2\0") })
         }
         if self.khr_cooperative_matrix {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_KHR_cooperative_matrix\0") })
@@ -8891,6 +8922,11 @@ pub struct Device {
     pub fp_cmd_dispatch_graph_amdx: Option<vk::FnCmdDispatchGraphAMDX>,
     pub fp_cmd_dispatch_graph_indirect_amdx: Option<vk::FnCmdDispatchGraphIndirectAMDX>,
     pub fp_cmd_dispatch_graph_indirect_count_amdx: Option<vk::FnCmdDispatchGraphIndirectCountAMDX>,
+    pub fp_set_latency_sleep_mode_nv: Option<vk::FnSetLatencySleepModeNV>,
+    pub fp_latency_sleep_nv: Option<vk::FnLatencySleepNV>,
+    pub fp_set_latency_marker_nv: Option<vk::FnSetLatencyMarkerNV>,
+    pub fp_get_latency_timings_nv: Option<vk::FnGetLatencyTimingsNV>,
+    pub fp_queue_notify_out_of_band_nv: Option<vk::FnQueueNotifyOutOfBandNV>,
 }
 impl Device {
     #[allow(clippy::cognitive_complexity, clippy::nonminimal_bool)]
@@ -12742,6 +12778,36 @@ impl Device {
                 let fp = f(CStr::from_bytes_with_nul_unchecked(
                     b"vkCmdDispatchGraphIndirectCountAMDX\0",
                 ));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_latency_sleep_mode_nv: if extensions.nv_low_latency2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSetLatencySleepModeNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_latency_sleep_nv: if extensions.nv_low_latency2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkLatencySleepNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_set_latency_marker_nv: if extensions.nv_low_latency2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkSetLatencyMarkerNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_get_latency_timings_nv: if extensions.nv_low_latency2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkGetLatencyTimingsNV\0"));
+                fp.map(|f| mem::transmute(f))
+            } else {
+                None
+            },
+            fp_queue_notify_out_of_band_nv: if extensions.nv_low_latency2 {
+                let fp = f(CStr::from_bytes_with_nul_unchecked(b"vkQueueNotifyOutOfBandNV\0"));
                 fp.map(|f| mem::transmute(f))
             } else {
                 None
@@ -20896,6 +20962,68 @@ impl Device {
             .fp_cmd_dispatch_graph_indirect_count_amdx
             .expect("vkCmdDispatchGraphIndirectCountAMDX is not loaded");
         (fp)(Some(command_buffer), scratch, count_info);
+    }
+    pub unsafe fn set_latency_sleep_mode_nv(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_sleep_mode_info: &mut vk::LatencySleepModeInfoNV,
+    ) -> Result<()> {
+        let fp = self
+            .fp_set_latency_sleep_mode_nv
+            .expect("vkSetLatencySleepModeNV is not loaded");
+        let err = (fp)(Some(self.handle), Some(swapchain), p_sleep_mode_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn latency_sleep_nv(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_sleep_info: &mut vk::LatencySleepInfoNV,
+    ) -> Result<()> {
+        let fp = self.fp_latency_sleep_nv.expect("vkLatencySleepNV is not loaded");
+        let err = (fp)(Some(self.handle), Some(swapchain), p_sleep_info);
+        match err {
+            vk::Result::SUCCESS => Ok(()),
+            _ => Err(err),
+        }
+    }
+    pub unsafe fn set_latency_marker_nv(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_latency_marker_info: &mut vk::SetLatencyMarkerInfoNV,
+    ) {
+        let fp = self
+            .fp_set_latency_marker_nv
+            .expect("vkSetLatencyMarkerNV is not loaded");
+        (fp)(Some(self.handle), Some(swapchain), p_latency_marker_info);
+    }
+    pub unsafe fn get_latency_timings_nv(
+        &self,
+        swapchain: vk::SwapchainKHR,
+        p_timing_count: &mut u32,
+        p_latency_marker_info: &mut vk::GetLatencyMarkerInfoNV,
+    ) {
+        let fp = self
+            .fp_get_latency_timings_nv
+            .expect("vkGetLatencyTimingsNV is not loaded");
+        (fp)(
+            Some(self.handle),
+            Some(swapchain),
+            p_timing_count,
+            p_latency_marker_info,
+        );
+    }
+    pub unsafe fn queue_notify_out_of_band_nv(
+        &self,
+        queue: vk::Queue,
+        p_queue_type_info: vk::OutOfBandQueueTypeInfoNV,
+    ) {
+        let fp = self
+            .fp_queue_notify_out_of_band_nv
+            .expect("vkQueueNotifyOutOfBandNV is not loaded");
+        (fp)(Some(queue), p_queue_type_info);
     }
 }
 

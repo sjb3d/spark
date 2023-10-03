@@ -3863,13 +3863,21 @@ impl ResolveModeFlags {
     pub const AVERAGE_KHR: Self = Self::AVERAGE;
     pub const MIN_KHR: Self = Self::MIN;
     pub const MAX_KHR: Self = Self::MAX;
+    /// Added by extension VK_ANDROID_external_format_resolve.
+    pub const EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID: Self = Self(0x10);
 }
-impl_bitmask!(ResolveModeFlags, 0xf);
+impl_bitmask!(ResolveModeFlags, 0x1f);
 impl fmt::Display for ResolveModeFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
             self.0 as _,
-            &[(0x1, "SAMPLE_ZERO"), (0x2, "AVERAGE"), (0x4, "MIN"), (0x8, "MAX")],
+            &[
+                (0x1, "SAMPLE_ZERO"),
+                (0x2, "AVERAGE"),
+                (0x4, "MIN"),
+                (0x8, "MAX"),
+                (0x10, "EXTERNAL_FORMAT_DOWNSAMPLE_ANDROID"),
+            ],
             f,
         )
     }
@@ -8030,6 +8038,12 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT: Self = Self(1000465000);
     /// Added by extension VK_EXT_pipeline_protected_access.
     pub const PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT: Self = Self(1000466000);
+    /// Added by extension VK_ANDROID_external_format_resolve.
+    pub const PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID: Self = Self(1000468000);
+    /// Added by extension VK_ANDROID_external_format_resolve.
+    pub const PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID: Self = Self(1000468001);
+    /// Added by extension VK_ANDROID_external_format_resolve.
+    pub const ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID: Self = Self(1000468002);
     /// Added by extension VK_KHR_maintenance5.
     pub const PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR: Self = Self(1000470000);
     /// Added by extension VK_KHR_maintenance5.
@@ -8078,6 +8092,24 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT: Self = Self(1000498000);
     /// Added by extension VK_EXT_dynamic_rendering_unused_attachments.
     pub const PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT: Self = Self(1000499000);
+    /// Added by extension VK_NV_low_latency2.
+    pub const LATENCY_SLEEP_MODE_INFO_NV: Self = Self(1000505000);
+    /// Added by extension VK_NV_low_latency2.
+    pub const LATENCY_SLEEP_INFO_NV: Self = Self(1000505001);
+    /// Added by extension VK_NV_low_latency2.
+    pub const SET_LATENCY_MARKER_INFO_NV: Self = Self(1000505002);
+    /// Added by extension VK_NV_low_latency2.
+    pub const GET_LATENCY_MARKER_INFO_NV: Self = Self(1000505003);
+    /// Added by extension VK_NV_low_latency2.
+    pub const LATENCY_TIMINGS_FRAME_REPORT_NV: Self = Self(1000505004);
+    /// Added by extension VK_NV_low_latency2.
+    pub const LATENCY_SUBMISSION_PRESENT_ID_NV: Self = Self(1000505005);
+    /// Added by extension VK_NV_low_latency2.
+    pub const OUT_OF_BAND_QUEUE_TYPE_INFO_NV: Self = Self(1000505006);
+    /// Added by extension VK_NV_low_latency2.
+    pub const SWAPCHAIN_LATENCY_CREATE_INFO_NV: Self = Self(1000505007);
+    /// Added by extension VK_NV_low_latency2.
+    pub const LATENCY_SURFACE_CAPABILITIES_NV: Self = Self(1000505008);
     /// Added by extension VK_KHR_cooperative_matrix.
     pub const PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR: Self = Self(1000506000);
     /// Added by extension VK_KHR_cooperative_matrix.
@@ -8826,6 +8858,9 @@ impl fmt::Display for StructureType {
             1000464010 => Some(&"OPTICAL_FLOW_SESSION_CREATE_PRIVATE_DATA_INFO_NV"),
             1000465000 => Some(&"PHYSICAL_DEVICE_LEGACY_DITHERING_FEATURES_EXT"),
             1000466000 => Some(&"PHYSICAL_DEVICE_PIPELINE_PROTECTED_ACCESS_FEATURES_EXT"),
+            1000468000 => Some(&"PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID"),
+            1000468001 => Some(&"PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID"),
+            1000468002 => Some(&"ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID"),
             1000470000 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_FEATURES_KHR"),
             1000470001 => Some(&"PHYSICAL_DEVICE_MAINTENANCE_5_PROPERTIES_KHR"),
             1000470003 => Some(&"RENDERING_AREA_INFO_KHR"),
@@ -8851,6 +8886,15 @@ impl fmt::Display for StructureType {
             1000497001 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM"),
             1000498000 => Some(&"PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT"),
             1000499000 => Some(&"PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT"),
+            1000505000 => Some(&"LATENCY_SLEEP_MODE_INFO_NV"),
+            1000505001 => Some(&"LATENCY_SLEEP_INFO_NV"),
+            1000505002 => Some(&"SET_LATENCY_MARKER_INFO_NV"),
+            1000505003 => Some(&"GET_LATENCY_MARKER_INFO_NV"),
+            1000505004 => Some(&"LATENCY_TIMINGS_FRAME_REPORT_NV"),
+            1000505005 => Some(&"LATENCY_SUBMISSION_PRESENT_ID_NV"),
+            1000505006 => Some(&"OUT_OF_BAND_QUEUE_TYPE_INFO_NV"),
+            1000505007 => Some(&"SWAPCHAIN_LATENCY_CREATE_INFO_NV"),
+            1000505008 => Some(&"LATENCY_SURFACE_CAPABILITIES_NV"),
             1000506000 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_KHR"),
             1000506001 => Some(&"COOPERATIVE_MATRIX_PROPERTIES_KHR"),
             1000506002 => Some(&"PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR"),
@@ -11275,6 +11319,68 @@ impl fmt::Display for DeviceFaultAddressTypeEXT {
 }
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct LatencyMarkerNV(pub(crate) i32);
+impl LatencyMarkerNV {
+    pub const SIMULATION_START: Self = Self(0);
+    pub const SIMULATION_END: Self = Self(1);
+    pub const RENDERSUBMIT_START: Self = Self(2);
+    pub const RENDERSUBMIT_END: Self = Self(3);
+    pub const PRESENT_START: Self = Self(4);
+    pub const PRESENT_END: Self = Self(5);
+    pub const INPUT_SAMPLE: Self = Self(6);
+    pub const TRIGGER_FLASH: Self = Self(7);
+    pub const OUT_OF_BAND_RENDERSUBMIT_START: Self = Self(8);
+    pub const OUT_OF_BAND_RENDERSUBMIT_END: Self = Self(9);
+    pub const OUT_OF_BAND_PRESENT_START: Self = Self(10);
+    pub const OUT_OF_BAND_PRESENT_END: Self = Self(11);
+}
+impl fmt::Display for LatencyMarkerNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"SIMULATION_START"),
+            1 => Some(&"SIMULATION_END"),
+            2 => Some(&"RENDERSUBMIT_START"),
+            3 => Some(&"RENDERSUBMIT_END"),
+            4 => Some(&"PRESENT_START"),
+            5 => Some(&"PRESENT_END"),
+            6 => Some(&"INPUT_SAMPLE"),
+            7 => Some(&"TRIGGER_FLASH"),
+            8 => Some(&"OUT_OF_BAND_RENDERSUBMIT_START"),
+            9 => Some(&"OUT_OF_BAND_RENDERSUBMIT_END"),
+            10 => Some(&"OUT_OF_BAND_PRESENT_START"),
+            11 => Some(&"OUT_OF_BAND_PRESENT_END"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct OutOfBandQueueTypeNV(pub(crate) i32);
+impl OutOfBandQueueTypeNV {
+    pub const RENDER: Self = Self(0);
+    pub const PRESENT: Self = Self(1);
+}
+impl fmt::Display for OutOfBandQueueTypeNV {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.0 {
+            0 => Some(&"RENDER"),
+            1 => Some(&"PRESENT"),
+            _ => None,
+        };
+        if let Some(name) = name {
+            write!(f, "{}", name)
+        } else {
+            write!(f, "{}", self.0)
+        }
+    }
+}
+#[repr(transparent)]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VendorId(pub(crate) i32);
 impl VendorId {
     /// Vivante vendor ID
@@ -11365,6 +11471,8 @@ impl DriverId {
     pub const MESA_NVK: Self = Self(24);
     /// Imagination Technologies
     pub const IMAGINATION_OPEN_SOURCE_MESA: Self = Self(25);
+    /// Mesa open source project
+    pub const MESA_AGXV: Self = Self(26);
     pub const AMD_PROPRIETARY_KHR: Self = Self::AMD_PROPRIETARY;
     pub const AMD_OPEN_SOURCE_KHR: Self = Self::AMD_OPEN_SOURCE;
     pub const MESA_RADV_KHR: Self = Self::MESA_RADV;
@@ -11406,6 +11514,7 @@ impl fmt::Display for DriverId {
             23 => Some(&"MESA_DOZEN"),
             24 => Some(&"MESA_NVK"),
             25 => Some(&"IMAGINATION_OPEN_SOURCE_MESA"),
+            26 => Some(&"MESA_AGXV"),
             _ => None,
         };
         if let Some(name) = name {
@@ -42878,6 +42987,399 @@ impl fmt::Debug for PhysicalDeviceLayeredDriverPropertiesMSFT {
             .finish()
     }
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExternalFormatResolveFeaturesANDROID {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub external_format_resolve: Bool32,
+}
+unsafe impl Send for PhysicalDeviceExternalFormatResolveFeaturesANDROID {}
+unsafe impl Sync for PhysicalDeviceExternalFormatResolveFeaturesANDROID {}
+impl Default for PhysicalDeviceExternalFormatResolveFeaturesANDROID {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_FEATURES_ANDROID,
+            p_next: ptr::null_mut(),
+            external_format_resolve: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExternalFormatResolveFeaturesANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExternalFormatResolveFeaturesANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("external_format_resolve", &self.external_format_resolve)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExternalFormatResolvePropertiesANDROID {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub null_color_attachment_with_external_format_resolve: Bool32,
+    pub external_format_resolve_chroma_offset_x: ChromaLocation,
+    pub external_format_resolve_chroma_offset_y: ChromaLocation,
+}
+unsafe impl Send for PhysicalDeviceExternalFormatResolvePropertiesANDROID {}
+unsafe impl Sync for PhysicalDeviceExternalFormatResolvePropertiesANDROID {}
+impl Default for PhysicalDeviceExternalFormatResolvePropertiesANDROID {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTERNAL_FORMAT_RESOLVE_PROPERTIES_ANDROID,
+            p_next: ptr::null_mut(),
+            null_color_attachment_with_external_format_resolve: Default::default(),
+            external_format_resolve_chroma_offset_x: Default::default(),
+            external_format_resolve_chroma_offset_y: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExternalFormatResolvePropertiesANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExternalFormatResolvePropertiesANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "null_color_attachment_with_external_format_resolve",
+                &self.null_color_attachment_with_external_format_resolve,
+            )
+            .field(
+                "external_format_resolve_chroma_offset_x",
+                &self.external_format_resolve_chroma_offset_x,
+            )
+            .field(
+                "external_format_resolve_chroma_offset_y",
+                &self.external_format_resolve_chroma_offset_y,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct AndroidHardwareBufferFormatResolvePropertiesANDROID {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub color_attachment_format: Format,
+}
+unsafe impl Send for AndroidHardwareBufferFormatResolvePropertiesANDROID {}
+unsafe impl Sync for AndroidHardwareBufferFormatResolvePropertiesANDROID {}
+impl Default for AndroidHardwareBufferFormatResolvePropertiesANDROID {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::ANDROID_HARDWARE_BUFFER_FORMAT_RESOLVE_PROPERTIES_ANDROID,
+            p_next: ptr::null_mut(),
+            color_attachment_format: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for AndroidHardwareBufferFormatResolvePropertiesANDROID {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("AndroidHardwareBufferFormatResolvePropertiesANDROID")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("color_attachment_format", &self.color_attachment_format)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LatencySleepModeInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub low_latency_mode: Bool32,
+    pub low_latency_boost: Bool32,
+    pub minimum_interval_us: u32,
+}
+unsafe impl Send for LatencySleepModeInfoNV {}
+unsafe impl Sync for LatencySleepModeInfoNV {}
+impl Default for LatencySleepModeInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LATENCY_SLEEP_MODE_INFO_NV,
+            p_next: ptr::null(),
+            low_latency_mode: Default::default(),
+            low_latency_boost: Default::default(),
+            minimum_interval_us: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for LatencySleepModeInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LatencySleepModeInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("low_latency_mode", &self.low_latency_mode)
+            .field("low_latency_boost", &self.low_latency_boost)
+            .field("minimum_interval_us", &self.minimum_interval_us)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LatencySleepInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub signal_semaphore: Option<Semaphore>,
+    pub value: u64,
+}
+unsafe impl Send for LatencySleepInfoNV {}
+unsafe impl Sync for LatencySleepInfoNV {}
+impl Default for LatencySleepInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LATENCY_SLEEP_INFO_NV,
+            p_next: ptr::null(),
+            signal_semaphore: Default::default(),
+            value: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for LatencySleepInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LatencySleepInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("signal_semaphore", &self.signal_semaphore)
+            .field("value", &self.value)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SetLatencyMarkerInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub present_id: u64,
+    pub marker: LatencyMarkerNV,
+}
+unsafe impl Send for SetLatencyMarkerInfoNV {}
+unsafe impl Sync for SetLatencyMarkerInfoNV {}
+impl Default for SetLatencyMarkerInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SET_LATENCY_MARKER_INFO_NV,
+            p_next: ptr::null(),
+            present_id: Default::default(),
+            marker: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SetLatencyMarkerInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SetLatencyMarkerInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .field("marker", &self.marker)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct GetLatencyMarkerInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub p_timings: *mut LatencyTimingsFrameReportNV,
+}
+unsafe impl Send for GetLatencyMarkerInfoNV {}
+unsafe impl Sync for GetLatencyMarkerInfoNV {}
+impl Default for GetLatencyMarkerInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::GET_LATENCY_MARKER_INFO_NV,
+            p_next: ptr::null(),
+            p_timings: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for GetLatencyMarkerInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("GetLatencyMarkerInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("p_timings", &self.p_timings)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LatencyTimingsFrameReportNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub present_id: u64,
+    pub input_sample_time_us: u64,
+    pub sim_start_time_us: u64,
+    pub sim_end_time_us: u64,
+    pub render_submit_start_time_us: u64,
+    pub render_submit_end_time_us: u64,
+    pub present_start_time_us: u64,
+    pub present_end_time_us: u64,
+    pub driver_start_time_us: u64,
+    pub driver_end_time_us: u64,
+    pub os_render_queue_start_time_us: u64,
+    pub os_render_queue_end_time_us: u64,
+    pub gpu_render_start_time_us: u64,
+    pub gpu_render_end_time_us: u64,
+}
+unsafe impl Send for LatencyTimingsFrameReportNV {}
+unsafe impl Sync for LatencyTimingsFrameReportNV {}
+impl Default for LatencyTimingsFrameReportNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LATENCY_TIMINGS_FRAME_REPORT_NV,
+            p_next: ptr::null(),
+            present_id: Default::default(),
+            input_sample_time_us: Default::default(),
+            sim_start_time_us: Default::default(),
+            sim_end_time_us: Default::default(),
+            render_submit_start_time_us: Default::default(),
+            render_submit_end_time_us: Default::default(),
+            present_start_time_us: Default::default(),
+            present_end_time_us: Default::default(),
+            driver_start_time_us: Default::default(),
+            driver_end_time_us: Default::default(),
+            os_render_queue_start_time_us: Default::default(),
+            os_render_queue_end_time_us: Default::default(),
+            gpu_render_start_time_us: Default::default(),
+            gpu_render_end_time_us: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for LatencyTimingsFrameReportNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LatencyTimingsFrameReportNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .field("input_sample_time_us", &self.input_sample_time_us)
+            .field("sim_start_time_us", &self.sim_start_time_us)
+            .field("sim_end_time_us", &self.sim_end_time_us)
+            .field("render_submit_start_time_us", &self.render_submit_start_time_us)
+            .field("render_submit_end_time_us", &self.render_submit_end_time_us)
+            .field("present_start_time_us", &self.present_start_time_us)
+            .field("present_end_time_us", &self.present_end_time_us)
+            .field("driver_start_time_us", &self.driver_start_time_us)
+            .field("driver_end_time_us", &self.driver_end_time_us)
+            .field("os_render_queue_start_time_us", &self.os_render_queue_start_time_us)
+            .field("os_render_queue_end_time_us", &self.os_render_queue_end_time_us)
+            .field("gpu_render_start_time_us", &self.gpu_render_start_time_us)
+            .field("gpu_render_end_time_us", &self.gpu_render_end_time_us)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct OutOfBandQueueTypeInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub queue_type: OutOfBandQueueTypeNV,
+}
+unsafe impl Send for OutOfBandQueueTypeInfoNV {}
+unsafe impl Sync for OutOfBandQueueTypeInfoNV {}
+impl Default for OutOfBandQueueTypeInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::OUT_OF_BAND_QUEUE_TYPE_INFO_NV,
+            p_next: ptr::null(),
+            queue_type: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for OutOfBandQueueTypeInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("OutOfBandQueueTypeInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("queue_type", &self.queue_type)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LatencySubmissionPresentIdNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub present_id: u64,
+}
+unsafe impl Send for LatencySubmissionPresentIdNV {}
+unsafe impl Sync for LatencySubmissionPresentIdNV {}
+impl Default for LatencySubmissionPresentIdNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LATENCY_SUBMISSION_PRESENT_ID_NV,
+            p_next: ptr::null(),
+            present_id: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for LatencySubmissionPresentIdNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LatencySubmissionPresentIdNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_id", &self.present_id)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct SwapchainLatencyCreateInfoNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub latency_mode_enable: Bool32,
+}
+unsafe impl Send for SwapchainLatencyCreateInfoNV {}
+unsafe impl Sync for SwapchainLatencyCreateInfoNV {}
+impl Default for SwapchainLatencyCreateInfoNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::SWAPCHAIN_LATENCY_CREATE_INFO_NV,
+            p_next: ptr::null(),
+            latency_mode_enable: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for SwapchainLatencyCreateInfoNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("SwapchainLatencyCreateInfoNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("latency_mode_enable", &self.latency_mode_enable)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct LatencySurfaceCapabilitiesNV {
+    pub s_type: StructureType,
+    pub p_next: *const c_void,
+    pub present_mode_count: u32,
+    pub p_present_modes: *mut PresentModeKHR,
+}
+unsafe impl Send for LatencySurfaceCapabilitiesNV {}
+unsafe impl Sync for LatencySurfaceCapabilitiesNV {}
+impl Default for LatencySurfaceCapabilitiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::LATENCY_SURFACE_CAPABILITIES_NV,
+            p_next: ptr::null(),
+            present_mode_count: Default::default(),
+            p_present_modes: ptr::null_mut(),
+        }
+    }
+}
+impl fmt::Debug for LatencySurfaceCapabilitiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("LatencySurfaceCapabilitiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("present_mode_count", &self.present_mode_count)
+            .field("p_present_modes", &self.p_present_modes)
+            .finish()
+    }
+}
 pub type FnCreateInstance = unsafe extern "system" fn(
     p_create_info: *const InstanceCreateInfo,
     p_allocator: *const AllocationCallbacks,
@@ -45588,3 +46090,26 @@ pub type FnCmdDispatchGraphIndirectAMDX = unsafe extern "system" fn(
 );
 pub type FnCmdDispatchGraphIndirectCountAMDX =
     unsafe extern "system" fn(command_buffer: Option<CommandBuffer>, scratch: DeviceAddress, count_info: DeviceAddress);
+pub type FnSetLatencySleepModeNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_sleep_mode_info: *mut LatencySleepModeInfoNV,
+) -> Result;
+pub type FnLatencySleepNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_sleep_info: *mut LatencySleepInfoNV,
+) -> Result;
+pub type FnSetLatencyMarkerNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_latency_marker_info: *mut SetLatencyMarkerInfoNV,
+);
+pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
+    device: Option<Device>,
+    swapchain: Option<SwapchainKHR>,
+    p_timing_count: *mut u32,
+    p_latency_marker_info: *mut GetLatencyMarkerInfoNV,
+);
+pub type FnQueueNotifyOutOfBandNV =
+    unsafe extern "system" fn(queue: Option<Queue>, p_queue_type_info: OutOfBandQueueTypeInfoNV);
