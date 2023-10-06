@@ -2763,10 +2763,12 @@ impl RenderingFlags {
     pub const SUSPENDING_KHR: Self = Self::SUSPENDING;
     pub const RESUMING: Self = Self(0x4);
     pub const RESUMING_KHR: Self = Self::RESUMING;
+    /// Added by extension VK_EXT_nested_command_buffer.
+    pub const CONTENTS_INLINE_EXT: Self = Self(0x10);
     /// Added by extension VK_EXT_legacy_dithering.
     pub const ENABLE_LEGACY_DITHERING_EXT: Self = Self(0x8);
 }
-impl_bitmask!(RenderingFlags, 0xf);
+impl_bitmask!(RenderingFlags, 0x1f);
 impl fmt::Display for RenderingFlags {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         display_bitmask(
@@ -2775,6 +2777,7 @@ impl fmt::Display for RenderingFlags {
                 (0x1, "CONTENTS_SECONDARY_COMMAND_BUFFERS"),
                 (0x2, "SUSPENDING"),
                 (0x4, "RESUMING"),
+                (0x10, "CONTENTS_INLINE_EXT"),
                 (0x8, "ENABLE_LEGACY_DITHERING_EXT"),
             ],
             f,
@@ -6433,12 +6436,15 @@ pub struct SubpassContents(pub(crate) i32);
 impl SubpassContents {
     pub const INLINE: Self = Self(0);
     pub const SECONDARY_COMMAND_BUFFERS: Self = Self(1);
+    /// Added by extension VK_EXT_nested_command_buffer.
+    pub const INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT: Self = Self(1000451000);
 }
 impl fmt::Display for SubpassContents {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.0 {
             0 => Some(&"INLINE"),
             1 => Some(&"SECONDARY_COMMAND_BUFFERS"),
+            1000451000 => Some(&"INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT"),
             _ => None,
         };
         if let Some(name) = name {
@@ -7993,6 +7999,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM: Self = Self(1000440001);
     /// Added by extension VK_QCOM_image_processing.
     pub const IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM: Self = Self(1000440002);
+    /// Added by extension VK_EXT_nested_command_buffer.
+    pub const PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT: Self = Self(1000451000);
+    /// Added by extension VK_EXT_nested_command_buffer.
+    pub const PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT: Self = Self(1000451001);
     /// Added by extension VK_EXT_external_memory_acquire_unmodified.
     pub const EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT: Self = Self(1000453000);
     /// Added by extension VK_EXT_extended_dynamic_state3.
@@ -8082,6 +8092,10 @@ impl StructureType {
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV: Self = Self(1000490000);
     /// Added by extension VK_NV_ray_tracing_invocation_reorder.
     pub const PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV: Self = Self(1000490001);
+    /// Added by extension VK_NV_extended_sparse_address_space.
+    pub const PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV: Self = Self(1000492000);
+    /// Added by extension VK_NV_extended_sparse_address_space.
+    pub const PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV: Self = Self(1000492001);
     pub const PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT: Self = Self(1000351000);
     pub const MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT: Self = Self(1000351002);
     /// Added by extension VK_ARM_shader_core_builtins.
@@ -8835,6 +8849,8 @@ impl fmt::Display for StructureType {
             1000440000 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM"),
             1000440001 => Some(&"PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM"),
             1000440002 => Some(&"IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM"),
+            1000451000 => Some(&"PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT"),
+            1000451001 => Some(&"PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT"),
             1000453000 => Some(&"EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT"),
             1000455000 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT"),
             1000455001 => Some(&"PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT"),
@@ -8880,6 +8896,8 @@ impl fmt::Display for StructureType {
             1000488000 => Some(&"PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM"),
             1000490000 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV"),
             1000490001 => Some(&"PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV"),
+            1000492000 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV"),
+            1000492001 => Some(&"PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV"),
             1000351000 => Some(&"PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT"),
             1000351002 => Some(&"MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT"),
             1000497000 => Some(&"PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM"),
@@ -38780,6 +38798,72 @@ impl fmt::Debug for DescriptorSetLayoutHostMappingInfoVALVE {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
+pub struct PhysicalDeviceNestedCommandBufferFeaturesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub nested_command_buffer: Bool32,
+    pub nested_command_buffer_rendering: Bool32,
+    pub nested_command_buffer_simultaneous_use: Bool32,
+}
+unsafe impl Send for PhysicalDeviceNestedCommandBufferFeaturesEXT {}
+unsafe impl Sync for PhysicalDeviceNestedCommandBufferFeaturesEXT {}
+impl Default for PhysicalDeviceNestedCommandBufferFeaturesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT,
+            p_next: ptr::null_mut(),
+            nested_command_buffer: Default::default(),
+            nested_command_buffer_rendering: Default::default(),
+            nested_command_buffer_simultaneous_use: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceNestedCommandBufferFeaturesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceNestedCommandBufferFeaturesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("nested_command_buffer", &self.nested_command_buffer)
+            .field("nested_command_buffer_rendering", &self.nested_command_buffer_rendering)
+            .field(
+                "nested_command_buffer_simultaneous_use",
+                &self.nested_command_buffer_simultaneous_use,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceNestedCommandBufferPropertiesEXT {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub max_command_buffer_nesting_level: u32,
+}
+unsafe impl Send for PhysicalDeviceNestedCommandBufferPropertiesEXT {}
+unsafe impl Sync for PhysicalDeviceNestedCommandBufferPropertiesEXT {}
+impl Default for PhysicalDeviceNestedCommandBufferPropertiesEXT {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT,
+            p_next: ptr::null_mut(),
+            max_command_buffer_nesting_level: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceNestedCommandBufferPropertiesEXT {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceNestedCommandBufferPropertiesEXT")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "max_command_buffer_nesting_level",
+                &self.max_command_buffer_nesting_level,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
     pub s_type: StructureType,
     pub p_next: *mut c_void,
@@ -41814,6 +41898,78 @@ impl fmt::Debug for PhysicalDeviceRayTracingInvocationReorderPropertiesNV {
             .field(
                 "ray_tracing_invocation_reorder_reordering_hint",
                 &self.ray_tracing_invocation_reorder_reordering_hint,
+            )
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    pub extended_sparse_address_space: Bool32,
+}
+unsafe impl Send for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {}
+unsafe impl Sync for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {}
+impl Default for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV,
+            p_next: ptr::null_mut(),
+            extended_sparse_address_space: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field("extended_sparse_address_space", &self.extended_sparse_address_space)
+            .finish()
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {
+    pub s_type: StructureType,
+    pub p_next: *mut c_void,
+    /// Total address space available for extended sparse allocations (bytes)
+    pub extended_sparse_address_space_size: DeviceSize,
+    /// Bitfield of which image usages are supported for extended sparse allocations
+    pub extended_sparse_image_usage_flags: ImageUsageFlags,
+    /// Bitfield of which buffer usages are supported for extended sparse allocations
+    pub extended_sparse_buffer_usage_flags: BufferUsageFlags,
+}
+unsafe impl Send for PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {}
+unsafe impl Sync for PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {}
+impl Default for PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {
+    fn default() -> Self {
+        Self {
+            s_type: StructureType::PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV,
+            p_next: ptr::null_mut(),
+            extended_sparse_address_space_size: Default::default(),
+            extended_sparse_image_usage_flags: Default::default(),
+            extended_sparse_buffer_usage_flags: Default::default(),
+        }
+    }
+}
+impl fmt::Debug for PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("PhysicalDeviceExtendedSparseAddressSpacePropertiesNV")
+            .field("s_type", &self.s_type)
+            .field("p_next", &self.p_next)
+            .field(
+                "extended_sparse_address_space_size",
+                &self.extended_sparse_address_space_size,
+            )
+            .field(
+                "extended_sparse_image_usage_flags",
+                &self.extended_sparse_image_usage_flags,
+            )
+            .field(
+                "extended_sparse_buffer_usage_flags",
+                &self.extended_sparse_buffer_usage_flags,
             )
             .finish()
     }
@@ -46093,17 +46249,17 @@ pub type FnCmdDispatchGraphIndirectCountAMDX =
 pub type FnSetLatencySleepModeNV = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
-    p_sleep_mode_info: *mut LatencySleepModeInfoNV,
+    p_sleep_mode_info: *const LatencySleepModeInfoNV,
 ) -> Result;
 pub type FnLatencySleepNV = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
-    p_sleep_info: *mut LatencySleepInfoNV,
+    p_sleep_info: *const LatencySleepInfoNV,
 ) -> Result;
 pub type FnSetLatencyMarkerNV = unsafe extern "system" fn(
     device: Option<Device>,
     swapchain: Option<SwapchainKHR>,
-    p_latency_marker_info: *mut SetLatencyMarkerInfoNV,
+    p_latency_marker_info: *const SetLatencyMarkerInfoNV,
 );
 pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
     device: Option<Device>,
@@ -46112,4 +46268,4 @@ pub type FnGetLatencyTimingsNV = unsafe extern "system" fn(
     p_latency_marker_info: *mut GetLatencyMarkerInfoNV,
 );
 pub type FnQueueNotifyOutOfBandNV =
-    unsafe extern "system" fn(queue: Option<Queue>, p_queue_type_info: OutOfBandQueueTypeInfoNV);
+    unsafe extern "system" fn(queue: Option<Queue>, p_queue_type_info: *const OutOfBandQueueTypeInfoNV);

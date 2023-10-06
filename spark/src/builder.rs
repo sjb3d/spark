@@ -20938,6 +20938,80 @@ impl Deref for DescriptorSetLayoutHostMappingInfoVALVEBuilder {
         &self.inner
     }
 }
+impl Builder<'_> for vk::PhysicalDeviceNestedCommandBufferFeaturesEXT {
+    type Type = PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {
+    inner: vk::PhysicalDeviceNestedCommandBufferFeaturesEXT,
+}
+impl PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn nested_command_buffer(mut self, nested_command_buffer: bool) -> Self {
+        self.inner.nested_command_buffer = if nested_command_buffer { vk::TRUE } else { vk::FALSE };
+        self
+    }
+    pub fn nested_command_buffer_rendering(mut self, nested_command_buffer_rendering: bool) -> Self {
+        self.inner.nested_command_buffer_rendering = if nested_command_buffer_rendering {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+    pub fn nested_command_buffer_simultaneous_use(mut self, nested_command_buffer_simultaneous_use: bool) -> Self {
+        self.inner.nested_command_buffer_simultaneous_use = if nested_command_buffer_simultaneous_use {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {
+    type Target = vk::PhysicalDeviceNestedCommandBufferFeaturesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceNestedCommandBufferFeaturesEXTBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceNestedCommandBufferFeaturesEXT {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceNestedCommandBufferFeaturesEXT {}
+impl Builder<'_> for vk::PhysicalDeviceNestedCommandBufferPropertiesEXT {
+    type Type = PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
+    inner: vk::PhysicalDeviceNestedCommandBufferPropertiesEXT,
+}
+impl PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn max_command_buffer_nesting_level(mut self, max_command_buffer_nesting_level: u32) -> Self {
+        self.inner.max_command_buffer_nesting_level = max_command_buffer_nesting_level;
+        self
+    }
+}
+impl Deref for PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {
+    type Target = vk::PhysicalDeviceNestedCommandBufferPropertiesEXT;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceProperties2Next for PhysicalDeviceNestedCommandBufferPropertiesEXTBuilder {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceNestedCommandBufferPropertiesEXT {}
 impl Builder<'_> for vk::PhysicalDeviceShaderModuleIdentifierFeaturesEXT {
     type Type = PhysicalDeviceShaderModuleIdentifierFeaturesEXTBuilder;
     fn builder() -> Self::Type {
@@ -23221,12 +23295,9 @@ impl<'a> FrameBoundaryEXTBuilder<'a> {
         self.inner.tag_name = tag_name;
         self
     }
-    pub fn tag_size(mut self, tag_size: usize) -> Self {
-        self.inner.tag_size = tag_size;
-        self
-    }
-    pub fn p_tag(mut self, p_tag: *const c_void) -> Self {
-        self.inner.p_tag = p_tag;
+    pub fn p_tag<T>(mut self, p_tag: &'a [T]) -> Self {
+        self.inner.tag_size = mem::size_of_val(p_tag) as usize;
+        self.inner.p_tag = p_tag.first().map_or(ptr::null(), |s| s as *const _) as *const _;
         self
     }
 }
@@ -23685,6 +23756,41 @@ impl DeviceCreateInfoNext for PhysicalDeviceRayTracingInvocationReorderFeaturesN
 impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
 impl DeviceCreateInfoNext for vk::PhysicalDeviceRayTracingInvocationReorderFeaturesNV {}
 impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceRayTracingInvocationReorderPropertiesNV {}
+impl Builder<'_> for vk::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {
+    type Type = PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder;
+    fn builder() -> Self::Type {
+        Default::default()
+    }
+}
+#[derive(Default)]
+pub struct PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder {
+    inner: vk::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV,
+}
+impl PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder {
+    pub fn p_next(mut self, p_next: *mut c_void) -> Self {
+        self.inner.p_next = p_next;
+        self
+    }
+    pub fn extended_sparse_address_space(mut self, extended_sparse_address_space: bool) -> Self {
+        self.inner.extended_sparse_address_space = if extended_sparse_address_space {
+            vk::TRUE
+        } else {
+            vk::FALSE
+        };
+        self
+    }
+}
+impl Deref for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder {
+    type Target = vk::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV;
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+impl PhysicalDeviceFeatures2Next for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder {}
+impl DeviceCreateInfoNext for PhysicalDeviceExtendedSparseAddressSpaceFeaturesNVBuilder {}
+impl PhysicalDeviceFeatures2Next for vk::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {}
+impl DeviceCreateInfoNext for vk::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV {}
+impl PhysicalDeviceProperties2Next for vk::PhysicalDeviceExtendedSparseAddressSpacePropertiesNV {}
 impl Builder<'_> for vk::DirectDriverLoadingInfoLUNARG {
     type Type = DirectDriverLoadingInfoLUNARGBuilder;
     fn builder() -> Self::Type {

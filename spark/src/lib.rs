@@ -1,4 +1,4 @@
-//! Generated from vk.xml with `VK_HEADER_VERSION` 266
+//! Generated from vk.xml with `VK_HEADER_VERSION` 267
 #![allow(
     clippy::too_many_arguments,
     clippy::trivially_copy_pass_by_ref,
@@ -1917,6 +1917,12 @@ impl InstanceExtensions {
     }
     pub fn enable_qcom_image_processing(&mut self) {
         self.enable_khr_format_feature_flags2();
+    }
+    pub fn supports_ext_nested_command_buffer(&self) -> bool {
+        self.supports_khr_get_physical_device_properties2()
+    }
+    pub fn enable_ext_nested_command_buffer(&mut self) {
+        self.enable_khr_get_physical_device_properties2();
     }
     pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
         self.supports_khr_external_memory()
@@ -4745,6 +4751,7 @@ pub struct DeviceExtensions {
     pub nv_linear_color_attachment: bool,
     pub ext_image_compression_control_swapchain: bool,
     pub qcom_image_processing: bool,
+    pub ext_nested_command_buffer: bool,
     pub ext_external_memory_acquire_unmodified: bool,
     pub ext_extended_dynamic_state3: bool,
     pub ext_subpass_merge_feedback: bool,
@@ -4761,6 +4768,7 @@ pub struct DeviceExtensions {
     pub sec_amigo_profiling: bool,
     pub qcom_multiview_per_view_viewports: bool,
     pub nv_ray_tracing_invocation_reorder: bool,
+    pub nv_extended_sparse_address_space: bool,
     pub ext_mutable_descriptor_type: bool,
     pub arm_shader_core_builtins: bool,
     pub ext_pipeline_library_group_handles: bool,
@@ -5048,6 +5056,7 @@ impl DeviceExtensions {
             b"VK_NV_linear_color_attachment" => self.nv_linear_color_attachment = true,
             b"VK_EXT_image_compression_control_swapchain" => self.ext_image_compression_control_swapchain = true,
             b"VK_QCOM_image_processing" => self.qcom_image_processing = true,
+            b"VK_EXT_nested_command_buffer" => self.ext_nested_command_buffer = true,
             b"VK_EXT_external_memory_acquire_unmodified" => self.ext_external_memory_acquire_unmodified = true,
             b"VK_EXT_extended_dynamic_state3" => self.ext_extended_dynamic_state3 = true,
             b"VK_EXT_subpass_merge_feedback" => self.ext_subpass_merge_feedback = true,
@@ -5064,6 +5073,7 @@ impl DeviceExtensions {
             b"VK_SEC_amigo_profiling" => self.sec_amigo_profiling = true,
             b"VK_QCOM_multiview_per_view_viewports" => self.qcom_multiview_per_view_viewports = true,
             b"VK_NV_ray_tracing_invocation_reorder" => self.nv_ray_tracing_invocation_reorder = true,
+            b"VK_NV_extended_sparse_address_space" => self.nv_extended_sparse_address_space = true,
             b"VK_EXT_mutable_descriptor_type" => self.ext_mutable_descriptor_type = true,
             b"VK_ARM_shader_core_builtins" => self.arm_shader_core_builtins = true,
             b"VK_EXT_pipeline_library_group_handles" => self.ext_pipeline_library_group_handles = true,
@@ -5351,6 +5361,7 @@ impl DeviceExtensions {
             nv_linear_color_attachment: false,
             ext_image_compression_control_swapchain: false,
             qcom_image_processing: false,
+            ext_nested_command_buffer: false,
             ext_external_memory_acquire_unmodified: false,
             ext_extended_dynamic_state3: false,
             ext_subpass_merge_feedback: false,
@@ -5367,6 +5378,7 @@ impl DeviceExtensions {
             sec_amigo_profiling: false,
             qcom_multiview_per_view_viewports: false,
             nv_ray_tracing_invocation_reorder: false,
+            nv_extended_sparse_address_space: false,
             ext_mutable_descriptor_type: false,
             arm_shader_core_builtins: false,
             ext_pipeline_library_group_handles: false,
@@ -7324,6 +7336,12 @@ impl DeviceExtensions {
         self.qcom_image_processing = true;
         self.enable_khr_format_feature_flags2();
     }
+    pub fn supports_ext_nested_command_buffer(&self) -> bool {
+        self.ext_nested_command_buffer
+    }
+    pub fn enable_ext_nested_command_buffer(&mut self) {
+        self.ext_nested_command_buffer = true;
+    }
     pub fn supports_ext_external_memory_acquire_unmodified(&self) -> bool {
         self.ext_external_memory_acquire_unmodified && self.supports_khr_external_memory()
     }
@@ -7433,6 +7451,12 @@ impl DeviceExtensions {
     pub fn enable_nv_ray_tracing_invocation_reorder(&mut self) {
         self.nv_ray_tracing_invocation_reorder = true;
         self.enable_khr_ray_tracing_pipeline();
+    }
+    pub fn supports_nv_extended_sparse_address_space(&self) -> bool {
+        self.nv_extended_sparse_address_space
+    }
+    pub fn enable_nv_extended_sparse_address_space(&mut self) {
+        self.nv_extended_sparse_address_space = true;
     }
     pub fn supports_ext_mutable_descriptor_type(&self) -> bool {
         self.ext_mutable_descriptor_type && self.supports_khr_maintenance3()
@@ -8341,6 +8365,9 @@ impl DeviceExtensions {
         if self.qcom_image_processing {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_QCOM_image_processing\0") })
         }
+        if self.ext_nested_command_buffer {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_nested_command_buffer\0") })
+        }
         if self.ext_external_memory_acquire_unmodified {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_external_memory_acquire_unmodified\0") })
         }
@@ -8388,6 +8415,9 @@ impl DeviceExtensions {
         }
         if self.nv_ray_tracing_invocation_reorder {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_ray_tracing_invocation_reorder\0") })
+        }
+        if self.nv_extended_sparse_address_space {
+            v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_NV_extended_sparse_address_space\0") })
         }
         if self.ext_mutable_descriptor_type {
             v.push(unsafe { CStr::from_bytes_with_nul_unchecked(b"VK_EXT_mutable_descriptor_type\0") })
@@ -20966,7 +20996,7 @@ impl Device {
     pub unsafe fn set_latency_sleep_mode_nv(
         &self,
         swapchain: vk::SwapchainKHR,
-        p_sleep_mode_info: &mut vk::LatencySleepModeInfoNV,
+        p_sleep_mode_info: &vk::LatencySleepModeInfoNV,
     ) -> Result<()> {
         let fp = self
             .fp_set_latency_sleep_mode_nv
@@ -20980,7 +21010,7 @@ impl Device {
     pub unsafe fn latency_sleep_nv(
         &self,
         swapchain: vk::SwapchainKHR,
-        p_sleep_info: &mut vk::LatencySleepInfoNV,
+        p_sleep_info: &vk::LatencySleepInfoNV,
     ) -> Result<()> {
         let fp = self.fp_latency_sleep_nv.expect("vkLatencySleepNV is not loaded");
         let err = (fp)(Some(self.handle), Some(swapchain), p_sleep_info);
@@ -20992,7 +21022,7 @@ impl Device {
     pub unsafe fn set_latency_marker_nv(
         &self,
         swapchain: vk::SwapchainKHR,
-        p_latency_marker_info: &mut vk::SetLatencyMarkerInfoNV,
+        p_latency_marker_info: &vk::SetLatencyMarkerInfoNV,
     ) {
         let fp = self
             .fp_set_latency_marker_nv
@@ -21018,7 +21048,7 @@ impl Device {
     pub unsafe fn queue_notify_out_of_band_nv(
         &self,
         queue: vk::Queue,
-        p_queue_type_info: vk::OutOfBandQueueTypeInfoNV,
+        p_queue_type_info: &vk::OutOfBandQueueTypeInfoNV,
     ) {
         let fp = self
             .fp_queue_notify_out_of_band_nv
